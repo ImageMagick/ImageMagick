@@ -1,12 +1,12 @@
 /*
   Copyright 1999-2020 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.  You may
   obtain a copy of the License at
-  
+
     https://imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ extern "C" {
 #define OPENCL_IF(...)		"\n #""if " #__VA_ARGS__ " \n"
 #define STRINGIFY(...) #__VA_ARGS__ "\n"
 
-const char *accelerateKernels =
+const char *const accelerateKernels =
 
 /*
   Define declarations.
@@ -252,7 +252,8 @@ const char *accelerateKernels =
       IndexChannel = 0x0020,             /* Color Index Table? */
       ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
       WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
-      MetaChannel = 0x0100,              /* ???? */
+      MetaChannel = 0x0100,              /* not used */
+      CompositeMaskChannel = 0x0200,     /* SVG mask */
       CompositeChannels = 0x001F,
       AllChannels = 0x7ffffff,
       /*
@@ -335,7 +336,7 @@ OPENCL_ENDIF()
       {
         if (value >= (CLQuantum) MaxMap)
           return ((uint)MaxMap);
-        else 
+        else
           return ((uint)value);
       }
   )
@@ -346,13 +347,6 @@ OPENCL_ENDIF()
       float sign = x < (float) 0.0 ? (float) -1.0 : (float) 1.0;
       return((sign*x) >= MagickEpsilon ? (float) 1.0/x : sign*((float) 1.0/MagickEpsilon));
     }
-  )
-
-  STRINGIFY(
-  static inline float RoundToUnity(const float value)
-   {
-     return clamp(value,0.0f,1.0f);
-   }
   )
 
   STRINGIFY(
@@ -376,22 +370,17 @@ OPENCL_ENDIF()
   static inline CLQuantum getBlue(CLPixelType p)               { return p.x; }
   static inline void setBlue(CLPixelType* p, CLQuantum value)  { (*p).x = value; }
   static inline float getBlueF4(float4 p)                      { return p.x; }
-  static inline void setBlueF4(float4* p, float value)         { (*p).x = value; }
 
   static inline CLQuantum getGreen(CLPixelType p)              { return p.y; }
   static inline void setGreen(CLPixelType* p, CLQuantum value) { (*p).y = value; }
   static inline float getGreenF4(float4 p)                     { return p.y; }
-  static inline void setGreenF4(float4* p, float value)        { (*p).y = value; }
 
   static inline CLQuantum getRed(CLPixelType p)                { return p.z; }
   static inline void setRed(CLPixelType* p, CLQuantum value)   { (*p).z = value; }
   static inline float getRedF4(float4 p)                       { return p.z; }
-  static inline void setRedF4(float4* p, float value)          { (*p).z = value; }
 
   static inline CLQuantum getAlpha(CLPixelType p)              { return p.w; }
-  static inline void setAlpha(CLPixelType* p, CLQuantum value) { (*p).w = value; }
   static inline float getAlphaF4(float4 p)                     { return p.w; }
-  static inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
 
   static inline void ReadChannels(const __global CLQuantum *p, const unsigned int number_channels,
     const ChannelType channel, float *red, float *green, float *blue, float *alpha)
@@ -807,7 +796,7 @@ OPENCL_ENDIF()
       }
       case PoissonNoise:
       {
-        float 
+        float
           poisson;
         unsigned int i;
         poisson=exp(-SigmaPoisson*QuantumScale*pixel);
@@ -1145,14 +1134,14 @@ OPENCL_ENDIF()
     /*
     */
     __kernel void Histogram(__global CLPixelType * restrict im,
-      const ChannelType channel, 
+      const ChannelType channel,
       const unsigned int colorspace,
       const unsigned int method,
       __global uint4 * restrict histogram)
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
-        const int columns = get_global_size(0);  
+        const int x = get_global_id(0);
+        const int y = get_global_id(1);
+        const int columns = get_global_size(0);
         const int c = x + y * columns;
         if ((channel & SyncChannels) != 0)
         {
@@ -1172,17 +1161,30 @@ OPENCL_ENDIF()
       }
     )
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    C o n t r a s t S t r e t c h                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+
     STRINGIFY(
-    /*
-    */
-    __kernel void ContrastStretch(__global CLPixelType * restrict im,
-      const ChannelType channel,  
-      __global CLPixelType * restrict stretch_map,
-      const float4 white, const float4 black)
-      {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
-        const int columns = get_global_size(0);  
+      __kernel void ContrastStretch
+      (
+        __global CLPixelType *restrict im,
+        const ChannelType channel,
+        __global CLPixelType *restrict stretch_map,
+        const float4 white,
+        const float4 black
+      ){
+        const int x = get_global_id(0);
+        const int y = get_global_id(1);
+        const int columns = get_global_size(0);
         const int c = x + y * columns;
 
         uint ePos;
@@ -1192,45 +1194,41 @@ OPENCL_ENDIF()
         //read from global
         oValue=im[c];
 
-        if ((channel & RedChannel) != 0)
+        if ((channel & RedChannel) && (getRedF4(white) != getRedF4(black)))
         {
-          if (getRedF4(white) != getRedF4(black))
-          {
-            ePos = ScaleQuantumToMap(getRed(oValue)); 
-            eValue = stretch_map[ePos];
-            red = getRed(eValue);
-          }
+          ePos = ScaleQuantumToMap(getRed(oValue));
+          eValue = stretch_map[ePos];
+          red = getRed(eValue);
         }
+        else
+          red = getRed(oValue);
 
-        if ((channel & GreenChannel) != 0)
+        if ((channel & GreenChannel) && (getGreenF4(white) != getGreenF4(black)))
         {
-          if (getGreenF4(white) != getGreenF4(black))
-          {
-            ePos = ScaleQuantumToMap(getGreen(oValue)); 
-            eValue = stretch_map[ePos];
-            green = getGreen(eValue);
-          }
+          ePos = ScaleQuantumToMap(getGreen(oValue));
+          eValue = stretch_map[ePos];
+          green = getGreen(eValue);
         }
+        else
+          green = getGreen(oValue);
 
-        if ((channel & BlueChannel) != 0)
+        if ((channel & BlueChannel) && (getBlueF4(white) != getBlueF4(black)))
         {
-          if (getBlueF4(white) != getBlueF4(black))
-          {
-            ePos = ScaleQuantumToMap(getBlue(oValue)); 
-            eValue = stretch_map[ePos];
-            blue = getBlue(eValue);
-          }
+          ePos = ScaleQuantumToMap(getBlue(oValue));
+          eValue = stretch_map[ePos];
+          blue = getBlue(eValue);
         }
+        else
+          blue = getBlue(oValue);
 
-        if ((channel & AlphaChannel) != 0)
+        if ((channel & AlphaChannel) && (getAlphaF4(white) != getAlphaF4(black)))
         {
-          if (getAlphaF4(white) != getAlphaF4(black))
-          {
-            ePos = ScaleQuantumToMap(getAlpha(oValue)); 
-            eValue = stretch_map[ePos];
-            alpha = getAlpha(eValue);
-          }
+          ePos = ScaleQuantumToMap(getAlpha(oValue));
+          eValue = stretch_map[ePos];
+          alpha = getAlpha(eValue);
         }
+        else
+          alpha = getAlpha(oValue);
 
         //write back
         im[c]=(CLPixelType)(blue, green, red, alpha);
@@ -1251,7 +1249,7 @@ OPENCL_ENDIF()
 */
 
   STRINGIFY(
-    __kernel 
+    __kernel
     void ConvolveOptimized(const __global CLPixelType *input, __global CLPixelType *output,
     const unsigned int imageWidth, const unsigned int imageHeight,
     __constant float *filter, const unsigned int filterWidth, const unsigned int filterHeight,
@@ -1328,7 +1326,7 @@ OPENCL_ENDIF()
 
             sum.x += f * p.x;
             sum.y += f * p.y;
-            sum.z += f * p.z; 
+            sum.z += f * p.z;
             sum.w += f * p.w;
 
             gamma += f;
@@ -1374,7 +1372,7 @@ OPENCL_ENDIF()
   )
 
   STRINGIFY(
-    __kernel 
+    __kernel
     void Convolve(const __global CLPixelType *input, __global CLPixelType *output,
                   const uint imageWidth, const uint imageHeight,
                   __constant float *filter, const unsigned int filterWidth, const unsigned int filterHeight,
@@ -1407,13 +1405,13 @@ OPENCL_ENDIF()
           for (int i = 0; i < filterWidth; i++) {
             inputPixelIndex.x = imageIndex.x - midFilterDimen.x + i;
             inputPixelIndex.x = ClampToCanvas(inputPixelIndex.x, imageWidth);
-        
+
             CLPixelType p = input[inputPixelIndex.y * imageWidth + inputPixelIndex.x];
             float f = filter[filterIndex];
 
             sum.x += f * p.x;
             sum.y += f * p.y;
-            sum.z += f * p.z; 
+            sum.z += f * p.z;
             sum.w += f * p.w;
 
             gamma += f;
@@ -1431,7 +1429,7 @@ OPENCL_ENDIF()
           for (int i = 0; i < filterWidth; i++) {
             inputPixelIndex.x = imageIndex.x - midFilterDimen.x + i;
             inputPixelIndex.x = ClampToCanvas(inputPixelIndex.x, imageWidth);
-        
+
             CLPixelType p = input[inputPixelIndex.y * imageWidth + inputPixelIndex.x];
             float alpha = QuantumScale*p.w;
             float f = filter[filterIndex];
@@ -1636,13 +1634,13 @@ OPENCL_ENDIF()
     /*
     */
     __kernel void Equalize(__global CLPixelType * restrict im,
-      const ChannelType channel,  
+      const ChannelType channel,
       __global CLPixelType * restrict equalize_map,
       const float4 white, const float4 black)
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
-        const int columns = get_global_size(0);  
+        const int x = get_global_id(0);
+        const int y = get_global_id(1);
+        const int columns = get_global_size(0);
         const int c = x + y * columns;
 
         uint ePos;
@@ -1656,19 +1654,19 @@ OPENCL_ENDIF()
         {
           if (getRedF4(white) != getRedF4(black))
           {
-            ePos = ScaleQuantumToMap(getRed(oValue)); 
+            ePos = ScaleQuantumToMap(getRed(oValue));
             eValue = equalize_map[ePos];
             red = getRed(eValue);
-            ePos = ScaleQuantumToMap(getGreen(oValue)); 
+            ePos = ScaleQuantumToMap(getGreen(oValue));
             eValue = equalize_map[ePos];
             green = getRed(eValue);
-            ePos = ScaleQuantumToMap(getBlue(oValue)); 
+            ePos = ScaleQuantumToMap(getBlue(oValue));
             eValue = equalize_map[ePos];
             blue = getRed(eValue);
-            ePos = ScaleQuantumToMap(getAlpha(oValue)); 
+            ePos = ScaleQuantumToMap(getAlpha(oValue));
             eValue = equalize_map[ePos];
             alpha = getRed(eValue);
- 
+
             //write back
             im[c]=(CLPixelType)(blue, green, red, alpha);
           }
@@ -1760,7 +1758,7 @@ OPENCL_ENDIF()
   Improve brightness / contrast of the image
   channel : define which channel is improved
   function : the function called to enchance the brightness contrast
-  number_parameters : numbers of parameters 
+  number_parameters : numbers of parameters
   parameters : the parameter
   */
   __kernel void ComputeFunction(__global CLQuantum *image,const unsigned int number_channels,
@@ -1852,7 +1850,7 @@ OPENCL_ENDIF()
     STRINGIFY(
 
       __kernel void LocalContrastBlurRow(__global CLPixelType *srcImage, __global CLPixelType *dstImage, __global float *tmpImage,
-          const int radius, 
+          const int radius,
           const int imageWidth,
           const int imageHeight)
       {
@@ -1902,7 +1900,7 @@ OPENCL_ENDIF()
 
     STRINGIFY(
       __kernel void LocalContrastBlurApplyColumn(__global CLPixelType *srcImage, __global CLPixelType *dstImage, __global float *blurImage,
-          const int radius, 
+          const int radius,
           const float strength,
           const int imageWidth,
           const int imageHeight)
@@ -2095,7 +2093,7 @@ OPENCL_ENDIF()
     *blue=ClampToQuantum(QuantumRange*b);
   }
 
-  static inline void ModulateHSL(const float percent_hue, const float percent_saturation,const float percent_lightness, 
+  static inline void ModulateHSL(const float percent_hue, const float percent_saturation,const float percent_lightness,
     CLQuantum *red,CLQuantum *green,CLQuantum *blue)
   {
     float
@@ -2117,14 +2115,14 @@ OPENCL_ENDIF()
     ConvertHSLToRGB(hue,saturation,lightness,red,green,blue);
   }
 
-  __kernel void Modulate(__global CLPixelType *im, 
-    const float percent_brightness, 
-    const float percent_hue, 
-    const float percent_saturation, 
+  __kernel void Modulate(__global CLPixelType *im,
+    const float percent_brightness,
+    const float percent_hue,
+    const float percent_saturation,
     const int colorspace)
   {
 
-    const int x = get_global_id(0);  
+    const int x = get_global_id(0);
     const int y = get_global_id(1);
     const int columns = get_global_size(0);
     const int c = x + y * columns;
@@ -2145,14 +2143,14 @@ OPENCL_ENDIF()
       case HSLColorspace:
       default:
         {
-          ModulateHSL(percent_hue, percent_saturation, percent_brightness, 
+          ModulateHSL(percent_hue, percent_saturation, percent_brightness,
               &red, &green, &blue);
         }
 
     }
 
     CLPixelType filteredPixel;
-   
+
     setRed(&filteredPixel, red);
     setGreen(&filteredPixel, green);
     setBlue(&filteredPixel, blue);
@@ -2175,7 +2173,7 @@ OPENCL_ENDIF()
 */
 
   STRINGIFY(
-    __kernel 
+    __kernel
     void MotionBlur(const __global CLPixelType *input, __global CLPixelType *output,
                     const unsigned int imageWidth, const unsigned int imageHeight,
                     const __global float *filter, const unsigned int width, const __global int2* offset,
@@ -2197,7 +2195,7 @@ OPENCL_ENDIF()
       pixel.w = (float)bias.w;
 
       if (((channel & AlphaChannel) == 0) || (matte == 0)) {
-        
+
         for (int i = 0; i < width; i++) {
           // only support EdgeVirtualPixelMethod through ClampToCanvas
           // TODO: implement other virtual pixel method
@@ -2273,7 +2271,7 @@ OPENCL_ENDIF()
     return 1.0f;
   }
   )
-    
+
   STRINGIFY(
   // Based on CubicBC from resize.c
   float CubicBC(const float x,const __global float* resizeFilterCoefficients)
@@ -2386,7 +2384,7 @@ OPENCL_ENDIF()
   {
     switch (filterType)
     {
-    /* Call Sinc even for SincFast to get better precision on GPU 
+    /* Call Sinc even for SincFast to get better precision on GPU
        and to avoid thread divergence.  Sinc is pretty fast on GPU anyway...*/
     case SincWeightingFunction:
     case SincFastWeightingFunction:
@@ -2435,7 +2433,7 @@ OPENCL_ENDIF()
   )
 
   ;
-  const char *accelerateKernels2 =
+  const char *const accelerateKernels2 =
 
   STRINGIFY(
 
@@ -2451,7 +2449,7 @@ OPENCL_ENDIF()
     pixelIndex = (pixelIndex<pixelPerWorkgroup)?pixelIndex:-1;
     return pixelIndex;
   }
- 
+
   )
 
   STRINGIFY(
