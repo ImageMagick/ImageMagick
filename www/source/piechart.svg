@@ -1,0 +1,32 @@
+<?xml version='1.0' standalone='no'?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 20001102//EN'
+   'http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd'>
+<svg width='22cm' height='13cm' viewBox='0 0 2200 1300'>
+  <g>
+    <rect x='1' y='1' width='2198' height='1298' style='fill:darkslateblue; stroke:blue; stroke-width:1'/>
+    <text style='font-size: 40; fill: white; stroke-width: 1' x='600' y='1100'>Average: 20.0</text>
+    <path d='M700.0,600.0 L340.0,600.0 A360.0,360.0 0 0,1 408.1452123287954,389.2376150414973 z' style='fill:red; stroke:black; stroke-width:5'/>
+    <text style='font-size: 40; fill: white; stroke-width: 1' x='1400' y='140'>MagickWand for PHP</text>
+    <text style='font-size: 30; fill: white; stroke-width: 1' x='1800' y='140'>(10.0%)</text>
+    <rect x='1330' y='100' width='40' height='40' style='fill:red; stroke:black; stroke-width:4'/>
+    <path d='M700.0,600.0 L408.1452123287954,389.2376150414973 A360.0,360.0 0 0,1 976.5894480359858,369.56936567559273 z' style='fill:yellow; stroke:black; stroke-width:5'/>
+    <text style='font-size: 40; fill: white; stroke-width: 1' x='1400' y='220'>MagickCore</text>
+    <text style='font-size: 30; fill: white; stroke-width: 1' x='1800' y='220'>(29.0%)</text>
+    <rect x='1330' y='180' width='40' height='40' style='fill:yellow; stroke:black; stroke-width:4'/>
+    <path d='M700.0,600.0 L976.5894480359858,369.56936567559273 A360.0,360.0 0 0,1 964.2680466142854,844.4634932636567 z' style='fill:fuchsia; stroke:black; stroke-width:5'/>
+    <text style='font-size: 40; fill: white; stroke-width: 1'
+       x='1400' y='300'>MagickWand</text>
+    <text style='font-size: 30; fill: white; stroke-width: 1' x='1800' y='300'>(22.9%)</text>
+    <rect x='1330' y='260' width='40' height='40' style='fill:fuchsia; stroke:black; stroke-width:4'/>
+    <path d='M700.0,600.0 L964.2680466142854,844.4634932636567 A360.0,360.0 0 0,1 757.853099990584,955.3210081341651 z' style='fill:blue; stroke:black; stroke-width:5'/>
+    <text style='font-size: 40; fill: white; stroke-width: 1' x='1400' y='380'>JMagick</text>
+    <text style='font-size: 30; fill: white; stroke-width: 1' x='1800' y='380'>(10.6%)</text>
+    <rect x='1330' y='340' width='40' height='40' style='fill:blue; stroke:black; stroke-width:4'/>
+    <path d='M700.0,600.0 L757.853099990584,955.3210081341651 A360.0,360.0 0 0,1 340.0,600.0 z' style='fill:lime; stroke:black; stroke-width:5'/>
+    <text style='font-size: 40; fill: white; stroke-width: 1' x='1400' y='460'>Magick++</text>
+    <text style='font-size: 30; fill: white; stroke-width: 1' x='1800' y='460'>(27.5%)</text>
+    <rect x='1330' y='420' width='40' height='40' style='fill:lime; stroke:black; stroke-width:4'/>
+    <text style='font-size: 100; fill: white; stroke-width: 1' x='100' y='150'>ImageMagick</text>
+    <circle cx='700' cy='600' r='360' style='fill: none; stroke: black; stroke-width:5' />
+  </g>
+</svg>

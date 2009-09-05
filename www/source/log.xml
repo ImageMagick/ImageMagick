@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logmap [
+<!ELEMENT logmap (log)+>
+<!ELEMENT log (#PCDATA)>
+<!ATTLIST log events CDATA #IMPLIED>
+<!ATTLIST log output CDATA #IMPLIED>
+<!ATTLIST log filename CDATA #IMPLIED>
+<!ATTLIST log generations CDATA #IMPLIED>
+<!ATTLIST log limit CDATA #IMPLIED>
+<!ATTLIST log format CDATA #IMPLIED>
+]>
+<!--
+  The format of the log is defined by embedding special format characters:
+
+    %c   client
+    %d   domain
+    %e   event
+    %f   function
+    %g   generation
+    %i   thread id
+    %l   line
+    %m   module
+    %n   log name
+    %p   process id
+    %r   real CPU time
+    %t   wall clock time
+    %u   user CPU time
+    %v   version
+    %%   percent sign
+    \n   newline
+    \r   carriage return
+-->
+<logmap>
+  <log events="None"/>
+  <log output="console"/>
+  <log filename="Magick-%g.log"/>
+  <log generations="3"/>
+  <log limit="2000"/>
+  <log format="%t %r %u %v %d %c[%p]: %m/%f/%l/%d\n  %e"/>
+</logmap>

@@ -1,0 +1,575 @@
+UNIX/Cygwin/MinGW COMPILATION
+
+Note:
+
+  Platform specific notes regarding specific operating systems may be found
+  in the Platforms.txt file.  This document provides generic instructions
+  which work in most common cases.  Additional notes regarding Cygwin &
+  MinGW are provided later in this file.
+
+Type:
+
+    gzip -dc ImageMagick-6.5.4.tar.gz | tar xvf -
+    cd ImageMagick-6.5.4
+
+If you do not have gzip(1), the source for the gzip package is available
+as a shell archive at
+
+    ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.shar
+
+or as a tar archive at
+
+    ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.tar
+
+Use the 'configure' script to automatically configure, build, and install
+ImageMagick.  The configure script may be executed from the ImageMagick source
+directory (e.g ./configure) or from a seperate build directory by specifying
+the full path to configure (e.g.  /src/ImageMagick-6.5.4/configure).  The
+advantage of using a seperate build directory is that multiple ImageMagick
+builds may share the same ImageMagick source directory while allowing each
+build to use a unique set of options.
+
+If you are willing to accept configure's default options, and build from
+within the source directory, type:
+
+    ./configure
+
+and watch the configure script output to verify that it finds everything
+that you think it should.  If it does not, then adjust your environment
+so that it does.
+
+By default,
+
+    make install
+
+will install the package's files in `/usr/local/bin', `/usr/local/lib', etc..
+You can specify an installation prefix other than `/usr/local' by giving
+`configure' the option `--prefix=PATH'.  This is valuable in case you don't
+have privileges to install under the default paths or if you want to install
+in the system directories instead.
+
+If you are not happy with configure's choice of compiler, compilation flags,
+or libraries, you can give `configure' initial values for variables by
+specifying them on the configure command line, e.g.:
+
+    ./configure CC=c99 CFLAGS=-O2 LIBS=-lposix
+
+Options which should be common to packages installed under the same directory
+heirarchy may be supplied via a 'config.site' file located under the
+installation prefix via the path ${prefix}/share/config.site where ${prefix} is
+the installation prefix.  This file is used for all packages installed under
+that prefix.  This is an example config.site file:
+
+    # Configuration values for all packages installed under this prefix
+    CC=gcc
+    CXX=c++
+    CPPFLAGS='-I/usr/local/include'
+    LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
+
+When the 'config.site' file is being used to supply configuration options,
+configure will issue a message similar to:
+
+    configure: loading site script /usr/local/share/config.site
+
+The configure variables you should be aware of are:
+
+    CC          Name of C compiler (e.g. 'cc -Xa') to use
+    CXX         Name of C++ compiler to use (e.g. 'CC')
+    CFLAGS      Compiler flags (e.g. '-g -O2') to compile C code
+    CXXFLAGS    Compiler flags (e.g. '-g -O2') to compile C++ code
+    CPPFLAGS    Include paths (-I/somedir) to look for header files
+    LDFLAGS     Library paths (-L/somedir) to look for libraries
+                Systems that support the notion of a library run-path
+                may require an additional argument in order to find
+                shared libraries at run time. For example, the Solaris
+                linker requires an argument of the form '-R/somedir',
+                some Linux systems will work with '-rpath /somedir',
+                while some other Linux systems who's gcc does not pass
+                -rpath to the linker require an argument of the form
+                '-Wl,-rpath,/somedir'.
+    LIBS        Extra libraries (-lsomelib) required to link
+
+Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory path must
+specify an absolute path rather than a relative path.
+
+Configure can usually find the X include and library files automatically, but
+if it doesn't, you can use the `configure' options `--x-includes=DIR' and
+`--x-libraries=DIR' to specify their locations.
+
+The configure script provides a number of ImageMagick specific options.  When
+disabling an option --disable-something is equivalent to specifying
+--enable-something=no and --without-something is equivalent to
+--with-something=no.  The configure options are as follows (execute 'configure
+--help' to see all options).
+
+Optional Features:
+ --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
+ --enable-prof           enable 'prof' profiling support (default disabled)
+ --enable-gprof          enable 'gprof' profiling support (default disabled)
+ --enable-gcov           enable 'gcov' profiling support (default disabled)
+ --disable-installed     disable building an installed ImageMagick
+                         (default enabled)
+ --disable-largefile     disable support for large (64 bit) file offsets
+
+Optional Packages/Options:
+ --with-quantum-depth    number of bits in a pixel quantum (default 8)
+ --with-modules          enable support for dynamically loadable modules
+ --with-cache            set pixel cache threshhold (defaults to available memory)
+ --without-threads       disable threads support
+ --with-frozenpaths      enable frozen delegate paths
+ --without-magick-plus-plus disable build/install of Magick++
+ --without-perl          disable build/install of PerlMagick
+      or
+ --with-perl=PERL        use specified Perl binary to configure PerlMagick
+ --with-perl-options=OPTIONS  options to pass on command-line when
+                         generating PerlMagick's Makefile from Makefile.PL
+ --without-bzlib         disable BZLIB support
+ --without-dps           disable Display Postscript support
+ --with-fpx              enable FlashPIX support
+ --with-gslib            enable Ghostscript library support
+ --without-jbig          disable JBIG support
+ --without-jpeg          disable JPEG support
+ --without-jp2           disable JPEG v2 support
+ --without-lcms          disable LCMS support
+ --without-png           disable PNG support
+ --without-tiff          disable TIFF support
+ --without-ttf           disable TrueType support
+ --without-wmf           disable WMF support
+ --with-fontpath         prepend to default font search path
+ --with-gs-font-dir      directory containing Ghostscript fonts
+ --with-windows-font-dir directory containing MS-Windows fonts
+ --without-xml           disable XML support
+ --without-zlib          disable ZLIB support
+ --with-x                use the X Window System
+ --with-share-path=DIR   Alternate path to share directory
+                         (default share/ImageMagick)
+ --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
+
+ImageMagick options represent either features to be enabled, disabled, or
+packages to be included in the build.  When a feature is enabled (via
+--enable-something), it enables code already present in ImageMagick.  When a
+package is enabled (via --with-something), the configure script will search for
+it, and if it is properly installed and ready to use (headers and built
+libraries are found by compiler) it will be included in the build.  The
+configure script is delivered with all features disabled and all packages
+enabled. In general, the only reason to disable a package is if a package
+exists but it is unsuitable for the build (perhaps an old version or not
+compiled with the right compilation flags).
+
+Several configure options require special note:
+
+  * --enable-shared: the shared libraries are built and support for
+    loading coder and process modules is enabled. Shared libraries are
+    preferred because they allow programs to share common code, making
+    the individual programs much smaller. In addition shared libraries
+    are required in order for PerlMagick to be dynamically loaded by an
+    installed PERL (otherwise an additional PERL (PerlMagick) must be
+    installed.
+
+    ImageMagick built with delegates (see MAGICK PLUG-INS below) can pose
+    additional challenges. If ImageMagick is built using static libraries (the
+    default without --enable-shared) then delegate libraries may be built as
+    either static libraries or shared libraries. However, if ImageMagick is
+    built using shared libraries, then all delegate libraries must also be
+    built as shared libraries.  Static libraries usually have the extension
+    .a, while shared libraries typically have extensions like .so, .sa, or
+    .dll. Code in shared libraries normally must compiled using a special
+    compiler option to produce Position Independent Code (PIC). The only time
+    this is not necessary is if the platform compiles code as PIC by default.
+
+    PIC compilation flags differ from vendor to vendor (gcc's is
+    -fPIC). However, you must compile all shared library source with the
+    same flag (for gcc use -fPIC rather than -fpic). While static libraries
+    are normally created using an archive tool like 'ar', shared libraries
+    are built using special linker or compiler options (e.g. -shared for gcc).
+
+    Building shared libraries often requires subtantial hand-editing of
+    Makefiles and is only recommended for those who know what they are doing.
+
+    If --enable-shared is not specified, a new PERL interpreter (PerlMagick)
+    is built which is statically linked against the PerlMagick extension. This
+    new interpreter is installed into the same directory as the ImageMagick
+    utilities. If --enable-shared is specified, the PerlMagick extension is
+    built as a dynamically loadable object which is loaded into your current
+    PERL interpreter at run-time. Use of dynamically-loaded extensions is
+    preferable over statically linked extensions so --enable-shared should
+    be specified if possible (note that all libraries used with ImageMagick
+    must be shared libraries!).
+
+  * --disable-static: static archive libraries (with extension .a)
+    are not built.  If you are building shared libraries, there is little
+    value to building static libraries. Reasons to build static libraries
+    include: 1) they can be easier to debug; 2) the clients do not have
+    external dependencies (i.e. libMagick.so); 3) building PIC versions
+    of the delegate libraries may take additional expertise and effort; 4)
+    you are unable to build shared libraries.
+
+  * --disable-installed: By default the ImageMagick build is
+    configured to formally install into a directory tree.  This is the
+    most secure and reliable way to install ImageMagick.  Specifying
+    --disable-installed configures ImageMagick so that it doesn't use
+    hard-coded paths and locates support files by computing an offset path
+    from the executable (or from the location specified by the MAGICK_HOME
+    environment variable. The uninstalled configuration is ideal for binary
+    distributions which are expected to extract and run in any location.
+
+  * --with-modules: image coders and process modules are built as
+    loadable modules which are installed under the directory
+    [prefix]/lib/ImageMagick-X.X.X/modules-QN (where 'N' equals 8, 16,
+    or 32 depending on the quantum depth) in the subdirectories 'coders'
+    and 'filters' respectively. The modules build option is only available
+    in conjunction with --enable-shared. If --enable-shared is not also
+    specified, then support for building modules is disabled.  Note that
+    if --enable-shared is specified, the module loader is active (allowing
+    extending an installed ImageMagick by simply copying a module into place)
+    but ImageMagick itself is not built using modules.
+
+  * --with-quantum-depth: This option allows the user to specify the
+    number of bits to use per pixel quantum (the size of the red, green,
+    blue, and alpha pixel components. For example, "--with-quantum-depth=8"
+    builds ImageMagick using 8-bit quantums.  Most computer display adaptors
+    use 8-bit quantums. Currently supported arguments are 8, 16, or 32. The
+    default is 8. This option is the most important option in determining
+    the overall run-time performance of ImageMagick.
+
+    The number of bits in a quantum determines how many values it may
+    contain. Each quantum level supports 256 times as many values as the
+    previous level. The following table shows the range available for
+    various quantum sizes.
+
+        QuantumDepth  Valid Range (Decimal)  Valid Range (Hex)
+              8            0-255                   00-FF
+             16           0-65535                0000-FFFF
+             32         0-4294967295         00000000-FFFFFFFF
+
+    Larger pixel quantums cause ImageMagick to run more slowly and to
+    require more memory. For example, using sixteen-bit pixel quantums
+    causes ImageMagick to run 15% to 50% slower (and take twice as much
+    memory) than when it is built to support eight-bit pixel quantums.
+
+    The amount of virtual memory consumed by an image can be computed by
+    the equation (QuantumDepth*Rows*Columns*5)/8. This is an important
+    consideration when resources are limited, particularly since processing
+    an image may require several images to be in memory at one time. The
+    following table shows memory consumption values for a 1024x768 image:
+
+        QuantumDepth  Virtual Memory
+            8              3MB
+           16              8MB
+           32             15MB
+
+  * --without-magick-plus-plus: Disable building Magick++, the C++
+    application programming interface to ImageMagick. A suitable C++
+    compiler is required in order to build Magick++. Specify the CXX
+    configure variable to select the C++ compiler to use (default "g++"),
+    and CXXFLAGS to select the desired compiler opimization and debug flags
+    (default "-g -O2"). Antique C++ compilers will normally be rejected by
+    configure tests so specifying this option should only be necessary if
+    Magick++ fails to compile.
+
+  * --with-frozenpaths: Normally external program names are substituted
+    into the delegates.xml file without full paths. Specify this option
+    to enable saving full paths to programs using locations determined by
+    configure. This is useful for environments where programs are stored
+    under multiple paths, and users may use different PATH settings than
+    the person who builds ImageMagick.
+
+  * --without-threads: By default, the ImageMagick library is compiled
+    with multi-thread support.  If this is undesireable, then specify
+    --without-threads.
+
+  * --with-cache: Specify a different image pixel cache threshold
+    using the --with-cache option. This sets the maximum amount of heap
+    memory that ImageMagick is allowed to consume before switching to using
+    memory-mapped temporary files to store raw pixel data.
+
+  * --disable-largefile: By default, ImageMagick is compiled with
+    support for large (> 2GB on a 32-bit CPU) files if the operating system
+    supports large files.  All applications which use the ImageMagick library
+    must then also include support for large files. By disabling support for
+    large files via --disable-largefile, dependent applications do not require
+    special compilation options for large files in order to use the library.
+
+  * --with-perl: If the argument --with-perl=/path/to/perl is supplied,
+    then /path/to/perl will be taken as the PERL interpreter to use. This
+    is important in case the 'perl' executable in your PATH is not PERL5,
+    or is not the PERL you want to use.
+
+  * --with-perl-options: The PerlMagick module is normally installed
+    using the Perl interpreter's installation PREFIX, rather than
+    ImageMagick's. If ImageMagick's installation prefix is not the same
+    as PERL's PREFIX, then you may find that PerlMagick's 'make install'
+    step tries to install into a directory tree that you don't have write
+    permissions to. This is common when PERL is delivered with the operating
+    system or on Internet Service Provider (ISP) web servers. If you want
+    PerlMagick to install elsewhere, then provide a PREFIX option to PERL's
+    configuration step via "--with-perl-options=PREFIX=/some/place". Other
+    options accepted by MakeMaker are 'LIB', 'LIBPERL_A', 'LINKTYPE',
+    and 'OPTIMIZE'. See the ExtUtils::MakeMaker(3) manual page for more
+    information on configuring PERL extensions.
+
+   * --without-x: By default, ImageMagick uses the X11 delegate libraries if
+     they are available. When --without-x is specified, use of X11 is disabled.
+     The display, animate, and import sub-commands are not included. The
+     remaining sub-commands have reduced functionality such as no access to X11
+     fonts (consider using Postscript or TrueType fonts instead).
+
+  * --with-gs-font-dir: Specify the directory containing the
+    Ghostscript Postscript Type 1 font files (e.g. "n022003l.pfb") so
+    that they can be rendered using the FreeType library. If the font
+    files are installed using the default Ghostscript installation paths
+    (${prefix}/share/ghostscript/fonts), they should be discovered
+    automatically by configure and specifying this option is not
+    necessary. Specify this option if the Ghostscript fonts fail to be
+    located automatically, or the location needs to be overridden.
+
+  * --with-windows-font-dir: Specify the directory containing
+    MS-Windows-compatible fonts. This is not necessary when ImageMagick is
+    running under MS-Windows.
+
+  After you install ImageMagick, install PerlMagick with these commands:
+
+    cd ImageMagick-6.5.4
+    cd PerlMagick
+    perl Makefile.PL
+    make
+    make install
+
+----
+
+Mac OS X-specific Build instructions
+
+Perform these steps as an administrator or with the sudo command:
+
+    * Install Fink. The default setup creates a /sw folder on your main hard
+    * drive. Make sure /sw/bin is in your path.
+    * Install the latest Xcode from Apple.
+    * Create a symbolic link in /Developer/SDKs/MacOSX10.4u.sdk/ to /sw:
+
+        cd /Developer/SDKs/MacOSX10.4u.sdk
+        ln -s sw /sw
+
+    * Use Fink, or FinkCommander to install any delegate libraries you
+    * require, for example:
+
+        fink install libjpeg
+
+As a regular user or administrator:
+
+    * Download the ImageMagick source distribution.
+    * Unpack and change into the top-level ImageMagick directory:
+
+        tar xvfz ImageMagick-6.3.3-0.tar.gz
+        cd ImageMagick-6.3.3
+
+    * Choose an architecture and set your CFLAGS environment variable. Here we
+    * set CFLAGS for an Intel build:
+
+        export CFLAGS="-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk/ -arch
+i386 -I/sw/include/"
+
+    * Set your LDFLAGS environment variable to:
+
+        export LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk/,-L/sw/lib/"
+
+    * Configure ImageMagick:
+
+        ./configure --prefix=/sw --with-quantum-depth=16 \
+          --disable-dependency-tracking --with-x=yes \
+          --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
+          --without-perl
+
+    * Build ImageMagick:
+
+        make
+
+    * Install ImageMagick:
+
+        sudo make install
+
+    * To test the ImageMagick GUI, start X11 and in a new shell and type:
+
+        display -display :0
+
+An alterative method is to download and build ImageMagick with MacPorts.
+Download and install MacPorts and type the following command:
+
+  sudo port install ImageMagick
+
+This not only installs ImageMagick but includes many of the delegate libraries
+such as JPEG and FreeType.
+
+----
+
+Building under Cygwin
+
+  ImageMagick may be built under the Windows '95-XP Cygwin Unix-emulation
+  environment available for free from
+
+    http://www.cygwin.com/
+
+  X11R6 for Cygwin is available from
+
+    http://xfree86.cygwin.com/
+
+  We recommended that the X11R6 package be installed since this enables
+  ImageMagick's X11 support (animate, display, and import sub-commands will
+  work) and it includes the Freetype v2 DLL required to support TrueType
+  and Postscript Type 1 fonts. Make sure that /usr/X11R6/bin is in your PATH
+  prior to running the configure program.
+
+  If you are using Cygwin version 1.3.9 or later, you can specify the configure
+  option '--enable-shared' to build Cygwin DLLs.  This option is required if
+  you want to build PerlMagick under Cygwin because Cygwin does not provide the
+  libperl.a static library required to create a static PerlMagick.  Note that
+  since C++ exceptions do not currently work properly when thrown from a DLL,
+  the Magick++ library is always built as a static library. Be sure to not
+  specify --disable-static if you are building the Magick++ library since that
+  would surely lead to problems.
+
+----
+
+Building under MinGW & MSYS
+
+  ImageMagick may be built using the free MinGW ("Minimalistic GNU for
+  Windows") package version 1.1, available from
+
+    http://www.mingw.org
+
+  which consists of a GNU-based (e.g. gcc) compilation toolset plus headers
+  and libraries required to build programs which are entirely based on
+  standard Microsoft Windows DLLs. MSYS provides a Unix-like console shell
+  window with sufficient functionality to run the ImageMagick configure
+  script and execute make.
+
+  Unlike the Cygwin build which creates programs based on a Unix-emulation
+  DLL, and which uses Unix-style paths to access Windows files, the MinGW
+  build creates native Windows console applications similar to the Visual
+  C++ build.
+
+  Please note that since the MinGW build is very new, some aspects of the
+  installation may vary from Windows user's expectations, and that only a
+  static build (no DLLs or modules) is currently supported.
+
+  Once MinGW & MSYS have been installed, start the MSYS console (via the
+  MSYS icon on the Windows desktop) and follow the Unix configure and build
+  instructions. Note that the default installation prefix is "/usr/local"
+  which installs the package into a MSYS directory. To install outside
+  of the MSYS directory tree, you may specify an installation prefix like
+  "/c/ImageMagick" which causes the package to be installed under the Windows
+  directory "C:\ImageMagick". The installation directory structure will look
+  very much like the Unix installation layout (e.g. "C:\ImageMagick\bin",
+  "C:\ImageMagick\lib", "C:\ImageMagick\share", etc.). Any additional
+  delegate libraries (e.g. libpng) will need to be built under MinGW in
+  order to be used.
+
+----
+
+Dealing with configuration failures:
+
+  While configure is designed to ease installation of ImageMagick, it often
+  discovers problems that would otherwise be encountered later when compiling
+  ImageMagick. The configure script tests for headers and libraries by
+  executing the compiler (CC) with the specified compilation flags (CFLAGS),
+  pre-processor flags (CPPFLAGS), and linker flags (LDFLAGS). Any errors are
+  logged to the file 'config.log'. If configure fails to discover a header
+  or library please review this log file to determine why, however, please
+  be aware that *errors in the config.log are normal* because configure
+  works by trying something and seeing if it fails. An error in config.log
+  is only a problem if the test should have passed on your system. After
+  taking corrective action, be sure to remove the 'config.cache' file before
+  running configure so that configure will re-inspect the environment rather
+  than using cached values.
+
+  Common causes of configure failures are: 1) a delegate header is not in the
+  header include path (CPPFLAGS -I option); 2) a delegate library is not in
+  the linker search/run path (LDFLAGS -L/-R option); 3) a delegate library
+  is missing a function (old version?); 4) compilation environment is faulty.
+
+  If all reasonable corrective actions have been tried and the problem appears
+  be due to a flaw in the configure script, please send a bug report to the
+  ImageMagick Defect Support Forum at
+  http://studio.imagemagick.org/magick/viewforum.php?f=3.  All bug reports
+  should contain the operating system type (as reported by 'uname -a') and the
+  compiler/compiler-version. A copy of the configure script output and/or the
+  config.log file may be valuable in order to find the problem.  If you send a
+  config.log, please also send a script of the configure output and a
+  description of what you expected to see (and why) so the failure you are
+  observing can be identified and resolved.
+
+----
+
+Makefile Build Targets
+
+  Once ImageMagick is configured, these standard build targets are
+  available from the generated Makefiles:
+
+  * Build the package
+
+        make
+
+  * Install the package
+
+        make install
+
+  * Run tests using the installed ImageMagick ('make install' must be done
+    first!).
+
+        make check
+
+  * Remove everything in the build directory created by 'make'.
+
+        make clean
+
+  * Remove everything in the build directory created by 'configure' and 'make'.
+    This is useful if you want to start over from scratch.
+
+        make distclean
+
+  * Remove all files from the system which are (or would be) installed by
+    'make install' using the current configuration.  Note that this target is
+    imperfect for PerlMagick since Perl no longer supports an 'uninstall' target.
+
+        make uninstall
+
+----
+
+Build & Install:
+
+  Now that ImageMagick is configured, type
+
+     make
+
+  to build the package and
+
+     make install
+
+  to install it.
+
+----
+
+Verifying The Build:
+
+  To confirm your installation of the ImageMagick distribution was successful,
+  ensure that the installation directory is in your executable search path and
+  type:
+
+    display
+
+  The ImageMagick logo is displayed on your X11 display.
+
+  If the image colors are not correct use this command:
+
+    display -visual default
+
+  For a more serious test, you may run the ImageMagick test suite by
+  typing
+
+    make check
+
+  Note that due to differences between the developer's environment and
+  your own it is possible that some tests may be indicated as failed even
+  though the results are ok. Differences between the developer's environment
+  and your own may include the compiler, the CPU type, and the library
+  versions used. The ImageMagick developers use the current release of all
+  dependent libraries.

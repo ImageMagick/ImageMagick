@@ -1,0 +1,448 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: Format and Print Image Properties</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="format, print, image, properties, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index"></p>
+
+<p>Use the <a href="../www/command-line-options.html#format_identify_">-format</a> option to print properties associated with an image in a format of your choosing. You can include the image filename, type, width, height, EXIF data, or other image attributes by embedding special format characters:</p>
+
+<pre class="text">
+   %b   file size
+   %c   comment
+   %d   directory
+   %e   filename extension
+   %f   filename
+   %g   page geometry
+   %h   current image height in pixels
+   %i   input filename
+   %k   number of unique colors
+   %l   label
+   %m   magick
+   %n   number of scenes
+   %o   output filename
+   %p   page number
+   %q   quantum depth
+   %r   image class and colorspace
+   %s   scene number
+   %t   top of filename
+   %u   unique temporary filename
+   %w   current width in pixels
+   %x   x resolution
+   %y   y resolution
+   %z   image depth
+   %A   image alpha channel
+   %C   image compression type
+   %D   image dispose method
+   %H   page height
+   %W   page width
+   %X   page x offset
+   %Y   page y offset
+   %Q   image compression quality
+   %T   image delay
+   %@   bounding box
+   %#   signature
+   %%   a percent sign
+   \n   newline
+   \r   carriage return
+</pre>
+
+<p>Here is a sample command and its output
+for an image with filename <kbd>bird.miff</kbd> and whose width is 512 and height is 480.</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format "%m:%f %wx%h" bird.miff</span><span class='crtout'>MIFF:bird.miff 512x480</span></p>
+<p>Additional properties are recognized when enclosed in braces:</p>
+
+<pre class="text">
+   %[base]
+   %[channels]
+   %[colorspace]
+   %[depth]
+   %[directory]
+   %[extension]
+   %[group]
+   %[height]               original height of image (when it was read in)
+   %[magick]
+   %[max]
+   %[mean]
+   %[min]
+   %[name]
+   %[page]
+   %[scene]
+   %[scenes]
+   %[size]                 original size of image (when it was read in)
+   %[standard-deviation]
+   %[unique]
+   %[width]                original width of image (when it was read in)
+   %[xresolution]
+   %[yresolution]
+</pre>
+
+<p>Use <kbd>fx:</kbd> to evaluate <a href="../www/fx.html">FX</a> expressions:</p>
+
+<p class="text">
+   %[fx:<em class="arg">expression</em>]
+</p>
+
+<p>Use <kbd>pixel:</kbd> to evaluate a pixel color as defined by the <a href="../www/fx.html">FX</a> expression:</p>
+
+<pre class="text">
+   %[pixel:<em class="arg">expression</em>]
+</pre>
+
+<p>You can also use the following special formatting syntax to print EXIF information contained in the file:</p>
+
+<pre class="text">
+   %[EXIF:<em class="arg">tag</em>]
+</pre>
+
+<p>Choose <em class="arg">tag</em> from the following:</p>
+
+<pre class="text">
+   *  (print all EXIF tags, in keyword=data format)
+   !  (print all EXIF tags, in tag_number data format)
+   #hhhh (print data for EXIF tag #hhhh)
+   ImageWidth
+   ImageLength
+   BitsPerSample
+   Compression
+   PhotometricInterpretation
+   FillOrder
+   DocumentName
+   ImageDescription
+   Make
+   Model
+   StripOffsets
+   Orientation
+   SamplesPerPixel
+   RowsPerStrip
+   StripByteCounts
+   XResolution
+   YResolution
+   PlanarConfiguration
+   ResolutionUnit
+   TransferFunction
+   Software
+   DateTime
+   Artist
+   WhitePoint
+   PrimaryChromaticities
+   TransferRange
+   JPEGProc
+   JPEGInterchangeFormat
+   JPEGInterchangeFormatLength
+   YCbCrCoefficients
+   YCbCrSubSampling
+   YCbCrPositioning
+   ReferenceBlackWhite
+   CFARepeatPatternDim
+   CFAPattern
+   BatteryLevel
+   Copyright
+   ExposureTime
+   FNumber
+   IPTC/NAA
+   EXIFOffset
+   InterColorProfile
+   ExposureProgram
+   SpectralSensitivity
+   GPSInfo
+   ISOSpeedRatings
+   OECF
+   EXIFVersion
+   DateTimeOriginal
+   DateTimeDigitized
+   ComponentsConfiguration
+   CompressedBitsPerPixel
+   ShutterSpeedValue
+   ApertureValue
+   BrightnessValue
+   ExposureBiasValue
+   MaxApertureValue
+   SubjectDistance
+   MeteringMode
+   LightSource
+   Flash
+   FocalLength
+   MakerNote
+   UserComment
+   SubSecTime
+   SubSecTimeOriginal
+   SubSecTimeDigitized
+   FlashPixVersion
+   ColorSpace
+   EXIFImageWidth
+   EXIFImageLength
+   InteroperabilityOffset
+   FlashEnergy
+   SpatialFrequencyResponse
+   FocalPlaneXResolution
+   FocalPlaneYResolution
+   FocalPlaneResolutionUnit
+   SubjectLocation
+   ExposureIndex
+   SensingMethod
+   FileSource
+   SceneType
+</pre>
+
+<p>Surround the format specification with quotation marks to prevent your shell from misinterpreting any spaces and square brackets.</p>
+
+<p>The following special formatting syntax can be used to print IPTC information contained in the file:</p>
+
+<pre class="text">
+   %[IPTC:<em class="arg">dataset</em>:<em class="arg">record</em>]
+</pre>
+
+<p>Select <em class="arg">dataset</em> and <em class="arg">record</em> from the following:</p>
+
+<pre class="text">
+    Envelope Record
+      1:00  Model Version
+      1:05  Destination
+      1:20  File Format
+      1:22  File Format Version
+      1:30  Service Identifier
+      1:40  Envelope Number
+      1:50  Product ID
+      1:60  Envelope Priority
+      1:70  Date Sent
+      1:80  Time Sent
+      1:90  Coded Character Set
+      1:100  UNO (Unique Name of Object)
+      1:120  ARM Identifier
+      1:122  ARM Version
+
+    Application Record
+      2:00  Record Version
+      2:03  Object Type Reference
+      2:05  Object Name (Title)
+      2:07  Edit Status
+      2:08  Editorial Update
+      2:10  Urgency
+      2:12  Subject Reference
+      2:15  Category
+      2:20  Supplemental Category
+      2:22  Fixture Identifier
+      2:25  Keywords
+      2:26  Content Location Code
+      2:27  Content Location Name
+      2:30  Release Date
+      2:35  Release Time
+      2:37  Expiration Date
+      2:35  Expiration Time
+      2:40  Special Instructions
+      2:42  Action Advised
+      2:45  Reference Service
+      2:47  Reference Date
+      2:50  Reference Number
+      2:55  Date Created
+      2:60  Time Created
+      2:62  Digital Creation Date
+      2:63  Digital Creation Time
+      2:65  Originating Program
+      2:70  Program Version
+      2:75  Object Cycle
+      2:80  By-Line (Author)
+      2:85  By-Line Title (Author Position) [Not used in Photoshop 7]
+      2:90  City
+      2:92  Sub-Location
+      2:95  Province/State
+      2:100  Country/Primary Location Code
+      2:101  Country/Primary Location Name
+      2:103  Original Transmission Reference
+      2:105  Headline
+      2:110  Credit
+      2:115  Source
+      2:116  Copyright Notice
+      2:118  Contact
+      2:120  Caption/Abstract
+      2:122  Caption Writer/Editor
+      2:125  Rasterized Caption
+      2:130  Image Type
+      2:131  Image Orientation
+      2:135  Language Identifier
+      2:150  Audio Type
+      2:151  Audio Sampling Rate
+      2:152  Audio Sampling Resolution
+      2:153  Audio Duration
+      2:154  Audio Outcue
+      2:200  ObjectData Preview File Format
+      2:201  ObjectData Preview File Format Version
+      2:202  ObjectData Preview Data
+
+    Pre-ObjectData Descriptor Record
+      7:10   Size Mode
+      7:20   Max Subfile Size
+      7:90   ObjectData Size Announced
+      7:95   Maximum ObjectData Size
+
+    ObjectData Record
+      8:10   Subfile
+
+    Post ObjectData Descriptor Record
+      9:10   Confirmed ObjectData Size
+</pre>
+
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

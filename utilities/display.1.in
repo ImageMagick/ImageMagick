@@ -1,0 +1,128 @@
+.TH display 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
+.SH NAME
+display \- displays an image or image sequence on any X server.
+.SH SYNOPSIS
+.TP
+\fBdisplay\fP [\fIoptions\fP] \fIinput-file\fP
+.SH OVERVIEW
+The \fBdisplay\fP program is a member of the ImageMagick(1) suite of tools.  Use it to display an image or image sequence on any X server.
+
+For more information about the display command, point your browser to file://@DOCUMENTATION_PATH@/www/display.html or http://www.imagemagick.org/script/display.php.
+.SH DESCRIPTION
+Image Settings:
+  \-antialias           remove pixel-aliasing
+  \-authenticate value  decrypt image with this password
+  \-backdrop            display image centered on a backdrop
+  \-channel type        apply option to select image channels
+  \-colormap type       Shared or Private
+  \-colorspace type     alternate image colorspace
+  \-comment string      annotate image with comment
+  \-compress type       type of pixel compression when writing the image
+  \-decipher filename   convert cipher pixels to plain pixels
+  \-define format:option
+                       define one or more image format options
+  \-delay value         display the next image after pausing
+  \-density geometry    horizontal and vertical density of the image
+  \-depth value         image depth
+  \-display server      display image to this X server
+  \-dispose method      layer disposal method
+  \-dither method       apply error diffusion to image
+  \-endian type         endianness (MSB or LSB) of the image
+  \-equalize            perform histogram equalization to an image
+  \-filter type         use this filter when resizing an image
+  \-format "string"     output formatted image characteristics
+  \-fuzz distance       colors within this distance are considered equal
+  \-geometry geometry   preferred size and location of the Image window
+  \-gravity type        horizontal and vertical backdrop placement
+  \-identify            identify the format and characteristics of the image
+  \-immutable           displayed image cannot be modified
+  \-interlace type      type of image interlacing scheme
+  \-interpolate method  pixel color interpolation method
+  \-label string        assign a label to an image
+  \-limit type value    pixel cache resource limit
+  \-loop iterations     loop images then exit
+  \-map type            display image using this Standard Colormap
+  \-matte               store matte channel if the image has one
+  \-monitor             monitor progress
+  \-page geometry       size and location of an image canvas
+  \-profile filename    add, delete, or apply an image profile
+  \-quality value       JPEG/MIFF/PNG compression level
+  \-quantize colorspace reduce colors in this colorspace
+  \-quiet               suppress all warning messages
+  \-regard-warnings     pay attention to warning messages
+  \-remote command      execute a command in an remote display process
+  \-repage geometry     size and location of an image canvas (operator)
+  \-sampling-factor geometry
+                       horizontal and vertical sampling factor
+  \-scenes range        image scene range
+  \-seed value          seed a new sequence of pseudo-random numbers
+  \-set property value  set an image property
+  \-size geometry       width and height of image
+  \-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp
+  \-texture filename    name of texture to tile onto the image background
+  \-transparent-color color
+                       transparent color
+  \-treedepth value     color tree depth
+  \-update seconds      detect when image file is modified and redisplay
+  \-verbose             print detailed information about the image
+  \-visual type         display image using this visual type
+  \-virtual-pixel method
+                       virtual pixel access method
+  \-window id           display image to background of this window
+  \-window-group id     exit program when this window id is destroyed
+  \-write filename      write image to a file
+
+Image Operators:
+  \-auto-orient         automatically orient image
+  \-border geometry     surround image with a border of color
+  \-clip                clip along the first path from the 8BIM profile
+  \-clip-path id        clip along a named path from the 8BIM profile
+  \-colors value        preferred number of colors in the image
+  \-contrast            enhance or reduce the image contrast
+  \-crop geometry       preferred size and location of the cropped image
+  \-despeckle           reduce the speckles within an image
+  \-edge factor         apply a filter to detect edges in the image
+  \-enhance             apply a digital filter to enhance a noisy image
+  \-extract geometry    extract area from image
+  \-flip                flip image in the vertical direction
+  \-flop                flop image in the horizontal direction
+  \-frame geometry      surround image with an ornamental border
+  \-gamma value         level of gamma correction
+  \-monochrome          transform image to black and white
+  \-negate              replace every pixel with its complementary color
+  \-raise value         lighten/darken image edges to create a 3-D effect
+  \-resample geometry   change the resolution of an image
+  \-resize geometry     resize the image
+  \-roll geometry       roll an image vertically or horizontally
+  \-rotate degrees      apply Paeth rotation to the image
+  \-sample geometry     scale image with pixel sampling
+  \-segment value       segment an image
+  \-sharpen geometry    sharpen the image
+  \-strip               strip image of all profiles and comments
+  \-trim                trim image edges
+
+Image Sequence Operators:
+  \-coalesce            merge a sequence of images
+  \-flatten             flatten a sequence of images
+
+Miscellaneous Options:
+  \-debug events        display copious debugging information
+  \-help                print program options
+  \-log format          format of debugging information
+  \-list type           print a list of supported option arguments
+  \-version             print version information
+
+In addition to those listed above, you can specify these standard X resources as command line options:  \-background, \-bordercolor, \-borderwidth, \-font, \-foreground, \-iconGeometry, \-iconic, \-mattecolor, \-name, \-shared-memory, \-usePixmap, or \-title.
+
+By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
+
+Buttons: 
+  1    press to map or unmap the Command widget
+  2    press and drag to magnify a region of an image
+  3    press to load an image from a visual image directory
+.SH SEE ALSO
+ImageMagick(1)
+
+.SH COPYRIGHT
+
+\fBCopyright (C) 1999-2009 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://www.imagemagick.org/script/license.php\fP

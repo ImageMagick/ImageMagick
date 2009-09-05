@@ -1,0 +1,253 @@
+WINDOWS XP/Win2K/98 VISUAL C++ 6.0 AND 7.0 COMPILATION
+
+  The Visual C++ distribution targeted at Windows XP, Win2K, or Windows
+  98 does not provide any stock workspace (DSW) or project files (DSP)
+  except for those included with third party libraries. Instead, there
+  is a `configure' program that must be built and run that creates build
+  environments to satisfy various requirements.
+
+  The Visual C++ system provides three different types of "runtimes" that
+  must match across all application, library, and DLL code that is built. The
+  `configure' program creates a set of build files that are consistent for
+  a specific runtime selection.
+
+  The three options for runtime support are:
+
+    1) Dynamic Multi-threaded DLL runtimes (VisualDynamicMT).
+    2) Static Single-threaded runtimes (VisualStaticST).
+    3) Static Multi-threaded runtimes (VisualStaticMT).
+    4) Static Multi-threaded DLL runtimes (VisualStaticMTDLL).
+
+  In addition to these runtimes, the VisualMagick build environment allows
+  you to select whether to include the X11 libraries in the build or not.
+  X11 DLLs and headers are provided with the VisualMagick build environment.
+  Most Windows users do not use X11 so they will prefer to build without
+  X11 support.  Without X11 support, the `animate', `display', and `import'
+  will not work.
+
+  This leads to five different possible build options, which should cover
+  almost any particular situation.  The default binary distribution is built
+  using #1 from above with the X11 libraries included.  This results in an
+  X11 compatible build using all DLL's for everything and multi-threaded
+  support (the only option for DLL's).
+
+  To do a build for your requirements, simply go to the configure subdirectory
+  under VisualMagick and open the configure.dsw workspace (for Visual C++
+  6.0) or configure.sln (for Visual C++ 7.0). Set the build configuration to
+  "Release" under the
+
+      "Build..., Set Active Configuration..."
+
+  menu.
+
+  Build and execute the configure program and follow the on-screen
+  instructions.  Generally you can accept the configuration defaults.
+
+  The configure program provides a button titled
+
+     Edit "magick_config.h"
+
+  Clicking this button allows you to edit `magick_config.h' in a Windows
+  Notepad window for optionally changing any preprocessor defines.
+  This file is copied to `magick\magick_config.h'.  You may safely open
+  `magick\magick_config.h', modify it, and recompile without re-running the
+  configure program.  In fact, using the notepad program to edit the copied
+  file may be preferable since it preserves the original `magick_config.hi'
+  file.
+
+  Key user tunables in magick_config.h include:
+
+    MAGICKCORE_QUANTUM_DEPTH (default 16)
+
+      Specify the size of PixelPacket color Quantums (8, 16, or 32).
+      If you need to preserve the fidelity of 16-bit images (gray, png,
+      etc), use 16.  If you want to work in remote sensing or if you are
+      a mad scientist you might consider 32.  Note, that a quantum-depth
+      16 uses 4-times as much memory as the default quantum-depth of 8,
+      whereas a quantum-depth of 32 uses 16-times as much memory.
+
+    MAGICKCORE_INSTALLED_SUPPORT (default undefined)
+
+      Define to build an ImageMagick which uses registry settings or embedded
+      paths to locate installed components (coder modules and configuration
+      files).  The default is to look for all files in the same directory
+      as the executable.
+
+    ProvideDllMain (default defined)
+
+      Define to include a DllMain() function ensures that the ImageMagick
+      DLL is properly initialized without participation from dependent
+      applications.  This avoids the requirement to invoke IntializeMagick()
+      from dependent applications but only works for DLL builds.
+
+  After creating your build environment you can proceed to open the DSW
+  (or SLN) file that was generated in the VisualMagick directory and build
+  everything from there.
+
+  In the final DSW file you will find a project call "All". In order to
+  build everything in the distribution, select this project and make it the
+  "active" project. Set the build configuration to the desired one (Debug,
+  or Release) and do a "clean" followed by a "build".  You should do the
+  build in a specific way:
+
+    1) Make the "All" project the active project (Bold)
+       Right click on the All project and select "Set As Active Project"
+    2) Select "Build..., Clean" 3) Select "Build..., Build" 4) Go get some
+    coffee unless you have a very fast machine!.
+
+  The "Clean" step is needed in order to make sure that all of the target
+  support libraries are updated with any patches needed to get them to
+  compile properly under Visual C++.
+
+  All of the required files that are needed to run any of the command
+  line tools will be found in the "bin" subdirectory of the VisualMagick
+  subdirectory.  This includes EXE, and DLL files. You should be able to test
+  the build directly from this directory without having to move anything to any
+  of the global SYSTEM or SYSTEM32 areas in the operating system installation.
+
+  Note #1:
+
+  The Visual C++ distribution of ImageMagick comes with the Magick++
+  C++ wrapper by default.  This add-on layer has a large number of demo
+  and test files that can be found in ImageMagick\Magick++\demo, and
+  ImageMagick\Magick++\tests. There are also a variety of tests that use
+  the straight C API as well in ImageMagick\tests.
+
+  All of these programs are NOT configured to be built in the default
+  workspace created by the configure program.  You can build these demos
+  and test programs to be built by checking the box in configure that says:
+
+    "Include all demo and test programs"
+
+  In addition, there is another related checkbox (checked by default) that
+  causes all generated project files to be created standalone so that they
+  can be copied to other areas of you system.
+
+  This is the checkbox:
+
+    "Generate all utility projects with full paths rather then relative paths"
+
+  Visual C++ uses a concept of "dependencies" that tell it what other
+  components need to be build when a particular project is being build.
+  This mechanism is also used to ensure that components link properly.
+  With this feature enabled, you should be able to nab a copy of...
+
+    VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C)
+
+  or
+
+    VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
+
+  and pop it into the notepad program, modify it (carefully) to your needs
+  and be on your way to happy compiling and linking.
+
+  You can feel free to pick any of the standard utilities, tests, or demo
+  programs as the basis for a new program by copying the project and the
+  source and hacking away.
+
+  The choice of what to use as a starting point is very easy.
+
+  For straight C API command line applications use something from:
+
+    ImageMagick\tests or ImageMagick\utilities (source code)
+    ImageMagick\VisualMagick\tests or ImageMagick\Visualmagick\utilities (project - DSP)
+
+  For C++ and Magick++ command line applications use something from:
+
+    ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code)
+    ImageMagick\VisualMagick\Magick++\tests or ImageMagick\VisualMagick\Magick++\demo (project - DSP)
+
+  For C++ and Magick++ and MFC windows applications use:
+
+    ImageMagick\contrib\win32\MFC\NtMagick (source code)
+    ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
+
+  Note #2:
+
+  The ImageMagick distribution is very modular. The default configuration
+  is there to get you rolling, but you need to make some serious choices
+  when you wish to change things around.
+
+  The default options are all targeted at having all the components in one
+  place (e.g. the "bin" directory of the VisualMagick build tree). These
+  components may be copied to another folder (such as to another computer).
+
+  The folder containing the executables and DLLs should contain all the
+  configuration files, *.xml.
+
+  The "bin" folder should contains all EXE's and DLL's as well as the very
+  important "coder.xml" file.
+
+  With this default setup, you can use any of the command line tools and run
+  scripts as normal.  You can actually get by quite nicely this way by doing
+  something like "pushd e:\xxx\yyy\bin" in any scripts you write to execute
+  "out of" this directory.
+
+  By default the core of ImageMagick on Win32 always looks in the place were
+  the exe program is run from in order to find all of the files as well as
+  the DLL's it needs.
+
+
+ENVIRONMENT VARIABLES
+
+  You can use the "System" control panel to allow you to add and delete what
+  is in any of the environment variables. You can even have user specific
+  environment variables if you wish.
+
+  PATH
+
+    This sets the default list of places were Windows looks for EXE's
+    and DLL's.  Windows CMD shell seems to look in the "current" directory
+    first - no matter what, which may make it unnecessary to update the PATH.
+    If you wish to run any of utilities from another location, you must
+    add the path to your "bin" directory in. For instance, you might add:
+
+       D:\CVS\ImageMagick\VisualMagick\bin
+
+    to do this for the default build environment like I do.
+
+  MAGICK_HOME
+
+    If all you do is modify the PATH variable, the first problem you will run
+    into is that ImageMagick may not be able to find any of its "modules".
+    Modules are all the IM_MOD*.DLL files you see in the distribution.
+    There is one of these for each and every file format that ImageMagick
+    supports. This environment variable tells the system were to look for
+    these DLL's.  The compiled in "default" is "execution path" - which says
+    - look in the same place that the application is running "in".  If you
+    are running from somewhere other then "bin" - this will no longer work
+    and you must use this variable.  If you elect to leave the modules in
+    the same place as the EXE's (a good idea), you can simply set this to
+    the same place as you did the PATH variable. In my case:
+
+       D:\\ImageMagick\coders
+
+    This is also the place were ImageMagick expects to find the configuration
+    files, *.xml, including module.xml, type.xml, etc.
+
+    One cool thing about the modules build of ImageMagick is that you can
+    now leave out file formats and lighten you load.  If all you ever need is
+    GIF and JPEG, simply drop all the other DLL's into the local trash
+    can and get on with your life.  However, always keep the "xc" format,
+    since ImageMagick uses it for internal purposes.
+
+  Also. You can elect to changes these things the good old "hard-coded"
+  way. Two #defines are applicable.
+
+  defines.h has
+
+      #define MagickConfigurePath  "c:\\ImageMagick\\"
+
+  To view any image in a Microsoft window, type
+
+      convert image.ext win:
+
+  Make sure Ghostscript is installed, otherwise, you will be unable to
+  convert or view a Postscript document, and Postscript standard fonts will
+  not be available.
+
+  You may use any standard web browser (e.g. Internet Explorer) to browse
+  the ImageMagick documentation.
+
+  The Win2K executables will work under Windows 98.
+

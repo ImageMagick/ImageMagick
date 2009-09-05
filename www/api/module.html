@@ -1,0 +1,505 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Loadable Modules</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, loadable, modules, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#AcquireModuleInfo">AcquireModuleInfo</a> &bull; <a href="#DestroyModuleList">DestroyModuleList</a> &bull; <a href="#GetModuleInfo">GetModuleInfo</a> &bull; <a href="#GetModuleInfoList">GetModuleInfoList</a> &bull; <a href="#GetModuleList">GetModuleList</a> &bull; <a href="#GetMagickModulePath">GetMagickModulePath</a> &bull; <a href="#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &bull; <a href="#ListModuleInfo">ListModuleInfo</a> &bull; <a href="#OpenModule">OpenModule</a> &bull; <a href="#OpenModules">OpenModules</a> &bull; <a href="#RegisterModule">RegisterModule</a> &bull; <a href="#TagToCoderModuleName">TagToCoderModuleName</a> &bull; <a href="#TagToFilterModuleName">TagToFilterModuleName</a> &bull; <a href="#TagToModuleName">TagToModuleName</a> &bull; <a href="#UnregisterModule">UnregisterModule</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="AcquireModuleInfo">AcquireModuleInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireModuleInfo() allocates the ModuleInfo structure.</p></ol>
+
+<p>The format of the AcquireModuleInfo method is:</p>
+
+<pre class="code">
+  ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>path</h5>
+<ol><p>the path associated with the tag.</p></ol>
+
+<h5>tag</h5>
+<ol><p>a character string that represents the image format we are looking for.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="DestroyModuleList">DestroyModuleList</a></h2>
+<div class="doc-section">
+
+<p>DestroyModuleList() unregisters any previously loaded modules and exits the module loaded environment.</p></ol>
+
+<p>The format of the DestroyModuleList module is:</p>
+
+<pre class="text">
+  void DestroyModuleList(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="GetModuleInfo">GetModuleInfo</a></h2>
+<div class="doc-section">
+
+<p>GetModuleInfo() returns a pointer to a ModuleInfo structure that matches the specified tag.  If tag is NULL, the head of the module list is returned. If no modules are loaded, or the requested module is not found, NULL is returned.</p></ol>
+
+<p>The format of the GetModuleInfo module is:</p>
+
+<pre class="text">
+  ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>tag</h5>
+<ol><p>a character string that represents the image format we are looking for.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="GetModuleInfoList">GetModuleInfoList</a></h2>
+<div class="doc-section">
+
+<p>GetModuleInfoList() returns any modules that match the specified pattern.</p></ol>
+
+<p>The format of the GetModuleInfoList function is:</p>
+
+<pre class="text">
+  const ModuleInfo **GetModuleInfoList(const char *pattern,
+    unsigned long *number_modules,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>pattern</h5>
+<ol><p>Specifies a pointer to a text string containing a pattern.</p></ol>
+
+<h5>number_modules</h5>
+<ol><p>This integer returns the number of modules in the list.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="GetModuleList">GetModuleList</a></h2>
+<div class="doc-section">
+
+<p>GetModuleList() returns any image format modules that match the specified pattern.</p></ol>
+
+<p>The format of the GetModuleList function is:</p>
+
+<pre class="text">
+  char **GetModuleList(const char *pattern,unsigned long *number_modules,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>pattern</h5>
+<ol><p>Specifies a pointer to a text string containing a pattern.</p></ol>
+
+<h5>number_modules</h5>
+<ol><p>This integer returns the number of modules in the list.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="GetMagickModulePath">GetMagickModulePath</a></h2>
+<div class="doc-section">
+
+<p>GetMagickModulePath() finds a module with the specified module type and filename.</p></ol>
+
+<p>The format of the GetMagickModulePath module is:</p>
+
+<pre class="text">
+  MagickBooleanType GetMagickModulePath(const char *filename,
+    MagickModuleType module_type,char *path,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>filename</h5>
+<ol><p>the module file name.</p></ol>
+
+<h5>module_type</h5>
+<ol><p>the module type: MagickImageCoderModule or MagickImageFilterModule.</p></ol>
+
+<h5>path</h5>
+<ol><p>the path associated with the filename.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="InvokeDynamicImageFilter">InvokeDynamicImageFilter</a></h2>
+<div class="doc-section">
+
+<p>InvokeDynamicImageFilter() invokes a dynamic image filter.</p></ol>
+
+<p>The format of the InvokeDynamicImageFilter module is:</p>
+
+<pre class="text">
+  MagickBooleanType InvokeDynamicImageFilter(const char *tag,Image **image,
+    const int argc,const char **argv,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>tag</h5>
+<ol><p>a character string that represents the name of the particular module.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>argc</h5>
+<ol><p>a pointer to an integer describing the number of elements in the argument vector.</p></ol>
+
+<h5>argv</h5>
+<ol><p>a pointer to a text array containing the command line arguments.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="ListModuleInfo">ListModuleInfo</a></h2>
+<div class="doc-section">
+
+<p>ListModuleInfo() lists the module info to a file.</p></ol>
+
+<p>The format of the ListModuleInfo module is:</p>
+
+<pre class="text">
+  MagickBooleanType ListModuleInfo(FILE *file,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>file</h5>
+<ol><p>An pointer to a FILE.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="OpenModule">OpenModule</a></h2>
+<div class="doc-section">
+
+<p>OpenModule() loads a module, and invokes its registration module.  It returns MagickTrue on success, and MagickFalse if there is an error.</p></ol>
+
+<p>The format of the OpenModule module is:</p>
+
+<pre class="text">
+  MagickBooleanType OpenModule(const char *module,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>module</h5>
+<ol><p>a character string that indicates the module to load.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="OpenModules">OpenModules</a></h2>
+<div class="doc-section">
+
+<p>OpenModules() loads all available modules.</p></ol>
+
+<p>The format of the OpenModules module is:</p>
+
+<pre class="text">
+  MagickBooleanType OpenModules(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="RegisterModule">RegisterModule</a></h2>
+<div class="doc-section">
+
+<p>RegisterModule() adds an entry to the module list.  It returns a pointer to the registered entry on success.</p></ol>
+
+<p>The format of the RegisterModule module is:</p>
+
+<pre class="text">
+  ModuleInfo *RegisterModule(const ModuleInfo *module_info,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>info</h5>
+<ol><p>a pointer to the registered entry is returned.</p></ol>
+
+<h5>module_info</h5>
+<ol><p>a pointer to the ModuleInfo structure to register.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="TagToCoderModuleName">TagToCoderModuleName</a></h2>
+<div class="doc-section">
+
+<p>TagToCoderModuleName() munges a module tag and obtains the filename of the corresponding module.</p></ol>
+
+<p>The format of the TagToCoderModuleName module is:</p>
+
+<pre class="text">
+  char *TagToCoderModuleName(const char *tag,char *name)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>tag</h5>
+<ol><p>a character string representing the module tag.</p></ol>
+
+<h5>name</h5>
+<ol><p>return the module name here.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="TagToFilterModuleName">TagToFilterModuleName</a></h2>
+<div class="doc-section">
+
+<p>TagToFilterModuleName() munges a module tag and returns the filename of the corresponding filter module.</p></ol>
+
+<p>The format of the TagToFilterModuleName module is:</p>
+
+<pre class="text">
+  void TagToFilterModuleName(const char *tag,char name)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>tag</h5>
+<ol><p>a character string representing the module tag.</p></ol>
+
+<h5>name</h5>
+<ol><p>return the filter name here.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="TagToModuleName">TagToModuleName</a></h2>
+<div class="doc-section">
+
+<p>TagToModuleName() munges the module tag name and returns an upper-case tag name as the input string, and a user-provided format.</p></ol>
+
+<p>The format of the TagToModuleName module is:</p>
+
+<pre class="text">
+  TagToModuleName(const char *tag,const char *format,char *module)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>tag</h5>
+<ol><p>the module tag.</p></ol>
+
+<h5>format</h5>
+<ol><p>a sprintf-compatible format string containing s where the upper-case tag name is to be inserted.</p></ol>
+
+<h5>module</h5>
+<ol><p>pointer to a destination buffer for the formatted result.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="UnregisterModule">UnregisterModule</a></h2>
+<div class="doc-section">
+
+<p>UnregisterModule() unloads a module, and invokes its de-registration module. Returns MagickTrue on success, and MagickFalse if there is an error.</p></ol>
+
+<p>The format of the UnregisterModule module is:</p>
+
+<pre class="text">
+  MagickBooleanType UnregisterModule(const ModuleInfo *module_info,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>module_info</h5>
+<ol><p>the module info.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

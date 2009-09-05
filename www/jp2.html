@@ -1,0 +1,269 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: JP2 Encoding Options</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="jp2, encoding, options, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index"></p>
+
+<p>ImageMagick's JPEG-2000 image formats, JP2 and JPC, accept a plethora of encoding options as detailed below.  As an example, suppose you are interested in these options:</p>
+
+<ul>
+<li>code blocks are 64 samples in width and 32 samples in height</li>
+<li>no multicomponent transform</li>
+<li>4 resolution levels for each component</li>
+<li>compression is lossy at 64:1</li>
+</ul>
+
+<p>Use this command:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert wizard.png -define jp2:cblkwidth=64 -define jp2:cblkheight=32  \ <br/>
+  -define jp2:nomct -define jp2:numrlvls=4 -define jp2:rate=0.015625 wizard.jpc</span></p>
+<p>Here is a complete list of JPEG-2000 encoding options:</p>
+
+<dl class="doc">
+<dt class="doc">imgareatlx=x</dt>
+<dd>Set the x-coordinate of the top-left corner of the image area to x.</dd>
+<dt class="doc">imgareatly=y</dt>
+<dd>Set the y-coordinate of the top-left corner of the image area to y.</dd>
+<dt class="doc">tilegrdtlx=x</dt>
+<dd>Set the x-coordinate of the top-left corner of the tiling grid to x.</dd>
+<dt class="doc">tilegrdtly=y</dt>
+<dd>Set the y-coordinate of the top-left corner of the tiling grid to y.</dd>
+<dt class="doc">tilewidth=w</dt>
+<dd>Set the nominal tile width to w.</dd>
+<dt class="doc">tileheight=h</dt>
+<dd>Set the nominal tile height to h.</dd>
+<dt class="doc">prcwidth=w</dt>
+<dd>Set the precinct width to w. The argument w must be an integer power of two. The default value is 32768.</dd>
+<dt class="doc">prcheight=h</dt>
+<dd>Set the precinct height to h. The argument h must be an integer power of two. The default value is 32768.</dd>
+<dt class="doc">cblkwidth=w</dt>
+<dd>Set the nominal code block width to w. The argument w must be an integer power of two.  The default value is 64.</dd>
+<dt class="doc">cblkheight=h</dt>
+<dd>Set the nominal code block height to h. The argument h must be an integer power of two. The default value is 64.</dd>
+<dt class="doc">mode=m</dt>
+<dd>Set the coding mode to m. The argument m must have one of the following values:
+
+<table class="doc">
+  <tbody>
+  <tr>
+    <th align="left">Value</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr> <td>int</td>    <td>integer mode</td> </tr>
+  <tr> <td>real</td>    <td>real mode</td> </tr>
+  </tbody>
+</table>
+</dd>
+
+<dd>If lossless coding is desired, the integer mode must be used. By default, the integer mode is employed. The choice of mode also determines which multicomponent and wavelet transforms (if any) are employed.</dd>
+<dt class="doc">rate=r</dt>
+<dd>Specify the target rate. The argument r is a positive real number. Since a rate of one corresponds to no compression, one should never need to explicitly specify a rate greater than one.  By default, the target rate is considered to be infinite.</dd>
+<dt class="doc">ilyrrates=r0[,r1,. . . ,rN]</dt>
+<dd>Specify the rates for any intermediate layers. The argument to this option is a comma separated list of N rates. Each rate is a positive real number. The rates must increase monotonically.  The last rate in the list should be less than or equal to the overall rate (as specified with the rate option).</dd>
+<dt class="doc">prg=p</dt>
+<dd>Set the progression order to p. The argument p must have one of the following values:
+
+<table class="doc">
+  <tbody>
+  <tr>
+    <th align="left">Value</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr> <td>lrcp</td>    <td>layer-resolution-component-position (LRCP) progressive (i.e., rate scalable)</td> </tr>
+  <tr> <td>rlcp</td>    <td>resolution-layer-component-position (RLCP) progressive (i.e., resolution scalable)</td> </tr>
+  <tr> <td>rpcl</td>    <td>resolution-position-component-layer (RPCL) progressive</td> </tr>
+  <tr> <td>pcrl</td>    <td>position-component-resolution-layer (PCRL) progressive</td> </tr>
+  <tr> <td>cprl</td>    <td>component-position-resolution-layer (CPRL) progressive</td> </tr>
+  </tbody>
+</table>
+</dd>
+
+<dd>By default, LRCP progressive ordering is employed. Note that the RPCL and PCRL progressions are not valid for all possible image geometries.</dd>
+<dt class="doc">nomct</dt>
+<dd>Disallow the use of any multicomponent transform.</dd>
+<dt class="doc">numrlvls=n</dt>
+<dd>Set the number of resolution levels to n. The argument n must be an integer that is greater than or equal to one. The default value is 6.</dd>
+<dt class="doc">sop</dt>
+<dd>Generate SOP marker segments.</dd>
+<dt class="doc">eph</dt>
+<dd>Generate EPH marker segments.</dd>
+<dt class="doc">lazy</dt>
+<dd>Enable lazy coding mode (a.k.a. arithmetic coding bypass).</dd>
+<dt class="doc">termall</dt>
+<dd>Terminate all coding passes.</dd>
+<dt class="doc">segsym</dt>
+<dd>Use segmentation symbols.</dd>
+<dt class="doc">vcausal</dt>
+<dd>Use vertically stripe causal contexts.</dd>
+<dt class="doc">pterm</dt>
+<dd>Use predictable termination.</dd>
+<dt class="doc">resetprob</dt>
+<dd>Reset the probability models after each coding pass.</dd>
+<dt class="doc">numgbits=n</dt>
+<dd>Set the number of guard bits to n.</dd>
+</dl>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

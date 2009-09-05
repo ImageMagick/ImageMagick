@@ -1,0 +1,63 @@
+2009-08-02  6.5.4-8 Cristy  <quetzlzacatenango@image...>
+  * Create a image registry to track which image objects must be cloned
+    when a Perl thread is created.
+
+2009-06-14  6.5.3-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Expand PerlMagick Composite() 'mask' merge for both compose 'displace'
+    and new 'distort' mapping (absolute lookup)
+
+2009-06-11  6.5.3-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fixed PerlMagick Composite() for correct merging of 'mask' image into
+    the overlay image for Displacement Mapping Composition.
+
+2009-06-02  6.5.3-2 Cristy  <quetzlzacatenango@image...>
+  * Fix filename parameter in Read() (e.g. $image->Read(filename=>'xc:white')).  
+2009-04-14  6.5.1-3 Cristy  <quetzlzacatenango@image...>
+  * Support magick parameter for Read() (e.g.
+    $im->Read( file => $fh, magick +> 'text:' )).
+
+2008-11-16  6.4.4-5 Cristy  <quetzlzacatenango@image...>
+  * Statistics() returns normalized values.
+
+2008-10-16  6.4.4-9 Michael.Kroell <michael.kroell@gmail...>
+  * Check if Image::Magick::constant is defined in AUTOLOAD() function.
+
+2008-06-07  6.4.1-9 Cristy  <quetzlzacatenango@image...>
+  * Permit settings of the form:
+    $image->Set("quantum:polarity","min-is-white").
+
+2008-04-07  6.4.0-5 Cristy  <quetzlzacatenango@image...>
+  * X11 regression test passed if the DISPLAY variable is not defined (reference
+		http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10979).
+  * Make regression test, x11/write.t, exit after 8 seconds as stated (reference
+		http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10979).
+
+2007-11-07  6.3.7-0 Cristy  <quetzlzacatenango@image...>
+  * Added gravity attribute to Transform() method.
+
+2007-09-12  6.3.5-9 Cristy  <quetzlzacatenango@image...>
+  * Added GetPixel()/SetPixel() methods.
+
+2007-06-22  6.3.4-2 grafman <grafman@graphcomp.com>
+  * Add GetImagePixels to return C pointer for image cache.
+  * Add SyncImagePixels to sync image cache.
+  * Add Quantum parameter to Get API to return Quantum-Depth.
+
+2007-06-21  6.3.4-1 Cristy  <quetzlzacatenango@image...>
+  * Add Distort.
+
+2007-03-20  6.3.3-3 Cristy  <quetzlzacatenango@image...>
+  * Add vector-graphics parameter to the Draw() method.
+
+    blob length was not being set properly).
+2007-03-11  6.3.3-2 Cristy  <quetzlzacatenango@image...>
+  * Read(blob=>$blob) and Ping(blob=>$blob) sometimes failed because the
+    blob length was not being set properly).
+
+2007-01-23  cristy  <cristy@virgi...>
+
+  * Add parameters fill-pattern and stroke-pattern to Annotate() and Draw().
+
+2005-01-10  cristy  <cristy@virgi...>
+  * Added normalize parameter to GetPixels().  Use normalize=>'true' to return
+    normalized pixel values.

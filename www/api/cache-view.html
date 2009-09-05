@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Cache Views</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, cache, views, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#AcquireCacheView">AcquireCacheView</a> &bull; <a href="#CloneCacheView">CloneCacheView</a> &bull; <a href="#DestroyCacheView">DestroyCacheView</a> &bull; <a href="#GetCacheViewColorspace">GetCacheViewColorspace</a> &bull; <a href="#GetCacheViewException">GetCacheViewException</a> &bull; <a href="#GetCacheViewStorageClass">GetCacheViewStorageClass</a> &bull; <a href="#GetCacheViewAuthenticPixels">GetCacheViewAuthenticPixels</a> &bull; <a href="#GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a> &bull; <a href="#GetCacheViewAuthenticIndexQueue">GetCacheViewAuthenticIndexQueue</a> &bull; <a href="#GetCacheViewAuthenticPixelQueue">GetCacheViewAuthenticPixelQueue</a> &bull; <a href="#GetCacheViewVirtualIndexQueue">GetCacheViewVirtualIndexQueue</a> &bull; <a href="#GetCacheViewVirtualPixelQueue">GetCacheViewVirtualPixelQueue</a> &bull; <a href="#GetCacheViewVirtualPixels">GetCacheViewVirtualPixels</a> &bull; <a href="#GetOneCacheViewVirtualPixel">GetOneCacheViewVirtualPixel</a> &bull; <a href="#GetOneCacheViewVirtualMethodPixel">GetOneCacheViewVirtualMethodPixel</a> &bull; <a href="#QueueCacheViewAuthenticPixels">QueueCacheViewAuthenticPixels</a> &bull; <a href="#SetCacheViewStorageClass">SetCacheViewStorageClass</a> &bull; <a href="#SetCacheViewVirtualPixelMethod">SetCacheViewVirtualPixelMethod</a> &bull; <a href="#SyncCacheViewAuthenticPixels">SyncCacheViewAuthenticPixels</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="AcquireCacheView">AcquireCacheView</a></h2>
+<div class="doc-section">
+
+<p>AcquireCacheView() acquires a view into the pixel cache, using the VirtualPixelMethod that is defined within the given image itself.</p></ol>
+
+<p>The format of the AcquireCacheView method is:</p>
+
+<pre class="code">
+  CacheView *AcquireCacheView(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="CloneCacheView">CloneCacheView</a></h2>
+<div class="doc-section">
+
+<p>CloneCacheView()  makes an exact copy of the specified cache view.</p></ol>
+
+<p>The format of the CloneCacheView method is:</p>
+
+<pre class="code">
+  CacheView *CloneCacheView(const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="DestroyCacheView">DestroyCacheView</a></h2>
+<div class="doc-section">
+
+<p>DestroyCacheView() destroys the specified view returned by a previous call to AcquireCacheView().</p></ol>
+
+<p>The format of the DestroyCacheView method is:</p>
+
+<pre class="code">
+  CacheView *DestroyCacheView(CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewColorspace">GetCacheViewColorspace</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewColorspace() returns the image colorspace associated with the specified view.</p></ol>
+
+<p>The format of the GetCacheViewColorspace method is:</p>
+
+<pre class="code">
+  ColorspaceType GetCacheViewColorspace(const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewException">GetCacheViewException</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewException() returns the image exception associated with the specified view.</p></ol>
+
+<p>The format of the GetCacheViewException method is:</p>
+
+<pre class="code">
+  ExceptionInfo GetCacheViewException(const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewStorageClass">GetCacheViewStorageClass</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewStorageClass() returns the image storage class  associated with the specified view.</p></ol>
+
+<p>The format of the GetCacheViewStorageClass method is:</p>
+
+<pre class="code">
+  ClassType GetCacheViewStorageClass(const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewAuthenticPixels">GetCacheViewAuthenticPixels</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewAuthenticPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
+
+<p>The format of the GetCacheViewAuthenticPixels method is:</p>
+
+<pre class="code">
+  PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
+    const long x,const long y,const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>x,y,columns,rows</h5>
+<ol><p>These values define the perimeter of a region of pixels.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a></h2>
+<div class="doc-section">
+
+<p>GetOneCacheViewAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p></ol>
+
+<p>The format of the GetOneCacheViewAuthenticPixel method is:</p>
+
+<pre class="code">
+  MagickBooleaNType GetOneCacheViewAuthenticPixel(
+    const CacheView *cache_view,const long x,const long y,
+    Pixelpacket *pixel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>x,y</h5>
+<ol><p>These values define the offset of the pixel.</p></ol>
+
+<h5>pixel</h5>
+<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewAuthenticIndexQueue">GetCacheViewAuthenticIndexQueue</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewAuthenticIndexQueue() returns the indexes associated with the last call to SetCacheViewIndexes() or GetCacheViewAuthenticIndexQueue().  The indexes are authentic and can be updated.</p></ol>
+
+<p>The format of the GetCacheViewAuthenticIndexQueue() method is:</p>
+
+<pre class="code">
+  IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewAuthenticPixelQueue">GetCacheViewAuthenticPixelQueue</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewAuthenticPixelQueue() returns the pixels associated with the last call to QueueCacheViewAuthenticPixels() or GetCacheViewAuthenticPixels().  The pixels are authentic and therefore can be updated.</p></ol>
+
+<p>The format of the GetCacheViewAuthenticPixelQueue() method is:</p>
+
+<pre class="code">
+  PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewVirtualIndexQueue">GetCacheViewVirtualIndexQueue</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewVirtualIndexQueue() returns the indexes associated with the last call to GetCacheViewVirtualIndexQueue().  The indexes are virtual and therefore cannot be updated.</p></ol>
+
+<p>The format of the GetCacheViewVirtualIndexQueue() method is:</p>
+
+<pre class="code">
+  const IndexPacket *GetCacheViewVirtualIndexQueue(
+    const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewVirtualPixelQueue">GetCacheViewVirtualPixelQueue</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewVirtualPixelQueue() returns the the pixels associated with the last call to GetCacheViewVirtualPixels().  The pixels are virtual and therefore cannot be updated.</p></ol>
+
+<p>The format of the GetCacheViewVirtualPixelQueue() method is:</p>
+
+<pre class="code">
+  const PixelPacket *GetCacheViewVirtualPixelQueue(
+    const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetCacheViewVirtualPixels">GetCacheViewVirtualPixels</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewVirtualPixels() gets virtual pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
+
+<p>The format of the GetCacheViewVirtualPixels method is:</p>
+
+<pre class="code">
+  const PixelPacket *GetCacheViewVirtualPixels(
+    const CacheView *cache_view,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>x,y,columns,rows</h5>
+<ol><p>These values define the perimeter of a region of pixels.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetOneCacheViewVirtualPixel">GetOneCacheViewVirtualPixel</a></h2>
+<div class="doc-section">
+
+<p>GetOneCacheViewVirtualPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.</p></ol>
+
+<p>The format of the GetOneCacheViewVirtualPixel method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetOneCacheViewVirtualPixel(
+    const CacheView *cache_view,const long x,const long y,
+    PixelPacket *pixel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>x,y</h5>
+<ol><p>These values define the offset of the pixel.</p></ol>
+
+<h5>pixel</h5>
+<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="GetOneCacheViewVirtualMethodPixel">GetOneCacheViewVirtualMethodPixel</a></h2>
+<div class="doc-section">
+
+<p>GetOneCacheViewVirtualMethodPixel() returns a single virtual pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.</p></ol>
+
+<p>The format of the GetOneCacheViewVirtualPixel method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetOneCacheViewVirtualMethodPixel(
+    const CacheView *cache_view,
+    const VirtualPixelMethod virtual_pixel_method,const long x,
+    const long y,PixelPacket *pixel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>virtual_pixel_method</h5>
+<ol><p>the virtual pixel method.</p></ol>
+
+<h5>x,y</h5>
+<ol><p>These values define the offset of the pixel.</p></ol>
+
+<h5>pixel</h5>
+<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="QueueCacheViewAuthenticPixels">QueueCacheViewAuthenticPixels</a></h2>
+<div class="doc-section">
+
+<p>QueueCacheViewAuthenticPixels() queues authentic pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
+
+<p>The format of the QueueCacheViewAuthenticPixels method is:</p>
+
+<pre class="code">
+  PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
+    const long x,const long y,const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>x,y,columns,rows</h5>
+<ol><p>These values define the perimeter of a region of pixels.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="SetCacheViewStorageClass">SetCacheViewStorageClass</a></h2>
+<div class="doc-section">
+
+<p>SetCacheViewStorageClass() sets the image storage class associated with the specified view.</p></ol>
+
+<p>The format of the SetCacheViewStorageClass method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetCacheViewStorageClass(CacheView *cache_view,
+    const ClassType storage_class)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>storage_class</h5>
+<ol><p>the image storage class: PseudoClass or DirectClass.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="SetCacheViewVirtualPixelMethod">SetCacheViewVirtualPixelMethod</a></h2>
+<div class="doc-section">
+
+<p>SetCacheViewVirtualPixelMethod() sets the virtual pixel method associated with the specified cache view.</p></ol>
+
+<p>The format of the SetCacheViewVirtualPixelMethod method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetCacheViewVirtualPixelMethod(CacheView *cache_view,
+    const VirtualPixelMethod virtual_pixel_method)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>virtual_pixel_method</h5>
+<ol><p>the virtual pixel method.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view
+_8c.html" target="source" name="SyncCacheViewAuthenticPixels">SyncCacheViewAuthenticPixels</a></h2>
+<div class="doc-section">
+
+<p>SyncCacheViewAuthenticPixels() saves the cache view pixels to the in-memory or disk cache.  It returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p></ol>
+
+<p>The format of the SyncCacheViewAuthenticPixels method is:</p>
+
+<pre class="code">
+  MagickBooleanType SyncCacheViewAuthenticPixels(CacheView *cache_view,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>cache_view</h5>
+<ol><p>the cache view.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

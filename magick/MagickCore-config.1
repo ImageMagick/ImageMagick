@@ -1,0 +1,69 @@
+.ad l
+.nh
+.TH MagickCore-Config 1 "2 May 2002" "ImageMagick"
+.SH NAME
+MagickCore-config \- get information about the installed version of ImageMagick
+.SH SYNOPSIS
+.B MagickCore-config 
+.B [--cflags]
+.B [--cppflags]
+.B [--exec-prefix]
+.B [--ldflags]
+.B [--libs]
+.B [--prefix]
+.B [--version]
+.SH DESCRIPTION
+.B MagickCore-config
+prints the compiler and linker flags required to compile and link programs
+that use the
+.BR ImageMagick
+Application Programmer Interface.
+.SH EXAMPLES
+To print the version of the installed distribution of
+.BR ImageMagick ,
+use:
+
+.nf
+  MagickCore-config \-\-version
+.fi
+  
+To compile a program that calls the 
+.BR ImageMagick
+Application Programmer Interface, use:
+
+.nf
+  cc `MagickCore-config \-\-cflags \-\-cppflags \-\-ldflags \-\-libs` program.c
+.fi
+
+.SH OPTIONS
+.TP
+.B \-\-cflags
+Print the compiler flags that were used to compile 
+.BR libMagick .
+.TP
+.B \-\-cppflags
+Print the preprocessor flags that are needed to find the
+.B ImageMagick
+C include files and defines to ensure that the ImageMagick data structures match between
+your program and the installed libraries.
+.TP
+.B \-\-exec-prefix
+Print the directory under which target specific binaries and executables are installed.
+.TP
+.B \-\-ldflags
+Print the linker flags that are needed to link with the
+.B ImageMagick
+library.
+.TP
+.B \-\-libs
+Print the linker flags that are needed to link a program with
+.BR libMagick .
+.TP
+.B \-\-version
+Print the version of the
+.B ImageMagick
+distribution to standard output.
+.SH LICENSE
+See http://www.imagemagick.org/script/license.php.
+.SH AUTHORS
+John Cristy, ImageMagick Studio LLC

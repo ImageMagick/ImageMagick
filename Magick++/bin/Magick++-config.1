@@ -1,0 +1,99 @@
+.ad l
+.nh
+.TH Magick++-Config 1 "2 May 2002" "ImageMagick"
+.SH NAME
+Magick++-config \- get information about the installed version of Magick++
+.SH SYNOPSIS
+.B Magick++-config 
+.B [--cppflags]
+.B [--cxxflags]
+.B [--exec-prefix]
+.B [--ldflags]
+.B [--libs]
+.B [--prefix]
+.B [--version]
+.SH DESCRIPTION
+.B Magick++-config
+prints the compiler and linker flags required to compile and link programs
+that use the
+.BR ImageMagick
+C++ Application Programmer Interface (known as
+.BR Magick++
+).
+.SH EXAMPLES
+To print the version of the installed distribution of
+.BR Magick++ ,
+use:
+
+.nf
+  Magick++-config \-\-version
+.fi
+  
+To compile a program that calls the 
+.BR ImageMagick
+C++ Application Programmer Interface, use:
+
+.nf
+  c++ `Magick++-config \-\-cxxflags \-\-cppflags \-\-ldflags \-\-libs` program.cpp
+.fi
+
+.SH OPTIONS
+.TP
+.B \-\-cppflags
+Print the preprocessor flags that are needed to find the
+.B ImageMagick
+C and C++ include files and defines to ensures that the ImageMagick data structures match between
+your program and the installed libraries.
+.TP
+.B \-\-cxxflags
+Print the compiler flags that were used to compile 
+.BR libMagick++ .
+.TP
+.B \-\-exec-prefix
+Print the directory under which target specific binaries and executables are installed.
+.TP
+.B \-\-ldflags
+Print the linker flags that are needed to link with the
+.B libMagick++
+library.
+.TP
+.B \-\-libs
+Print the linker flags that are needed to link a program with
+.BR libMagick++ .
+.TP
+.B \-\-prefix
+Print the directory under which the package is installed.
+.TP
+.B \-\-version
+Print the version of the
+.B ImageMagick
+distribution to standard output.
+.SH COPYRIGHT
+Copyright (C) 2000 ImageMagick Studio LLC, a non-profit organization dedicated
+to making software imaging solutions freely available.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of ImageMagick, and to permit persons to whom the
+ImageMagick is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of ImageMagick.
+
+The software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.  In no event shall
+ImageMagick Studio be liable for any claim, damages or other liability,
+whether in an action of contract, tort or otherwise, arising from, out of
+or in connection with ImageMagick or the use or other dealings in
+ImageMagick.
+
+Except as contained in this notice, the name of the ImageMagick Studio
+shall not be used in advertising or otherwise to promote the sale, use or
+other dealings in ImageMagick without prior written authorization from the
+ImageMagick Studio.
+.SH AUTHORS
+Bob Friesenhahn, ImageMagick Studio
+

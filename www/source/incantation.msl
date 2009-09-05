@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<image size="400x400">
+  <read filename="image.gif" />
+  <get width="base-width" height="base-height" />
+  <resize geometry="%[dimensions]" />
+  <get width="width" height="height" />
+  <print output="Image sized from %[base-width]x%[base-height] to %[width]x%[height].\n" />
+  <write filename="image.png" />
+</image>

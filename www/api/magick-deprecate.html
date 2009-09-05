@@ -1,0 +1,907 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickWand, C API for ImageMagick: Deprecated Methods</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickwc, api, for, imagemagick:, deprecated, methods, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#MagickClipPathImage">MagickClipPathImage</a> &bull; <a href="#DrawGetFillAlpha">DrawGetFillAlpha</a> &bull; <a href="#DrawGetStrokeAlpha">DrawGetStrokeAlpha</a> &bull; <a href="#DrawPeekGraphicWand">DrawPeekGraphicWand</a> &bull; <a href="#DrawPopGraphicContext">DrawPopGraphicContext</a> &bull; <a href="#DrawPushGraphicContext">DrawPushGraphicContext</a> &bull; <a href="#DrawSetFillAlpha">DrawSetFillAlpha</a> &bull; <a href="#DrawSetStrokeAlpha">DrawSetStrokeAlpha</a> &bull; <a href="#MagickColorFloodfillImage">MagickColorFloodfillImage</a> &bull; <a href="#MagickDescribeImage">MagickDescribeImage</a> &bull; <a href="#MagickFlattenImages">MagickFlattenImages</a> &bull; <a href="#MagickGetImageAttribute">MagickGetImageAttribute</a> &bull; <a href="#MagickGetImageMatte">MagickGetImageMatte</a> &bull; <a href="#MagickGetImagePixels">MagickGetImagePixels</a> &bull; <a href="#MagickGetImageSize">MagickGetImageSize</a> &bull; <a href="#MagickMapImage">MagickMapImage</a> &bull; <a href="#MagickMatteFloodfillImage">MagickMatteFloodfillImage</a> &bull; <a href="#MagickMosaicImages">MagickMosaicImages</a> &bull; <a href="#MagickOpaqueImage">MagickOpaqueImage</a> &bull; <a href="#MagickPaintFloodfillImage">MagickPaintFloodfillImage</a> &bull; <a href="#MagickPaintOpaqueImage">MagickPaintOpaqueImage</a> &bull; <a href="#MagickPaintTransparentImage">MagickPaintTransparentImage</a> &bull; <a href="#MagickSetImageAttribute">MagickSetImageAttribute</a> &bull; <a href="#MagickSetImageIndex">MagickSetImageIndex</a> &bull; <a href="#MagickTransparentImage">MagickTransparentImage</a> &bull; <a href="#MagickRegionOfInterestImage">MagickRegionOfInterestImage</a> &bull; <a href="#MagickSetImagePixels">MagickSetImagePixels</a> &bull; <a href="#MagickWriteImageBlob">MagickWriteImageBlob</a> &bull; <a href="#PixelGetNextRow">PixelGetNextRow</a> &bull; <a href="#PixelIteratorGetException">PixelIteratorGetException</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickClipPathImage">MagickClipPathImage</a></h2>
+<div class="doc-section">
+
+<p>MagickClipPathImage() clips along the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
+
+<p>The format of the MagickClipPathImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickClipPathImage(MagickWand *wand,
+    const char *pathname,const MagickBooleanType inside)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>pathname</h5>
+<ol><p>name of clipping path resource. If name is preceded by #, use clipping path numbered by name.</p></ol>
+
+<h5>inside</h5>
+<ol><p>if non-zero, later operations take effect inside clipping path. Otherwise later operations take effect outside clipping path.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawGetFillAlpha">DrawGetFillAlpha</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFillAlpha() returns the alpha used when drawing using the fill color or fill texture.  Fully opaque is 1.0.</p></ol>
+
+<p>The format of the DrawGetFillAlpha method is:</p>
+
+<pre class="code">
+  double DrawGetFillAlpha(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawGetStrokeAlpha">DrawGetStrokeAlpha</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeAlpha() returns the alpha of stroked object outlines.</p></ol>
+
+<p>The format of the DrawGetStrokeAlpha method is:</p>
+
+<pre class="code">
+  double DrawGetStrokeAlpha(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand. </p>
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawPeekGraphicWand">DrawPeekGraphicWand</a></h2>
+<div class="doc-section">
+
+<p>DrawPeekGraphicWand() returns the current drawing wand.</p></ol>
+
+<p>The format of the PeekDrawingWand method is:</p>
+
+<pre class="code">
+  DrawInfo *DrawPeekGraphicWand(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawPopGraphicContext">DrawPopGraphicContext</a></h2>
+<div class="doc-section">
+
+<p>DrawPopGraphicContext() destroys the current drawing wand and returns to the previously pushed drawing wand. Multiple drawing wands may exist. It is an error to attempt to pop more drawing wands than have been pushed, and it is proper form to pop all drawing wands which have been pushed.</p></ol>
+
+<p>The format of the DrawPopGraphicContext method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawPopGraphicContext(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawPushGraphicContext">DrawPushGraphicContext</a></h2>
+<div class="doc-section">
+
+<p>DrawPushGraphicContext() clones the current drawing wand to create a new drawing wand.  The original drawing wand(s) may be returned to by invoking PopDrawingWand().  The drawing wands are stored on a drawing wand stack.  For every Pop there must have already been an equivalent Push.</p></ol>
+
+<p>The format of the DrawPushGraphicContext method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawPushGraphicContext(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawSetFillAlpha">DrawSetFillAlpha</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFillAlpha() sets the alpha to use when drawing using the fill color or fill texture.  Fully opaque is 1.0.</p></ol>
+
+<p>The format of the DrawSetFillAlpha method is:</p>
+
+<pre class="code">
+  void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand.</p></ol>
+
+<h5>fill_alpha</h5>
+<ol><p>fill alpha</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="DrawSetStrokeAlpha">DrawSetStrokeAlpha</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeAlpha() specifies the alpha of stroked object outlines.</p></ol>
+
+<p>The format of the DrawSetStrokeAlpha method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeAlpha(DrawingWand *wand,const double stroke_alpha)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the drawing wand.</p></ol>
+
+<h5>stroke_alpha</h5>
+<ol><p>stroke alpha.  The value 1.0 is opaque.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickColorFloodfillImage">MagickColorFloodfillImage</a></h2>
+<div class="doc-section">
+
+<p>MagickColorFloodfillImage() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p></ol>
+
+<p>The format of the MagickColorFloodfillImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
+    const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
+    const long x,const long y)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>fill</h5>
+<ol><p>the floodfill color pixel wand.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+<h5>bordercolor</h5>
+<ol><p>the border color pixel wand.</p></ol>
+
+<h5>x,y</h5>
+<ol><p>the starting location of the operation.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickDescribeImage">MagickDescribeImage</a></h2>
+<div class="doc-section">
+
+<p>MagickDescribeImage() identifies an image by printing its attributes to the file.  Attributes include the image width, height, size, and others.</p></ol>
+
+<p>The format of the MagickDescribeImage method is:</p>
+
+<pre class="code">
+  const char *MagickDescribeImage(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickFlattenImages">MagickFlattenImages</a></h2>
+<div class="doc-section">
+
+<p>MagickFlattenImages() merges a sequence of images.  This useful for combining Photoshop layers into a single image.</p></ol>
+
+<p>The format of the MagickFlattenImages method is:</p>
+
+<pre class="code">
+  MagickWand *MagickFlattenImages(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickGetImageAttribute">MagickGetImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>MagickGetImageAttribute() returns a value associated with the specified property.  Use MagickRelinquishMemory() to free the value when you are finished with it.</p></ol>
+
+<p>The format of the MagickGetImageAttribute method is:</p>
+
+<pre class="code">
+  char *MagickGetImageAttribute(MagickWand *wand,const char *property)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>property</h5>
+<ol><p>the property.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickGetImageMatte">MagickGetImageMatte</a></h2>
+<div class="doc-section">
+
+<p>MagickGetImageMatte() returns MagickTrue if the image has a matte channel otherwise MagickFalse.</p></ol>
+
+<p>The format of the MagickGetImageMatte method is:</p>
+
+<pre class="code">
+  unsigned long MagickGetImageMatte(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickGetImagePixels">MagickGetImagePixels</a></h2>
+<div class="doc-section">
+
+<p>MagickGetImagePixels() extracts pixel data from an image and returns it to you.  The method returns MagickTrue on success otherwise MagickFalse if an error is encountered.  The data is returned as char, short int, int, long, float, or double in the order specified by map.</p></ol>
+
+<p>Suppose you want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</p>
+
+<pre class="text">
+  MagickGetImagePixels(wand,0,0,640,1,"RGB",CharPixel,pixels);
+</pre>
+
+<p>The format of the MagickGetImagePixels method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickGetImagePixels(MagickWand *wand,
+    const long x,const long y,const unsigned long columns,
+    const unsigned long rows,const char *map,const StorageType storage,
+    void *pixels)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>x, y, columns, rows</h5>
+<ol><p>These values define the perimeter of a region of pixels you want to extract.</p></ol>
+
+<h5>map</h5>
+<ol><p>This string reflects the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale), P = pad.</p></ol>
+
+<h5>storage</h5>
+<ol><p>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from these types: CharPixel, DoublePixel, FloatPixel, IntegerPixel, LongPixel, QuantumPixel, or ShortPixel.</p></ol>
+
+<h5>pixels</h5>
+<ol><p>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickGetImageSize">MagickGetImageSize</a></h2>
+<div class="doc-section">
+
+<p>MagickGetImageSize() returns the image length in bytes.</p></ol>
+
+<p>The format of the MagickGetImageSize method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickGetImageSize(MagickWand *wand,
+    MagickSizeType *length)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>length</h5>
+<ol><p>the image length in bytes.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickMapImage">MagickMapImage</a></h2>
+<div class="doc-section">
+
+<p>MagickMapImage() replaces the colors of an image with the closest color from a reference image.</p></ol>
+
+<p>The format of the MagickMapImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickMapImage(MagickWand *wand,
+    const MagickWand *map_wand,const MagickBooleanType dither)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>map</h5>
+<ol><p>the map wand.</p></ol>
+
+<h5>dither</h5>
+<ol><p>Set this integer value to something other than zero to dither the mapped image.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickMatteFloodfillImage">MagickMatteFloodfillImage</a></h2>
+<div class="doc-section">
+
+<p>MagickMatteFloodfillImage() changes the transparency value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the transparency value is changed for any neighbor pixel that does not match the bordercolor member of image.</p></ol>
+
+<p>The format of the MagickMatteFloodfillImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
+    const double alpha,const double fuzz,const PixelWand *bordercolor,
+    const long x,const long y)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>alpha</h5>
+<ol><p>the level of transparency: 1.0 is fully opaque and 0.0 is fully transparent.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+<h5>bordercolor</h5>
+<ol><p>the border color pixel wand.</p></ol>
+
+<h5>x,y</h5>
+<ol><p>the starting location of the operation.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickMosaicImages">MagickMosaicImages</a></h2>
+<div class="doc-section">
+
+<p>MagickMosaicImages() inlays an image sequence to form a single coherent picture.  It returns a wand with each image in the sequence composited at the location defined by the page offset of the image.</p></ol>
+
+<p>The format of the MagickMosaicImages method is:</p>
+
+<pre class="code">
+  MagickWand *MagickMosaicImages(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickOpaqueImage">MagickOpaqueImage</a></h2>
+<div class="doc-section">
+
+<p>MagickOpaqueImage() changes any pixel that matches color with the color defined by fill.</p></ol>
+
+<p>The format of the MagickOpaqueImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickOpaqueImage(MagickWand *wand,
+    const PixelWand *target,const PixelWand *fill,const double fuzz)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel(s).</p></ol>
+
+<h5>target</h5>
+<ol><p>Change this target color to the fill color within the image.</p></ol>
+
+<h5>fill</h5>
+<ol><p>the fill pixel wand.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickPaintFloodfillImage">MagickPaintFloodfillImage</a></h2>
+<div class="doc-section">
+
+<p>MagickPaintFloodfillImage() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p></ol>
+
+<p>The format of the MagickPaintFloodfillImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
+    const ChannelType channel,const PixelWand *fill,const double fuzz,
+    const PixelWand *bordercolor,const long x,const long y)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel(s).</p></ol>
+
+<h5>fill</h5>
+<ol><p>the floodfill color pixel wand.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+<h5>bordercolor</h5>
+<ol><p>the border color pixel wand.</p></ol>
+
+<h5>x,y</h5>
+<ol><p>the starting location of the operation.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickPaintOpaqueImage">MagickPaintOpaqueImage</a></h2>
+<div class="doc-section">
+
+<p>MagickPaintOpaqueImage() changes any pixel that matches color with the color defined by fill.</p></ol>
+
+<p>The format of the MagickPaintOpaqueImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickPaintOpaqueImage(MagickWand *wand,
+    const PixelWand *target,const PixelWand *fill,const double fuzz)
+  MagickBooleanType MagickPaintOpaqueImageChannel(MagickWand *wand,
+    const ChannelType channel,const PixelWand *target,
+    const PixelWand *fill,const double fuzz)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel(s).</p></ol>
+
+<h5>target</h5>
+<ol><p>Change this target color to the fill color within the image.</p></ol>
+
+<h5>fill</h5>
+<ol><p>the fill pixel wand.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickPaintTransparentImage">MagickPaintTransparentImage</a></h2>
+<div class="doc-section">
+
+<p>MagickPaintTransparentImage() changes any pixel that matches color with the color defined by fill.</p></ol>
+
+<p>The format of the MagickPaintTransparentImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
+    const PixelWand *target,const double alpha,const double fuzz)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>target</h5>
+<ol><p>Change this target color to specified opacity value within the image.</p></ol>
+
+<h5>alpha</h5>
+<ol><p>the level of transparency: 1.0 is fully opaque and 0.0 is fully transparent.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickSetImageAttribute">MagickSetImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>MagickSetImageAttribute() associates a property with an image.</p></ol>
+
+<p>The format of the MagickSetImageAttribute method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickSetImageAttribute(MagickWand *wand,
+    const char *property,const char *value)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>property</h5>
+<ol><p>the property.</p></ol>
+
+<h5>value</h5>
+<ol><p>the value.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickSetImageIndex">MagickSetImageIndex</a></h2>
+<div class="doc-section">
+
+<p>MagickSetImageIndex() set the current image to the position of the list specified with the index parameter.</p></ol>
+
+<p>The format of the MagickSetImageIndex method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickSetImageIndex(MagickWand *wand,const long index)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>index</h5>
+<ol><p>the scene number.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickTransparentImage">MagickTransparentImage</a></h2>
+<div class="doc-section">
+
+<p>MagickTransparentImage() changes any pixel that matches color with the color defined by fill.</p></ol>
+
+<p>The format of the MagickTransparentImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickTransparentImage(MagickWand *wand,
+    const PixelWand *target,const double alpha,const double fuzz)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>target</h5>
+<ol><p>Change this target color to specified opacity value within the image.</p></ol>
+
+<h5>alpha</h5>
+<ol><p>the level of transparency: 1.0 is fully opaque and 0.0 is fully transparent.</p></ol>
+
+<h5>fuzz</h5>
+<ol><p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount. The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickRegionOfInterestImage">MagickRegionOfInterestImage</a></h2>
+<div class="doc-section">
+
+<p>MagickRegionOfInterestImage() extracts a region of the image and returns it as a new wand.</p></ol>
+
+<p>The format of the MagickRegionOfInterestImage method is:</p>
+
+<pre class="code">
+  MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
+    const unsigned long width,const unsigned long height,const long x,
+    const long y)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>width</h5>
+<ol><p>the region width.</p></ol>
+
+<h5>height</h5>
+<ol><p>the region height.</p></ol>
+
+<h5>x</h5>
+<ol><p>the region x offset.</p></ol>
+
+<h5>y</h5>
+<ol><p>the region y offset.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickSetImagePixels">MagickSetImagePixels</a></h2>
+<div class="doc-section">
+
+<p>MagickSetImagePixels() accepts pixel datand stores it in the image at the location you specify.  The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The pixel data can be either char, short int, int, long, float, or double in the order specified by map.</p></ol>
+
+<p>Suppose your want to upload the first scanline of a 640x480 image from character data in red-green-blue order:</p>
+
+<pre class="text">
+  MagickSetImagePixels(wand,0,0,640,1,"RGB",CharPixel,pixels);
+</pre>
+
+<p>The format of the MagickSetImagePixels method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickSetImagePixels(MagickWand *wand,
+    const long x,const long y,const unsigned long columns,
+    const unsigned long rows,const char *map,const StorageType storage,
+    const void *pixels)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>x, y, columns, rows</h5>
+<ol><p>These values define the perimeter of a region of pixels you want to define.</p></ol>
+
+<h5>map</h5>
+<ol><p>This string reflects the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale), P = pad.</p></ol>
+
+<h5>storage</h5>
+<ol><p>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.</p></ol>
+
+<h5>pixels</h5>
+<ol><p>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="MagickWriteImageBlob">MagickWriteImageBlob</a></h2>
+<div class="doc-section">
+
+<p>MagickWriteImageBlob() implements direct to memory image formats.  It returns the image as a blob and its length.   Use MagickSetFormat() to set the format of the returned blob (GIF, JPEG,  PNG, etc.).</p></ol>
+
+<p>Use MagickRelinquishMemory() to free the blob when you are done with it.</p></ol>
+
+<p>The format of the MagickWriteImageBlob method is:</p>
+
+<pre class="code">
+  unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>wand</h5>
+<ol><p>the magick wand.</p></ol>
+
+<h5>length</h5>
+<ol><p>the length of the blob.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="PixelGetNextRow">PixelGetNextRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetNextRow() returns the next row as an array of pixel wands from the pixel iterator.</p></ol>
+
+<p>The format of the PixelGetNextRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetNextRow(PixelIterator *iterator,
+    unsigned long *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>iterator</h5>
+<ol><p>the pixel iterator.</p></ol>
+
+<h5>number_wands</h5>
+<ol><p>the number of pixel wands.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate
+_8c.html" target="source" name="PixelIteratorGetException">PixelIteratorGetException</a></h2>
+<div class="doc-section">
+
+<p>PixelIteratorGetException() returns the severity, reason, and description of any error that occurs when using other methods in this API.</p></ol>
+
+<p>The format of the PixelIteratorGetException method is:</p>
+
+<pre class="code">
+  char *PixelIteratorGetException(const Pixeliterator *iterator,
+    ExceptionType *severity)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>iterator</h5>
+<ol><p>the pixel iterator.</p></ol>
+
+<h5>severity</h5>
+<ol><p>the severity of the error is returned here.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

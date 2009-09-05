@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/ImageMagick
+
+Name: MagickCore
+Description: MagickCore - C API for ImageMagick
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lMagickCore
+Cflags: -I${includedir} @MAGICK_PCFLAGS@

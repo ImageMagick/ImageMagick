@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Magick::Color Class</title>
+<meta name="GENERATOR" content="OpenOffice.org 1.0 (Win32)">
+<meta name="AUTHOR" content="Bob Friesenhahn">
+<meta name="CREATED" content="20020805;13543972">
+<meta name="CHANGEDBY" content="Bob Friesenhahn">
+<meta name="CHANGED" content="20020805;14583794">
+<meta name="DESCRIPTION" content="Magick::Color class documentation">
+<link rel=stylesheet type=text/css href=../../www/magick.css>
+</head>
+<body lang="en-US" text="#ffffff" link="#0000EE" vlink="#551A8B" bgcolor="#fbc713">
+<h1 align="center">Magick::Color</h1>
+<p><a href="#Color">Color</a> is the base color class in Magick++. It is a simple container class for the pixel red, green, blue, and alpha values scaled to fit ImageMagick's Quantum size. Normally users will instantiate a class derived from Color which supports the color model that fits the needs of the application. The Color class may be constructed directly from an X11-style color string.</p>
+<p style="margin-bottom: 0cm">Available derived color specification classes are shown in the following table:</p>
+<p align="center" style="margin-bottom: 0cm"><b>Color Derived Classes</b></p>
+<center>
+<table width="90%" border="1" cellpadding="2" cellspacing="3">
+<col width="29*">
+<col width="227*">
+<tr>
+<td width="12%">
+<p><a href="#ColorRGB">ColorRGB</a></p></td>
+<td width="88%">
+<p>Representation of RGB color with red, green, and blue specified as ratios (0 to 1)</p></td></tr>
+<tr>
+<td width="12%">
+<p><a href="#ColorGray">ColorGray</a></p></td>
+<td width="88%">
+<p>Representation of <span lang="en-US">grayscale</span> RGB color (equal parts red, green, and blue) specified as a ratio (0 to 1)</p></td></tr>
+<tr>
+<td width="12%">
+<p><a href="#ColorMono">ColorMono</a></p></td>
+<td width="88%">
+<p>Representation of a black/white color (true/false)</p></td></tr>
+<tr>
+<td width="12%">
+<p><a href="#ColorYUV">ColorYUV</a></p></td>
+<td width="88%">
+<p>Representation of a color in the YUV <span lang="en-US">colorspace</span></p></td></tr></table></center>
+<p style="margin-bottom: 0cm">ImageMagick may be compiled to support 32 or 64 bit pixels of type <span lang="en-US">PixelPacket.</span> This is controlled by the value of the QuantumDepth define. The default is 64 bit pixels, which provides the best accuracy. If memory consumption and/or processing time must be minimized, then ImageMagick may be compiled with QuantumDepth=8. The following table shows the relationship between <i>QuantumDepth</i>, the type of <i>Quantum</i>, and the overall <i>PixelPacket</i> size.</p>
+<p align="center" style="margin-bottom: 0cm"><b>Effect Of QuantumDepth Values</b></p>
+<center>
+<table width="361" border="1" cellpadding="2" cellspacing="3">
+<col width="102">
+<col width="121">
+<col width="111">
+<tr>
+<td width="102">
+<p align="center"><b>QuantumDepth</b></p></td>
+<td width="121">
+<p align="center"><b>Quantum Typedef</b></p></td>
+<td width="111">
+<p align="center"><b>PixelPacket Size</b></p></td></tr>
+<tr>
+<td width="102">
+<p align="center">8</p></td>
+<td width="121">
+<p align="center">unsigned char</p></td>
+<td width="111">
+<p align="center">32 bits</p></td></tr>
+<tr>
+<td width="102">
+<p align="center">16</p></td>
+<td width="121">
+<p align="center">unsigned short</p></td>
+<td width="111">
+<p align="center">64 bits</p></td></tr></table></center>
+<h3><a name="Color"></a>Color Class</h3>
+<p>The Color base class is not intended to be used directly. Normally a user will construct a derived class or inherit from this class. Color arguments are must be scaled to fit the Quantum size. The Color class contains a pointer to a PixelPacket, which may be allocated by the Color class, or may refer to an existing pixel in an image.</p>
+<p>An alternate way to <span lang="en-US">construct</span> the class is via an X11-<span lang="en-US">compatible</span> color specification string.</p>
+<p><tt><font size="2"><font color="#000066">class Color</font></font></tt><br>
+<tt><font size="2"><font color="#000066">{</font></font></tt><br>
+<tt><font size="2"><font color="#000066">public:</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( Quantum red_,</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum green_,</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum blue_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( Quantum red_,</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum green_,</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum blue_,</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum alpha_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( const std::string &amp;x11color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( const char * x11color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">virtual ~Color ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( const Color &amp; color_ );</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Red color (range 0 to QuantumRange)</font></font></tt><br>
+<tt><font size="2"><font color="#000066">void redQuantum ( Quantum red_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum redQuantum ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Green color (range 0 to QuantumRange)</font></font></tt><br>
+<tt><font size="2"><font color="#000066">void greenQuantum ( Quantum green_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum greenQuantum ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Blue color (range 0 to QuantumRange)</font></font></tt><br>
+<tt><font size="2"><font color="#000066">void blueQuantum ( Quantum blue_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum blueQuantum ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Alpha level (range OpaqueOpacity=0 to TransparentOpacity=QuantumRange)</font></font></tt><br>
+<tt><font size="2"><font color="#000066">void alphaQuantum ( Quantum alpha_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Quantum alphaQuantum ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Scaled (to 1.0) version of alpha for use in sub-classes</font></font></tt><br>
+<tt><font size="2"><font color="#000066">// (range opaque=0 to transparent=1.0)</font></font></tt><br>
+<tt><font size="2"><font color="#000066">void alpha ( double alpha_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double alpha ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">// Does object contain valid color?</font></font></tt><br>
+<tt><font size="2"><font color="#000066">void isValid ( bool valid_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">bool isValid ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">// Set color via X11 color specification string</font></font></tt><br>
+<tt><font size="2"><font color="#000066">const Color&amp; operator= ( const std::string &amp;x11color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">const Color&amp; operator= ( const char * x11color_ );</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Assignment operator</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color&amp; operator= ( const Color&amp; color_ );</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">// Return X11 color specification string</font></font></tt><br>
+<tt><font size="2"><font color="#000066">/* virtual */ operator std::string() const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Return ImageMagick PixelPacket</font></font></tt><br>
+<tt><font size="2"><font color="#000066">operator PixelPacket() const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Construct color via ImageMagick PixelPacket</font></font></tt><br>
+<tt><font size="2"><font color="#000066">Color ( const PixelPacket &amp;color_ );</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Set color via ImageMagick PixelPacket</font></font></tt><br>
+<tt><font size="2"><font color="#000066">const Color&amp; operator= ( PixelPacket &amp;color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">};</font></font></tt></p>
+<h3><a name="ColorRGB"></a>ColorRGB</h3>
+<p>Representation of an RGB color. All color arguments have a valid range of 0.0 - 1.0.</p>
+<p><tt><font size="2"><font color="#000066">class ColorRGB : public Color</font></font></tt><br>
+<tt><font size="2"><font color="#000066">{</font></font></tt><br>
+<tt><font size="2"><font color="#000066">public:</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorRGB ( double red_, double green_, double blue_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorRGB ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorRGB ( const Color &amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">/* virtual */ ~ColorRGB ( void );</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void red ( double red_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double red ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void green ( double green_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double green ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void blue ( double blue_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double blue ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Assignment operator from base class</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorRGB&amp; operator= ( const Color&amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">};</font></font></tt></p>
+<h3><a name="ColorGray"></a>ColorGray</h3>
+<p>Representation of a grayscale color (in RGB colorspace). <span lang="en-US">Grayscale</span> is simply RGB with equal parts of red, green, and blue. All double arguments have a valid range of 0.0 - 1.0.</p>
+<p><tt><font size="2"><font color="#000066">class ColorGray : public Color</font></font></tt><br>
+<tt><font size="2"><font color="#000066">{</font></font></tt><br>
+<tt><font size="2"><font color="#000066">public:</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorGray ( double shade_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorGray ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorGray ( const Color &amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">/* virtual */ ~ColorGray ();</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">void shade ( double shade_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double shade ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Assignment operator from base class</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorGray&amp; operator= ( const Color&amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">};</font></font></tt></p>
+<h3><a name="ColorMono"></a>ColorMono</h3>
+<p>Representation of a black/white pixel (in RGB colorspace). Color arguments are constrained to 'false' (black pixel) and 'true' (white pixel).</p>
+<p><tt><font size="2"><font color="#000066">class ColorMono : public Color</font></font></tt><br>
+<tt><font size="2"><font color="#000066">{</font></font></tt><br>
+<tt><font size="2"><font color="#000066">public:</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorMono ( bool mono_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorMono ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorMono ( const Color &amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">/* virtual */ ~ColorMono ();</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void mono ( bool mono_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">bool mono ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Assignment operator from base class</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorMono&amp; operator= ( const Color&amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">};</font></font></tt></p>
+<h3><a name="ColorHSL"></a>ColorHSL</h3>
+<p>Representation of a color in Hue/Saturation/Luminosity (HSL) colorspace.</p>
+<p><tt><font size="2"><font color="#000066">class ColorHSL : public Color</font></font></tt><br>
+<tt><font size="2"><font color="#000066">{</font></font></tt><br>
+<tt><font size="2"><font color="#000066">public:</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorHSL ( double hue_, double saturation_, double luminosity_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorHSL ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorHSL ( const Color &amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">/* virtual */ ~ColorHSL ( );</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void hue ( double hue_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double hue ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void saturation ( double saturation_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double saturation ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void luminosity ( double luminosity_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double luminosity ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Assignment operator from base class</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorHSL&amp; operator= ( const Color&amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">};</font></font></tt></p>
+<h3><a name="ColorYUV"></a>ColorYUV</h3>
+<p>Representation of a color in YUV colorspace (used to encode color for television transmission).</p>
+<p>Argument ranges:<br>
+ Y: 0.0 through 1.0<br>
+ U: -0.5 through 0.5<br>
+ V: -0.5 through 0.5</p>
+<p><tt><font size="2"><font color="#000066">class ColorYUV : public Color</font></font></tt><br>
+<tt><font size="2"><font color="#000066">{</font></font></tt><br>
+<tt><font size="2"><font color="#000066">public:</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorYUV ( double y_, double u_, double v_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorYUV ( void );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorYUV ( const Color &amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">/* virtual */ ~ColorYUV ( void );</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void u ( double u_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double u ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void v ( double v_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double v ( void ) const;</font></font></tt><br>
+<br>
+<tt><font size="2"><font color="#000066">void y ( double y_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">double y ( void ) const;</font></font></tt></p>
+<p><tt><font size="2"><font color="#000066">// Assignment operator from base class</font></font></tt><br>
+<tt><font size="2"><font color="#000066">ColorYUV&amp; operator= ( const Color&amp; color_ );</font></font></tt><br>
+<tt><font size="2"><font color="#000066">};</font></font></tt></p>
+<br>
+</body>
+</html>

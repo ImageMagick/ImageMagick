@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE magicmap [
+<!ELEMENT magicmap (magic)+>
+<!ELEMENT magic (#PCDATA)>
+<!ATTLIST magic name CDATA #REQUIRED>
+<!ATTLIST magic offset CDATA "0">
+<!ATTLIST magic target CDATA #REQUIRED>
+]>
+<magicmap>
+  <magic name="AVI" offset="0" target="RIFF"/>
+  <magic name="8BIMWTEXT" offset="0" target="8\000B\000I\000M\000#"/>
+  <magic name="8BIMTEXT" offset="0" target="8BIM#"/>
+  <magic name="8BIM" offset="0" target="8BIM"/>
+  <magic name="BMP" offset="0" target="BA"/>
+  <magic name="BMP" offset="0" target="BM"/>
+  <magic name="BMP" offset="0" target="CI"/>
+  <magic name="BMP" offset="0" target="CP"/>
+  <magic name="BMP" offset="0" target="IC"/>
+  <magic name="BMP" offset="0" target="PI"/>
+  <magic name="CGM" offset="0" target="BEGMF"/>
+  <magic name="CIN" offset="0" target="\200\052\137\327"/>
+  <magic name="CRW" offset="0" target="II\x1a\x00\x00\x00HEAPCCDR"/>
+  <magic name="DCM" offset="128" target="DICM"/>
+  <magic name="DCX" offset="0" target="\261\150\336\72"/>
+  <magic name="DDS" offset="0" target="DDS "/>
+  <magic name="DIB" offset="0" target="\050\000"/>
+  <magic name="DJVU" offset="0" target="AT&amp;TFORM"/>
+  <magic name="DOT" offset="0" target="digraph"/>
+  <magic name="DPX" offset="0" target="SDPX"/>
+  <magic name="DPX" offset="0" target="XPDS"/>
+  <magic name="EMF" offset="40" target="\040\105\115\106\000\000\001\000"/>
+  <magic name="EPT" offset="0" target="\305\320\323\306"/>
+  <magic name="EXR" offset="0" target="\166\057\061\001"/>
+  <magic name="FAX" offset="0" target="DFAX"/>
+  <magic name="FIG" offset="0" target="#FIG"/>
+  <magic name="FITS" offset="0" target="IT0"/>
+  <magic name="FITS" offset="0" target="SIMPLE"/>
+  <magic name="FPX" offset="0" target="\320\317\021\340"/>
+  <magic name="GIF" offset="0" target="GIF8"/>
+  <magic name="GPLT" offset="0" target="#!/usr/local/bin/gnuplot"/>
+  <magic name="HDF" offset="1" target="HDF"/>
+  <magic name="HPGL" offset="0" target="IN;"/>
+  <magic name="HTML" offset="1" target="HTML"/>
+  <magic name="HTML" offset="1" target="html"/>
+  <magic name="ILBM" offset="8" target="ILBM"/>
+  <magic name="IPTCWTEXT" offset="0" target="\062\000#\000\060\000=\000\042\000&amp;\000#\000\060\000;\000&amp;\000#\000\062\000;\000\042\000"/>
+  <magic name="IPTCTEXT" offset="0" target="2#0=\042&amp;#0;&amp;#2;\042"/>
+  <magic name="IPTC" offset="0" target="\034\002"/>
+  <magic name="JNG" offset="0" target="\213JNG\r\n\032\n"/>
+  <magic name="JPEG" offset="0" target="\377\330\377"/>
+  <magic name="JPC" offset="0" target="\377\117"/>
+  <magic name="JP2" offset="4" target="\152\120\040\040\015"/>
+  <magic name="MIFF" offset="0" target="Id=ImageMagick"/>
+  <magic name="MIFF" offset="0" target="id=ImageMagick"/>
+  <magic name="MNG" offset="0" target="\212MNG\r\n\032\n"/>
+  <magic name="MPC" offset="0" target="id=MagickCache"/>
+  <magic name="MPEG" offset="0" target="\000\000\001\263"/>
+  <magic name="MRW" offset="0" target="\x00MRM"/>
+  <magic name="ORF" offset="0" target="IIRO\x08\x00\x00\x00"/>
+  <magic name="PCD" offset="2048" target="PCD_"/>
+  <magic name="PCL" offset="0" target="\033E\033"/>
+  <magic name="PCX" offset="0" target="\012\002"/>
+  <magic name="PCX" offset="0" target="\012\005"/>
+  <magic name="PDB" offset="60" target="vIMGView"/>
+  <magic name="PDF" offset="0" target="%PDF-"/>
+  <magic name="PFA" offset="0" target="%!PS-AdobeFont-1.0"/>
+  <magic name="PFB" offset="6" target="%!PS-AdobeFont-1.0"/>
+  <magic name="PGX" offset="0" target="\050\107\020\115\046"/>
+  <magic name="PICT" offset="522" target="\000\021\002\377\014\000"/>
+  <magic name="PNG" offset="0" target="\211PNG\r\n\032\n"/>
+  <magic name="PNM" offset="0" target="P1"/>
+  <magic name="PNM" offset="0" target="P2"/>
+  <magic name="PNM" offset="0" target="P3"/>
+  <magic name="PNM" offset="0" target="P4"/>
+  <magic name="PNM" offset="0" target="P5"/>
+  <magic name="PNM" offset="0" target="P6"/>
+  <magic name="PNM" offset="0" target="P7"/>
+  <magic name="PNM" offset="0" target="PF"/>
+  <magic name="PNM" offset="0" target="Pf"/>
+  <magic name="PS" offset="0" target="%!"/>
+  <magic name="PS" offset="0" target="\004%!"/>
+  <magic name="PS" offset="0" target="\305\320\323\306"/>
+  <magic name="PSD" offset="0" target="8BPS"/>
+  <magic name="PWP" offset="0" target="SFW95"/>
+  <magic name="RAD" offset="0" target="#?RADIANCE"/>
+  <magic name="RAD" offset="0" target="VIEW= "/>
+  <magic name="RAF" offset="0" target="FUJIFILMCCD-RAW "/>
+  <magic name="RLE" offset="0" target="\122\314"/>
+  <magic name="SCT" offset="0" target="CT"/>
+  <magic name="SFW" offset="0" target="SFW94"/>
+  <magic name="SGI" offset="0" target="\001\332"/>
+  <magic name="SUN" offset="0" target="\131\246\152\225"/>
+  <magic name="SVG" offset="1" target="?XML"/>
+  <magic name="SVG" offset="1" target="?xml"/>
+  <magic name="TXT" offset="0" target="# ImageMagick pixel enumeration:"/>
+  <magic name="TIFF" offset="0" target="\115\115\000\052"/>
+  <magic name="TIFF" offset="0" target="\111\111\052\000"/>
+  <magic name="TIFF64" offset="0" target="\115\115\000\053\000\010\000\000"/>
+  <magic name="TIFF64" offset="0" target="\111\111\053\000\010\000\000\000"/>
+  <magic name="VICAR" offset="0" target="LBLSIZE"/>
+  <magic name="VICAR" offset="0" target="NJPL1I"/>
+  <magic name="VIFF" offset="0" target="\253\001"/>
+  <magic name="WMF" offset="0" target="\327\315\306\232"/>
+  <magic name="WMF" offset="0" target="\001\000\011\000"/>
+  <magic name="WPG" offset="0" target="\377WPC"/>
+  <magic name="XBM" offset="0" target="#define"/>
+  <magic name="XCF" offset="0" target="gimp xcf"/>
+  <magic name="XPM" offset="1" target="* XPM *"/>
+  <magic name="XWD" offset="4" target="\007\000\000"/>
+  <magic name="XWD" offset="5" target="\000\000\007"/>
+  <magic name="XEF" offset="0" target="FOVb"/>
+</magicmap>

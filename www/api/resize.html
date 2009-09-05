@@ -1,0 +1,459 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Resize an Image</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, resize, an, image, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#AdaptiveResizeImage">AdaptiveResizeImage</a> &bull; <a href="#MagnifyImage">MagnifyImage</a> &bull; <a href="#MinifyImage">MinifyImage</a> &bull; <a href="#ResampleImage">ResampleImage</a> &bull; <a href="#LiquidRescaleImage">LiquidRescaleImage</a> &bull; <a href="#ResizeImage">ResizeImage</a> &bull; <a href="#SampleImage">SampleImage</a> &bull; <a href="#ScaleImage">ScaleImage</a> &bull; <a href="#ThumbnailImage">ThumbnailImage</a> &bull; <a href="#ZoomImage">ZoomImage</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="AdaptiveResizeImage">AdaptiveResizeImage</a></h2>
+<div class="doc-section">
+
+<p>AdaptiveResizeImage() adaptively resize image with pixel resampling.</p></ol>
+
+<p>The format of the AdaptiveResizeImage method is:</p>
+
+<pre class="code">
+  Image *AdaptiveResizeImage(const Image *image,
+    const unsigned long columns,const unsigned long rows,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>the number of columns in the resized image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>the number of rows in the resized image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="MagnifyImage">MagnifyImage</a></h2>
+<div class="doc-section">
+
+<p>MagnifyImage() is a convenience method that scales an image proportionally to twice its size.</p></ol>
+
+<p>The format of the MagnifyImage method is:</p>
+
+<pre class="code">
+  Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="MinifyImage">MinifyImage</a></h2>
+<div class="doc-section">
+
+<p>MinifyImage() is a convenience method that scales an image proportionally to half its size.</p></ol>
+
+<p>The format of the MinifyImage method is:</p>
+
+<pre class="code">
+  Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="ResampleImage">ResampleImage</a></h2>
+<div class="doc-section">
+
+<p>ResampleImage() resize image in terms of its pixel size, so that when displayed at the given resolution it will be the same size in terms of real world units as the original image at the original resolution.</p></ol>
+
+<p>The format of the ResampleImage method is:</p>
+
+<pre class="code">
+  Image *ResampleImage(Image *image,const double x_resolution,
+    const double y_resolution,const FilterTypes filter,const double blur,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image to be resized to fit the given resolution.</p></ol>
+
+<h5>x_resolution</h5>
+<ol><p>the new image x resolution.</p></ol>
+
+<h5>y_resolution</h5>
+<ol><p>the new image y resolution.</p></ol>
+
+<h5>filter</h5>
+<ol><p>Image filter to use.</p></ol>
+
+<h5>blur</h5>
+<ol><p>the blur factor where > 1 is blurry, < 1 is sharp.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="LiquidRescaleImage">LiquidRescaleImage</a></h2>
+<div class="doc-section">
+
+<p>LiquidRescaleImage() rescales image with seam carving.</p></ol>
+
+<p>The format of the LiquidRescaleImage method is:</p>
+
+<pre class="code">
+  Image *LiquidRescaleImage(const Image *image,
+    const unsigned long columns,const unsigned long rows,
+    const double delta_x,const double rigidity,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>the number of columns in the rescaled image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>the number of rows in the rescaled image.</p></ol>
+
+<h5>delta_x</h5>
+<ol><p>maximum seam transversal step (0 means straight seams).</p></ol>
+
+<h5>rigidity</h5>
+<ol><p>introduce a bias for non-straight seams (typically 0).</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="ResizeImage">ResizeImage</a></h2>
+<div class="doc-section">
+
+<p>ResizeImage() scales an image to the desired dimensions, using the given filter (see AcquireFilterInfo() ).</p></ol>
+
+<p>If an undefined filter is given the filter defaults to Mitchell for a colormapped image, a image with a matte channel, or if the image is enlarged.  Otherwise the filter defaults to a Lanczos.</p></ol>
+
+<p>ResizeImage() was inspired by Paul Heckbert's "zoom" program.</p></ol>
+
+<p>The format of the ResizeImage method is:</p>
+
+<pre class="code">
+  Image *ResizeImage(Image *image,const unsigned long columns,
+    const unsigned long rows,const FilterTypes filter,const double blur,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>the number of columns in the scaled image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>the number of rows in the scaled image.</p></ol>
+
+<h5>filter</h5>
+<ol><p>Image filter to use.</p></ol>
+
+<h5>blur</h5>
+<ol><p>the blur factor where > 1 is blurry, < 1 is sharp. Typically set this to 1.0.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="SampleImage">SampleImage</a></h2>
+<div class="doc-section">
+
+<p>SampleImage() scales an image to the desired dimensions with pixel sampling.  Unlike other scaling methods, this method does not introduce any additional color into the scaled image.</p></ol>
+
+<p>The format of the SampleImage method is:</p>
+
+<pre class="code">
+  Image *SampleImage(const Image *image,const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>the number of columns in the sampled image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>the number of rows in the sampled image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="ScaleImage">ScaleImage</a></h2>
+<div class="doc-section">
+
+<p>ScaleImage() changes the size of an image to the given dimensions.</p></ol>
+
+<p>The format of the ScaleImage method is:</p>
+
+<pre class="code">
+  Image *ScaleImage(const Image *image,const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>the number of columns in the scaled image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>the number of rows in the scaled image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="ThumbnailImage">ThumbnailImage</a></h2>
+<div class="doc-section">
+
+<p>ThumbnailImage() changes the size of an image to the given dimensions and removes any associated profiles.  The goal is to produce small low cost thumbnail images suited for display on the Web.</p></ol>
+
+<p>The format of the ThumbnailImage method is:</p>
+
+<pre class="code">
+  Image *ThumbnailImage(const Image *image,const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>the number of columns in the scaled image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>the number of rows in the scaled image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" target="source" name="ZoomImage">ZoomImage</a></h2>
+<div class="doc-section">
+
+<p>ZoomImage() creates a new image that is a scaled size of an existing one. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results.  See Graphic Gems III for details on this algorithm.</p></ol>
+
+<p>The filter member of the Image structure specifies which image filter to use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.</p></ol>
+
+<p>The format of the ZoomImage method is:</p>
+
+<pre class="code">
+  Image *ZoomImage(const Image *image,const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>columns</h5>
+<ol><p>An integer that specifies the number of columns in the zoom image.</p></ol>
+
+<h5>rows</h5>
+<ol><p>An integer that specifies the number of rows in the scaled image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>
