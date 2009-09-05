@@ -1,0 +1,66 @@
+.TH compare 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
+.SH NAME
+compare \- mathematically and visually annotate the difference between an image and its reconstruction.
+.SH SYNOPSIS
+.TP
+\fBcompare\fP \fIinput-file\fP \fIinput-file\fP [\fIoptions\fP] \fIoutput-file\fP
+.SH OVERVIEW
+The \fBcompare\fP program is a member of the ImageMagick(1) suite of tools.  Use it to mathematically and visually annotate the difference between an image and its reconstruction.
+
+For more information about the compare command, point your browser to file://@DOCUMENTATION_PATH@/www/compare.html or http://www.imagemagick.org/script/compare.php.
+.SH DESCRIPTION
+Image Settings:
+  \-authenticate value  decrypt image with this password
+  \-channel type        apply option to select image channels
+  \-colorspace type     alternate image colorspace
+  \-compose operator    set image composite operator
+  \-compress type       type of pixel compression when writing the image
+  \-decipher filename   convert cipher pixels to plain pixels
+  \-define format:option
+                       define one or more image format options
+  \-density geometry    horizontal and vertical density of the image
+  \-depth value         image depth
+  \-encipher filename   convert plain pixels to cipher pixels
+  \-extract geometry    extract area from image
+  \-format "string"     output formatted image characteristics
+  \-fuzz distance       colors within this distance are considered equal
+  \-identify            identify the format and characteristics of the image
+  \-interlace type      type of image interlacing scheme
+  \-highlight-color color
+                       emphasize pixel differences with this color
+  \-limit type value    pixel cache resource limit
+  \-lowlight-color color
+                       de-emphasize pixel differences with this color
+  \-metric type         measure differences between images with this metric
+  \-monitor             monitor progress
+  \-profile filename    add, delete, or apply an image profile
+  \-quality value       JPEG/MIFF/PNG compression level
+  \-quiet               suppress all warning messages
+  \-quantize colorspace reduce colors in this colorspace
+  \-regard-warnings     pay attention to warning messages
+  \-sampling-factor geometry
+                       horizontal and vertical sampling factor
+  \-seed value          seed a new sequence of pseudo-random numbers
+  \-set attribute value set an image attribute
+  \-size geometry       width and height of image
+  \-transparent-color color
+                       transparent color
+  \-type type           image type
+  \-verbose             print detailed information about the image
+  \-virtual-pixel method
+                       virtual pixel access method
+
+Miscellaneous Options:
+  \-debug events        display copious debugging information
+  \-help                print program options
+  \-log format          format of debugging information
+  \-list type           print a list of supported option arguments
+  \-version             print version information
+
+By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
+.SH SEE ALSO
+ImageMagick(1)
+
+.SH COPYRIGHT
+
+\fBCopyright (C) 1999-2009 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://www.imagemagick.org/script/license.php\fP

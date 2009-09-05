@@ -1,0 +1,18 @@
+#FIG 3.2
+Portrait
+Center
+Inches
+Letter 
+100.00
+Single
+0
+1200 2
+6 2100 1575 8100 2775
+4 1 4 0 0 18 32 0.0000 4 450 6000 5100 2625 You can display an image!\001
+4 1 4 0 0 18 32 0.0000 4 345 5010 5100 1950 CONGRATULATIONS!\001
+-6
+2 4 0 1 0 7 0 0 -1 0.000 0 0 7 0 0 5
+	 9150 5850 9150 600 900 600 900 5850 9150 5850
+4 1 0 0 0 18 24 0.0000 4 330 3420 5100 3450 Please Stand By . . .\001
+4 1 0 0 0 18 24 0.0000 4 330 5775 5100 4125 In eight seconds this window will\001
+4 1 0 0 0 18 24 0.0000 4 330 4395 5100 4530 automatically disappear.\001

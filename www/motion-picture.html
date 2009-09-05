@@ -1,0 +1,286 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: Motion Picture Digital Images</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="motion, picture, digital, images, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#intro">Introduction to Motion Picture Formats</a> &bull; <a href="#log">Log Format</a> &bull; <a href="#properties">DPX properties</a> &bull; <a href="#settings">DPX Settings</a>]</p>
+
+<h2><a name="intro"></a>Introduction to Motion Picture Formats</h2>
+<div class="doc-section">
+
+<p>DPX (SMPTE 268M-2003) - This format is used in Motion Picture and Effects industry that makes particular use of the extensive header information and the format's flexibility in being able to handle high dynamic range and logarithmic color values at a variety of bit depths using RGB or YCbCr pixel descriptions.  It is based on, but largely supercedes, Kodak's Cineon format that has more a more film specific header.</p>
+
+<p>One example of it's use includes scanning film for use in post production. Each frame is stored as an individual DPX file ranging from 2k (2048 pixels wide) to 8k (8192 pixels wide - for IMAX frames) at anything between 8 to 64 bits per color component. A sequence of these might then be processed using compositing software, altering the color or adding visual effects. Once complete they might then be recorded digitally to tape or projected back on to film.</p>
+
+<p>The color values for each pixel are often stored logarithmically (particularly if the sequence is destined to be transferred back on to film) which more naturally reflects the density of how color information is stored in the emulsion on the original film. When viewed without alteration, logarithmic files appear to have very low contrast and requires a 'look up table' to translate the logarithmic image to something that resembles what you might see if the image was transferred back to film and projected in a cinema. Apart from making the image linear (like most typical computer images) and adjusting the gamma level this table sets where the black and white point lies.</p>
+
+<p>For a 10 bit logarithmic image where each color component value ranges from 0 to 1023 the black and white points are normally set at 95 for black and 685 for white. What this means is that the logarithmic file stores color values that are lighter than what the linear version will display as pure white and darker than what it will display as pure black. This extra information therefore remains available for an effects artists who might wish to alter the brightness of the image after it has been stored as a DPX file.</p>
+
+<p>As an example, had this information been lost, reducing the brightness of an image uniformly would result in highlights becoming darker, whereas with this extra information the highlights instead reduce in size and start showing details that were previously too bright to be seen. The latter is far closer to what happens in the real world.</p>
+
+<p>The header can contain Film and/or Television specific data related to a production. For example the television header can contain a SMPTE time code so that shots exported as a DPX sequence from a production's edit can be easily replaced once any effects have been added. The film header holds information about the reel of film the frames originated from and various camera settings that were used while filming.  All these details usually stay with the images as they are passed between post-production companies.</p>
+
+</div>
+
+<h2><a name="log"></a>Log Format</h2>
+<div class="doc-section">
+
+<p>The color values for each pixel are often stored logarithmically (particularly if the sequence is destined to be transferred back on to film) which more naturally reflects the density of how color information is stored in the emulsion on the original film. When viewed without alteration logarithmic files appear to have very low contrast (leftmost image), and so require a 'look up table' to translate the logarithmic image to something that resembles what you might see if the image was transferred back to film and projected in a cinema (rightmost image). Apart from making the image linear (like most typical computer images) and adjusting the gamma level this table sets where the black and white point lies.</p>
+
+<p class="image">
+  <a href="../images/bluebells_log.jpg"><img src="../images/bluebells_log.jpg" width="384" height="288" class="image-slices" alt="bluebells-log" /></a>
+  <a href="../images/bluebells_lin.jpg"><img src="../images/bluebells_lin.jpg" width="384" height="288" class="image-slices" alt="bluebells-linear" /></a>
+</p>
+
+<p>For a 10 bit logarithmic image where each color component value ranges from 0 to 1023 the black and white points are normally set at 95 for black and 685 for white. What this means is that the logarithmic file stores color values that are lighter than what the linear version will display as pure white and darker than what it will display as pure black. This extra information therefore remains available for an effects artists who might wish to alter the brightness of the image after it has been stored as a DPX file.</p>
+
+<p>As an example, had this information been lost, reducing the brightness of a linear image uniformly would result in highlights becoming darker (leftmost image), whereas with this extra information the highlights instead reduce in size and start showing details that were previously too bright to be seen (rightmost image). The latter is far closer to what happens in the real world.</p>
+
+<p class="image">
+  <a href="../images/bluebells_clipped.jpg"><img src="../images/bluebells_clipped.jpg" width="384" height="288" class="image-slices" alt="bluebells-clipped" /></a>
+  <a href="../images/bluebells_darker.jpg"><img src="../images/bluebells_darker.jpg" width="384" height="288" class="image-slices" alt="bluebells-darker" /></a>
+</p>
+
+</div>
+
+<h2><a name="properties"></a>DPX Properties</h2>
+<div class="doc-section">
+
+<p>ImageMagick supports these DPX properties:</p>
+
+<pre class="text">
+  dpx:file.copyright
+  dpx:file.creator
+  dpx:file.filename
+  dpx:file.project
+  dpx:file.version
+  dpx:film.count
+  dpx:film.format
+  dpx:film.frame_id
+  dpx:film.frame_position
+  dpx:film.frame_rate
+  dpx:film.held_count
+  dpx:film.id
+  dpx:film.offset
+  dpx:film.prefix
+  dpx:film.sequence_length
+  dpx:film.shutter_angle
+  dpx:film.slate
+  dpx:film.type
+  dpx:orientation.aspect_ratio
+  dpx:orientation.border
+  dpx:orientation.device
+  dpx:orientation.filename
+  dpx:orientation.x_center
+  dpx:orientation.x_offset
+  dpx:orientation.x_size
+  dpx:orientation.y_center
+  dpx:orientation.y_offset
+  dpx:orientation.y_size
+  dpx:television.black_gain
+  dpx:television.black_level
+  dpx:television.break_point
+  dpx:television.field_number
+  dpx:television.frame_rate
+  dpx:television.gamma
+  dpx:television.integration_times
+  dpx:television.interlace
+  dpx:television.padding
+  dpx:television.time.code
+  dpx:television.time_offset
+  dpx:television.user.bits
+  dpx:television.vertical_sample_rate
+  dpx:television.video_signal
+  dpx:television.white_level
+  dpx:user.id
+</pre>
+
+<p> To determine which properties are associated with your DPX image, use this command for example:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -verbose bluebells.dpx</span></p>
+<p>To identify a particular property, try this:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format "%[dpx:television.time.code]" bluebells.dpx</span></p>
+<p>Finally, to set a property:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001.dpx</span></p>
+</div>
+
+<h2><a name="settings"></a>DPX Settings</h2>
+<div class="doc-section">
+
+<p>Use <a href="../www/command-line-options.html#set">-set</a> to specify the image gamma or black and white points.  For example use:
+</p>
+
+	<div>
+	<p class="crtsnip">-set gamma 1.7</p>
+
+	<p class="crtsnip">-set reference-black 95</p>
+
+	<p class="crtsnip">-set reference-white 685</p>
+	</div>
+
+</div>
+
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

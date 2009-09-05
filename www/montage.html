@@ -1,0 +1,705 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: Command-line Tools: Montage</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="command-line, tools:, montage, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#usage">Example Usage</a> &bull; <a href="#options">Option Summary</a>]</p>
+
+<div class="doc-section">
+<p>Use the <kbd>montage</kbd> program to create a composite image by combining several separate images.  The images are tiled on the composite image optionally adorned with a border, frame, image name, and more. See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <kbd>montage</kbd> command or see below for example usages of the command.</p>
+</div>
+
+<h2><a name="usage"></a>Example Usage</h2>
+<div class="doc-section">
+
+<p>We list a few examples of the <kbd>montage</kbd> command here to illustrate its usefulness and ease of use.  To get started, let's montage two images into a single composite:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>montage -background #336699 -geometry +4+4 rose.jpg red-ball.png montage.jpg</span></p>
+<p class="image">
+  <a href="../images/rose.jpg">
+  <img style="margin-top:14px; margin-bottom:14px;" src="../images/rose.jpg" width="70" height="46" alt="rose" />
+  </a>
+  <a href="../images/red-ball.png">
+  <img style="margin-top:2px; margin-bottom:2px;" src="../images/red-ball.png" width="70" height="70" alt="red ball" />
+  </a>
+  <img style="margin-top:27px; margin-bottom:27px;" src="../images/right.gif" width="20" height="20" alt="==>" />
+  <a href="../images/montage.jpg">
+  <img src="../images/montage.jpg" width="148" height="74" alt="montage" />
+  </a>
+</p>
+
+<p>Ok, let's add some decorations:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>montage -label %f -frame 5 -background #336699 -geometry +4+4 rose.jpg red-ball.png frame.jpg</span></p>
+<p class="image">
+  <a href="../images/rose.jpg">
+  <img style="margin-top:31px; margin-bottom:31px;" src="../images/rose.jpg" width="70" height="46" alt="rose.jpg" />
+  </a>
+  <a href="../images/red-ball.png">
+  <img style="margin-top:19px; margin-bottom:19px;" src="../images/red-ball.png" width="70" height="70" alt="red ball" />
+  </a>
+	<img style="margin-top:44px; margin-bottom:44px;" src="../images/right.gif" width="20" height="20" alt="==>" />
+  <a href="../images/frame.jpg">
+  <img src="../images/frame.jpg" width="176" height="108" alt="frame" />
+  </a>
+</p>
+
+<p>You can find additional examples of using <kbd>montage</kbd> at <a href="http://www.imagemagick.org/Usage/montage/">Examples of ImageMagick Usage</a> and <a href="http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www-106.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+
+</div>
+
+<h2><a name="options"></a>Option Summary</h2>
+<div class="doc-section">
+
+<p>The <kbd>montage</kbd> command recognizes these options.  Click on an option to get more details about how that option works.</p>
+
+<table class="doc">
+  <tbody>
+  <tr>
+    <th align="left">Option</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#adaptive-sharpen">-adaptive-sharpen <em class="option">geometry</em></a></td>
+    <td valign="top">adaptively sharpen pixels; increase effect near edges</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#adjoin">-adjoin</a></td>
+    <td valign="top">join images into a single multi-image file</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#affine">-affine <em class="option">matrix</em></a></td>
+    <td valign="top">affine transform matrix</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#alpha">-alpha</a></td>
+    <td valign="top">on, activate, off, deactivate, set, opaque, copy",
+transparent, extract, background, or shape the alpha channel</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#annotate">-annotate <em class="option">geometry text</em></a></td>
+    <td valign="top">annotate the image with text</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#authenticate">-authenticate <em class="option">value</em></a></td>
+    <td valign="top">decrypt image with this password</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#auto-orient">-auto-orient</a></td>
+    <td valign="top">automagically orient image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#background">-background <em class="option">color</em></a></td>
+    <td valign="top">background color</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#blue-primary">-blue-primary <em class="option">point</em></a></td>
+    <td valign="top">chromaticity blue primary point</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#blur">-blur <em class="option">geometry</em></a></td>
+    <td valign="top">reduce image noise and reduce detail levels</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#border">-border <em class="option">geometry</em></a></td>
+    <td valign="top">surround image with a border of color</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#bordercolor">-bordercolor <em class="option">color</em></a></td>
+    <td valign="top">border color</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#caption">-caption <em class="option">string</em></a></td>
+    <td valign="top">assign a caption to an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#channel">-channel <em class="option">type</em></a></td>
+    <td valign="top">apply option to select image channels</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#clone">-clone <em class="option">index</em></a></td>
+    <td valign="top">clone an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#coalesce">-coalesce</a></td>
+    <td valign="top">merge a sequence of images</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#colors">-colors <em class="option">value</em></a></td>
+    <td valign="top">preferred number of colors in the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#colorspace">-colorspace <em class="option">type</em></a></td>
+    <td valign="top">set image colorspace</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#comment">-comment <em class="option">string</em></a></td>
+    <td valign="top">annotate image with comment</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#compose">-compose <em class="option">operator</em></a></td>
+    <td valign="top">set image composite operator</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#composite">-composite</a></td>
+    <td valign="top">composite image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#compress">-compress <em class="option">type</em></a></td>
+    <td valign="top">image compression type</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#crop">-crop <em class="option">geometry</em></a></td>
+    <td valign="top">preferred size and location of the cropped image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#debug">-debug <em class="option">events</em></a></td>
+    <td valign="top">display copious debugging information</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#define">-define <em class="option">format:option</em></a></td>
+    <td valign="top">define one or more image format options</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#density">-density <em class="option">geometry</em></a></td>
+    <td valign="top">horizontal and vertical density of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#depth">-depth <em class="option">value</em></a></td>
+    <td valign="top">image depth</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#display">-display <em class="option">server</em></a></td>
+    <td valign="top">get image or font from this X server</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#dispose">-dispose <em class="option">method</em></a></td>
+    <td valign="top">layer disposal method</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#dither">-dither  <em class="option">method</em></a></td>
+    <td valign="top">apply error diffusion to image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#draw">-draw <em class="option">string</em></a></td>
+    <td valign="top">annotate the image with a graphic primitive</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#endian">-endian <em class="option">type</em></a></td>
+    <td valign="top">endianness (MSB or LSB) of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#extent">-extent <em class="option">geometry</em></a></td>
+    <td valign="top">set the image size</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#extract">-extract <em class="option">geometry</em></a></td>
+    <td valign="top">extract area from image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#fill">-fill <em class="option">color</em></a></td>
+    <td valign="top">color to use when filling a graphic primitive</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#filter">-filter <em class="option">type</em></a></td>
+    <td valign="top">use this filter when resizing an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#flatten">-flatten</a></td>
+    <td valign="top">flatten a sequence of images</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#flip">-flip</a></td>
+    <td valign="top">flip image in the vertical direction</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#flop">-flop</a></td>
+    <td valign="top">flop image in the horizontal direction</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#font">-font <em class="option">name</em></a></td>
+    <td valign="top">render text with this font</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#frame">-frame <em class="option">geometry</em></a></td>
+    <td valign="top">surround image with an ornamental border</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#gamma">-gamma <em class="option">value</em></a></td>
+    <td valign="top">level of gamma correction</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#geometry">-geometry <em class="option">geometry</em></a></td>
+    <td valign="top">preferred size or location of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#gravity">-gravity <em class="option">type</em></a></td>
+    <td valign="top">horizontal and vertical text placement</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#green-primary">-green-primary <em class="option">point</em></a></td>
+    <td valign="top">chromaticity green primary point</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#help">-help</a></td>
+    <td valign="top">print program options</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#identify">-identify</a></td>
+    <td valign="top">identify the format and characteristics of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#interlace">-interlace <em class="option">type</em></a></td>
+    <td valign="top">type of image interlacing scheme</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#interpolate">-interpolate <em class="option">method</em></a></td>
+    <td valign="top">pixel color interpolation method</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#label">-label <em class="option">string</em></a></td>
+    <td valign="top">assign a label to an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#limit">-limit <em class="option">type value</em></a></td>
+    <td valign="top">pixel cache resource limit</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#log">-log <em class="option">format</em></a></td>
+    <td valign="top">format of debugging information</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#mattecolor">-mattecolor <em class="option">color</em></a></td>
+    <td valign="top">frame color</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#mode">-mode <em class="option">type</em></a></td>
+    <td valign="top">framing style</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#monitor">-monitor</a></td>
+    <td valign="top">monitor progress</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#monochrome">-monochrome</a></td>
+    <td valign="top">transform image to black and white</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#origin">-origin <em class="option">geometry</em></a></td>
+    <td valign="top">image origin</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#page">-page <em class="option">geometry</em></a></td>
+    <td valign="top">size and location of an image canvas (setting)</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#pointsize">-pointsize <em class="option">value</em></a></td>
+    <td valign="top">font point size</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#polaroid">-polaroid <em class="option">angle</em></a></td>
+    <td valign="top">simulate a Polaroid picture</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#profile">-profile <em class="option">filename</em></a></td>
+    <td valign="top">add, delete, or apply an image profile</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#quality">-quality <em class="option">value</em></a></td>
+    <td valign="top">JPEG/MIFF/PNG compression level</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#quantize">-quantize <em class="option">colorspace</em></a></td>
+    <td valign="top">reduce image colors in this colorspace</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#quiet">-quiet</a></td>
+    <td valign="top">suppress all warning messages</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#red-primary">-red-primary <em class="option">point</em></a></td>
+    <td valign="top">chromaticity red primary point</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#regard-warnings">-regard-warnings</a></td>
+    <td valign="top">pay attention to warning messages.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#repage">-repage <em class="option">geometry</em></a></td>
+    <td valign="top">size and location of an image canvas</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#resize">-resize <em class="option">geometry</em></a></td>
+    <td valign="top">resize the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#respect-parentheses">-respect-parentheses</a></td>
+    <td valign="top">settings remain in effect until parenthesis boundary.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#rotate">-rotate <em class="option">degrees</em></a></td>
+    <td valign="top">apply Paeth rotation to the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#sampling-factor">-sampling-factor <em class="option">geometry</em></a></td>
+    <td valign="top">horizontal and vertical sampling factor</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#scenes">-scenes<em>range</em></a></td>
+    <td valign="top">image scene range</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#seed">-seed <em class="option">value</em></a></td>
+    <td valign="top">seed a new sequence of pseudo-random numbers</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#shadow">-shadow <em class="option">geometry</em></a></td>
+    <td valign="top">simulate an image shadow</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#size">-size <em class="option">geometry</em></a></td>
+    <td valign="top">width and height of image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#strip">-strip</a></td>
+    <td valign="top">strip image of all profiles and comments</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#stroke">-stroke <em class="option">color</em></a></td>
+    <td valign="top">graphic primitive stroke color</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#texture">-texture <em class="option">filename</em></a></td>
+    <td valign="top">name of texture to tile onto the image background</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#tile">-tile <em class="option">filename</em></a></td>
+    <td valign="top">tile image when filling a graphic primitive</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#tile-offset">-tile-offset <em class="option">geometry</em></a></td>
+    <td valign="top">set the image tile offset</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#title">-title</a></td>
+    <td valign="top">decorate the montage image with a title</td>
+  </tr>
+
+  <tr>
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#transform">-transform</a></td>
+    <td valign="top">affine transform image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#transparent">-transparent <em class="option">color</em></a></td>
+    <td valign="top">make this color transparent within the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#transpose">-transpose</a></td>
+    <td valign="top">flip image in the vertical direction and rotate 90 degrees</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#transparent-color">-transparent-color <em class="option">color</em></a></td>
+    <td valign="top">transparent color</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#treedepth">-treedepth <em class="option">value</em></a></td>
+    <td valign="top">color tree depth</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#trim">-trim</a></td>
+    <td valign="top">trim image edges</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#type">-type <em class="option">type</em></a></td>
+    <td valign="top">image type</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#units">-units <em class="option">type</em></a></td>
+    <td valign="top">the units of image resolution</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#unsharp">-unsharp <em class="option">geometry</em></a></td>
+    <td valign="top">sharpen the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#verbose">-verbose</a></td>
+    <td valign="top">print detailed information about the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#version">-version</a></td>
+    <td valign="top">print version information</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#view">-view</a></td>
+    <td valign="top">FlashPix viewing transforms</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#virtual-pixel">-virtual-pixel <em class="option">method</em></a></td>
+    <td valign="top">access method for pixels outside the boundaries of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#white-point">-white-point <em class="option">point</em></a></td>
+    <td valign="top">chromaticity white point</td>
+  </tr>
+
+  </tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

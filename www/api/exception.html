@@ -1,0 +1,472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Dealing with Exceptions</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#AcquireExceptionInfo">AcquireExceptionInfo</a> &bull; <a href="#ClearMagickException">ClearMagickException</a> &bull; <a href="#CatchException">CatchException</a> &bull; <a href="#DestroyExceptionInfo">DestroyExceptionInfo</a> &bull; <a href="#GetExceptionInfo">GetExceptionInfo</a> &bull; <a href="#GetExceptionMessage">GetExceptionMessage</a> &bull; <a href="#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> &bull; <a href="#InheritException">InheritException</a> &bull; <a href="#MagickError">MagickError</a> &bull; <a href="#MagickFatalError">MagickFatalError</a> &bull; <a href="#MagickWarning">MagickWarning</a> &bull; <a href="#SetErrorHandler">SetErrorHandler</a> &bull; <a href="#SetFatalErrorHandler">SetFatalErrorHandler</a> &bull; <a href="#SetWarningHandler">SetWarningHandler</a> &bull; <a href="#ThrowException">ThrowException</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p></ol>
+
+<p>The format of the AcquireExceptionInfo method is:</p>
+
+<pre class="code">
+  ExceptionInfo *AcquireExceptionInfo(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="ClearMagickException">ClearMagickException</a></h2>
+<div class="doc-section">
+
+<p>ClearMagickException() clears any exception that may not have been caught yet.</p></ol>
+
+<p>The format of the ClearMagickException method is:</p>
+
+<pre class="code">
+  ClearMagickException(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>the exception info.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="CatchException">CatchException</a></h2>
+<div class="doc-section">
+
+<p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p></ol>
+
+<p>The format of the CatchException method is:</p>
+
+<pre class="code">
+  CatchException(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>the exception info.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
+<div class="doc-section">
+
+<p>DestroyExceptionInfo() deallocates memory associated with an exception.</p></ol>
+
+<p>The format of the DestroyExceptionInfo method is:</p>
+
+<pre class="code">
+  ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>the exception info.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="GetExceptionInfo">GetExceptionInfo</a></h2>
+<div class="doc-section">
+
+<p>GetExceptionInfo() initializes an exception to default values.</p></ol>
+
+<p>The format of the GetExceptionInfo method is:</p>
+
+<pre class="code">
+  GetExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>the exception info.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="GetExceptionMessage">GetExceptionMessage</a></h2>
+<div class="doc-section">
+
+<p>GetExceptionMessage() returns the error message defined by the specified error code.</p></ol>
+
+<p>The format of the GetExceptionMessage method is:</p>
+
+<pre class="code">
+  char *GetExceptionMessage(const int error)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>error</h5>
+<ol><p>the error code.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
+<div class="doc-section">
+
+<p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p></ol>
+
+<p>The format of the GetLocaleExceptionMessage method is:</p>
+
+<pre class="code">
+  const char *GetLocaleExceptionMessage(const ExceptionType severity,
+    const char *tag)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>severity</h5>
+<ol><p>the severity of the exception.</p></ol>
+
+<h5>tag</h5>
+<ol><p>the message tag.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="InheritException">InheritException</a></h2>
+<div class="doc-section">
+
+<p>InheritException() inherits an exception from a related exception.</p></ol>
+
+<p>The format of the InheritException method is:</p>
+
+<pre class="code">
+  InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>the exception info.</p></ol>
+
+<h5>relative</h5>
+<ol><p>the related exception info.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="MagickError">MagickError</a></h2>
+<div class="doc-section">
+
+<p>MagickError() calls the exception handler methods with an error reason.</p></ol>
+
+<p>The format of the MagickError method is:</p>
+
+<pre class="code">
+  void MagickError(const ExceptionType error,const char *reason,
+    const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>Specifies the numeric error category.</p></ol>
+
+<h5>reason</h5>
+<ol><p>Specifies the reason to display before terminating the program.</p></ol>
+
+<h5>description</h5>
+<ol><p>Specifies any description to the reason.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="MagickFatalError">MagickFatalError</a></h2>
+<div class="doc-section">
+
+<p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p></ol>
+
+<p>The format of the MagickError method is:</p>
+
+<pre class="code">
+  void MagickFatalError(const ExceptionType error,const char *reason,
+    const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>Specifies the numeric error category.</p></ol>
+
+<h5>reason</h5>
+<ol><p>Specifies the reason to display before terminating the program.</p></ol>
+
+<h5>description</h5>
+<ol><p>Specifies any description to the reason.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="MagickWarning">MagickWarning</a></h2>
+<div class="doc-section">
+
+<p>MagickWarning() calls the warning handler methods with a warning reason.</p></ol>
+
+<p>The format of the MagickWarning method is:</p>
+
+<pre class="code">
+  void MagickWarning(const ExceptionType warning,const char *reason,
+    const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>warning</h5>
+<ol><p>the warning severity.</p></ol>
+
+<h5>reason</h5>
+<ol><p>Define the reason for the warning.</p></ol>
+
+<h5>description</h5>
+<ol><p>Describe the warning.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="SetErrorHandler">SetErrorHandler</a></h2>
+<div class="doc-section">
+
+<p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p></ol>
+
+<p>The format of the SetErrorHandler method is:</p>
+
+<pre class="code">
+  ErrorHandler SetErrorHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>handler</h5>
+<ol><p>the method to handle errors.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
+<div class="doc-section">
+
+<p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p></ol>
+
+<p>The format of the SetErrorHandler method is:</p>
+
+<pre class="code">
+  ErrorHandler SetErrorHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>handler</h5>
+<ol><p>the method to handle errors.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="SetWarningHandler">SetWarningHandler</a></h2>
+<div class="doc-section">
+
+<p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p></ol>
+
+<p>The format of the SetWarningHandler method is:</p>
+
+<pre class="code">
+  ErrorHandler SetWarningHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>handler</h5>
+<ol><p>the method to handle warnings.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
+_8c.html" target="source" name="ThrowException">ThrowException</a></h2>
+<div class="doc-section">
+
+<p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p></ol>
+
+<p>The format of the ThrowException method is:</p>
+
+<pre class="code">
+  MagickBooleanType ThrowException(ExceptionInfo *exception,
+    const ExceptionType severity,const char *reason,
+    const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>exception</h5>
+<ol><p>the exception info.</p></ol>
+
+<h5>severity</h5>
+<ol><p>the severity of the exception.</p></ol>
+
+<h5>reason</h5>
+<ol><p>the reason for the exception.</p></ol>
+
+<h5>description</h5>
+<ol><p>the exception description.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

@@ -1,0 +1,383 @@
+This file records noteworthy changes in Magick++.
+
+(5.5.2)
+  * Added adaptiveThreshold() method.
+  * Added colorMapSize() method.
+  * Added DrawablePushClipPath, DrawablePopClipPath, and DrawableClipPath.
+
+(5.5.1)
+  * Fixed a Color memory allocation problem which became evident when
+    using the Magick++ DLL.
+  * Completed implementation of Image textEncoding() method.  Oops!
+
+(5.4.9)
+  * Added the Image textEncoding() method and an encoding option to
+    DrawableText to support specifying "UTF-8" (Unicode) text encoding.
+  * Added the Image compare() method to support comparing two similar
+    images and obtaining error values.
+  * Magick++ compiles as a DLL under Visual C++ 7.0.
+
+(5.4.8)
+  * The image type() method now also specifies the output image type
+    to use while writing.
+  * Added a profile() method to Image to support adding, removing,
+    and retrieving named embedded application profiles.
+  * Magick++ compiles as a DLL under Visual C++ 6.0.
+
+(5.4.7)
+  * No changes to report.
+
+(5.4.6)
+  * Magick++ library no longer depends on C++ iostreams APIs.
+  * Added DrawableTextUnderColor class to set text underbox color.
+
+(5.4.5)
+  * Drawable classes have been re-written to use ImageMagick's draw.h
+    APIs.
+  * Fixed a nasty bug when reporting some forms of errors.  The bug
+    was causing an exception in error.c.
+  * Template API implementation cleanup.
+  * Rationalized some parameter types.
+  * New method, Pixels::getConst() to obtain read-only pixels.
+  * DrawableDashArray() prefers an array of type 'double' rather than
+    'unsigned int'.  Please use the new form.
+  * Composite images are output as embedded inlined Base64 when
+    preparing MVG data.
+  * Blob class supports encoding and decoding Base64 data.
+  * New method, Image::ping to ping a Blob.
+
+(5.4.4)
+  * Fixed a bug in DrawableDashArray.
+  * Numerous consistency improvements based on findings from Gimpel lint.
+  * Added endian method to Image, and endianImage class to STL.h in
+    order to support setting endian option for formats which support
+    the notion (e.g. TIFF).
+  * DrawableCompositeImage was not working.  Now it does.
+
+(5.4.3)
+  * Support selecting fonts via font-family, font-style, font-weight,
+    and font-stretch via the DrawableFont class.
+  * CoderInfo API change.  MatchType is scoped to CoderInfo class.
+  * Bugfix for Magick::Exception memory leak.
+  * Bugfix for DrawableGravity class (had stopped working).
+  * Bugfix for Image antiAlias() method (wasn't working).
+  * Reimplemented image registration code (which passes image via
+    DrawableCompositeImage).
+
+(5.4.2)
+  * TypeMetric class revamped to match current ImageMagick type metrics
+    definition.
+  * Fixed possible stack corruption on some architectures when returning
+    Color as a string.
+  * DrawableCompositeImage can be constructed based on an Image in memory
+    rather than just a filename.
+  * Added Drawable objects (DrawablePushPattern & DrawablePopPattern)
+    for definining arbitrary named patterns to be used for stroke and fill.
+  * Added Image strokePattern() and fillPattern() methods for specifying
+    image to use while drawing stroked object outlines and while filling
+    objects, respectively.
+
+(5.4.1)
+  * Fixed memory leak in Image::draw().
+
+  * Automagically cleans up ImageMagick allocations prior to process
+    exit to avoid annoying memory leak tools.
+
+(5.4.0)
+  * Fixed bug when scaling from Quantum to double in derived Color classes.
+
+  * Pass all input parameter strings as 'const std::string &' in Color class.
+
+  * Added support for obtaining pixel indexes.
+
+  * Implemented support for read-only pixels and pixel indexes.
+
+  * Added Image boundingBox() method to return smallest bounding box
+    enclosing non-border pixels.
+
+(5.3.9)
+  * New class, CoderInfo, to return information for a specified image
+    format as well as the coderInfoList() template function to return
+    the list of coders which match a specification.
+
+  * User now may tell Blob updateNoCopy() what memory system (C or C++)
+    the memory was allocated from.  Used to assume the C++ allocator.
+    This resolves a bug on some platforms (e.g. Windows).
+
+  * Added Image 'opacity' method (and STL opacityImage()) to set, or
+    attenuate, image opacity.
+
+  * Added Image 'type' method (and STL typeImage()) to set image
+    representation type.
+
+  * Image depth method now adjusts pixels to match specified image depth,
+    and reports depth based on current image pixels.
+
+(5.3.8)
+  * New class 'TypeMetric' to contain font type metrics.
+
+  * New Image method 'fontTypeMetrics()' to obtain font type metrics.
+
+  * Image colorMap method automatically extends the colormap if index
+    is past the end of the current colormap.
+
+  * Added clipMask method to add a clip mask to the current
+    image. Prevents modification to image pixels wherever the
+    associated clip mask image is tranparent.
+
+  * Documented methods which were added previously, but left
+    undocumented.
+
+(5.3.7)
+  * No changes.
+
+(5.3.6)
+  * Adjusted parameters to 'edge' and 'medianFilter' to match
+    equivalent libMagick functions.
+  * Fixed a Montage bug which was not allowing color options to be unset.
+  * Montage defaults are no longer taken from first Image in list.
+  * Magick++ demo output looks like PerlMagick demo output again.
+
+(5.3.5)
+  * Default radius and sigma parameters were changed on the blur,
+    charcoal, emboss, and sharpen methods to match ImageMagick defaults.
+  * Fixes to Magick++ demos to restore appearance.
+  * Added shave method for shaving edges from image (a form of crop).
+
+(5.3.1-5.3.4)
+  * No changes.
+
+(5.3.0)
+  * Released with ImageMagick 5.3.0
+  * Bug fix. Under certain conditions, several annotation options
+    were being reset.
+
+(5.2.9)
+  * Released with ImageMagick 5.2.9
+  * Added fillRule method to Image class.
+
+(5.2.8)
+  * Released with ImageMagick 5.2.8
+  * Added 'fill' and 'stroke' methods to Montage class.
+  * Added 'erase' and 'strokeAntiAlias' methods to Image class.
+  * Renamed Image class 'layer' method to 'channel'.
+  * Support supplying composition rule to DrawableCompositeImage.
+
+(5.2.7)
+  * Released with ImageMagick 5.2.7
+  * Added convolve and unsharpmask methods to Image.
+  * Added deconstructImages and mosaicImages template functions.
+  * Fixed handling of geometry parameter to annotate method.
+
+(5.2.6)
+  * Released with ImageMagick 5.2.6.
+  * Added support for a SVG-style dash array and dash offset
+    parameters (for drawing dashed lines).
+  * Added support for setting the shape to be used at the end of open
+    subpaths when they are stroked.
+  * Added support for setting the shape to be used at the corners of
+    paths (or other vector shapes) when they are stroked.
+  * Added support for setting extension limit for miter joins.
+  * Rotate text the proper way using an affine transform.
+
+(5.2.5)
+  * Released with ImageMagick 5.2.5.
+  * Completely re-wrote drawable object classes in order to support
+    all current ImageMagick drawing capabilities using a list-based paradigm.
+    New drawing capabilities include coordinate transformations and the
+    currently undocumented (but quite powerful) path capabilities.
+
+(5.2.4)
+  * Released with ImageMagick 5.2.4.
+  * Magick++ is now built by the regular ImageMagick build process.
+    when --with-magick_plus_plus is specified to configure.
+  * Fixed bug with setting text drawing options.
+  * Fixed API bug with colorize.  Options adjusted to match ImageMagick
+    API change (API change was long ago).
+  * Library compiles using Sun Workshop 5.0 compiler.  Linkage problems with
+    some demos/tests due to libtool-related compiler/linker bug.
+  * Compiles using Sun Forte 6.0 compiler.
+
+(5.2.3)
+  * Switched to new release numbering (match ImageMagick release number)
+  * Released with ImageMagick 5.2.3.
+  * Fixed bug in which the Image read method was not reporting
+    warnings (only errors).
+  * Parameter changes to blur, charcoal, emboss, and sharpen methods
+    of the Image class to match equivalent ImageMagick API changes.
+  * Parameter changes to blurImage, charcoalImage, embossImage, and
+    sharpenImage STL functions in order to match equivalent ImageMagick
+    API changes.
+
+(0.9.5)
+  * Released with ImageMagick 5.2.2.
+
+(0.9.4)
+  * Released with ImageMagick 5.2.1.
+  * Bugfix to the Pixels GetIndexes() method.
+  * Adapted to ImageMagick 5.2.1's revised matte channel interpretation.
+
+(0.9.3)
+  * Released with ImageMagick 5.2
+  * New class 'Pixels' to support low-level pixel access in image. New
+    API supports multiple pixel views into the same image.  Number of
+    available pixel views limited to the number of image rows + 1.
+  * Dramatically improved performance for text annotation and drawing.
+  * Fix text annotation bug which did not allow spaces in annotation text.
+  * Added gaussianBlurImage() method.
+  * Fixed bug in floodFillTexture().
+  * Re-worked error reporting methodology to use re-entrant error
+    reporting rather than the previous method (based on call-backs)
+    which required thread specific data.
+  * Should be thread-safe under Win32 now.
+
+(0.9.2)
+  * Released with ImageMagick 5.1.1
+  * Should be thread-safe when used with POSIX threads (pthreads).
+  * Added methods getPixels, setPixels, syncPixels, readPixels, and
+    writePixels, in order to provide low-level access to Image pixels.
+  * Bugfix: size method was setting Options size, but not Image rows
+    and columns.
+
+(0.9.1)
+  * Released with ImageMagick 5.1.0
+  * Added additional constructors, read, and write methods for BLOBs
+    to make BLOBs easier to use.
+  * Added the medianFilter() method to Image.
+  * Renamed transformColorSpace() to colorSpace() and added a
+    colorSpace() accessor method.
+  * Renamed psPageSize() to page(), which now properly returns the
+    actual attribute from the image, rather than the image options.
+    This is important in order to manipulate GIF animations.
+  * Bug fixes.
+
+(0.9)
+  * Ported to ImageMagick 5.0.
+  * BLOB sizes are now specified using size_t type.
+  * Rotate() no longer accepts sharpen or crop options.
+  * Shear() No longer accepts a crop option.
+  * FontPointsize() now takes a double.
+  * The condense, uncondense, and condensed methods have been removed
+    since ImageMagick 5.0 no longer uses run-length encoding.
+  * The quantizeError method has been removed since it never worked.
+  * The cacheThreshold method is added to set the threshold of
+    ImageMagick's image cache.
+
+(0.8.9)
+  * Released with ImageMagick 4.2.9
+  * Blob reference counting was totally broken, leading to a memory
+    leak if it was used.  Fixed by starting reference count from one
+    rather than zero.
+
+(0.8.8)
+  * Fixed a Image constructor bug when constructing from a Blob
+
+(0.8.7)
+  * Bugfix: condensed() was returning wrong state.
+
+(0.8.6)
+  * Color is now based on ImageMagick's RunlengthPacket structure (via a
+    pointer) so that it may eventually be used to represent an image
+    pixel.  This is currently a work in progress.
+
+(0.8.5)
+  * Headers are now installed under prefix/include/Magick++ on Unix
+    systems with the exception that Magick++.h is installed under
+    prefix/include as it was before.  Programs which include Magick++.h
+    (the documented approach) should not be impacted.
+  * Image constructors to construct an image from a BLOB.
+  * Image read and write methods to decode and encode images stored in a
+    BLOB.  This allows reading/writing image "files" from/to memory rather
+    than a traditional file.
+
+(0.8.4)
+  * New mapImages algorithm maps a sequence of images to the colormap of
+    a provided image.
+  * New quantizeImages algorithm computes and applies a common colormap
+    to a sequence of images.
+
+(0.8.3)
+  * Ported to ImageMagick 4.2.6.
+  * Blob supports default constructor.
+  * New Blob method updateNoCopy() to support efficient initialization by
+    derived class.
+
+(0.8.2)
+  * Uses libtool 1.3 to build library under Unix and Cygwin (static lib only).
+  * Added Blob class to support supplying formatted binary data to methods.
+  * Added support for setting ICC and IPTC profiles from a binary BLOB.
+  * Added support for transformations of image data to/from alternate
+    colorspace (e.g. CYMK).
+  * Added support for 'pinging' an image (get image dimensions/size quickly).
+  * Added 'uncondense' method to de-compress in-memory image data.
+  * Added support for annotation using rotated text.
+
+(0.8.1)
+  * Added support for setting alpha in Magick::Color
+  * Set/get color alpha in Magick::Image::pixelColor() for DirectClass images.
+
+(0.8)
+  * Transitioned to Beta
+  * Improved Microsoft Visual C++ build environment.
+
+(0.7.4)
+  * Added animateImages() and displayImages() to MagickSTL.h.
+  * Added function objects to support setting image attributes.
+
+(0.7.3)
+  * Image::penTexture() now takes Image reference rather than
+    Image pointer.  Set Image to invalid using isValid(false)
+    to unset texture.
+  * Attribute methods that take Color, Geometry, Image, or string
+    arguments may now unset the attribute by setting the state of
+    the object to invalid using isValid(false), or the empty string
+    (in the case of string).  This allows full control over ImageMagick
+    attributes which are stored as C strings which may be set to NULL.
+  * Updated for ImageMagick 4.2.1
+
+(0.7.2)
+  * Added STL function object support for all Image manipulation
+    methods to support operating on all or part of the images
+    stored in an STL container.
+
+(0.7.1)
+  * Added Coordinate class and methods in Drawable to support x,y
+    coordinates.
+  * Changed coordinate parameters from unsigned int to double in Drawable.
+  * Changed polygon methods in Drawable to use STL list argument.
+  * Added STL list based draw method to Image.
+  * Changed Exception heirarchy to support Warning and Error sub-classes.
+    Most exception class names have changed.
+
+(0.7)
+  * Updated for ImageMagick 4.2.0
+  * Added support for flood-filling and drawing with texture.
+  * Montage supported.
+  * Oodles of bugs fixed.
+  * Implemented image attribute tests.
+  * Implemented PerlMagick 'demo' and 'shapes' demo programs in Magick++.
+  * Some parameters re-ordered due to experience from writing demo programs.
+
+(0.6)
+  * Initial support for integrating image-list oriented operations with
+    STL containers.
+
+(0.5)
+  * Compiles and runs under Unix using egcs release 1.1 or later.
+  * Compiles and runs under Windows using Visual C++ 5.X or later.
+  * Users of Magick++ API are not exposed to ImageMagick headers.
+  * Magick++ API is namespaced under "Magick".
+  * "Magick" prefix removed from object names.
+  * User options are now completely contained within Image object.
+    There is no longer a MagickOptions parameter to some methods.
+
+(0.1)
+  * All ImageMagick operations which operate on individual images are
+    supported.
+  * Image objects have value semantics, avoid unnecessary image
+    copies through the use of reference counting, and may be compared
+    via standard operators.
+  * Geometry, color, annotations, and user-options are supported by
+    separate classes.
+  * Errors are reported synchronously via C++ exceptions.
+

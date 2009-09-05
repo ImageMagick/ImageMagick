@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Paint on an Image</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, paint, on, an, image, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+</div>
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#FloodfillPaintImage">FloodfillPaintImage</a> &bull; <a href="#OilPaintImage">OilPaintImage</a> &bull; <a href="#OpaquePaintImage">OpaquePaintImage</a> &bull; <a href="#TransparentPaintImage">TransparentPaintImage</a> &bull; <a href="#TransparentPaintImageChroma">TransparentPaintImageChroma</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/paint
+_8c.html" target="source" name="FloodfillPaintImage">FloodfillPaintImage</a></h2>
+<div class="doc-section">
+
+<p>FloodfillPaintImage() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p></ol>
+
+<p>By default target must match a particular pixel color exactly. However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+<p>The format of the FloodfillPaintImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType FloodfillPaintImage(Image *image,
+    const ChannelType channel,const DrawInfo *draw_info,
+    const MagickPixelPacket target,const long x_offset,const long y_offset,
+    const MagickBooleanType invert)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel(s).</p></ol>
+
+<h5>draw_info</h5>
+<ol><p>the draw info.</p></ol>
+
+<h5>target</h5>
+<ol><p>the RGB value of the target color.</p></ol>
+
+<h5>x_offset,y_offset</h5>
+<ol><p>the starting location of the operation.</p></ol>
+
+<h5>invert</h5>
+<ol><p>paint any pixel that does not match the target color.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/paint
+_8c.html" target="source" name="OilPaintImage">OilPaintImage</a></h2>
+<div class="doc-section">
+
+<p>OilPaintImage() applies a special effect filter that simulates an oil painting.  Each pixel is replaced by the most frequent color occurring in a circular region defined by radius.</p></ol>
+
+<p>The format of the OilPaintImage method is:</p>
+
+<pre class="code">
+  Image *OilPaintImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>radius</h5>
+<ol><p>the radius of the circular neighborhood.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/paint
+_8c.html" target="source" name="OpaquePaintImage">OpaquePaintImage</a></h2>
+<div class="doc-section">
+
+<p>OpaquePaintImage() changes any pixel that matches color with the color defined by fill.</p></ol>
+
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p></ol>
+
+<p>The format of the OpaquePaintImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType OpaquePaintImage(Image *image,
+    const PixelPacket *target,const PixelPacket *fill,
+    const MagickBooleanType invert)
+  MagickBooleanType OpaquePaintImageChannel(Image *image,
+    const ChannelType channel,const PixelPacket *target,
+    const PixelPacket *fill,const MagickBooleanType invert)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel(s).</p></ol>
+
+<h5>target</h5>
+<ol><p>the RGB value of the target color.</p></ol>
+
+<h5>fill</h5>
+<ol><p>the replacement color.</p></ol>
+
+<h5>invert</h5>
+<ol><p>paint any pixel that does not match the target color.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/paint
+_8c.html" target="source" name="TransparentPaintImage">TransparentPaintImage</a></h2>
+<div class="doc-section">
+
+<p>TransparentPaintImage() changes the opacity value associated with any pixel that matches color to the value defined by opacity.</p></ol>
+
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p></ol>
+
+<p>The format of the TransparentPaintImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TransparentPaintImage(Image *image,
+    const MagickPixelPacket *target,const Quantum opacity,
+    const MagickBooleanType invert)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>target</h5>
+<ol><p>the target color.</p></ol>
+
+<h5>opacity</h5>
+<ol><p>the replacement opacity value.</p></ol>
+
+<h5>invert</h5>
+<ol><p>paint any pixel that does not match the target color.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/paint
+_8c.html" target="source" name="TransparentPaintImageChroma">TransparentPaintImageChroma</a></h2>
+<div class="doc-section">
+
+<p>TransparentPaintImageChroma() changes the opacity value associated with any pixel that matches color to the value defined by opacity.</p></ol>
+
+<p>As there is one fuzz value for the all the channels, the TransparentPaintImage() API is not suitable for the operations like chroma, where the tolerance for similarity of two color component (RGB) can be different, Thus we define this method take two target pixels (one low and one hight) and all the pixels of an image which are lying between these two pixels are made transparent.</p></ol>
+
+<p>The format of the TransparentPaintImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TransparentPaintImage(Image *image,
+    const MagickPixelPacket *low,const MagickPixelPacket *hight,
+    const Quantum opacity,const MagickBooleanType invert)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>low</h5>
+<ol><p>the low target color.</p></ol>
+
+<h5>high</h5>
+<ol><p>the high target color.</p></ol>
+
+<h5>opacity</h5>
+<ol><p>the replacement opacity value.</p></ol>
+
+<h5>invert</h5>
+<ol><p>paint any pixel that does not match the target color.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

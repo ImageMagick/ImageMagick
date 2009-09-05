@@ -1,0 +1,1517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale [
+<!ELEMENT locale (exception)>
+<!ELEMENT exception (ANY)+>
+<!ELEMENT warning (message)+>
+<!ELEMENT error (message)+>
+<!ELEMENT fatalerror (message)+>
+<!ELEMENT message (#PCDATA)>
+<!ATTLIST locale name CDATA #REQUIRED>
+<!ATTLIST message name CDATA #REQUIRED>
+]>
+<locale name="english">
+  <exception>
+    <blob>
+      <error>
+        <message name="UnableToOpenBlob">
+          unable to open image
+        </message>
+        <message name="UnableToOpenFile">
+          unable to open file
+        </message>
+        <message name="UnableToReadBlob">
+          unable to read blob
+        </message>
+        <message name="UnableToWriteBlob">
+          unable to write blob
+        </message>
+        <message name="UnrecognizedImageFormat">
+          unrecognized image format
+        </message>
+        <message name="ZeroLengthBlobNotPermitted">
+          zero-length blob not permitted
+        </message>
+      </error>
+    </blob>
+    <cache>
+      <error>
+        <message name="CacheResourcesExhausted">
+          Cache resources exhausted
+        </message>
+        <message name="InconsistentPersistentCacheDepth">
+          inconsistent persistent cache depth
+        </message>
+        <message name="NoPixelsDefinedInCache">
+          no pixels defined in cache
+        </message>
+        <message name="PixelCacheIsNotOpen">
+          pixel cache is not open
+        </message>
+        <message name="PixelsAreNotAuthentic">
+          pixels are not authentic
+        </message>
+        <message name="UnableToCloneCache">
+          unable to clone cache
+        </message>
+        <message name="UnableToExtendCache">
+          unable to extend cache
+        </message>
+        <message name="UnableToGetCacheNexus">
+          unable to get cache nexus
+        </message>
+        <message name="UnableToOpenCache">
+          unable to open cache
+        </message>
+        <message name="UnableToPersistPixelCache">
+          unable to persist pixel cache
+        </message>
+        <message name="UnableToReadPixelCache">
+          unable to read pixel cache
+        </message>
+      </error>
+      <fatalerror>
+        <message name="UnableToAcquireCacheView">
+          unable to acquire cache view
+        </message>
+      </fatalerror>
+    </cache>
+    <coder>
+      <error>
+        <message name="ColormapTypeNotSupported">
+          colormap type not supported
+        </message>
+        <message name="ColorspaceModelIsNotSupported">
+          colorspace model is not supported
+        </message>
+        <message name="CompressNotSupported">
+          compression not supported
+        </message>
+        <message name="DataEncodingSchemeIsNotSupported">
+          data encoding scheme is not supported
+        </message>
+        <message name="DataStorageTypeIsNotSupported">
+          data storage type is not supported
+        </message>
+        <message name="DeltaPNGNotSupported">
+          delta-PNG is not supported
+        </message>
+        <message name="EncryptedWPGImageFileNotSupported">
+          encrypted WPG image file not supported
+        </message>
+        <message name="FractalCompressNotSupported">
+          Fractal compression not supported
+        </message>
+        <message name="ImageColumnOrRowSizeIsNotSupported">
+          image column or row size is not supported
+        </message>
+        <message name="ImageDoesNotHaveAClipMask">
+          image does not have a clip mask
+        </message>
+        <message name="ImageDoesNotHaveAAlphaChannel">
+          image does not have a alpha channel
+        </message>
+        <message name="ImageDoesNotHaveAThumbnail">
+          image does not have a EXIF thumbnail
+        </message>
+        <message name="ImageIsNotTiled">
+          image is not tiled
+        </message>
+        <message name="IrregularChannelGeometryNotSupported">
+          irregular channel geometry not supported
+        </message>
+        <message name="JNGCompressNotSupported">
+          JNG compression not supported
+        </message>
+        <message name="JPEGCompressNotSupported">
+          JPEG compression not supported
+        </message>
+        <message name="JPEGEmbeddingFailed">
+          JPEG embedding failed
+        </message>
+        <message name="LocationTypeIsNotSupported">
+          Location type is not supported
+        </message>
+        <message name="MapStorageTypeIsNotSupported">
+          Map storage type is not supported
+        </message>
+        <message name="MultidimensionalMatricesAreNotSupported">
+          Multi-dimensional matrices are not supported
+        </message>
+        <message name="MultipleRecordListNotSupported">
+          Multiple record list not supported
+        </message>
+        <message name="NoBitmapOnClipboard">
+          no bitmap on clipboard
+        </message>
+        <message name="NoAPP1DataIsAvailable">
+          no APP1 data is available
+        </message>
+        <message name="No8BIMDataIsAvailable">
+          no 8BIM data is available
+        </message>
+        <message name="NoColorProfileIsAvailable">
+          no color profile is available
+        </message>
+        <message name="NoDataReturned">
+          no data returned
+        </message>
+        <message name="NoImageVectorGraphics">
+          no image vector graphics; unable to generate SVG
+        </message>
+        <message name="NoIPTCProfileAvailable">
+          no IPTC profile available
+        </message>
+        <message name="NumberOfImagesIsNotSupported">
+          number of images is not supported
+        </message>
+        <message name="OnlyContinuousTonePictureSupported">
+          only continuous tone picture supported
+        </message>
+        <message name="OnlyLevelZerofilesSupported">
+          only level zero files Supported
+        </message>
+        <message name="PNGCompressNotSupported">
+          PNG compression not supported
+        </message>
+        <message name="RLECompressNotSupported">
+          RLE compression not supported
+        </message>
+        <message name="UnableToCopyProfile">
+          unable to copy profile
+        </message>
+        <message name="UnableToCreateBitmap">
+          unable to create bitmap
+        </message>
+        <message name="UnableToCreateADC">
+          unable to create a DC
+        </message>
+        <message name="UnableToDecompressImage">
+          unable to decompress image
+        </message>
+        <message name="UnableToWriteMPEGParameters">
+          unable to write MPEG parameters
+        </message>
+        <message name="UnableToZipCompressImage">
+          unable to zip-compress image
+        </message>
+        <message name="ZIPCompressNotSupported">
+          ZIP compression not supported
+        </message>
+      </error>
+      <warning>
+        <message name="LosslessToLossyJPEGConversion">
+          Lossless to lossy JPEG conversion
+        </message>
+      </warning>
+    </coder>
+    <configure>
+      <error>
+        <message name="IncludeElementNestedTooDeeply">
+          include element nested too deeply
+        </message>
+      </error>
+      <warning>
+        <message name="UnableToOpenConfigureFile">
+          unable to access configure file
+        </message>
+        <message name="UnableToOpenModuleFile">
+          unable to open module file
+        </message>
+      </warning>
+    </configure>
+    <corrupt>
+      <image>
+        <error>
+          <message name="AnErrorHasOccurredReadingFromFile">
+            An error has occurred reading from file
+          </message>
+          <message name="AnErrorHasOccurredWritingToFile">
+            An error has occurred writing to file
+          </message>
+          <message name="CipherSupportNotEnabled">
+            cipher support not enabled
+          </message>
+          <message name="ColormapExceeds256Colors">
+            Colormap exceeded 256 colors
+          </message>
+          <message name="CorruptImage">
+            Corrupt image
+          </message>
+          <message name="FileFormatVersionMismatch">
+            file format version mismatch
+          </message>
+          <message name="ImageDepthNotSupported">
+            image depth not supported
+          </message>
+          <message name="ImageFileDoesNotContainAnyImageData">
+            image file does not contain any image data
+          </message>
+          <message name="ImageTypeNotSupported">
+            image type not supported
+          </message>
+          <message name="ImproperImageHeader">
+            Improper image header
+          </message>
+          <message name="InsufficientImageDataInFile">
+            Insufficient image data in file
+          </message>
+          <message name="InvalidColormapIndex">
+            Invalid colormap index
+          </message>
+          <message name="InvalidPixel">
+            Invalid pixel
+          </message>
+          <message name="LengthAndFilesizeDoNotMatch">
+            Length and filesize do not match
+          </message>
+          <message name="MaximumChannelsExceeded">
+            maximum channels exceeded
+          </message>
+          <message name="NegativeOrZeroImageSize">
+            Negative or zero image size
+          </message>
+          <message name="NonOS2HeaderSizeError">
+            Non OS2 BMP header size less than 40
+          </message>
+          <message name="NotEnoughPixelData">
+            Not enough pixel data
+          </message>
+          <message name="NotEnoughTiles">
+            Not enough tiles found in level
+          </message>
+          <message name="TooMuchImageDataInFile">
+            Too much image data in file
+          </message>
+          <message name="StaticPlanesValueNotEqualToOne">
+            Static planes value not equal to 1
+          </message>
+          <message name="UnableToReadExtensionBlock">
+            unable to read extension block
+          </message>
+          <message name="UnableToReadImageHeader">
+            unable to read image header
+          </message>
+          <message name="UnableToReadImageData">
+            unable to read image data
+          </message>
+          <message name="UnableToRunlengthDecodeImage">
+            unable to runlength decode image
+          </message>
+          <message name="UnableToUncompressImage">
+            unable to uncompress image
+          </message>
+          <message name="UnexpectedEndOfFile">
+            Unexpected end-of-file
+          </message>
+          <message name="UnexpectedSamplingFactor">
+            Unexpected sampling factor
+          </message>
+          <message name="UnknownPatternType">
+            Unknown pattern type
+          </message>
+          <message name="UnrecognizedAlphaChannelType">
+            unrecognized alpha channel tpe
+          </message>
+          <message name="UnrecognizedBitsPerPixel">
+            unrecognized bits per pixel
+          </message>
+          <message name="UnrecognizedImageCompression">
+            unrecognized compression
+          </message>
+          <message name="UnrecognizedNumberOfColors">
+            unrecognized number of colors
+          </message>
+        </error>
+        <fatalerror>
+          <message name="UnableToPersistKey">
+            unable to persist key
+          </message>
+        </fatalerror>
+        <warning>
+          <message name="SkipToSyncByte">
+            Corrupt PCD image, skipping to sync byte
+          </message>
+        </warning>
+      </image>
+    </corrupt>
+    <delegate>
+      <error>
+        <message name="DelegateFailed">
+          Delegate failed
+        </message>
+        <message name="FailedToComputeOutputSize">
+          Failed to compute output size
+        </message>
+        <message name="FailedToRenderFile">
+          Failed to render file
+        </message>
+        <message name="FailedToScanFile">
+          Failed to scan file
+        </message>
+        <message name="NoTagFound">
+          no tag found
+        </message>
+        <message name="PCLDelegateFailed">
+          PCL delegate failed
+        </message>
+        <message name="PostscriptDelegateFailed">
+          Postscript delegate failed
+        </message>
+        <message name="UnableToCreateImage">
+          unable to create image
+        </message>
+        <message name="UnableToDecodeImageFile">
+          unable to decode image file
+        </message>
+        <message name="UnableToEncodeImageFile">
+          unable to encode image file
+        </message>
+        <message name="UnableToInitializeFPXLibrary">
+          unable to initialize FPX library
+        </message>
+        <message name="UnableToInitializeWMFLibrary">
+          unable to initialize WMF library
+        </message>
+        <message name="UnableToManageJP2Stream">
+          unable to manage JP2 stream
+        </message>
+        <message name="UnableToReadAspectRatio">
+          unable to read aspect ratio
+        </message>
+        <message name="UnableToReadSummaryInfo">
+          unable to read summary info
+        </message>
+        <message name="UnableToSetAffineMatrix">
+          unable to set affine matrix
+        </message>
+        <message name="UnableToSetAspectRatio">
+          unable to set aspect ratio
+        </message>
+        <message name="UnableToSetColorTwist">
+          unable to set color twist
+        </message>
+        <message name="UnableToSetContrast">
+          unable to set contrast
+        </message>
+        <message name="UnableToSetFilteringValue">
+          unable to set filtering value
+        </message>
+        <message name="UnableToSetImageTitle">
+          unable to set image title
+        </message>
+        <message name="UnableToSetJPEGLevel">
+          unable to set JPEG level
+        </message>
+        <message name="UnableToSetRegionOfInterest">
+          unable to set region of interest
+        </message>
+        <message name="UnableToSetSummaryInfo">
+          unable to set summary info
+        </message>
+        <message name="UnableToWriteSVGFormat">
+          unable to write SVG format
+        </message>
+        <message name="XPSDelegateFailed">
+          XPS delegate failed
+        </message>
+      </error>
+    </delegate>
+    <draw>
+      <error>
+        <message name="AlreadyPushingPatternDefinition">
+          Already pushing pattern definition
+        </message>
+        <message name="NonconformingDrawingPrimitiveDefinition">
+          Non-conforming drawing primitive definition
+        </message>
+        <message name="NotARelativeURL">
+          Not a relative URL
+        </message>
+        <message name="NotCurrentlyPushingPatternDefinition">
+          Not currently pushing pattern definition
+        </message>
+        <message name="SegmentStackOverflow">
+          Segment stack overflow
+        </message>
+        <message name="TooManyBezierCoordinates">
+          Too many bezier coordinates
+        </message>
+        <message name="UnableToPrint">
+          unable to print
+        </message>
+        <message name="UnbalancedGraphicContextPushPop">
+          unbalanced graphic context push-pop
+        </message>
+        <message name="URLNotFound">
+          URL not found
+        </message>
+      </error>
+    </draw>
+    <file>
+      <open>
+        <error>
+          <message name="UnableToCreateTemporaryFile">
+            unable to create temporary file
+          </message>
+          <message name="UnableToOpenFile">
+            unable to open file
+          </message>
+          <message name="UnableToWriteFile">
+            unable to write file
+          </message>
+        </error>
+      </open>
+    </file>
+    <image>
+      <error>
+        <message name="AngleIsDiscontinuous">
+          angle is discontinuous
+        </message>
+        <message name="ColormappedImageRequired">
+          Colormapped image required
+        </message>
+        <message name="ColorSeparatedImageRequired">
+          Color separated image required
+        </message>
+        <message name="ColorspaceColorProfileMismatch">
+          Color profile operates on another colorspace
+        </message>
+        <message name="ImageDepthNotSupported">
+          image depth not supported
+        </message>
+        <message name="ImageSequenceRequired">
+          image sequence is required
+        </message>
+        <message name="ImageSizeDiffers">
+          image size differs
+        </message>
+        <message name="LeftAndRightImageSizesDiffer">
+          left and right image sizes differ
+        </message>
+        <message name="NegativeOrZeroImageSize">
+          Negative or zero image size
+        </message>
+        <message name="NoImagesWereFound">
+          no images were found
+        </message>
+        <message name="NoImagesWereLoaded">
+          no images were loaded
+        </message>
+        <message name="TooManyClusters">
+          too many cluster
+        </message>
+        <message name="UnableToCreateColorTransform">
+          unable to create color transform
+        </message>
+        <message name="WidthOrHeightExceedsLimit">
+          Width or height exceeds limit
+        </message>
+      </error>
+    </image>
+    <missing>
+      <delegate>
+        <error>
+          <message name="DelegateLibrarySupportNotBuiltIn">
+            delegate library support not built-in
+          </message>
+          <message name="NoDecodeDelegateForThisImageFormat">
+            no decode delegate for this image format
+          </message>
+          <message name="NoEncodeDelegateForThisImageFormat">
+            no encode delegate for this image format
+          </message>
+        </error>
+        <warning>
+          <message name="DelegateLibrarySupportNotBuiltIn">
+            delegate library support not built-in
+          </message>
+          <message name="FreeTypeLibraryIsNotAvailable">
+            FreeType library is not available
+          </message>
+          <message name="LCMSLibraryIsNotAvailable">
+            LCMS color profile library is not available
+          </message>
+        </warning>
+      </delegate>
+    </missing>
+    <module>
+      <error>
+        <message name="ImageCoderSignatureMismatch">
+          image coder signature mismatch
+        </message>
+        <message name="ImageFilterSignatureMismatch">
+          image filter signature mismatch
+        </message>
+        <message name="UnableToLoadModule">
+          unable to load module
+        </message>
+        <message name="UnableToRegisterImageFormat">
+          unable to register image format
+        </message>
+      </error>
+      <fatalerror>
+        <message name="UnableToInitializeModuleLoader">
+          unable to initialize module loader
+        </message>
+      </fatalerror>
+      <warning>
+        <message name="UnableToCloseModule">
+          unable to close module
+        </message>
+      </warning>
+    </module>
+    <option>
+      <error>
+        <message name="ClutImageRequired">
+          color lookup table image required
+        </message>
+        <message name="CompositeImageRequired">
+          composite image required
+        </message>
+        <message name="DivideByZero">
+          divide by zero
+        </message>
+        <message name="FrameIsLessThanImageSize">
+          frame is less than image size
+        </message>
+        <message name="GeometryDimensionsAreZero">
+          geometry dimensions are zero
+        </message>
+        <message name="GeometryDoesNotContainImage">
+          geometry does not contain image
+        </message>
+        <message name="ImagesAreNotTheSameSize">
+          images are not the same size
+        </message>
+        <message name="ImageSizeMustExceedBevelWidth">
+          size must exceed bevel width
+        </message>
+        <message name="ImageSmallerThanRadius">
+          image smaller than radius
+        </message>
+        <message name="ImageWidthsOrHeightsDiffer">
+          image widths or heights differ
+        </message>
+        <message name="InvalidArgument">
+          invalid argument for option
+        </message>
+        <message name="InvalidGeometry">
+          invalid geometry
+        </message>
+        <message name="KernelWidthMustBeAnOddNumber">
+          kernel width must be an odd number
+        </message>
+        <message name="MapImageRequired">
+          map image required
+        </message>
+        <message name="MissingArgument">
+          option requires an argument
+        </message>
+        <message name="MissingAnImageFilename">
+          missing an image filename
+        </message>
+        <message name="MissingExpression">
+          missing expression
+        </message>
+        <message name="MissingNullSeparator">
+          Missing Null Image List Separator
+        </message>
+        <message name="MustSpecifyAnImageName">
+          Must specify an image name
+        </message>
+        <message name="MustSpecifyImageSize">
+          Must specify image size
+        </message>
+        <message name="NoBlobDefined">
+          no Binary Large OBjects defined
+        </message>
+        <message name="NoClipPathDefined">
+          no clip path defined
+        </message>
+        <message name="NoImagesDefined">
+          no images defined
+        </message>
+        <message name="NoImageVectorGraphics">
+          no image vector graphics
+        </message>
+        <message name="NoSuchImage">
+          no such image
+        </message>
+        <message name="NoSuchOption">
+          no such option
+        </message>
+        <message name="NonZeroWidthAndHeightRequired">
+          non-zero width and height required
+        </message>
+        <message name="NotEnoughParameters">
+          not enough parameters
+        </message>
+        <message name="ParenthesisNestedTooDeeply">
+          parenthesis nested too deeply
+        </message>
+        <message name="ReferenceImageRequired">
+          reference image required
+        </message>
+        <message name="ReferenceIsNotMyType">
+          reference is not my type
+        </message>
+        <message name="SteganoImageRequired">
+          stegano image required
+        </message>
+        <message name="StereoImageRequired">
+          stereo image required
+        </message>
+        <message name="SubimageSpecificationReturnsNoImages">
+          subimage specification returns no images
+        </message>
+        <message name="UnableToOpenFile">
+          unable to open file
+        </message>
+        <message name="UnableToParseExpression">
+          unable to parse expression
+        </message>
+        <message name="UnbalancedParenthesis">
+          unbalanced parenthesis
+        </message>
+        <message name="UnrecognizedAttribute">
+          unrecognized attribute
+        </message>
+        <message name="UnrecognizedChannelType">
+          unrecognized channel type
+        </message>
+        <message name="UnrecognizedColor">
+          unrecognized color
+        </message>
+        <message name="UnrecognizedColorspace">
+          unrecognized image colorspace
+        </message>
+        <message name="UnrecognizedComposeOperator">
+          unrecognized compose operator
+        </message>
+        <message name="UnrecognizedCompressType">
+          unrecognized compress type
+        </message>
+        <message name="UnrecognizedDisposeMethod">
+          unrecognized dispose method
+        </message>
+        <message name="UnrecognizedDistortMethod">
+          unrecognized distortion method
+        </message>
+        <message name="UnrecognizedDitherMethod">
+          unrecognized dither method
+        </message>
+        <message name="UnrecognizedEndianType">
+          unrecognized endian type
+        </message>
+        <message name="UnrecognizedElement">
+          unrecognized element
+        </message>
+        <message name="UnrecognizedEvaluateOperator">
+          unrecognized evaluate operator
+        </message>
+        <message name="UnrecognizedEventType">
+          unrecognized event type
+        </message>
+        <message name="UnrecognizedFunction">
+          unrecognized function
+        </message>
+        <message name="UnrecognizedGravityType">
+          unrecognized gravity type
+        </message>
+        <message name="UnrecognizedImageCompression">
+          unrecognized image compression
+        </message>
+        <message name="UnrecognizedImageFilter">
+          unrecognized image filter
+        </message>
+        <message name="UnrecognizedImageFormat">
+          unrecognized image format
+        </message>
+        <message name="UnrecognizedImageMode">
+          unrecognized image mode
+        </message>
+        <message name="UnrecognizedImageOrientation">
+          unrecognized image orientation
+        </message>
+        <message name="UnrecognizedImageType">
+          unrecognized image type
+        </message>
+        <message name="UnrecognizedIntentType">
+          unrecognized intent type
+        </message>
+        <message name="UnrecognizedInterlaceType">
+          unrecognized interlace type
+        </message>
+        <message name="UnrecognizedInterpolateMethod">
+          unrecognized interpolate method
+        </message>
+        <message name="UnrecognizedListType">
+          unrecognized list type
+        </message>
+        <message name="UnrecognizedMetricType">
+          unrecognized metric type
+        </message>
+        <message name="UnrecognizedModeType">
+          unrecognized mode type
+        </message>
+        <message name="UnrecognizedOption">
+          unrecognized option
+        </message>
+        <message name="UnrecognizedPerlMagickMethod">
+          unrecognized PerlMagick method
+        </message>
+        <message name="UnrecognizedPixelMap">
+          unrecognized pixel map
+        </message>
+        <message name="UnrecognizedPreviewType">
+          unrecognized preview type
+        </message>
+        <message name="UnrecognizedResourceType">
+          unrecognized resource type
+        </message>
+        <message name="UnrecognizedSparseColorMethod">
+          unrecognized sparse color method
+        </message>
+        <message name="UnrecognizedStorageType">
+          unrecognized storage type
+        </message>
+        <message name="UnrecognizedStretchType">
+          unrecognized stretch type
+        </message>
+        <message name="UnrecognizedType">
+          unrecognized type
+        </message>
+        <message name="UnrecognizedUnitsType">
+          unrecognized units type
+        </message>
+        <message name="UnrecognizedVirtualPixelMethod">
+          unrecognized virtual pixel method
+        </message>
+        <message name="XmlInvalidAttribute">
+          XML invalid attribute
+        </message>
+        <message name="XmlInvalidContent">
+          XML invalid content
+        </message>
+        <message name="XmlMissingAttribute">
+          XML missing required attribute
+        </message>
+        <message name="XmlMissingContent">
+          XML missing required content
+        </message>
+        <message name="XmlMissingElement">
+          XML missing required element
+        </message>
+      </error>
+      <fatalerror>
+        <message name="MissingAnImageFilename">
+          missing an image filename
+        </message>
+        <message name="TruncatedFilename">
+          image filename truncated
+        </message>
+        <message name="UnrecognizedColormapType">
+          unrecognized colormap type
+        </message>
+        <message name="UnrecognizedColorspaceType">
+          unrecognized colorspace type
+        </message>
+        <message name="UnrecognizedEndianType">
+          unrecognized endian type
+        </message>
+        <message name="UnrecognizedImageCompressionType">
+          unrecognized compression type
+        </message>
+        <message name="UnrecognizedImageType">
+          unrecognized image type
+        </message>
+        <message name="UnrecognizedInterlaceType">
+          unrecognized interlace type
+        </message>
+        <message name="UnrecognizedListType">
+          unrecognized list type
+        </message>
+        <message name="UnrecognizedDisposeMethod">
+          unrecognized dispose method
+        </message>
+        <message name="UnrecognizedOption">
+          unrecognized option
+        </message>
+        <message name="UnrecognizedResourceType">
+          unrecognized resource type
+        </message>
+        <message name="UnrecognizedVirtualPixelMethod">
+          unrecognized virtual pixel method
+        </message>
+      </fatalerror>
+      <warning>
+        <message name="GeometryDoesNotContainImage">
+          geometry does not contain image
+        </message>
+        <message name="NoSuchElement">
+          no such element in list
+        </message>
+        <message name="UnrecognizedColor">
+          unrecognized color
+        </message>
+        <message name="ZeroTimeAnimation">
+          animation only contains zero time delays
+        </message>
+      </warning>
+    </option>
+    <registry>
+      <error>
+        <message name="UnableToGetRegistryID">
+          unable to get registry ID
+        </message>
+        <message name="UnableToSetRegistry">
+          unable to set registry
+        </message>
+      </error>
+    </registry>
+    <resource>
+      <limit>
+        <error>
+          <message name="PixelCacheAllocationFailed">
+            Pixel cache allocation failed
+          </message>
+          <message name="MemoryAllocationFailed">
+            Memory allocation failed
+          </message>
+          <message name="UnableToAcquireString">
+            unable to acquire string
+          </message>
+          <message name="UnableToAllocateColormap">
+            unable to allocate colormap
+          </message>
+          <message name="UnableToConvertFont">
+            unable to convert font
+          </message>
+          <message name="UnableToCreateColormap">
+            unable to create colormap
+          </message>
+          <message name="UnableToDitherImage">
+            unable to dither image
+          </message>
+          <message name="UnableToClonePackageInfo">
+            unable to clone package info
+          </message>
+          <message name="UnableToGetPackageInfo">
+            unable to get package info
+          </message>
+        </error>
+        <fatalerror>
+          <message name="UnableToAllocateDashPattern">
+            unable to allocate dash pattern
+          </message>
+          <message name="UnableToAllocateDerivatives">
+            unable to allocate derivates
+          </message>
+          <message name="UnableToAllocateGammaMap">
+            unable to allocate gamma map
+          </message>
+          <message name="UnableToAllocateImage">
+            unable to allocate image
+          </message>
+          <message name="UnableToAllocateImagePixels">
+            unable to allocate image pixels
+          </message>
+          <message name="UnableToInitializeSemaphore">
+            unable to initialize semaphore
+          </message>
+          <message name="UnableToAcquireString">
+            unable to allocate string
+          </message>
+          <message name="MemoryAllocationFailed">
+            Memory allocation failed
+          </message>
+          <message name="UnableToConcatenateString">
+            unable to concatenate string
+          </message>
+          <message name="UnableToConvertText">
+            unable to convert text
+          </message>
+          <message name="UnableToCreateColormap">
+            unable to create colormap
+          </message>
+          <message name="UnableToCloneImage">
+            unable to clone image
+          </message>
+          <message name="UnableToDisplayImage">
+            unable to display image
+          </message>
+          <message name="UnableToEscapeString">
+            unable to escape string
+          </message>
+          <message name="UnableToInterpretMSLImage">
+            unable to interpret MSL image
+          </message>
+        </fatalerror>
+        <warning>
+          <message name="MemoryAllocationFailed">
+            memory allocation failed
+          </message>
+        </warning>
+      </limit>
+    </resource>
+    <type>
+      <error>
+        <message name="FontSubstitutionRequired">
+          font substitution required
+        </message>
+        <message name="UnableToGetTypeMetrics">
+          unable to get type metrics
+        </message>
+        <message name="UnableToInitializeFreetypeLibrary">
+          unable to initialize freetype library
+        </message>
+        <message name="UnableToReadFont">
+          unable to read font
+        </message>
+        <message name="UnrecognizedFontEncoding">
+          unrecognized font encoding
+        </message>
+      </error>
+      <warning>
+        <message name="UnableToReadFont">
+          unable to read font
+        </message>
+      </warning>
+    </type>
+    <stream>
+      <error>
+        <message name="ImageDoesNotContainTheStreamGeometry">
+          image does not contain the stream geometry
+        </message>
+        <message name="NoStreamHandlerIsDefined">
+          no stream handler is defined
+        </message>
+        <message name="PixelCacheIsNotOpen">
+          Pixel cache is not open
+        </message>
+      </error>
+    </stream>
+    <wand>
+      <error>
+        <message name="InvalidColormapIndex">
+          invalid colormap index
+        </message>
+        <message name="ZeroRegionSize">
+          zero region size
+        </message>
+        <message name="UnableToOpenFile">
+          unable to open file
+        </message>
+        <message name="QuantumDepthMismatch">
+          Wand quantum depth does not match that of the core API
+        </message>
+        <message name="ContainsNoImages">
+          Wand contains no images
+        </message>
+        <message name="ContainsNoIterators">
+          Wand contains no iterators
+        </message>
+      </error>
+    </wand>
+    <xserver>
+      <error>
+        <message name="ColorIsNotKnownToServer">
+          color is not known to server
+        </message>
+        <message name="NoWindowWithSpecifiedIDExists">
+          no window with specified ID exists
+        </message>
+        <message name="StandardColormapIsNotInitialized">
+          standard Colormap is not initialized
+        </message>
+        <message name="UnableToConnectToRemoteDisplay">
+          unable to connect to remote display
+        </message>
+        <message name="UnableToCreateBitmap">
+          unable to create bitmap
+        </message>
+        <message name="UnableToCreateColormap">
+          unable to create colormap
+        </message>
+        <message name="UnableToCreatePixmap">
+          unable to create pixmap
+        </message>
+        <message name="UnableToCreateProperty">
+          unable to create property
+        </message>
+        <message name="UnableToCreateStandardColormap">
+          unable to create standard colormap
+        </message>
+        <message name="UnableToDisplayImageInfo">
+          unable to display image info
+        </message>
+        <message name="UnableToGetProperty">
+          unable to get property
+        </message>
+        <message name="UnableToGetStandardColormap">
+          unable to get Standard Colormap
+        </message>
+        <message name="UnableToGetVisual">
+          unable to get visual
+        </message>
+        <message name="UnableToGrabMouse">
+          unable to grab mouse
+        </message>
+        <message name="UnableToLoadFont">
+          unable to load font
+        </message>
+        <message name="UnableToMatchVisualToStandardColormap">
+          unable to match visual to Standard Colormap
+        </message>
+        <message name="UnableToOpenXServer">
+          unable to open X server
+        </message>
+        <message name="UnableToReadXWindowAttributes">
+          unable to read X window attributes
+        </message>
+        <message name="UnableToReadXWindowImage">
+          unable to read X window image
+        </message>
+        <message name="UnrecognizedColormapType">
+          unrecognized colormap type
+        </message>
+        <message name="UnrecognizedGravityType">
+          unrecognized gravity type
+        </message>
+        <message name="UnrecognizedVisualSpecifier">
+          unrecognized visual specifier
+        </message>
+      </error>
+      <fatalerror>
+        <message name="UnableToCreateCursor">
+          unable to create X cursor
+        </message>
+        <message name="UnableToCreateGraphicContext">
+          unable to create graphic context
+        </message>
+        <message name="UnableToCreateStandardColormap">
+          unable to create standard colormap
+        </message>
+        <message name="UnableToCreateTextProperty">
+          unable to create text property
+        </message>
+        <message name="UnableToCreateXWindow">
+          unable to create X window
+        </message>
+        <message name="UnableToCreateXImage">
+          unable to create X image
+        </message>
+        <message name="UnableToCreateXPixmap">
+          unable to create X pixmap
+        </message>
+        <message name="UnableToDisplayImage">
+          unable to display image
+        </message>
+        <message name="UnableToGetVisual">
+          unable to get visual
+        </message>
+        <message name="UnableToGetPixelInfo">
+          unable to get pixel info
+        </message>
+        <message name="UnableToLoadFont">
+          unable to load font
+        </message>
+        <message name="UnableToMakeXWindow">
+          unable to make X window
+        </message>
+        <message name="UnableToOpenXServer">
+          unable to open X server
+        </message>
+        <message name="UnableToViewFonts">
+          unable to view fonts
+        </message>
+      </fatalerror>
+      <warning>
+        <message name="UsingDefaultVisual">
+          using default visual
+        </message>
+        <message name="UnableToGetVisual">
+          unable to get visual
+        </message>
+      </warning>
+    </xserver>
+  </exception>
+  <monitor>
+    <AddNoise>
+      <message name="Image">
+        Add noise to image
+      </message>
+    </AddNoise>
+    <Append>
+      <message name="Image">
+        Append image sequence
+      </message>
+    </Append>
+    <assign>
+      <message name="Image">
+        Assign image colors
+      </message>
+    </assign>
+    <Average>
+      <message name="Image">
+        Average image sequence
+      </message>
+    </Average>
+    <Chop>
+      <message name="Image">
+        Chop image
+      </message>
+    </Chop>
+    <Classify>
+      <message name="Image">
+        Classify image colors
+      </message>
+    </Classify>
+    <ColorReplace>
+      <message name="Image">
+        Replace color in image
+      </message>
+    </ColorReplace>
+    <Colorize>
+      <message name="Image">
+        Colorize image
+      </message>
+    </Colorize>
+    <Combine>
+      <message name="Image">
+        Combine image
+      </message>
+    </Combine>
+    <ContrastStretch>
+      <message name="Image">
+         Contrast-stretch image
+      </message>
+    </ContrastStretch>
+    <Convolve>
+      <message name="Image">
+        Convolve image
+      </message>
+    </Convolve>
+    <Crop>
+      <message name="Image">
+        Crop image
+      </message>
+    </Crop>
+    <Decode>
+      <message name="Image">
+        Decode image
+      </message>
+    </Decode>
+    <Despeckle>
+      <message name="Image">
+        Despeckle image
+      </message>
+    </Despeckle>
+    <Distort>
+      <message name="Image">
+        Distort image
+      </message>
+    </Distort>
+    <Dither>
+      <message name="Image">
+        Dither image colors
+      </message>
+    </Dither>
+    <DullContrast>
+      <message name="Image">
+        Dull image contrast
+      </message>
+    </DullContrast>
+    <Equalize>
+      <message name="Image">
+        Equalize image
+      </message>
+    </Equalize>
+    <Flip>
+      <message name="Image">
+        Flip image
+      </message>
+    </Flip>
+    <Flop>
+      <message name="Image">
+        Flop image
+      </message>
+    </Flop>
+    <Frame>
+      <message name="Image">
+        Add frame to image
+      </message>
+    </Frame>
+    <Fx>
+      <message name="Image">
+        Fx image
+      </message>
+    </Fx>
+    <GammaCorrect>
+      <message name="Image">
+        Gamma correct image
+      </message>
+    </GammaCorrect>
+    <Histogram>
+      <message name="Image">
+        Compute image histogram
+      </message>
+    </Histogram>
+    <Implode>
+      <message name="Image">
+        Implode image
+      </message>
+    </Implode>
+    <Level>
+      <message name="Image">
+        Level image
+      </message>
+    </Level>
+    <Load>
+      <message name="Image">
+        Load image
+      </message>
+      <message name="Images">
+        Load images
+      </message>
+    </Load>
+    <Magnfiy>
+      <message name="Image">
+        Magnfiy image
+      </message>
+    </Magnfiy>
+    <MedianFilter>
+      <message name="Image">
+        Filter image with neighborhood ranking
+      </message>
+    </MedianFilter>
+    <Minify>
+      <message name="Image">
+        Minify image
+      </message>
+    </Minify>
+    <Modulate>
+      <message name="Image">
+        Modulate image
+      </message>
+    </Modulate>
+    <Mogrify>
+      <message name="Image">
+        Mogrify image
+      </message>
+    </Mogrify>
+    <Montage>
+      <message name="Image">
+        Montage image
+      </message>
+    </Montage>
+    <Morph>
+      <message name="Image">
+        Morph image sequence
+      </message>
+    </Morph>
+    <Mosaic>
+      <message name="Image">
+        Mosaic image
+      </message>
+    </Mosaic>
+    <Negate>
+      <message name="Image">
+        Negate image
+      </message>
+    </Negate>
+    <OilPaint>
+      <message name="Image">
+        Oil paint image
+      </message>
+    </OilPaint>
+    <Opaque>
+      <message name="Image">
+        Set opaque color in image
+      </message>
+    </Opaque>
+    <Plasma>
+      <message name="Image">
+        Plasma image
+      </message>
+    </Plasma>
+    <Preview>
+      <message name="Image">
+        Preview image
+      </message>
+    </Preview>
+    <Raise>
+      <message name="Image">
+        Raise image
+      </message>
+    </Raise>
+    <Recolor>
+      <message name="Image">
+        Recolor color image
+      </message>
+    </Recolor>
+    <Reduce>
+      <message name="Image">
+        Reduce image colors
+      </message>
+    </Reduce>
+    <ReduceNoise>
+      <message name="Image">
+        Reduce the image noise
+      </message>
+    </ReduceNoise>
+    <Render>
+      <message name="Image">
+        Render image
+      </message>
+    </Render>
+    <Resize>
+      <message name="Image">
+        Resize image
+      </message>
+    </Resize>
+    <RGBTransform>
+      <message name="Image">
+        RGB transform image
+      </message>
+    </RGBTransform>
+    <Roll>
+      <message name="Image">
+        Roll image
+      </message>
+    </Roll>
+    <Rotate>
+      <message name="Image">
+        Rotate image
+      </message>
+    </Rotate>
+    <Sample>
+      <message name="Image">
+        Sample image
+      </message>
+    </Sample>
+    <Save>
+      <message name="Image">
+        Save image
+      </message>
+      <message name="Images">
+        Save images
+      </message>
+    </Save>
+    <Scale>
+      <message name="Image">
+        Scale image
+      </message>
+    </Scale>
+    <Segment>
+      <message name="Image">
+        Segment image
+      </message>
+    </Segment>
+    <Separate>
+      <message name="Image">
+        Extract a channel from image
+      </message>
+    </Separate>
+    <SepiaTone>
+      <message name="Image">
+        Sepia-tone image
+      </message>
+    </SepiaTone>
+    <Shade>
+      <message name="Image">
+        Shade image
+      </message>
+    </Shade>
+    <Sharpen>
+      <message name="Image">
+        Sharpen image
+      </message>
+    </Sharpen>
+    <SharpenContrast>
+      <message name="Image">
+        Sharpen image contrast
+      </message>
+    </SharpenContrast>
+    <SigmoidalContrast>
+      <message name="Image">
+        Sigmoidal contrast image
+      </message>
+    </SigmoidalContrast>
+    <Solarize>
+      <message name="Image">
+        Solarize image
+      </message>
+    </Solarize>
+    <Splice>
+      <message name="Image">
+        Splice image
+      </message>
+    </Splice>
+    <Spread>
+      <message name="Image">
+        Spread image
+      </message>
+    </Spread>
+    <Stegano>
+      <message name="Image">
+        Stegano image
+      </message>
+    </Stegano>
+    <Stereo>
+      <message name="Image">
+        Stereo image
+      </message>
+    </Stereo>
+    <Swirl>
+      <message name="Image">
+        Swirl image
+      </message>
+    </Swirl>
+    <Texture>
+      <message name="Image">
+        Texture image
+      </message>
+    </Texture>
+    <Threshold>
+      <message name="Image">
+        Threshold image
+      </message>
+    </Threshold>
+    <Tile>
+      <message name="Image">
+        Tile image
+      </message>
+    </Tile>
+    <Tint>
+      <message name="Image">
+        Tint image
+      </message>
+    </Tint>
+    <TransformRGB>
+      <message name="Image">
+        Transform RGB image
+      </message>
+    </TransformRGB>
+    <Transparent>
+      <message name="Image">
+        Set transparent color in image
+      </message>
+    </Transparent>
+    <Wave>
+      <message name="Image">
+        Wave image
+      </message>
+    </Wave>
+    <XShear>
+      <message name="Image">
+        X Shear image
+      </message>
+    </XShear>
+    <YShear>
+      <message name="Image">
+        Y Shear image
+      </message>
+    </YShear>
+  </monitor>
+</locale>

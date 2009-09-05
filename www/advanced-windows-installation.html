@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: Advanced Windows Source Installation</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="advanced, windows, source, installation, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+
+<p class="navigation-index">[<a href="#download">Download &amp; Unpack</a> &bull; <a href="#configure">Configure</a>  &bull; <a href="#build">Build</a> &bull; <a href="#install">Install</a> &bull; <a href="#binary">Create a Self-installing Binary Distribution</a> &bull; <a href="#problems">Dealing with Unexpected Problems</a> &bull; <a href="#project">Building Your Custom Project</a>]</p>
+
+<div class="doc-section">
+<p>It's possible you don't want to concern yourself with advanced installation under Windows.  If so, you also have the option of installing a self-installing <a href="../www/binary-releases.html#windows">binary release</a> or if you still want to install from source without all the fuss see the simple <a href="../www/install-source.html#windows">Install From Source</a> instructions.  However, if you want to customize the configuration and installation of ImageMagick under Windows, lets begin.</p>
+</div>
+
+<h2><a name="download"></a>Download &amp; Unpack</h2>
+<div class="doc-section">
+
+<p>Building ImageMagick source for Windows requires a modern version of Microsoft Visual Studio IDE.  Users have reported success with the Borland C++ compiler as well.  If you don't have a compiler you can still install a self-installing <a href="../www/binary-releases.html#windows">binary release</a>.</p>
+
+<p>Download <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/windows/ImageMagick-windows.zip">ImageMagick-windows.zip</a> from <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/windows">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/windows/digest.rdf">message digest</a>.</p>
+
+<p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any MS-DOS Command Prompt window:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>unzip ImageMagick-windows.zip</span></p>
+<p>Now that you have the ImageMagick Windows source distribution unpacked, let's configure it.</p>
+
+</div>
+
+<h2><a name="configure"></a>Configure</h2>
+<div class="doc-section">
+
+<p>These instructions are specific to building ImageMagick with the <a href="http://msdn.microsoft.com/vstudio/">Visual Studio</a> under Windows XP, Win2K, or Windows 98.  ImageMagick does not include any workspace (DSW) or project files (DSP) except for those included with third party libraries. Instead, there is a <kbd>configure</kbd> program that must be built and run which creates the Visual Studio workspaces for ImageMagick.  The Visual Studio system provides four different types of <em>runtime</em> environments that must match across all application, library, and dynamic-library (DLL) code that is built. The <kbd>configure</kbd> program creates a set of build files that are consistent for a specific runtime selection listed here:</p>
+
+<ol>
+  <li>Dynamic Multi-threaded DLL runtimes (VisualDynamicMT).</li>
+  <li>Static Single-threaded runtimes (VisualStaticST).</li>
+	<li>Static Multi-threaded runtimes (VisualStaticMT).</li>
+	<li>Static Multi-threaded DLL runtimes (VisualStaticMTDLL).</li>
+</ol>
+
+<p>In addition to these runtimes, the VisualMagick build environment allows you to select whether to include the X11 libraries in the build or not.  X11 DLLs and headers are provided with the VisualMagick build environment.  Most Windows users are probably not interested in using X11, so you might prefer to build without X11 support.  Since the <kbd>animate</kbd>, <kbd>display</kbd>, and <kbd>import</kbd> program depends on the X11 delegate libraries, these programs will no work if you choose not to include X11 support.</p>
+
+<p>This leads to five different possible build options. The default binary distribution is built using the Dynamic Multi-threaded DLL (VisualDynamicMT) option with the X11 libraries included.  This results in an X11 compatible build using all DLL's for everything and multi-threaded support (the only option for DLL's).</p>
+
+<p>To create a workspace for your requirements, simply go to the <kbd>VisualMagick\configure</kbd> folder and open the <kbd>configure.dsw</kbd> workspace (for Visual Studio 6) or <kbd>configure.sln</kbd> (for Visual Studio 7 or 8). Set the build configuration to <em>Release</em>.</p>
+
+<p>Build and execute the configure program and follow the on-screen instructions.  You should not change any of the defaults unless you have a specific reason to do so.</p>
+
+<p>The configure program has a button entitled:</p>
+
+<p class="text">
+  Edit "magick_config.h"
+</p>
+
+<p>Click on this button to bring up <kbd>magick-config.h</kbd> in Windows Notepad.  Review and optionally change any preprocessor defines in ImageMagick's <kbd>magick_config.h</kbd> file to suit your needs.  This file is copied to <kbd>magick\magick_config.h</kbd>.  You may safely open <kbd>magick\magick_config.h</kbd>, modify it, and recompile without re-running the configure program. In fact, using Notepad to edit the copied file may be preferable since it preserves the original <kbd>magick_config.h</kbd> file.</p>
+
+<p>Key user defines in <kbd>magick_config.h</kbd> include:</p>
+
+<dl class="doc">
+<dt> MAGICKCORE_QUANTUM_DEPTH (default 16)</dt>
+  <dd>Specify the depth of the pixel component depth (8, 16, or 32).  A value of 8 uses half the memory than 16 and may run 30% faster, but provides 256 times less color resolution than a value of 16.  We recommend a quantum depth of 16 because 16-bit images are becoming more prevalent on the Internet.</dd>
+<dt>MAGICKCORE_INSTALLED_SUPPORT (default undefined)</dt>
+  <dd>Define to build a ImageMagick which uses registry settings or embedded paths to locate installed components (coder modules and configuration files). The default is to look for all files in the same directory as the executable.  You will wand to define this value if you intend on <a href="#install">installing</a> ImageMagick on your system.</dd>
+<dt>ProvideDllMain (default undefined)</dt>
+  <dd>Define to include a DllMain() function ensures that the ImageMagick DLL is properly initialized without participation from dependent applications. This avoids the requirement to invoke IntializeMagick() from dependent applications is only useful for DLL builds.</dd>
+</dl>
+
+<p>ImageMagick is now configured and ready to build.</p>
+
+<p>The default build is WIN32.  For 64-bit, open a newly created static solution and enter Configuration Manager. Add a x64 configuration, copying the configuration from WIn32. Be sure  that it adds the configuration to all the projects.  Now compile.</p>
+
+</div>
+
+<h2><a name="Build"></a>Build</h2>
+<div class="doc-section">
+
+<p>After creating your build environment, proceed to open the DSW (or SLN) workspace in the <kbd>VisualMagick</kbd> folder.  In the DSW file choose the <em>All</em> project to make it the <em>active</em> project.  Set the build configuration to the desired one (Debug, or Release) and <em>clean</em> and <em>build:</em></p>
+
+<ol>
+  <li>Right click on the All project and select <em>Set As Active Project</em></li>
+  <li>Select "Build=>Clean Solution"</li>
+	<li>Select "Build=>Build Solution"</li>
+</ol>
+
+<p>The <em>clean</em> step is necessary in order to make sure that all of the target support libraries are updated with any patches needed to get them to compile properly under Visual Studio.</p>
+
+<p>After a successful build, all of the required files that are needed to run any of the <a href="../www/command-line-tools.html">command line tools</a> are located in the <kbd>VisualMagick\bin</kbd> folder.  This includes EXE, DLL libraries, and ImageMagick configuration files.  You should be able to test the build directly from this directory without having to move anything to any of the global SYSTEM or SYSTEM32 areas in the operating system installation.</p>
+
+<p>The Visual Studio distribution of ImageMagick comes with the Magick++ C++ wrapper by default. This add-on layer has a large number of demo and test files that can be found in <kbd>ImageMagick\Magick++\demo</kbd>, and <kbd>ImageMagick\Magick++\tests</kbd>. There are also a variety of tests that use the straight C API as well in ImageMagick\tests.</p>
+
+<p> All of these programs are <em>not</em> configured to be built in the default workspace created by the configure program. You can cause all of these demos and test programs to be built by checking the box in configure that says:</p>
+
+<p class="text">
+  Include all demo and test programs
+</p>
+
+<p>In addition, there is another related checkbox (checked by default) that causes all generated project files to be created standalone so that they can be copied to other areas of you system.</p>
+
+<p>This the checkbox:</p>
+
+<p class="text">
+  Generate all utility projects with full paths rather then relative paths.
+</p>
+
+<p>Visual Studio uses a concept of <em>dependencies</em> that tell it what other components need to be build when a particular project is being build. This mechanism is also used to ensure that components link properly. In my normal development environment, I want to be able to make changes and debug the system as a whole, so I like and NEED to use dependencies. However, most end users don't want to work this way.</p>
+
+<p>Instead they really just want to build the package and then get down to business working on their application. The solution is to make all the utility projects (UTIL_xxxx_yy_exe.dsp) use full absolute paths to all the things they need. This way the projects stand on their own and can actually be copied and used as templates to get a particular custom application compiling with little effort.</p>
+
+<p>With this feature enabled, you should be able to nab a copy of</p>
+
+<p class="text">
+  VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C) or  <br/>
+  VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
+</p>
+
+<p>and pop it into Notepad, modify it (carefully) to your needs and be on your way to happy compiling and linking.</p>
+
+<p> You can feel free to pick any of the standard utilities, tests, or demo programs as the basis for a new program by copying the project and the source and hacking away.</p>
+
+<p>The choice of what to use as a starting point is very easy.</p>
+
+<p>For straight C API command line applications use something from:</p>
+
+<p class="text">
+  ImageMagick\tests or  <br/>
+  ImageMagick\utilities (source code) or <br/>
+  ImageMagick\VisualMagick\tests or  <br/>
+  ImageMagick\Visualmagick\utilities (project - DSP)
+</p>
+
+<p>For C++ and Magick++ command line applications use something from:</p>
+
+<p class="text">
+  ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code) or <br/>
+  ImageMagick\VisualMagick\Magick++\tests or  <br/>
+  ImageMagick\VisualMagick\Magick++\demo (project - DSP)
+</p>
+
+<p>For C++ and Magick++ and MFC windows applications use:</p>
+
+<p class="text">
+  ImageMagick\contrib\win32\MFC\NtMagick (source code) or <br/>
+  ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
+</p>
+
+<p>The ImageMagick distribution is very modular. The default configuration is there to get you rolling, but you need to make some serious choices when you wish to change things around.</p>
+
+<p>The default options are all targeted at having all the components in one place (e.g. the <kbd>bin</kbd> directory of the VisualMagick build tree). These components may be copied to another folder (such as to another computer).</p>
+
+<p>The folder containing the executables and DLLs should contain the following files:</p>
+
+<ol>
+  <li>magic.xml</li>
+  <li>delegates.xml</li>
+  <li>modules.xml</li>
+  <li>colors.xml</li>
+</ol>
+
+<p>among others.</p>
+
+<p>The <kbd>bin</kbd> folder should contains all EXE's and DLL's as well as the very important <kbd>modules.xml</kbd> file.</p>
+
+<p>With this default setup, you can use any of the command line tools and run scripts as normal. You can actually get by quite nicely this way by doing something like <kbd>pushd e:\xxx\yyy\bin</kbd> in any scripts you write to execute <em>out of</em> this directory.</p>
+
+<p>By default the core of ImageMagick on Win32 always looks in the place were the exe program is run from in order to find all of the files as well as the DLL's it needs.</p>
+
+	<h3>ENVIRONMENT VARIABLES</h3>
+	<div class="doc-section">
+
+		<p>You can use the <em>System</em> control panel to allow you to add and delete what is in any of the environment variables. You can even have user specific environment variables if you wish.</p>
+
+		<h4>PATH</h4>
+		<div class="doc-section">
+		  <p>This environmental variable sets the default list of places were Windows looks for EXE's and DLL's. Windows CMD shell seems to look in the <em>current</em> directory first no matter what, which may make it unnecessary to update the PATH. If you wish to run any of utilities from another location then you must add the path to your <kbd>bin</kbd> directory in. For instance, to do this for the default build environment like I do, you might add:</p>
+
+
+			<p class="text">
+			  C:\ImageMagick\VisualMagick\bin
+			</p>
+
+		</div>
+
+		<h4>MAGICK_HOME</h4>
+		<div class="doc-section">
+		  <p>If all you do is modify the PATH variable, the first problem you will run into is that ImageMagick may not be able to find any of its <em>modules</em>. Modules are all the IM_MOD*.DLL files you see in the distribution. There is one of these for each and every file format that ImageMagick supports. This environment variable tells the system were to look for these DLL's. The compiled in <em>default</em> is <em>execution path</em> - which says - look in the same place that the application is running <em>in</em>. If you are running from somewhere other then <kbd>bin</kbd> - this will no longer work and you must use this variable. If you elect to leave the modules in the same place as the EXE's (a good idea) then you can simply set this to the same place as you did the PATH variable. In my case:</p>
+
+			<p class="text">
+			  C:\ImageMagick\coders
+			</p>
+
+			<p>This also the place were ImageMagick expects to find the <kbd>colors.xml</kbd>, <kbd>delegates.xml</kbd>, <kbd>magic.xml</kbd>, <kbd>modules.xml</kbd>, and <kbd>type.xml</kbd> files.</p>
+		</div>
+	</div>
+
+<p>One cool thing about the modules build of ImageMagick is that you can now leave out file formats and lighten you load. If all you ever need is GIF and JPEG, then simply drop all the other DLL's into the local trash can and get on with your life.</p>
+
+<p>Always keep the XC format, since ImageMagick uses it internally.</p>
+
+<p>You can elect to changes these things the good old <em>hard-coded</em> way. This define is applicable in <kbd>magick-config.h</kbd>:</p>
+
+<p class="text">
+  #define MagickConfigurePath  "C:\\ImageMagick\\"
+</p>
+
+<p>To view any image in a Microsoft window, type</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.ext win:</span></p>
+<p>Make sure <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> is installed, otherwise, you will be unable to convert or view a Postscript document, and Postscript standard fonts will not be available.</p>
+
+<p>You may use any standard web browser (e.g. Internet Explorer) to browse the ImageMagick documentation.</p>
+
+<p>The Win2K executables will work under Windows 98.</p>
+
+<p>ImageMagick is now configured and built. You can optionally install it on your system as discussed below.</p>
+
+<p>If you are looking to install the ImageMagick COM+ object, see <a href="../www/ImageMagickObject.html">Installing the ImageMagickObject COM+ Component</a>.</p>
+
+</div>
+
+<h2><a name="Install"></a>Install</h2>
+<div class="doc-section">
+
+<p>You can run ImageMagick command line utilities directly from the <kbd>VisualMagick\bin</kbd> folder, however, in most cases you may want the convenience of an installer script.  ImageMagick provides <a href="http://www.jrsoftware.org">Inno Setup</a> scripts for this purpose.  Note, you must define MAGICKCORE_INSTALLED_SUPPORT at <a href="#configure">configure</a> time to utilize the installer scripts.</p>
+
+<p>To get started building a self-installing ImageMagick executable, go to <kbd>VisualMagick\installer</kbd> folder and click on a script that matches your build environment.  Press F9 to build and install ImageMagick.  The default location is <kbd>C:Program Files\ImageMagick-6.?.?\Q?</kbd>.  The exact folder name depends on the ImageMagick version and quantum depth.  Once installed, ImageMagick command line utilities and libraries are available to the MS Command Prompt, web scripts, or to meet your development needs.</p>
+
+</div>
+
+<h2><a name="binary"></a>Create a Self-Installing Binary Distribution</h2>
+<div class="doc-section">
+
+<h3>Prerequisites</h3>
+
+	<ol>
+	<li>Download and install <a href="http://www.jrsoftware.org/isinfo.html">Inno Setup 5</a>.</li>
+	<li>Download and install <a href="http://www.activestate.com/store/activeperl/download/">ActiveState ActivePerl</a>.</li>
+	</ol>
+
+<h3>Run the Configure Wizard</h3>
+
+	<ol>
+	<li>Double-click on <kbd>VisualMagick/configure/configure.sln</kbd> to build the configure wizard.</li>
+	<li>Select <kbd>Rebuild All</kbd> and launch the configure wizard.</li>
+	<li>Uncheck <kbd>Use X11 Stubs</kbd> and check <kbd>Build demo and test programs</kbd>.</li>
+	<li>Click on <kbd>Edit magick_config.h</kbd> and define <kbd>MAGICKCORE_INSTALLED_SUPPORT</kbd>.</li>
+	<li>Complete the configure wizard screens to create the ImageMagick Visual C++ workspace.</li>
+	</ol>
+
+<h3>Build ImageMagick</h3>
+
+	<ol>
+	<li>Double-click on <kbd>VisualMagick/VisualDynamicMT.sln</kbd> to launch the ImageMagick Visual workspace.</li>
+	<li>Set the active configuration to <kbd>Win32 Release</kbd>.</li>
+	<li>Select <kbd>Rebuild All</kbd> to build the ImageMagick binary distribution.</li>
+	</ol>
+
+<h3>Build ImageMagickObject</h3>
+
+	<ol>
+	<li>Launch the MS-DOS Command Prompt application and move to the <kbd>contrib\win32\ATL7\ImageMagickObject</kbd> folder.</li>
+	<li>Build ImageMagickObject with these commands:
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>BuildImageMagickObject clean</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>BuildImageMagickObject release</span></p></li>
+	</ol>
+
+<h3>Build PerlMagick</h3>
+
+	<ol>
+	<li>Launch the MS-DOS Command Prompt application and move to the <kbd>PerlMagick</kbd> folder.</li>
+	<li>Build PerlMagick with these commands:
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake release</span></p></li>
+	</ol>
+
+<h3>Create the Self-installing ImageMagick Binary Distribution</h3>
+
+	<ol>
+	<li>Double-click on <kbd>VisualMagick/installer/im-dll-16.iss</kbd> to launch the Inno Setup 5 wizard.</li>
+	<li>Select <kbd>File->Compile</kbd>.</li>
+	</ol>
+
+<h3>Install the Binary Distribution</h3>
+
+	<ol>
+	<li>Double-click on
+	<kbd>VisualMagick/bin/ImageMagick-6.5.5-6-Q16-windows-dll.exe</kbd>
+	to launch the ImageMagick binary distribution.</li>
+	<li>Complete the installer screens to install ImageMagick on your system.</li>
+	</ol>
+
+<h3>Test the Binary Distribution</h3>
+
+	<ol>
+	<li>Launch the MS-DOS Command Prompt application and move to the <kbd>PerlMagick</kbd> folder and type
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake test</span></p></li>
+
+	<li>Move to the <kbd>VisualMagick/tests</kbd> folder and type
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>validate</span></p></li>
+	<li>Move to the <kbd>VisualMagick/Magick++/tests</kbd> folder and type
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>run_tests.bat</span></p></li>
+	<li>Move to the <kbd>VisualMagick/Magick++/demo</kbd> folder and type
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>run_demos.bat</span></p></li>
+	</ol>
+
+<p>If all the tests pass without complaint, the ImageMagick self-install binary distribution is ready for use.</p>
+
+</div>
+
+<h2><a name="problems"></a>Dealing with Unexpected Problems</h2>
+<div class="doc-section">
+
+<p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick.</p>
+
+<p>If the compiler generates an error or if it quits unexpectedly, go to the <a href="http://msdn.microsoft.com/vstudio/">Visual Studio</a> web site and look for Visual Studio service packs.  Chances are, after you download and install all the Visual Studio service packs, ImageMagick will compile and build as expected.</p>
+
+</div>
+
+<h2><a name="project"></a>Building Your Custom Project</h2>
+<div class="doc-section">
+
+<p>The Windows <a href="../www/binary-releases.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <kbd>c:/Program Files/ImageMagick-6.5.5-0/Magick++_demos</kbd> folder.  If not, be sure to select <kbd>Configuration Properties->C/C++->Preprocessor</kbd> and set these definitions:</p>
+</p
+<pre class="text">
+  NDEBUG
+  WIN32
+  _CONSOLE
+  _VISUALC_
+  NeedFunctionPrototypes
+  _DLL
+  _MAGICKMOD_
+</pre>
+
+</div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

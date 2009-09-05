@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Magick++ Future</title>
+<meta name="GENERATOR" content="OpenOffice.org 1.0 (Win32)">
+<meta name="AUTHOR" content="Bob Friesenhahn">
+<meta name="CREATED" content="20020805;17562470">
+<meta name="CHANGEDBY" content="Bob Friesenhahn">
+<meta name="CHANGED" content="20020805;18005350">
+<meta name="DESCRIPTION" content="C++ API for ImageMagick">
+<link rel=stylesheet type=text/css href=../../www/magick.css>
+</head>
+<body lang="en-US" text="#ffffff" link="#0000EE" vlink="#551A8B" bgcolor="#fbc713">
+<h1 align="center">Future Plans</h1>
+<p>A challenging release plan has been developed for Magick++. What actually gets accomplished depends on the level of support from users and developers. Volunteers are needed. In particular, work on the CORBA/COM IDL-base API may proceed in parallel with other development. The following is the tentative development and release plan (step 1.0 is complete).</p>
+<p><b>1.0</b> API for operating on individual images and STL containers of images</p>
+<blockquote>This version supports all ImageMagick API operations which operate on a single image as well as providing <a href="http://www.sgi.com/tech/stl/">STL</a> container support for operating on multiple images (on any STL compatable container which supports a forward input iterator).</blockquote>
+<blockquote>STL is used as the framework in which to store images. Template functions (e.g. montage) are provided to build the image lists required by ImageMagick and then invoke the list-oriented ImageMagick API. STL is quite powerful yet easy to use. At this stage Magick++ has matched what is currently available/possible using the PerlMagick API due to leveraging the power of STL.</blockquote>
+<p><b>2.0</b> <a href="http://www.omg.org/">CORBA</a> and/or COM IDL based client API with server implementation for executing image processing operations on a remote (or local) computer.</p>
+<blockquote>This version provides an IDL-based API. A C++ wrapper API compatable with that developed for release 2.0 is available for use by clients. Client wrappers may also be developed for other languages (e.g. Java). COM and CORBA servers are provided which are implemented in terms of the Magick++ API in order to satisfy client requests (which may run a different operating system than the server).</blockquote>
+<p><b>3.0</b> Integration of IDL-based API with an existing open source work-queing system in order to load-share image processing tasks and the image frame and file level across a large number of machines.</p>
+<blockquote>This version is the culmination of the effort. By intelligently spreading work over many machines, the performance of ImageMagick is magnified. In order for this to be a success algorithms for efficient transfer of image data must be developed. Algorithms that take into account processor afinity and the CPU vs I/O tradeoff for the task to be performed must be developed. At this point in time, the queuing system to be employed has not been identified.</blockquote>
+</body>
+</html>

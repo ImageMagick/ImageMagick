@@ -1,0 +1,236 @@
+This file provides platform specific portability notes which don't
+belong in README.txt. Usually ImageMagick compiles fine according to the
+procedures described in README.txt, but sometimes a platform related
+oddity causes a failure.
+
+Cygwin
+======
+                                                                                
+  Problem
+                                                                                
+    PerlMagick fails to link.
+                                                                                
+  Indications
+                                                                                
+    libperl.a is not found.
+                                                                                
+  Solution
+                                                                                
+    Configure like
+                                                                                
+      ./configure --enable-shared
+                                                                                
+    or
+                                                                                
+      ./configure --enable-shared --with-modules
+                                                                                
+  Cygwin doesn't normally come with a libperl.a but it does come with the
+  equivalent DLL.  Using a shared build gets PerlMagick over the hurdle.
+
+
+SGI Irix
+=========
+
+  Problem
+
+    How to successfully configure ImageMagick using SGI's commercial
+    compiler (e.g. IRIX C/C++ v7.3.1.X)?
+
+  Indications
+
+    Compiling C++ code fails with the error:
+    #error directive:  This header file requires the -LANG:std option
+
+  Solution
+
+    Configure like
+
+      CC=cc CFLAGS="-O2 -OPT:Olimit=0" CXX=CC \
+      CXXFLAGS="-LANG:std -Wl,-woff,84 -O2" CXXCPP="CC -LANG:std -E" \
+      ./configure --with-modules --with-threads ...
+
+    with the following in /etc/compiler.defaults
+
+      -DEFAULT:abi=n32:isa=mips3
+
+
+Linux 6.1
+=========
+
+  Problem
+
+    When '-rpath /somedir' is added to LDFLAGS in order to tell the
+    linker to apply a run-time linker path, configure fails.
+
+  Indications
+
+    The configure script prints the error message
+
+      checking for executable suffix...
+                                  configure: error: cannot compute EXEEXT:
+
+    and the error message
+
+      gcc: unrecognized option `-rpath'
+
+    is written to config.log
+
+  Solution
+
+    Use 'LDFLAGS=-Wl,-rpath,/somedir' instead to pass the options through
+    to the linker.
+
+
+FreeBSD 3.X and 4.X
+===================
+
+  Problem
+  
+    ImageMagick does not run after it is installed. The system does not
+    see an installed shared library until the 'ldconfig' command has
+    been executed (as root) using the correct options.
+
+  Indications
+  
+    System fails to find shared library needed by ImageMagick.
+
+  Solution
+  
+    Either reboot the system (which automatically runs ldconfig) or
+    execute
+
+      /sbin/ldconfig -m ${PREFIX}/lib
+
+    where ${PREFIX} is the prefix used when configuring ImageMagick
+    (default /usr/local).
+
+
+Digital Unix and OSF/1
+======================
+
+  Problem
+  
+    Digital Unix provides an outdated JPEG shared library as part of the
+    system.
+    
+  Indications
+
+    ImageMagick fails to link.
+
+  Solution
+  
+    Ensure that the JPEG library you installed is used. Be sure to
+    install the JPEG library as a shared library.
+
+
+Solaris 2.X
+============
+
+  Problem
+  
+    An outdated delegate library is used rather than the one just
+    installed.
+    
+  Indications
+  
+    o Failure to link due to unresolved symbols
+    o Failure to run properly
+    o The command 'ldd `which convert`' lists the wrong library.
+  
+  Solution
+
+    If the problem library is a shared library (.so extension) then
+    install your own library as a shared library. Then add the required
+    -L and -R options to find your shared library at both link and run
+    time. For example, if your library is installed in /usr/local/lib:
+      
+      configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib' 
+
+  Problem
+
+    An outdated libtiff.so (libtiff.so.3) is installed in
+    /usr/openwin/lib. This library may be used by accident rather than
+    the intended libtiff.so, or libtiff.a. In particular, the linker
+    generally considers linking against a shared library before it
+    considers static libraries, so the system libtiff.so may be used
+    even though there is an installed libtiff.a earlier in the linker
+    search path.
+
+  Indications
+  
+    ImageMagick fails to link or load TIFF files.
+
+  Solution
+
+    o Install libtiff as a shared library, and make sure that LDFLAGS
+      contains the required -L and -R options to find your shared
+      library at both link and run time. For example, if libtiff.so is
+      installed in /usr/local/lib:
+      
+      configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
+
+    or
+      
+    o Remove /usr/openwin/lib/libtiff.so.3. Note that if you take this
+      step, some tools like 'imagetool' and 'pageview' will stop working.
+
+  Problem
+  
+    When using gcc 3.0.X, configure decides that the compiler is insufficient
+    to compile Magick++.
+    
+  Indications
+  
+    Fails ISO C++ test.
+  
+  Solution
+
+    The problem is due to gcc provided headers undefining
+    Solaris-provided defines for 64-bit versions of stdio functions. The
+    solution is to either configure with --disable-largefile or edit the
+    installed g++-v3/bits/std_cstdio.h to bracket the offending undefs
+    (for fgetpos, fopen, freopen, fsetpos, & tmpfile) like:
+
+    #if _FILE_OFFSET_BITS != 64
+    #undef fopen
+    #endif
+
+       or
+
+    Install gcc 3.1 (or later) instead.
+
+  Problem
+
+    A static library was used in a shared library build.
+
+  Indications
+
+    Linker prints a warning similar to:
+
+    "ld: fatal: relocations remain against allocatable but non-writable
+     sections"
+
+  Solution
+
+    All libraries used in a shared library build *must* also be shared
+    libraries. Check all libraries referenced in the libtool link
+    command line and verify that all of the referenced libraries are
+    indeed shared libraries. All system libraries are available as
+    shared libraries so it is likely that any static library is locally
+    installed.
+    
+AIX 5.X
+============
+
+  Problem
+  
+    The builkd dependacy files are not created.
+    
+  Indications
+  
+    The build fails with missing .deps/source.PLO errors.
+  
+  Solution
+
+    Add --disable-dependency-tracking to your configure command line.
+      

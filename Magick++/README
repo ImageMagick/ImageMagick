@@ -1,0 +1,63 @@
+
+This is Magick++, the object-oriented C++ API to the ImageMagick
+image-processing library, the most comprehensive open-source image
+processing solution available. Read the release notes for Magick++.
+
+Magick++ supports an object model which is inspired by PerlMagick.
+Magick++ executes faster than PerlMagick since it is accessed from a
+compiled language rather than from a scripting language. This makes it more
+suitable for Web CGI programs which must start-up and execute quickly.
+Images support implicit reference counting so that copy constructors and
+assignment incur almost no cost. The cost of actually copying an image (if
+necessary) is done just before modification and this copy is managed
+automatically by Magick++. De-referenced copies are automatically deleted.
+The image objects support value (rather than pointer)  semantics so it is
+trivial to support multiple generations of an image in memory at one time.
+
+Magick++ provides integrated support for the Standard Template Library (STL)
+so that the powerful containers available (e.g. deque, vector, list, and
+map)  can be used to write programs similar to those possible with PERL &
+PerlMagick. STL-compatable template versions of ImageMagick's list-style
+operations are provided so that operations may be performed on multiple
+images stored in STL containers.
+
+Documentation
+
+Detailed documentation are provided for all Magick++ classes, class methods,
+and template functions which comprise the API.
+
+Obtaining Magick++
+
+Magick++ is included as part of ImageMagick source releases and may be
+retrieved via ftp or Subversion.
+
+Installation
+
+Once you have the sources available, follow these detailed installation
+instructions for UNIX and Windows.
+
+Usage
+
+A helper script named Magick++-config is installed under Unix which assists
+with recalling compilation options required to compile and link programs
+which use Magick++.  For example, the following command will compile and
+link the source file example.cpp to produce the executable example (notice
+that quotes are backward quotes):
+
+     c++ `Magick++-config --cxxflags --cppflags --ldflags --libs` \
+       -o example example.cpp
+
+Windows users may get started by manually editing a project file for one of
+the Magick++ demo programs.
+
+Reporting Bugs
+
+Please report any bugs via the Magick++ Bug Tracking System at
+http://www.imagemagick.org/discourse-server/.
+
+Related Packages
+
+Users who are interested in displaying their images at video game rates on a
+wide number of platforms and graphic environments (e.g. Windows, X11, BeOS,
+and Linux/CGI) may want to try PtcMagick, which provides a simple interface
+between Magick++ and OpenPTC.

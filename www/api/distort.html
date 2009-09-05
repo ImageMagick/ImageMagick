@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Image Distortions</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, image, distortions, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.buerodruck.de/stempel-service/index.html">Stempel bestellen</a><!-- 200910000035+ -->
+</div>
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#DistortImage">DistortImage</a> &bull; <a href="#SparseColorImage">SparseColorImage</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/distort
+_8c.html" target="source" name="DistortImage">DistortImage</a></h2>
+<div class="doc-section">
+
+<p>DistortImage() distorts an image using various distortion methods, by mapping color lookups of the source image to a new destination image usally of the same size as the source image, unless 'bestfit' is set to true.</p></ol>
+
+<p>If 'bestfit' is enabled, and distortion allows it, the destination image is adjusted to ensure the whole source 'image' will just fit within the final destination image, which will be sized and offset accordingly.  Also in many cases the virtual offset of the source image will be taken into account in the mapping.</p></ol>
+
+<p>If the '-verbose' control option has been set print to standard error the equicelent '-fx' formula with coefficients for the function, if practical.</p></ol>
+
+<p>The format of the DistortImage() method is:</p>
+
+<pre class="code">
+  Image *DistortImage(const Image *image,const DistortImageMethod method,
+    const unsigned long number_arguments,const double *arguments,
+    MagickBooleanType bestfit, ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image to be distorted.</p></ol>
+
+<h5>method</h5>
+<ol><p>the method of image distortion.</p></ol>
+
+<p>ArcDistortion always ignores source image offset, and always 'bestfit' the destination image with the top left corner offset relative to the polar mapping center.</p></ol>
+
+<p>Affine, Perspective, and Bilinear, do least squares fitting of the distrotion when more than the minimum number of control point pairs are provided.</p></ol>
+
+<p>Perspective, and Bilinear, fall back to a Affine distortion when less than 4 control point pairs are provided.  While Affine distortions let you use any number of control point pairs, that is Zero pairs is a No-Op (viewport only) distortion, one pair is a translation and two pairs of control points do a scale-rotate-translate, without any shearing.</p></ol>
+
+<h5>number_arguments</h5>
+<ol><p>the number of arguments given.</p></ol>
+
+<h5>arguments</h5>
+<ol><p>an array of floating point arguments for this method.</p></ol>
+
+<h5>bestfit</h5>
+<ol><p>Attempt to 'bestfit' the size of the resulting image. This also forces the resulting image to be a 'layered' virtual canvas image.  Can be overridden using 'distort:viewport' setting.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure</p></ol>
+
+<p>Extra Controls from Image meta-data (artifacts)...</p></ol>
+
+<p>o "verbose" Output to stderr alternatives, internal coefficents, and FX equivelents for the distortion operation (if feasible). This forms an extra check of the distortion method, and allows users access to the internal constants IM calculates for the distortion.</p></ol>
+
+<p>o "distort:viewport" Directly set the output image canvas area and offest to use for the resulting image, rather than use the original images canvas, or a calculated 'bestfit' canvas.</p></ol>
+
+<p>o "distort:scale" Scale the size of the output canvas by this amount to provide a method of Zooming, and for super-sampling the results.</p></ol>
+
+<p>Other settings that can effect results include</p></ol>
+
+<p>o 'interpolate' For source image lookups (scale enlargements)</p></ol>
+
+<p>o 'filter'      Set filter to use for area-resampling (scale shrinking). Set to 'point' to turn off and use 'interpolate' lookup instead</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/distort
+_8c.html" target="source" name="SparseColorImage">SparseColorImage</a></h2>
+<div class="doc-section">
+
+<p>SparseColorImage(), given a set of coordinates, interpolates the colors found at those coordinates, across the whole image, using various methods.</p></ol>
+
+<p>The format of the SparseColorImage() method is:</p>
+
+<pre class="code">
+  Image *SparseColorImage(const Image *image,const ChannelType channel,
+    SparseColorMethod method,const unsigned long number_arguments,
+    const double *arguments,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image to be filled in.</p></ol>
+
+<h5>channel</h5>
+<ol><p>Specify which color values (in RGBKA sequence) are being set. This also determines the number of color_values in above.</p></ol>
+
+<h5>method</h5>
+<ol><p>the method to fill in the gradient between the control points.</p></ol>
+
+<p>The methods used for SparseColor() are often simular to methods used for DistortImage(), and even share the same code for determination of the function coefficents, though with more dimensions (or resulting values).</p></ol>
+
+<h5>number_arguments</h5>
+<ol><p>the number of arguments given.</p></ol>
+
+<h5>arguments</h5>
+<ol><p>array of floating point arguments for this method-- x,y,color_values-- with color_values given as normalized values.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

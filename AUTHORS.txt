@@ -1,0 +1,122 @@
+Cristy is the principal architect of ImageMagick and still maintains the
+ImageMagick distribution.
+
+We acknowledge the substantial contributions to the ImageMagick project by
+these gifted individuals (listed in alphabetical order):
+
+Kelly Bergougnoux
+     Authored the Cineon image coder (based on the existing DPX source).
+
+Rod Bogart and John W. Peterson, University of Utah
+     Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
+
+Nathan Brown
+     Original author of the JP2 coder.
+
+Mike Chiarappa
+     Created a Borland C++ Builder 6.0 build environment for ImageMagick.
+
+Thomas R Crimmins
+     Inventor of the eight hull algorithm used for speckle reduction.
+
+Troy Edwards
+     Authored the source RPM spec file for ImageMagick.
+
+Jaroslav Fojtik
+     Authored the CUT, ART, and MATLAB coder modules.
+
+Francis J. Franklin
+     Ported the WMF coder to the libwmf 0.2 API.
+
+Markus Friedl
+     Original author of Base64 encode/decode sources.
+
+Bob Friesenhahn
+     Author of Magick++ (C++ API to ImageMagick).  Author of module loader
+     facility, automatic file identification (magic) support, Unix/Cygwin/MinGW
+     configure/make facility, Windows setup.exe style installer, WMF renderer,
+     C API documentation formatter, and the C, C++, and Perl test suites
+     used by ImageMagick.
+
+Michael Halle, Spatial Imaging Group at MIT
+     Contributed the initial implementation of Alan Paeth's image rotation
+     algorithm.
+
+David Harr
+     Contributed (with Leonard Rosenthol) dash pattern, linecap stroking
+     algorithm, and minor rendering improvements.
+
+Christopher R. Hawks
+     Authored the PALM coder.
+
+Paul Heckbert, Carnegie Mellon University
+     Image resizing is loosely based on Paul Heckbert's Zoom program.
+
+Peder Langlo, Hewlett Packard
+     Made hundreds of suggestions and bug reports. Without Peder, this software
+     would not be nearly as useful as it is today.
+
+Rick Mabry
+     Contributed code to support filling drawn objects using a pattern image
+     and major improvements to the web page (both content and appearance).
+
+Catalin Mihaila
+     Contributed a ZX-Spectrum SCREEN$ reader.
+
+David Pensak, E. I. du Pont de Nemours and Company
+     For providing the computing environment that made developing ImageMagick
+     possible.
+
+William Radcliffe
+     Author of the VisualMagick project configure facility for Visual C++.
+     Author of FlashPix module. Author of the EMF, XTRN, and META coders.
+     Significant contributions to the MSL, JPEG, TIFF, SVG, and URL coders.
+     Authored "process" module support. Wrote the micro-timer facility used by
+     'identify'. Ported module loader support to Windows. Significantly
+     improved polygon rendering performance.
+
+Glenn Randers-Pehrson
+     Contributed significantly to the utilities.  Authored support for JNG,
+     MNG, and PNG formats. Provided significant support for the BMP format.
+     Significant improvements to the documentation, including creating a
+     documentation authoring environment based on the <imdoc> format.
+
+Paul Raveling, USC Information Sciences Institute
+     The spatial subdivision color reduction algorithm is based on his Img
+     software.
+
+Leonard Rosenthol
+     Authored the 'conjure' utility and associated MSL execution environment.
+     Provided MacOS support. Authored the CLIPBOARD, XCF, and PSD coders.
+     Postscript and PDF expertise. Significant drawing enhancements including
+     support for dash patterns, linecap stroking, clipping masks and a mask
+     image.
+
+Kyle Shorter
+     Original author of PerlMagick.  Author of the LOCALE coder.
+
+Lars Ruben Skyum
+     Contributed the -clippath functionality, improved color profile support,
+     and re-wrote the PS3 coder.
+
+Alvy Ray Smith and Eric Ray Lyons
+     HWB color transform and algorithm.
+
+Michael Still and IBM developer Works
+     For the excellant article, "Graphics from the command line".  First
+     published by IBM DeveloperWorks.
+
+Anthony Thyssen
+     Designed the ImageMagick 6.0 command line processing with parenthesis,
+     image sequence operators, and GIF animation processing.  Wrote the
+     image perspective distortions (-distort) and resampling methods.
+     Maintains a comprehensive set of examples of using ImageMagick at
+     http://www.imagemagick.org/Usage/. 
+
+Milan Votava
+     Contributed support for Wireless BitMap, used in WAP - Wireless Access
+     Protocol.
+
+Alexander Zimmermann
+     Responsible for the ImageMagick Linux binary distributions for many years.
+     His efforts are very much appreciated.

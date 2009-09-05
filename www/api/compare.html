@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Compare an Image to a Reconstructed Image</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, compare, an, image, to, a, reconstructed, image, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+</div>
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#CompareImageChannels">CompareImageChannels</a> &bull; <a href="#GetImageChannelDistortion">GetImageChannelDistortion</a> &bull; <a href="#GetImageChannelDistrortion">GetImageChannelDistrortion</a> &bull; <a href="#IsImagesEqual">IsImagesEqual</a> &bull; <a href="#SimilarityImage">SimilarityImage</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare
+_8c.html" target="source" name="CompareImageChannels">CompareImageChannels</a></h2>
+<div class="doc-section">
+
+<p>CompareImageChannels() compares one or more image channels of an image to a reconstructed image and returns the difference image.</p></ol>
+
+<p>The format of the CompareImageChannels method is:</p>
+
+<pre class="code">
+  Image *CompareImageChannels(const Image *image,
+    const Image *reconstruct_image,const ChannelType channel,
+    const MetricType metric,double *distortion,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>reconstruct_image</h5>
+<ol><p>the reconstruct image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel.</p></ol>
+
+<h5>metric</h5>
+<ol><p>the metric.</p></ol>
+
+<h5>distortion</h5>
+<ol><p>the computed distortion between the images.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare
+_8c.html" target="source" name="GetImageChannelDistortion">GetImageChannelDistortion</a></h2>
+<div class="doc-section">
+
+<p>GetImageChannelDistortion() compares one or more image channels of an image to a reconstructed image and returns the specified distortion metric.</p></ol>
+
+<p>The format of the CompareImageChannels method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetImageChannelDistortion(const Image *image,
+    const Image *reconstruct_image,const ChannelType channel,
+    const MetricType metric,double *distortion,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>reconstruct_image</h5>
+<ol><p>the reconstruct image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel.</p></ol>
+
+<h5>metric</h5>
+<ol><p>the metric.</p></ol>
+
+<h5>distortion</h5>
+<ol><p>the computed distortion between the images.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare
+_8c.html" target="source" name="GetImageChannelDistrortion">GetImageChannelDistrortion</a></h2>
+<div class="doc-section">
+
+<p>GetImageChannelDistrortion() compares the image channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p></ol>
+
+<p>The format of the CompareImageChannels method is:</p>
+
+<pre class="code">
+  double *GetImageChannelDistortions(const Image *image,
+    const Image *reconstruct_image,const MetricType metric,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>reconstruct_image</h5>
+<ol><p>the reconstruct image.</p></ol>
+
+<h5>metric</h5>
+<ol><p>the metric.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare
+_8c.html" target="source" name="IsImagesEqual">IsImagesEqual</a></h2>
+<div class="doc-section">
+
+<p>IsImagesEqual() measures the difference between colors at each pixel location of two images.  A value other than 0 means the colors match exactly.  Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reconstruct image.  The error measure is assigned to these image members:</p>
+
+<pre class="text">
+      o mean_error_per_pixel:  The mean error for any single pixel in
+  the image.
+</pre>
+
+<h5>normalized_mean_error</h5>
+<ol><p>The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</p></ol>
+
+<h5>normalized_maximum_error</h5>
+<ol><p>The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</p></ol>
+
+<p>A small normalized mean square error, accessed as image->normalized_mean_error, suggests the images are very similar in spatial layout and color.</p></ol>
+
+<p>The format of the IsImagesEqual method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsImagesEqual(Image *image,
+    const Image *reconstruct_image)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>reconstruct_image</h5>
+<ol><p>the reconstruct image.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare
+_8c.html" target="source" name="SimilarityImage">SimilarityImage</a></h2>
+<div class="doc-section">
+
+<p>SimilarityImage() compares the reference image of the image and returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between.</p></ol>
+
+<p>The format of the SimilarityImageImage method is:</p>
+
+<pre class="code">
+  Image *SimilarityImage(const Image *image,const Image *reference,
+    RectangleInfo *offset,double *similarity,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>reference</h5>
+<ol><p>find an area of the image that closely resembles this image.</p></ol>
+
+<p>o the best match offset of the reference image within the image.</p></ol>
+
+<h5>similarity</h5>
+<ol><p>the computed similarity between the images.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

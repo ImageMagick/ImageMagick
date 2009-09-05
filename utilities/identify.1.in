@@ -1,0 +1,59 @@
+.TH identify 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
+.SH NAME
+identify \- describes the format and characteristics of one or more image files.
+.SH SYNOPSIS
+.TP
+\fBidentify\fP [\fIoptions\fP] \fIinput-file\fP
+.SH OVERVIEW
+The \fBidentify\fP program is a member of the ImageMagick(1) suite of tools.  It describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image (by default off use \fI-define unique=true\fP option), the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image. Many more attributes are available with the verbose option.
+
+For more information about the identify command, point your browser to file://@DOCUMENTATION_PATH@/www/identify.html or http://www.imagemagick.org/script/identify.php.
+.SH DESCRIPTION
+Image Settings:
+  \-antialias           remove pixel-aliasing
+  \-authenticate value  decrypt image with this password
+  \-channel type        apply option to select image channels
+  \-crop geometry       cut out a rectangular region of the image
+  \-define format:option
+                       define one or more image format options
+  \-define unique=true  return the number of unique colors in the image
+  \-density geometry    horizontal and vertical density of the image
+  \-depth value         image depth
+  \-extract geometry    extract area from image
+  \-format "string"     output formatted image characteristics
+  \-fuzz distance       colors within this distance are considered equal
+  \-interlace type      type of image interlacing scheme
+  \-interpolate method  pixel color interpolation method
+  \-limit type value    pixel cache resource limit
+  \-list type           Color, Configure, Delegate, Format, Magic, Module,
+                       Resource, or Type
+  \-matte               store matte channel if the image has one
+  \-monitor             monitor progress
+  \-ping                efficiently determine image attributes
+  \-quiet               suppress all warning messages
+  \-regard-warnings     pay attention to warning messages
+  \-sampling-factor geometry
+                       horizontal and vertical sampling factor
+  \-seed value          seed a new sequence of pseudo-random numbers
+  \-set attribute value set an image attribute
+  \-size geometry       width and height of image
+  \-strip               strip image of all profiles and comments
+  \-units type          the units of image resolution
+  \-verbose             print detailed information about the image
+  \-virtual-pixel method
+                       virtual pixel access method
+
+Miscellaneous Options:
+  \-debug events        display copious debugging information
+  \-help                print program options
+  \-log format          format of debugging information
+  \-list type           print a list of supported option arguments
+  \-version             print version information
+
+By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
+.SH SEE ALSO
+ImageMagick(1)
+
+.SH COPYRIGHT
+
+\fBCopyright (C) 1999-2009 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://www.imagemagick.org/script/license.php\fP

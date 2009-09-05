@@ -1,0 +1,56 @@
+.TH stream 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
+.SH NAME
+stream \- a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.
+.SH SYNOPSIS
+.TP
+\fBstream\fP [\fIoptions\fP] \fIinput-file\fP \fIoutput-file\fP
+.SH OVERVIEW
+\fBStream\fP is a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making \fBstream\fP desirable when working with large images or when you require raw pixel components.
+
+For more information about the stream command, point your browser to file://@DOCUMENTATION_PATH@/www/stream.html or http://www.imagemagick.org/script/stream.php.
+.SH DESCRIPTION
+Image Settings:
+  \-authenticate value  decrypt image with this password
+  \-channel type        apply option to select image channels
+  \-colorspace type     alternate image colorspace
+  \-compress type       type of pixel compression when writing the image
+  \-define format:option
+                       define one or more image format options
+  \-density geometry    horizontal and vertical density of the image
+  \-depth value         image depth
+  \-extract geometry    extract area from image
+  \-identify            identify the format and characteristics of the image
+  \-interlace type      type of image interlacing scheme
+  \-interpolate method  pixel color interpolation method
+  \-limit type value    pixel cache resource limit
+  \-map components      one or more pixel components
+  \-monitor             monitor progress
+  \-quantize colorspace reduce colors in this colorspace
+  \-quiet               suppress all warning messages
+  \-regard-warnings     pay attention to warning messages
+  \-sampling-factor geometry
+                       horizontal and vertical sampling factor
+  \-seed value          seed a new sequence of pseudo-random numbers
+  \-set attribute value set an image attribute
+  \-size geometry       width and height of image
+  \-storage-type type   pixel storage type
+  \-transparent-color color
+                       transparent color
+  \-verbose             print detailed information about the image
+  \-virtual-pixel method
+                       virtual pixel access method
+
+Miscellaneous Options:
+  \-debug events        display copious debugging information
+  \-help                print program options
+  \-log format          format of debugging information
+  \-list type           print a list of supported option arguments
+  \-version             print version information
+
+By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
+.SH SEE ALSO
+ImageMagick(1)
+
+.SH COPYRIGHT
+
+\fBCopyright (C) 1999-2009 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://www.imagemagick.org/script/license.php\fP

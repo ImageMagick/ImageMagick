@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/ImageMagick
+
+
+Name: Magick++
+Version: @PACKAGE_VERSION@
+Description: Magick++ - C++ API for ImageMagick
+Requires: ImageMagick
+Libs: -L${libdir} -lMagick++
+Cflags: -I${includedir}

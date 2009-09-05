@@ -1,0 +1,214 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: Install the ImageMagickObject COM+ Component</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="install, the, imagemagickobject, com+, component, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="../www/#intro">Introduction to the ImageMagickObject COM+ Object</a> &bull; <a href="../www/#build">Build ImageMagickObject From Source</a>]</p>
+
+<h2><a name="intro"></a>Introduction to the ImageMagickObject COM+ Object</h2>
+<div class="doc-section">
+
+<p>The ImageMagickObject is a COM+ compatible component that can be invoked from any language capable of using COM objects.  The intended use is for Windows Scripting Host VBS scripts and Visual Basic, but it is also available from to C++, ASP, and other languages like Delphi, Perl and PHP.</p>
+
+<p>The ImageMagickObject COM+ component provides access to the <a href="../www/compare.html">compare</a>, <a href="../www/convert.html">convert</a>, <a href="../www/composite.html">composite</a>, <a href="../www/mogrify.html">mogrify</a>, <a href="../www/identify.html">identify</a>, <a href="../www/montage.html">montage</a>, and <a href="../www/stream.html">stream</a> tools, efficiently executing them as part of your process, rather than as external programs. The way you use it is exactly the same. You pass it a list of strings including filenames and various options and it does the job. In fact, you can take any existing batch scripts that use the command line tools and translate them into the equivalent calls to the COM+ object in a matter of minutes. Beyond that, there is also a way to pass in and retrieve images in memory in the form of standard smart arrays (byte arrays). Samples are provided, to show both the simple and more elaborate forms of access.</p>
+
+<p>ImageMagick provides a statically-built ImageMagick object as part of its <a href="../www/binary-releases.html#windows">Windows installation package</a>.  When this package is installed, ImageMagickObject and its sample programs are installed to this path:</p>
+
+<pre class="text">
+  c:\Program Files\ImageMagick-6.5.5-Q16\ImageMagickObject
+</pre>
+
+<p>The ImageMagickObject is registered if the checkbox, <kbd>Register ImageMagickObject</kbd>, is checked at install time.</p>
+
+<p>To execute the sample program from the Windows Command Shell, type:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cscript SimpleTest.vbs</span></p>
+<p>Since the ImageMagick utility command line parsers are incorporated within ImageMagickObject, please refer to the <a href="../www/command-line-tools.html">command-line tools</a> discussion to learn how to use it. The sample VBS scripts show how the object should be called and used and have lots of comments.</p>
+
+<p>C++ programmers should have a look at the <kbd>MagickCMD.cpp</kbd> command line utility for an example of how to call the object from C++.  The object requires a variable size list of BSTR's to emulate the command line argc, argv style calling conventions of the COM component which is more complex in C++ then in VBS or VB.</p>
+
+<p>MagickCMD is a C++ sample, but it also serves as a replacement for all the other command line utilities in most applications. Instead of using <kbd>convert xxxx yyyy</kbd> you can use <kbd>MagickCMD convert xxxx yyyy</kbd> instead. MagickCMD calls the COM object to accomplish the designated task.  This small tight combination replaces the entire usual binary distribution in just a few megabytes.</p>
+
+</div>
+
+<h2><a name="build"></a>Build ImageMagickObject From Source</h2>
+<div class="doc-section">
+
+<p>The source code for ImageMagickObject is available from the ImageMagick <a href="../www/subversion.html">subversion</a> repository, or as part of the <a href="../www/install-source.html#windows">Windows source</a> distribution. Once the source code has been retrieved and extracted, the source for ImageMagickObject is the directory <kbd>ImageMagick\contrib\win32\ATL7ImageMagickObject</kbd>, however, ImageMagick itself must be built using the static-multithread (VisualStaticMT) build configuration.  Building ImageMagickObject requires Microsoft Visual C++ 7.0 as delivered with Microsoft's Visual Studio .NET package. See the <a href="../www/install-source.html#windows">Windows compilation instructions</a> to get ImageMagick itself built before building the ImageMagick COM+ component.</p>
+
+<p>Once the VisualStaticMT project has been built, build the ImageMagickObject with this procedure:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd  ImageMagick/contrib/win32/ATL7/ImageMagickObject</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>BuildImageMagickObject release</span></p>
+<p>Here, we assume that the VisualStaticMT project has been built using the release setting for an optimized build. If the debug setting was used for a debug build, specify the argument <kbd>debug</kbd>; instead.</p>
+
+<p>To register the DLL as a COM+ server, type</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>regsvr32 /c /s ImageMagickObject.dll</span></p>
+<p>To unregister the DLL, type</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>regsvr32 /u /s ImageMagickObject.dll</span></p>
+<p>Use MagickCMD to exercise ImageMagickObject to verify that it is working properly.</p>
+
+</div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>

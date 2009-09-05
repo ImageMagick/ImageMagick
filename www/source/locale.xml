@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE localemap [
+<!ELEMENT localemap (include)+>
+<!ELEMENT include (#PCDATA)>
+<!ATTLIST include locale CDATA #REQUIRED>
+<!ATTLIST include file CDATA #REQUIRED>
+]>
+<localemap>
+  <include locale="no_NO.ISO-8859-1" file="bokmal.xml"/>
+  <include locale="ca_ES.ISO-8859-1" file="catalan.xml"/>
+  <include locale="hr_HR.ISO-8859-2" file="croatian.xml"/>
+  <include locale="cs_CZ.ISO-8859-2" file="czech.xml"/>
+  <include locale="da_DK.ISO-8859-1" file="danish.xml"/>
+  <include locale="de_DE.ISO-8859-1" file="deutsch.xml"/>
+  <include locale="nl_NL.ISO-8859-1" file="dutch.xml"/>
+  <include locale="C" file="english.xml"/>
+  <include locale="et_EE.ISO-8859-1" file="estonian.xml"/>
+  <include locale="fi_FI.ISO-8859-1" file="finnish.xml"/>
+  <include locale="fr_FR.ISO-8859-1" file="francais.xml"/>
+  <include locale="fr_FR.ISO-8859-1" file="francais.xml"/>
+  <include locale="fr_FR.UTF-8" file="francais.xml"/>
+  <include locale="gl_ES.ISO-8859-1" file="galego.xml"/>
+  <include locale="gl_ES.ISO-8859-1" file="galician.xml"/>
+  <include locale="de_DE.ISO-8859-1" file="german.xml"/>
+  <include locale="el_GR.ISO-8859-7" file="greek.xml"/>
+  <include locale="en_US.UTF-8" file="english.xml"/>
+  <include locale="iw_IL.ISO-8859-8" file="hebrew.xml"/>
+  <include locale="hr_HR.ISO-8859-2" file="hrvatski.xml"/>
+  <include locale="hu_HU.ISO-8859-2" file="hungarian.xml"/>
+  <include locale="is_IS.ISO-8859-1" file="icelandic.xml"/>
+  <include locale="it_IT.ISO-8859-1" file="italian.xml"/>
+  <include locale="ja_JP.eucJP" file="japanese.xml"/>
+  <include locale="ko_KR.eucKR" file="korean.xml"/>
+  <include locale="lt_LT.ISO-8859-13" file="lithuanian.xml"/>
+  <include locale="no_NO.ISO-8859-1" file="norwegian.xml"/>
+  <include locale="nn_NO.ISO-8859-1" file="nynorsk.xml"/>
+  <include locale="pl_PL.ISO-8859-2" file="polish.xml"/>
+  <include locale="pt_PT.ISO-8859-1" file="portuguese.xml"/>
+  <include locale="ro_RO.ISO-8859-2" file="romanian.xml"/>
+  <include locale="ru_RU.ISO-8859-5" file="russian.xml"/>
+  <include locale="sk_SK.ISO-8859-2" file="slovak.xml"/>
+  <include locale="sl_SI.ISO-8859-2" file="slovene.xml"/>
+  <include locale="es_ES.ISO-8859-1" file="spanish.xml"/>
+  <include locale="sv_SE.ISO-8859-1" file="swedish.xml"/>
+  <include locale="th_TH.TIS-620" file="thai.xml"/>
+  <include locale="tr_TR.ISO-8859-9" file="turkish.xml"/>
+</localemap>

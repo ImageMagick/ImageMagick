@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="Author" content="Bob Friesenhahn">
+<meta name="Description" content="Description of Magick::Image object composition.">
+<title>Magick::Image Data Structures</title>
+<link rel=stylesheet type=text/css href=../../www/magick.css>
+</head>
+<body text="#ffffff" bgcolor="#fbc713" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<center>
+<h1>Magick::Image Data Structures</h1></center>
+The class Magick::Image is a simple handle which points to a reference-counted image representation. This allows multiple Magick::Image instances to share the same image and attributes. At the point in time that the image data, or image attributes are modified and the current reference count is greater than one, the image data and attributes are copied to create a new image with a reference count of one and the reference count on the old image is decremented. If the reference count on the old image becomes zero, then the associated reference and data are deleted. This strategy represents a simple (but effective) form of garbage collection 
+<p><img src="Image.png" height="490" width="910"></p>
+</body>
+</html>

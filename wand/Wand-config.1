@@ -1,0 +1,69 @@
+.ad l
+.nh
+.TH Wand-Config 1 "2 May 2002" "Wand"
+.SH NAME
+Wand-config \- get information about the installed version of the Magick Wand
+.SH SYNOPSIS
+.B Wand-config 
+.B [--cflags]
+.B [--cppflags]
+.B [--exec-prefix]
+.B [--ldflags]
+.B [--libs]
+.B [--prefix]
+.B [--version]
+.SH DESCRIPTION
+.B Wand-config
+prints the compiler and linker flags required to compile and link programs
+that use the
+.BR Wand
+Application Programmer Interface.
+.SH EXAMPLES
+To print the version of the installed distribution of
+.BR Wand ,
+use:
+
+.nf
+  Wand-config \-\-version
+.fi
+  
+To compile a program that calls the 
+.BR Wand
+Application Programmer Interface, use:
+
+.nf
+  cc `Wand-config \-\-cflags \-\-cppflags \-\-ldflags \-\-libs` program.c
+.fi
+
+.SH OPTIONS
+.TP
+.B \-\-cflags
+Print the compiler flags that were used to compile 
+.BR libWand .
+.TP
+.B \-\-cppflags
+Print the preprocessor flags that are needed to find the
+.B Wand
+C include files and defines to ensure that the Wand data structures match between
+your program and the installed libraries.
+.TP
+.B \-\-exec-prefix
+Print the directory under which target specific binaries and executables are installed.
+.TP
+.B \-\-ldflags
+Print the linker flags that are needed to link with the
+.B Wand
+library.
+.TP
+.B \-\-libs
+Print the linker flags that are needed to link a program with
+.BR libWand .
+.TP
+.B \-\-version
+Print the version of the
+.B Wand
+distribution to standard output.
+.SH COPYRIGHT
+See http://www.imagemagick.org/script/license.php
+.SH AUTHORS
+John Cristy, ImageMagick Studio LLC

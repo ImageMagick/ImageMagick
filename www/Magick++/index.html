@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Magick++ -- C++ API for ImageMagick</title>
+<link rel=stylesheet type=text/css href=../../www/magick.css>
+</head>
+<body lang="en-US" text="#ffffff" link="#0000EE" vlink="#551A8B" bgcolor="#fbc713">
+<h1>Magick++ -- C++ API for ImageMagick</h1>
+<p>Magick++ is the object-oriented C++ API to the <a href="../../index.html"><span lang="en-US">ImageMagick</span></a> image-processing library, the most comprehensive open-source image processing package available. Read the latest <a href="NEWS.html">NEWS</a> and <a href="ChangeLog.html"><span lang="en-US">ChangeLog</span></a> for <span lang="en-US">Magick</span>++.</p>
+<p><img src="ImageMagick.png" name="Graphic2" align="right" width="250" height="259" border="0">Magick++ supports an object model which is inspired by <a href="../../perl.html">PerlMagick</a>. Images support implicit reference counting so that copy constructors and assignment incur almost no cost. The cost of actually copying an image (if necessary) is done just before modification and this copy is managed automatically by Magick++. De-referenced copies are automatically deleted. The image objects support value (rather than pointer) semantics so it is trivial to support multiple generations of an image in memory at one time.</p>
+<p>Magick++ provides integrated support for the <a href="http://www.sgi.com/tech/stl/">Standard Template Library</a> (STL) so that the powerful containers available (e.g. <a href="http://www.sgi.com/tech/stl/Deque.html"><span lang="en-US">deque</span></a>, <a href="http://www.sgi.com/tech/stl/Vector.html">vector</a>, <a href="http://www.sgi.com/tech/stl/List.html">list</a>, and <a href="http://www.sgi.com/tech/stl/Map.html">map</a>) can be used to write programs similar to those possible with PERL &amp;<span lang="en-US">PerlMagick.</span> STL-<span lang="en-US">compatible</span> template versions of <span lang="en-US">ImageMagick's</span> list-style operations are provided so that operations may be performed on multiple images stored in STL containers.</p>
+<h3>Documentation</h3>
+<p>Detailed <a href="Documentation.html">documentation</a> are provided for all Magick++ classes, class methods, and template functions which comprise the API.</p>
+<h3>Obtaining Magick++</h3>
+<p>Magick++ is included as part of <a href="../../index.html">ImageMagick</a> source releases and may be retrieved via <a href="../download.html"><span lang="en-US">ftp</span></a> or <a href="../subversion.html">subversion</a>.</p>
+<h3>Installation</h3>
+<p>Once you have the sources available, follow these detailed <a href="Install.html">installation instructions</a> for UNIX and Windows.</p>
+<h3>Usage</h3>
+<p>A helper script named <i>Magick++-config</i> is installed under Unix which assists with recalling compilation options required to compile and link programs which use Magick++. For example, the following command will compile and link the source file <i>example.cpp</i> to produce the executable <i>example</i> (notice that quotes are backward quotes):</p>
+<blockquote><tt><font color="#ffffff"><font size="2">c++ `Magick++-config --cxxflags --cppflags` -o example example.cpp `Magick++-config --ldflags --libs`
+</font></tt></blockquote>
+<p>Windows users may get started by manually editing a project file for one of the Magick++ demo programs.</p>
+<p><b>Please note that under Windows (and possibly the Mac) it is necessary to initialize the ImageMagick library prior to using the Magick++ library</b>. This initialization is performed by passing the path to the ImageMagick DLLs (assumed to be in the same directory as your program) to the InitializeMagick() function call. This is commonly performed by providing the path to your program (argv[0]) as shown in the following example:</p>
+<blockquote><tt><font color="#ffffff">int main( int /*argc*/, char ** argv)</font></tt><br>
+<tt><font color="#ffffff">{</font></tt><br>
+<tt><font color="#ffffff">InitializeMagick(*argv);</font></tt></blockquote>
+<p>This <span lang="en-US">initialization</span> step is not required under Unix, Linux, <span lang="en-US">Cygwin</span>, or any other operating environment that supports the notion of "installing" ImageMagick in a known location.</p>
+<h3>Reporting Bugs</h3>
+<p>Please report any bugs or questions via the <a href="http://studio.imagemagick.org/magick/index.php">ImageMagick Discourse Server</a>.
+<h3>Related Packages</h3>
+<p>Users who are interested in displaying their images at video game rates on a wide number of platforms and graphic environments (e.g. Windows, X11, BeOS, and Linux/CGI) may want to try <a href="http://www.simplesystems.org/PtcMagick/">PtcMagick</a>, which provides a simple interface between Magick++ and <a href="http://www.gaffer.org/ptc/">OpenPTC</a>.</p>
+</body>
+</html>

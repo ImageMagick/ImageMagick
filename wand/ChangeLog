@@ -1,0 +1,332 @@
+2009-08-27  6.5.5-3 Cristy  <quetzlzacatenango@image...>
+  * Added MagickSetOpacity/MagickGetOpacity.
+
+2009-07-27  6.5.4-7 Cristy  <quetzlzacatenango@image...>
+  * Added MagickSetBorderColor/MagickGetBorderColor.
+
+2009-04-27  6.5.1-9 Cristy  <quetzlzacatenango@image...>
+  * Added MagickSetImageFuzz/MagickGetImageFuzz.
+
+2009-03-08  6.4.9-10 Mikko  <mkoppanen@php...>
+  * Added DrawGet/SetTextKerning and DrawGet/SetInterWordSpacing.
+
+2008-11-27  6.4.6-7 Cristy  <quetzlzacatenango@image...>
+  * MagickSetVirtualPixelMethod() now properly sets and returns the
+    virtual pixel method.
+
+2008-11-03  6.4.5-4 Cristy  <quetzlzacatenango@image...>
+  * Do not filter drawing commands.
+
+2008-10-27  6.4.5-1 Cristy  <quetzlzacatenango@image...>
+  * Add MagickSparseColorImage() API method.
+    
+2008-02-23  6.3.9-0 Cristy  <quetzlzacatenango@image...>
+  * Patch MagickReadImageBlob() to support Postscript which does not have
+    native blob support.
+
+2008-01-28  6.3.8-3 Cristy  <quetzlzacatenango@image...>
+  * Return wand->images->depth for MagickGetImageDepth();
+
+2008-01-10  6.3.7-10 Cristy  <quetzlzacatenango@image...>
+  * Inherit image exception *before* destroying the cloned image (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10415).
+
+2007-11-27  6.3.7-2 Cristy  <quetzlzacatenango@image...>
+  * Fix memory leak in MagickSetImageProfile() (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=10197).
+
+2007-11-06  6.3.6-10 Cristy  <quetzlzacatenango@image...>
+  * New MagickSetImageAlphaChannel() method to activate, deactivate, reset, or
+	  set the image alpha channel.
+
+2007-10-27  6.3.6-4 Cristy  <quetzlzacatenango@image...>
+  * Added get/set font and pointsize methods to magick-property.c (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=6&t=9997).
+
+2007-09-10  6.3.5-9 Cristy  <quetzlzacatenango@image...>
+  * Added MagickGetImageProperties(), MagickGetImageOptions(), and
+    MagickGetImageProfiles() methods.
+
+2007-07-18  6.3.5-3 Cristy  <quetzlzacatenango@image...>
+  * Clone profile before returning from MagickRemoveImageProfile().
+
+2007-07-16  6.3.5-2 Cristy  <quetzlzacatenango@image...>
+  * Add MagickGetType() method.
+  * Fix MagickAddImage() relative to the iterator offset (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=9218).
+
+2007-05-23  6.3.4-5 Cristy  <quetzlzacatenango@image...>
+  * * Add MagickPaintFloodfillImage() method.
+
+2007-04-18  6.3.3-9 Kwon  <xogusgalaxy@nate....>
+  * Fixed small memory leak in RelinquishWandId().
+
+2007-02-24  6.3.3-0 Cristy  <quetzlzacatenango@image...>
+  * Add MagickResetImagePage() to reset the image page canvas and position.
+
+2007-01-16  6.3.2-0 Cristy  <stentz@image...>
+  * Added methods MagickGetAntialias(), MagickSetAntialias(),
+    MagickGetInterpolateMethod(), and MagickSetInterpolateMethod().
+
+2007-01-08  6.3.1-7 Cristy  <stentz@image...>
+  * MagickOrtderedPosterizeImage() performs an ordered dither based on a number
+  	of pre-defined dithering threshold maps, but over multiple intensity levels,
+  	which can be different for different channels, according to the input
+  	arguments.
+  * Added MagickSetImageClipMask(), MagickGetImageClipMask() methods.
+  * Add MagickSetImageProperty()/MagickGetImageProperty() and deprecate
+    MagickSetImageAttribute()/MagickGetImageAttribute().
+
+2006-10-12  6.3.0-1 Cristy  <stentz@image...>
+  * MagickSetImageColormapColor() now properly sync the image colormap.
+  * Add MagickGetImageInterpolateMethod() and MagickSetImageInterpolateMethod().
+
+2006-06-26  6.2.8-6 Cristy  <stentz@image...>
+  * DrawSetFillRule() no longer emits an improper MVG command.
+
+2006-06-26  6.2.8-0 Cristy  <stentz@image...>
+  * Fixed small memory leak in ClearDrawingWand().
+
+2006-05-10  6.2.7-6 Cristy  <stentz@image...>
+  * Add MagickSegmentImage() method to API.
+
+2005-12-31  Cristy  <stentz@image...>
+  * Opacity value not being returned by PixelGetColorAsString() /
+    PixelGetColorAsNormalizedString() correctly (bug report by O. Watson).
+
+2005-12-28  Cristy  <stentz@image...>
+  * DrawSetGravity() actually sets the gravity when ForgetGravity is 
+    specified (bug report by O. Watson).
+  * Added MagickSetIteratorIndex() and MagickGetIteratorIndex() and
+    deprecated MagickSetImageIndex() and MagickGetImageIndex().
+
+2005-12-21  Cristy  <stentz@image...>
+  * PixelSyncIterator() promotes PseudoClass images to DirectClass (bug
+    report by O. Watson).
+  * Fix PixelGetIteratorRow()  to return the correct image row.
+
+2005-12-11  Cristy  <stentz@image...>
+  * Add PixelGetIteratorRow() and PixelGetCurrentIteratorRow() methods
+    (suggested by O. Watson).
+  * Add PixelGetColorAsNormalizedString() method (suggested by O. Watson).
+ 
+2005-11-14  Cristy  <stentz@image...>
+  * Add MagickSigmoidalContrastImage() method.
+  * Set the pixel depth in MagickSetPixelColor().
+
+2005-10-28  Cristy  <stentz@image...>
+  * Add MagickRandomThresholdImage(), MagickRandomThresholdImageChannel(),
+    and MagickShadeImage() (suggested by O. Watson).
+
+2005-10-18  Cristy  <stentz@image...>
+  * PixelGetQuantumColor() automatically converts CMYK pixel wands to RGB.
+  * Add DrawResetVectorGraphics() method to reset the vector graphics but not
+    the drawing attributes.
+
+2005-09-20  Cristy  <yarrow@image...>
+  * Do not inherit base opacity when setting fill/stroke color.
+
+2005-09-10  Cristy  <yarrow@image...>
+  * Added MagickGetImageTicksPerSecond() and MagickSetImageTicksPerSecond().
+  * Added MagickGetMagickResource().
+  * Added MagickThumbnaiImage().
+
+2005-09-01  Cristy  <yarrow@image...>
+  * DrawSetStrokeDashArray() no longer faults for an array of one element
+    (bug report by O. Watson).
+
+2005-08-24  Cristy  <yarrow@image...>
+  * Add MagickWandGenesis() and MagickWandTermnus() methods.
+
+2005-08-06  Cristy  <yarrow@image...>
+  * Add MagickSetImageExtent() method.
+  * Add MagickSetType() method.
+
+2005-06-15  Cristy  <yarrow@image...>
+  * Add MagickClearException() to wand/magick-wand.h.
+
+2005-06-15  Cristy  <yarrow@image...>
+  * DrawGetFillOpacity() and DrawSetFillOpacity() were setting alpha values
+    rather than opacity.  Note, both of these methods are deprecated.
+  * Added MagickSetImageProgressMonitor() to monitor the progress of a specific
+    image.
+
+2005-06-07  Cristy  <yarrow@image...>
+  * Initialize pixel iterator ID in NewPixelRegionIterator (bug report by
+    O. Watson).
+  * Add MagickGetImagePixelColor() method (suggested by O. Watson).
+
+2005-06-01  Cristy  <yarrow@image...>
+  * Added methods PixelSetFirstIteratorRow(), PixelSetLastIteratorRow(),
+    and IsPixelWandSimilar().
+
+2005-05-28  Cristy  <yarrow@image...>
+  * MagickGetImageTotalInkDensity() returns the total ink density for an image.
+
+2005-05-16  Cristy  <yarrow@image...>
+  * Add MagickSetPage() and MagickSetImagePage() methods.
+
+2005-05-10  Cristy  <yarrow@image...>
+  * CloneDrawingWand() no longer faults when the supplied drawing wand has not
+    been initialized.
+
+2005-05-08  Cristy  <yarrow@image...>
+  * MagickGetImageCompressionQuality() properly returns the image compression
+    quality.  Previously it returned the wand compression quality.
+
+2005-04-29  Cristy  <yarrow@image...>
+  * PixelSetYellowQuantum() now sets the correct color component.
+  * Add MagickSetBackgroundColor() method to set the wand's background color
+    attribute.
+
+2005-04-14  Cristy  <yarrow@image...>
+  * Inherit exception when MagickWriteImageFile() fails.
+
+2005-04-11  Cristy  <yarrow@image...>
+  * Added MagickRegionOfInterestImage() to return a region of an image as a
+    new wand.
+
+2005-04-10  Cristy  <yarrow@image...>
+  * Throw exception if fdopen() fails in
+    MagickWriteImageFile()/MagickReadImageFile() methods.
+
+2005-03-22  Cristy  <yarrow@image...>
+  * Added MagickSigmoidalContrastImage() for sigmoidal non-linearity contrast
+    control.
+
+2005-03-10  Chris Madison  <madisonblu@hotma...>
+  * Added the MagickSepiaToneImage() method to simulate a sepia-toned photo.
+
+2004-03-05  Chris Madison  <madisonblu@hotma...>
+  * Add MagickGetImageAttribute() method.
+
+2005-02-15  Peter Seiderer  <ps.report@gmx.n...>
+  * Avoid an assert by checking the return from GetImageFromMagickWand(0.
+
+2005-01-19  Cristy  <yarrow@image...>
+  * Permit NULL for MagickSetFilename() & MagickSetImageFilename().
+
+2005-01-10  Cristy  <yarrow@image...>
+  * Permit NULL for MagickSetFormat() & MagickSetImageFormat().
+
+2004-12-15  Cristy  <yarrow@image...>
+  * Added ClearMagickWand(), ClearPixelIterator(), ClearPixelWand() and
+    ClearDrawingWand() methods.
+
+2004-12-10  Cristy  <yarrow@image...>
+  * Set the vector graphics length in DrawSetVectorGraphics() (bug report from
+    O. Watson).
+
+2004-12-09  Cristy  <yarrow@image...>
+  * Classic off-by-one patch for CloneDrawingWand() (bug report from O. Watson).
+
+2004-12-08  Cristy  <yarrow@image...>
+  * DrawGetStrokeOpacity() just calls DrawGetStrokeAlpha(); it is supposed to
+    return the stroke color's opacity, not the alpha (problem reports from O.
+    Watson).
+
+2004-12-07  Cristy  <yarrow@image...>
+  * Fixed problem reports from O. Watson:
+    1) If the format of an image is not set, the BLOB returned by
+       MagickGetImageBlob() will be empty, but no MagickWand error condition
+       is ever set.
+    2) If the MagickWand's image sequence's format if set (via
+       MagickSetFormat()), but the image formats of individual images are not
+       set, any attempt to retrieve the sequence's image BLOB still fails
+       (i.e. via MagickGetImagesBlob()). If the MagickWand's image format
+       has been set, the API should use that format as the exclusive format
+       for the returned BLOB.
+    3) When the situation in #2 above occurs, no error condition is
+       set. If the problem mentioned in #2 is fixed, an error condition
+       should be set if there is nothing (no format or no filename), from
+       which the API can determine the image format in which it should
+       return the BLOB.
+    4) Even though the MagickWand's image format has been set, when each
+       individual image's format/filename is empty, MagickWriteImagesFile()
+       sets the following error:
+
+         no encode delegate for this image format 'filename.ext.0'
+
+       where "filename.ext" was the name of the file on which the filehandle
+       was opened. The format of the MagickWand (if it is set). should
+       suffice as the desired encoding delegate.
+
+2004-11-18  Cristy  <yarrow@image...>
+  * Added MagickNewImage() adds a blank image canvas of the specified size and
+    background color to the wand.
+
+2004-11-15  Cristy  <yarrow@image...>
+  * Added MagickGetInterlaceScheme() to correspond to
+    MagickSetInterlaceScheme().
+
+2004-11-06  Cristy  <yarrow@image...>
+  * GNS contributed MagickQueryMultilineFontMetrics().  Its like
+    MagickQueryFontMetrics() but returns the maximum text width and height for
+    multiple lines of text.
+
+2004-11-04  Cristy  <yarrow@image...>
+  * MagickReadImageBlob() and MagickReadImageFile() calls GetFirstImageInList(),
+    previously GetLastImageInList().
+
+2004-10-28  Cristy  <yarrow@image...>
+  * MagickTrimImage() was not properly trimmming the image.
+
+2004-10-27  Cristy  <yarrow@image...>
+  * Added DrawSetTextAlignment() and DrawGetTextAlignment() methods (suggested
+    by Daniel Jackson).
+
+2004-10-25  Cristy  <yarrow@image...>
+  * Verify the Wand QuantumDepth matches that of the ImageMagick core API.
+  * Added MagickSetAdjoin() and MagickSetImageAdjoin() methods.
+
+2004-10-17  Cristy  <yarrow@image...>
+  * Added the MagickGetImagesBlob() method to turn an image sequence into a
+    blob.
+
+2004-10-14  Cristy  <yarrow@image...>
+  * Added methods MagickClearException(), DrawClearException(),
+    PixelClearException(), and PixelClearIteratorException().
+
+2004-10-12  Cristy  <yarrow@image...>
+  * Add DrawGetVectorGraphics()/DrawSetVectorGraphics()/methods as a way to
+    persist the vector graphics state.
+
+2004-09-30  Cristy  <yarrow@image...>
+  * Add new MagickQueryConfigureOption() method to return a valur associated
+    with a particular option.
+
+2004-09-29  Cristy  <yarrow@image...>
+  * Return an error if MagickSetImageIndex() requests a bogus image index.
+  * MagickWriteImages(): default to a reasonable filename when no filename is
+    provided.
+
+2004-09-28  Cristy  <yarrow@image...>
+  * Add new CloneDrawingWand() method.
+
+2004-09-15  Cristy  <yarrow@image...>
+  * If the filename parameter of MagickWriteImage() is NULL, use the existing
+    filename.
+
+2004-09-13  Chris Madison  <madisonblu@hotma...>
+  * DestroyMagickWand() was previous void, now it returns (MagickWand *) NULL
+    to force the wand to a known value and to detect logic errors in the program
+    (any reference to the wand after it is destroyed will cause a fault).
+    Other destroy methods will be changed in this manner as well.  Note,
+    this change will not affect existing programs that rely on these methods.
+
+2004-09-11  Cristy  <yarrow@image...>
+  * Relinquish pixel iterator ID to prevent small memory leak.
+
+2004-09-08  Cristy  <yarrow@image...>
+  * Add MagickSetResolution(), required to render Postscript at a density
+    other than the default (e.g. 72dpi).
+
+2004-09-03  Cristy  <yarrow@image...>
+  * Add IsMagickWand(), IsDrawingWand(), IsPixelWand(), and IsPixelIterator()
+    methods.
+  * Convert several drawing wand methods from void to MagickBooleanType so
+    they return MagickFalse if an error occurs (e.g. DrawComposite()).
+
+2004-08-28  Cristy  <yarrow@image...>
+  * We now export the DrawComposite() drawing wand method as a public method.
+    Previously it was private.

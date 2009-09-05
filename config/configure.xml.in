@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuremap [
+<!ELEMENT configuremap (configure)+>
+<!ELEMENT configure (#PCDATA)>
+<!ATTLIST configure name CDATA #REQUIRED>
+<!ATTLIST configure value CDATA #REQUIRED>
+]>
+<configuremap>
+  <configure name="NAME" value="@PACKAGE_NAME@"/>
+  <configure name="LIB_VERSION" value="@PACKAGE_LIB_VERSION@"/>
+  <configure name="LIB_VERSION_NUMBER" value="@PACKAGE_LIB_VERSION_NUMBER@"/>
+  <configure name="RELEASE_DATE" value="@PACKAGE_RELEASE_DATE@"/>
+  <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
+  <configure name="PREFIX" value="@PREFIX_DIR@"/>
+  <configure name="EXEC-PREFIX" value="@EXEC_PREFIX_DIR@"/>
+  <configure name="VERSION" value="@PACKAGE_VERSION@"/>
+  <configure name="CC" value="@CC@"/>
+  <configure name="CFLAGS" value="@MAGICK_CFLAGS@"/>
+  <configure name="CPPFLAGS" value="@MAGICK_CPPFLAGS@"/>
+  <configure name="PCFLAGS" value="@MAGICK_PCFLAGS@"/>
+  <configure name="DEFS" value="@DEFS@"/>
+  <configure name="LDFLAGS" value="@MAGICK_LDFLAGS@"/>
+  <configure name="LIBS" value="@MAGICK_LIBS@"/>
+  <configure name="CXX" value="@CXX@"/>
+  <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
+  <configure name="DISTCHECK_CONFIG_FLAGS" value="@DISTCHECK_CONFIG_FLAGS@"/>
+  <configure name="HOST" value="@host@"/>
+  <configure name="DELEGATES" value="@DELEGATES@"/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2009 ImageMagick Studio LLC"/>
+  <configure name="WEBSITE" value="http://www.imagemagick.org"/>
+  <configure name="QuantumDepth" value="@QUANTUM_DEPTH@"/>
+</configuremap>

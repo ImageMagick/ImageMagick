@@ -1,0 +1,124 @@
+.TH montage 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
+.SH NAME
+montage \- create a composite image by combining several separate images. The images are tiled on the composite image optionall adorned with a border, frame, image name, and more.
+.SH SYNOPSIS
+.TP
+\fBmontage\fP \fIinput-file\fP [\fIoptions\fP] \fIoutput-file\fP
+.SH OVERVIEW
+The \fBmontage\fP program is a member of the ImageMagick(1) suite of tools.  Use it to create a composite image by combining several separate images. The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.
+
+For more information about the montage command, point your browser to file://@DOCUMENTATION_PATH@/www/montage.html or http://www.imagemagick.org/script/montage.php.
+.SH DESCRIPTION
+Image Settings:
+  \-adjoin              join images into a single multi-image file
+  \-affine matrix       affine transform matrix
+  \-authenticate value  decrypt image with this password
+  \-blue-primary point  chromaticity blue primary point
+  \-bordercolor color   border color
+  \-channel type        apply option to select image channels
+  \-colors value        preferred number of colors in the image
+  \-colorspace type     alternate image colorsapce
+  \-comment string      annotate image with comment
+  \-compose operator    composite operator
+  \-compress type       type of pixel compression when writing the image
+  \-define format:option
+                       define one or more image format options
+  \-density geometry    horizontal and vertical density of the image
+  \-depth value         image depth
+  \-display server      query font from this X server
+  \-dispose method      layer disposal method
+  \-dither method       apply error diffusion to image
+  \-draw string         annotate the image with a graphic primitive
+  \-encoding type       text encoding type
+  \-endian type         endianness (MSB or LSB) of the image
+  \-extract geometry    extract area from image
+  \-fill color          color to use when filling a graphic primitive
+  \-filter type         use this filter when resizing an image
+  \-font name           render text with this font
+  \-format "string"     output formatted image characteristics
+  \-gamma value         level of gamma correction
+  \-geometry geometry   preferred tile and border sizes
+  \-gravity direction   which direction to gravitate towards
+  \-green-primary point chromaticity green primary point
+  \-identify            identify the format and characteristics of the image
+  \-interlace type      type of image interlacing scheme
+  \-interpolate method  pixel color interpolation method
+  \-label string        assign a label to an image
+  \-limit type value    pixel cache resource limit
+  \-matte               store matte channel if the image has one
+  \-mattecolor color    frame color
+  \-mode type           framing style
+  \-monitor             monitor progress
+  \-page geometry       size and location of an image canvas (setting)
+  \-pointsize value     font point size
+  \-profile filename    add, delete, or apply an image profile
+  \-quality value       JPEG/MIFF/PNG compression level
+  \-quantize colorspace reduce colors in this colorspace
+  \-quiet               suppress all warning messages
+  \-red-primary point   chromaticity red primary point
+  \-regard-warnings     pay attention to warning messages
+  \-sampling-factor geometry
+                       horizontal and vertical sampling factor
+  \-scenes range        image scene range
+  \-seed value          seed a new sequence of pseudo-random numbers
+  \-set attribute value set an image attribute
+  \-shadow              add a shadow beneath a tile to simulate depth
+  \-size geometry       width and height of image
+  \-stroke color        color to use when stroking a graphic primitive
+  \-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp
+  \-texture filename    name of texture to tile onto the image background
+  \-thumbnail geometry  create a thumbnail of the image
+  \-tile geometry       number of tiles per row and column
+  \-title string        decorate the montage image with a title
+  \-transparent-color color
+                       transparent color
+  \-treedepth value     color tree depth
+  \-trim                trim image edges
+  \-units type          the units of image resolution
+  \-verbose             print detailed information about the image
+  \-virtual-pixel method
+                       virtual pixel access method
+  \-white-point point   chromaticity white point
+
+Image Operators:
+  \-adaptive-sharpen geometry
+                       adaptively sharpen pixels; increase effect near edges
+  \-annotate geometry text
+                       annotate the image with text
+  \-blur geometry      reduce image noise and reduce detail levels
+  \-border geometry     surround image with a border of color
+  \-crop geometry       preferred size and location of the cropped image
+  \-flatten             flatten a sequence of images
+  \-flip                flip image in the vertical direction
+  \-flop                flop image in the horizontal direction
+  \-frame geometry      surround image with an ornamental border
+  \-monochrome          transform image to black and white
+  \-polaroid angle      simulate a Polaroid picture
+  \-repage geometry     size and location of an image canvas (operator)
+  \-resize geometry     resize the image
+  \-rotate degrees      apply Paeth rotation to the image
+  \-strip               strip image of all profiles and comments
+  \-transform           affine transform image
+  \-transparent color   make this color transparent within the image
+  \-type type           image type
+  \-unsharp geometry    sharpen the image
+
+Image Sequence Operators:
+  \-coalesce            merge a sequence of images
+
+Miscellaneous Options:
+  \-debug events        display copious debugging information
+  \-help                print program options
+  \-log format          format of debugging information
+  \-list type           print a list of supported option arguments
+  \-version             print version information
+
+In addition to those listed above, you can specify these standard X resources as command line options:  \-background, \-bordercolor, \-borderwidth, \-font, \-mattecolor, or \-title.
+
+By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
+.SH SEE ALSO
+ImageMagick(1)
+
+.SH COPYRIGHT
+
+\fBCopyright (C) 1999-2009 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://www.imagemagick.org/script/license.php\fP

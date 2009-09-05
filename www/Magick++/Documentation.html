@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Magick++ Documentation</title>
+<meta name="GENERATOR" content="OpenOffice.org 1.0 (Win32)">
+<meta name="AUTHOR" content="Bob Friesenhahn">
+<meta name="CREATED" content="20020805;14591273">
+<meta name="CHANGEDBY" content="Bob Friesenhahn">
+<meta name="CHANGED" content="20020805;15041750">
+<meta name="DESCRIPTION" content="C++ API for ImageMagick">
+<link rel=stylesheet type=text/css href=../../www/magick.css>
+</head>
+<body lang="en-US" text="#ffffff" link="#0000EE" vlink="#551A8B" bgcolor="#fbc713">
+<p align="center"><img src="Magick++.png" name="Graphic1" align="bottom" width="464" height="134" border="0"></p>
+<p><a href="http://www.imagemagick.org/www/Magick++">Magick++</a> provides a simple C++ API to the ImageMagick image processing library which supports reading and writing a huge number of image formats as well as supporting a broad spectrum of traditional image processing operations. The ImageMagick C API is complex and the data structures are currently not documented. Magick++ provides access to most of the features available from the C API but in a simple object-oriented and well-documented framework.</p>
+<p>Magick++ is intended to support commercial-grade application development. In order to avoid possible conflicts with the user's application, all symbols contained in Magick++ (included by the header <tt><font color="#663366">&lt;Magick++.h&gt;</font></tt>) are scoped to the <span lang="en-US">namespace</span> <i>Magick</i>. Symbols from the ImageMagick C library are imported under the <i>MagickLib</i> namespace to avoid possible conflicts and ImageMagick macros are only included within the Magick++ implementation so they won't impact the user's application.</p>
+<p>The core class in Magick++ is the <a href="Image.html">Image</a> class. The Image class provides methods to manipulate a single image frame (e.g. a JPEG image). Standard Template Library (STL)<span lang="en-US">compatible</span> <a href="STL.html">algorithms and function objects</a> are provided in order to manipulate multiple image frames or to read and write file formats which support multiple image frames (e.g. GIF animations, MPEG animations, and Postscript files).</p>
+<p>The Image class supports reference-counted memory management which supports the semantics of an intrinsic variable type (e.g. 'int') with an extremely efficient <tt>operator =</tt> and copy constructor (only a pointer is assigned) while ensuring that the image data is replicated as required so that it the image may be modified without impacting earlier generations. Since the Image class manages heap memory internally, images are best allocated via C++ automatic (stack-based) memory allocation. This support allows most programs using Magick++ to be written without using any pointers, simplifying the implementation and avoiding the risks of using pointers. When a program uses automatic memory allocation to allocate Magick++ images, that aspect of the program becomes naturally exception-safe and thread-safe.</p>
+<p>The image class uses a number of supportive classes in order to specify arguments. Colors are specified via the <a href="Color.html">Color</a> class. Colors specified in X11-style string form are implicitly converted to the Color class. Geometry arguments (those specifying width, height, and/or x and y offset) are specified via the <a href="Geometry.html">Geometry</a> class. Similar to the Color class, geometries specified as an X11-style string are implicitly converted to the Geometry class. Two dimensional drawable objects are specified via the <a href="Drawable.html">Drawable</a> class. Drawable objects may be provided as a single object or as a list of objects to be rendered using the current image options. Montage options (a montage is a rendered grid of thumbnails in one image) are specified via the <a href="Montage.html">Montage</a> class.</p>
+<p>Errors are reported using C++ exceptions derived from the <a href="Exception.html">Exception</a> class, which is itself derived from the standard C++ exception class. Exceptions are reported synchronous with the operation and are caught by the first matching <i>try</i> block as the stack is unraveled. This allows a clean coding style in which multiple related Magick++ commands may be executed with errors handled as a unit rather than line-by-line. Since the Image object provides reference-counted memory management, unreferenced images on the stack are automatically cleaned up, avoiding the potential for memory leaks.</p>
+<p style="margin-bottom: 0cm">For ease of access, the documentation for the available user-level classes is available via the following table.</p>
+<br>
+<p align="center" style="margin-bottom: 0cm"><b>Magick++ User-Level Classes</b></p>
+<center>
+<table width="90%" border="1" cellpadding="2" cellspacing="3">
+<col width="35*">
+<col width="221*">
+<tr>
+<td width="14%">
+<p><a href="Blob.html">Blob</a></p></td>
+<td width="86%">
+<p>Binary Large OBject container.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="CoderInfo.html">CoderInfo</a></p></td>
+<td width="86%">
+<p>Report information about supported image formats (use with <a href="STL.html#coderInfoList">coderInfoList</a>())</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Color.html">Color</a></p></td>
+<td width="86%">
+<p>Color specification.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Drawable.html">Drawable</a></p></td>
+<td width="86%">
+<p>Drawable shape (for input to 'draw').</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Exception.html">Exception</a></p></td>
+<td width="86%">
+<p>C++ exception objects.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Geometry.html">Geometry</a></p></td>
+<td width="86%">
+<p>Geometry specification.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Image.html">Image</a></p></td>
+<td width="86%">
+<p>Image frame. This is the primary object in Magick++.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Montage.html">Montage</a></p></td>
+<td width="86%">
+<p>Montage options for montageImages().</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="Pixels.html">Pixels</a></p></td>
+<td width="86%">
+<p>Low-level access to image pixels.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="STL.html">STL</a></p></td>
+<td width="86%">
+<p>STL algorithms and function objects for operating on containers of image frames.</p></td></tr>
+<tr>
+<td width="14%">
+<p><a href="TypeMetric.html">TypeMetric</a></p></td>
+<td width="86%">
+<p>Container for font type metrics (use with <a href="Image.html#fontTypeMetrics">Image::fontTypeMetrics</a>).</p></td></tr></table></center>
+<blockquote style="margin-left: 0cm"></blockquote>
+<br>
+</body>
+</html>

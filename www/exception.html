@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: Exceptions</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="exceptions, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2009 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 200911010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 200911010480 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201001010120 Buchhorn -->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index"></p>
+
+<p>ImageMagick returns a status of 0 whenever a command or algorithm successfully complete without complaint.  A warning code generally is typically just a notice that something unusual occurred but the command or algorithm still completed and most likely the results are still usable.  An error means the command or algorithm could not complete as expected and any results are unreliable.  A fatal error means the command or algorithm could not complete and the process exits prematurely and no results are returned.</p>
+
+<table class="doc">
+  <caption>ImageMagick Error and Warning Codes</caption>
+  <tbody>
+  <tr>
+    <th style="width: 15%">Domain</th>
+    <th>Description</th>
+    <th>Warning</th>
+    <th>Error</th>
+    <th>Fatal Error</th>
+  </tr>
+
+  <tr>
+    <td valign="top">Success</td>
+    <td valign="top">the command or algorithm completed successfully without complaint</td>
+    <td valign="top">0</td>
+    <td valign="top">0</td>
+    <td valign="top">0</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Resource Limit</td>
+    <td valign="top">a program resource is exhausted (e.g. not enough memory)</td>
+    <td valign="top">300</td>
+    <td valign="top">400</td>
+    <td valign="top">700</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Type</td>
+    <td valign="top">A font is unavailable; a substitution may have occurred</td>
+    <td valign="top">305</td>
+    <td valign="top">405</td>
+    <td valign="top">705</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Option</td>
+    <td valign="top">a command-line option was malformed</td>
+    <td valign="top">310</td>
+    <td valign="top">410</td>
+    <td valign="top">710</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Delegate</td>
+    <td valign="top">an ImageMagick <i>delegate</i> failed to complete</td>
+    <td valign="top">315</td>
+    <td valign="top">415</td>
+    <td valign="top">715</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Missing Delegate</td>
+    <td valign="top">the image type can not be read or written because the appropriate <i>Delegate</i> is missing</td>
+    <td valign="top">320</td>
+    <td valign="top">420</td>
+    <td valign="top">720</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Corrupt Image</td>
+    <td valign="top">the image file may be corrupt</td>
+    <td valign="top">325</td>
+    <td valign="top">425</td>
+    <td valign="top">725</td>
+  </tr>
+
+  <tr>
+    <td valign="top">FileOpen</td>
+    <td valign="top">the image file could not be opened for reading or writing</td>
+    <td valign="top">330</td>
+    <td valign="top">430</td>
+    <td valign="top">730</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Blob</td>
+    <td valign="top">a binary large object could not be allocated, read, or written</td>
+    <td valign="top">335</td>
+    <td valign="top">435</td>
+    <td valign="top">735</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Stream</td>
+    <td valign="top">there was a problem reading or writing from a stream</td>
+    <td valign="top">340</td>
+    <td valign="top">440</td>
+    <td valign="top">740</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Cache</td>
+    <td valign="top">pixels could not be read or written to the pixel cache</td>
+    <td valign="top">345</td>
+    <td valign="top">445</td>
+    <td valign="top">745</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Coder</td>
+    <td valign="top">there was a problem with an image coder</td>
+    <td valign="top">350</td>
+    <td valign="top">450</td>
+    <td valign="top">750</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Module</td>
+    <td valign="top">there was a problem with an image module</td>
+    <td valign="top">355</td>
+    <td valign="top">455</td>
+    <td valign="top">755</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Draw</td>
+    <td valign="top">a drawing operation failed</td>
+    <td valign="top">360</td>
+    <td valign="top">460</td>
+    <td valign="top">760</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Image</td>
+    <td valign="top">the operation could not complete due to an incompatible image</td>
+    <td valign="top">365</td>
+    <td valign="top">465</td>
+    <td valign="top">765</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Wand</td>
+    <td valign="top">there was a problem specific to the MagickWand API</td>
+    <td valign="top">370</td>
+    <td valign="top">470</td>
+    <td valign="top">770</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Random</td>
+    <td valign="top">there is a problem generating a true or pseudo-random number</td>
+    <td valign="top">375</td>
+    <td valign="top">475</td>
+    <td valign="top">775</td>
+  </tr>
+
+  <tr>
+    <td valign="top">XServer</td>
+    <td valign="top">an X resource is unavailable</td>
+    <td valign="top">380</td>
+    <td valign="top">480</td>
+    <td valign="top">780</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Monitor</td>
+    <td valign="top">there was a problem activating the progress monitor</td>
+    <td valign="top">385</td>
+    <td valign="top">485</td>
+    <td valign="top">785</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Registry</td>
+    <td valign="top">there was a problem getting or setting the registry</td>
+    <td valign="top">390</td>
+    <td valign="top">490</td>
+    <td valign="top">790</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Configure</td>
+    <td valign="top">there was a problem getting a configuration file</td>
+    <td valign="top">395</td>
+    <td valign="top">495</td>
+    <td valign="top">795</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Policy</td>
+    <td valign="top">a policy denies access to a delegate, coder, filter, path, or resource.</td>
+    <td valign="top">399</td>
+    <td valign="top">499</td>
+    <td valign="top">799</td>
+  </tr>
+  </tbody>
+</table>
+
+</div>
+
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2009 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>
