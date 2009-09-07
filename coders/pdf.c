@@ -102,7 +102,8 @@ static MagickBooleanType
 %  The format of the InvokePostscriptDelegate method is:
 %
 %      MagickBooleanType InvokePostscriptDelegate(
-%        const MagickBooleanType verbose,const char *command)
+%        const MagickBooleanType verbose,const char *command,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -112,10 +113,15 @@ static MagickBooleanType
 %    o command: the address of a character string containing the command to
 %      execute.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType InvokePostscriptDelegate(
-  const MagickBooleanType verbose,const char *command)
+  const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
 {
+  int
+    status;
+
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(__WINDOWS__)
   char
     **argv;
@@ -128,8 +134,7 @@ static MagickBooleanType InvokePostscriptDelegate(
 
   int
     argc,
-    code,
-    status;
+    code;
 
   register long
     i;
@@ -153,7 +158,10 @@ static MagickBooleanType InvokePostscriptDelegate(
   gs_func_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
 #endif
   if (gs_func == (GhostscriptVectors *) NULL)
-    return(SystemCommand(verbose,command) == 0 ? MagickFalse : MagickTrue);
+    {
+      status=SystemCommand(verbose,command,exception);
+      return(status != 0 ? MagickTrue : MagickFalse);
+    }
   if (verbose != MagickFalse)
     {
       (void) fputs("[ghostscript library]",stdout);
@@ -161,7 +169,10 @@ static MagickBooleanType InvokePostscriptDelegate(
     }
   status=(gs_func->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
-    return(SystemCommand(verbose,command) == 0 ? MagickFalse : MagickTrue);
+    {
+      status=SystemCommand(verbose,command,exception);
+      return(status != 0 ? MagickTrue : MagickFalse);
+    }
   argv=StringToArgv(command,&argc);
   status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
@@ -176,12 +187,22 @@ static MagickBooleanType InvokePostscriptDelegate(
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
   if ((status == 0) || (status == -101))
-    return(MagickFalse);
+    {
+      char
+        *message;
+
+      message=GetExceptionMessage(errno);
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+        "`%s': %s",command,message);
+      message=DestroyString(message);
+      return(MagickFalse);
+    }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "Ghostscript returns status %d, exit code %d",status,code);
   return(MagickTrue);
 #else
-  return(SystemCommand(verbose,command) != 0 ? MagickTrue : MagickFalse);
+  status=SystemCommand(verbose,command,exception);
+  return(status != 0 ? MagickTrue : MagickFalse);
 #endif
 }
 
@@ -544,10 +565,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
      if (cmyk != MagickFalse)
        delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
      else
-       if (LocaleCompare(image_info->magick,"AI") == 0)
-         delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
-       else
-         delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
+#if defined(MAGICKCORE_PNG_DELEGATE)
+       delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
+#else
+       delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
+#endif
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) RelinquishUniqueFileResource(postscript_filename);
@@ -596,7 +618,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,
     read_info->filename,postscript_filename,input_filename);
-  status=InvokePostscriptDelegate(read_info->verbose,command);
+  status=InvokePostscriptDelegate(read_info->verbose,command,exception);
   pdf_image=(Image *) NULL;
   if ((status == MagickFalse) &&
       (IsPDFRendered(read_info->filename) != MagickFalse))

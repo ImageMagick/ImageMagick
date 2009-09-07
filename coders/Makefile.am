@@ -19,6 +19,11 @@
 # Where coder modules get installed
 codersdir = $(CODER_PATH)
 
+if DPS_DELEGATE
+MAGICK_DPS_MODULES = coders/dps.la
+MAGICK_DPS_SRCS = coders/dps.c
+endif
+
 if DJVU_DELEGATE
 MAGICK_DJVU_MODULES = coders/djvu.la
 MAGICK_DJVU_SRCS = coders/djvu.c
@@ -32,11 +37,6 @@ endif
 if FPX_DELEGATE
 MAGICK_FPX_MODULES = coders/fpx.la
 MAGICK_FPX_SRCS = coders/fpx.c
-endif
-
-if WINGDI32_DELEGATE
-MAGICK_GDI32_MODULES = coders/clipboard.la coders/emf.la
-MAGICK_GDI32_SRCS = coders/clipboard.c coders/emf.c
 endif
 
 if JBIG_DELEGATE
@@ -62,6 +62,11 @@ endif
 if TIFF_DELEGATE
 MAGICK_TIFF_MODULES = coders/ept.la coders/tiff.la
 MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
+endif
+
+if WINGDI32_DELEGATE
+MAGICK_GDI32_MODULES = coders/clipboard.la coders/emf.la
+MAGICK_GDI32_SRCS = coders/clipboard.c coders/emf.c
 endif
 
 if WMF_DELEGATE
@@ -92,7 +97,6 @@ MAGICK_CODER_SRCS = \
 	coders/dib.c \
 	coders/dng.c \
 	coders/dot.c \
-	coders/dps.c \
 	coders/dpx.c \
 	coders/fax.c \
 	coders/fits.c \
@@ -172,6 +176,7 @@ MAGICK_CODER_SRCS = \
 	coders/xps.c \
 	coders/ycbcr.c \
 	coders/yuv.c \
+  $(MAGICK_DPS_SRCS) \
   $(MAGICK_DJVU_SRCS) \
   $(MAGICK_EXR_SRCS) \
   $(MAGICK_FPX_SRCS) \
@@ -203,7 +208,6 @@ coders_LTLIBRARIES = \
 	coders/dib.la \
 	coders/dng.la \
 	coders/dot.la \
-	coders/dps.la \
 	coders/dpx.la \
 	coders/fax.la \
 	coders/fits.la \
@@ -283,6 +287,7 @@ coders_LTLIBRARIES = \
 	coders/xps.la \
 	coders/ycbcr.la \
 	coders/yuv.la \
+  $(MAGICK_DPS_MODULES) \
   $(MAGICK_DJVU_MODULES) \
   $(MAGICK_EXR_MODULES) \
   $(MAGICK_FPX_MODULES) \

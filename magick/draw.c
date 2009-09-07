@@ -287,6 +287,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     (void) CloneString(&clone_info->encoding,draw_info->encoding);
   clone_info->pointsize=draw_info->pointsize;
   clone_info->kerning=draw_info->kerning;
+  clone_info->interline_spacing=draw_info->interline_spacing;
   clone_info->interword_spacing=draw_info->interword_spacing;
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
@@ -2152,6 +2153,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             graphic_context[n]->compose=(CompositeOperator) compose;
             break;
           }
+        if (LocaleCompare("interline-spacing",keyword) == 0)
+          {
+            GetMagickToken(q,&q,token);
+            graphic_context[n]->interline_spacing=atof(token);
+            break;
+          }
         if (LocaleCompare("interword-spacing",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
@@ -3617,115 +3624,69 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   const FillRule fill_rule,const long x,const long y,
   MagickRealType *stroke_opacity)
 {
-  long
-    highwater,
-    j,
-    k,
-    number_edges,
-    number_points,
+  int
     winding_number;
 
-  MagickBooleanType
-    quest;
+  long
+    j;
 
   MagickRealType
+    alpha,
+    beta,
     distance,
-    midpoint,
     subpath_opacity;
 
   PointInfo
-    current_point,
-    delta,
-    point,
-    previous_point;
-
-  register const PointInfo
-    *q;
+    delta;
 
   register EdgeInfo
     *p;
 
+  register const PointInfo
+    *q;
+
   register long
     i;
-
-  register MagickRealType
-    alpha,
-    beta;
-
-  SegmentInfo
-    edge,
-    bounds;
 
   /*
     Compute fill & stroke opacity for this (x,y) point.
   */
   *stroke_opacity=0.0;
   subpath_opacity=0.0;
-  winding_number=0;
-  quest=MagickTrue;
-  point.x=(MagickRealType) x;
-  point.y=(MagickRealType) y;
-  edge.x1=0.0;
-  edge.y1=0.0;
-  edge.x2=0.0;
-  edge.y2=0.0;
   p=polygon_info->edges;
-  number_edges=(long) polygon_info->number_edges;
-  midpoint=mid+0.5;
-  for (j=0; j < number_edges; j++, p++)
+  for (j=0; j < (long) polygon_info->number_edges; j++, p++)
   {
-    bounds=p->bounds;
-    if (point.y <= (bounds.y1-midpoint))
+    if (y <= (p->bounds.y1-mid-0.5))
       break;
-    if (point.y > (bounds.y2+midpoint-MagickEpsilon))
+    if (y > (p->bounds.y2+mid+0.5))
       {
-        (void) DestroyEdge(polygon_info,(unsigned long) j);
-        number_edges=(long) polygon_info->number_edges;
+        (void) DestroyEdge(polygon_info,j);
         continue;
       }
-    if (point.y <= bounds.y1)
-      quest=MagickFalse;
-    else
-      if ((quest != MagickFalse) && (point.y <= bounds.y2) &&
-          (point.x > bounds.x1) && (point.x > bounds.x2))
-        winding_number+=p->direction != 0 ? 1 : -1;
-    if ((point.x <= (bounds.x1-midpoint)) ||
-        (point.x > (bounds.x2+midpoint-MagickEpsilon)))
+    if ((x <= (p->bounds.x1-mid-0.5)) || (x > (p->bounds.x2+mid+0.5)))
       continue;
-    highwater=(long) MagickMax((double) p->highwater,1.0);
-    number_points=(long) p->number_points;
-    k=highwater-1;
-    current_point.y=p->points[k].y;
-    for (i=highwater; i < number_points; i++)
+    for (i=MagickMax(p->highwater,1); i < (long) p->number_points; i++)
     {
-      previous_point.y=current_point.y;
-      current_point.y=p->points[i].y;
-      if (point.y < (previous_point.y-midpoint))
+      if (y <= (p->points[i-1].y-mid-0.5))
         break;
-      if (point.y > (current_point.y+midpoint-MagickEpsilon))
+      if (y > (p->points[i].y+mid+0.5))
         continue;
-      q=p->points+i-1;
-      edge.x1=q->x;
-      edge.y1=q->y;
-      edge.x2=(q+1)->x;
-      edge.y2=(q+1)->y;
-      k=i;
-      if (p->scanline != point.y)
+      if (p->scanline != y)
         {
-          p->scanline=point.y;
-          p->highwater=(unsigned long) i;
-          highwater=i;
+          p->scanline=y;
+          p->highwater=i;
         }
       /*
         Compute distance between a point and an edge.
       */
-      delta.x=edge.x2-edge.x1;
-      delta.y=edge.y2-edge.y1;
-      beta=delta.x*(point.x-edge.x1)+delta.y*(point.y-edge.y1);
+      q=p->points+i-1;
+      delta.x=(q+1)->x-q->x;
+      delta.y=(q+1)->y-q->y;
+      beta=delta.x*(x-q->x)+delta.y*(y-q->y);
       if (beta < 0.0)
         {
-          delta.x=point.x-edge.x1;
-          delta.y=point.y-edge.y1;
+          delta.x=x-q->x;
+          delta.y=y-q->y;
           distance=delta.x*delta.x+delta.y*delta.y;
         }
       else
@@ -3733,14 +3694,15 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
           alpha=delta.x*delta.x+delta.y*delta.y;
           if (beta > alpha)
             {
-              delta.x=point.x-edge.x2;
-              delta.y=point.y-edge.y2;
+              delta.x=x-(q+1)->x;
+              delta.y=y-(q+1)->y;
               distance=delta.x*delta.x+delta.y*delta.y;
             }
           else
             {
-              beta=delta.x*(point.y-edge.y1)-delta.y*(point.x-edge.x1);
-              distance=beta*beta/alpha;
+              alpha=1.0/alpha;
+              beta=delta.x*(y-q->y)-delta.y*(x-q->x);
+              distance=alpha*beta*beta;
             }
         }
       /*
@@ -3749,7 +3711,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
       beta=0.0;
       if (p->ghostline == MagickFalse)
         {
-          alpha=midpoint;
+          alpha=mid+0.5;
           if ((*stroke_opacity < 1.0) &&
               (distance <= ((alpha+0.25)*(alpha+0.25))))
             {
@@ -3761,7 +3723,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
                   beta=1.0;
                   if (distance != 1.0)
                     beta=sqrt((double) distance);
-                  alpha=beta-midpoint;
+                  alpha=beta-mid-0.5;
                   if (*stroke_opacity < ((alpha-0.25)*(alpha-0.25)))
                     *stroke_opacity=(alpha-0.25)*(alpha-0.25);
                 }
@@ -3780,32 +3742,12 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
         {
           beta=1.0;
           if (distance != 1.0)
-            beta=sqrt((double) distance);
+            beta=sqrt(distance);
         }
       alpha=beta-1.0;
-      if (subpath_opacity < (alpha*alpha-MagickEpsilon))
+      if (subpath_opacity < (alpha*alpha))
         subpath_opacity=alpha*alpha;
     }
-    /*
-      Determine winding number.
-    */
-    if ((quest == MagickFalse) || (point.y > bounds.y2) ||
-        (point.x <= bounds.x1) || (point.x > bounds.x2))
-      continue;
-    for (i=highwater; i < number_points; i++)
-      if (point.y <= p->points[i].y)
-        break;
-    if (i != k)
-      {
-        q=p->points+i-1;
-        edge.x1=q->x;
-        edge.y1=q->y;
-        edge.x2=(q+1)->x;
-        edge.y2=(q+1)->y;
-      }
-    if (((edge.x2-edge.x1)*(point.y-edge.y1)) <=
-        ((edge.y2-edge.y1)*(point.x-edge.x1)))
-      winding_number+=p->direction != 0 ? 1 : -1;
   }
   /*
     Compute fill opacity.
@@ -3814,6 +3756,29 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
     return(0.0);
   if (subpath_opacity >= 1.0)
     return(1.0);
+  /*
+    Determine winding number.
+  */
+  winding_number=0;
+  p=polygon_info->edges;
+  for (j=0; j < (long) polygon_info->number_edges; j++, p++)
+  {
+    if (y <= p->bounds.y1)
+      break;
+    if ((y > p->bounds.y2) || (x <= p->bounds.x1))
+      continue;
+    if (x > p->bounds.x2)
+      {
+        winding_number+=p->direction ? 1 : -1;
+        continue;
+      }
+    for (i=MagickMax(p->highwater,1); i < (long) p->number_points; i++)
+      if (y <= p->points[i].y)
+        break;
+    q=p->points+i-1;
+    if ((((q+1)->x-q->x)*(y-q->y)) <= (((q+1)->y-q->y)*(x-q->x)))
+      winding_number+=p->direction ? 1 : -1;
+  }
   if (fill_rule != NonZeroRule)
     {
       if ((MagickAbsoluteValue(winding_number) & 0x01) != 0)
@@ -4196,6 +4161,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       PixelPacket
         *q;
 
+      if ((y < 0) || (y >= (long) image->rows))
+        break;
+      if ((x < 0) || (x >= (long) image->columns))
+        break;
       q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
@@ -4795,6 +4764,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   option=GetImageOption(clone_info,"kerning");
   if (option != (const char *) NULL)
     draw_info->kerning=atof(option);
+  option=GetImageOption(clone_info,"interline-spacing");
+  if (option != (const char *) NULL)
+    draw_info->interline_spacing=atof(option);
   option=GetImageOption(clone_info,"interword-spacing");
   if (option != (const char *) NULL)
     draw_info->interword_spacing=atof(option);

@@ -161,7 +161,7 @@ static inline long MagickMax(const long x,const long y)
 }
 
 static MagickBooleanType MonitorProgress(const char *text,
-  const MagickOffsetType quantum,const MagickSizeType span,
+  const MagickOffsetType offset,const MagickSizeType extent,
   void *wand_unused(client_data))
 {
   char
@@ -174,7 +174,7 @@ static MagickBooleanType MonitorProgress(const char *text,
   register char
     *p;
 
-  if (span < 2)
+  if (extent < 2)
     return(MagickTrue);
   (void) CopyMagickMemory(tag,text,MaxTextExtent);
   p=strrchr(tag,'/');
@@ -185,12 +185,13 @@ static MagickBooleanType MonitorProgress(const char *text,
   if (locale_message == message)
     locale_message=tag;
   if (p == (char *) NULL)
-    (void) fprintf(stderr,"%s: %02ld%%\r",locale_message,(long)
-      (100L*quantum/(span-1)));
+    (void) fprintf(stderr,"%s: %ld of %lu, %02ld%% complete\r",locale_message,
+      (long) offset,(unsigned long) extent,(long) (100L*offset/(extent-1)));
   else
-    (void) fprintf(stderr,"%s: %02ld%%  [%s]\r",locale_message,(long)
-      (100L*quantum/(span-1)),p+1);
-  if ((MagickSizeType) quantum == (span-1))
+    (void) fprintf(stderr,"%s[%s]: %ld of %lu, %02ld%% complete\r",
+      locale_message,p+1,(long) offset,(unsigned long) extent,(long)
+      (100L*offset/(extent-1)));
+  if (offset == (MagickOffsetType) (extent-1))
     (void) fprintf(stderr,"\n");
   (void) fflush(stderr);
   return(MagickTrue);
@@ -1746,6 +1747,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             *image=DestroyImage(*image);
             *image=implode_image;
+            break;
+          }
+        if (LocaleCompare("interline-spacing",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) ParseGeometry("0",&geometry_info);
+            else
+              (void) ParseGeometry(argv[i+1],&geometry_info);
+            draw_info->interline_spacing=geometry_info.rho;
             break;
           }
         if (LocaleCompare("interword-spacing",option+1) == 0)
@@ -3625,6 +3635,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-green-primary point chromaticity green primary point",
       "-intent type         type of rendering intent when managing the image color",
       "-interlace type      type of image interlacing scheme",
+      "-interline-spacing value",
+      "                     set the space between two text lines",
       "-interpolate method  pixel color interpolation method",
       "-interword-spacing value",
       "                     set the space between two words",
@@ -4830,6 +4842,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (interlace < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedInterlaceType",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("interline-spacing",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("interpolate",option+1) == 0)
@@ -6505,6 +6528,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               }
             image_info->interlace=(InterlaceType) ParseMagickOption(
               MagickInterlaceOptions,MagickFalse,argv[i+1]);
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("interline-spacing",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageOption(image_info,option+1,"undefined");
+                break;
+              }
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }

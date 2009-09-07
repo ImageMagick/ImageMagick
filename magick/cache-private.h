@@ -192,6 +192,9 @@ extern MagickExport Cache
   GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *),
   ReferencePixelCache(Cache);
 
+extern MagickExport CacheType
+  GetPixelCacheType(const Image *);
+
 extern MagickExport ClassType
   GetPixelCacheStorageClass(const Cache);
 
@@ -229,6 +232,7 @@ extern MagickExport PixelPacket
 
 extern MagickExport void
   ClonePixelCacheMethods(Cache,const Cache),
+  GetPixelCacheTileSize(const Image *,unsigned long *,unsigned long *),
   GetPixelCacheMethods(CacheMethods *),
   SetPixelCacheMethods(Cache,CacheMethods *);
 

@@ -571,6 +571,15 @@ void Magick::Image::chop( const Geometry &geometry_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+// contains one or more color corrections and applies the correction to the
+// image.
+void Magick::Image::cdl ( const std::string &cdl_ )
+{
+  modifyImage();
+  (void) ColorDecisionListImage( image(), cdl_.c_str() );
+  throwImageException();
+}
+
 // Colorize
 void Magick::Image::colorize ( const unsigned int opacityRed_,
                                const unsigned int opacityGreen_,
@@ -737,15 +746,16 @@ void Magick::Image::display( void )
 // mapping color lookups of the source image to a new destination image
 // usally of the same size as the source image, unless 'bestfit' is set to
 // true.
-void Magick::Image::distort ( const DistortImageMethod method,
-                              const unsigned long number_arguments,
-                              const double *arguments,
-                              unsigned int bestfit )
+void Magick::Image::distort ( const DistortImageMethod method_,
+                              const unsigned long number_arguments_,
+                              const double *arguments_,
+                              const bool bestfit_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage = DistortImage ( image(), method,
-    number_arguments, arguments, (MagickBooleanType) bestfit, &exceptionInfo );
+  MagickCore::Image* newImage = DistortImage ( image(), method_,
+    number_arguments_, arguments_, bestfit_ == true ? MagickTrue : MagickFalse,
+    &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1118,6 +1128,14 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+// Apply a color lookup table (Hald CLUT) to the image.
+void  Magick::Image::haldClut ( const Image &clutImage_ )
+{
+  modifyImage();
+  (void) HaldClutImage( image(), clutImage_.constImage() );
+  throwImageException();
 }
 
 // Implode image
@@ -1603,6 +1621,20 @@ void Magick::Image::read ( const unsigned int width_,
   throwException( exceptionInfo );
   if ( image )
     throwException( image->exception );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+// Apply a color matrix to the image channels.  The user supplied
+// matrix may be of order 1 to 5 (1x1 through 5x5).
+void Magick::Image::recolor (const unsigned int order_,
+         const double *color_matrix_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    RecolorImage( image(), order_, color_matrix_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 

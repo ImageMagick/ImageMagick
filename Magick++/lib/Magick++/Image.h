@@ -197,6 +197,11 @@ namespace Magick
     // horizontal or vertical subregion of image.
 
     void            chop ( const Geometry &geometry_ );
+
+    // Accepts a lightweight Color Correction Collection
+    // (CCC) file which solely contains one or more color corrections and
+    // applies the correction to the image.
+    void            cdl ( const std::string &cdl_ );
     
     // Colorize image with pen color, using specified percent opacity
     // for red, green, and blue quantums
@@ -262,10 +267,10 @@ namespace Magick
     // mapping color lookups of the source image to a new destination image
     // usally of the same size as the source image, unless 'bestfit' is set to
     // true.
-    void            distort ( const DistortImageMethod method,
-                              const unsigned long number_arguments,
-                              const double *arguments,
-                              unsigned int bestfit = 0 );
+    void            distort ( const DistortImageMethod method_,
+                              const unsigned long number_arguments_,
+                              const double *arguments_,
+                              const bool bestfit_ = false );
 
     // Draw on image using a single drawable
     void            draw ( const Drawable &drawable_ );
@@ -372,6 +377,10 @@ namespace Magick
     void            gaussianBlurChannel ( const ChannelType channel_,
                                           const double width_,
                                           const double sigma_ );
+
+    // Apply a color lookup table (Hald CLUT) to the image.
+    void            haldClut ( const Image &clutImage_ );
+
     
     // Implode image (special effect)
     void            implode ( const double factor_ );
@@ -1088,6 +1097,11 @@ typedef struct _ImageStatistics
     // Quantization tree-depth
     void            quantizeTreeDepth ( const unsigned int treeDepth_ );
     unsigned int    quantizeTreeDepth ( void ) const;
+
+    // Apply a color matrix to the image channels.  The user supplied
+    // matrix may be of order 1 to 5 (1x1 through 5x5).
+    void            recolor (const unsigned int order_,
+         const double *color_matrix_);
 
     // The type of rendering intent
     void            renderingIntent ( const RenderingIntent renderingIntent_ );

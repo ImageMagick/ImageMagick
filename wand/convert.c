@@ -347,6 +347,8 @@ static MagickBooleanType ConvertUsage(void)
       "-green-primary point chromaticity green primary point",
       "-intent type         type of rendering intent when managing the image color",
       "-interlace type      type of image interlacing scheme",
+      "-interline-spacing value",
+      "                     set the space between two text lines",
       "-interpolate method  pixel color interpolation method",
       "-interword-spacing value",
       "                     set the space between two words",
@@ -1585,6 +1587,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (interlace < 0)
               ThrowConvertException(OptionError,"UnrecognizedInterlaceType",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("interline-spacing",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("interpolate",option+1) == 0)

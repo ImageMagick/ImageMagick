@@ -286,6 +286,7 @@ static struct
       {"encoding", StringReference}, {"affine", ArrayReference},
       {"fill-pattern", ImageReference}, {"stroke-pattern", ImageReference},
       {"tile", ImageReference}, {"kerning", RealReference},
+      {"interline-spacing", RealReference},
       {"interword-spacing", RealReference} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
@@ -319,6 +320,7 @@ static struct
       {"origin", StringReference}, {"text", StringReference},
       {"fill-pattern", ImageReference}, {"stroke-pattern", ImageReference},
       {"vector-graphics", StringReference}, {"kerning", RealReference},
+      {"interline-spacing", RealReference},
       {"interword-spacing", RealReference} } },
     { "Equalize", { {"channel", MagickChannelOptions} } },
     { "Gamma", { {"gamma", StringReference}, {"channel", MagickChannelOptions},
@@ -7644,7 +7646,9 @@ Mogrify(ref,...)
           if (attribute_flag[29] != 0)
             draw_info->kerning=argument_list[29].real_reference;
           if (attribute_flag[30] != 0)
-            draw_info->interword_spacing=argument_list[30].real_reference;
+            draw_info->interline_spacing=argument_list[30].real_reference;
+          if (attribute_flag[31] != 0)
+            draw_info->interword_spacing=argument_list[31].real_reference;
           (void) AnnotateImage(image,draw_info);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -8142,7 +8146,9 @@ Mogrify(ref,...)
           if (attribute_flag[29] != 0)
             draw_info->kerning=argument_list[29].real_reference;
           if (attribute_flag[30] != 0)
-            draw_info->interword_spacing=argument_list[30].real_reference;
+            draw_info->interline_spacing=argument_list[30].real_reference;
+          if (attribute_flag[31] != 0)
+            draw_info->interword_spacing=argument_list[31].real_reference;
           DrawImage(image,draw_info);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -11354,6 +11360,12 @@ QueryFontMetrics(ref,...)
         case 'i':
         case 'I':
         {
+          if (LocaleCompare(attribute,"interline-spacing") == 0)
+            {
+              flags=ParseGeometry(SvPV(ST(i),na),&geometry_info);
+              draw_info->interline_spacing=geometry_info.rho;
+              break;
+            }
           if (LocaleCompare(attribute,"interword-spacing") == 0)
             {
               flags=ParseGeometry(SvPV(ST(i),na),&geometry_info);

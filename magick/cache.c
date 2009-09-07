@@ -2692,7 +2692,7 @@ MagickExport PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t P i x e l C a c h e S t o r a e C l a s s                           %
++   G e t P i x e l C a c h e S t o r a g e C l a s s                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2723,6 +2723,89 @@ MagickExport ClassType GetPixelCacheStorageClass(const Cache cache)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_info->filename);
   return(cache_info->storage_class);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t P i x e l C a c h e T i l e S i z e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCacheTileSize() returns the pixel cache tile size.
+%
+%  The format of the GetPixelCacheTileSize() method is:
+%
+%      void GetPixelCacheTileSize(const Image *image,unsigned long *width,
+%        unsigned long *height)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o width: the optimize cache tile width in pixels.
+%
+%    o height: the optimize cache tile height in pixels.
+%
+*/
+MagickExport void GetPixelCacheTileSize(const Image *image,unsigned long *width,
+  unsigned long *height)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  *width=2048UL/sizeof(PixelPacket);
+  if (GetPixelCacheType(image) == DiskCache)
+    *width=8196UL/sizeof(PixelPacket);
+  *height=(*width);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t P i x e l C a c h e T y p e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCacheType() returns the pixel cache type (e.g. memory, disk, etc.).
+%
+%  The format of the GetPixelCacheType() method is:
+%
+%      CacheType GetPixelCacheType(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport CacheType GetPixelCacheType(const Image *image)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  return(cache_info->type);
 }
 
 /*

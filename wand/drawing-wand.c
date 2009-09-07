@@ -2272,6 +2272,37 @@ WandExport double DrawGetTextKerning(DrawingWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t T e x t I n t e r L i n e S p a c i n g                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetTextInterwordSpacing() gets the spacing between lines in text.
+%
+%  The format of the DrawSetFontKerning method is:
+%
+%      double DrawGetTextInterwordSpacing(DrawingWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+*/
+WandExport double DrawGetTextInterlineSpacing(DrawingWand *wand)
+{
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  return(CurrentContext->interline_spacing);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w G e t T e x t I n t e r w o r d S p a c i n g                     %
 %                                                                             %
 %                                                                             %
@@ -5868,6 +5899,47 @@ WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
     {
       CurrentContext->kerning=kerning;
       (void) MvgPrintf(wand,"kerning %lf\n",kerning);
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w S e t T e x t I n t e r L i n e S p a c i n g                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawSetTextInterwordSpacing() sets the spacing between line in text.
+%
+%  The format of the DrawSetInterwordSpacing method is:
+%
+%      void DrawSetTextInterwordSpacing(DrawingWand *wand,
+%        const double interline_spacing)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o interline_spacing: text line spacing
+%
+*/
+WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
+  const double interline_spacing)
+{
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == WandSignature);
+
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if ((wand->filter_off != MagickFalse) && 
+      (CurrentContext->interline_spacing != interline_spacing))
+    {
+      CurrentContext->interline_spacing=interline_spacing;
+      (void) MvgPrintf(wand,"interline_spacing %lf\n",interline_spacing);
     }
 }
 

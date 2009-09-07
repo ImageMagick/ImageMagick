@@ -199,6 +199,20 @@ namespace Magick
     Geometry _geometry;
   };
 
+  // Accepts a lightweight Color Correction Collection (CCC) file which solely
+  // contains one or more color corrections and applies the correction to the
+  // image.
+  class MagickDLLDecl cdlImage : public std::unary_function<Image&,void>
+  {
+  public:
+    cdlImage( const std::string &cdl_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    std::string   _cdl;
+  };
+
   // Colorize image using pen color at specified percent opacity
   class MagickDLLDecl colorizeImage : public std::unary_function<Image&,void>
   {
@@ -312,6 +326,31 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
+  };
+
+  // Distort image.  distorts an image using various distortion methods, by
+  // mapping color lookups of the source image to a new destination image
+  // usally of the same size as the source image, unless 'bestfit' is set to
+  // true.
+  class MagickDLLDecl distortImage : public std::unary_function<Image&,void>
+  {
+  public:
+    distortImage( const Magick::DistortImageMethod method_,
+      const unsigned long number_arguments_,
+      const double *arguments_,
+      const bool bestfit_ );
+          
+    distortImage( const Magick::DistortImageMethod method_,
+      const unsigned long number_arguments_,
+      const double *arguments_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    DistortImageMethod _method;
+    unsigned long _number_arguments;
+    const double *_arguments;
+    bool _bestfit;
   };
 
   // Draw on image
@@ -533,6 +572,18 @@ namespace Magick
   private:
     double _width;
     double _sigma;
+  };
+
+  // Apply a color lookup table (Hald CLUT) to the image.
+  class MagickDLLDecl haldClutImage : public std::unary_function<Image&,void>
+  {
+  public:
+    haldClutImage( const Image &haldClutImage_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    Image             _haldClutImage;
   };
 
   // Implode image (special effect)
@@ -785,6 +836,21 @@ namespace Magick
   private:
     Geometry   _geometry;
     bool       _raisedFlag;
+  };
+
+  // Apply a color matrix to the image channels.  The user supplied
+  // matrix may be of order 1 to 5 (1x1 through 5x5).
+  class MagickDLLDecl recolorImage : public std::unary_function<Image&,void>
+  {
+  public:
+    recolorImage( const unsigned int order_,
+          const double *color_matrix_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    unsigned int  _order;
+    const double *_color_matrix;
   };
 
   // Reduce noise in image using a noise peak elimination filter
