@@ -186,7 +186,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   for (i=0; i < (long) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
-  if ((status == 0) || (status == -101))
+  if ((status == 0) || (status <= -100))
     {
       char
         *message;
