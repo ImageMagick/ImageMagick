@@ -186,17 +186,17 @@ static MagickBooleanType InvokePostscriptDelegate(
   for (i=0; i < (long) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
-  if ((status <= -1) && (status >= -100))
-    {
-      char
-        *message;
+  if ((status == 0) || (status == -101))
+    return(MagickFalse);
+  {
+    char
+      *message;
 
-      message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "`%s': %s",command,message);
-      message=DestroyString(message);
-      return(MagickFalse);
-    }
+    message=GetExceptionMessage(errno);
+    (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+      "`%s': %s",command,message);
+    message=DestroyString(message);
+  }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "Ghostscript returns status %d, exit code %d",status,code);
   return(MagickTrue);
