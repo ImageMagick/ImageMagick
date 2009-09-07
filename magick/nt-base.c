@@ -962,7 +962,7 @@ static int NTGetLatestGhostscript( void )
   int
     count,
     i,
-    version,
+    gsver,
     *ver;
 
   DWORD version = GetVersion();
@@ -982,13 +982,13 @@ static int NTGetLatestGhostscript( void )
       ver=(int *) RelinquishMagickMemory(ver);
       return FALSE;
     }
-  version = 0;
+  gsver = 0;
   for (i=1; i<=ver[0]; i++) {
-    if (ver[i] > version)
-      version = ver[i];
+    if (ver[i] > gsver)
+      gsver = ver[i];
   }
   ver=(int *) RelinquishMagickMemory(ver);
-  return(version);
+  return(gsver);
 }
 
 
