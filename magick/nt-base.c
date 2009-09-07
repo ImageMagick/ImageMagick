@@ -962,7 +962,7 @@ static int NTGetLatestGhostscript( void )
   int
     count,
     i,
-    gsver,
+    version,
     *ver;
 
   DWORD version = GetVersion();
@@ -982,13 +982,13 @@ static int NTGetLatestGhostscript( void )
       ver=(int *) RelinquishMagickMemory(ver);
       return FALSE;
     }
-  gsver = 0;
+  version = 0;
   for (i=1; i<=ver[0]; i++) {
-    if (ver[i] > gsver)
-      gsver = ver[i];
+    if (ver[i] > version)
+      version = ver[i];
   }
   ver=(int *) RelinquishMagickMemory(ver);
-  return(gsver);
+  return(version);
 }
 
 
@@ -1020,17 +1020,17 @@ static int NTGetLatestGhostscript( void )
 MagickExport int NTGhostscriptDLL(char *path, int length)
 {
   int
-    gsver;
+    version;
 
   char
     buf[256];
 
   *path='\0';
-  gsver = NTGetLatestGhostscript();
-  if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
+  version = NTGetLatestGhostscript();
+  if ((version == FALSE) || (version < GS_MINIMUM_VERSION))
     return FALSE;
 
-  if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
+  if (!NTGhostscriptGetString(version, "GS_DLL", buf, sizeof(buf)))
     return FALSE;
 
   (void) CopyMagickString(path,buf,length+1);
@@ -1085,36 +1085,34 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %
 %  A description of each parameter follows:
 %
-%    o path: Pointer to buffer in which to return result.
+%    o path: pointer to buffer in which to return result.
 %
-%    o length: Length of buffer
+%    o length: length of buffer.
 %
 */
 MagickExport int NTGhostscriptEXE(char *path,int length)
 {
-  int
-    gsver;
-
   char
-    buf[256],
+    buffer[MaxTexytExtent],
     *p;
 
-  (void) CopyMagickString(path,"gswin32c.exe",length);
-  gsver=NTGetLatestGhostscript();
-  if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
-    return(FALSE);
-  if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
-    return(FALSE);
-  p=strrchr(buf, '\\');
-  if (p) {
-    p++;
-    *p = 0;
-    (void) CopyMagickString(p,"gswin32c.exe",sizeof(buf));
-    (void) CopyMagickString(path,buf,length+1);
-    return TRUE;
-  }
+  int
+    version;
 
-  return FALSE;
+  (void) CopyMagickString(path,"gswin32c.exe",length);
+  version=NTGetLatestGhostscript();
+  if ((version == FALSE) || (version < GS_MINIMUM_VERSION))
+    return(FALSE);
+  if (NTGhostscriptGetString(version,"GS_DLL",buffer,sizeof(buffer)) == 0)
+    return(FALSE);
+  p=strrchr(buffer, '\\');
+  if (p == (char *) NULL)
+    return(FALSE);
+  p++;
+  *p='\0';
+  (void) CopyMagickString(p,path,sizeof(buffer)-strlen(buffer));
+  (void) CopyMagickString(path,buffer,length);
+  return(TRUE);
 }
 
 /*
@@ -1899,9 +1897,9 @@ MagickExport int NTSyncMemory(void *address,size_t length,int flags)
 %  NTSystemCommand() executes the specified command and waits until it
 %  terminates.  The returned value is the exit status of the command.
 %
-%  The format of the NTSystemComman method is:
+%  The format of the NTSystemCommand method is:
 %
-%      int NTSystemComman(const char *command)
+%      int NTSystemCommand(const char *command)
 %
 %  A description of each parameter follows:
 %

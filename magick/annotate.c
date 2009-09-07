@@ -164,6 +164,9 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     primitive[MaxTextExtent],
     **textlist;
 
+  double
+    height;
+
   DrawInfo
     *annotate,
     *annotate_info;
@@ -190,7 +193,6 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     metrics;
 
   unsigned long
-    height,
     number_lines;
 
   assert(image != (Image *) NULL);
@@ -233,7 +235,9 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.ty=geometry_info.psi-image->page.y;
     (void) CloneString(&annotate->text,textlist[i]);
     (void) GetTypeMetrics(image,annotate,&metrics);
-    height=(unsigned long) (metrics.ascent-metrics.descent+0.5);
+    height=metrics.height;
+    if (draw_info->interline_spacing != 0.0)
+      height+=draw_info->interline_spacing;
     switch (annotate->gravity)
     {
       case UndefinedGravity:
@@ -393,7 +397,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         undercolor_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         undercolor_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         (void) FormatMagickString(primitive,MaxTextExtent,
-          "rectangle 0,0 %g,%ld",metrics.origin.x,height);
+          "rectangle 0,0 %g,%g",metrics.origin.x,height);
         (void) CloneString(&undercolor_info->primitive,primitive);
         (void) DrawImage(image,undercolor_info);
         (void) DestroyDrawInfo(undercolor_info);

@@ -318,7 +318,8 @@ typedef struct _DrawInfo
 
   double
     kerning,
-    interword_spacing;
+    interword_spacing,
+    interline_spacing;
 } DrawInfo;
 
 typedef struct _PrimitiveInfo

@@ -44,7 +44,7 @@ extern MagickExport FILE
   *OpenMagickStream(const char *,const char *);
 
 extern MagickExport int
-  SystemCommand(const MagickBooleanType,const char *);
+  SystemCommand(const MagickBooleanType,const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   AcquireUniqueFilename(char *),

@@ -157,6 +157,18 @@ void Magick::chopImage::operator()( Magick::Image &image_ ) const
   image_.chop( _geometry );
 }
 
+// accepts a lightweight Color Correction Collection (CCC) file which solely
+// contains one or more color corrections and applies the correction to the
+// image.
+Magick::cdlImage::cdlImage( const std::string &cdl_ )
+  : _cdl ( cdl_ )
+{
+}
+void Magick::cdlImage::operator()( Image &image_ ) const
+{
+  image_.cdl( _cdl.c_str() );
+}
+
 // Colorize image using pen color at specified percent opacity
 Magick::colorizeImage::colorizeImage( const unsigned int opacityRed_,
                                       const unsigned int opacityGreen_,
@@ -264,6 +276,34 @@ Magick::despeckleImage::despeckleImage( void )
 void Magick::despeckleImage::operator()( Magick::Image &image_ ) const
 {
   image_.despeckle( );
+}
+
+// Distort image.  distorts an image using various distortion methods, by
+// mapping color lookups of the source image to a new destination image
+// usally of the same size as the source image, unless 'bestfit' is set to
+// true.
+Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
+                                    const unsigned long number_arguments_,
+                                    const double *arguments_,
+                                    const bool bestfit_ )
+  : _method ( method_ ),
+    _number_arguments ( number_arguments_ ),
+    _arguments ( arguments_ ),
+    _bestfit( bestfit_ )
+{
+}
+Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
+                                    const unsigned long number_arguments_,
+                                    const double *arguments_ )
+  : _method ( method_ ),
+    _number_arguments ( number_arguments_ ),
+    _arguments ( arguments_ ),
+    _bestfit( false )
+{
+}
+void Magick::distortImage::operator()( Magick::Image &image_ ) const
+{
+  image_.distort( _method, _number_arguments, _arguments, _bestfit );
 }
 
 // Draw on image
@@ -520,6 +560,16 @@ void Magick::gaussianBlurImage::operator()( Magick::Image &image_ ) const
   image_.gaussianBlur( _width, _sigma );
 }
 
+// Apply a color lookup table (Hald CLUT) to the image.
+Magick::haldClutImage::haldClutImage( const Image &haldClutImage_ )
+  : _haldClutImage ( haldClutImage_ )
+{
+}
+void Magick::haldClutImage::operator()( Image &image_ ) const
+{
+  image_.haldClut( _haldClutImage );
+}
+
 // Implode image (special effect)
 Magick::implodeImage::implodeImage( const double factor_  )
   : _factor( factor_ )
@@ -732,6 +782,19 @@ Magick::raiseImage::raiseImage( const Magick::Geometry &geometry_ ,
 void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 {
   image_.raise( _geometry, _raisedFlag );
+}
+
+// Apply a color matrix to the image channels.  The user supplied
+// matrix may be of order 1 to 5 (1x1 through 5x5).
+Magick::recolorImage::recolorImage( const unsigned int order_,
+              const double *color_matrix_ )
+  : _order( order_ ),
+    _color_matrix( color_matrix_ )
+{
+}
+void Magick::recolorImage::operator()( Image &image_ ) const
+{
+  image_.recolor( _order, _color_matrix );
 }
 
 // Reduce noise in image using a noise peak elimination filter

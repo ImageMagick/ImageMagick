@@ -183,7 +183,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterDJVUImage();
 #endif
   (void) RegisterDNGImage();
+#if defined(MAGICKCORE_DPS_DELEGATE)
   (void) RegisterDPSImage();
+#endif
   (void) RegisterDPXImage();
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
   (void) RegisterEMFImage();
@@ -347,7 +349,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterDJVUImage();
 #endif
   UnregisterDNGImage();
+#if defined(MAGICKCORE_DPS_DELEGATE)
   UnregisterDPSImage();
+#endif
   UnregisterDPXImage();
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
   UnregisterEMFImage();

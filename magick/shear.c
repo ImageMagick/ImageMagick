@@ -1009,8 +1009,6 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
 static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
   ExceptionInfo *exception)
 {
-#define TileHeight  128
-#define TileWidth  128
 #define RotateImageTag  "Rotate/Image"
 
   CacheView
@@ -1036,6 +1034,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
   assert(image != (Image *) NULL);
   page=image->page;
   rotations%=4;
+  if (rotations == 0)
+    return(CloneImage(image,0,0,MagickTrue,exception));
   if ((rotations == 1) || (rotations == 3))
     rotate_image=CloneImage(image,image->rows,image->columns,MagickTrue,
       exception);
@@ -1058,54 +1058,6 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
       /*
         Rotate 0 degrees.
       */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register const IndexPacket
-          *__restrict indexes;
-
-        register const PixelPacket
-          *__restrict p;
-
-        register IndexPacket
-          *__restrict rotate_indexes;
-
-        register PixelPacket
-          *__restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        q=QueueCacheViewAuthenticPixels(rotate_view,0,y,rotate_image->columns,1,
-          exception);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          {
-            status=MagickFalse;
-            continue;
-          }
-        indexes=GetCacheViewVirtualIndexQueue(image_view);
-        rotate_indexes=GetCacheViewAuthenticIndexQueue(rotate_view);
-        (void) CopyMagickMemory(q,p,image->columns*sizeof(*p));
-        if ((indexes != (IndexPacket *) NULL) &&
-            (rotate_indexes != (IndexPacket *) NULL))
-          (void) CopyMagickMemory(rotate_indexes,indexes,image->columns*
-            sizeof(*indexes));
-        sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-        if (image->progress_monitor != (MagickProgressMonitor) NULL)
-          {
-            MagickBooleanType
-              proceed;
-
-            proceed=SetImageProgress(image,RotateImageTag,progress++,
-              image->rows);
-            if (proceed == MagickFalse)
-              status=MagickFalse;
-          }
-      }
       break;
     }
     case 1:
@@ -1113,17 +1065,22 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
       long
         tile_y;
 
+      unsigned long
+        tile_height,
+        tile_width;
+
       /*
         Rotate 90 degrees.
       */
-      for (tile_y=0; tile_y < (long) image->rows; tile_y+=TileHeight)
+      GetPixelCacheTileSize(image,&tile_width,&tile_height);
+      for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height)
       {
         register long
           tile_x;
 
         if (status == MagickFalse)
           continue;
-        for (tile_x=0; tile_x < (long) image->columns; tile_x+=TileWidth)
+        for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width)
         {
           MagickBooleanType
             sync;
@@ -1144,26 +1101,26 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
             *__restrict q;
 
           unsigned long
-            tile_height,
-            tile_width;
+            height,
+            width;
 
-          tile_width=TileWidth;
-          if ((tile_x+TileWidth) > (long) image->columns)
-            tile_width=(unsigned long) (TileWidth-(tile_x+TileWidth-
+          width=tile_width;
+          if ((tile_x+(long) tile_width) > (long) image->columns)
+            width=(unsigned long) (tile_width-(tile_x+tile_width-
               image->columns));
-          tile_height=TileHeight;
-          if ((tile_y+TileHeight) > (long) image->rows)
-            tile_height=(unsigned long) (TileHeight-(tile_y+TileHeight-
+          height=tile_height;
+          if ((tile_y+(long) tile_height) > (long) image->rows)
+            height=(unsigned long) (tile_height-(tile_y+tile_height-
               image->rows));
-          p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,tile_width,
-            tile_height,exception);
+          p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,
+            height,exception);
           if (p == (const PixelPacket *) NULL)
             {
               status=MagickFalse;
               break;
             }
           indexes=GetCacheViewVirtualIndexQueue(image_view);
-          for (y=0; y < (long) tile_width; y++)
+          for (y=0; y < (long) width; y++)
           {
             register const PixelPacket
               *__restrict tile_pixels;
@@ -1172,18 +1129,18 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
               x;
 
             q=QueueCacheViewAuthenticPixels(rotate_view,(long)
-              rotate_image->columns-(tile_y+tile_height),y+tile_x,tile_height,
+              rotate_image->columns-(tile_y+height),y+tile_x,height,
               1,exception);
             if (q == (PixelPacket *) NULL)
               {
                 status=MagickFalse;
                 break;
               }
-            tile_pixels=p+(tile_height-1)*tile_width+y;
-            for (x=0; x < (long) tile_height; x++)
+            tile_pixels=p+(height-1)*width+y;
+            for (x=0; x < (long) height; x++)
             {
               *q++=(*tile_pixels);
-              tile_pixels-=tile_width;
+              tile_pixels-=width;
             }
             rotate_indexes=GetCacheViewAuthenticIndexQueue(rotate_view);
             if ((indexes != (IndexPacket *) NULL) &&
@@ -1192,11 +1149,11 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
                 register const IndexPacket
                   *__restrict tile_indexes;
 
-                tile_indexes=indexes+(tile_height-1)*tile_width+y;
-                for (x=0; x < (long) tile_height; x++)
+                tile_indexes=indexes+(height-1)*width+y;
+                for (x=0; x < (long) height; x++)
                 {
                   *rotate_indexes++=(*tile_indexes);
-                  tile_indexes-=tile_width;
+                  tile_indexes-=width;
                 }
               }
             sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
@@ -1209,12 +1166,13 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,RotateImageTag,progress+=TileHeight,
+            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
       }
+      (void) SetImageProgress(image,RotateImageTag,image->rows-1,image->rows);
       Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.width != 0)
@@ -1291,17 +1249,22 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
       long
         tile_y;
 
+      unsigned long
+        tile_height,
+        tile_width;
+
       /*
         Rotate 270 degrees.
       */
-      for (tile_y=0; tile_y < (long) image->rows; tile_y+=TileHeight)
+      GetPixelCacheTileSize(image,&tile_width,&tile_height);
+      for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height)
       {
         register long
           tile_x;
 
         if (status == MagickFalse)
           continue;
-        for (tile_x=0; tile_x < (long) image->columns; tile_x+=TileWidth)
+        for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width)
         {
           MagickBooleanType
             sync;
@@ -1322,26 +1285,26 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
             *__restrict q;
 
           unsigned long
-            tile_height,
-            tile_width;
+            height,
+            width;
 
-          tile_width=TileWidth;
-          if ((tile_x+TileWidth) > (long) image->columns)
-            tile_width=(unsigned long) (TileWidth-(tile_x+TileWidth-
+          width=tile_width;
+          if ((tile_x+(long) tile_width) > (long) image->columns)
+            width=(unsigned long) (tile_width-(tile_x+tile_width-
               image->columns));
-          tile_height=TileHeight;
-          if ((tile_y+TileHeight) > (long) image->rows)
-            tile_height=(unsigned long) (TileHeight-(tile_y+TileHeight-
+          height=tile_height;
+          if ((tile_y+(long) tile_height) > (long) image->rows)
+            height=(unsigned long) (tile_height-(tile_y+tile_height-
               image->rows));
-          p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,tile_width,
-            tile_height,exception);
+          p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,
+            height,exception);
           if (p == (const PixelPacket *) NULL)
             {
               status=MagickFalse;
               break;
             }
           indexes=GetCacheViewVirtualIndexQueue(image_view);
-          for (y=0; y < (long) tile_width; y++)
+          for (y=0; y < (long) width; y++)
           {
             register const PixelPacket
               *__restrict tile_pixels;
@@ -1350,17 +1313,17 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
               x;
 
             q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(long)
-              y+rotate_image->rows-(tile_x+tile_width),tile_height,1,exception);
+              y+rotate_image->rows-(tile_x+width),height,1,exception);
             if (q == (PixelPacket *) NULL)
               {
                 status=MagickFalse;
                 break;
               }
-            tile_pixels=p+(tile_width-1)-y;
-            for (x=0; x < (long) tile_height; x++)
+            tile_pixels=p+(width-1)-y;
+            for (x=0; x < (long) height; x++)
             {
               *q++=(*tile_pixels);
-              tile_pixels+=tile_width;
+              tile_pixels+=width;
             }
             rotate_indexes=GetCacheViewAuthenticIndexQueue(rotate_view);
             if ((indexes != (IndexPacket *) NULL) &&
@@ -1369,11 +1332,11 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
                 register const IndexPacket
                   *__restrict tile_indexes;
 
-                tile_indexes=indexes+(tile_width-1)-y;
-                for (x=0; x < (long) tile_height; x++)
+                tile_indexes=indexes+(width-1)-y;
+                for (x=0; x < (long) height; x++)
                 {
                   *rotate_indexes++=(*tile_indexes);
-                  tile_indexes+=tile_width;
+                  tile_indexes+=width;
                 }
               }
             sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
@@ -1386,12 +1349,13 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,RotateImageTag,progress+=TileHeight,
+            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
       }
+      (void) SetImageProgress(image,RotateImageTag,image->rows-1,image->rows);
       Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.height != 0)

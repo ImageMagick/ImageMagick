@@ -53,6 +53,7 @@ extern WandExport double
   DrawGetStrokeOpacity(const DrawingWand *),
   DrawGetStrokeWidth(const DrawingWand *),
   DrawGetTextKerning(DrawingWand *),
+  DrawGetTextInterlineSpacing(DrawingWand *),
   DrawGetTextInterwordSpacing(DrawingWand *);
 
 extern WandExport DrawInfo
@@ -127,6 +128,7 @@ extern WandExport void
   DrawGetFillColor(const DrawingWand *,PixelWand *),
   DrawGetStrokeColor(const DrawingWand *,PixelWand *),
   DrawSetTextKerning(DrawingWand *,const double),
+  DrawSetTextInterlineSpacing(DrawingWand *,const double),
   DrawSetTextInterwordSpacing(DrawingWand *,const double),
   DrawGetTextUnderColor(const DrawingWand *,PixelWand *),
   DrawLine(DrawingWand *,const double, const double,const double,const double),

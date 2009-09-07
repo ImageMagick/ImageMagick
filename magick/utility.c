@@ -50,6 +50,7 @@
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/option.h"
+#include "magick/policy.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/signature-private.h"
@@ -1773,28 +1774,58 @@ MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
 %
 %  The format of the SystemCommand method is:
 %
-%      int SystemCommand(const MagickBooleanType verbose,const char *command)
+%      int SystemCommand(const MagickBooleanType verbose,const char *command,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o verbose: A value other than 0 prints the executed command before it is
+%    o verbose: a value other than 0 prints the executed command before it is
 %      invoked.
 %
-%    o command: This string is the command to execute.
+%    o command: this string is the command to execute.
+%
+%    o exception: return any errors here.
 %
 */
 MagickExport int SystemCommand(const MagickBooleanType verbose,
-  const char *command)
+  const char *command,ExceptionInfo *exception)
 {
+  char
+    **arguments;
+
   int
+    number_arguments,
     status;
 
+  PolicyDomain
+    domain;
+
+  PolicyRights
+    rights;
+
+  register long
+    i;
+
+  status=(-1);
+  arguments=StringToArgv(command,&number_arguments);
+  if (arguments == (char **) NULL)
+    return(status);
+  domain=DelegatePolicyDomain;
+  rights=ExecutePolicyRights;
+  if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",arguments[1]);
+      for (i=0; i < number_arguments; i++)
+        arguments[i]=DestroyString(arguments[i]);
+      arguments=(char **) RelinquishMagickMemory(arguments);
+      return(-1);
+    }
   if (verbose != MagickFalse)
     {
       (void) fprintf(stderr,"%s\n",command);
       (void) fflush(stderr);
     }
-  status=(-1);
 #if defined(MAGICKCORE_POSIX_SUPPORT)
 #if !defined(MAGICKCORE_HAVE_EXECVP)
   status=system(command);
@@ -1803,60 +1834,42 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
     status=system(command);
   else
     {
-      char
-        **arguments;
+      pid_t
+        child_pid;
 
-      int
-        number_arguments;
-
-      arguments=StringToArgv(command,&number_arguments);
-      if (arguments == (char **) NULL)
+      /*
+        Call application directly rather than from a shell.
+      */
+      child_pid=fork();
+      if (child_pid == (pid_t) -1)
         status=system(command);
       else
-        {
-          pid_t
-            child_pid;
+        if (child_pid == 0)
+          {
+            status=execvp(arguments[1],arguments+1);
+            _exit(1);
+          }
+        else
+          {
+            int
+              child_status;
 
-          register long
-            i;
+            pid_t
+              pid;
 
-          /*
-            Call application directly rather than from a shell.
-          */
-          child_pid=fork();
-          if (child_pid == (pid_t) -1)
-            status=system(command);
-          else
-            if (child_pid == 0)
-              {
-                status=execvp(arguments[1],arguments+1);
-                _exit(1);
-              }
+            child_status=0;
+            pid=waitpid(child_pid,&child_status,0);
+            if (pid == -1)
+              status=(-1);
             else
               {
-                int
-                  child_status;
-
-                pid_t
-                  pid;
-
-                child_status=0;
-                pid=waitpid(child_pid,&child_status,0);
-                if (pid == -1)
-                  status=(-1);
+                if (WIFEXITED(child_status) != 0)
+                  status=WEXITSTATUS(child_status);
                 else
-                  {
-                    if (WIFEXITED(child_status) != 0)
-                      status=WEXITSTATUS(child_status);
-                    else
-                      if (WIFSIGNALED(child_status))
-                        status=(-1);
-                  }
+                  if (WIFSIGNALED(child_status))
+                    status=(-1);
               }
-          for (i=0; i < number_arguments; i++)
-            arguments[i]=DestroyString(arguments[i]);
-          arguments=(char **) RelinquishMagickMemory(arguments);
-        }
+          }
     }
 #endif
 #elif defined(__WINDOWS__)
@@ -1873,16 +1886,13 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
       char
         *message;
 
-      ExceptionInfo
-        *exception;
-
-      exception=AcquireExceptionInfo();
       message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
         "`%s': %s",command,message);
       message=DestroyString(message);
-      CatchException(exception);
-      exception=DestroyExceptionInfo(exception);
     }
+  for (i=0; i < number_arguments; i++)
+    arguments[i]=DestroyString(arguments[i]);
+  arguments=(char **) RelinquishMagickMemory(arguments);
   return(status);
 }

@@ -564,6 +564,7 @@ namespace Magick
   using MagickCore::CoderError;
   using MagickCore::CoderFatalError;
   using MagickCore::CoderWarning;
+  using MagickCore::ColorDecisionListImage;
   using MagickCore::ColorizeImage;
   using MagickCore::ColorPacket;
   using MagickCore::CompositeImage;
@@ -748,6 +749,7 @@ namespace Magick
   using MagickCore::GlobExpression;
   using MagickCore::GravityAdjustGeometry;
   using MagickCore::GreaterValue;
+  using MagickCore::HaldClutImage;
   using MagickCore::HeightValue;
   using MagickCore::ImageError;
   using MagickCore::ImageFatalError;
@@ -820,6 +822,7 @@ namespace Magick
   using MagickCore::RaiseImage;
   using MagickCore::RandomThresholdImageChannel;
   using MagickCore::ReadImage;
+  using MagickCore::RecolorImage;
   using MagickCore::RectangleInfo;
   using MagickCore::ReduceNoiseImage;
   using MagickCore::RegisterMagickInfo;

@@ -61,7 +61,7 @@
 %  monitor method looks like this:
 %
 %    MagickBooleanType MagickProgressMonitor(const char *text,
-%      const MagickOffsetType offset,const MagickSizeType span,
+%      const MagickOffsetType offset,const MagickSizeType extent,
 %      void *client_data)
 %
 %  If the progress monitor returns MagickFalse, the current operation is
@@ -110,7 +110,7 @@ MagickExport MagickProgressMonitor SetImageProgressMonitor(Image *image,
 %  progress monitor method looks like this:
 %
 %    MagickBooleanType MagickProgressMonitor(const char *text,
-%      const MagickOffsetType offset,const MagickSizeType span,
+%      const MagickOffsetType offset,const MagickSizeType extent,
 %      void *client_data)
 %
 %  If the progress monitor returns MagickFalse, the current operation is
