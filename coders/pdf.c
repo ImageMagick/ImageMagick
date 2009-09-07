@@ -160,7 +160,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   if (gs_func == (GhostscriptVectors *) NULL)
     {
       status=SystemCommand(verbose,command,exception);
-      return(status != 0 ? MagickTrue : MagickFalse);
+      return(status == 0 ? MagickTrue : MagickFalse);
     }
   if (verbose != MagickFalse)
     {
@@ -171,7 +171,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   if (status < 0)
     {
       status=SystemCommand(verbose,command,exception);
-      return(status != 0 ? MagickTrue : MagickFalse);
+      return(status == 0 ? MagickTrue : MagickFalse);
     }
   argv=StringToArgv(command,&argc);
   status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
@@ -186,23 +186,23 @@ static MagickBooleanType InvokePostscriptDelegate(
   for (i=0; i < (long) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
-  if ((status == 0) || (status == -101))
-    return(MagickFalse);
-  {
-    char
-      *message;
+  if ((status != 0) && (status != -101))
+    {
+      char
+        *message;
 
-    message=GetExceptionMessage(errno);
-    (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-      "`%s': %s",command,message);
-    message=DestroyString(message);
-  }
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Ghostscript returns status %d, exit code %d",status,code);
+      message=GetExceptionMessage(errno);
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+        "`%s': %s",command,message);
+      message=DestroyString(message);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Ghostscript returns status %d, exit code %d",status,code);
+      return(MagickFalse);
+    }
   return(MagickTrue);
 #else
   status=SystemCommand(verbose,command,exception);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status == 0 ? MagickTrue : MagickFalse);
 #endif
 }
 
@@ -235,7 +235,7 @@ static MagickBooleanType IsPDF(const unsigned char *magick,const size_t offset)
 {
   if (offset < 5)
     return(MagickFalse);
-  if (LocaleNCompare((char *) magick,"%PDF-",5) == 0)
+  if (LocaleNCompare((const char *) magick,"%PDF-",5) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -620,7 +620,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->filename,postscript_filename,input_filename);
   status=InvokePostscriptDelegate(read_info->verbose,command,exception);
   pdf_image=(Image *) NULL;
-  if ((status == MagickFalse) &&
+  if ((status != MagickFalse) &&
       (IsPDFRendered(read_info->filename) != MagickFalse))
     pdf_image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
