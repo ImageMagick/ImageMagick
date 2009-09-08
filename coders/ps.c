@@ -698,11 +698,10 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (cmyk != MagickFalse)
       delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
     else
-#if defined(MAGICKCORE_PNG_DELEGATE)
-      delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
-#else
-      delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
-#endif
+      if (pages == 1)
+        delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
+      else
+        delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) RelinquishUniqueFileResource(postscript_filename);
