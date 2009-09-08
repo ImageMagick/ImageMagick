@@ -1093,7 +1093,7 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 MagickExport int NTGhostscriptEXE(char *path,int length)
 {
   char
-    buffer[MaxTexytExtent],
+    buffer[MaxTextExtent],
     *p;
 
   int
