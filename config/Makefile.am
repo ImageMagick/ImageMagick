@@ -50,6 +50,7 @@ CONFIG_EXTRA_DIST = \
 	config/english.xml \
 	config/francais.xml \
 	config/ImageMagick.rdf.in \
+	config/lndir.sh \
 	config/locale.xml \
 	config/log.xml \
 	config/magic.xml \
