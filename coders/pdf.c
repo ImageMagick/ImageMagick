@@ -565,11 +565,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
      if (cmyk != MagickFalse)
        delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
      else
-#if defined(MAGICKCORE_PNG_DELEGATE)
-       delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
-#else
-       delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
-#endif
+       if (LocaleCompare(image_info->magick,"AI") == 0)
+         delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
+       else
+         delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) RelinquishUniqueFileResource(postscript_filename);
