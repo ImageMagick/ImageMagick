@@ -1239,7 +1239,7 @@ ModuleExport unsigned long RegisterJPEGImage(void)
     *entry;
 
   static const char
-    *description = "Joint Photographic Experts Group JFIF format";
+    description[] = "Joint Photographic Experts Group JFIF format";
 
   *version='\0';
 #if defined(JPEG_LIB_VERSION)

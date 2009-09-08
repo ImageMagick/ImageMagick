@@ -57,9 +57,9 @@
   Constant declaration.
 */
 static const char
-  *BackgroundColor = "#fff",  /* white */
-  *BorderColor = "#dfdfdf",  /* gray */
-  *MatteColor = "#bdbdbd";  /* gray */
+  BackgroundColor[] = "#fff",  /* white */
+  BorderColor[] = "#dfdfdf",  /* gray */
+  MatteColor[] = "#bdbdbd";  /* gray */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
