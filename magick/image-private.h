@@ -32,19 +32,19 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 
 extern MagickExport const char
-  *BackgroundColor,
-  *BorderColor,
-  *DefaultTileFrame,
-  *DefaultTileGeometry,
-  *DefaultTileLabel,
-  *ForegroundColor,
-  *MatteColor,
-  *LoadImageTag,
-  *LoadImagesTag,
-  *PSDensityGeometry,
-  *PSPageGeometry,
-  *SaveImageTag,
-  *SaveImagesTag;
+  BackgroundColor[],
+  BorderColor[],
+  DefaultTileFrame[],
+  DefaultTileGeometry[],
+  DefaultTileLabel[],
+  ForegroundColor[],
+  MatteColor[],
+  LoadImageTag[],
+  LoadImagesTag[],
+  PSDensityGeometry[],
+  PSPageGeometry[],
+  SaveImageTag[],
+  SaveImagesTag[];
 
 extern MagickExport const double
   DefaultResolution;
