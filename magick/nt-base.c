@@ -810,7 +810,7 @@ static int NTGhostscriptFind(const char **product_family,int *major_version,
       "GPL Ghostscript",
       "GNU Ghostscript",
       "AFPL Ghostscript",
-      "Aladdin Ghostscript" 
+      "Aladdin Ghostscript"
     };
 
   /*
@@ -883,7 +883,7 @@ static int NTGhostscriptGetString(const char *name,char *value,
   int
     i,
     extent;
-  
+
   static const char
     *product_family = NULL;
 
