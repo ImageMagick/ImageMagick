@@ -1584,24 +1584,24 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ExtractSubimageFromImageImage() extracts a region of the image that most
-%  closely resembles the referemce.
+%  closely resembles the reference.
 %
 %  The format of the ExtractSubimageFromImageImage method is:
 %
-%      Image *ExtractSubimageFromImage(const Image *image,const Image *referemce,
+%      Image *ExtractSubimageFromImage(const Image *image,const Image *reference,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o referemce: find an area of the image that closely resembles this image.
+%    o reference: find an area of the image that closely resembles this image.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
-static double GetSimilarityMetric(const Image *image,const Image *referemce,
+static double GetSimilarityMetric(const Image *image,const Image *reference,
   const long x_offset,const long y_offset,const double similarity_threshold,
   ExceptionInfo *exception)
 {
@@ -1615,7 +1615,7 @@ static double GetSimilarityMetric(const Image *image,const Image *referemce,
 
   CacheView
     *image_view,
-    *referemce_view;
+    *reference_view;
 
   /*
     Compute the similarity in pixels between two images.
@@ -1623,18 +1623,18 @@ static double GetSimilarityMetric(const Image *image,const Image *referemce,
   normalized_similarity=1.0;
   similarity=0.0;
   channels=3;
-  if ((image->matte != MagickFalse) && (referemce->matte != MagickFalse))
+  if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
     channels++;
   if ((image->colorspace == CMYKColorspace) &&
-      (referemce->colorspace == CMYKColorspace))
+      (reference->colorspace == CMYKColorspace))
     channels++;
   image_view=AcquireCacheView(image);
-  referemce_view=AcquireCacheView(referemce);
-  for (y=0; y < (long) referemce->rows; y++)
+  reference_view=AcquireCacheView(reference);
+  for (y=0; y < (long) reference->rows; y++)
   {
     register const IndexPacket
       *indexes,
-      *referemce_indexes;
+      *reference_indexes;
 
     register const PixelPacket
       *p,
@@ -1644,14 +1644,14 @@ static double GetSimilarityMetric(const Image *image,const Image *referemce,
       x;
 
     p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset+y,
-      referemce->columns,1,exception);
-    q=GetCacheViewVirtualPixels(referemce_view,0,y,referemce->columns,1,
+      reference->columns,1,exception);
+    q=GetCacheViewVirtualPixels(reference_view,0,y,reference->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
       continue;
     indexes=GetCacheViewVirtualIndexQueue(image_view);
-    referemce_indexes=GetCacheViewVirtualIndexQueue(referemce_view);
-    for (x=0; x < (long) referemce->columns; x++)
+    reference_indexes=GetCacheViewVirtualIndexQueue(reference_view);
+    for (x=0; x < (long) reference->columns; x++)
     {
       MagickRealType
         pixel;
@@ -1662,32 +1662,32 @@ static double GetSimilarityMetric(const Image *image,const Image *referemce,
       similarity+=pixel*pixel;
       pixel=QuantumScale*(p->blue-(double) q->blue);
       similarity+=pixel*pixel;
-      if ((image->matte != MagickFalse) && (referemce->matte != MagickFalse))
+      if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
         {
           pixel=QuantumScale*(p->opacity-(double) q->opacity);
           similarity+=pixel*pixel;
         }
       if ((image->colorspace == CMYKColorspace) &&
-          (referemce->colorspace == CMYKColorspace))
+          (reference->colorspace == CMYKColorspace))
         {
-          pixel=QuantumScale*(indexes[x]-(double) referemce_indexes[x]);
+          pixel=QuantumScale*(indexes[x]-(double) reference_indexes[x]);
           similarity+=pixel*pixel;
         }
       p++;
       q++;
     }
-    normalized_similarity=sqrt(similarity)/referemce->columns/referemce->rows/
+    normalized_similarity=sqrt(similarity)/reference->columns/reference->rows/
       channels;
     if (normalized_similarity > similarity_threshold)
       break;
   }
-  referemce_view=DestroyCacheView(referemce_view);
+  reference_view=DestroyCacheView(reference_view);
   image_view=DestroyCacheView(image_view);
   return(normalized_similarity);
 }
 
-MagickExport Image *ExtractSubimageFromImage(Image *image,const Image *referemce,
-  ExceptionInfo *exception)
+MagickExport Image *ExtractSubimageFromImage(Image *image,
+  const Image *reference,ExceptionInfo *exception)
 {
   long
     y;
@@ -1699,16 +1699,16 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,const Image *referemce
     offset;
 
   /*
-    Extract referemce from image.
+    Extract reference from image.
   */
-  if ((referemce->columns > image->columns) || (referemce->rows > image->rows))
+  if ((reference->columns > image->columns) || (reference->rows > image->rows))
     return((Image *) NULL);
-  similarity_threshold=HUGE_VAL;
-  SetGeometry(referemce,&offset);
+  similarity_threshold=image->columns*image->rows;
+  SetGeometry(reference,&offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
 #endif
-  for (y=0; y < (long) (image->rows-referemce->rows); y++)
+  for (y=0; y < (long) (image->rows-reference->rows); y++)
   {
     double
       similarity;
@@ -1716,9 +1716,9 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,const Image *referemce
     register long
       x;
 
-    for (x=0; x < (long) (image->columns-referemce->columns); x++)
+    for (x=0; x < (long) (image->columns-reference->columns); x++)
     {
-      similarity=GetSimilarityMetric(image,referemce,x,y,similarity_threshold,
+      similarity=GetSimilarityMetric(image,reference,x,y,similarity_threshold,
         exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ExtractSubimageFromImage)
@@ -1731,7 +1731,7 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,const Image *referemce
         }
     }
   }
-  if (similarity_threshold > (QuantumScale*referemce->fuzz/100.0))
+  if (similarity_threshold > (QuantumScale*reference->fuzz/100.0))
     return((Image *) NULL);
   return(CropImage(image,&offset,exception));
 }
