@@ -1,16 +1,3 @@
-This copyright is limited to code for locating an installed Ghostscript under Windows) in magick/nt-base.c, incorporated from the gsview package:
-
-  Copyright (C) 2000-2002, Ghostgum Software Pty Ltd.  All rights reserved.
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy of this file ("Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this Software, and to permit persons to whom this file is furnished to do so, subject to the following conditions:
-
-  This Software is distributed with NO WARRANTY OF ANY KIND.  No author or distributor accepts any responsibility for the consequences of using it, or for whether it serves any particular purpose or works at all, unless he or she says so in writing.
-
-  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-* * *
-
-
 This copyright is limited to magick/utility.c/Base64Decode() and Base64Encode(), incorporated from the OpenSSH package:
 
   Copyright (c) 2000 Markus Friedl.  All rights reserved.
@@ -51,7 +38,7 @@ This copyright is limited to code for reading XML files in magick/xml-tree.c, in
 
 This copyright is limited to the Windows installer and enhancements to the automake and autoconf configure scripts, incorporated from the GraphicsMagick package:
 
-  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated to making software imaging solutions freely available.
+  Copyright (C) 2002-2009 GraphicsMagick Group, an organization dedicated to making software imaging solutions freely available.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files ("GraphicsMagick"), to deal in GraphicsMagick without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of GraphicsMagick, and to permit persons to whom GraphicsMagick is furnished to do so, subject to the following conditions:
 

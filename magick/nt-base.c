@@ -74,10 +74,10 @@ static char
 #endif
 
 static GhostscriptVectors
-  gs_vectors;
+  ghostscript_vectors;
 
 static void
-  *gs_dll_handle = (void *) NULL;
+  *ghostscript_handle = (void *) NULL;
 
 /*
   External declarations.
@@ -738,302 +738,207 @@ MagickExport MagickBooleanType NTGetModulePath(const char *module,char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptDLL() obtains the path to the latest Ghostscript DLL.  The
-%  method returns MagickFalse if a value is not obtained.
+%  NTGhostscriptDLL() returns the path to the most recent Ghostscript DLL.  The
+%  method returns TRUE on success otherwise FALSE.
 %
 %  The format of the NTGhostscriptDLL method is:
 %
-%      int NTGhostscriptDLL(char *path, int length)
+%      int NTGhostscriptDLL(char *path,int length)
 %
 %  A description of each parameter follows:
 %
-%    o path: Pointer to buffer in which to return result.
+%    o path: return the Ghostscript DLL path here.
 %
-%    o length: Length of buffer
+%    o length: the buffer length.
 %
 */
 
-#define GS_PRODUCT_AFPL "AFPL Ghostscript"
-#define GS_PRODUCT_ALADDIN "Aladdin Ghostscript"
-#define GS_PRODUCT_GNU "GNU Ghostscript"
-#define GS_PRODUCT_GPL "GPL Ghostscript"
-#define GS_MINIMUM_VERSION 550
-
-/*
-  Get Ghostscript versions for given product.
-  Store results starting at pver + 1 + offset.
-  Returns total number of versions in pver.
-*/
-static int NTGhostscriptProductVersions(int *pver,int offset,
-  const char *gs_productfamily)
+static int NTGetRegistryValue(HKEY root,const char *key,const char *name,
+  char *value,int *length)
 {
-  HKEY
-    hkey,
-    hkeyroot;
-
-  DWORD
-    cbData;
-
-  char
-    key[MaxTextExtent],
+  BYTE
+    byte,
     *p;
 
-  int
-    n = 0,
-    ver;
+  DWORD
+    extent,
+    type;
 
-  (void) FormatMagickString(key,MaxTextExtent,"Software\\%s",gs_productfamily);
-  hkeyroot = HKEY_LOCAL_MACHINE;
-  if (RegOpenKeyExA(hkeyroot,key,0,KEY_READ,&hkey) == ERROR_SUCCESS)
-    {
-      /*
-        Now enumerate the keys.
-      */
-      cbData = sizeof(key) / sizeof(char);
-      while (RegEnumKeyA(hkey,n,key,cbData) == ERROR_SUCCESS)
-      {
-        n++;
-        ver = 0;
-        p = key;
-        while (*p && (*p!='.')) {
-          ver = (ver * 10) + (*p - '0')*100;
-          p++;
-        }
-        if (*p == '.')
-          p++;
-        if (*p)
-          {
-            ver+=10*(*p-'0');
-            p++;
-          }
-        if (*p)
-          ver+=(*p - '0');
-        if ((n+offset) < pver[0])
-          pver[n+offset]=ver;
-      }
-      RegCloseKey(hkey);
-    }
-  return(n+offset);
-}
-
-/* Query registry to find which versions of Ghostscript are installed.
- * Return version numbers in an integer array.
- * On entry, the first element in the array must be the array size
- * in elements.
- * If all is well, TRUE is returned.
- * On exit, the first element is set to the number of Ghostscript
- * versions installed, and subsequent elements to the version
- * numbers of Ghostscript.
- * e.g. on entry {5, 0, 0, 0, 0}, on exit {3, 550, 600, 596, 0}
- * Returned version numbers may not be sorted.
- *
- * If Ghostscript is not installed at all, return FALSE
- * and set pver[0] to 0.
- * If the array is not large enough, return FALSE
- * and set pver[0] to the number of Ghostscript versions installed.
- */
-
-static int NTGhostscriptEnumerateVersions(int *pver)
-{
-  int
-    n;
-
-  assert(pver != (int *) NULL);
-  n=NTGhostscriptProductVersions(pver,0,GS_PRODUCT_AFPL);
-  n=NTGhostscriptProductVersions(pver,n,GS_PRODUCT_ALADDIN);
-  n=NTGhostscriptProductVersions(pver,n,GS_PRODUCT_GNU);
-  n=NTGhostscriptProductVersions(pver,n,GS_PRODUCT_GPL);
-  if (n >= pver[0])
-    {
-      pver[0]=n;
-      return(FALSE);  /* too small */
-    }
-  if (n == 0)
-    {
-      pver[0] = 0;
-      return(FALSE);  /* not installed */
-    }
-  pver[0]=n;
-  return(TRUE);
-}
-
-/*
- Get a named registry value.
- Key = hkeyroot\\key, named value = name.
- name, ptr, plen and return values are the same as in gp_getenv();
-*/
-static int NTGetRegistryValue(HKEY hkeyroot,const char *key,const char *name,
-  char *ptr,int *plen)
-{
   HKEY
     hkey;
 
-  DWORD
-    cbData,
-    keytype;
-
-  BYTE
-    b,
-    *bptr = (BYTE *)ptr;
-
   LONG
-    rc;
+    status;
 
-  if (RegOpenKeyExA(hkeyroot,key,0,KEY_READ,&hkey) == ERROR_SUCCESS)
+  /*
+    Get a registry value: Key = root\\key, named value = name.
+   */
+  if (RegOpenKeyExA(root,key,0,KEY_READ,&hkey) != ERROR_SUCCESS)
+    return(1);  /* no match */
+  p=(BYTE *) value;
+  type=REG_SZ;
+  extent=(*length);
+  if (p == (BYTE *) NULL)
+    p=(&byte);  /* won't return ERROR_MORE_DATA if value is NULL */
+  status=RegQueryValueExA(hkey,(char *) name,0,&type,p,&extent);
+  RegCloseKey(hkey);
+  if (status == ERROR_SUCCESS)
     {
-      keytype = REG_SZ;
-      cbData = *plen;
-      if (bptr == (BYTE *)NULL)
-        bptr=(&b);  /* Registry API won't return ERROR_MORE_DATA */
-      /* if ptr is NULL */
-      rc=RegQueryValueExA(hkey,(char *) name,0,&keytype,bptr,&cbData);
-      RegCloseKey(hkey);
-      if (rc == ERROR_SUCCESS)
-        {
-          *plen = cbData;
-          return 0;  /* found environment variable and copied it */
-        } else if (rc == ERROR_MORE_DATA) {
-        /* buffer wasn't large enough */
-          *plen = cbData;
-          return -1;
-        }
+      *length=extent;
+      return(0);  /* return the match */
+    }
+  if (status == ERROR_MORE_DATA)
+    {
+      *length=extent;
+      return(-1);  /* buffer wasn't large enough */
     }
   return(1);  /* not found */
 }
 
-static int NTGhostscriptGetProductString(int gs_revision,const char *name,
-  char *ptr,int len,const char *gs_productfamily)
+static int NTGhostscriptFind(const char **product_family,int *major_version,
+  int *minor_version)
 {
-  /* If using Win32, look in the registry for a value with
-   * the given name.  The registry value will be under the key
-   * HKEY_CURRENT_USER\Software\AFPL Ghostscript\N.NN
-   * or if that fails under the key
-   * HKEY_LOCAL_MACHINE\Software\AFPL Ghostscript\N.NN
-   * where "AFPL Ghostscript" is actually gs_productfamily
-   * and N.NN is obtained from gs_revision.
-   */
+  int
+    i;
 
+  MagickBooleanType
+    status;
+
+  static const char
+    *products[4] =
+    {
+      "GPL Ghostscript",
+      "GNU Ghostscript",
+      "AFPL Ghostscript",
+      "Aladdin Ghostscript" 
+    };
+
+  /*
+    Find the most recent version of Ghostscript.
+  */
+  status=FALSE;
+  *product_family=NULL;
+  *major_version=5;
+  *minor_version=49; /* min version of Ghostscript is 5.50 */
+  for (i=0; i < (sizeof(products)/sizeof(products[0])); i++)
+  {
+    char
+      key[MaxTextExtent];
+
+    HKEY
+      hkey,
+      root;
+
+    (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
+    root=HKEY_LOCAL_MACHINE;
+    if (RegOpenKeyExA(root,key,0,KEY_READ,&hkey) == ERROR_SUCCESS)
+      {
+        DWORD
+          extent;
+
+        int
+          j;
+
+        /*
+          Now enumerate the keys.
+        */
+        extent=sizeof(key)/sizeof(char);
+        for (j=0; RegEnumKeyA(hkey,j,key,extent) == ERROR_SUCCESS; j++)
+        {
+          int
+            major,
+            minor;
+
+          major=0;
+          minor=0;
+          if (sscanf(key,"%d.%d",&major,&minor) != 2)
+            continue;
+          if ((major > *major_version) || ((major == *major_version) &&
+              (minor > *minor_version)))
+            {
+              *product_family=products[i];
+              *major_version=major;
+              *minor_version=minor;
+              status=MagickTrue;
+            }
+          }
+       }
+    }
+  if (status == MagickFalse)
+    {
+      *major_version=0;
+      *minor_version=0;
+    }
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Ghostscript (%s) "
+    "version %d.%02d",*product_family,*major_version,*minor_version);
+  return(status);
+}
+
+static int NTGhostscriptGetString(const char *name,char *value,
+  const size_t length)
+{
   char
-    dotversion[MaxTextExtent],
     key[MaxTextExtent];
 
   int
-    code,
-    length;
+    i,
+    extent;
+  
+  static const char
+    *product_family = NULL;
 
-  DWORD version = GetVersion();
+  static int
+    major_version=0,
+    minor_version=0;
 
-  if (((HIWORD(version) & 0x8000) != 0) && ((HIWORD(version) & 0x4000) == 0))
-    {
-      /* Win32s */
-      return FALSE;
-    }
-  (void) FormatMagickString(dotversion,MaxTextExtent,"%d.%02d",(int)
-    (gs_revision/100),(int) (gs_revision % 100));
-  (void) FormatMagickString(key,MaxTextExtent,"Software\\%s\\%s",
-    gs_productfamily,dotversion);
-  length = len;
-  code = NTGetRegistryValue(HKEY_CURRENT_USER, key, name, ptr, &length);
-  if ( code == 0 )
-    return TRUE;  /* found it */
-  length = len;
-  code = NTGetRegistryValue(HKEY_LOCAL_MACHINE, key, name, ptr, &length);
-  if ( code == 0 )
-    return TRUE;  /* found it */
-  return FALSE;
-}
+  struct
+  {
+    const HKEY
+      hkey;
 
-static int NTGhostscriptGetString(int gs_revision,const char *name,char *ptr,
-  int len)
-{
-  if (NTGhostscriptGetProductString(gs_revision,name,ptr,len,GS_PRODUCT_AFPL))
-    return(TRUE);
-  if (NTGhostscriptGetProductString(gs_revision,name,ptr,len,GS_PRODUCT_ALADDIN))
-    return(TRUE);
-  if (NTGhostscriptGetProductString(gs_revision,name,ptr,len,GS_PRODUCT_GNU))
-    return(TRUE);
-  if (NTGhostscriptGetProductString(gs_revision,name,ptr,len,GS_PRODUCT_GPL))
-    return(TRUE);
+    const char
+      *name;
+  }
+  hkeys[2] =
+  {
+    { HKEY_CURRENT_USER,  "HKEY_CURRENT_USER"  },
+    { HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE" }
+  };
+
+  /*
+    Get a string from the installed Ghostscript.
+  */
+  value[0]='\0';
+  if (product_family == NULL)
+    (void) NTGhostscriptFind(&product_family,&major_version,&minor_version);
+  if (product_family == NULL)
+    return(FALSE);
+  (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
+    product_family,major_version,minor_version);
+  for (i=0; i < sizeof(hkeys)/sizeof(hkeys[0]); i++)
+  {
+    extent=length;
+    if (NTGetRegistryValue(hkeys[i].hkey,key,name,value,&extent) == 0)
+      {
+        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+          "registry: \"%s\\%s\\%s\"=\"%s\"",hkeys[i].name,key,name,value);
+        return(TRUE);
+      }
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "registry: \"%s\\%s\\%s\" (failed)",hkeys[i].name,key,name);
+  }
   return(FALSE);
 }
 
-static int NTGetLatestGhostscript( void )
+MagickExport int NTGhostscriptDLL(char *path,int length)
 {
-  int
-    count,
-    i,
-    gsver,
-    *ver;
-
-  DWORD version = GetVersion();
-  if ( ((HIWORD(version) & 0x8000)!=0) && ((HIWORD(version) & 0x4000)==0) )
-    return FALSE;  /* win32s */
-
-  count = 1;
-  NTGhostscriptEnumerateVersions(&count);
-  if (count < 1)
-    return FALSE;
-  ver=(int *) AcquireQuantumMemory(count+1UL,sizeof(*ver));
-  if (ver == (int *)NULL)
-    return(FALSE);
-  ver[0]=count+1;
-  if (!NTGhostscriptEnumerateVersions(ver))
-    {
-      ver=(int *) RelinquishMagickMemory(ver);
-      return FALSE;
-    }
-  gsver = 0;
-  for (i=1; i<=ver[0]; i++) {
-    if (ver[i] > gsver)
-      gsver = ver[i];
-  }
-  ver=(int *) RelinquishMagickMemory(ver);
-  return(gsver);
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T G h o s t s c r i p t D L L                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTGhostscriptDLL() obtains the path to the latest Ghostscript DLL.  The
-%  method returns MagickFalse if a value is not obtained.
-%
-%  The format of the NTGhostscriptDLL method is:
-%
-%      int NTGhostscriptDLL( char *path, int length)
-%
-%  A description of each parameter follows:
-%
-%    o path: Pointer to path buffer to update
-%
-%    o length: Allocation size of path buffer.
-%
-*/
-MagickExport int NTGhostscriptDLL(char *path, int length)
-{
-  int
-    version;
-
   char
-    buf[256];
+    dll_path[MaxTextExtent];
 
   *path='\0';
-  version = NTGetLatestGhostscript();
-  if ((version == FALSE) || (version < GS_MINIMUM_VERSION))
-    return FALSE;
-
-  if (!NTGhostscriptGetString(version, "GS_DLL", buf, sizeof(buf)))
-    return FALSE;
-
-  (void) CopyMagickString(path,buf,length+1);
+  if (NTGhostscriptGetString("GS_DLL",dll_path,sizeof(dll_path)) == 0)
+    return(FALSE);
+  (void) CopyMagickString(path,dll_path,length);
   return(TRUE);
 }
 
@@ -1048,21 +953,21 @@ MagickExport int NTGhostscriptDLL(char *path, int length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptDLLVectors() returns a GhostscriptVectors structure containing
-%  function vectors to invoke Ghostscript DLL functions. A null pointer is
-%  returned if there is an error with loading the DLL or retrieving the
-%  function vectors.
+%  NTGhostscriptDLLVectors() returns a GhostscriptVectors structure that
+%  contain function vectors to invoke Ghostscript DLL functions. A null
+%  pointer is returned if there is an error when loading the DLL or
+%  retrieving the function vectors.
 %
 %  The format of the NTGhostscriptDLLVectors method is:
 %
 %      const GhostscriptVectors *NTGhostscriptDLLVectors(void)
 %
 */
-MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
+MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors(void)
 {
-  if (NTGhostscriptLoadDLL())
-    return(&gs_vectors);
-  return((GhostscriptVectors*) NULL);
+  if (NTGhostscriptLoadDLL() == FALSE)
+    return((GhostscriptVectors *) NULL);
+  return(&ghostscript_vectors);
 }
 
 /*
@@ -1077,15 +982,16 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  NTGhostscriptEXE() obtains the path to the latest Ghostscript executable.
-%  The method returns MagickFalse if a value is not obtained.
+%  The method returns FALSE if a full path value is not obtained and returns
+%  a default path of gswin32c.exe.
 %
 %  The format of the NTGhostscriptEXE method is:
 %
-%      int NTGhostscriptEXE(char *path, int length)
+%      int NTGhostscriptEXE(char *path,int length)
 %
 %  A description of each parameter follows:
 %
-%    o path: pointer to buffer in which to return result.
+%    o path: return the Ghostscript executable path here.
 %
 %    o length: length of buffer.
 %
@@ -1093,25 +999,26 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 MagickExport int NTGhostscriptEXE(char *path,int length)
 {
   char
-    buffer[MaxTextExtent],
     *p;
 
-  int
-    version;
+  static char
+    executable[MaxTextExtent] = { "" };
 
+  if (*executable != '\0')
+    {
+      (void) CopyMagickString(path,executable,length);
+      return(TRUE);
+    }
   (void) CopyMagickString(path,"gswin32c.exe",length);
-  version=NTGetLatestGhostscript();
-  if ((version == FALSE) || (version < GS_MINIMUM_VERSION))
+  if (NTGhostscriptGetString("GS_DLL",executable,sizeof(executable)) == FALSE)
     return(FALSE);
-  if (NTGhostscriptGetString(version,"GS_DLL",buffer,sizeof(buffer)) == 0)
-    return(FALSE);
-  p=strrchr(buffer, '\\');
+  p=strrchr(executable, '\\');
   if (p == (char *) NULL)
     return(FALSE);
   p++;
   *p='\0';
-  (void) CopyMagickString(p,path,sizeof(buffer)-strlen(buffer));
-  (void) CopyMagickString(path,buffer,length);
+  (void) CopyMagickString(p,path,sizeof(executable)-strlen(executable));
+  (void) CopyMagickString(path,executable,length);
   return(TRUE);
 }
 
@@ -1126,18 +1033,18 @@ MagickExport int NTGhostscriptEXE(char *path,int length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptFonts() gets the path to the Ghostscript fonts.  The method
-%  returns MagickFalse if an error occurs otherwise MagickTrue.
+%  NTGhostscriptFonts() obtains the path to the Ghostscript fonts.  The method
+%  returns FALSE if it cannot determine the font path.
 %
 %  The format of the NTGhostscriptFonts method is:
 %
-%      int NTGhostscriptFonts(char *path,int length)
+%      int NTGhostscriptFonts(char *path, int length)
 %
 %  A description of each parameter follows:
 %
-%    o path: Pointer to buffer in which to return result.
+%    o path: return the font path here.
 %
-%    o length: Length of buffer.
+%    o length: length of the path buffer.
 %
 */
 MagickExport int NTGhostscriptFonts(char *path,int length)
@@ -1146,18 +1053,12 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
     buffer[MaxTextExtent],
     filename[MaxTextExtent];
 
-  int
-    version;
-
   register char
     *p,
     *q;
 
   *path='\0';
-  version=NTGetLatestGhostscript();
-  if ((version == FALSE) || (version < GS_MINIMUM_VERSION))
-    return(FALSE);
-  if (!NTGhostscriptGetString(version,"GS_LIB",buffer,MaxTextExtent))
+  if (NTGhostscriptGetString("GS_LIB",buffer,MaxTextExtent) == FALSE)
     return(FALSE);
   for (p=buffer-1; p != (char *) NULL; p=strchr(p+1,DirectoryListSeparator))
   {
@@ -1165,7 +1066,7 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
     q=strchr(path,DirectoryListSeparator);
     if (q != (char *) NULL)
       *q='\0';
-    FormatMagickString(filename,MaxTextExtent,"%s%sfonts.dir",path,
+    (void) FormatMagickString(filename,MaxTextExtent,"%s%sfonts.dir",path,
       DirectorySeparator);
     if (IsPathAccessible(filename) != MagickFalse)
       return(TRUE);
@@ -1185,45 +1086,45 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  NTGhostscriptLoadDLL() attempts to load the Ghostscript DLL and returns
-%  MagickTrue if it succeeds.
+%  TRUE if it succeeds.
 %
 %  The format of the NTGhostscriptLoadDLL method is:
 %
 %      int NTGhostscriptLoadDLL(void)
 %
+%%
 */
 MagickExport int NTGhostscriptLoadDLL(void)
 {
   char
-    module_path[MaxTextExtent];
+    path[MaxTextExtent];
 
-  if (gs_dll_handle != (void *) NULL)
-    return(MagickTrue);
-  if (NTGhostscriptDLL(module_path,sizeof(module_path)) == MagickFalse)
-    return(MagickFalse);
-  gs_dll_handle=NTOpenLibrary(module_path);
-  if (gs_dll_handle == (void *) NULL)
-    return(MagickFalse);
-  (void) ResetMagickMemory((void *) &gs_vectors,0,sizeof(GhostscriptVectors));
-  gs_vectors.exit=(int (MagickDLLCall *)
-    (gs_main_instance *)) NTGetLibrarySymbol(gs_dll_handle,"gsapi_exit");
-  gs_vectors.init_with_args=(int (MagickDLLCall *)
-    (gs_main_instance *,int,char **))
-    (NTGetLibrarySymbol(gs_dll_handle,"gsapi_init_with_args"));
-  gs_vectors.new_instance=(int (MagickDLLCall *) (gs_main_instance **,void *))
-    (NTGetLibrarySymbol(gs_dll_handle,"gsapi_new_instance"));
-  gs_vectors.run_string=(int (MagickDLLCall *)
-    (gs_main_instance *,const char *,int,int *))
-    (NTGetLibrarySymbol(gs_dll_handle,"gsapi_run_string"));
-  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))
-    (NTGetLibrarySymbol(gs_dll_handle,"gsapi_delete_instance"));
-  if ((gs_vectors.exit == NULL) ||
-      (gs_vectors.init_with_args == NULL) ||
-      (gs_vectors.new_instance == NULL) ||
-      (gs_vectors.run_string == NULL) ||
-      (gs_vectors.delete_instance == NULL))
-    return(MagickFalse);
-  return(MagickTrue);
+  if (ghostscript_handle != (void *) NULL)
+    return(TRUE);
+  if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
+    return(FALSE);
+  ghostscript_handle=lt_dlopen(path);
+  if (ghostscript_handle == (void *) NULL)
+    return(FALSE);
+  (void) ResetMagickMemory((void *) &ghostscript_vectors,0,
+    sizeof(GhostscriptVectors));
+  ghostscript_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))
+    lt_dlsym(ghostscript_handle,"gsapi_exit");
+  ghostscript_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,
+    int,char **)) (lt_dlsym(ghostscript_handle,"gsapi_init_with_args"));
+  ghostscript_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **,
+    void *)) (lt_dlsym(ghostscript_handle,"gsapi_new_instance"));
+  ghostscript_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *,
+    const char *,int,int *)) (lt_dlsym(ghostscript_handle,"gsapi_run_string"));
+  ghostscript_vectors.delete_instance=(void (MagickDLLCall *) (gs_main_instance
+    *)) (lt_dlsym(ghostscript_handle,"gsapi_delete_instance"));
+  if ((ghostscript_vectors.exit == NULL) ||
+      (ghostscript_vectors.init_with_args == NULL) ||
+      (ghostscript_vectors.new_instance == NULL) ||
+      (ghostscript_vectors.run_string == NULL) ||
+      (ghostscript_vectors.delete_instance == NULL))
+    return(FALSE);
+  return(TRUE);
 }
 
 /*
@@ -1237,7 +1138,8 @@ MagickExport int NTGhostscriptLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptUnLoadDLL() unloads the Ghostscript DLL if it is loaded.
+%  NTGhostscriptUnLoadDLL() unloads the Ghostscript DLL and returns TRUE if
+%  it succeeds.
 %
 %  The format of the NTGhostscriptUnLoadDLL method is:
 %
@@ -1246,12 +1148,16 @@ MagickExport int NTGhostscriptLoadDLL(void)
 */
 MagickExport int NTGhostscriptUnLoadDLL(void)
 {
-  if (gs_dll_handle == (void *) NULL)
-    return(MagickFalse);
-  NTCloseLibrary(gs_dll_handle);
-  gs_dll_handle=(void *) NULL;
-  (void) ResetMagickMemory((void *) &gs_vectors,0,sizeof(GhostscriptVectors));
-  return(MagickTrue);
+  int
+    status;
+
+  if (ghostscript_handle == (void *) NULL)
+    return(FALSE);
+  status=lt_dlclose(ghostscript_handle);
+  ghostscript_handle=(void *) NULL;
+  (void) ResetMagickMemory((void *) &ghostscript_vectors,0,
+    sizeof(GhostscriptVectors));
+  return(status);
 }
 
 /*
