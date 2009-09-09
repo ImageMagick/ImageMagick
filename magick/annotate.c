@@ -613,9 +613,6 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   TypeMetric
     extent;
 
-  unsigned long
-    number_lines;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -649,9 +646,8 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
     if (extent.width > metrics->width)
       *metrics=extent;
   }
-  number_lines=(unsigned long) i;
-  metrics->height=(double) number_lines*(long) (metrics->ascent-
-    metrics->descent+draw_info->interline_spacing+0.5);
+  metrics->height=(double) (i*(unsigned long) (metrics->ascent-
+    metrics->descent+0.5)+(i-1)*draw_info->interline_spacing);
   /*
     Relinquish resources.
   */
