@@ -762,9 +762,23 @@ MagickExport void InitializeMagickResources(void)
   files=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
   files=sysconf(_SC_OPEN_MAX);
-#elif defined(MAGICKCORE_HAVE_GETDTABLESIZE) && defined(MAGICKCORE_POSIX_SUPPORT)
-  files=getdtablesize();
 #endif
+#if defined(MAGICKCORE_HAVE_GETRLIMIT) && defined(RLIMIT_NOFILE)
+  if (files < 0)
+    {
+      struct rlimit
+        resources;
+
+      if (getrlimit(RLIMIT_NOFILE,&resources) != -1)
+        files=resources.rlim_cur;
+  }
+#endif
+#if defined(MAGICKCORE_HAVE_GETDTABLESIZE) && defined(MAGICKCORE_POSIX_SUPPORT)
+  if (files < 0)
+    files=getdtablesize();
+#endif
+  if (files < 0)
+    files=64;
   (void) SetMagickResourceLimit(FileResource,MagickMax((unsigned long)
     (3*files/4),64));
   limit=GetEnvironmentValue("MAGICK_FILE_LIMIT");
