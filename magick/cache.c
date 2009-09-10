@@ -1468,12 +1468,6 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   CacheInfo
     *cache_info;
 
-  CacheType
-    type;
-
-  MapMode
-    mode;
-
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -1490,11 +1484,14 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   (void) UnlockSemaphoreInfo(cache_info->semaphore);
   if (cache_resources != (SplayTreeInfo *) NULL)
     (void) DeleteNodeByValueFromSplayTree(cache_resources,cache_info);
-  type=cache_info->type;
-  mode=cache_info->mode;
-  RelinquishPixelCachePixels(cache_info);
-  if ((mode != ReadMode) && ((type == MapCache) || (type == DiskCache)))
-    (void) RelinquishUniqueFileResource(cache_info->cache_filename);
+  if ((cache_info->mode == ReadMode) || ((cache_info->type != MapCache) &&
+      (cache_info->type != DiskCache)))
+    RelinquishPixelCachePixels(cache_info);
+  else
+    {
+      RelinquishPixelCachePixels(cache_info);
+      (void) RelinquishUniqueFileResource(cache_info->cache_filename);
+    }
   *cache_info->cache_filename='\0';
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
