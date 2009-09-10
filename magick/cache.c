@@ -2082,6 +2082,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
     time_limit;
 
   MagickBooleanType
+    destroy,
     status;
 
   if (image->debug != MagickFalse)
@@ -2096,6 +2097,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
     ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
+  destroy=MagickFalse;
   (void) LockSemaphoreInfo(cache_info->semaphore);
   if (cache_info->reference_count > 1)
     {
@@ -2121,13 +2123,15 @@ MagickExport Cache GetImagePixelCache(Image *image,
                 status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
-                  cache_info->reference_count--;
+                  destroy=MagickTrue;
                   image->cache=clone_image.cache;
                 }
             }
         }
     }
   (void) UnlockSemaphoreInfo(cache_info->semaphore);
+  if (destroy != MagickFalse)
+    DestroyPixelCache(cache_info);
   if (status != MagickFalse)
     {
       /*
