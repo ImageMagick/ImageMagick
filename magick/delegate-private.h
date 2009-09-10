@@ -41,7 +41,7 @@ typedef struct gs_main_instance_s
 #  endif
 #endif
 
-typedef struct _GhostscriptVectors
+typedef struct _GhostInfo
 {
   int
     (MagickDLLCall *exit)(gs_main_instance *);
@@ -57,7 +57,7 @@ typedef struct _GhostscriptVectors
 
   void
     (MagickDLLCall *delete_instance)(gs_main_instance *);
-} GhostscriptVectors;
+} GhostInfo;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

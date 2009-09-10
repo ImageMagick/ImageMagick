@@ -73,11 +73,11 @@ static char
   *lt_slsearchpath = (char *) NULL;
 #endif
 
-static GhostscriptVectors
-  ghostscript_vectors;
+static GhostInfo
+  ghost_info;
 
 static void
-  *ghostscript_handle = (void *) NULL;
+  *ghost_handle = (void *) NULL;
 
 /*
   External declarations.
@@ -738,8 +738,8 @@ MagickExport MagickBooleanType NTGetModulePath(const char *module,char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptDLL() returns the path to the most recent Ghostscript DLL.  The
-%  method returns TRUE on success otherwise FALSE.
+%  NTGhostscriptDLL() returns the path to the most recent Ghostscript version
+%  DLL.  The method returns TRUE on success otherwise FALSE.
 %
 %  The format of the NTGhostscriptDLL method is:
 %
@@ -771,15 +771,15 @@ static int NTGetRegistryValue(HKEY root,const char *key,const char *name,
     status;
 
   /*
-    Get a registry value: Key = root\\key, named value = name.
-   */
+    Get a registry value: key = root\\key, named value = name.
+  */
   if (RegOpenKeyExA(root,key,0,KEY_READ,&hkey) != ERROR_SUCCESS)
     return(1);  /* no match */
   p=(BYTE *) value;
   type=REG_SZ;
   extent=(*length);
   if (p == (BYTE *) NULL)
-    p=(&byte);  /* won't return ERROR_MORE_DATA if value is NULL */
+    p=(&byte);  /* ERROR_MORE_DATA only if value is NULL */
   status=RegQueryValueExA(hkey,(char *) name,0,&type,p,&extent);
   RegCloseKey(hkey);
   if (status == ERROR_SUCCESS)
@@ -790,12 +790,12 @@ static int NTGetRegistryValue(HKEY root,const char *key,const char *name,
   if (status == ERROR_MORE_DATA)
     {
       *length=extent;
-      return(-1);  /* buffer wasn't large enough */
+      return(-1);  /* buffer not large enough */
     }
   return(1);  /* not found */
 }
 
-static int NTGhostscriptFind(const char **product_family,int *major_version,
+static int NTLocateGhostscript(const char **product_family,int *major_version,
   int *minor_version)
 {
   int
@@ -810,7 +810,7 @@ static int NTGhostscriptFind(const char **product_family,int *major_version,
       "GPL Ghostscript",
       "GNU Ghostscript",
       "AFPL Ghostscript",
-      "Aladdin Ghostscript"
+      "Aladdin Ghostscript" 
     };
 
   /*
@@ -883,9 +883,9 @@ static int NTGhostscriptGetString(const char *name,char *value,
   int
     i,
     extent;
-
+  
   static const char
-    *product_family = NULL;
+    *product_family = (const char *) NULL;
 
   static int
     major_version=0,
@@ -908,9 +908,9 @@ static int NTGhostscriptGetString(const char *name,char *value,
   /*
     Get a string from the installed Ghostscript.
   */
-  value[0]='\0';
+  *value='\0';
   if (product_family == NULL)
-    (void) NTGhostscriptFind(&product_family,&major_version,&minor_version);
+    (void) NTLocateGhostscript(&product_family,&major_version,&minor_version);
   if (product_family == NULL)
     return(FALSE);
   (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
@@ -953,21 +953,21 @@ MagickExport int NTGhostscriptDLL(char *path,int length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptDLLVectors() returns a GhostscriptVectors structure that
-%  contain function vectors to invoke Ghostscript DLL functions. A null
-%  pointer is returned if there is an error when loading the DLL or
-%  retrieving the function vectors.
+%  NTGhostscriptDLLVectors() returns a GhostInfo structure that includes
+%  function vectors to invoke Ghostscript DLL functions. A null pointer is
+%  returned if there is an error when loading the DLL or retrieving the
+%  function vectors.
 %
 %  The format of the NTGhostscriptDLLVectors method is:
 %
-%      const GhostscriptVectors *NTGhostscriptDLLVectors(void)
+%      const GhostInfo *NTGhostscriptDLLVectors(void)
 %
 */
-MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors(void)
+MagickExport const GhostInfo *NTGhostscriptDLLVectors(void)
 {
   if (NTGhostscriptLoadDLL() == FALSE)
-    return((GhostscriptVectors *) NULL);
-  return(&ghostscript_vectors);
+    return((GhostInfo *) NULL);
+  return(&ghost_info);
 }
 
 /*
@@ -1092,37 +1092,33 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
 %
 %      int NTGhostscriptLoadDLL(void)
 %
-%%
 */
 MagickExport int NTGhostscriptLoadDLL(void)
 {
   char
     path[MaxTextExtent];
 
-  if (ghostscript_handle != (void *) NULL)
+  if (ghost_handle != (void *) NULL)
     return(TRUE);
   if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
     return(FALSE);
-  ghostscript_handle=lt_dlopen(path);
-  if (ghostscript_handle == (void *) NULL)
+  ghost_handle=lt_dlopen(path);
+  if (ghost_handle == (void *) NULL)
     return(FALSE);
-  (void) ResetMagickMemory((void *) &ghostscript_vectors,0,
-    sizeof(GhostscriptVectors));
-  ghostscript_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))
-    lt_dlsym(ghostscript_handle,"gsapi_exit");
-  ghostscript_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,
-    int,char **)) (lt_dlsym(ghostscript_handle,"gsapi_init_with_args"));
-  ghostscript_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **,
-    void *)) (lt_dlsym(ghostscript_handle,"gsapi_new_instance"));
-  ghostscript_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *,
-    const char *,int,int *)) (lt_dlsym(ghostscript_handle,"gsapi_run_string"));
-  ghostscript_vectors.delete_instance=(void (MagickDLLCall *) (gs_main_instance
-    *)) (lt_dlsym(ghostscript_handle,"gsapi_delete_instance"));
-  if ((ghostscript_vectors.exit == NULL) ||
-      (ghostscript_vectors.init_with_args == NULL) ||
-      (ghostscript_vectors.new_instance == NULL) ||
-      (ghostscript_vectors.run_string == NULL) ||
-      (ghostscript_vectors.delete_instance == NULL))
+  (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+  ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
+    lt_dlsym(ghost_handle,"gsapi_exit");
+  ghost_info.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,int,
+    char **)) (lt_dlsym(ghost_handle,"gsapi_init_with_args"));
+  ghost_info.new_instance=(int (MagickDLLCall *)(gs_main_instance **,void *)) (
+    lt_dlsym(ghost_handle,"gsapi_new_instance"));
+  ghost_info.run_string=(int (MagickDLLCall *)(gs_main_instance *,const char *,
+    int,int *)) (lt_dlsym(ghost_handle,"gsapi_run_string"));
+  ghost_info.delete_instance=(void (MagickDLLCall *) (gs_main_instance *)) (
+    lt_dlsym(ghost_handle,"gsapi_delete_instance"));
+  if ((ghost_info.exit == NULL) || (ghost_info.init_with_args == NULL) ||
+      (ghost_info.new_instance == NULL) || (ghost_info.run_string == NULL) ||
+      (ghost_info.delete_instance == NULL))
     return(FALSE);
   return(TRUE);
 }
@@ -1151,12 +1147,11 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
   int
     status;
 
-  if (ghostscript_handle == (void *) NULL)
+  if (ghost_handle == (void *) NULL)
     return(FALSE);
-  status=lt_dlclose(ghostscript_handle);
-  ghostscript_handle=(void *) NULL;
-  (void) ResetMagickMemory((void *) &ghostscript_vectors,0,
-    sizeof(GhostscriptVectors));
+  status=lt_dlclose(ghost_handle);
+  ghost_handle=(void *) NULL;
+  (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
   return(status);
 }
 
