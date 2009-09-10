@@ -121,6 +121,9 @@ typedef struct _CacheInfo
   CacheType
     type;
 
+  MapMode
+    mode;
+
   MagickBooleanType
     mapped;
 
