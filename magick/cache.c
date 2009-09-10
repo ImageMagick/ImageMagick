@@ -1484,6 +1484,15 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   (void) UnlockSemaphoreInfo(cache_info->semaphore);
   if (cache_resources != (SplayTreeInfo *) NULL)
     (void) DeleteNodeByValueFromSplayTree(cache_resources,cache_info);
+  if (cache_info->debug != MagickFalse)
+    {
+      char
+        message[MaxTextExtent];
+
+      (void) FormatMagickString(message,MaxTextExtent,"destroy %s",
+        cache_info->filename);
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
+    }
   if ((cache_info->mode == ReadMode) || ((cache_info->type != MapCache) &&
       (cache_info->type != DiskCache)))
     RelinquishPixelCachePixels(cache_info);
@@ -1496,15 +1505,6 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
-  if (cache_info->debug != MagickFalse)
-    {
-      char
-        message[MaxTextExtent];
-
-      (void) FormatMagickString(message,MaxTextExtent,"destroy %s",
-        cache_info->filename);
-      (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
-    }
   if (cache_info->random_info != (RandomInfo *) NULL)
     cache_info->random_info=DestroyRandomInfo(cache_info->random_info);
   cache_info->signature=(~MagickSignature);
