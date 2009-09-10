@@ -1471,6 +1471,9 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   CacheType
     type;
 
+  MapMode
+    mode;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -1488,8 +1491,9 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   if (cache_resources != (SplayTreeInfo *) NULL)
     (void) DeleteNodeByValueFromSplayTree(cache_resources,cache_info);
   type=cache_info->type;
+  mode=cache_info->mode;
   RelinquishPixelCachePixels(cache_info);
-  if ((type == MapCache) || (type == DiskCache))
+  if ((mode != ReadMode) && ((type == MapCache) || (type == DiskCache)))
     (void) RelinquishUniqueFileResource(cache_info->cache_filename);
   *cache_info->cache_filename='\0';
   if (cache_info->nexus_info != (NexusInfo **) NULL)
@@ -2099,7 +2103,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
   cache_info=(CacheInfo *) image->cache;
   destroy=MagickFalse;
   (void) LockSemaphoreInfo(cache_info->semaphore);
-  if (cache_info->reference_count > 1)
+  if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
     {
       Image
         clone_image;
@@ -4098,6 +4102,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
 %
 %    o filename: the persistent pixel cache filename.
 %
+%    o attach: A value other than zero initializes the persistent pixel
+%      cache.
+%
 %    o initialize: A value other than zero initializes the persistent pixel
 %      cache.
 %
@@ -4143,7 +4150,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   if (attach != MagickFalse)
     {
       /*
-        Attach persistent pixel cache.
+        Attach existing persistent pixel cache.
       */
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -4154,21 +4161,21 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       cache_info->offset=(*offset);
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
-      cache_info=(CacheInfo *) ReferencePixelCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       return(MagickTrue);
     }
-  if ((cache_info->type != MemoryCache) && (cache_info->reference_count == 1))
+  if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
+      (cache_info->reference_count == 1))
     {
       (void) LockSemaphoreInfo(cache_info->semaphore);
-      if ((cache_info->type != MemoryCache) &&
+      if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
           (cache_info->reference_count == 1))
         {
           int
             status;
 
           /*
-            Usurp resident persistent pixel cache.
+            Usurp existing persistent pixel cache.
           */
           status=rename(cache_info->cache_filename,filename);
           if (status == 0)
@@ -4188,7 +4195,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       (void) UnlockSemaphoreInfo(cache_info->semaphore);
     }
   /*
-    Attach persistent pixel cache.
+    Clone persistent pixel cache.
   */
   clone_image=(*image);
   clone_info=(CacheInfo *) clone_image.cache;
