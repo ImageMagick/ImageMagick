@@ -90,7 +90,7 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InvokePostscriptDelegate() executes the postscript interpreter with the
+%  InvokePostscriptDelegate() executes the Postscript interpreter with the
 %  specified command.
 %
 %  The format of the InvokePostscriptDelegate method is:
@@ -120,8 +120,8 @@ static MagickBooleanType InvokePostscriptDelegate(
   char
     **argv;
 
-  const GhostscriptVectors
-    *gs_func;
+  const GhostInfo
+    *ghost_info;
 
   gs_main_instance
     *interpreter;
@@ -134,24 +134,24 @@ static MagickBooleanType InvokePostscriptDelegate(
     i;
 
 #if defined(__WINDOWS__)
-  gs_func=NTGhostscriptDLLVectors();
+  ghost_info=NTGhostscriptDLLVectors();
 #else
-  GhostscriptVectors
-    gs_func_struct;
+  GhostInfo
+    ghost_info_struct;
 
-  gs_func=(&gs_func_struct);
-  (void) ResetMagickMemory(&gs_func,0,sizeof(gs_func));
-  gs_func_struct.new_instance=(int (*)(gs_main_instance **,void *))
+  ghost_info=(&ghost_info_struct);
+  (void) ResetMagickMemory(&ghost_info,0,sizeof(ghost_info));
+  ghost_info_struct.new_instance=(int (*)(gs_main_instance **,void *))
     gsapi_new_instance;
-  gs_func_struct.init_with_args=(int (*)(gs_main_instance *,int,char **))
+  ghost_info_struct.init_with_args=(int (*)(gs_main_instance *,int,char **))
     gsapi_init_with_args;
-  gs_func_struct.run_string=(int (*)(gs_main_instance *,const char *,int,int *))
-    gsapi_run_string;
-  gs_func_struct.delete_instance=(void (*)(gs_main_instance *))
+  ghost_info_struct.run_string=(int (*)(gs_main_instance *,const char *,int,
+    int *)) gsapi_run_string;
+  ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
     gsapi_delete_instance;
-  gs_func_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
+  ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
 #endif
-  if (gs_func == (GhostscriptVectors *) NULL)
+  if (ghost_info == (GhostInfo *) NULL)
     {
       status=SystemCommand(verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
@@ -161,19 +161,19 @@ static MagickBooleanType InvokePostscriptDelegate(
       (void) fputs("[ghostscript library]",stdout);
       (void) fputs(strchr(command,' '),stdout);
     }
-  status=(gs_func->new_instance)(&interpreter,(void *) NULL);
+  status=(ghost_info->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
     {
       status=SystemCommand(verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
     }
   argv=StringToArgv(command,&argc);
-  status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
+  status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
-    status=(gs_func->run_string)(interpreter,"systemdict /start get exec\n",0,
-      &code);
-  (gs_func->exit)(interpreter);
-  (gs_func->delete_instance)(interpreter);
+    status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
+      0,&code);
+  (ghost_info->exit)(interpreter);
+  (ghost_info->delete_instance)(interpreter);
 #if defined(__WINDOWS__)
   NTGhostscriptUnLoadDLL();
 #endif

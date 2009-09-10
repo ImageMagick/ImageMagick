@@ -306,7 +306,7 @@ typedef long ssize_t;
 extern MagickExport char
   *NTGetLastError(void);
 
-extern MagickExport const GhostscriptVectors
+extern MagickExport const GhostInfo
   *NTGhostscriptDLLVectors(void);
 
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
