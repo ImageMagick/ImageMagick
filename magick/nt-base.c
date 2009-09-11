@@ -932,13 +932,14 @@ static int NTGhostscriptGetString(const char *name,char *value,
 
 MagickExport int NTGhostscriptDLL(char *path,int length)
 {
-  char
-    dll_path[MaxTextExtent];
+  static char
+    dll[MaxTextExtent] = { "" };
 
   *path='\0';
-  if (NTGhostscriptGetString("GS_DLL",dll_path,sizeof(dll_path)) == 0)
-    return(FALSE);
-  (void) CopyMagickString(path,dll_path,length);
+  if ((*dll == '\0') &&
+      (NTGhostscriptGetString("GS_DLL",dll,sizeof(dll)) == FALSE))
+   return(FALSE);
+  (void) CopyMagickString(path,dll,length);
   return(TRUE);
 }
 
@@ -998,27 +999,24 @@ MagickExport const GhostInfo *NTGhostscriptDLLVectors(void)
 */
 MagickExport int NTGhostscriptEXE(char *path,int length)
 {
-  char
+  register char
     *p;
 
   static char
-    executable[MaxTextExtent] = { "" };
+    program[MaxTextExtent] = { "" };
 
-  if (*executable != '\0')
-    {
-      (void) CopyMagickString(path,executable,length);
-      return(TRUE);
-    }
   (void) CopyMagickString(path,"gswin32c.exe",length);
-  if (NTGhostscriptGetString("GS_DLL",executable,sizeof(executable)) == FALSE)
+  if ((*program == '\0') &&
+      (NTGhostscriptGetString("GS_DLL",program,sizeof(program)) == FALSE))
     return(FALSE);
-  p=strrchr(executable, '\\');
-  if (p == (char *) NULL)
-    return(FALSE);
-  p++;
-  *p='\0';
-  (void) CopyMagickString(p,path,sizeof(executable)-strlen(executable));
-  (void) CopyMagickString(path,executable,length);
+  p=strrchr(program,'\\');
+  if (p != (char *) NULL)
+    {
+      p++;
+      *p='\0';
+      (void) ConcatenateMagickString(program,"gswin32c.exe",sizeof(program));
+    }
+  (void) CopyMagickString(path,program,length);
   return(TRUE);
 }
 
