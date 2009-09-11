@@ -654,7 +654,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
             status=MagickTrue;
             is_gray=IsGrayImage(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,1) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
             for (i=0L; i < 5L; i++)
             {
@@ -1197,7 +1197,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *images,
         if ((is_gray != MagickFalse) && (images->next != (Image *) NULL))
           is_gray=IsGrayImage(images->next,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp parallel for schedule(dynamic,1) shared(status)
+        #pragma omp parallel for schedule(static,1) shared(status)
 #endif
         for (i=0L; i < 5L; i++)
         {

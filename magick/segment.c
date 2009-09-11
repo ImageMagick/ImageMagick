@@ -518,7 +518,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {

@@ -549,7 +549,7 @@ MagickExport Image *AppendImages(const Image *image,
       y_offset-=geometry.y;
     image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(dynamic,4) shared(status)
+    #pragma omp parallel for schedule(static,1) shared(status)
 #endif
     for (y=0; y < (long) image->rows; y++)
     {
@@ -761,7 +761,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   number_images=GetImageListLength(image);
   average_view=AcquireCacheView(average_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) average_image->rows; y++)
   {
@@ -1341,7 +1341,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
   progress=0;
   combine_view=AcquireCacheView(combine_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) combine_image->rows; y++)
   {
@@ -1529,7 +1529,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -2288,7 +2288,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -2748,7 +2748,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -3035,7 +3035,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       exception=(&image->exception);
       image_view=AcquireCacheView(image);
       #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp parallel for schedule(dynamic,4) shared(status)
+        #pragma omp parallel for schedule(static,1) shared(status)
       #endif
       for (y=0; y < (long) image->rows; y++)
       {
@@ -3212,7 +3212,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -3879,7 +3879,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -4210,7 +4210,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
     Assign index values to colormap entries.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (i=0; i < (long) image->colors; i++)
     image->colormap[i].opacity=(IndexPacket) i;
@@ -4223,7 +4223,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
     Update image colormap indexes to sorted colormap order.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (i=0; i < (long) image->colors; i++)
     pixels[(long) image->colormap[i].opacity]=(unsigned short) i;
