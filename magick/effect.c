@@ -1434,6 +1434,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 {
 #define DespeckleImageTag  "Despeckle/Image"
 
+  CacheView
+    *despeckle_view,
+    *image_view;
+
   Image
     *despeckle_image;
 
@@ -1453,10 +1457,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   static const int
     X[4] = {0, 1, 1,-1},
     Y[4] = {1, 0, 1, 1};
-
-  CacheView
-    *despeckle_view,
-    *image_view;
 
   /*
     Allocate despeckled image.
