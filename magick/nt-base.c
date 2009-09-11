@@ -938,7 +938,7 @@ MagickExport int NTGhostscriptDLL(char *path,int length)
   *path='\0';
   if ((*dll == '\0') &&
       (NTGhostscriptGetString("GS_DLL",dll,sizeof(dll)) == FALSE))
-   return(FALSE);
+    return(FALSE);
   (void) CopyMagickString(path,dll,length);
   return(TRUE);
 }
