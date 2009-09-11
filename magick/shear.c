@@ -706,7 +706,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   status=MagickTrue;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -757,7 +757,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   RadonProjection(source_cells,destination_cells,-1,projection);
   (void) ResetRadonCells(source_cells);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1451,7 +1451,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,8) shared(progress, status)
+  #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
   for (y=0; y < (long) height; y++)
   {
@@ -1671,7 +1671,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,8) shared(progress, status)
+  #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
   for (x=0; x < (long) width; x++)
   {

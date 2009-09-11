@@ -269,7 +269,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   edge_view=AcquireCacheView(edge_image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) blur_image->rows; y++)
   {
@@ -587,7 +587,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   edge_view=AcquireCacheView(edge_image);
   sharp_view=AcquireCacheView(sharp_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) sharp_image->rows; y++)
   {
@@ -908,7 +908,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) blur_image->rows; y++)
   {
@@ -1499,7 +1499,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (channel=0; channel <= 3; channel++)
   {
@@ -2244,7 +2244,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   image_view=AcquireCacheView(image);
   median_view=AcquireCacheView(median_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) median_image->rows; y++)
   {
@@ -2516,7 +2516,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -3291,7 +3291,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) blur_image->rows; y++)
   {
@@ -3602,7 +3602,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   image_view=AcquireCacheView(image);
   noise_view=AcquireCacheView(noise_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) noise_image->rows; y++)
   {
@@ -3859,7 +3859,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -4195,7 +4195,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   image_view=AcquireCacheView(image);
   shade_view=AcquireCacheView(shade_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -4492,7 +4492,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(spread_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) spread_image->rows; y++)
   {
@@ -4651,7 +4651,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   unsharp_view=AcquireCacheView(unsharp_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
