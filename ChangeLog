@@ -1,3 +1,9 @@
+2009-09-11  6.5.5-10 Cristy  <quetzlzacatenango@image...>
+  * Return the global maximum threads to avoid the rare cache view assertions.
+
+2009-09-10  6.5.5-9 Cristy  <quetzlzacatenango@image...>
+  * Do not include last line of text in the interline spacing computation.
+
 2009-09-07  6.5.5-8 Cristy  <quetzlzacatenango@image...>
   * Check that quantum_info is defined before destroying it in the PNG coder.
   * Add -interline-spacing option to convert.

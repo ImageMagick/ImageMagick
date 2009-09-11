@@ -779,6 +779,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 
     register long
       i,
+      id,
       x;
 
     register MagickPixelPacket
@@ -798,7 +799,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       }
     average_indexes=GetCacheViewAuthenticIndexQueue(average_view);
     pixel=zero;
-    average_pixel=average_pixels[GetOpenMPThreadId()];
+    id=GetOpenMPThreadId();
+    average_pixel=average_pixels[id];
     for (x=0; x < (long) average_image->columns; x++)
       average_pixel[x]=zero;
     next=image;
