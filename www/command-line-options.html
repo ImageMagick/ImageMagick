@@ -4817,8 +4817,12 @@ id="shared-memory"></a>-shared-memory</h4>
   3072x2048
 </pre>
 
-<p>Finally, use this option to choose a particular resolution layer of a JBIG or JPEG image (e.g. -size 1024x768).</p>
+<p>You can use this option to choose a particular resolution layer of a JBIG or JPEG image (e.g. -size 1024x768).</p>
 
+    <p>Finally, we convert two JPEG images to TIFF.  We want to subsample the first but not the second image so we reset the size option:
+    </p>
+
+		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 640x480 image1.jpg +size image2.jpg image.tif</span></p>
 <div style="margin: auto;">
   <h4><a name="sketch" id="sketch"></a>-sketch <em class="arg">radius</em><br />-sketch <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em></h4>
 </div>
@@ -5520,7 +5524,7 @@ percentage, which defaults to 100 percent (no color change). </p>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

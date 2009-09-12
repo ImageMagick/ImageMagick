@@ -123,9 +123,6 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.buerodruck.de/stempel-service/index.html">Stempel bestellen</a><!-- 200910000035+ -->
-</div>
-<div  class="sponsor">
    <a href="http://www.goyax.de">Börse</a><!-- 201001000240 Gewiese digital-finance.de -->
 </div>
 <div  class="sponsor">
@@ -236,7 +233,7 @@
 		</p>
 
 		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 640x480 -depth 8 rgb:image image.png</span></p>
-		</div>
+  </div>
 
 	<h3>Built-in Images and Patterns</h3>
 		<div class="doc-section">
@@ -371,7 +368,12 @@
 <p>In this example, <em class="arg">-channel</em> applies to each of the images, since, as we mentioned, settings persist:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -channel RGB wand.png wizard.png images.png</span></p></div>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -channel RGB wand.png wizard.png images.png</span></p>
+    <p>Here we convert two JPEG images to TIFF.  We want to subsample the first but not the second image so we reset the size option:
+    </p>
+
+		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 640x480 image1.jpg +size image2.jpg image.tif</span></p>
+</div>
 
 <h2><a name="operator"></a>Image Operator</h2>
 <div class="doc-section">
@@ -632,7 +634,7 @@ above.</p>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
