@@ -197,7 +197,11 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
         count=ReadBlob(image,length,pixels);
         if (count != (ssize_t) length)
-          break;
+          {
+            ThrowFileException(exception,CorruptImageError,
+              "UnexpectedEndOfFile",image->filename);
+            break;
+          }
       }
     for (y=0; y < (long) image->extract_info.height; y++)
     {
@@ -218,6 +222,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
         break;
       count=ReadBlob(image,length,pixels);
+      if ((count != (ssize_t) length) &&
+          (y < (long) (image->extract_info.height-1)))
+        {
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
+          break;
+        }
       if (((y-image->extract_info.y) >= 0) && 
           ((y-image->extract_info.y) < (long) image->rows))
         {
@@ -246,12 +257,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         }
     }
     SetQuantumImageType(image,quantum_type);
-    if (EOFBlob(image) != MagickFalse)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
-      }
     /*
       Proceed to next image.
     */
