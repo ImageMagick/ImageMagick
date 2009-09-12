@@ -1411,6 +1411,8 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   if (image == (Image *) NULL)
     ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1])
   FinalizeImageSettings(image_info,image,MagickTrue);
+  if (image == (Image *) NULL)
+    ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1])
   if (resource_info.window_id != (char *) NULL)
     {
       XAnimateBackgroundImage(display,&resource_info,image);

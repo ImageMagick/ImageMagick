@@ -2818,6 +2818,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
   if (image == (Image *) NULL)
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
+  if (image == (Image *) NULL)
+    ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   status&=WriteImages(image_info,image,argv[argc-1],exception);
   if (metadata != (char **) NULL)
     {
