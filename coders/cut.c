@@ -480,20 +480,20 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             }
           image->colormap[i].red=(Quantum) ReadBlobLSBShort(palette);
-          if(QuantumRange!=(Quantum) PalHeader.MaxRed)
+          if (QuantumRange != (Quantum) PalHeader.MaxRed)
             {
               image->colormap[i].red=RoundToQuantum(((double)
                 image->colormap[i].red*QuantumRange+(PalHeader.MaxRed>>1))/
                 PalHeader.MaxRed);
             }
           image->colormap[i].green=(Quantum) ReadBlobLSBShort(palette);
-          if(QuantumRange!=(Quantum) PalHeader.MaxGreen)
+          if (QuantumRange != (Quantum) PalHeader.MaxGreen)
             {
               image->colormap[i].green=RoundToQuantum
                 (((double) image->colormap[i].green*QuantumRange+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
             }
           image->colormap[i].blue=(Quantum) ReadBlobLSBShort(palette);
-          if(QuantumRange!=(Quantum) PalHeader.MaxBlue)
+          if (QuantumRange != (Quantum) PalHeader.MaxBlue)
             {
               image->colormap[i].blue=RoundToQuantum
                 (((double)image->colormap[i].blue*QuantumRange+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue);

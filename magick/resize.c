@@ -747,7 +747,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       support=GetResizeFilterSupport(resize_filter);
       (void) printf("# support = %lg\n",support);
       for (x=0.0; x <= support; x+=0.01f)
-        (void) printf("%5.2lf\t%lf\n",x,GetResizeFilterWeight(resize_filter,x));
+        (void) printf("%5.2lf\t%lf\n",x,(double) GetResizeFilterWeight(
+          resize_filter,x));
       (void) printf("%5.2lf\t%lf\n",support,0.0);
     }
   return(resize_filter);
