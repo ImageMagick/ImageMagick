@@ -7204,6 +7204,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
   status=MagickTrue;
   for (i=0; i < (long) argc; i++)
   {
+if (*images == (Image *) NULL)
+  break;
     option=argv[i];
     if (IsMagickOption(option) == MagickFalse)
       continue;

@@ -787,6 +787,12 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
       }
     }
     SetQuantumImageType(image,quantum_type);
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */

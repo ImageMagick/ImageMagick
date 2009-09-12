@@ -1666,6 +1666,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   if (image == (Image *) NULL)
     ThrowMontageException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
+  if (image == (Image *) NULL)
+    ThrowMontageException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   (void) CopyMagickString(montage_info->filename,argv[argc-1],MaxTextExtent);
   montage_image=MontageImageList(image_info,montage_info,image,exception);
   if (montage_image == (Image *) NULL)

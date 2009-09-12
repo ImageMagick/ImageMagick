@@ -1592,6 +1592,8 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   if ((image == (Image *) NULL) || (GetImageListLength(image) < 2))
     ThrowCompositeException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
+  if ((image == (Image *) NULL) || (GetImageListLength(image) < 2))
+    ThrowCompositeException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   /*
     Composite images.
   */

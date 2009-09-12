@@ -740,6 +740,8 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   if (image == (Image *) NULL)
     ThrowStreamException(OptionError,"MissingAnImageFilename",argv[i]);
   FinalizeImageSettings(image_info,image,MagickTrue);
+  if (image == (Image *) NULL)
+    ThrowStreamException(OptionError,"MissingAnImageFilename",argv[i]);
   DestroyStream();
   return(status != 0 ? MagickTrue : MagickFalse);
 }
