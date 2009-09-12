@@ -144,7 +144,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   '5110ae8eb21ded2d8e6b6d3f5cc80317a6c58304f84731810a318bd76473427a',
   'ed4b38de6a8bc7408585a5b38efb677d6877244a80cff9ca2d95dbacdaf8df3f',
-  '088f77cf949713bfff5ebc765012ff3fc31aeb6299582c8434cc66aa542c4ffb');
+  'a850f7c36bd1f36c2716503fba898a26f7139340888f0cfe6923c6615d8348d5');
 
 #
 # 12) Test Framed Montage with drop-shadows
@@ -155,7 +155,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
   'd4de864f9004b185297c9c2351f811aaeb779095bdd8fd5f29bcfbee79f09da4',
   'bcd96dabb454c5d25091422763b1cdecb6a69a9b02b84a5b7fa0a70f150b957c',
-  '0b0f4a00f1954524e3ee7531bf5bd9c02ad815565502df51c3f04f6c46daa601');
+  '132a618050740b0d2df1987b4f627a74e5d61149b63c9d39cec518e8957b1f43');
 
 #
 # 13) Test Framed Montage with drop-shadows and background texture
@@ -166,7 +166,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
   '8418407b6d56d2c1b67bc735004794d9eb20609d30115a93255eefcad3499e95',
   '9209b2db884fa4730eeab6c410b90e094fa305635baab7ede17270c13f6e80ad',
-  '6cbb433ba2a2da3a25da4beba224c72cc620d3beb32965a4f1a5c02e42ec3b76');
+  'e1da83a6f13af63cd29c6905eae906188a688e53a3dbcc80c889e4d54c52b496');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
