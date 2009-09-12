@@ -52,6 +52,8 @@ extern "C" {
 #  endif
 #endif
 
+#define _BIND_TO_CURRENT_VCLIBS_VERSION 1
+
 #if !defined(vms) && !defined(macintosh) && !defined(__WINDOWS__)
 # define MAGICKCORE_POSIX_SUPPORT
 #endif
