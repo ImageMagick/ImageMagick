@@ -1580,7 +1580,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 */
 
 static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
-  const unsigned long number_parameters,const MagickRealType *parameters,
+  const unsigned long number_parameters,const double *parameters,
   ExceptionInfo *exception)
 {
   MagickRealType
