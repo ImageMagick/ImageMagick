@@ -1,5 +1,6 @@
 2009-09-11  6.5.5-10 Cristy  <quetzlzacatenango@image...>
   * Return the global maximum threads to avoid the rare cache view assertions.
+  * Throw an end-of-file exception for truncated raw gray images.
 
 2009-09-10  6.5.5-9 Cristy  <quetzlzacatenango@image...>
   * Do not include last line of text in the interline spacing computation.
