@@ -255,6 +255,12 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           register PixelPacket
             *__restrict q;
 
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -302,8 +308,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         break;
       }
@@ -316,8 +320,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_types[0]);
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
         for (y=0; y < (long) image->extract_info.height; y++)
         {
@@ -330,6 +332,12 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           register PixelPacket
             *__restrict q;
 
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           for (i=0; i < channels; i++)
           {
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
@@ -364,8 +372,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
               }
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
           if (image->previous == (Image *) NULL)
             {
@@ -385,8 +391,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_types[0]);
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
         for (i=0; i < channels; i++)
         {
@@ -401,6 +405,12 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             register PixelPacket
               *__restrict q;
 
+            if (count != (ssize_t) length)
+              {
+                ThrowFileException(exception,CorruptImageError,
+                  "UnexpectedEndOfFile",image->filename);
+                break;
+              }
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
               exception);
             if (q == (PixelPacket *) NULL)
@@ -437,8 +447,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
               }
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
           if (image->previous == (Image *) NULL)
             {
@@ -489,8 +497,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
           for (y=0; y < (long) image->extract_info.height; y++)
           {
             register const PixelPacket
@@ -502,6 +508,12 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             register PixelPacket
               *__restrict q;
 
+            if (count != (ssize_t) length)
+              {
+                ThrowFileException(exception,CorruptImageError,
+                  "UnexpectedEndOfFile",image->filename);
+                break;
+              }
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
               exception);
             if (q == (PixelPacket *) NULL)
@@ -538,8 +550,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
               }
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
           if (image->previous == (Image *) NULL)
             {

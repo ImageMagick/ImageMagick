@@ -221,11 +221,15 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           {
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -264,8 +268,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
             }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         break;
       }
@@ -287,13 +289,17 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           {
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
         for (y=0; y < (long) image->extract_info.height; y++)
         {
           for (i=0; i < (image->matte != MagickFalse ? 4 : 3); i++)
           {
+            if (count != (ssize_t) length)
+              {
+                ThrowFileException(exception,CorruptImageError,
+                  "UnexpectedEndOfFile",image->filename);
+                break;
+              }
             quantum_type=quantum_types[i];
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
               exception);
@@ -330,8 +336,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                   break;
               }
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
           if (image->previous == (Image *) NULL)
             {
@@ -351,11 +355,15 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           {
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
           }
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -384,8 +392,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
             }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -395,6 +401,12 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           }
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -423,8 +435,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
            }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -434,6 +444,12 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           }
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -462,8 +478,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
             }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -475,6 +489,12 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           {
             for (y=0; y < (long) image->extract_info.height; y++)
             {
+              if (count != (ssize_t) length)
+                {
+                  ThrowFileException(exception,CorruptImageError,
+                    "UnexpectedEndOfFile",image->filename);
+                  break;
+                }
               q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
                 exception);
               if (q == (PixelPacket *) NULL)
@@ -504,8 +524,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                 }
               count=ReadBlob(image,length,pixels);
-              if (count != (ssize_t) length)
-                break;
             }
             if (image->previous == (Image *) NULL)
               {
@@ -552,10 +570,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               }
         count=ReadBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -584,8 +606,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
             }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -612,10 +632,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               }
         count=ReadBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -644,8 +668,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
            }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -672,10 +694,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               }
         count=ReadBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
         for (y=0; y < (long) image->extract_info.height; y++)
         {
+          if (count != (ssize_t) length)
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
           if (q == (PixelPacket *) NULL)
@@ -704,8 +730,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
            }
           count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -734,10 +758,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                   }
             count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              break;
             for (y=0; y < (long) image->extract_info.height; y++)
             {
+              if (count != (ssize_t) length)
+                {
+                  ThrowFileException(exception,CorruptImageError,
+                    "UnexpectedEndOfFile",image->filename);
+                  break;
+                }
               q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
                 exception);
               if (q == (PixelPacket *) NULL)
@@ -767,8 +795,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                }
               count=ReadBlob(image,length,pixels);
-              if (count != (ssize_t) length)
-                break;
             }
             if (image->previous == (Image *) NULL)
               {
