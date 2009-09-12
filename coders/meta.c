@@ -1582,7 +1582,7 @@ ModuleExport void UnregisterMETAImage(void)
 %
 */
 
-static size_t GetIPTCStream(unsigned char **info,unsigned long length)
+static size_t GetIPTCStream(unsigned char **info,size_t length)
 {
   int
     c;
@@ -1594,6 +1594,7 @@ static size_t GetIPTCStream(unsigned char **info,unsigned long length)
     *p;
 
   size_t
+    extent,
     info_length;
 
   unsigned char
@@ -1605,6 +1606,45 @@ static size_t GetIPTCStream(unsigned char **info,unsigned long length)
   unsigned long
     tag_length;
 
+  p=(*info);
+  extent=length;
+  if ((*p == 0x1c) && (*(p+1) == 0x02))
+    return(length);
+  /*
+    Extract IPTC from 8BIM resource block.
+  */
+  while (extent >= 12)
+  {
+    if (strncmp((const char *) p,"8BIM",4))
+      break;
+    p+=4;
+    extent-=4;
+    marker=(unsigned int) (*p) << 8 | *(p+1);
+    p+=2;
+    extent-=2;
+    c=*p++;
+    extent--;
+    c|=0x01;
+    if ((size_t) c >= extent)
+      break;
+    p+=c;
+    extent-=c;
+    if (extent < 4)
+      break;
+    tag_length=(((unsigned long) *p) << 24) | (((unsigned long) *(p+1)) << 16) |
+      (((unsigned long) *(p+2)) << 8) | ((unsigned long) *(p+3));
+    p+=4;
+    extent-=4;
+    if (tag_length > extent)
+      break;
+    if (marker == IPTC_ID)
+      {
+        *info=p; /* let the caller know were it is */
+        return(extent);
+      }
+    p+=tag_length;
+    extent-=tag_length;
+  }
   /*
     Find the beginning of the IPTC info.
   */
@@ -2238,7 +2278,7 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       info=GetStringInfoDatum(profile);
       length=GetStringInfoLength(profile);
-      length=(unsigned long) GetIPTCStream(&info,(unsigned long) length);
+      length=GetIPTCStream(&info,length);
       if (length == 0)
         ThrowWriterException(CoderError,"NoIPTCProfileAvailable");
       (void) WriteBlob(image,length,info);
@@ -2282,7 +2322,7 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
         ThrowWriterException(CoderError,"No8BIMDataIsAvailable");
       info=GetStringInfoDatum(profile);
       length=GetStringInfoLength(profile);
-      length=(unsigned long) GetIPTCStream(&info,(unsigned long) length);
+      length=GetIPTCStream(&info,length);
       if (length == 0)
         ThrowWriterException(CoderError,"NoIPTCProfileAvailable");
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
