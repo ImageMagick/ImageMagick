@@ -1417,9 +1417,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) CopyMagickString(buffer,"/Filter [ /CCITTFaxDecode ]\n",
           MaxTextExtent);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,
-          "/DecodeParms [ << /K %s /Columns %ld /Rows %ld >> ]\n",
-          CCITTParam,image->columns,image->rows);
+        (void) FormatMagickString(buffer,MaxTextExtent,"/DecodeParms [ << "
+          "/K %s /BlackIs1 true /Columns %ld /Rows %ld >> ]\n",CCITTParam,
+          image->columns,image->rows);
         break;
       }
       default:
@@ -1859,9 +1859,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) CopyMagickString(buffer,"/Filter [ /CCITTFaxDecode ]\n",
           MaxTextExtent);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,
-          "/DecodeParms [ << /K %s /Columns %lu /Rows %lu >> ]\n",
-          CCITTParam,tile_image->columns,tile_image->rows);
+        (void) FormatMagickString(buffer,MaxTextExtent,"/DecodeParms [ << "
+          "/K %s /BlackIs1 true /Columns %lu /Rows %lu >> ]\n",CCITTParam,
+          tile_image->columns,tile_image->rows);
         break;
       }
       default:
