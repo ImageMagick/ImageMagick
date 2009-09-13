@@ -167,7 +167,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     &target[2]);
   status=MagickTrue;
   GetMagickPixelPacket(image,&zero);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -323,7 +323,7 @@ MagickExport unsigned long GetImageChannelDepth(const Image *image,
         i;
 
       p=image->colormap;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -364,7 +364,7 @@ MagickExport unsigned long GetImageChannelDepth(const Image *image,
       return(depth);
     }
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1323,7 +1323,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   range=GetQuantumRange(depth);
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1382,7 +1382,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
 
       p=image->colormap;
       range=GetQuantumRange(depth);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
       for (i=0; i < (long) image->colors; i++)

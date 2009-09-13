@@ -1154,7 +1154,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
         MagickTrue : MagickFalse);
       image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
+#if defined(_OPENMP) && (_OPENMP > 200505)
   #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
 #endif
       for (y=0; y < (long) image->rows; y++)
@@ -1180,7 +1180,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           continue;
         pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
+#if defined(_OPENMP) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadDPXImage)
 #endif
         {

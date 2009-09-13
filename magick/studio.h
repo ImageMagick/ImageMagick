@@ -203,7 +203,6 @@ extern "C" {
 
 #if defined(_OPENMP) && (_OPENMP >= 200203)
 #  include <omp.h>
-#  define MAGICKCORE_OPENMP_SUPPORT 1
 #endif
 
 #if defined(MAGICKCORE_HAVE_PREAD) && defined(MAGICKCORE_HAVE_DECL_PREAD) && !MAGICKCORE_HAVE_DECL_PREAD

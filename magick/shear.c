@@ -445,7 +445,7 @@ static inline ssize_t ReadRadonCell(const RadonInfo *radon_info,
     count;
 
 #if !defined(MAGICKCORE_HAVE_PPREAD)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ReadRadonCell)
 #endif
   {
@@ -489,7 +489,7 @@ static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_WriteRadonCell)
 #endif
   {
@@ -625,7 +625,7 @@ static void RadonProjection(RadonInfo *source_cells,
     p=q;
     q=swap;
   }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for
 #endif
   for (x=0; x < (long) p->width; x++)
@@ -705,7 +705,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   }
   status=MagickTrue;
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -756,7 +756,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   }
   RadonProjection(source_cells,destination_cells,-1,projection);
   (void) ResetRadonCells(source_cells);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1073,7 +1073,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
         Rotate 90 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
       for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height)
@@ -1187,7 +1187,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
       /*
         Rotate 180 degrees.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
       for (y=0; y < (long) image->rows; y++)
@@ -1263,7 +1263,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
         Rotate 270 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
       for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height)
@@ -1459,7 +1459,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
   for (y=0; y < (long) height; y++)
@@ -1589,7 +1589,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_XShearImage)
 #endif
         proceed=SetImageProgress(image,XShearImageTag,progress++,height);
@@ -1679,7 +1679,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress, status)
 #endif
   for (x=0; x < (long) width; x++)
@@ -1809,7 +1809,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_YShearImage)
 #endif
         proceed=SetImageProgress(image,YShearImageTag,progress++,image->rows);
