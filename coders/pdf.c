@@ -1403,13 +1403,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       case LZWCompression:
       {
-         (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"LZWDecode");
-         break;
+        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"LZWDecode");
+        break;
       }
       case ZipCompression:
       {
-         (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"FlateDecode");
-         break;
+        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"FlateDecode");
+        break;
       }
       case FaxCompression:
       case Group4Compression:
