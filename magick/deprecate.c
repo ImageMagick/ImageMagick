@@ -1705,7 +1705,7 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,
     return((Image *) NULL);
   similarity_threshold=image->columns*image->rows;
   SetGeometry(reference,&offset);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1)
 #endif
   for (y=0; y < (long) (image->rows-reference->rows); y++)
@@ -1720,7 +1720,7 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,
     {
       similarity=GetSimilarityMetric(image,reference,x,y,similarity_threshold,
         exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ExtractSubimageFromImage)
 #endif
       if (similarity < similarity_threshold)

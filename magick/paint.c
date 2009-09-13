@@ -600,7 +600,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   progress=0;
   image_view=AcquireCacheView(image);
   paint_view=AcquireCacheView(paint_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -685,7 +685,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_OilPaintImage)
 #endif
         proceed=SetImageProgress(image,OilPaintImageTag,progress++,image->rows);
@@ -789,7 +789,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   exception=(&image->exception);
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -842,7 +842,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_OpaquePaintImageChannel)
 #endif
         proceed=SetImageProgress(image,OpaquePaintImageTag,progress++,
@@ -931,7 +931,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   exception=(&image->exception);
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -972,7 +972,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_TransparentPaintImage)
 #endif
         proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
@@ -1061,7 +1061,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1109,7 +1109,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_TransparentPaintImageChroma)
 #endif
         proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,

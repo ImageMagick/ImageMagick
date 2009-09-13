@@ -108,7 +108,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
   total_ink_density=0.0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -136,7 +136,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
     {
       density=(double) p->red+p->green+p->blue+indexes[x];
       if (density > total_ink_density)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GetImageTotalInkDensity)
 #endif
         {

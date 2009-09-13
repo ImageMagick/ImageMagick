@@ -191,7 +191,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   number_pixels=(MagickRealType) width*height;
   image_view=AcquireCacheView(image);
   threshold_view=AcquireCacheView(threshold_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -286,7 +286,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_AdaptiveThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
@@ -385,7 +385,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -453,7 +453,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_BilevelImageChannel)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
@@ -571,7 +571,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -636,7 +636,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_BlackThresholdImageChannel)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
@@ -1321,7 +1321,7 @@ printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
     status=MagickTrue;
     progress=0;
     image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -1404,7 +1404,7 @@ printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
           MagickBooleanType
             proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_OrderedPosterizeImageChannel)
 #endif
           proceed=SetImageProgress(image,DitherImageTag,progress++,image->rows);
@@ -1540,7 +1540,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
           image->filename);
       random_info=AcquireRandomInfoThreadSet();
       image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
       for (y=0; y < (long) image->rows; y++)
@@ -1597,7 +1597,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_RandomThresholdImageChannel)
 #endif
             proceed=SetImageProgress(image,ThresholdImageTag,progress++,
@@ -1617,7 +1617,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
     }
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1725,7 +1725,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_RandomThresholdImageChannel)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
@@ -1844,7 +1844,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1894,7 +1894,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_WhiteThresholdImageChannel)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
