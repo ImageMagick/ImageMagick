@@ -2773,7 +2773,7 @@ MagickExport void GetPixelCacheTileSize(const Image *image,unsigned long *width,
   assert(cache_info->signature == MagickSignature);
   *width=2048UL/sizeof(PixelPacket);
   if (GetPixelCacheType(image) == DiskCache)
-    *width=8196UL/sizeof(PixelPacket);
+    *width=8192UL/sizeof(PixelPacket);
   *height=(*width);
 }
 
