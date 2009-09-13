@@ -2964,9 +2964,9 @@ static MagickBooleanType XSaveImage(Display *display,
       /*
         Request page geometry from user.
       */
-      (void) FormatMagickString(geometry,MaxTextExtent,PSPageGeometry);
+      (void) CopyMagickString(geometry,PSPageGeometry,MaxTextExtent);
       if (LocaleCompare(image_info->magick,"PDF") == 0)
-        (void) FormatMagickString(geometry,MaxTextExtent,PSPageGeometry);
+        (void) CopyMagickString(geometry,PSPageGeometry,MaxTextExtent);
       if (image_info->page != (char *) NULL)
         (void) CopyMagickString(geometry,image_info->page,MaxTextExtent);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
