@@ -590,8 +590,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                     q[x+bit].opacity=(Quantum) (((byte & (0x80 >> bit)) != 0) ?
                       TransparentOpacity : OpaqueOpacity);
                 }
-              for (x=0; x < (long) scanline_pad; x++)
-                (void) ReadBlobByte(image);
+              if ((image->columns % 32) != 0)
+                for (x=0; x < (long) ((32-(image->columns % 32))/8); x++)
+                  (void) ReadBlobByte(image);
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
