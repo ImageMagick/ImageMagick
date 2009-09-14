@@ -1898,6 +1898,7 @@ namespace Magick
     MagickCore::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
     throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   // Append images from list into single image in either horizontal or
@@ -1916,6 +1917,7 @@ namespace Magick
     unlinkImages( first_, last_ );
     appendedImage_->replaceImage( image );
     throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   // Average a set of images.
@@ -1932,6 +1934,7 @@ namespace Magick
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
     throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   // Merge a sequence of images.
@@ -1961,6 +1964,7 @@ namespace Magick
 
     // Report any error
     throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   // Return format coders matching specified conditions.
@@ -2037,6 +2041,7 @@ namespace Magick
       }
     coder_list=(char **) MagickCore::RelinquishMagickMemory( coder_list );
     throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   //
@@ -2374,6 +2379,7 @@ namespace Magick
     MagickCore::DestroyImageInfo(imageInfo);
     insertImages( sequence_, images);
     throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
   template <class Container>
   void readImages( Container *sequence_,
