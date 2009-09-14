@@ -849,7 +849,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     value[MaxTextExtent];
 
   const char
-    *property;
+    *option;
 
   ErrorManager
     error_manager;
@@ -959,8 +959,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (units == 2)
     image->units=PixelsPerCentimeterResolution;
   number_pixels=(MagickSizeType) image->columns*image->rows;
-  property=GetImageProperty(image,"jpeg:size");
-  if (property != (const char *) NULL)
+  option=GetImageOption(image_info,"jpeg:size");
+  if (option != (const char *) NULL)
     {
       double
         scale_factor;
@@ -974,7 +974,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       /*
         Scale the image.
       */
-      flags=ParseGeometry(property,&geometry_info);
+      flags=ParseGeometry(option,&geometry_info);
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=geometry_info.rho;
       jpeg_calc_output_dimensions(&jpeg_info);
