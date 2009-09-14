@@ -324,12 +324,12 @@ static void DefaultFatalErrorHandler(
 %
 %  The format of the DefaultWarningHandler method is:
 %
-%      void DefaultWarningHandler(const ExceptionType warning,
+%      void DefaultWarningHandler(const ExceptionType severity,
 %        const char *reason,const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o warning: Specifies the numeric warning category.
+%    o severity: Specifies the numeric warning category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
