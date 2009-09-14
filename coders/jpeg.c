@@ -848,6 +848,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   char
     value[MaxTextExtent];
 
+  const char
+    *property;
+
   ErrorManager
     error_manager;
 
@@ -956,20 +959,33 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (units == 2)
     image->units=PixelsPerCentimeterResolution;
   number_pixels=(MagickSizeType) image->columns*image->rows;
-  if (image_info->size != (char *) NULL)
+  property=GetImageProperty(image,"jpeg:scale");
+  if (property != (const char *) NULL)
     {
       double
         scale_factor;
 
+      GeometryInfo
+        geometry_info;
+
+      int
+        flags;
+
       /*
-        Let the JPEG library subsample for us.
+        Scale the image.
       */
+      flags=ParseGeometry(property,&geometry_info);
+      if ((flags & SigmaValue) == 0)
+        geometry_info.sigma=geometry_info.rho;
       jpeg_calc_output_dimensions(&jpeg_info);
       image->magick_columns=jpeg_info.output_width;
       image->magick_rows=jpeg_info.output_height;
-      scale_factor=(double) jpeg_info.output_width/image->columns;
-      if (scale_factor > ((double) jpeg_info.output_height/image->rows))
-        scale_factor=(double) jpeg_info.output_height/image->rows;
+      scale_factor=1.0;
+      if (geometry_info.rho != 0.0)
+        scale_factor=jpeg_info.output_width/geometry_info.rho;
+      if ((geometry_info.sigma != 0.0) &&
+          (scale_factor > (jpeg_info.output_height/geometry_info.sigma)))
+        scale_factor=jpeg_info.output_height/geometry_info.sigma;
       jpeg_info.scale_num=1U;
       jpeg_info.scale_denom=(unsigned int) scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
