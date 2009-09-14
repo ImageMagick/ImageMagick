@@ -349,6 +349,7 @@ MagickExport int NTCloseLibrary(void *handle)
 
 static BOOL ControlHandler(DWORD type)
 {
+  (void) type;
   AsynchronousDestroyMagickResources();
   return(FALSE);
 }
@@ -411,12 +412,12 @@ MagickExport double NTElapsedTime(void)
 %
 %  The format of the NTErrorHandler method is:
 %
-%      void NTErrorHandler(const ExceptionType error,const char *reason,
+%      void NTErrorHandler(const ExceptionType severity,const char *reason,
 %        const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o error: Specifies the numeric error category.
+%    o severity: Specifies the numeric error category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
@@ -424,13 +425,14 @@ MagickExport double NTElapsedTime(void)
 %    o description: Specifies any description to the reason.
 %
 */
-MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
-  const char *description)
+MagickExport void NTErrorHandler(const ExceptionType severity,
+  const char *reason,const char *description)
 {
   char
     buffer[3*MaxTextExtent],
     *message;
 
+  (void) severity;
   if (reason == (char *) NULL)
     {
       MagickCoreTerminus();
@@ -533,6 +535,9 @@ MagickExport MagickBooleanType NTGatherRandomData(const size_t length,
   status=CryptReleaseContext(handle,0);
   if (status == 0)
     return(MagickFalse);
+#else
+  (void) random;
+  (void) length;
 #endif
   return(MagickTrue);
 }
@@ -820,7 +825,7 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
   *product_family=NULL;
   *major_version=5;
   *minor_version=49; /* min version of Ghostscript is 5.50 */
-  for (i=0; i < (sizeof(products)/sizeof(products[0])); i++)
+  for (i=0; i < (long) (sizeof(products)/sizeof(products[0])); i++)
   {
     char
       key[MaxTextExtent];
@@ -915,7 +920,7 @@ static int NTGhostscriptGetString(const char *name,char *value,
     return(FALSE);
   (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
-  for (i=0; i < sizeof(hkeys)/sizeof(hkeys[0]); i++)
+  for (i=0; i < (long) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
   {
     extent=length;
     if (NTGetRegistryValue(hkeys[i].hkey,key,name,value,&extent) == 0)
@@ -1213,6 +1218,7 @@ MagickExport void *NTMapMemory(char *address,size_t length,int protection,
   void
     *map;
 
+  (void) address;
   access_mode=0;
   file_handle=INVALID_HANDLE_VALUE;
   low_length=(DWORD) (length & 0xFFFFFFFFUL);
@@ -1708,6 +1714,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
 */
 MagickExport void NTSeekDirectory(DIR *entry,long position)
 {
+  (void) position;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(entry != (DIR *) NULL);
 }
@@ -1777,6 +1784,7 @@ MagickExport int NTSetSearchPath(const char *path)
 */
 MagickExport int NTSyncMemory(void *address,size_t length,int flags)
 {
+  (void) flags;
   if (FlushViewOfFile(address,length) == MagickFalse)
     return(-1);
   return(0);
@@ -2035,6 +2043,7 @@ MagickExport int NTTruncateFile(int file,off_t length)
 */
 MagickExport int NTUnmapMemory(void *map,size_t length)
 {
+  (void) length;
   if (UnmapViewOfFile(map) == 0)
     return(-1);
   return(0);
@@ -2115,12 +2124,12 @@ MagickExport double NTUserTime(void)
 %
 %  The format of the NTWarningHandler method is:
 %
-%      void NTWarningHandler(const ExceptionType warning,const char *reason,
+%      void NTWarningHandler(const ExceptionType severity,const char *reason,
 %        const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o warning: Specifies the numeric warning category.
+%    o severity: Specifies the numeric warning category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
@@ -2128,12 +2137,13 @@ MagickExport double NTUserTime(void)
 %    o description: Specifies any description to the reason.
 %
 */
-MagickExport void NTWarningHandler(const ExceptionType warning,
+MagickExport void NTWarningHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   char
     buffer[2*MaxTextExtent];
 
+  (void) severity;
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)

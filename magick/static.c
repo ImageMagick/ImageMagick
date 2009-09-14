@@ -114,7 +114,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 
     image_filter=(ImageFilterHandler *) NULL;
     if (LocaleCompare("analyze",tag) == 0)
-      image_filter=analyzeImage;
+      image_filter=(ImageFilterHandler *) analyzeImage;
     if (image_filter != (ImageFilterHandler *) NULL)
       {
         unsigned long
