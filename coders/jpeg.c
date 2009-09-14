@@ -959,7 +959,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (units == 2)
     image->units=PixelsPerCentimeterResolution;
   number_pixels=(MagickSizeType) image->columns*image->rows;
-  property=GetImageProperty(image,"jpeg:scale");
+  property=GetImageProperty(image,"jpeg:size");
   if (property != (const char *) NULL)
     {
       double
