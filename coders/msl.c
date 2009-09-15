@@ -4807,6 +4807,34 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
                 break;
               }
+              case 'G':
+              case 'g':
+              {
+                if (LocaleCompare(keyword,"gravity") == 0)
+                  {
+                    option=ParseMagickOption(MagickGravityOptions,MagickFalse,
+                      value);
+                    if (option < 0)
+                      ThrowMSLException(OptionError,"UnrecognizedGravityType",
+                        value);
+                    (void) SetImageOption(msl_info->image_info[n],keyword,
+                      value);
+                    break;
+                  }
+                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                break;
+              }
+              case 'P':
+              case 'p':
+              {
+                if (LocaleCompare(keyword,"pointsize") == 0)
+                  {
+                    msl_info->image_info[n]->pointsize=atof(value);
+                    break;
+                  }
+                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                break;
+              }
               case 'S':
               case 's':
               {
@@ -5468,7 +5496,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
         if (attributes == (const xmlChar **) NULL)
-        break;
+          break;
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];

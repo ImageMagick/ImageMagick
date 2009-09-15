@@ -349,7 +349,9 @@ static const struct ReferenceFormats
     { "XPM", 0.0 },
     { "XPS", 0.0 },
     { "XV", 0.0 },
+#if !defined(__WINDOWS__)
     { "XWD", 0.0 },
+#endif
     { "YUV", 0.0 },
     { "YCbCr", 0.0 },
     { "YCbCrA", 0.0 },
