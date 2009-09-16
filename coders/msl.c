@@ -5861,7 +5861,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   colorspace=(ColorspaceType) ParseMagickOption(
                     MagickColorspaceOptions,MagickFalse,keyword);
                   if (colorspace < 0)
-                    ThrowMSLException(OptionError,"Unrecognized colorspace",
+                    ThrowMSLException(OptionError,"UnrecognizedColorspace",
                       value);
                   (void) TransformImageColorspace(msl_info->image[n],
                     (ColorspaceType) colorspace);
@@ -7676,6 +7676,23 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   draw_info=msl_info->draw_info[n];
   switch (*keyword)
   {
+    case 'A':
+    case 'a':
+    {
+      if (LocaleCompare(keyword,"adjoin") == 0)
+        {
+          long
+            adjoin;
+
+          adjoin=ParseMagickOption(MagickBooleanOptions,MagickFalse,value);
+          if (adjoin < 0)
+            ThrowMSLException(OptionError,"UnrecognizedType",value);
+          image_info->adjoin=(MagickBooleanType) adjoin;
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
     case 'B':
     case 'b':
     {
@@ -7737,12 +7754,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           (void) CopyMagickString(image_info->magick,value,MaxTextExtent);
           break;
         }
-      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-      break;
-    }
-    case 'P':
-    case 'p':
-    {
       if (LocaleCompare(keyword,"mattecolor") == 0)
         {
           (void) QueryColorDatabase(value,&image_info->matte_color,
