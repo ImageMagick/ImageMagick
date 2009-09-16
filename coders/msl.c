@@ -154,7 +154,7 @@ static MagickBooleanType
   WriteMSLImage(const ImageInfo *,Image *);
 
 static MagickBooleanType
-  SetMSLAttributes(MSLInfo *,const xmlChar **);
+  SetMSLAttributes(MSLInfo *,const char *,const char *);
 #endif
 
 #if defined(MAGICKCORE_XML_DELEGATE)
@@ -3252,13 +3252,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     {
       if (LocaleCompare((const char *) tag,"image") == 0)
         {
-          long
-            n;
-
           MSLPushImage(msl_info,(Image *) NULL);
           if (attributes == (const xmlChar **) NULL)
             break;
-          (void) SetMSLAttributes(msl_info,attributes);
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
@@ -3300,12 +3296,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       }
                     break;
                   }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                (void) SetMSLAttributes(msl_info,keyword,value);
                 break;
               }
               default:
               {
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                (void) SetMSLAttributes(msl_info,keyword,value);
                 break;
               }
             }
@@ -7687,97 +7683,119 @@ ModuleExport unsigned long RegisterMSLImage(void)
 %  The format of the SetMSLAttributes method is:
 %
 %      MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,
-%        const xmlChar **attributes)
+%        const char *keyword,const char *value)
 %
 %  A description of each parameter follows:
 %
 %    o msl_info: the MSL info.
 %
-%    o attributes: the attribute list.
+%    o keyword: the keyword.
+%
+%    o value: the value.
 %
 */
-static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,
-  const xmlChar **attributes)
+static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
+  const char *value)
 {
   char
-    *value;
+    *values;
 
-  const char
-    *keyword;
+  DrawInfo
+    *draw_info;
 
   ExceptionInfo
     *exception;
 
+  ImageInfo
+    *image_info;
+
   long
     n;
 
-  register long
-    i;
-
   assert(msl_info != (MSLInfo *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  if (attributes == (const xmlChar **) NULL)
+  if (keyword == (const char *) NULL)
+    return(MagickTrue);
+  if (value == (const char *) NULL)
     return(MagickTrue);
   exception=msl_info->exception;
   n=msl_info->n;
-  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+  image_info=msl_info->image_info[n];
+  draw_info=msl_info->draw_info[n];
+  values=(char *) NULL;
+  CloneString(&values,InterpretImageProperties(image_info,
+    msl_info->attributes[n],keyword));
+  switch (*keyword)
   {
-    keyword=(const char *) attributes[i++];
-    CloneString(&value,InterpretImageProperties(msl_info->image_info[n],
-      msl_info->attributes[n],(const char *) attributes[i]));
-    switch (*keyword)
+    case 'B':
+    case 'b':
     {
-      case 'B':
-      case 'b':
-      {
-        if (LocaleCompare(keyword,"background") == 0)
-          {
-            (void) QueryColorDatabase(value,
-              &msl_info->image_info[n]->background_color,exception);
-            break;
-          }
-        ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-        break;
-      }
-      case 'F':
-      case 'f':
-      {
-        if (LocaleCompare(keyword,"fill") == 0)
-          {
-            (void) QueryColorDatabase(value,&msl_info->draw_info[n]->fill,
-              exception);
-            break;
-          }
-        ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-        break;
-      }
-      case 'I':
-      case 'i':
-      {
-        if (LocaleCompare(keyword,"id") == 0)
-          {
-            (void) SetImageProperty(msl_info->attributes[n],keyword,NULL);
-            (void) SetImageProperty(msl_info->attributes[n],keyword,value);
-            break;
-          }
-        ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-        break;
-      }
-      case 'S':
-      case 's':
-      {
-        if (LocaleCompare(keyword,"size") == 0)
-          {
-            CloneString(&msl_info->image_info[n]->size,value);
-            break;
-          }
-        ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-        break;
-      }
-      default:
-        break;
+      if (LocaleCompare(keyword,"background") == 0)
+        {
+          (void) QueryColorDatabase(values,&image_info->background_color,
+            exception);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'F':
+    case 'f':
+    {
+      if (LocaleCompare(keyword,"fill") == 0)
+        {
+          (void) QueryColorDatabase(values,&draw_info->fill,exception);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'I':
+    case 'i':
+    {
+      if (LocaleCompare(keyword,"id") == 0)
+        {
+          (void) SetImageProperty(msl_info->attributes[n],keyword,NULL);
+          (void) SetImageProperty(msl_info->attributes[n],keyword,values);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'P':
+    case 'p':
+    {
+      if (LocaleCompare(keyword,"pointsize") == 0)
+        {
+          draw_info->pointsize=atof(values);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'S':
+    case 's':
+    {
+      if (LocaleCompare(keyword,"size") == 0)
+        {
+          (void) CloneString(&image_info->size,values);
+          break;
+        }
+      if (LocaleCompare(keyword,"stroke") == 0)
+        {
+          (void) QueryColorDatabase(values,&draw_info->stroke,exception);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    default:
+    {
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
     }
   }
+  if (values != (char *) NULL)
+    values=DestroyString(values);
   return(MagickTrue);
 }
 
