@@ -5818,137 +5818,93 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             msl_info->attributes[n],(const char *) attributes[i]));
           switch (*keyword)
           {
-            case 'B':
-            case 'b':
-            {
-              if (LocaleCompare(keyword,"background") == 0)
-              {
-                (void) QueryColorDatabase(value,
-                  &msl_info->image_info[n]->background_color,&exception);
-                break;
-              }
-              else if (LocaleCompare(keyword,"bordercolor") == 0)
-              {
-                (void) QueryColorDatabase(value,
-                  &msl_info->image_info[n]->border_color,&exception);
-                break;
-              }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-              break;
-            }
             case 'C':
             case 'c':
             {
               if (LocaleCompare(keyword,"clip-mask") == 0)
-              {
-                for (j=0; j<msl_info->n;j++)
                 {
-                  const char *
-                    theAttr = GetImageProperty(msl_info->attributes[j], "id");
-                  if (theAttr && LocaleCompare(theAttr, value) == 0)
+                  for (j=0; j < msl_info->n; j++)
                   {
-                    SetImageMask( msl_info->image[n], msl_info->image[j] );
-                    break;
+                    const char
+                      *property;
+
+                    property=GetImageProperty(msl_info->attributes[j],"id");
+                    if (LocaleCompare(property,value) == 0)
+                      {
+                        SetImageMask(msl_info->image[n],msl_info->image[j]);
+                        break;
+                      }
                   }
+                  break;
                 }
-                break;
-              }
               if (LocaleCompare(keyword,"clip-path") == 0)
-              {
-                for (j=0; j<msl_info->n;j++)
                 {
-                  const char *
-                    theAttr = GetImageProperty(msl_info->attributes[j], "id");
-                  if (theAttr && LocaleCompare(theAttr, value) == 0)
+                  for (j=0; j < msl_info->n; j++)
                   {
-                    SetImageClipMask( msl_info->image[n], msl_info->image[j] );
-                    break;
+                    const char
+                      *property;
+
+                    property=GetImageProperty(msl_info->attributes[j],"id");
+                    if (LocaleCompare(property,value) == 0)
+                      {
+                        SetImageClipMask(msl_info->image[n],msl_info->image[j]);
+                        break;
+                      }
                   }
+                  break;
                 }
-                break;
-              }
-              else if (LocaleCompare(keyword, "colorspace") == 0)
-              {
-                if (LocaleCompare(value, "CMYK") == 0)
-                  SetImageType(msl_info->image[n],ColorSeparationType );
-                else if (LocaleCompare(value, "Gray") == 0)
-                  SetImageType(msl_info->image[n],GrayscaleType );
-                else if (LocaleCompare(value, "RGB") == 0)
-                  SetImageType(msl_info->image[n],TrueColorType );
-                else
-                  ThrowMSLException(OptionError,"Unrecognized colorspace",
-                    keyword);
-                break;
-              }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              if (LocaleCompare(keyword,"colorspace") == 0)
+                {
+                  long
+                    colorspace;
+
+                  colorspace=(ColorspaceType) ParseMagickOption(
+                    MagickColorspaceOptions,MagickFalse,keyword);
+                  if (colorspace < 0)
+                    ThrowMSLException(OptionError,"Unrecognized colorspace",
+                      value);
+                  (void) TransformImageColorspace(msl_info->image[n],
+                    (ColorspaceType) colorspace);
+                  break;
+                }
+              (void) SetMSLAttributes(msl_info,keyword,value);
               break;
             }
             case 'D':
             case 'd':
             {
-              if (LocaleCompare(keyword, "density") == 0)
-              {
-                GeometryInfo
-                  geometry_info;
-
-                MagickStatusType
-                  flags;
-
-                (void) CloneString(&msl_info->image_info[n]->density,
-                  (char *) NULL);
-                (void) CloneString(&msl_info->image_info[n]->density,value);
-                (void) CloneString(&msl_info->draw_info[n]->density,
-                  msl_info->image_info[n]->density);
-                flags=ParseGeometry(msl_info->image_info[n]->density,
-                  &geometry_info);
-                msl_info->image[n]->x_resolution=geometry_info.rho;
-                msl_info->image[n]->y_resolution=geometry_info.sigma;
-                if ((flags & SigmaValue) == 0)
-                  msl_info->image[n]->y_resolution=
-                    msl_info->image[n]->x_resolution;
-                break;
-              }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-              break;
-            }
-            case 'M':
-            case 'm':
-            {
-              if (LocaleCompare(keyword, "magick") == 0)
-              {
-                (void) CopyMagickString(msl_info->image_info[n]->magick,
-                  value,MaxTextExtent);
-                break;
-              }
-              else if (LocaleCompare(keyword,"mattecolor") == 0)
-              {
-                (void) QueryColorDatabase(value,
-                  &msl_info->image_info[n]->matte_color,&exception);
-                break;
-              }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              if (LocaleCompare(keyword,"density") == 0)
+                {
+                  flags=ParseGeometry(value,&geometry_info);
+                  msl_info->image[n]->x_resolution=geometry_info.rho;
+                  msl_info->image[n]->y_resolution=geometry_info.sigma;
+                  if ((flags & SigmaValue) == 0)
+                    msl_info->image[n]->y_resolution=
+                      msl_info->image[n]->x_resolution;
+                  break;
+                }
+              (void) SetMSLAttributes(msl_info,keyword,value);
               break;
             }
             case 'O':
             case 'o':
             {
               if (LocaleCompare(keyword, "opacity") == 0)
-              {
-                long  opac = OpaqueOpacity,
+                {
+                  long  opac = OpaqueOpacity,
                   len = (long) strlen( value );
 
-                if (value[len-1] == '%') {
-                  char  tmp[100];
-                  (void) CopyMagickString(tmp,value,len);
-                  opac = atol( tmp );
-                  opac = (int)(QuantumRange * ((float)opac/100));
-                } else
-                  opac = atol( value );
-                (void) SetImageOpacity( msl_info->image[n], (Quantum) opac );
-                break;
+                  if (value[len-1] == '%') {
+                    char  tmp[100];
+                    (void) CopyMagickString(tmp,value,len);
+                    opac = atol( tmp );
+                    opac = (int)(QuantumRange * ((float)opac/100));
+                  } else
+                    opac = atol( value );
+                  (void) SetImageOpacity( msl_info->image[n], (Quantum) opac );
+                  break;
               }
-
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              (void) SetMSLAttributes(msl_info,keyword,value);
               break;
             }
             case 'P':
@@ -5982,12 +5938,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->image_info[n]->page=GetPageGeometry(page);
                 break;
               }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              (void) SetMSLAttributes(msl_info,keyword,value);
               break;
             }
             default:
             {
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              (void) SetMSLAttributes(msl_info,keyword,value);
               break;
             }
           }
@@ -7697,9 +7653,6 @@ ModuleExport unsigned long RegisterMSLImage(void)
 static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   const char *value)
 {
-  char
-    *values;
-
   DrawInfo
     *draw_info;
 
@@ -7721,9 +7674,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   n=msl_info->n;
   image_info=msl_info->image_info[n];
   draw_info=msl_info->draw_info[n];
-  values=(char *) NULL;
-  CloneString(&values,InterpretImageProperties(image_info,
-    msl_info->attributes[n],keyword));
   switch (*keyword)
   {
     case 'B':
@@ -7731,8 +7681,26 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"background") == 0)
         {
-          (void) QueryColorDatabase(values,&image_info->background_color,
+          (void) QueryColorDatabase(value,&image_info->background_color,
             exception);
+          break;
+        }
+      if (LocaleCompare(keyword,"bordercolor") == 0)
+        {
+          (void) QueryColorDatabase(value,&image_info->border_color,
+            exception);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'D':
+    case 'd':
+    {
+      if (LocaleCompare(keyword,"density") == 0)
+        {
+          (void) CloneString(&image_info->density,value);
+          (void) CloneString(&draw_info->density,value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7743,7 +7711,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"fill") == 0)
         {
-          (void) QueryColorDatabase(values,&draw_info->fill,exception);
+          (void) QueryColorDatabase(value,&draw_info->fill,exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7755,7 +7723,30 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
       if (LocaleCompare(keyword,"id") == 0)
         {
           (void) SetImageProperty(msl_info->attributes[n],keyword,NULL);
-          (void) SetImageProperty(msl_info->attributes[n],keyword,values);
+          (void) SetImageProperty(msl_info->attributes[n],keyword,value);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'M':
+    case 'm':
+    {
+      if (LocaleCompare(keyword,"magick") == 0)
+        {
+          (void) CopyMagickString(image_info->magick,value,MaxTextExtent);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'P':
+    case 'p':
+    {
+      if (LocaleCompare(keyword,"mattecolor") == 0)
+        {
+          (void) QueryColorDatabase(value,&image_info->matte_color,
+            exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7766,7 +7757,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"pointsize") == 0)
         {
-          draw_info->pointsize=atof(values);
+          draw_info->pointsize=atof(value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7777,12 +7768,12 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"size") == 0)
         {
-          (void) CloneString(&image_info->size,values);
+          (void) CloneString(&image_info->size,value);
           break;
         }
       if (LocaleCompare(keyword,"stroke") == 0)
         {
-          (void) QueryColorDatabase(values,&draw_info->stroke,exception);
+          (void) QueryColorDatabase(value,&draw_info->stroke,exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7794,8 +7785,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
       break;
     }
   }
-  if (values != (char *) NULL)
-    values=DestroyString(values);
   return(MagickTrue);
 }
 
