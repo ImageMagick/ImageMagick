@@ -2417,6 +2417,7 @@ namespace Magick
 
     if ( errorStat != false )
       {
+        (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
         return;
       }
 
