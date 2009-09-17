@@ -1325,6 +1325,7 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/cache-view.h magick/cipher.c magick/cipher.h \
 	magick/client.c magick/client.h magick/coder.c magick/coder.h \
 	magick/color.c magick/color.h magick/color-private.h \
+	magick/colormap.c magick/colormap.h magick/colormap-private.h \
 	magick/colorspace.c magick/colorspace.h \
 	magick/colorspace-private.h magick/compare.c magick/compare.h \
 	magick/composite.c magick/composite.h \
@@ -1419,6 +1420,7 @@ am__objects_2 = magick/magick_libMagickCore_la-animate.lo \
 	magick/magick_libMagickCore_la-client.lo \
 	magick/magick_libMagickCore_la-coder.lo \
 	magick/magick_libMagickCore_la-color.lo \
+	magick/magick_libMagickCore_la-colormap.lo \
 	magick/magick_libMagickCore_la-colorspace.lo \
 	magick/magick_libMagickCore_la-compare.lo \
 	magick/magick_libMagickCore_la-composite.lo \
@@ -3716,6 +3718,9 @@ MAGICK_BASE_SRCS = \
 	magick/color.c \
 	magick/color.h \
 	magick/color-private.h \
+	magick/colormap.c \
+	magick/colormap.h \
+	magick/colormap-private.h \
 	magick/colorspace.c \
 	magick/colorspace.h \
 	magick/colorspace-private.h \
@@ -3911,6 +3916,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/client.h \
 	magick/coder.h \
 	magick/color.h \
+	magick/colormap.h \
 	magick/colorspace.h \
 	magick/compare.h \
 	magick/composite.h \
@@ -3987,6 +3993,7 @@ MAGICK_NOINST_HDRS = \
 	magick/blob-private.h \
 	magick/cache-private.h \
 	magick/color-private.h \
+	magick/colormap-private.h \
 	magick/colorspace-private.h \
 	magick/composite-private.h \
 	magick/delegate-private.h \
@@ -5406,6 +5413,8 @@ magick/magick_libMagickCore_la-coder.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-color.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-colormap.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-colorspace.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-compare.lo: magick/$(am__dirstamp) \
@@ -6681,6 +6690,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libMagickCore_la-coder.lo
 	-rm -f magick/magick_libMagickCore_la-color.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-color.lo
+	-rm -f magick/magick_libMagickCore_la-colormap.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-colormap.lo
 	-rm -f magick/magick_libMagickCore_la-colorspace.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-colorspace.lo
 	-rm -f magick/magick_libMagickCore_la-compare.$(OBJEXT)
@@ -7175,6 +7186,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-coder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-colormap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-colorspace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-compare.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-composite.Plo@am__quote@
@@ -8381,6 +8393,14 @@ magick/magick_libMagickCore_la-color.lo: magick/color.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/color.c' object='magick/magick_libMagickCore_la-color.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-color.lo `test -f 'magick/color.c' || echo '$(srcdir)/'`magick/color.c
+
+magick/magick_libMagickCore_la-colormap.lo: magick/colormap.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-colormap.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-colormap.Tpo -c -o magick/magick_libMagickCore_la-colormap.lo `test -f 'magick/colormap.c' || echo '$(srcdir)/'`magick/colormap.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-colormap.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-colormap.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/colormap.c' object='magick/magick_libMagickCore_la-colormap.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-colormap.lo `test -f 'magick/colormap.c' || echo '$(srcdir)/'`magick/colormap.c
 
 magick/magick_libMagickCore_la-colorspace.lo: magick/colorspace.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-colorspace.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-colorspace.Tpo -c -o magick/magick_libMagickCore_la-colorspace.lo `test -f 'magick/colorspace.c' || echo '$(srcdir)/'`magick/colorspace.c

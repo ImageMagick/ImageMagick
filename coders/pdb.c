@@ -50,6 +50,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
+#include "magick/colormap-private.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
 #include "magick/constitute.h"

@@ -32,6 +32,7 @@ $call Make cipher.c
 $call Make client.c
 $call Make coder.c
 $call Make color.c
+$call Make colormap.c
 $call Make colorspace.c
 $call Make compare.c
 $call Make composite.c
@@ -130,7 +131,7 @@ $ deass magick
 $ deass wand
 $library/create libMagick.olb -
   animate, annotate, artifact, blob, cache, cache-view, cipher, client, coder, -
-  color, colorspace, compare, composite, compress, configure, -
+  color, colormap, colorspace, compare, composite, compress, configure, -
   constitute, decorate, delegate, deprecate, display, distort, draw, -
   effect, enhance, exception, fx, gem, geometry, hashmap, histogram, identify, -
   image, layer, list, locale, log, magic, magick, matrix, memory, mime, -

@@ -39,6 +39,9 @@ typedef struct _ChannelStatistics
 extern MagickExport ChannelStatistics
   *GetImageChannelStatistics(const Image *,ExceptionInfo *);
 
+extern MagickExport Image
+  *AverageImages(const Image *,ExceptionInfo *);
+
 extern MagickExport MagickBooleanType
   GetImageChannelExtrema(const Image *,const ChannelType,unsigned long *,
     unsigned long *,ExceptionInfo *),

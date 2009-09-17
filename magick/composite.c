@@ -2369,3 +2369,76 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     destination_image=DestroyImage(destination_image);
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     T e x t u r e I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TextureImage() repeatedly tiles the texture image across and down the image
+%  canvas.
+%
+%  The format of the TextureImage method is:
+%
+%      MagickBooleanType TextureImage(Image *image,const Image *texture)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o texture: This image is the texture to layer on the background.
+%
+*/
+MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
+{
+#define TextureImageTag  "Texture/Image"
+
+  ExceptionInfo
+    *exception;
+
+  long
+    y;
+
+  MagickStatusType
+    status;
+
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(image->signature == MagickSignature);
+  if (texture == (const Image *) NULL)
+    return(MagickFalse);
+  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+    return(MagickFalse);
+  /*
+    Tile texture onto the image background.
+  */
+  status=MagickTrue;
+  exception=(&image->exception);
+  for (y=0; y < (long) image->rows; y+=texture->rows)
+  {
+    register long
+      x;
+
+    for (x=0; x < (long) image->columns; x+=texture->columns)
+      status|=CompositeImage(image,image->compose,texture,x+
+        texture->tile_offset.x,y+texture->tile_offset.y);
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,TextureImageTag,y,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  (void) SetImageProgress(image,TextureImageTag,image->rows,image->rows);
+  return(status != 0 ? MagickTrue : MagickFalse);
+}

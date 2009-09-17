@@ -94,7 +94,8 @@ extern MagickExport MagickBooleanType
   CompositeImage(Image *,const CompositeOperator,const Image *,const long,
     const long),
   CompositeImageChannel(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const long,const long);
+    const Image *,const long,const long),
+  TextureImage(Image *,const Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
