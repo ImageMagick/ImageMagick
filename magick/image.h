@@ -481,7 +481,6 @@ extern MagickExport ExceptionType
 extern MagickExport Image
   *AcquireImage(const ImageInfo *),
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),
-  *AverageImages(const Image *,ExceptionInfo *),
   *CloneImage(const Image *,const unsigned long,const unsigned long,
     const MagickBooleanType,ExceptionInfo *),
   *CombineImages(const Image *,const ChannelType,ExceptionInfo *),
@@ -508,7 +507,6 @@ extern MagickExport MagickBooleanType
   AcquireImageColormap(Image *,const unsigned long),
   ClipImage(Image *),
   ClipImagePath(Image *,const char *,const MagickBooleanType),
-  CycleColormapImage(Image *,const long),
   GetImageAlphaChannel(const Image *),
   IsTaintImage(const Image *),
   IsMagickConflict(const char *),
@@ -527,10 +525,8 @@ extern MagickExport MagickBooleanType
   SetImageOpacity(Image *,const Quantum),
   SetImageStorageClass(Image *,const ClassType),
   SetImageType(Image *,const ImageType),
-  SortColormapByIntensity(Image *),
   StripImage(Image *),
-  SyncImage(Image *),
-  TextureImage(Image *,const Image *);
+  SyncImage(Image *);
 
 extern MagickExport size_t
   InterpretImageFilename(const ImageInfo *,Image *,const char *,int,char *);

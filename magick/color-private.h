@@ -34,16 +34,6 @@ static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   return(MagickFalse);
 }
 
-static inline IndexPacket ConstrainColormapIndex(Image *image,
-  const unsigned long index)
-{
-  if (index < image->colors)
-    return((IndexPacket) index);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
-  return((IndexPacket) 0);
-}
-
 static inline MagickBooleanType IsGray(const PixelPacket *pixel)
 {
   if ((pixel->red == pixel->green) && (pixel->green == pixel->blue))

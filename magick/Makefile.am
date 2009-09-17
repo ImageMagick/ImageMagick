@@ -81,6 +81,9 @@ MAGICK_BASE_SRCS = \
 	magick/color.c \
 	magick/color.h \
 	magick/color-private.h \
+	magick/colormap.c \
+	magick/colormap.h \
+	magick/colormap-private.h \
 	magick/colorspace.c \
 	magick/colorspace.h \
 	magick/colorspace-private.h \
@@ -281,6 +284,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/client.h \
 	magick/coder.h \
 	magick/color.h \
+	magick/colormap.h \
 	magick/colorspace.h \
 	magick/compare.h \
 	magick/composite.h \
@@ -357,6 +361,7 @@ MAGICK_NOINST_HDRS = \
 	magick/blob-private.h \
 	magick/cache-private.h \
 	magick/color-private.h \
+	magick/colormap-private.h \
 	magick/colorspace-private.h \
 	magick/composite-private.h \
 	magick/delegate-private.h \

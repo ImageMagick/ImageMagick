@@ -157,6 +157,7 @@ extern "C" {
 #include "magick/coder.h"
 #include "magick/color.h"
 #include "magick/colorspace.h"
+#include "magick/colormap.h"
 #include "magick/compare.h"
 #include "magick/composite.h"
 #include "magick/compress.h"

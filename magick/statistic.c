@@ -93,6 +93,257 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     A v e r a g e I m a g e s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AverageImages() takes a set of images and averages them together.  Each
+%  image in the set must have the same width and height.  AverageImages()
+%  returns a single image with each corresponding pixel component of each
+%  image averaged.   On failure, a NULL image is returned and exception
+%  describes the reason for the failure.
+%
+%  The format of the AverageImages method is:
+%
+%      Image *AverageImages(Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image sequence.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
+{
+  register long
+    i;
+
+  assert(pixels != (MagickPixelPacket **) NULL);
+  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+    if (pixels[i] != (MagickPixelPacket *) NULL)
+      pixels[i]=(MagickPixelPacket *) RelinquishMagickMemory(pixels[i]);
+  pixels=(MagickPixelPacket **) RelinquishAlignedMemory(pixels);
+  return(pixels);
+}
+
+static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
+{
+  register long
+    i,
+    j;
+
+  MagickPixelPacket
+    **pixels;
+
+  unsigned long
+    number_threads;
+
+  number_threads=GetOpenMPMaximumThreads();
+  pixels=(MagickPixelPacket **) AcquireAlignedMemory(number_threads,
+    sizeof(*pixels));
+  if (pixels == (MagickPixelPacket **) NULL)
+    return((MagickPixelPacket **) NULL);
+  (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
+  for (i=0; i < (long) number_threads; i++)
+  {
+    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(image->columns,
+      sizeof(**pixels));
+    if (pixels[i] == (MagickPixelPacket *) NULL)
+      return(DestroyPixelThreadSet(pixels));
+    for (j=0; j < (long) image->columns; j++)
+      GetMagickPixelPacket(image,&pixels[i][j]);
+  }
+  return(pixels);
+}
+
+MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
+{
+#define AverageImageTag  "Average/Image"
+
+  CacheView
+    *average_view;
+
+  const Image
+    *next;
+
+  Image
+    *average_image;
+
+  long
+    progress,
+    y;
+
+  MagickBooleanType
+    status;
+
+  MagickPixelPacket
+    **average_pixels,
+    zero;
+
+  unsigned long
+    number_images;
+
+  /*
+    Ensure the image are the same size.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+    if ((next->columns != image->columns) || (next->rows != image->rows))
+      ThrowImageException(OptionError,"ImageWidthsOrHeightsDiffer");
+  /*
+    Initialize average next attributes.
+  */
+  average_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (average_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(average_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&average_image->exception);
+      average_image=DestroyImage(average_image);
+      return((Image *) NULL);
+    }
+  average_pixels=AcquirePixelThreadSet(image);
+  if (average_pixels == (MagickPixelPacket **) NULL)
+    {
+      average_image=DestroyImage(average_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  /*
+    Average image pixels.
+  */
+  status=MagickTrue;
+  progress=0;
+  GetMagickPixelPacket(image,&zero);
+  number_images=GetImageListLength(image);
+  average_view=AcquireCacheView(average_image);
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=0; y < (long) average_image->rows; y++)
+  {
+    CacheView
+      *image_view;
+
+    const Image
+      *next;
+
+    MagickPixelPacket
+      pixel;
+
+    register IndexPacket
+      *__restrict average_indexes;
+
+    register long
+      i,
+      id,
+      x;
+
+    register MagickPixelPacket
+      *average_pixel;
+
+    register PixelPacket
+      *__restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(average_view,0,y,average_image->columns,1,
+      exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    average_indexes=GetCacheViewAuthenticIndexQueue(average_view);
+    pixel=zero;
+    id=GetOpenMPThreadId();
+    average_pixel=average_pixels[id];
+    for (x=0; x < (long) average_image->columns; x++)
+      average_pixel[x]=zero;
+    next=image;
+    for (i=0; i < (long) number_images; i++)
+    {
+      register const IndexPacket
+        *indexes;
+
+      register const PixelPacket
+        *p;
+
+      image_view=AcquireCacheView(next);
+      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          image_view=DestroyCacheView(image_view);
+          break;
+        }
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      for (x=0; x < (long) next->columns; x++)
+      {
+        SetMagickPixelPacket(next,p,indexes+x,&pixel);
+        average_pixel[x].red+=QuantumScale*pixel.red;
+        average_pixel[x].green+=QuantumScale*pixel.green;
+        average_pixel[x].blue+=QuantumScale*pixel.blue;
+        average_pixel[x].opacity+=QuantumScale*pixel.opacity;
+        if (average_image->colorspace == CMYKColorspace)
+          average_pixel[x].index+=QuantumScale*pixel.index;
+        p++;
+      }
+      image_view=DestroyCacheView(image_view);
+      next=GetNextImageInList(next);
+    }
+    for (x=0; x < (long) average_image->columns; x++)
+    {
+      average_pixel[x].red=(MagickRealType) (QuantumRange*
+        average_pixel[x].red/number_images);
+      average_pixel[x].green=(MagickRealType) (QuantumRange*
+        average_pixel[x].green/number_images);
+      average_pixel[x].blue=(MagickRealType) (QuantumRange*
+        average_pixel[x].blue/number_images);
+      average_pixel[x].opacity=(MagickRealType) (QuantumRange*
+        average_pixel[x].opacity/number_images);
+      if (average_image->colorspace == CMYKColorspace)
+        average_pixel[x].index=(MagickRealType) (QuantumRange*
+          average_pixel[x].index/number_images);
+      SetPixelPacket(average_image,&average_pixel[x],q,average_indexes+x);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(average_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+        #pragma omp critical (MagickCore_AverageImages)
+#endif
+        proceed=SetImageProgress(image,AverageImageTag,progress++,
+          average_image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  average_view=DestroyCacheView(average_view);
+  average_pixels=DestroyPixelThreadSet(average_pixels);
+  if (status == MagickFalse)
+    average_image=DestroyImage(average_image);
+  return(average_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t I m a g e B o u n d i n g B o x                                     %
 %                                                                             %
 %                                                                             %
