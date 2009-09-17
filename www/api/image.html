@@ -148,7 +148,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AcquireImage">AcquireImage</a> &bull; <a href="#AcquireImageColormap">AcquireImageColormap</a> &bull; <a href="#AcquireImageInfo">AcquireImageInfo</a> &bull; <a href="#AcquireNextImage">AcquireNextImage</a> &bull; <a href="#AppendImages">AppendImages</a> &bull; <a href="#AverageImages">AverageImages</a> &bull; <a href="#CatchImageException">CatchImageException</a> &bull; <a href="#ClipImagePath">ClipImagePath</a> &bull; <a href="#CloneImage">CloneImage</a> &bull; <a href="#CloneImageInfo">CloneImageInfo</a> &bull; <a href="#CombineImages">CombineImages</a> &bull; <a href="#CycleColormap">CycleColormap</a> &bull; <a href="#DestroyImage">DestroyImage</a> &bull; <a href="#DestroyImageInfo">DestroyImageInfo</a> &bull; <a href="#GetImageAlphaChannel">GetImageAlphaChannel</a> &bull; <a href="#GetImageClipMask">GetImageClipMask</a> &bull; <a href="#GetImageException">GetImageException</a> &bull; <a href="#GetImageInfo">GetImageInfo</a> &bull; <a href="#GetImageMask">GetImageMask</a> &bull; <a href="#GetImageType">GetImageType</a> &bull; <a href="#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &bull; <a href="#InterpretImageFilename">InterpretImageFilename</a> &bull; <a href="#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &bull; <a href="#IsImageObject">IsImageObject</a> &bull; <a href="#IsTaintImage">IsTaintImage</a> &bull; <a href="#ModifyImage">ModifyImage</a> &bull; <a href="#NewMagickImage">NewMagickImage</a> &bull; <a href="#ReferenceImage">ReferenceImage</a> &bull; <a href="#ResetImagePage">ResetImagePage</a> &bull; <a href="#SeparateImageChannel">SeparateImageChannel</a> &bull; <a href="#SeparateImages">SeparateImages</a> &bull; <a href="#SetImageAlphaChannel">SetImageAlphaChannel</a> &bull; <a href="#SetImageBackgroundColor">SetImageBackgroundColor</a> &bull; <a href="#SetImageStorageClass">SetImageStorageClass</a> &bull; <a href="#SetImageClipMask">SetImageClipMask</a> &bull; <a href="#SetImageExtent">SetImageExtent</a> &bull; <a href="#SetImageInfoBlob">SetImageInfoBlob</a> &bull; <a href="#SetImageInfoFile">SetImageInfoFile</a> &bull; <a href="#SetImageMask">SetImageMask</a> &bull; <a href="#SetImageOpacity">SetImageOpacity</a> &bull; <a href="#SetImageType">SetImageType</a> &bull; <a href="#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &bull; <a href="#StripImage">StripImage</a> &bull; <a href="#TextureImage">TextureImage</a>]</p>
+<p class="navigation-index">[<a href="#AcquireImage">AcquireImage</a> &bull; <a href="#AcquireImageColormap">AcquireImageColormap</a> &bull; <a href="#AcquireImageInfo">AcquireImageInfo</a> &bull; <a href="#AcquireNextImage">AcquireNextImage</a> &bull; <a href="#AppendImages">AppendImages</a> &bull; <a href="#CatchImageException">CatchImageException</a> &bull; <a href="#ClipImagePath">ClipImagePath</a> &bull; <a href="#CloneImage">CloneImage</a> &bull; <a href="#CloneImageInfo">CloneImageInfo</a> &bull; <a href="#CombineImages">CombineImages</a> &bull; <a href="#DestroyImage">DestroyImage</a> &bull; <a href="#DestroyImageInfo">DestroyImageInfo</a> &bull; <a href="#GetImageAlphaChannel">GetImageAlphaChannel</a> &bull; <a href="#GetImageClipMask">GetImageClipMask</a> &bull; <a href="#GetImageException">GetImageException</a> &bull; <a href="#GetImageInfo">GetImageInfo</a> &bull; <a href="#GetImageMask">GetImageMask</a> &bull; <a href="#GetImageType">GetImageType</a> &bull; <a href="#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &bull; <a href="#InterpretImageFilename">InterpretImageFilename</a> &bull; <a href="#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &bull; <a href="#IsImageObject">IsImageObject</a> &bull; <a href="#IsTaintImage">IsTaintImage</a> &bull; <a href="#ModifyImage">ModifyImage</a> &bull; <a href="#NewMagickImage">NewMagickImage</a> &bull; <a href="#ReferenceImage">ReferenceImage</a> &bull; <a href="#ResetImagePage">ResetImagePage</a> &bull; <a href="#SeparateImageChannel">SeparateImageChannel</a> &bull; <a href="#SeparateImages">SeparateImages</a> &bull; <a href="#SetImageAlphaChannel">SetImageAlphaChannel</a> &bull; <a href="#SetImageBackgroundColor">SetImageBackgroundColor</a> &bull; <a href="#SetImageStorageClass">SetImageStorageClass</a> &bull; <a href="#SetImageClipMask">SetImageClipMask</a> &bull; <a href="#SetImageExtent">SetImageExtent</a> &bull; <a href="#SetImageInfoBlob">SetImageInfoBlob</a> &bull; <a href="#SetImageInfoFile">SetImageInfoFile</a> &bull; <a href="#SetImageMask">SetImageMask</a> &bull; <a href="#SetImageOpacity">SetImageOpacity</a> &bull; <a href="#SetImageType">SetImageType</a> &bull; <a href="#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &bull; <a href="#StripImage">StripImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image
 _8c.html" target="source" name="AcquireImage">AcquireImage</a></h2>
@@ -246,27 +246,6 @@ _8c.html" target="source" name="AppendImages">AppendImages</a></h2>
 
 <h5>stack</h5>
 <ol><p>A value other than 0 stacks the images top-to-bottom.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="AverageImages">AverageImages</a></h2>
-<div class="doc-section">
-
-<p>AverageImages() takes a set of images and averages them together.  Each image in the set must have the same width and height.  AverageImages() returns a single image with each corresponding pixel component of each image averaged.   On failure, a NULL image is returned and exception describes the reason for the failure.</p></ol>
-
-<p>The format of the AverageImages method is:</p>
-
-<pre class="code">
-  Image *AverageImages(Image *image,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image sequence.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
@@ -385,27 +364,6 @@ _8c.html" target="source" name="CombineImages">CombineImages</a></h2>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="CycleColormap">CycleColormap</a></h2>
-<div class="doc-section">
-
-<p>CycleColormap() displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</p></ol>
-
-<p>The format of the CycleColormapImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType CycleColormapImage(Image *image,const long displace)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>displace</h5>
-<ol><p>displace the colormap this amount.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image
@@ -1068,27 +1026,6 @@ _8c.html" target="source" name="StripImage">StripImage</a></h2>
 <ol><p>the image.</p></ol>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="TextureImage">TextureImage</a></h2>
-<div class="doc-section">
-
-<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p></ol>
-
-<p>The format of the TextureImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType TextureImage(Image *image,const Image *texture)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>texture</h5>
-<ol><p>This image is the texture to layer on the background.</p></ol>
-
- </div>
 
 </div>
 
@@ -1097,7 +1034,7 @@ _8c.html" target="source" name="TextureImage">TextureImage</a></h2>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

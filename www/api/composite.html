@@ -148,7 +148,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#CompositeImageChannel">CompositeImageChannel</a>]</p>
+<p class="navigation-index">[<a href="#CompositeImageChannel">CompositeImageChannel</a> &bull; <a href="#TextureImage">TextureImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/composite
 _8c.html" target="source" name="CompositeImageChannel">CompositeImageChannel</a></h2>
@@ -198,6 +198,27 @@ _8c.html" target="source" name="CompositeImageChannel">CompositeImageChannel</a>
 <p>If set to "false" then disable all normal handling of pixels not covered by the composite_image.  Typically used for repeated tiling of the composite_image by the calling API.</p></ol>
 
 <p>Previous to IM v6.5.3-3  this was called "modify-outside-overlay"</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/composite
+_8c.html" target="source" name="TextureImage">TextureImage</a></h2>
+<div class="doc-section">
+
+<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p></ol>
+
+<p>The format of the TextureImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TextureImage(Image *image,const Image *texture)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>texture</h5>
+<ol><p>This image is the texture to layer on the background.</p></ol>
 
  </div>
 
