@@ -834,9 +834,16 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
       hkey,
       root;
 
+    REGSAM
+      mode;
+
     (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
     root=HKEY_LOCAL_MACHINE;
-    if (RegOpenKeyExA(root,key,0,KEY_READ,&hkey) == ERROR_SUCCESS)
+    mode=KEY_READ;
+#if defined(KEY_WOW64_32KEY)
+    mode|=KEY_WOW64_32KEY;
+#endif
+    if (RegOpenKeyExA(root,key,0,mode,&hkey) == ERROR_SUCCESS)
       {
         DWORD
           extent;
@@ -866,9 +873,10 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
               *minor_version=minor;
               status=MagickTrue;
             }
-          }
        }
-    }
+       (void) RegCloseKey(hkey);
+     }
+  }
   if (status == MagickFalse)
     {
       *major_version=0;
