@@ -478,7 +478,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  BlackThresholdImage() is like ThresholdImage() but forces all pixels below
-%  the threshold into black while leaving all pixels above the threshold
+%  the threshold into black while leaving all pixels at or above the threshold
 %  unchanged.
 %
 %  The format of the BlackThresholdImage method is:
@@ -1751,7 +1751,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  WhiteThresholdImage() is like ThresholdImage() but forces all pixels above
-%  the threshold into white while leaving all pixels below the threshold
+%  the threshold into white while leaving all pixels at or below the threshold
 %  unchanged.
 %
 %  The format of the WhiteThresholdImage method is:
