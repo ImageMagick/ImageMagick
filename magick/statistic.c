@@ -72,6 +72,7 @@
 #include "magick/memory_.h"
 #include "magick/module.h"
 #include "magick/monitor.h"
+#include "magick/monitor-private.h"
 #include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
