@@ -70,9 +70,11 @@
 #include "magick/memory_.h"
 #include "magick/option.h"
 #include "magick/paint.h"
+#include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
+#include "magick/registry.h"
 #include "magick/resize.h"
 #include "magick/segment.h"
 #include "magick/shear.h"
@@ -190,6 +192,54 @@ static MagickBooleanType
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
+  ExceptionInfo *exception)
+{
+  char
+    key[MaxTextExtent];
+
+  ExceptionInfo
+    *sans_exception;
+
+  Image
+    *image;
+
+  ImageInfo
+    *read_info;
+
+  (void) FormatMagickString(key,MaxTextExtent,"cache:%s",path);
+  sans_exception=AcquireExceptionInfo();
+  image=(Image *) GetImageRegistry(ImageRegistryType,key,sans_exception);
+  sans_exception=DestroyExceptionInfo(sans_exception);
+  if (image != (Image *) NULL)
+    return(image);
+  read_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(read_info->filename,path,MaxTextExtent);
+  image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  if (image != (Image *) NULL)
+    (void) SetImageRegistry(ImageRegistryType,key,image,exception);
+  return(image);
+}
+
+static int IsPathDirectory(const char *path)
+{
+  MagickBooleanType
+    status;
+
+  struct stat
+    attributes;
+
+  if ((path == (const char *) NULL) || (*path == '\0'))
+    return(MagickFalse);
+  status=GetPathAttributes(path,&attributes);
+  if (status == MagickFalse)
+    return(-1);
+  if (S_ISDIR(attributes.st_mode) == 0)
+    return(0);
+  return(1);
+}
 
 static int MSLIsStandalone(void *context)
 {
@@ -4213,6 +4263,110 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           }
           break;
         }
+        if (LocaleCompare((const char *) tag, "profile") == 0)
+          {
+            ImageInfo
+              *clone_info;
+
+            if (msl_info->image[n] == (Image *) NULL)
+              {
+                ThrowMSLException(OptionError,"NoImagesDefined",
+                  (const char *) tag);
+                break;
+              }
+            if (attributes == (const xmlChar **) NULL)
+              break;
+            for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+            {
+              const char
+                *name;
+
+              const StringInfo
+                *profile;
+
+              Image
+                *profile_image;
+
+              ImageInfo
+                *profile_info;
+
+              keyword=(const char *) attributes[i++];
+              attribute=InterpretImageProperties(msl_info->image_info[n],
+                msl_info->attributes[n],(const char *) attributes[i]);
+              CloneString(&value,attribute);
+              if (*keyword == '+')
+                {
+                  /*
+                    Remove a profile from the image.
+                  */
+                  (void) ProfileImage(msl_info->image[n],keyword,
+                    (const unsigned char *) NULL,0,MagickTrue);
+                  continue;
+                }
+              /*
+                Associate a profile with the image.
+              */
+              profile_info=CloneImageInfo(msl_info->image_info[n]);
+              profile=GetImageProfile(msl_info->image[n],"iptc");
+              if (profile != (StringInfo *) NULL)
+                profile_info->profile=(void *) CloneStringInfo(profile);
+              profile_image=GetImageCache(profile_info,keyword,&exception);
+              profile_info=DestroyImageInfo(profile_info);
+              if (profile_image == (Image *) NULL)
+                {
+                  char
+                    name[MaxTextExtent],
+                    filename[MaxTextExtent];
+
+                  register char
+                    *p;
+
+                  StringInfo
+                    *profile;
+
+                  (void) CopyMagickString(filename,keyword,MaxTextExtent);
+                  (void) CopyMagickString(name,keyword,MaxTextExtent);
+                  for (p=filename; *p != '\0'; p++)
+                    if ((*p == ':') && (IsPathDirectory(keyword) < 0) &&
+                        (IsPathAccessible(keyword) == MagickFalse))
+                      {
+                        register char
+                          *q;
+
+                        /*
+                          Look for profile name (e.g. name:profile).
+                        */
+                        (void) CopyMagickString(name,filename,(size_t)
+                          (p-filename+1));
+                        for (q=filename; *q != '\0'; q++)
+                          *q=(*++p);
+                        break;
+                      }
+                  profile=FileToStringInfo(filename,~0UL,&exception);
+                  if (profile != (StringInfo *) NULL)
+                    {
+                      (void) ProfileImage(msl_info->image[n],name,
+                        GetStringInfoDatum(profile),(unsigned long)
+                        GetStringInfoLength(profile),MagickFalse);
+                      profile=DestroyStringInfo(profile);
+                    }
+                  continue;
+                }
+              ResetImageProfileIterator(profile_image);
+              name=GetNextImageProfile(profile_image);
+              while (name != (const char *) NULL)
+              {
+                profile=GetImageProfile(profile_image,name);
+                if (profile != (StringInfo *) NULL)
+                  (void) ProfileImage(msl_info->image[n],name,
+                    GetStringInfoDatum(profile),(unsigned long)
+                    GetStringInfoLength(profile),MagickFalse);
+                name=GetNextImageProfile(profile_image);
+              }
+              profile_image=DestroyImage(profile_image);
+            }
+            break;
+          }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
     }
     case 'Q':
@@ -7660,6 +7814,9 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   ExceptionInfo
     *exception;
 
+  Image
+    *image;
+
   ImageInfo
     *image_info;
 
@@ -7675,6 +7832,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   n=msl_info->n;
   image_info=msl_info->image_info[n];
   draw_info=msl_info->draw_info[n];
+  image=msl_info->image[n];
   switch (*keyword)
   {
     case 'A':
@@ -7689,6 +7847,17 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           if (adjoin < 0)
             ThrowMSLException(OptionError,"UnrecognizedType",value);
           image_info->adjoin=(MagickBooleanType) adjoin;
+          break;
+        }
+      if (LocaleCompare(keyword,"alpha") == 0)
+        {
+          long
+            alpha;
+
+          alpha=ParseMagickOption(MagickAlphaOptions,MagickFalse,value);
+          if (alpha < 0)
+            ThrowMSLException(OptionError,"UnrecognizedType",value);
+          (void) SetImageAlphaChannel(image,(AlphaChannelType) alpha);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
