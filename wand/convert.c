@@ -208,7 +208,7 @@ static MagickBooleanType ConvertUsage(void)
       "-layers method       optimize, merge,  or compare image layers",
       "-level value         adjust the level of image contrast",
       "-level-colors color,color",
-      "                     level image using given colors",
+      "                     level image with the given colors",
       "-linear-stretch geometry",
       "                     improve contrast by `stretching with saturation'",
       "-liquid-rescale geometry",

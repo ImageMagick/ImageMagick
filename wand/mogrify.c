@@ -1860,25 +1860,25 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
             p=(const char *) argv[i+1];
             GetMagickToken(p,&p,token);  /* get black point color */
-            if (isalpha((int) token[0]) || (token[0] == '#'))
+            if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
               (void) QueryMagickColor(token,&black_point,exception);
             else
-              (void) QueryMagickColor("black",&black_point,exception);
+              (void) QueryMagickColor("#000000",&black_point,exception);
             if (isalpha((int) token[0]) || (token[0] == '#'))
               GetMagickToken(p,&p,token);
-            if (token[0] == '\0')
+            if (*token == '\0')
               white_point=black_point; /* set everything to that color */
             else
               {
                 /*
                   Get white point color.
                 */
-                if (!(isalpha((int) token[0]) || (token[0] == '#')))
+                if ((isalpha((int) *token) == 0) && ((*token == '#') == 0))
                   GetMagickToken(p,&p,token);
-                if ((isalpha((int) token[0]) || (token[0] == '#')))
+                if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
                   (void) QueryMagickColor(token,&white_point,exception);
                 else
-                  (void) QueryMagickColor("white",&white_point,exception);
+                  (void) QueryMagickColor("#ffffff",&white_point,exception);
               }
             (void) LevelImageColors(*image,channel,&black_point,&white_point,
               *option == '+' ? MagickTrue : MagickFalse);
@@ -3496,7 +3496,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-layers method       optimize, merge,  or compare image layers",
       "-level value         adjust the level of image contrast",
       "-level-colors color,color",
-      "                     level image using given colors",
+      "                     level image with the given colors",
       "-linear-stretch geometry",
       "                     improve contrast by `stretching with saturation'",
       "-liquid-rescale geometry",

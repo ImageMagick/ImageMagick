@@ -2718,9 +2718,9 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LevelImageColor() will map the given color to "black" and "white"
-%  values, limearly spreading out the colors, and level values on a channel by
-%  channel bases, as per LevelImage().  The given colors allows you to specify
+%  LevelImageColor() maps the given color to "black" and "white" values,
+%  linearly spreading out the colors, and level values on a channel by channel
+%  bases, as per LevelImage().  The given colors allows you to specify
 %  different level ranges for each of the color channels seperatally.
 %
 %  If the boolean 'invert' is set true the image values will modifyed in the
@@ -2731,9 +2731,9 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
 %
 %  The format of the LevelImageColors method is:
 %
-%  MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
-%    const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
-%    const MagickBooleanType invert)
+%    MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+%      const MagickPixelPacket *black_color,
+%      const MagickPixelPacket *white_color,const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
