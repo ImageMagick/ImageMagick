@@ -115,12 +115,6 @@ MagickExport Image *BorderImage(const Image *image,
     image->rows+2*border_info->height,MagickTrue,exception);
   if (border_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(border_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&border_image->exception);
-      border_image=DestroyImage(border_image);
-      return((Image *) NULL);
-    }
   border_image->background_color=border_image->border_color;
   if (border_image->background_color.opacity != OpaqueOpacity)
     border_image->matte=MagickTrue;
