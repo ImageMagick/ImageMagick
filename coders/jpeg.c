@@ -940,9 +940,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if ((i != 2) && (i != 13) && (i != 14))
       jpeg_set_marker_processor(&jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=jpeg_read_header(&jpeg_info,MagickTrue);
-  if ((image->colorspace == YCbCrColorspace) ||
-      (image->colorspace == Rec601YCbCrColorspace) ||
-      (image->colorspace == Rec709YCbCrColorspace))
+  if ((image_info->colorspace == YCbCrColorspace) ||
+      (image_info->colorspace == Rec601YCbCrColorspace) ||
+      (image_info->colorspace == Rec709YCbCrColorspace))
     jpeg_info.out_color_space=JCS_YCbCr;
   /*
     Set image resolution.
