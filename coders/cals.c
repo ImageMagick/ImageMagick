@@ -10,7 +10,7 @@
 %                         CCCC  A   A  LLLLL  SSSSS                           %
 %                                                                             %
 %                                                                             %
-%                        Read/Write CALS Image Format                         %
+%                 Read/Write CALS Raster Group 1 Image Format                 %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
@@ -59,11 +59,21 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/option.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+#if defined(MAGICKCORE_HAVE_TIFFCONF_H)
+#include "tiffconf.h"
+#endif
+#include "tiffio.h"
+#define CCITTParam  "-1"
+#else
+#define CCITTParam  "0"
+#endif
 
 /*
  Forward declarations.
@@ -83,7 +93,7 @@ static MagickBooleanType
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsCALS() returns MagickTrue if the image format type, identified by the
-%  magick string, is CALS.
+%  magick string, is CALS Raster Group 1.
 %
 %  The format of the IsCALS method is:
 %
@@ -120,9 +130,9 @@ static MagickBooleanType IsCALS(const unsigned char *magick,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadCALSImage() reads an Automated Interchange of Technical Information,
-%  MIL-STD-1840A image file and returns it.  It allocates the memorient_y necessary
-%  for the new Image structure and returns a pointer to the new image.
+%  ReadCALSImage() reads an CALS Raster Group 1 image format image file and
+%  returns it.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
 %
 %  The format of the ReadCALSImage method is:
 %
@@ -149,18 +159,18 @@ static inline size_t WriteCALSLSBLong(FILE *file,const unsigned int value)
   return(fwrite(buffer,1,4,file));
 }
 
-static Image *ReadCALSImage(const ImageInfo *image_info,
+static Image *Huffman2DDecodeImage(const ImageInfo *image_info,Image *image,
+  const unsigned long density,const unsigned long orientation,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    header[129];
+    filename[MaxTextExtent];
 
   FILE
     *file;
 
   Image
-    *image;
+    *huffman_image;
 
   ImageInfo
     *read_info;
@@ -169,12 +179,6 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
     c,
     unique_file;
 
-  MagickBooleanType
-    status;
-
-  register long
-    i;
-
   size_t
     length;
 
@@ -182,7 +186,78 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
     offset,
     strip_offset;
 
-  unsigned int
+  /*
+    Write CALS facsimile document wrapped as a TIFF image file.
+  */
+  file=(FILE *) NULL;
+  unique_file=AcquireUniqueFileResource(filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb");
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+  length=fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
+  length=fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
+  length=fwrite("\000\001\004\000\001\000\000\000",1,8,file);
+  length=WriteCALSLSBLong(file,image->columns);
+  length=fwrite("\001\001\004\000\001\000\000\000",1,8,file);
+  length=WriteCALSLSBLong(file,image->rows);
+  length=fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
+  length=fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
+  length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
+  length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
+  strip_offset=10+(12*14)+4+8;
+  length=WriteCALSLSBLong(file,(unsigned int) strip_offset);
+  length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
+  length=WriteCALSLSBLong(file,orientation);
+  length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
+  length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
+  length=WriteCALSLSBLong(file,image->columns);
+  length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
+  offset=(ssize_t) ftell(file)-4;
+  length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
+  length=WriteCALSLSBLong(file,(unsigned int) (strip_offset-8));
+  length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
+  length=WriteCALSLSBLong(file,(unsigned int) (strip_offset-8));
+  length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
+  length=fwrite("\000\000\000\000",1,4,file);
+  length=WriteCALSLSBLong(file,density);
+  length=WriteCALSLSBLong(file,1);
+  for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
+    (void) fputc(c,file);
+  (void) CloseBlob(image);
+  offset=(ssize_t) fseek(file,(long) offset,SEEK_SET);
+  length=WriteCALSLSBLong(file,(unsigned int) length);
+  (void) fclose(file);
+  /*
+    Read TIFF image.
+  */
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"tiff:%.1024s",
+    filename);
+  huffman_image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  (void) RelinquishUniqueFileResource(filename);
+  return(huffman_image);
+}
+
+static Image *ReadCALSImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  char
+    header[129];
+
+  Image
+    *huffman_image,
+    *image;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  unsigned long
     density,
     direction,
     height,
@@ -230,17 +305,17 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
       {
         if (LocaleNCompare(header,"rdensty:",8) == 0)
           {
-            (void) sscanf(header+8,"%u",&density);
+            (void) sscanf(header+8,"%lu",&density);
             break;
           }
         if (LocaleNCompare(header,"rpelcnt:",8) == 0)
           {
-            (void) sscanf(header+8,"%u,%u",&width,&height);
+            (void) sscanf(header+8,"%lu,%lu",&width,&height);
             break;
           }
         if (LocaleNCompare(header,"rorient:",8) == 0)
           {
-            (void) sscanf(header+8,"%u,%u",&pel_path,&direction);
+            (void) sscanf(header+8,"%lu,%lu",&pel_path,&direction);
             if (pel_path == 90)
               orientation=5;
             else
@@ -255,7 +330,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare(header,"rtype:",6) == 0)
           {
-            (void) sscanf(header+6,"%u",&type);
+            (void) sscanf(header+6,"%lu",&type);
             break;
           }
         break;
@@ -264,62 +339,15 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   }
   if ((width == 0) || (height == 0) || (type == 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  /*
-    Write CALS facsimile document wrapped as a TIFF image file.
-  */
-  file=(FILE *) NULL;
-  unique_file=AcquireUniqueFileResource(filename);
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb");
-  if ((unique_file == -1) || (file == (FILE *) NULL))
-    ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
-  length=fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
-  length=fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
-  length=fwrite("\000\001\004\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,width);
-  length=fwrite("\001\001\004\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,height);
-  length=fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  length=fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
-  length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
-  length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
-  strip_offset=10+(12*14)+4+8;
-  length=WriteCALSLSBLong(file,(unsigned int) strip_offset);
-  length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,orientation);
-  length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,width);
-  length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
-  offset=(ssize_t) ftell(file)-4;
-  length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned int) (strip_offset-8));
-  length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned int) (strip_offset-8));
-  length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
-  length=fwrite("\000\000\000\000",1,4,file);
-  length=WriteCALSLSBLong(file,density);
-  length=WriteCALSLSBLong(file,1);
-  for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
-    (void) fputc(c,file);
-  (void) CloseBlob(image);
+  image->columns=width;
+  image->rows=height;
+  huffman_image=Huffman2DDecodeImage(image_info,image,density,orientation,
+    exception);
   image=DestroyImage(image);
-  offset=(ssize_t) fseek(file,(long) offset,SEEK_SET);
-  length=WriteCALSLSBLong(file,(unsigned int) length);
-  (void) fclose(file);
-  /*
-    Read TIFF image.
-  */
-  read_info=CloneImageInfo(image_info);
-  SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"tiff:%.1024s",
-    filename);
-  image=ReadImage(read_info,exception);
-  read_info=DestroyImageInfo(read_info);
-  (void) RelinquishUniqueFileResource(filename);
-  if (image == (Image *) NULL)
-    return(image);
-  return(GetFirstImageInList(image));
+  (void) CloseBlob(huffman_image);
+  if (huffman_image == (Image *) NULL)
+    return(huffman_image);
+  return(GetFirstImageInList(huffman_image));
 }
 
 /*
@@ -333,11 +361,12 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterCALSImage() adds attributes for the CALS X image format to the list
-%  of supported formats.  The attributes include the image format tag, a
-%  method to read and/or write the format, whether the format supports the
-%  saving of more than one frame to the same file or blob, whether the format
-%  supports native in-memorient_y I/O, and a brief description of the format.
+%  RegisterCALSImage() adds attributes for the CALS Raster Group 1 image file
+%  image format to the list of supported formats.  The attributes include the
+%  image format tag, a method to read and/or write the format, whether the
+%  format supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief description
+%  of the format.
 %
 %  The format of the RegisterCALSImage method is:
 %
@@ -396,7 +425,8 @@ ModuleExport void UnregisterCALSImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteCALSImage() writes an image to a file in CALS type I image format.
+%  WriteCALSImage() writes an image to a file in CALS Raster Group 1 image
+%  format.
 %
 %  The format of the WriteCALSImage method is:
 %
@@ -411,7 +441,133 @@ ModuleExport void UnregisterCALSImage(void)
 %
 */
 
-static MagickBooleanType WriteCALSRecord(Image *image,const char *data)
+static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
+  Image *image,Image *inject_image)
+{
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
+  Image
+    *huffman_image;
+
+  ImageInfo
+    *write_info;
+
+  int
+    unique_file;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  ssize_t
+    count;
+
+  TIFF
+    *tiff;
+
+  uint16
+    fillorder;
+
+  uint32
+    *byte_count,
+    strip_size;
+
+  unsigned char
+    *buffer;
+
+  /*
+    Write image as CCITTFax4 TIFF image to a temporary file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(inject_image != (Image *) NULL);
+  assert(inject_image->signature == MagickSignature);
+  huffman_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
+  if (huffman_image == (Image *) NULL)
+    return(MagickFalse);
+  file=(FILE *) NULL;
+  unique_file=AcquireUniqueFileResource(filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb"); 
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    {
+      ThrowFileException(&image->exception,FileOpenError,
+        "UnableToCreateTemporaryFile",filename);
+      return(MagickFalse);
+    }
+  (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
+    filename);
+  write_info=CloneImageInfo(image_info);
+  SetImageInfoFile(write_info,file);
+  write_info->compression=Group4Compression;
+  (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
+  status=WriteImage(write_info,huffman_image);
+  (void) fflush(file);
+  write_info=DestroyImageInfo(write_info);
+  if (status == MagickFalse)
+    return(MagickFalse);
+  tiff=TIFFOpen(filename,"rb");
+  if (tiff == (TIFF *) NULL)
+    {
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
+        image_info->filename);
+      return(MagickFalse);
+    }
+  /*
+    Allocate raw strip buffer.
+  */
+  byte_count=0;
+  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  strip_size=byte_count[0];
+  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
+    if (byte_count[i] > strip_size)
+      strip_size=byte_count[i];
+  buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
+    sizeof(*buffer));
+  if (buffer == (unsigned char *) NULL)
+    {
+      TIFFClose(tiff);
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image_info->filename);
+    }
+  /*
+    Compress runlength encoded to 2D Huffman pixels.
+  */
+  fillorder=FILLORDER_LSB2MSB;
+  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
+  {
+    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(long)
+      byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,(unsigned long) count);
+    (void) WriteBlob(image,(size_t) count,buffer);
+  }
+  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  TIFFClose(tiff);
+  huffman_image=DestroyImage(huffman_image);
+  (void) fclose(file);
+  (void) RelinquishUniqueFileResource(filename);
+  return(MagickTrue);
+}
+
+static ssize_t WriteCALSRecord(Image *image,const char *data)
 {
   char
     pad[128];
@@ -430,16 +586,13 @@ static MagickBooleanType WriteCALSRecord(Image *image,const char *data)
     {
       p=data;
       for (i=0; (i < 128) && (p[i] != '\0'); i++);
-      count=WriteBlob(image,(size_t) i,(unsigned char *) data);
+      count=WriteBlob(image,(size_t) i,(const unsigned char *) data);
     }
   if (i < 128)
     {
-      /*
-        Pad CALS record.
-      */
       i=128-i;
-      (void) ResetMagickMemory(pad,' ',(size_t) i);
-      count=WriteBlob(image,(size_t) i,(unsigned char *) pad);
+      (void) ResetMagickMemory(pad,' ',(const size_t) i);
+      count=WriteBlob(image,(size_t) i,(const unsigned char *) pad);
     }
   return(count);
 }

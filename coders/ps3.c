@@ -70,6 +70,10 @@
 #include "magick/utility.h"
 #include "magick/module.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
+#if defined(MAGICKCORE_HAVE_TIFFCONF_H)
+#include "tiffconf.h"
+#endif
+#include "tiffio.h"
 #define CCITTParam  "-1"
 #else
 #define CCITTParam  "0"
@@ -189,6 +193,132 @@ ModuleExport void UnregisterPS3Image(void)
 %    o image: the image.
 %
 */
+
+static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
+  Image *image,Image *inject_image)
+{
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
+  Image
+    *huffman_image;
+
+  ImageInfo
+    *write_info;
+
+  int
+    unique_file;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  ssize_t
+    count;
+
+  TIFF
+    *tiff;
+
+  uint16
+    fillorder;
+
+  uint32
+    *byte_count,
+    strip_size;
+
+  unsigned char
+    *buffer;
+
+  /*
+    Write image as CCITTFax4 TIFF image to a temporary file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(inject_image != (Image *) NULL);
+  assert(inject_image->signature == MagickSignature);
+  huffman_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
+  if (huffman_image == (Image *) NULL)
+    return(MagickFalse);
+  file=(FILE *) NULL;
+  unique_file=AcquireUniqueFileResource(filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb"); 
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    {
+      ThrowFileException(&image->exception,FileOpenError,
+        "UnableToCreateTemporaryFile",filename);
+      return(MagickFalse);
+    }
+  (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
+    filename);
+  write_info=CloneImageInfo(image_info);
+  SetImageInfoFile(write_info,file);
+  write_info->compression=Group4Compression;
+  (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
+  status=WriteImage(write_info,huffman_image);
+  (void) fflush(file);
+  write_info=DestroyImageInfo(write_info);
+  if (status == MagickFalse)
+    return(MagickFalse);
+  tiff=TIFFOpen(filename,"rb");
+  if (tiff == (TIFF *) NULL)
+    {
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
+        image_info->filename);
+      return(MagickFalse);
+    }
+  /*
+    Allocate raw strip buffer.
+  */
+  byte_count=0;
+  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  strip_size=byte_count[0];
+  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
+    if (byte_count[i] > strip_size)
+      strip_size=byte_count[i];
+  buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
+    sizeof(*buffer));
+  if (buffer == (unsigned char *) NULL)
+    {
+      TIFFClose(tiff);
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image_info->filename);
+    }
+  /*
+    Compress runlength encoded to 2D Huffman pixels.
+  */
+  fillorder=FILLORDER_LSB2MSB;
+  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
+  {
+    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(long)
+      byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,(unsigned long) count);
+    (void) WriteBlob(image,(size_t) count,buffer);
+  }
+  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  TIFFClose(tiff);
+  huffman_image=DestroyImage(huffman_image);
+  (void) fclose(file);
+  (void) RelinquishUniqueFileResource(filename);
+  return(MagickTrue);
+}
 
 static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   Image *image,unsigned char **pixels,size_t *length)
