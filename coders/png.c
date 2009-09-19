@@ -2320,7 +2320,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
-        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
 #if (0 && (MAGICKCORE_QUANTUM_DEPTH == 8) && !defined(MAGICKCORE_HDRI_SUPPORT))
