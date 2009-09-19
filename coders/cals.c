@@ -160,7 +160,6 @@ static inline size_t WriteCALSLSBLong(FILE *file,const unsigned int value)
 }
 
 static Image *Huffman2DDecodeImage(const ImageInfo *image_info,Image *image,
-  const unsigned long density,const unsigned long orientation,
   ExceptionInfo *exception)
 {
   char
@@ -206,21 +205,21 @@ static Image *Huffman2DDecodeImage(const ImageInfo *image_info,Image *image,
   length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
   length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
   strip_offset=10+(12*14)+4+8;
-  length=WriteCALSLSBLong(file,(unsigned int) strip_offset);
+  length=WriteCALSLSBLong(file,(unsigned long) strip_offset);
   length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,orientation);
+  length=WriteCALSLSBLong(file,(unsigned long) image->orientation);
   length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
   length=WriteCALSLSBLong(file,image->columns);
   length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
   offset=(ssize_t) ftell(file)-4;
   length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned int) (strip_offset-8));
+  length=WriteCALSLSBLong(file,(unsigned long) (strip_offset-8));
   length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned int) (strip_offset-8));
+  length=WriteCALSLSBLong(file,(unsigned long) (strip_offset-8));
   length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
   length=fwrite("\000\000\000\000",1,4,file);
-  length=WriteCALSLSBLong(file,density);
+  length=WriteCALSLSBLong(file,image->x_resolution);
   length=WriteCALSLSBLong(file,1);
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
     (void) fputc(c,file);
@@ -341,8 +340,10 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->columns=width;
   image->rows=height;
-  huffman_image=Huffman2DDecodeImage(image_info,image,density,orientation,
-    exception);
+  image->x_resolution=(double) density;
+  image->y_resolution=(double) density;
+  image->orientation=(OrientationType) orientation;
+  huffman_image=Huffman2DDecodeImage(image_info,image,exception);
   image=DestroyImage(image);
   (void) CloseBlob(huffman_image);
   if (huffman_image == (Image *) NULL)
@@ -639,6 +640,8 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   count=WriteCALSRecord(image,"srcgph: NONE");
   count=WriteCALSRecord(image,"docls: NONE");
   count=WriteCALSRecord(image,"rtype: 1");
+  orient_x=0;
+  orient_y=0;
   switch (image->orientation)
   {
     case TopRightOrientation:
@@ -654,13 +657,13 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       break;
     }
     case BottomLeftOrientation:
-      orient_x=0;
+    {
       orient_y=90;
       break;
+    }
     case LeftTopOrientation:
     {
       orient_x=270;
-      orient_y=0;
       break;
     }
     case RightTopOrientation:
@@ -678,12 +681,10 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
     case LeftBottomOrientation:
     {
       orient_x=90;
-      orient_y=0;
       break;
     }
     default:
     {
-      orient_x=0; 
       orient_y=270;
     }
   }
