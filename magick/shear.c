@@ -562,7 +562,7 @@ static inline MagickBooleanType SetRadonCell(const RadonInfo *radon_info,
       return(MagickTrue);
     }
   count=WriteRadonCell(radon_info,i*sizeof(*radon_info->cells),
-    sizeof(*radon_info->cells),(unsigned char *) &value);
+    sizeof(*radon_info->cells),(const unsigned char *) &value);
   if (count != (ssize_t) sizeof(*radon_info->cells))
     return(MagickFalse);
   return(MagickTrue);
