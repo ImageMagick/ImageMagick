@@ -338,6 +338,7 @@ coders_cals_la_SOURCES  = coders/cals.c
 coders_cals_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_cals_la_LDFLAGS  = $(MODULECOMMONFLAGS)
 coders_cals_la_LIBADD   = $(MAGICKCORE_LIBS)
+coders_cals_la_LIBADD   = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 
 # CAPTION coder module
 coders_caption_la_SOURCES  = coders/caption.c
