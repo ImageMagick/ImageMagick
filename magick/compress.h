@@ -51,7 +51,6 @@ typedef struct _Ascii85Info
 extern MagickExport MagickBooleanType
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *,Image *),
-  Huffman2DEncodeImage(const ImageInfo *,Image *,Image *),
   LZWEncodeImage(Image *,const size_t,unsigned char *),
   PackbitsEncodeImage(Image *,const size_t,unsigned char *),
   ZLIBEncodeImage(Image *,const size_t,unsigned char *);
