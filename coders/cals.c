@@ -51,6 +51,7 @@
 #include "magick/colorspace.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/geometry.h"
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/list.h"
@@ -63,6 +64,12 @@
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
+
+/*
+ Forward declarations.
+*/
+static MagickBooleanType
+  WriteCALSImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,11 +100,11 @@ static MagickBooleanType IsCALS(const unsigned char *magick,const size_t length)
 {
   if (length < 128)
     return(MagickFalse);
-  if (LocaleNCompare((char *) magick,"version: MIL-STD-1840",21) == 0)
+  if (LocaleNCompare((const char *) magick,"version: MIL-STD-1840",21) == 0)
     return(MagickTrue);
-  if (LocaleNCompare((char *) magick,"srcdocid:",9) == 0)
+  if (LocaleNCompare((const char *) magick,"srcdocid:",9) == 0)
     return(MagickTrue);
-  if (LocaleNCompare((char *) magick,"rorient:",8) == 0)
+  if (LocaleNCompare((const char *) magick,"rorient:",8) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -114,7 +121,7 @@ static MagickBooleanType IsCALS(const unsigned char *magick,const size_t length)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReadCALSImage() reads an Automated Interchange of Technical Information,
-%  MIL-STD-1840A image file and returns it.  It allocates the memory necessary
+%  MIL-STD-1840A image file and returns it.  It allocates the memorient_y necessary
 %  for the new Image structure and returns a pointer to the new image.
 %
 %  The format of the ReadCALSImage method is:
@@ -330,7 +337,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
 %  of supported formats.  The attributes include the image format tag, a
 %  method to read and/or write the format, whether the format supports the
 %  saving of more than one frame to the same file or blob, whether the format
-%  supports native in-memory I/O, and a brief description of the format.
+%  supports native in-memorient_y I/O, and a brief description of the format.
 %
 %  The format of the RegisterCALSImage method is:
 %
@@ -344,6 +351,7 @@ ModuleExport unsigned long RegisterCALSImage(void)
 
   entry=SetMagickInfo("CALS");
   entry->decoder=(DecodeImageHandler *) ReadCALSImage;
+  entry->encoder=(EncodeImageHandler *) WriteCALSImage;
   entry->adjoin=MagickFalse;
   entry->magick=(IsImageFormatHandler *) IsCALS;
   entry->description=ConstantString("Automated Interchange of Technical "
@@ -375,4 +383,179 @@ ModuleExport unsigned long RegisterCALSImage(void)
 ModuleExport void UnregisterCALSImage(void)
 {
   (void) UnregisterMagickInfo("CALS");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e C A L S I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteCALSImage() writes an image to a file in CALS type I image format.
+%
+%  The format of the WriteCALSImage method is:
+%
+%      MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+*/
+
+static MagickBooleanType WriteCALSRecord(Image *image,const char *data)
+{
+  char
+    pad[128];
+
+  ssize_t
+    count;
+
+  register const char
+    *p;
+
+  register long
+    i;
+
+  i=0;
+  if (data != (const char *) NULL)
+    {
+      p=data;
+      for (i=0; (i < 128) && (p[i] != '\0'); i++);
+      count=WriteBlob(image,(size_t) i,(unsigned char *) data);
+    }
+  if (i < 128)
+    {
+      /*
+        Pad CALS record.
+      */
+      i=128-i;
+      (void) ResetMagickMemory(pad,' ',(size_t) i);
+      count=WriteBlob(image,(size_t) i,(unsigned char *) pad);
+    }
+  return(count);
+}
+
+static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
+  Image *image)
+{
+  char
+    buffer[129];
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  ssize_t
+    count;
+
+  unsigned long
+    density,
+    orient_x,
+    orient_y;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == MagickFalse)
+    return(status);
+  /*
+    Create standard CALS header.
+  */
+  count=WriteCALSRecord(image,"srcdocid: NONE");
+  count=WriteCALSRecord(image,"dstdocid: NONE");
+  count=WriteCALSRecord(image,"txtfilid: NONE");
+  count=WriteCALSRecord(image,"figid: NONE");
+  count=WriteCALSRecord(image,"srcgph: NONE");
+  count=WriteCALSRecord(image,"docls: NONE");
+  count=WriteCALSRecord(image,"rtype: 1");
+  switch (image->orientation)
+  {
+    case TopRightOrientation:
+    {
+      orient_x=180;
+      orient_y=270;
+      break;
+    }
+    case BottomRightOrientation:
+    {
+      orient_x=180;
+      orient_y=90;
+      break;
+    }
+    case BottomLeftOrientation:
+      orient_x=0;
+      orient_y=90;
+      break;
+    case LeftTopOrientation:
+    {
+      orient_x=270;
+      orient_y=0;
+      break;
+    }
+    case RightTopOrientation:
+    {
+      orient_x=270;
+      orient_y=180;
+      break;
+    }
+    case RightBottomOrientation:
+    {
+      orient_x=90;
+      orient_y=180;
+      break;
+    }
+    case LeftBottomOrientation:
+    {
+      orient_x=90;
+      orient_y=0;
+      break;
+    }
+    default:
+    {
+      orient_x=0; 
+      orient_y=270;
+    }
+  }
+  (void) FormatMagickString(buffer,MaxTextExtent,"rorient: %03ld,%03ld",
+    orient_x,orient_y);
+  count=WriteCALSRecord(image,buffer);
+  (void) FormatMagickString(buffer,MaxTextExtent,"rpelcnt: %06lu,%06lu",
+    image->columns,image->rows);
+  count=WriteCALSRecord(image,buffer);  
+  density=200;
+  if (image_info->density != (char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      (void) ParseGeometry(image_info->density,&geometry_info);
+      density=(unsigned long) (geometry_info.rho+0.5);
+    }
+  (void) FormatMagickString(buffer,MaxTextExtent,"rdensty: %04lu",density);
+  count=WriteCALSRecord(image,buffer);
+  count=WriteCALSRecord(image,"notes: NONE");
+  (void) ResetMagickMemory(buffer,' ',128);
+  for (i=0; i < 5; i++)
+    (void) WriteBlob(image,128,(unsigned char *) buffer);
+  status=Huffman2DEncodeImage(image_info,image,image);
+  (void) CloseBlob(image);
+  return(status);
 }
