@@ -516,6 +516,9 @@ static struct
       {"color-correction-collection", StringReference} } },
     { "AutoGamma", { {"channel", MagickChannelOptions} } },
     { "AutoLevel", { {"channel", MagickChannelOptions} } },
+    { "LevelColors", { {"invert", MagickBooleanOptions},
+      {"black-point", RealReference}, {"white-point", RealReference},
+      {"channel", MagickChannelOptions}, {"invert", MagickBooleanOptions} } },
   };
 
 static SplayTreeInfo
@@ -6759,6 +6762,8 @@ Mogrify(ref,...)
     AutoGammaImage     = 254
     AutoLevel          = 255
     AutoLevelImage     = 256
+    LevelColors        = 257
+    LevelColorsImage   = 258
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -9937,6 +9942,26 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].long_reference;
           (void) AutoLevelImageChannel(image,channel);
+          break;
+        }
+        case 129:  /* LevelColors */
+        {
+          MagickPixelPacket
+            black_point,
+            white_point;
+
+          (void) QueryMagickColor("#000000",&black_point,exception);
+          (void) QueryMagickColor("#ffffff",&black_point,exception);
+          if (attribute_flag[1] != 0)
+             (void) QueryMagickColor(argument_list[1].string_reference,
+               &black_point,exception);
+          if (attribute_flag[2] != 0)
+             (void) QueryMagickColor(argument_list[2].string_reference,
+               &white_point,exception);
+          if (attribute_flag[3] != 0)
+            channel=(ChannelType) argument_list[3].long_reference;
+          (void) LevelImageColors(image,channel,&black_point,&white_point,
+            argument_list[0].long_reference != 0 ? MagickTrue : MagickFalse);
           break;
         }
       }

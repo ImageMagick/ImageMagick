@@ -46,7 +46,7 @@ extern MagickExport MagickBooleanType
   LevelizeImageChannel(Image *,const ChannelType,const double,const double,
     const double),
   LevelImageColors(Image *,const ChannelType,const MagickPixelPacket *,
-    const MagickPixelPacket *, const MagickBooleanType),
+    const MagickPixelPacket *,const MagickBooleanType),
   LinearStretchImage(Image *,const double,const double),
   ModulateImage(Image *,const char *),
   NegateImage(Image *,const MagickBooleanType),
