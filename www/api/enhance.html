@@ -518,16 +518,16 @@ _8c.html" target="source" name="LevelizeImageChannel">LevelizeImageChannel</a></
 _8c.html" target="source" name="LevelImageColor">LevelImageColor</a></h2>
 <div class="doc-section">
 
-<p>LevelImageColor() will map the given color to "black" and "white" values, limearly spreading out the colors, and level values on a channel by channel bases, as per LevelImage().  The given colors allows you to specify different level ranges for each of the color channels seperatally.</p></ol>
+<p>LevelImageColor() maps the given color to "black" and "white" values, linearly spreading out the colors, and level values on a channel by channel bases, as per LevelImage().  The given colors allows you to specify different level ranges for each of the color channels seperatally.</p></ol>
 
 <p>If the boolean 'invert' is set true the image values will modifyed in the reverse direction. That is any existing "black" and "white" colors in the image will become the color values given, with all other values compressed appropriatally.  This effectivally maps a greyscale gradient into the given color gradient.</p></ol>
 
 <p>The format of the LevelImageColors method is:</p>
 
 <pre class="code">
-    MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
-      const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
-      const MagickBooleanType invert)
+      MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+  const MagickPixelPacket *black_color,
+  const MagickPixelPacket *white_color,const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
