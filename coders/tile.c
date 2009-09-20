@@ -74,7 +74,8 @@
 %
 %  The format of the ReadTILEImage method is:
 %
-%      Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadTILEImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
