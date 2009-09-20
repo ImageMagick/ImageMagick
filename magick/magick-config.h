@@ -182,6 +182,9 @@
 #define MAGICKCORE_HAVE_CLOSEDIR  1 
 #endif
 
+/* Define to 1 if you have the <CL/cl.h> header file. */
+/* #undef HAVE_CL_CL_H */
+
 /* Define to 1 if you have the <complex.h> header file. */
 #ifndef MAGICKCORE_HAVE_COMPLEX_H 
 #define MAGICKCORE_HAVE_COMPLEX_H  1 
@@ -455,6 +458,9 @@
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
+
+/* Define to 1 if you have the <OpenCL/cl.h> header file. */
+/* #undef HAVE_OPENCL_CL_H */
 
 /* Define to 1 if you have the `opendir' function. */
 #ifndef MAGICKCORE_HAVE_OPENDIR 
@@ -890,6 +896,9 @@
 #ifndef MAGICKCORE_HAVE_WCHAR_H 
 #define MAGICKCORE_HAVE_WCHAR_H  1 
 #endif
+
+/* Define to 1 if you have the <windows.h> header file. */
+/* #undef HAVE_WINDOWS_H */
 
 /* This value is set to 1 to indicate that the system argz facility works */
 #ifndef MAGICKCORE_HAVE_WORKING_ARGZ 
