@@ -386,6 +386,9 @@ CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 AC_SUBST(OPENMP_CFLAGS)
 
+# Enable support for OpenCL
+AX_CHECK_CL
+
 ########
 #
 # Check for large file support
