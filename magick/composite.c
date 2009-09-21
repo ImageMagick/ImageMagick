@@ -1349,6 +1349,83 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       modify_outside_overlay=MagickTrue;
       break;
     }
+    case OverCompositeOp:
+    {
+      if (image->matte != MagickFalse)
+        break;
+    }
+    case CopyCompositeOp:
+    {
+      if ((x_offset+(long) composite_image->columns) < 0)
+        break;
+      if ((x_offset+(long) composite_image->columns) >= (long) image->columns)
+        break;
+      if ((y_offset+(long) composite_image->rows) < 0)
+        break;
+      if ((y_offset+(long) composite_image->rows) >= (long) image->rows)
+        break;
+      status=MagickTrue;
+      exception=(&image->exception);
+      image_view=AcquireCacheView(image);
+      composite_view=AcquireCacheView(composite_image);
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+#pragma omp parallel for schedule(static,1) shared(status)
+#endif
+      for (y=0; y < (long) composite_image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register const IndexPacket
+          *composite_indexes;
+
+        register const PixelPacket
+          *p;
+
+        register IndexPacket
+          *indexes;
+
+        register PixelPacket
+          *q;
+
+        if (status == MagickFalse)
+          continue;
+        p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
+          1,exception);
+        q=QueueCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
+          composite_image->columns,1,exception);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          {
+            status=MagickFalse;
+            continue;
+          }
+        composite_indexes=GetCacheViewVirtualIndexQueue(composite_view);
+        indexes=GetCacheViewAuthenticIndexQueue(image_view);
+        (void) CopyMagickMemory(q,p,composite_image->columns*sizeof(*p));
+        if ((indexes != (IndexPacket *) NULL) &&
+            (composite_indexes != (const IndexPacket *) NULL))
+          (void) CopyMagickMemory(indexes,composite_indexes,
+            composite_image->columns*sizeof(*indexes));
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+        if (image->progress_monitor != (MagickProgressMonitor) NULL)
+          {
+            MagickBooleanType
+              proceed;
+
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+#pragma omp critical (MagickCore_TextureImage)
+#endif
+            proceed=SetImageProgress(image,CompositeImageTag,y,image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+      composite_view=DestroyCacheView(composite_view);
+      image_view=DestroyCacheView(image_view);
+      return(status);
+    }
     case CopyOpacityCompositeOp:
     case ChangeMaskCompositeOp:
     {
@@ -2516,7 +2593,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     for (x=0; x < (long) image->columns; x+=texture->columns)
     {
       width=texture->columns;
-      if ((x+width) > (long) image->columns)
+      if ((x+(long) width) > (long) image->columns)
         width=image->columns-x;
       (void) CopyMagickMemory(q,p,width*sizeof(*p));
       if ((indexes != (IndexPacket *) NULL) &&

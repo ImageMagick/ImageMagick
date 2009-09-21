@@ -3188,8 +3188,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[16],
         gamma;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-1,
-        4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-
+        1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3231,8 +3231,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-1,
-        4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-
+        1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3272,8 +3272,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),2,2,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),2,
+        2,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3357,8 +3357,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       MagickPixelPacket
         pixels[1];
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),1,1,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),1,
+        1,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3503,8 +3503,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       MagickPixelPacket
         pixels[1];
 
-      p=GetCacheViewVirtualPixels(image_view,NearestNeighbor(x),NearestNeighbor(y),
-        1,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,NearestNeighbor(x),
+        NearestNeighbor(y),1,1,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3530,8 +3530,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-1,
-        4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-
+        1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3649,6 +3649,54 @@ MagickExport unsigned int IsSubimage(const char *geometry,
   if ((pedantic != MagickFalse) && (strchr(geometry,',') != (char *) NULL))
     return(MagickFalse);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     L e v e l I m a g e C o l o r s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LevelImageColor() will map the given color to "black" and "white"
+%  values, limearly spreading out the colors, and level values on a channel by
+%  channel bases, as per LevelImage().  The given colors allows you to specify
+%  different level ranges for each of the color channels seperatally.
+%
+%  If the boolean 'invert' is set true the image values will modifyed in the
+%  reverse direction. That is any existing "black" and "white" colors in the
+%  image will become the color values given, with all other values compressed
+%  appropriatally.  This effectivally maps a greyscale gradient into the given
+%  color gradient.
+%
+%  The format of the LevelImageColors method is:
+%
+%  MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+%    const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
+%    const MagickBooleanType invert)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o black_color: The color to map black to/from
+%
+%    o white_point: The color to map white to/from
+%
+%    o invert: if true map the colors (levelize), rather than from (level)
+%
+*/
+MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+  const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
+  const MagickBooleanType invert)
+{
+  return(LevelColorsImageChannel(image,channel,black_color,white_color,invert));
 }
 
 /*

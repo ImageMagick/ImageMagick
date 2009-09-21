@@ -1880,7 +1880,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 else
                   (void) QueryMagickColor("#ffffff",&white_point,exception);
               }
-            (void) LevelImageColors(*image,channel,&black_point,&white_point,
+            (void) LevelColorsImageChannel(*image,channel,&black_point,&white_point,
               *option == '+' ? MagickTrue : MagickFalse);
             break;
           }

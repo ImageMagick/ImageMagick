@@ -84,7 +84,7 @@
 %  AutoGammaImage() extract the 'mean' from the image and adjust the image
 %  to try make set its gamma appropriatally.
 %
-%  The format of the LevelImage method is:
+%  The format of the AutoGammaImage method is:
 %
 %      MagickBooleanType AutoGammaImage(Image *image)
 %      MagickBooleanType AutoGammaImageChannel(Image *image,
@@ -2392,8 +2392,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
     status=LevelImageChannel(image,DefaultChannels,black_point,white_point,
       gamma);
   else
-    status=LevelizeImageChannel(image,DefaultChannels,black_point,white_point,
-      gamma);
+    status=LevelizeImage(image,black_point,white_point,gamma);
   return(status);
 }
 
@@ -2402,26 +2401,28 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     L e v e l I m a g e C h a n n e l                                       %
+%     L e v e l i z e I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LevelImageChannel() applies the normal LevelImage() operation to just the
-%  Specific channels specified, spreading out the values between the black and
-%  white points over the entire range of values.  Gamma correction is also
-%  applied after the values has been mapped.
+%  LevelizeImage() applies the normal level operation to the image, spreading
+%  out the values between the black and white points over the entire range of
+%  values.  Gamma correction is also applied after the values has been mapped.
 %
 %  It is typically used to improve image contrast, or to provide a controlled
 %  linear threshold for the image. If the black and white points are set to
 %  the minimum and maximum values found in the image, the image can be
 %  normalized.  or by swapping black and white values, negate the image.
 %
-%  The format of the LevelizeImageChannel method is:
+%  The format of the LevelizeImage method is:
 %
-%      MagickBooleanType LevelImageChannel(Image *image,
-%        const ChannelType channel,black_point,white_point,gamma)
+%      MagickBooleanType LevelizeImage(Image *image,const double black_point,
+%        const double white_point,const double gamma)
+%      MagickBooleanType LevelizeImageChannel(Image *image,
+%        const ChannelType channel,const double black_point,
+%        const double white_point,const double gamma)
 %
 %  A description of each parameter follows:
 %
@@ -2437,6 +2438,18 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %             use 1.0 for purely linear stretching of image color values
 %
 */
+
+MagickExport MagickBooleanType LevelizeImage(Image *image,
+  const double black_point,const double white_point,const double gamma)
+{
+  MagickBooleanType
+    status;
+
+  status=LevelizeImageChannel(image,DefaultChannels,black_point,white_point,
+    gamma);
+  return(status);
+}
+
 MagickExport MagickBooleanType LevelImageChannel(Image *image,
   const ChannelType channel,const double black_point,const double white_point,
   const double gamma)
@@ -2729,10 +2742,13 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
 %  appropriatally.  This effectivally maps a greyscale gradient into the given
 %  color gradient.
 %
-%  The format of the LevelImageColors method is:
+%  The format of the LevelColorsImageChannel method is:
 %
-%    MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+%    MagickBooleanType LevelColorsImage(Image *image,
 %      const MagickPixelPacket *black_color,
+%      const MagickPixelPacket *white_color,const MagickBooleanType invert)
+%    MagickBooleanType LevelColorsImageChannel(Image *image,
+%      const ChannelType channel,const MagickPixelPacket *black_color,
 %      const MagickPixelPacket *white_color,const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
@@ -2748,12 +2764,23 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
 %    o invert: if true map the colors (levelize), rather than from (level)
 %
 */
-MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+
+MagickExport MagickBooleanType LevelColorsImage(Image *image,
   const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
   const MagickBooleanType invert)
 {
-#define LevelColorImageTag  "LevelColor/Image"
+  MagickBooleanType
+    status;
 
+  status=LevelColorsImageChannel(image,DefaultChannels,black_color,white_color,
+    invert);
+  return(status);
+}
+
+MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
+  const ChannelType channel,const MagickPixelPacket *black_color,
+  const MagickPixelPacket *white_color,const MagickBooleanType invert)
+{
   MagickStatusType
     status;
 

@@ -1,6 +1,14 @@
+2009-09-21  6.5.6-3 Cristy  <quetzlzacatenango@image...>
+  * Deprecate LevelImageColors(), replace with LevelColorsImage().
+
+2009-09-17  6.5.6-2 Cristy  <quetzlzacatenango@image...>
+  * Optimize copy composite operator.
+
+2009-09-15  6.5.6-2 Cristy  <quetzlzacatenango@image...>
+  * Use -define jpeg:size to scale a JPEG image to the specified size.
+
 2009-09-13  6.5.6-0 Cristy  <quetzlzacatenango@image...>
   * Fix ICON alpha mask scanline pad.
-  * Use -define jpeg:size to scale a JPEG image to the specified size.
 
 2009-09-11  6.5.5-10 Cristy  <quetzlzacatenango@image...>
   * Return the global maximum threads to avoid the rare cache view assertions.

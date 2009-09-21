@@ -667,7 +667,7 @@ extern "C" {
 #define IsTaintImage  PrependMagickMethod(IsTaintImage)
 #define LeastSquaresAddTerms  PrependMagickMethod(LeastSquaresAddTerms)
 #define LevelImageChannel  PrependMagickMethod(LevelImageChannel)
-#define LevelImageColors  PrependMagickMethod(LevelImageColors)
+#define LevelColorsImageChannel  PrependMagickMethod(LevelColorsImageChannel)
 #define LevelImage  PrependMagickMethod(LevelImage)
 #define LevelizeImageChannel  PrependMagickMethod(LevelizeImageChannel)
 #define LiberateMemory  PrependMagickMethod(LiberateMemory)
