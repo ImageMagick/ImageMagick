@@ -464,7 +464,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
     return(status);
   (void) CloseBlob(image);
   /*
-    Write JPEG files.
+    Write intermediate files.
   */
   coalesce_image=CoalesceImages(image,&image->exception);
   if (coalesce_image == (Image *) NULL)
@@ -528,10 +528,12 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
         {
           if (status != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "%lu. Wrote JPEG file for scene %lu:",i,p->scene);
+              "%lu. Wrote %s file for scene %lu:",i,WriteMPEGIntermediateFormat,
+              p->scene);
           else
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "%lu. Failed to write JPEG file for scene %lu:",i,p->scene);
+              "%lu. Failed to write %s file for scene %lu:",i,
+              WriteMPEGIntermediateFormat,p->scene);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",
             filename);
         }
