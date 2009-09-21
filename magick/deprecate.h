@@ -167,6 +167,8 @@ extern MagickExport MagickBooleanType
     magick_attribute((format (printf,3,0))),
   FuzzyColorCompare(const Image *,const PixelPacket *,const PixelPacket *),
   FuzzyOpacityCompare(const Image *,const PixelPacket *,const PixelPacket *),
+  LevelImageColors(Image *,const ChannelType,const MagickPixelPacket *,
+    const MagickPixelPacket *, const MagickBooleanType),
   MagickMonitor(const char *,const MagickOffsetType,const MagickSizeType,
     void *),
   MapImage(Image *,const Image *,const MagickBooleanType),

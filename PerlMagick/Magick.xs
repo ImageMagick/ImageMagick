@@ -9960,7 +9960,7 @@ Mogrify(ref,...)
                &white_point,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].long_reference;
-          (void) LevelImageColors(image,channel,&black_point,&white_point,
+          (void) LevelColorsImageChannel(image,channel,&black_point,&white_point,
             argument_list[0].long_reference != 0 ? MagickTrue : MagickFalse);
           break;
         }
