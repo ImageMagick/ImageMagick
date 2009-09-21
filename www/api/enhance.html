@@ -148,7 +148,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AutoGammaImage">AutoGammaImage</a> &bull; <a href="#AutoLevelImage">AutoLevelImage</a> &bull; <a href="#ColorDecisionListImage">ColorDecisionListImage</a> &bull; <a href="#ClutImage">ClutImage</a> &bull; <a href="#ContrastImage">ContrastImage</a> &bull; <a href="#The ContrastStretchImage">The ContrastStretchImage</a> &bull; <a href="#EnhanceImage">EnhanceImage</a> &bull; <a href="#EqualizeImage">EqualizeImage</a> &bull; <a href="#GammaImage">GammaImage</a> &bull; <a href="#HaldClutImage">HaldClutImage</a> &bull; <a href="#LevelImage">LevelImage</a> &bull; <a href="#LevelImageChannel">LevelImageChannel</a> &bull; <a href="#LevelizeImageChannel">LevelizeImageChannel</a> &bull; <a href="#LevelImageColor">LevelImageColor</a> &bull; <a href="#The LinearStretchImage">The LinearStretchImage</a> &bull; <a href="#ModulateImage">ModulateImage</a> &bull; <a href="#NegateImage">NegateImage</a> &bull; <a href="#The NormalizeImage">The NormalizeImage</a> &bull; <a href="#SigmoidalContrastImage">SigmoidalContrastImage</a>]</p>
+<p class="navigation-index">[<a href="#AutoGammaImage">AutoGammaImage</a> &bull; <a href="#AutoLevelImage">AutoLevelImage</a> &bull; <a href="#ColorDecisionListImage">ColorDecisionListImage</a> &bull; <a href="#ClutImage">ClutImage</a> &bull; <a href="#ContrastImage">ContrastImage</a> &bull; <a href="#The ContrastStretchImage">The ContrastStretchImage</a> &bull; <a href="#EnhanceImage">EnhanceImage</a> &bull; <a href="#EqualizeImage">EqualizeImage</a> &bull; <a href="#GammaImage">GammaImage</a> &bull; <a href="#HaldClutImage">HaldClutImage</a> &bull; <a href="#LevelImage">LevelImage</a> &bull; <a href="#LevelizeImage">LevelizeImage</a> &bull; <a href="#LevelizeImageChannel">LevelizeImageChannel</a> &bull; <a href="#LevelImageColor">LevelImageColor</a> &bull; <a href="#The LinearStretchImage">The LinearStretchImage</a> &bull; <a href="#ModulateImage">ModulateImage</a> &bull; <a href="#NegateImage">NegateImage</a> &bull; <a href="#The NormalizeImage">The NormalizeImage</a> &bull; <a href="#SigmoidalContrastImage">SigmoidalContrastImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/enhance
 _8c.html" target="source" name="AutoGammaImage">AutoGammaImage</a></h2>
@@ -156,7 +156,7 @@ _8c.html" target="source" name="AutoGammaImage">AutoGammaImage</a></h2>
 
 <p>AutoGammaImage() extract the 'mean' from the image and adjust the image to try make set its gamma appropriatally.</p></ol>
 
-<p>The format of the LevelImage method is:</p>
+<p>The format of the AutoGammaImage method is:</p>
 
 <pre class="code">
   MagickBooleanType AutoGammaImage(Image *image)
@@ -447,18 +447,21 @@ _8c.html" target="source" name="LevelImage">LevelImage</a></h2>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/enhance
-_8c.html" target="source" name="LevelImageChannel">LevelImageChannel</a></h2>
+_8c.html" target="source" name="LevelizeImage">LevelizeImage</a></h2>
 <div class="doc-section">
 
-<p>LevelImageChannel() applies the normal LevelImage() operation to just the Specific channels specified, spreading out the values between the black and white points over the entire range of values.  Gamma correction is also applied after the values has been mapped.</p></ol>
+<p>LevelizeImage() applies the normal level operation to the image, spreading out the values between the black and white points over the entire range of values.  Gamma correction is also applied after the values has been mapped.</p></ol>
 
 <p>It is typically used to improve image contrast, or to provide a controlled linear threshold for the image. If the black and white points are set to the minimum and maximum values found in the image, the image can be normalized.  or by swapping black and white values, negate the image.</p></ol>
 
-<p>The format of the LevelizeImageChannel method is:</p>
+<p>The format of the LevelizeImage method is:</p>
 
 <pre class="code">
-  MagickBooleanType LevelImageChannel(Image *image,
-    const ChannelType channel,black_point,white_point,gamma)
+  MagickBooleanType LevelizeImage(Image *image,const double black_point,
+    const double white_point,const double gamma)
+  MagickBooleanType LevelizeImageChannel(Image *image,
+    const ChannelType channel,const double black_point,
+    const double white_point,const double gamma)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -522,11 +525,14 @@ _8c.html" target="source" name="LevelImageColor">LevelImageColor</a></h2>
 
 <p>If the boolean 'invert' is set true the image values will modifyed in the reverse direction. That is any existing "black" and "white" colors in the image will become the color values given, with all other values compressed appropriatally.  This effectivally maps a greyscale gradient into the given color gradient.</p></ol>
 
-<p>The format of the LevelImageColors method is:</p>
+<p>The format of the LevelColorsImageChannel method is:</p>
 
 <pre class="code">
-      MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+      MagickBooleanType LevelColorsImage(Image *image,
   const MagickPixelPacket *black_color,
+  const MagickPixelPacket *white_color,const MagickBooleanType invert)
+      MagickBooleanType LevelColorsImageChannel(Image *image,
+  const ChannelType channel,const MagickPixelPacket *black_color,
   const MagickPixelPacket *white_color,const MagickBooleanType invert)
 </pre>
 
