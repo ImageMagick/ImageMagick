@@ -99,29 +99,31 @@ MagickExport Image *BorderImage(const Image *image,
   const RectangleInfo *border_info,ExceptionInfo *exception)
 {
   Image
-    *border_image;
+    *border_image,
+    *clone_image;
 
-  /*
-    Decorate the image with a border.
-  */
+  FrameInfo
+    frame_info;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(border_info != (const RectangleInfo *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  border_image=CloneImage(image,image->columns+2*border_info->width,
-    image->rows+2*border_info->height,MagickTrue,exception);
-  if (border_image == (Image *) NULL)
+  assert(border_info != (RectangleInfo *) NULL);
+  frame_info.width=image->columns+(border_info->width << 1);
+  frame_info.height=image->rows+(border_info->height << 1);
+  frame_info.x=(long) border_info->width;
+  frame_info.y=(long) border_info->height;
+  frame_info.inner_bevel=0;
+  frame_info.outer_bevel=0;
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  border_image->background_color=border_image->border_color;
-  if (border_image->background_color.opacity != OpaqueOpacity)
-    border_image->matte=MagickTrue;
-  (void) SetImageBackgroundColor(border_image);
-  (void) CompositeImage(border_image,image->compose,image,(long)
-    border_info->width,(long) border_info->height);
-  border_image->background_color=image->background_color;
+  clone_image->matte_color=image->border_color;
+  border_image=FrameImage(clone_image,&frame_info,exception);
+  clone_image=DestroyImage(clone_image);
+  if (border_image != (Image *) NULL)
+    border_image->matte_color=image->matte_color;
   return(border_image);
 }
 
@@ -189,6 +191,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     width;
 
   CacheView
+    *image_view,
     *frame_view;
 
   /*
@@ -279,6 +282,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   status=MagickTrue;
   progress=0;
+  image_view=AcquireCacheView(image);
   frame_view=AcquireCacheView(frame_image);
   height=(unsigned long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel);
@@ -443,12 +447,39 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     /*
       Set frame interior to interior color.
     */
-    for (x=0; x < (long) image->columns; x++)
-    {
-      SetPixelPacket(frame_image,&interior,q,frame_indexes);
-      q++;
-      frame_indexes++;
-    }
+    if ((image->compose != CopyCompositeOp) &&
+        ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
+      for (x=0; x < (long) image->columns; x++)
+      {
+        SetPixelPacket(frame_image,&interior,q,frame_indexes);
+        q++;
+        frame_indexes++;
+      }
+    else
+      {
+        register const IndexPacket
+          *indexes;
+
+        register const PixelPacket
+          *p;
+
+        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        indexes=GetCacheViewVirtualIndexQueue(image_view);
+        (void) CopyMagickMemory(q,p,image->columns*sizeof(*p));
+        if ((indexes != (IndexPacket *) NULL) &&
+             (frame_indexes != (const IndexPacket *) NULL))
+          {
+            (void) CopyMagickMemory(frame_indexes,indexes,image->columns*
+              sizeof(*indexes));
+            frame_indexes+=image->columns;
+          }
+        q+=image->columns;
+      }
     for (x=0; x < (long) frame_info->inner_bevel; x++)
     {
       SetPixelPacket(frame_image,&highlight,q,frame_indexes);
@@ -595,11 +626,16 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         }
     }
   frame_view=DestroyCacheView(frame_view);
-  x=(long) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
-    frame_info->inner_bevel);
-  y=(long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
-    frame_info->inner_bevel);
-  (void) CompositeImage(frame_image,image->compose,image,x,y);
+  image_view=DestroyCacheView(image_view);
+  if ((image->compose != CopyCompositeOp) &&
+      ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
+    {
+      x=(long) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
+        frame_info->inner_bevel);
+      y=(long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+        frame_info->inner_bevel);
+      (void) CompositeImage(frame_image,image->compose,image,x,y);
+    }
   return(frame_image);
 }
 
