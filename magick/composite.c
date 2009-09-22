@@ -2501,7 +2501,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     return(MagickFalse);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
-      ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
+      ((image->compose != OverCompositeOp) || (image->matte != MagickFalse) ||
+       (texture->matte != MagickFalse)))
     {
       /*
         Tile texture onto the image background.
