@@ -1814,7 +1814,7 @@ MagickExport MagickBooleanType FormatImageAttributeList(Image *image,
 #endif
   if (n < 0)
     value[MaxTextExtent-1]='\0';
-  return(SetImageAttribute(image,key,value));
+  return(SetImageProperty(image,key,value));
 }
 
 MagickExport MagickBooleanType FormatImageAttribute(Image *image,
@@ -1827,7 +1827,7 @@ MagickExport MagickBooleanType FormatImageAttribute(Image *image,
     operands;
 
   va_start(operands,format);
-  status=FormatImageAttributeList(image,key,format,operands);
+  status=FormatImagePropertyList(image,key,format,operands);
   va_end(operands);
   return(status);
 }
@@ -1881,7 +1881,7 @@ MagickExport void FormatString(char *string,const char *format,...)
     operands;
 
   va_start(operands,format);
-  FormatStringList(string,format,operands);
+  FormatMagickStringList(string,MaxTextExtent,format,operands);
   va_end(operands);
   return;
 }
@@ -3787,7 +3787,7 @@ MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 MagickExport void MagickIncarnate(const char *path)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
-  InitializeMagick(path);
+  MagickCoreGenesis(path,MagickFalse);
 }
 
 /*
@@ -4484,7 +4484,11 @@ MagickExport MagickBooleanType PaintFloodfillImage(Image *image,
 MagickExport MagickBooleanType PaintOpaqueImage(Image *image,
   const MagickPixelPacket *target,const MagickPixelPacket *fill)
 {
-  return(PaintOpaqueImageChannel(image,DefaultChannels,target,fill));
+  MagickBooleanType
+    status;
+
+  status=OpaquePaintImageChannel(image,DefaultChannels,target,fill,MagickFalse);
+  return(status);
 }
 
 MagickExport MagickBooleanType PaintOpaqueImageChannel(Image *image,
@@ -4910,9 +4914,6 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
       1.2f, 0.4f, 0.9f, 1.3f, 0.2f}, 
     threshold=128;
 
-  unsigned int
-    status;
-
   unsigned long
     order;
 
@@ -5050,13 +5051,6 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
       }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    if (QuantumTick(y,image->rows) != MagickFalse)
-      {
-        status=MagickMonitor(RandomChannelThresholdImageText,y,image->rows,
-          exception);
-        if (status == MagickFalse)
-          break;
-      }
   }
   random_info=DestroyRandomInfo(random_info);
   return(MagickTrue);

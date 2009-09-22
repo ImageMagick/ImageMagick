@@ -1287,9 +1287,6 @@ MagickExport Image *DestroyImage(Image *image)
     image->colormap=(PixelPacket *) RelinquishMagickMemory(image->colormap);
   if (image->geometry != (char *) NULL)
     image->geometry=DestroyString(image->geometry);
-#if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
-  DestroyImageAttributes(image);
-#endif
   DestroyImageProfiles(image);
   DestroyImageProperties(image);
   DestroyImageArtifacts(image);
