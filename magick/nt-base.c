@@ -930,7 +930,7 @@ static int NTGhostscriptGetString(const char *name,char *value,
     product_family,major_version,minor_version);
   for (i=0; i < (long) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
   {
-    extent=length;
+    extent=(int) length;
     if (NTGetRegistryValue(hkeys[i].hkey,key,name,value,&extent) == 0)
       {
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
