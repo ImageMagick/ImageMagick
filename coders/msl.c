@@ -7899,6 +7899,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
       if (LocaleCompare(keyword,"fill") == 0)
         {
           (void) QueryColorDatabase(value,&draw_info->fill,exception);
+          (void) SetImageOption(image_info,keyword,value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7955,6 +7956,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
       if (LocaleCompare(keyword,"stroke") == 0)
         {
           (void) QueryColorDatabase(value,&draw_info->stroke,exception);
+          (void) SetImageOption(image_info,keyword,value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
