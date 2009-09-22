@@ -1353,6 +1353,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     {
       if (image->matte != MagickFalse)
         break;
+      if (composite_image->matte != MagickFalse)
+        break;
     }
     case CopyCompositeOp:
     {
