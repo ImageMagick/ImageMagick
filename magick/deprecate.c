@@ -59,6 +59,7 @@
 #include "magick/draw.h"
 #include "magick/draw-private.h"
 #include "magick/effect.h"
+#include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/geometry.h"
