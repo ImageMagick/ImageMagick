@@ -180,6 +180,7 @@ ModuleExport void UnregisterPS2Image(void)
 %
 */
 
+#if defined(MAGICKCORE_TIFF_DELEGATE)
 static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image,Image *inject_image)
 {
@@ -305,6 +306,24 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   (void) RelinquishUniqueFileResource(filename);
   return(MagickTrue);
 }
+#else
+static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
+  Image *image,Image *inject_image)
+{
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(inject_image != (Image *) NULL);
+  assert(inject_image->signature == MagickSignature);
+  (void) ThrowMagickException(&image->exception,GetMagickModule(),
+    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (TIFF)",
+    image->filename);
+  return(MagickFalse);
+}
+#endif
 
 static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
 {
@@ -837,9 +856,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 (void) HuffmanEncodeImage(image_info,image,image);
                 break;
               }
-#if defined(MAGICKCORE_TIFF_DELEGATE)
             (void) Huffman2DEncodeImage(image_info,image,image);
-#endif
             break;
           }
           case JPEGCompression:

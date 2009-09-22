@@ -341,6 +341,7 @@ MagickExport void DestroyRandomReservoir(void)
 %
 */
 
+#if !defined(__WINDOWS__)
 static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
 {
   register unsigned char
@@ -366,6 +367,7 @@ static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
   }
   return(offset);
 }
+#endif
 
 static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 {
