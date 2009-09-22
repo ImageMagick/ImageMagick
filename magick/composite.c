@@ -2598,8 +2598,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       if ((x+(long) width) > (long) image->columns)
         width=image->columns-x;
       (void) CopyMagickMemory(q,p,width*sizeof(*p));
-      if ((indexes != (IndexPacket *) NULL) &&
-          (texture_indexes != (const IndexPacket *) NULL))
+      if ((image->colorspace == CMYKColorspace) &&
+          (texture->colorspace == CMYKColorspace))
         {
           (void) CopyMagickMemory(indexes,texture_indexes,width*
             sizeof(*indexes));

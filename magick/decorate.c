@@ -471,8 +471,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           }
         indexes=GetCacheViewVirtualIndexQueue(image_view);
         (void) CopyMagickMemory(q,p,image->columns*sizeof(*p));
-        if ((indexes != (IndexPacket *) NULL) &&
-             (frame_indexes != (const IndexPacket *) NULL))
+        if ((image->colorspace == CMYKColorspace) &&
+            (frame_image->colorspace == CMYKColorspace))
           {
             (void) CopyMagickMemory(frame_indexes,indexes,image->columns*
               sizeof(*indexes));
