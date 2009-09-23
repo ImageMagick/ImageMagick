@@ -43,7 +43,7 @@ static void ScribbleImage (MagickWand *canvas)
     (void) PixelSetColor(color,"#ffffff");
     DrawSetFillColor(picasso,color);
     DrawRectangle(picasso,23.69,22.97,564.6,802.2);
-    DrawSetFillAlpha(picasso,1.0);
+    DrawSetFillOpacity(picasso,1.0);
     (void) PixelSetColor(color,"none");
     DrawSetFillColor(picasso,color);
     DrawSetStrokeColor(picasso,color);
