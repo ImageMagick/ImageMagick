@@ -76,6 +76,7 @@
 #include "magick/quantum-private.h"
 #include "magick/registry.h"
 #include "magick/resize.h"
+#include "magick/resource_.h"
 #include "magick/segment.h"
 #include "magick/shear.h"
 #include "magick/signature.h"
@@ -4265,9 +4266,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
         if (LocaleCompare((const char *) tag, "profile") == 0)
           {
-            ImageInfo
-              *clone_info;
-
             if (msl_info->image[n] == (Image *) NULL)
               {
                 ThrowMSLException(OptionError,"NoImagesDefined",
@@ -4965,51 +4963,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     AppendImageToList(&msl_info->image[n],image);
                     break;
                   }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-                break;
-              }
-              case 'G':
-              case 'g':
-              {
-                if (LocaleCompare(keyword,"gravity") == 0)
-                  {
-                    option=ParseMagickOption(MagickGravityOptions,MagickFalse,
-                      value);
-                    if (option < 0)
-                      ThrowMSLException(OptionError,"UnrecognizedGravityType",
-                        value);
-                    (void) SetImageOption(msl_info->image_info[n],keyword,
-                      value);
-                    break;
-                  }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-                break;
-              }
-              case 'P':
-              case 'p':
-              {
-                if (LocaleCompare(keyword,"pointsize") == 0)
-                  {
-                    msl_info->image_info[n]->pointsize=atof(value);
-                    break;
-                  }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-                break;
-              }
-              case 'S':
-              case 's':
-              {
-                if (LocaleCompare(keyword,"size") == 0)
-                  {
-                    msl_info->image_info[n]->size=AcquireString(value);
-                    break;
-                  }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                (void) SetMSLAttributes(msl_info,keyword,value);
                 break;
               }
               default:
               {
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                (void) SetMSLAttributes(msl_info,keyword,value);
                 break;
               }
             }
@@ -7196,23 +7155,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       MaxTextExtent);
                     break;
                   }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-              }
-              case 'Q':
-              case 'q':
-              {
-                if (LocaleCompare(keyword,"quality") == 0)
-                  {
-                    msl_info->image_info[n]->quality=atol(value);
-                    msl_info->image[n]->quality=
-                      msl_info->image_info[n]->quality;
-                    break;
-                  }
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                (void) SetMSLAttributes(msl_info,keyword,value);
               }
               default:
               {
-                ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                (void) SetMSLAttributes(msl_info,keyword,value);
                 break;
               }
             }
@@ -7808,17 +7755,26 @@ ModuleExport unsigned long RegisterMSLImage(void)
 static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   const char *value)
 {
+  Image
+    *attributes;
+
   DrawInfo
     *draw_info;
 
   ExceptionInfo
     *exception;
 
+  GeometryInfo
+    geometry_info;
+
   Image
     *image;
 
   ImageInfo
     *image_info;
+
+  int
+    flags;
 
   long
     n;
@@ -7830,6 +7786,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     return(MagickTrue);
   exception=msl_info->exception;
   n=msl_info->n;
+  attributes=msl_info->attributes[n];
   image_info=msl_info->image_info[n];
   draw_info=msl_info->draw_info[n];
   image=msl_info->image[n];
@@ -7857,7 +7814,40 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           alpha=ParseMagickOption(MagickAlphaOptions,MagickFalse,value);
           if (alpha < 0)
             ThrowMSLException(OptionError,"UnrecognizedType",value);
-          (void) SetImageAlphaChannel(image,(AlphaChannelType) alpha);
+          if (image != (Image *) NULL)
+            (void) SetImageAlphaChannel(image,(AlphaChannelType) alpha);
+          break;
+        }
+      if (LocaleCompare(keyword,"antialias") == 0)
+        {
+          long
+            antialias;
+
+          antialias=ParseMagickOption(MagickBooleanOptions,MagickFalse,value);
+          if (antialias < 0)
+            ThrowMSLException(OptionError,"UnrecognizedGravityType",value);
+          image_info->antialias=(MagickBooleanType) antialias;
+          break;
+        }
+      if (LocaleCompare(keyword,"area-limit") == 0)
+        {
+          MagickSizeType
+            limit;
+
+          limit=MagickResourceInfinity;
+          if (LocaleCompare(value,"unlimited") != 0)
+            limit=(MagickSizeType) StringToDouble(value,100.0);
+          (void) SetMagickResourceLimit(AreaResource,limit);
+          break;
+        }
+      if (LocaleCompare(keyword,"attenuate") == 0)
+        {
+          (void) SetImageOption(image_info,keyword,value);
+          break;
+        }
+      if (LocaleCompare(keyword,"authenticate") == 0)
+        {
+          (void) CloneString(&image_info->density,value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7870,6 +7860,25 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         {
           (void) QueryColorDatabase(value,&image_info->background_color,
             exception);
+          break;
+        }
+      if (LocaleCompare(keyword,"bias") == 0)
+        {
+          if (image == (Image *) NULL)
+            break;
+          image->bias=StringToDouble(value,QuantumRange);
+          break;
+        }
+      if (LocaleCompare(keyword,"blue-primary") == 0)
+        {
+          if (image == (Image *) NULL)
+            break;
+          flags=ParseGeometry(value,&geometry_info);
+          image->chromaticity.blue_primary.x=geometry_info.rho;
+          image->chromaticity.blue_primary.y=geometry_info.sigma;
+          if ((flags & SigmaValue) == 0)
+            image->chromaticity.blue_primary.y=
+              image->chromaticity.blue_primary.x;
           break;
         }
       if (LocaleCompare(keyword,"bordercolor") == 0)
@@ -7902,6 +7911,28 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           (void) SetImageOption(image_info,keyword,value);
           break;
         }
+      if (LocaleCompare(keyword,"filename") == 0)
+        {
+          (void) CopyMagickString(image_info->filename,value,MaxTextExtent);
+          break;
+        }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'G':
+    case 'g':
+    {
+      if (LocaleCompare(keyword,"gravity") == 0)
+        {
+          long
+            gravity;
+
+          gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,value);
+          if (gravity < 0)
+            ThrowMSLException(OptionError,"UnrecognizedGravityType",value);
+          (void) SetImageOption(image_info,keyword,value);
+          break;
+        }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
       break;
     }
@@ -7910,8 +7941,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"id") == 0)
         {
-          (void) SetImageProperty(msl_info->attributes[n],keyword,NULL);
-          (void) SetImageProperty(msl_info->attributes[n],keyword,value);
+          (void) SetImageProperty(attributes,keyword,value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7939,10 +7969,24 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"pointsize") == 0)
         {
+          image_info->pointsize=atof(value);
           draw_info->pointsize=atof(value);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
+    }
+    case 'Q':
+    case 'q':
+    {
+      if (LocaleCompare(keyword,"quality") == 0)
+        {
+          image_info->quality=atol(value);
+          if (image == (Image *) NULL)
+            break;
+          image->quality=atol(value);
+          break;
+        }
       break;
     }
     case 'S':

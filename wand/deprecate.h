@@ -33,71 +33,82 @@ typedef struct _DrawingWand
   *DrawContext;
 
 extern WandExport double
-  DrawGetFillAlpha(const DrawingWand *),
-  DrawGetStrokeAlpha(const DrawingWand *);
+  DrawGetFillAlpha(const DrawingWand *) magick_attribute((deprecated)),
+  DrawGetStrokeAlpha(const DrawingWand *) magick_attribute((deprecated));
 
 extern WandExport DrawInfo
-  *DrawPeekGraphicWand(const DrawingWand *);
+  *DrawPeekGraphicWand(const DrawingWand *) magick_attribute((deprecated));
 
 extern WandExport char
-  *MagickDescribeImage(MagickWand *),
-  *MagickGetImageAttribute(MagickWand *,const char *),
-  *PixelIteratorGetException(const PixelIterator *,ExceptionType *);
+  *MagickDescribeImage(MagickWand *) magick_attribute((deprecated)),
+  *MagickGetImageAttribute(MagickWand *,const char *)
+    magick_attribute((deprecated)),
+  *PixelIteratorGetException(const PixelIterator *,ExceptionType *)
+    magick_attribute((deprecated));
 
 extern WandExport long
-  MagickGetImageIndex(MagickWand *);
+  MagickGetImageIndex(MagickWand *) magick_attribute((deprecated));
 
 extern WandExport MagickBooleanType
-  MagickClipPathImage(MagickWand *,const char *,const MagickBooleanType),
+  MagickClipPathImage(MagickWand *,const char *,const MagickBooleanType)
+    magick_attribute((deprecated)),
   MagickColorFloodfillImage(MagickWand *,const PixelWand *,const double,
-    const PixelWand *,const long,const long),
+    const PixelWand *,const long,const long) magick_attribute((deprecated)),
   MagickGetImageChannelExtrema(MagickWand *,const ChannelType,unsigned long *,
-    unsigned long *),
-  MagickGetImageExtrema(MagickWand *,unsigned long *,unsigned long *),
-  MagickGetImageMatte(MagickWand *),
+    unsigned long *) magick_attribute((deprecated)),
+  MagickGetImageExtrema(MagickWand *,unsigned long *,unsigned long *)
+    magick_attribute((deprecated)),
+  MagickGetImageMatte(MagickWand *) magick_attribute((deprecated)),
   MagickGetImagePixels(MagickWand *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,void *),
-  MagickMapImage(MagickWand *,const MagickWand *,const MagickBooleanType),
+    const unsigned long,const char *,const StorageType,void *)
+    magick_attribute((deprecated)),
+  MagickMapImage(MagickWand *,const MagickWand *,const MagickBooleanType)
+    magick_attribute((deprecated)),
   MagickMatteFloodfillImage(MagickWand *,const double,const double,
-    const PixelWand *,const long,const long),
+    const PixelWand *,const long,const long) magick_attribute((deprecated)),
   MagickOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
-    const double),
+    const double) magick_attribute((deprecated)),
   MagickPaintFloodfillImage(MagickWand *,const ChannelType,const PixelWand *,
-    const double,const PixelWand *,const long,const long),
+    const double,const PixelWand *,const long,const long)
+    magick_attribute((deprecated)),
   MagickPaintOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
-    const double),
+    const double) magick_attribute((deprecated)),
   MagickPaintOpaqueImageChannel(MagickWand *,const ChannelType,
-    const PixelWand *,const PixelWand *,const double),
+    const PixelWand *,const PixelWand *,const double)
+    magick_attribute((deprecated)),
   MagickPaintTransparentImage(MagickWand *,const PixelWand *,const double,
-    const double),
-  MagickSetImageAttribute(MagickWand *,const char *,const char *),
-  MagickSetImageIndex(MagickWand *,const long),
-  MagickSetImageOption(MagickWand *,const char *,const char *,const char *),
+    const double) magick_attribute((deprecated)),
+  MagickSetImageAttribute(MagickWand *,const char *,const char *)
+    magick_attribute((deprecated)),
+  MagickSetImageIndex(MagickWand *,const long) magick_attribute((deprecated)),
+  MagickSetImageOption(MagickWand *,const char *,const char *,const char *)
+    magick_attribute((deprecated)),
   MagickSetImagePixels(MagickWand *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,const void *),
+    const unsigned long,const char *,const StorageType,const void *)
+    magick_attribute((deprecated)),
   MagickTransparentImage(MagickWand *,const PixelWand *,const double,
-    const double);
+    const double) magick_attribute((deprecated));
 
 extern WandExport MagickWand
-  *MagickFlattenImages(MagickWand *),
-  *MagickMosaicImages(MagickWand *),
+  *MagickFlattenImages(MagickWand *) magick_attribute((deprecated)),
+  *MagickMosaicImages(MagickWand *) magick_attribute((deprecated)),
   *MagickRegionOfInterestImage(MagickWand *,const unsigned long,
-    const unsigned long,const long,const long);
+    const unsigned long,const long,const long) magick_attribute((deprecated));
 
 extern WandExport MagickSizeType
-  MagickGetImageSize(MagickWand *);
+  MagickGetImageSize(MagickWand *) magick_attribute((deprecated));
 
 extern WandExport PixelWand
-  **PixelGetNextRow(PixelIterator *);
+  **PixelGetNextRow(PixelIterator *) magick_attribute((deprecated));
 
 extern WandExport unsigned char
-  *MagickWriteImageBlob(MagickWand *,size_t *);
+  *MagickWriteImageBlob(MagickWand *,size_t *) magick_attribute((deprecated));
 
 extern WandExport void
-  DrawPopGraphicContext(DrawingWand *),
-  DrawPushGraphicContext(DrawingWand *),
-  DrawSetFillAlpha(DrawingWand *,const double),
-  DrawSetStrokeAlpha(DrawingWand *,const double);
+  DrawPopGraphicContext(DrawingWand *) magick_attribute((deprecated)),
+  DrawPushGraphicContext(DrawingWand *) magick_attribute((deprecated)),
+  DrawSetFillAlpha(DrawingWand *,const double) magick_attribute((deprecated)),
+  DrawSetStrokeAlpha(DrawingWand *,const double) magick_attribute((deprecated));
 
 #endif
 
