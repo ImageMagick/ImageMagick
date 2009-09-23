@@ -86,6 +86,7 @@ static const char
     "  <coder magick=\"BRF\" name=\"BRAILLE\" />"
     "  <coder magick=\"CMYKA\" name=\"CMYK\" />"
     "  <coder magick=\"C\" name=\"GRAY\" />"
+    "  <coder magick=\"CAL\" name=\"CALS\" />"
     "  <coder magick=\"CR2\" name=\"DNG\" />"
     "  <coder magick=\"CRW\" name=\"DNG\" />"
     "  <coder magick=\"CUR\" name=\"ICON\" />"

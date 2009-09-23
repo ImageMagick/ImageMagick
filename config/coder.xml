@@ -24,6 +24,7 @@
   <coder magick="BRG" name="RGB"/>
   <coder magick="CMYKA" name="CMYK"/>
   <coder magick="C" name="RAW"/>
+  <coder magick="CAL" name="CALS"/>
   <coder magick="CR2" name="DNG"/>
   <coder magick="CRW" name="DNG"/>
   <coder magick="CUR" name="ICON"/>

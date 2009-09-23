@@ -236,6 +236,14 @@ static Image *Huffman2DDecodeImage(const ImageInfo *image_info,Image *image,
   (void) FormatMagickString(read_info->filename,MaxTextExtent,"tiff:%.1024s",
     filename);
   huffman_image=ReadImage(read_info,exception);
+  if (huffman_image != (Image *) NULL)
+    {
+      (void) CopyMagickString(huffman_image->filename,image_info->filename,
+        MaxTextExtent);
+      (void) CopyMagickString(huffman_image->magick_filename,
+         image_info->filename,MaxTextExtent);
+      (void) CopyMagickString(huffman_image->magick,"CALS",MaxTextExtent);
+    }
   read_info=DestroyImageInfo(read_info);
   (void) RelinquishUniqueFileResource(filename);
   return(huffman_image);
@@ -391,13 +399,36 @@ ModuleExport unsigned long RegisterCALSImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("CALS");
+  static const char
+    *CALSDescription=
+    {
+      "Continuous Acquisition and Life-cycle Support Type 1 Image"
+    },
+    *CALSNote=
+    {
+      "Specified in MIL-R-28002 and MIL-PRF-28002"
+    };
+
+  entry=SetMagickInfo("CAL");
   entry->decoder=(DecodeImageHandler *) ReadCALSImage;
+#if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->encoder=(EncodeImageHandler *) WriteCALSImage;
+#endif
   entry->adjoin=MagickFalse;
   entry->magick=(IsImageFormatHandler *) IsCALS;
-  entry->description=ConstantString("Automated Interchange of Technical "
-    "Information, MIL-STD-1840A");
+  entry->description=ConstantString(CALSDescription);
+  entry->note=ConstantString(CALSNote);
+  entry->module=ConstantString("CALS");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("CALS");
+  entry->decoder=(DecodeImageHandler *) ReadCALSImage;
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+  entry->encoder=(EncodeImageHandler *) WriteCALSImage;
+#endif
+  entry->adjoin=MagickFalse;
+  entry->magick=(IsImageFormatHandler *) IsCALS;
+  entry->description=ConstantString(CALSDescription);
+  entry->note=ConstantString(CALSNote);
   entry->module=ConstantString("CALS");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
@@ -424,6 +455,7 @@ ModuleExport unsigned long RegisterCALSImage(void)
 */
 ModuleExport void UnregisterCALSImage(void)
 {
+  (void) UnregisterMagickInfo("CAL");
   (void) UnregisterMagickInfo("CALS");
 }
 
@@ -524,6 +556,7 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   SetImageInfoFile(write_info,file);
   write_info->compression=Group4Compression;
+  write_info->type=BilevelType;
   (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
   status=WriteImage(write_info,huffman_image);
   (void) fflush(file);
