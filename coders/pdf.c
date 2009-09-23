@@ -921,6 +921,7 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   SetImageInfoFile(write_info,file);
   write_info->compression=Group4Compression;
+  write_info->type=BilevelType;
   (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
   status=WriteImage(write_info,huffman_image);
   (void) fflush(file);
