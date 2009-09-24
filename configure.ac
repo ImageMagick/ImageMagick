@@ -2595,7 +2595,7 @@ AC_MSG_CHECKING([for ImageMagick delegate programs])
 AC_MSG_RESULT([])
 AutotraceDecodeDelegateDefault='autotrace'
 AVIDecodeDelegateDefault='mplayer'
-BlenderDelegateDefault='blender'
+BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
 CGMDecodeDelegateDefault='ralcgm'

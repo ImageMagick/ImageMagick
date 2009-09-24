@@ -66,6 +66,7 @@
 #include "magick/quantum-private.h"
 #include "magick/profile.h"
 #include "magick/resize.h"
+#include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/splay-tree.h"
 #include "magick/static.h"
@@ -178,7 +179,11 @@ static volatile MagickBooleanType
   Forward declarations.
 */
 #if defined(MAGICKCORE_TIFF_DELEGATE)
+static Image *
+  ReadTIFFImage(const ImageInfo *,ExceptionInfo *);
+
 static MagickBooleanType
+  WriteGROUP4Image(const ImageInfo *,Image *),
   WritePTIFImage(const ImageInfo *,Image *),
   WriteTIFFImage(const ImageInfo *,Image *);
 #endif
@@ -226,6 +231,158 @@ static MagickBooleanType IsTIFF(const unsigned char *magick,const size_t length)
 #endif
   return(MagickFalse);
 }
+
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d G R O U P 4 I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadGROUP4Image() reads a raw CCITT Group 4 image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadGROUP4Image method is:
+%
+%      Image *ReadGROUP4Image(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline size_t WriteLSBLong(FILE *file,const unsigned int value)
+{
+  unsigned char
+    buffer[4];
+
+  buffer[0]=(unsigned char) value;
+  buffer[1]=(unsigned char) (value >> 8);
+  buffer[2]=(unsigned char) (value >> 16);
+  buffer[3]=(unsigned char) (value >> 24);
+  return(fwrite(buffer,1,4,file));
+}
+
+static Image *ReadGROUP4Image(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
+  Image
+    *image;
+
+  ImageInfo
+    *read_info;
+
+  int
+    c,
+    unique_file;
+
+  MagickBooleanType
+    status;
+
+  size_t
+    length;
+
+  ssize_t
+    offset,
+    strip_offset;
+
+  /*
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image=AcquireImage(image_info);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  /*
+    Write raw CCITT Group 4 wrapped as a TIFF image file.
+  */
+  file=(FILE *) NULL;
+  unique_file=AcquireUniqueFileResource(filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb");
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+  length=fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
+  length=fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
+  length=fwrite("\000\001\004\000\001\000\000\000",1,8,file);
+  length=WriteLSBLong(file,image->columns);
+  length=fwrite("\001\001\004\000\001\000\000\000",1,8,file);
+  length=WriteLSBLong(file,image->rows);
+  length=fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
+  length=fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
+  length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
+  length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
+  strip_offset=10+(12*14)+4+8;
+  length=WriteLSBLong(file,(unsigned long) strip_offset);
+  length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
+  length=WriteLSBLong(file,(unsigned long) image->orientation);
+  length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
+  length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
+  length=WriteLSBLong(file,image->columns);
+  length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
+  offset=(ssize_t) ftell(file)-4;
+  length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
+  length=WriteLSBLong(file,(unsigned long) (strip_offset-8));
+  length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
+  length=WriteLSBLong(file,(unsigned long) (strip_offset-8));
+  length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
+  length=fwrite("\000\000\000\000",1,4,file);
+  length=WriteLSBLong(file,image->x_resolution);
+  length=WriteLSBLong(file,1);
+  for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
+    (void) fputc(c,file);
+  offset=(ssize_t) fseek(file,(long) offset,SEEK_SET);
+  length=WriteLSBLong(file,(unsigned int) length);
+  (void) fclose(file);
+  (void) CloseBlob(image);
+  image=DestroyImage(image);
+  /*
+    Read TIFF image.
+  */
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"%.1024s",
+    filename);
+  image=ReadTIFFImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  if (image != (Image *) NULL)
+    {
+      (void) CopyMagickString(image->filename,image_info->filename,
+        MaxTextExtent);
+      (void) CopyMagickString(image->magick_filename,image_info->filename,
+        MaxTextExtent);
+      (void) CopyMagickString(image->magick,"GROUP4",MaxTextExtent);
+    }
+  (void) RelinquishUniqueFileResource(filename);
+  return(image);
+}
+#endif
 
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 /*
@@ -1530,6 +1687,18 @@ ModuleExport unsigned long RegisterTIFFImage(void)
   }
 #endif
 
+  entry=SetMagickInfo("GROUP4");
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadGROUP4Image;
+  entry->encoder=(EncodeImageHandler *) WriteGROUP4Image;
+#endif
+  entry->raw=MagickTrue;
+  entry->endian_support=MagickTrue;
+  entry->seekable_stream=MagickTrue;
+  entry->thread_support=NoThreadSupport;
+  entry->description=ConstantString("Raw CCITT Group4");
+  entry->module=ConstantString("TIFF");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PTIF");
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
@@ -1607,6 +1776,7 @@ ModuleExport unsigned long RegisterTIFFImage(void)
 */
 ModuleExport void UnregisterTIFFImage(void)
 {
+  (void) UnregisterMagickInfo("RAWGROUP4");
   (void) UnregisterMagickInfo("PTIF");
   (void) UnregisterMagickInfo("TIF");
   (void) UnregisterMagickInfo("TIFF");
@@ -1619,6 +1789,173 @@ ModuleExport void UnregisterTIFFImage(void)
   RelinquishSemaphoreInfo(tiff_semaphore);
   DestroySemaphoreInfo(&tiff_semaphore);
 }
+
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e G R O U P 4 I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteGROUP4Image() writes an image in the raw CCITT Group 4 image format.
+%
+%  The format of the WriteGROUP4Image method is:
+%
+%      MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+*/
+static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
+  Image *image)
+{
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
+  Image
+    *huffman_image;
+
+  ImageInfo
+    *write_info;
+
+  int
+    unique_file;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  ssize_t
+    count;
+
+  TIFF
+    *tiff;
+
+  uint16
+    fillorder;
+
+  uint32
+    *byte_count,
+    strip_size;
+
+  unsigned char
+    *buffer;
+
+  /*
+    Write image as CCITT Group4 TIFF image to a temporary file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == MagickFalse)
+    return(status);
+  huffman_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  if (huffman_image == (Image *) NULL)
+    {
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
+  file=(FILE *) NULL;
+  unique_file=AcquireUniqueFileResource(filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb"); 
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    {
+      ThrowFileException(&image->exception,FileOpenError,
+        "UnableToCreateTemporaryFile",filename);
+      return(MagickFalse);
+    }
+  (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
+    filename);
+  (void) SetImageType(huffman_image,BilevelType);
+  write_info=CloneImageInfo(image_info);
+  SetImageInfoFile(write_info,file);
+  write_info->compression=Group4Compression;
+  write_info->type=BilevelType;
+  (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
+  status=WriteTIFFImage(write_info,huffman_image);
+  (void) fflush(file);
+  write_info=DestroyImageInfo(write_info);
+  if (status == MagickFalse)
+    {
+      InheritException(&image->exception,&huffman_image->exception);
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      return(MagickFalse);
+    }
+  tiff=TIFFOpen(filename,"rb");
+  if (tiff == (TIFF *) NULL)
+    {
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
+        image_info->filename);
+      return(MagickFalse);
+    }
+  /*
+    Allocate raw strip buffer.
+  */
+  byte_count=0;
+  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  strip_size=byte_count[0];
+  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
+    if (byte_count[i] > strip_size)
+      strip_size=byte_count[i];
+  buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
+    sizeof(*buffer));
+  if (buffer == (unsigned char *) NULL)
+    {
+      TIFFClose(tiff);
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image_info->filename);
+    }
+  /*
+    Compress runlength encoded to 2D Huffman pixels.
+  */
+  fillorder=FILLORDER_LSB2MSB;
+  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
+  {
+    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(long)
+      byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,(unsigned long) count);
+    if (WriteBlob(image,(size_t) count,buffer) != count)
+      status=MagickFalse;
+  }
+  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  TIFFClose(tiff);
+  huffman_image=DestroyImage(huffman_image);
+  (void) fclose(file);
+  (void) RelinquishUniqueFileResource(filename);
+  (void) CloseBlob(image);
+  return(status);
+}
+#endif
 
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 /*
