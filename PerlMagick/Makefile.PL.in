@@ -59,10 +59,10 @@ WriteMakefile
    'DEFINE'	=> '@LFS_CPPFLAGS@ @DEFS@',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
+   'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@ -I"' . $Config{'usrinc'} . '/ImageMagick"',
 
    # C compiler
-   #'CC' => '@CC@',
+   'CC' => '@CC@',
 
    # C pre-processor flags (e.g. -I & -D options)
    # 'CPPFLAGS' => "$Config{'cppflags'} @CPPFLAGS@",
@@ -71,7 +71,7 @@ WriteMakefile
    'CCFLAGS' => "$Config{'ccflags'} @CFLAGS@",
 
    # Linker
-   #'LD' => $Config{'ld'} == $Config{'cc'} ? '@CC@' : $Config{'ld'},
+   'LD' => $Config{'ld'} == $Config{'cc'} ? '@CC@' : $Config{'ld'},
 
    # Linker flags for building an executable
    'LDFLAGS' =>  "-L../magick/.libs -lMagickCore -L../wand/.libs -lMagickWand $Config{'ldflags'} @LDFLAGS@",
