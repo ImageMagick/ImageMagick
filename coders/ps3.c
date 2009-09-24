@@ -270,7 +270,10 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   (void) fflush(file);
   write_info=DestroyImageInfo(write_info);
   if (status == MagickFalse)
-    return(MagickFalse);
+    {
+      (void) RelinquishUniqueFileResource(filename);
+      return(MagickFalse);
+    }
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {

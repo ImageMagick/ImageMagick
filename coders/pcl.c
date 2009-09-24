@@ -934,7 +934,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
         }
       }
     }
-    (void) WriteBlobString(image,"\033*r0B");  /* end graphics */
+    (void) WriteBlobString(image,"\033*rB");  /* end graphics */
     switch (image->compression)
     {
       case NoCompression:
