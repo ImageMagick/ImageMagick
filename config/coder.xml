@@ -51,6 +51,7 @@
   <coder magick="GBR" name="RGB"/>
   <coder magick="GRB" name="RGB"/>
   <coder magick="GRANITE" name="MAGICK"/>
+  <coder magick="GROUP4" name="TIFF"/>
   <coder magick="H" name="MAGICK"/>
   <coder magick="HTM" name="HTML"/>
   <coder magick="HTTP" name="URL"/>

@@ -112,6 +112,7 @@ static const char
     "  <coder magick=\"GIF87\" name=\"GIF\" />"
     "  <coder magick=\"G\" name=\"GRAY\" />"
     "  <coder magick=\"GRANITE\" name=\"MAGICK\" />"
+    "  <coder magick=\"GROUP4\" name=\"TIFF\" />"
     "  <coder magick=\"H\" name=\"MAGICK\" />"
     "  <coder magick=\"HTM\" name=\"HTML\" />"
     "  <coder magick=\"HTTP\" name=\"URL\" />"

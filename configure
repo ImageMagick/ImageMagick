@@ -43403,7 +43403,7 @@ $as_echo_n "checking for ImageMagick delegate programs... " >&6; }
 $as_echo "" >&6; }
 AutotraceDecodeDelegateDefault='autotrace'
 AVIDecodeDelegateDefault='mplayer'
-BlenderDelegateDefault='blender'
+BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
 CGMDecodeDelegateDefault='ralcgm'
