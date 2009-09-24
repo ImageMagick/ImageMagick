@@ -59,10 +59,10 @@ WriteMakefile
    'DEFINE'	=> ' -D_LARGE_FILES=1 -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -I/usr/include/libxml2',
+   'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"',
 
    # C compiler
-   #'CC' => 'gcc -std=gnu99',
+   'CC' => 'gcc -std=gnu99',
 
    # C pre-processor flags (e.g. -I & -D options)
    # 'CPPFLAGS' => "$Config{'cppflags'} -I/usr/include/freetype2 -I/usr/include/libxml2",
@@ -71,7 +71,7 @@ WriteMakefile
    'CCFLAGS' => "$Config{'ccflags'} -fopenmp -g -O2 -Wall -W -pthread",
 
    # Linker
-   #'LD' => $Config{'ld'} == $Config{'cc'} ? 'gcc -std=gnu99' : $Config{'ld'},
+   'LD' => $Config{'ld'} == $Config{'cc'} ? 'gcc -std=gnu99' : $Config{'ld'},
 
    # Linker flags for building an executable
    'LDFLAGS' =>  "-L../magick/.libs -lMagickCore -L../wand/.libs -lMagickWand $Config{'ldflags'} -lfreetype",
