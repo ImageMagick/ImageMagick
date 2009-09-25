@@ -1220,6 +1220,60 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k C l a m p I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickClampImage() restricts the color range from 0 to QuantumDepth.
+%
+%  The format of the MagickClampImage method is:
+%
+%      MagickBooleanType MagickClampImage(MagickWand *wand)
+%      MagickBooleanType MagickClampImageChannel(MagickWand *wand,
+%        const ChannelType channel)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the channel.
+%
+*/
+
+WandExport MagickBooleanType MagickClampImage(MagickWand *wand)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickClampImageChannel(wand,DefaultChannels);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickClampImageChannel(MagickWand *wand,
+  const ChannelType channel)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=ClampImageChannel(wand->images,channel);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C l i p I m a g e                                             %
 %                                                                             %
 %                                                                             %

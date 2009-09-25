@@ -39,6 +39,8 @@ extern MagickExport MagickBooleanType
   BlackThresholdImage(Image *,const char *),
   BlackThresholdImageChannel(Image *,const ChannelType,const char *,
     ExceptionInfo *),
+  ClampImage(Image *),
+  ClampImageChannel(Image *,const ChannelType),
   ListThresholdMaps(FILE *,ExceptionInfo *),
   OrderedDitherImage(Image *),  /* deprecated */
   OrderedDitherImageChannel(Image *,const ChannelType,ExceptionInfo *),

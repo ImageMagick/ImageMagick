@@ -519,6 +519,7 @@ static struct
     { "LevelColors", { {"invert", MagickBooleanOptions},
       {"black-point", RealReference}, {"white-point", RealReference},
       {"channel", MagickChannelOptions}, {"invert", MagickBooleanOptions} } },
+    { "Clamp", { {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -6764,6 +6765,8 @@ Mogrify(ref,...)
     AutoLevelImage     = 256
     LevelColors        = 257
     LevelColorsImage   = 258
+    Clamp              = 259
+    ClampImage         = 260
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -9960,8 +9963,16 @@ Mogrify(ref,...)
                &white_point,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].long_reference;
-          (void) LevelColorsImageChannel(image,channel,&black_point,&white_point,
-            argument_list[0].long_reference != 0 ? MagickTrue : MagickFalse);
+          (void) LevelColorsImageChannel(image,channel,&black_point,
+            &white_point,argument_list[0].long_reference != 0 ? MagickTrue :
+            MagickFalse);
+          break;
+        }
+        case 130:  /* Clamp */
+        {
+          if (attribute_flag[0] != 0)
+            channel=(ChannelType) argument_list[0].long_reference;
+          (void) ClampImageChannel(image,channel);
           break;
         }
       }

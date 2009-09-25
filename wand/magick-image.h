@@ -99,6 +99,8 @@ extern WandExport MagickBooleanType
   MagickCharcoalImage(MagickWand *,const double,const double),
   MagickChopImage(MagickWand *,const unsigned long,const unsigned long,
     const long,const long),
+  MagickClampImage(MagickWand *),
+  MagickClampImageChannel(MagickWand *,const ChannelType),
   MagickClipImage(MagickWand *),
   MagickClipImagePath(MagickWand *,const char *,const MagickBooleanType),
   MagickClutImage(MagickWand *,const MagickWand *),
