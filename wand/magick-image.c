@@ -1226,7 +1226,7 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickClampImage() restricts the color range from 0 to QuantumDepth.
+%  MagickClampImage() restricts the color range from 0 to pixel range.
 %
 %  The format of the MagickClampImage method is:
 %

@@ -3462,7 +3462,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-cdl filename        color correct with a color decision list",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
-      "-clamp               restrict pixel range from 0 to QuantumDepth",
+      "-clamp               restrict pixel range from 0 to pixel range",
       "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
       "-clip-path id        clip along a named path from the 8BIM profile",

@@ -660,7 +660,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClampImage() restricts the color range from 0 to QuantumDepth.
+%  ClampImage() restricts the color range from 0 to pixel depth.
 %
 %  The format of the ClampImageChannel method is:
 %
@@ -740,7 +740,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
       return(SyncImage(image));
     }
   /*
-    Clamp threshold image.
+    Clamp image.
   */
   status=MagickTrue;
   progress=0;
