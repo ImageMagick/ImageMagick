@@ -44,6 +44,7 @@ static inline MagickBooleanType IsGray(const PixelPacket *pixel)
 static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
       (p->opacity != OpaqueOpacity))
     return(MagickFalse);
@@ -65,6 +66,29 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) && (p->index != q->index))
     return(MagickFalse);
+#else
+  if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
+      (fabs(p->opacity-OpaqueOpacity) > 0.5))
+    return(MagickFalse);
+  if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
+      (fabs(q->opacity-OpaqueOpacity)) > 0.5)
+    return(MagickFalse);
+  if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
+    {
+      if (fabs(p->opacity-q->opacity) > 0.5)
+        return(MagickFalse);
+      if (fabs(p->opacity-TransparentOpacity) <= 0.5)
+        return(MagickTrue);
+    }
+  if (fabs(p->red-q->red) > 0.5)
+    return(MagickFalse);
+  if (fabs(p->green-q->green) > 0.5)
+    return(MagickFalse);
+  if (fabs(p->blue-q->blue) > 0.5)
+    return(MagickFalse);
+  if ((p->colorspace == CMYKColorspace) && (fabs(p->index-q->index) > 0.5))
+    return(MagickFalse);
+#endif
   return(MagickTrue);
 }
 
