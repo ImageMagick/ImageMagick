@@ -341,7 +341,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   strip_offset=10+(12*14)+4+8;
   length=WriteLSBLong(file,(unsigned long) strip_offset);
   length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(unsigned long) image->orientation);
+  length=WriteLSBLong(file,(unsigned long) image_info->orientation);
   length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
   length=WriteLSBLong(file,image->columns);
@@ -1694,6 +1694,7 @@ ModuleExport unsigned long RegisterTIFFImage(void)
 #endif
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
+  entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Raw CCITT Group4");
@@ -1888,6 +1889,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
     filename);
   (void) SetImageType(huffman_image,BilevelType);
   write_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(write_info,(void *) NULL,0);
   SetImageInfoFile(write_info,file);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;

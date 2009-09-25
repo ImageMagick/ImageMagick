@@ -65,15 +65,6 @@
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-#if defined(MAGICKCORE_HAVE_TIFFCONF_H)
-#include "tiffconf.h"
-#endif
-#include "tiffio.h"
-#define CCITTParam  "-1"
-#else
-#define CCITTParam  "0"
-#endif
 
 /*
  Forward declarations.
@@ -146,31 +137,19 @@ static MagickBooleanType IsCALS(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t WriteCALSLSBLong(FILE *file,const unsigned int value)
-{
-  unsigned char
-    buffer[4];
-
-  buffer[0]=(unsigned char) value;
-  buffer[1]=(unsigned char) (value >> 8);
-  buffer[2]=(unsigned char) (value >> 16);
-  buffer[3]=(unsigned char) (value >> 24);
-  return(fwrite(buffer,1,4,file));
-}
-
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-static Image *Huffman2DDecodeImage(const ImageInfo *image_info,Image *image,
+static Image *ReadCALSImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    header[129],
+    message[MaxTextExtent];
 
   FILE
     *file;
 
   Image
-    *huffman_image;
+    *image;
 
   ImageInfo
     *read_info;
@@ -178,97 +157,6 @@ static Image *Huffman2DDecodeImage(const ImageInfo *image_info,Image *image,
   int
     c,
     unique_file;
-
-  size_t
-    length;
-
-  ssize_t
-    offset,
-    strip_offset;
-
-  /*
-    Write CALS facsimile document wrapped as a TIFF image file.
-  */
-  file=(FILE *) NULL;
-  unique_file=AcquireUniqueFileResource(filename);
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb");
-  if ((unique_file == -1) || (file == (FILE *) NULL))
-    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
-  length=fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
-  length=fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
-  length=fwrite("\000\001\004\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,image->columns);
-  length=fwrite("\001\001\004\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,image->rows);
-  length=fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  length=fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
-  length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
-  length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
-  strip_offset=10+(12*14)+4+8;
-  length=WriteCALSLSBLong(file,(unsigned long) strip_offset);
-  length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned long) image->orientation);
-  length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,image->columns);
-  length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
-  offset=(ssize_t) ftell(file)-4;
-  length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned long) (strip_offset-8));
-  length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
-  length=WriteCALSLSBLong(file,(unsigned long) (strip_offset-8));
-  length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
-  length=fwrite("\000\000\000\000",1,4,file);
-  length=WriteCALSLSBLong(file,image->x_resolution);
-  length=WriteCALSLSBLong(file,1);
-  for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
-    (void) fputc(c,file);
-  (void) CloseBlob(image);
-  offset=(ssize_t) fseek(file,(long) offset,SEEK_SET);
-  length=WriteCALSLSBLong(file,(unsigned int) length);
-  (void) fclose(file);
-  /*
-    Read TIFF image.
-  */
-  read_info=CloneImageInfo(image_info);
-  SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"tiff:%.1024s",
-    filename);
-  huffman_image=ReadImage(read_info,exception);
-  if (huffman_image != (Image *) NULL)
-    {
-      (void) CopyMagickString(huffman_image->filename,image_info->filename,
-        MaxTextExtent);
-      (void) CopyMagickString(huffman_image->magick_filename,
-         image_info->filename,MaxTextExtent);
-      (void) CopyMagickString(huffman_image->magick,"CALS",MaxTextExtent);
-    }
-  read_info=DestroyImageInfo(read_info);
-  (void) RelinquishUniqueFileResource(filename);
-  return(huffman_image);
-}
-#else
-static Image *Huffman2DDecodeImage(const ImageInfo *magick_unused(image_info),
-  Image *image,ExceptionInfo *exception)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (TIFF)",image->filename);
-  return((Image *) NULL);
-}
-#endif
-
-static Image *ReadCALSImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  char
-    header[129];
-
-  Image
-    *huffman_image,
-    *image;
 
   MagickBooleanType
     status;
@@ -356,19 +244,41 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
       }
     }
   }
-  if ((width == 0) || (height == 0) || (type == 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  image->columns=width;
-  image->rows=height;
-  image->x_resolution=(double) density;
-  image->y_resolution=(double) density;
-  image->orientation=(OrientationType) orientation;
-  huffman_image=Huffman2DDecodeImage(image_info,image,exception);
+  /*
+    Read CALS pixels.
+  */
+  file=(FILE *) NULL;
+  unique_file=AcquireUniqueFileResource(filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb");
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+  while ((c=ReadBlobByte(image)) != EOF)
+    (void) fputc(c,file);
+  (void) fclose(file);
+  (void) CloseBlob(image);
   image=DestroyImage(image);
-  (void) CloseBlob(huffman_image);
-  if (huffman_image == (Image *) NULL)
-    return(huffman_image);
-  return(GetFirstImageInList(huffman_image));
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"group4:%.1024s",
+    filename);
+  (void) FormatMagickString(message,MaxTextExtent,"%lux%lu",width,height);
+  read_info->size=ConstantString(message);
+  (void) FormatMagickString(message,MaxTextExtent,"%lu",density);
+  read_info->density=ConstantString(message);
+  read_info->orientation=(OrientationType) orientation;
+  image=ReadImage(read_info,exception);
+  if (image != (Image *) NULL)
+    {
+      (void) CopyMagickString(image->filename,image_info->filename,
+        MaxTextExtent);
+      (void) CopyMagickString(image->magick_filename,image_info->filename,
+        MaxTextExtent);
+      (void) CopyMagickString(image->magick,"CALS",MaxTextExtent);
+    }
+  read_info=DestroyImageInfo(read_info);
+  (void) RelinquishUniqueFileResource(filename);
+  return(image);
 }
 
 /*
@@ -486,155 +396,6 @@ ModuleExport void UnregisterCALSImage(void)
 %
 */
 
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image,Image *inject_image)
-{
-  char
-    filename[MaxTextExtent];
-
-  FILE
-    *file;
-
-  Image
-    *huffman_image;
-
-  ImageInfo
-    *write_info;
-
-  int
-    unique_file;
-
-  MagickBooleanType
-    status;
-
-  register long
-    i;
-
-  ssize_t
-    count;
-
-  TIFF
-    *tiff;
-
-  uint16
-    fillorder;
-
-  uint32
-    *byte_count,
-    strip_size;
-
-  unsigned char
-    *buffer;
-
-  /*
-    Write image as CCITTFax4 TIFF image to a temporary file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(inject_image != (Image *) NULL);
-  assert(inject_image->signature == MagickSignature);
-  huffman_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
-  if (huffman_image == (Image *) NULL)
-    return(MagickFalse);
-  file=(FILE *) NULL;
-  unique_file=AcquireUniqueFileResource(filename);
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb"); 
-  if ((unique_file == -1) || (file == (FILE *) NULL))
-    {
-      ThrowFileException(&image->exception,FileOpenError,
-        "UnableToCreateTemporaryFile",filename);
-      return(MagickFalse);
-    }
-  (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
-    filename);
-  write_info=CloneImageInfo(image_info);
-  SetImageInfoFile(write_info,file);
-  write_info->compression=Group4Compression;
-  write_info->type=BilevelType;
-  (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
-  status=WriteImage(write_info,huffman_image);
-  (void) fflush(file);
-  write_info=DestroyImageInfo(write_info);
-  if (status == MagickFalse)
-    {
-      (void) RelinquishUniqueFileResource(filename);
-      return(MagickFalse);
-    }
-  tiff=TIFFOpen(filename,"rb");
-  if (tiff == (TIFF *) NULL)
-    {
-      huffman_image=DestroyImage(huffman_image);
-      (void) fclose(file);
-      (void) RelinquishUniqueFileResource(filename);
-      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
-        image_info->filename);
-      return(MagickFalse);
-    }
-  /*
-    Allocate raw strip buffer.
-  */
-  byte_count=0;
-  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
-  strip_size=byte_count[0];
-  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
-    sizeof(*buffer));
-  if (buffer == (unsigned char *) NULL)
-    {
-      TIFFClose(tiff);
-      huffman_image=DestroyImage(huffman_image);
-      (void) fclose(file);
-      (void) RelinquishUniqueFileResource(filename);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image_info->filename);
-    }
-  /*
-    Compress runlength encoded to 2D Huffman pixels.
-  */
-  fillorder=FILLORDER_LSB2MSB;
-  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
-  {
-    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(long)
-      byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(buffer,(unsigned long) count);
-    (void) WriteBlob(image,(size_t) count,buffer);
-  }
-  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  TIFFClose(tiff);
-  huffman_image=DestroyImage(huffman_image);
-  (void) fclose(file);
-  (void) RelinquishUniqueFileResource(filename);
-  return(MagickTrue);
-}
-#else
-static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image,Image *inject_image)
-{
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(inject_image != (Image *) NULL);
-  assert(inject_image->signature == MagickSignature);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (TIFF)",
-    image->filename);
-  return(MagickFalse);
-}
-#endif
-
 static ssize_t WriteCALSRecord(Image *image,const char *data)
 {
   char
@@ -669,7 +430,13 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   Image *image)
 {
   char
-    buffer[129];
+    header[129];
+
+  Image
+    *group4_image;
+
+  ImageInfo
+    *write_info;
 
   MagickBooleanType
     status;
@@ -679,6 +446,12 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
 
   ssize_t
     count;
+
+  size_t
+    length;
+
+  unsigned char
+    *group4;
 
   unsigned long
     density,
@@ -755,12 +528,12 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       orient_y=270;
     }
   }
-  (void) FormatMagickString(buffer,MaxTextExtent,"rorient: %03ld,%03ld",
+  (void) FormatMagickString(header,MaxTextExtent,"rorient: %03ld,%03ld",
     orient_x,orient_y);
-  count=WriteCALSRecord(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"rpelcnt: %06lu,%06lu",
+  count=WriteCALSRecord(image,header);
+  (void) FormatMagickString(header,MaxTextExtent,"rpelcnt: %06lu,%06lu",
     image->columns,image->rows);
-  count=WriteCALSRecord(image,buffer);  
+  count=WriteCALSRecord(image,header);  
   density=200;
   if (image_info->density != (char *) NULL)
     {
@@ -770,13 +543,36 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       (void) ParseGeometry(image_info->density,&geometry_info);
       density=(unsigned long) (geometry_info.rho+0.5);
     }
-  (void) FormatMagickString(buffer,MaxTextExtent,"rdensty: %04lu",density);
-  count=WriteCALSRecord(image,buffer);
+  (void) FormatMagickString(header,MaxTextExtent,"rdensty: %04lu",density);
+  count=WriteCALSRecord(image,header);
   count=WriteCALSRecord(image,"notes: NONE");
-  (void) ResetMagickMemory(buffer,' ',128);
+  (void) ResetMagickMemory(header,' ',128);
   for (i=0; i < 5; i++)
-    (void) WriteBlob(image,128,(unsigned char *) buffer);
-  status=Huffman2DEncodeImage(image_info,image,image);
+    (void) WriteBlob(image,128,(unsigned char *) header);
+  /*
+    Write CALS pixels.
+  */
+  write_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(write_info->filename,"GROUP4:",MaxTextExtent);
+  (void) CopyMagickString(write_info->magick,"GROUP4",MaxTextExtent);
+  group4_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  if (group4_image == (Image *) NULL)
+    {
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
+  group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
+    &image->exception);
+  group4_image=DestroyImage(group4_image);
+  if (group4 == (unsigned char *) NULL)
+    {
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
+  write_info=DestroyImageInfo(write_info);
+  if (WriteBlob(image,length,group4) != (ssize_t) length)
+    status=MagickFalse;
+  group4=(unsigned char *) RelinquishMagickMemory(group4);
   (void) CloseBlob(image);
   return(status);
 }
