@@ -351,6 +351,9 @@ ModuleExport void UnregisterEPTImage(void)
 */
 static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image)
 {
+  char
+     filename[MaxTextExtent];
+
   EPTInfo
     ept_info;
 
@@ -397,8 +400,9 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image)
     return(MagickFalse);
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->magick,"TIFF",MaxTextExtent);
-  (void) FormatMagickString(write_info->filename,MaxTextExtent,"tiff:%.1024s",
+  (void) FormatMagickString(filename,MaxTextExtent,"tiff:%.1024s",
     write_info->filename); 
+  (void) CopyMagickString(write_info->filename,filename,MaxTextExtent);
   (void) TransformImage(&write_image,(char *) NULL,"512x512>");
   if ((write_image->storage_class == DirectClass) ||
       (write_image->colors > 256))
@@ -428,13 +432,13 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image)
   /*
     Write EPT image.
   */
-  (void) WriteBlobLSBLong(image,ept_info.magick);
+  (void) WriteBlobLSBLong(image,(unsigned int) ept_info.magick);
   (void) WriteBlobLSBLong(image,30);
-  (void) WriteBlobLSBLong(image,(unsigned long) ept_info.postscript_length);
+  (void) WriteBlobLSBLong(image,(unsigned int) ept_info.postscript_length);
   (void) WriteBlobLSBLong(image,0);
   (void) WriteBlobLSBLong(image,0);
-  (void) WriteBlobLSBLong(image,(unsigned long) ept_info.postscript_length+30);
-  (void) WriteBlobLSBLong(image,(unsigned long) ept_info.tiff_length);
+  (void) WriteBlobLSBLong(image,(unsigned int) ept_info.postscript_length+30);
+  (void) WriteBlobLSBLong(image,(unsigned int) ept_info.tiff_length);
   (void) WriteBlobLSBShort(image,0xffff);
   (void) WriteBlob(image,ept_info.postscript_length,ept_info.postscript);
   (void) WriteBlob(image,ept_info.tiff_length,ept_info.tiff);

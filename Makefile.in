@@ -421,9 +421,7 @@ coders_braille_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_braille_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_braille_la_rpath = -rpath $(codersdir)
-coders_cals_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_cals_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_cals_la_OBJECTS = coders/coders_cals_la-cals.lo
 coders_cals_la_OBJECTS = $(am_coders_cals_la_OBJECTS)
 coders_cals_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -3035,7 +3033,7 @@ coders_braille_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_cals_la_SOURCES = coders/cals.c
 coders_cals_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_cals_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_cals_la_LIBADD = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
+coders_cals_la_LIBADD = $(MAGICKCORE_LIBS)
 
 # CAPTION coder module
 coders_caption_la_SOURCES = coders/caption.c
