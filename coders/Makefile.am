@@ -686,7 +686,7 @@ coders_pdb_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_pdf_la_SOURCES      = coders/pdf.c
 coders_pdf_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD       = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(GS_LIBS) $(MATH_LIBS)
+coders_pdf_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(GS_LIBS) $(MATH_LIBS)
 
 # PICT coder module
 coders_pict_la_SOURCES     = coders/pict.c
@@ -734,13 +734,13 @@ coders_ps_la_LIBADD        = $(MAGICKCORE_LIBS) $(GS_LIBS) $(MATH_LIBS)
 coders_ps2_la_SOURCES      = coders/ps2.c
 coders_ps2_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_ps2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_ps2_la_LIBADD       = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_ps2_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PS3 coder module
 coders_ps3_la_SOURCES      = coders/ps3.c
 coders_ps3_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_ps3_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_ps3_la_LIBADD       = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_ps3_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PSD coder module
 coders_psd_la_SOURCES      = coders/psd.c
