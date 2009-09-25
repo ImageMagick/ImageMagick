@@ -1798,6 +1798,7 @@ AC_ARG_WITH([gslib],
     [with_gslib=$withval],
     [with_gslib='no'])
 
+gslib_framework='no'
 if test "$with_gslib" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gslib=$with_gslib "
 fi
@@ -1808,7 +1809,7 @@ if test "$with_gslib" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
     AC_MSG_CHECKING([for Ghostscript])
     AC_MSG_RESULT([])
-    framework=0;
+    framework=0
     failed=0
     passed=0
     AC_CHECK_HEADER(ghostscript/iapi.h,passed=`expr $passed + 1`,
@@ -1825,6 +1826,7 @@ if test "$with_gslib" != 'no'; then
         else
             if test $framework -gt 0; then
                 GS_LIBS='-framework Ghostscript'
+                gslib_framework='yes'
                 AC_MSG_RESULT([yes, using framework.])
             else
                 AC_MSG_RESULT([yes, using library.])
@@ -2629,7 +2631,7 @@ PGPDecodeDelegateDefault='pgpv'
 POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes'; then
     PSDelegateDefault='gswin32c'
-elif test $framework -gt 0; then
+elif test "$gslib_framework" = 'yes'; then
     PSDelegateDefault='gsc'
 else
     PSDelegateDefault='gs'

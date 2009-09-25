@@ -38589,6 +38589,7 @@ else
 fi
 
 
+gslib_framework='no'
 if test "$with_gslib" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gslib=$with_gslib "
 fi
@@ -38602,7 +38603,7 @@ $as_echo "-------------------------------------------------------------" >&6; }
 $as_echo_n "checking for Ghostscript... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    framework=0;
+    framework=0
     failed=0
     passed=0
     if test "${ac_cv_header_ghostscript_iapi_h+set}" = set; then
@@ -39034,6 +39035,7 @@ $as_echo "no -- some components failed test" >&6; }
         else
             if test $framework -gt 0; then
                 GS_LIBS='-framework Ghostscript'
+                gslib_framework='yes'
                 { $as_echo "$as_me:$LINENO: result: yes, using framework." >&5
 $as_echo "yes, using framework." >&6; }
             else
@@ -43437,7 +43439,7 @@ PGPDecodeDelegateDefault='pgpv'
 POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes'; then
     PSDelegateDefault='gswin32c'
-elif test $framework -gt 0; then
+elif test "$gslib_framework" = 'yes'; then
     PSDelegateDefault='gsc'
 else
     PSDelegateDefault='gs'
