@@ -365,8 +365,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   /*
     Read TIFF image.
   */
-  read_info=CloneImageInfo(image_info);
-  SetImageInfoBlob(read_info,(void *) NULL,0);
+  read_info=CloneImageInfo((Image *) NULL);
   (void) FormatMagickString(read_info->filename,MaxTextExtent,"%.1024s",
     filename);
   image=ReadTIFFImage(read_info,exception);
@@ -1888,8 +1887,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
     filename);
   (void) SetImageType(huffman_image,BilevelType);
-  write_info=CloneImageInfo(image_info);
-  SetImageInfoBlob(write_info,(void *) NULL,0);
+  write_info=CloneImageInfo((Image *) NULL);
   SetImageInfoFile(write_info,file);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
@@ -2026,7 +2024,9 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   /*
     Write pyramid-encoded TIFF image.
   */
-  write_info=CloneImageInfo(image_info);
+  write_info=CloneImageInfo((Image *) NULL);
+  (void) CopyMagickString(write_info->filename,image_info->filename,
+    MaxTextExtent);
   *write_info->magick='\0';
   write_info->adjoin=MagickTrue;
   status=WriteTIFFImage(write_info,GetFirstImageInList(images));
