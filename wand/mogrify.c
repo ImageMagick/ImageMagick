@@ -854,6 +854,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             *image=chop_image;
             break;
           }
+        if (LocaleCompare("clamp",option+1) == 0)
+          {
+            /*
+              Clamp image.
+            */
+            (void) SyncImageSettings(image_info,*image);
+            (void) ClampImageChannel(*image,channel);
+            InheritException(exception,&(*image)->exception);
+            break;
+          }
         if (LocaleCompare("clip",option+1) == 0)
           {
             (void) SyncImageSettings(image_info,*image);
@@ -3452,6 +3462,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-cdl filename        color correct with a color decision list",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
+      "-clamp               restrict pixel range from 0 to QuantumDepth",
       "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
       "-clip-path id        clip along a named path from the 8BIM profile",
@@ -4190,6 +4201,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("clamp",option+1) == 0)
+          break;
+        if (LocaleCompare("clip",option+1) == 0)
+          break;
         if (LocaleCompare("clip-mask",option+1) == 0)
           {
             if (*option == '+')

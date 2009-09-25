@@ -654,6 +654,161 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     C l a m p I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClampImage() restricts the color range from 0 to QuantumDepth.
+%
+%  The format of the ClampImageChannel method is:
+%
+%      MagickBooleanType ClampImage(Image *image)
+%      MagickBooleanType ClampImageChannel(Image *image,
+%        const ChannelType channel)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+*/
+
+static inline Quantum ClampToQuantum(const Quantum quantum)
+{
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  if (quantum <= 0)
+    return(0);
+  if (quantum >= QuantumRange)
+    return(QuantumRange);
+  return(quantum);
+#else
+  return(quantum);
+#endif
+}
+
+MagickExport MagickBooleanType ClampImage(Image *image)
+{
+  MagickBooleanType
+    status;
+
+  status=ClampImageChannel(image,DefaultChannels);
+  return(status);
+}
+
+MagickExport MagickBooleanType ClampImageChannel(Image *image,
+  const ChannelType channel)
+{
+#define ClampImageTag  "Clamp/Image"
+
+  ExceptionInfo
+    *exception;
+
+  long
+    progress,
+    y;
+
+  MagickBooleanType
+    status;
+
+  CacheView
+    *image_view;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->storage_class == PseudoClass)
+    {
+      register long
+        i;
+
+      register PixelPacket
+        *__restrict q;
+
+      q=image->colormap;
+      for (i=0; i < (long) image->colors; i++)
+      {
+        q->red=ClampToQuantum(q->red);
+        q->green=ClampToQuantum(q->green);
+        q->blue=ClampToQuantum(q->blue);
+        q->opacity=ClampToQuantum(q->opacity);
+        q++;
+      }
+      return(SyncImage(image));
+    }
+  /*
+    Clamp threshold image.
+  */
+  status=MagickTrue;
+  progress=0;
+  exception=(&image->exception);
+  image_view=AcquireCacheView(image);
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    register IndexPacket
+      *__restrict indexes;
+
+    register long
+      x;
+
+    register PixelPacket
+      *__restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      if ((channel & RedChannel) != 0)
+        q->red=ClampToQuantum(q->red);
+      if ((channel & GreenChannel) != 0)
+        q->green=ClampToQuantum(q->green);
+      if ((channel & BlueChannel) != 0)
+        q->blue=ClampToQuantum(q->blue);
+      if ((channel & OpacityChannel) != 0)
+        q->opacity=ClampToQuantum(q->opacity);
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        indexes[x]=(IndexPacket) ClampToQuantum(indexes[x]);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+  #pragma omp critical (MagickCore_ClampImageChannel)
+#endif
+        proceed=SetImageProgress(image,ClampImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  D e s t r o y T h r e s h o l d M a p                                      %
 %                                                                             %
 %                                                                             %
