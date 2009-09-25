@@ -67,11 +67,11 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 #include "magick/utility.h"
+
+/*
+  Define declarations.
+*/
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-#if defined(MAGICKCORE_HAVE_TIFFCONF_H)
-#include "tiffconf.h"
-#endif
-#include "tiffio.h"
 #define CCITTParam  "-1"
 #else
 #define CCITTParam  "0"
@@ -180,154 +180,41 @@ ModuleExport void UnregisterPS2Image(void)
 %
 */
 
-#if defined(MAGICKCORE_TIFF_DELEGATE)
 static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image,Image *inject_image)
 {
-  char
-    filename[MaxTextExtent];
-
-  FILE
-    *file;
-
   Image
-    *huffman_image;
+    *group4_image;
 
   ImageInfo
     *write_info;
 
-  int
-    unique_file;
-
   MagickBooleanType
     status;
 
-  register long
-    i;
-
-  ssize_t
-    count;
-
-  TIFF
-    *tiff;
-
-  uint16
-    fillorder;
-
-  uint32
-    *byte_count,
-    strip_size;
+  size_t
+    length;
 
   unsigned char
-    *buffer;
+    *group4;
 
-  /*
-    Write image as CCITTFax4 TIFF image to a temporary file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(inject_image != (Image *) NULL);
-  assert(inject_image->signature == MagickSignature);
-  huffman_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
-  if (huffman_image == (Image *) NULL)
-    return(MagickFalse);
-  file=(FILE *) NULL;
-  unique_file=AcquireUniqueFileResource(filename);
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb"); 
-  if ((unique_file == -1) || (file == (FILE *) NULL))
-    {
-      ThrowFileException(&image->exception,FileOpenError,
-        "UnableToCreateTemporaryFile",filename);
-      return(MagickFalse);
-    }
-  (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
-    filename);
   write_info=CloneImageInfo(image_info);
-  SetImageInfoFile(write_info,file);
-  write_info->compression=Group4Compression;
-  write_info->type=BilevelType;
-  (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
-  status=WriteImage(write_info,huffman_image);
-  (void) fflush(file);
+  (void) CopyMagickString(write_info->filename,"GROUP4:",MaxTextExtent);
+  (void) CopyMagickString(write_info->magick,"GROUP4",MaxTextExtent);
+  group4_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
+  if (group4_image == (Image *) NULL)
+    return(MagickFalse);
+  group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
+    &image->exception);
+  group4_image=DestroyImage(group4_image);
+  if (group4 == (unsigned char *) NULL)
+    return(MagickFalse);
   write_info=DestroyImageInfo(write_info);
-  if (status == MagickFalse)
-    {
-      (void) RelinquishUniqueFileResource(filename);
-      return(MagickFalse);
-    }
-  tiff=TIFFOpen(filename,"rb");
-  if (tiff == (TIFF *) NULL)
-    {
-      huffman_image=DestroyImage(huffman_image);
-      (void) fclose(file);
-      (void) RelinquishUniqueFileResource(filename);
-      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
-        image_info->filename);
-      return(MagickFalse);
-    }
-  /*
-    Allocate raw strip buffer.
-  */
-  byte_count=0;
-  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
-  strip_size=byte_count[0];
-  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
-    sizeof(*buffer));
-  if (buffer == (unsigned char *) NULL)
-    {
-      TIFFClose(tiff);
-      huffman_image=DestroyImage(huffman_image);
-      (void) fclose(file);
-      (void) RelinquishUniqueFileResource(filename);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image_info->filename);
-    }
-  /*
-    Compress runlength encoded to 2D Huffman pixels.
-  */
-  fillorder=FILLORDER_LSB2MSB;
-  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
-  {
-    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(long)
-      byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(buffer,(unsigned long) count);
-    (void) WriteBlob(image,(size_t) count,buffer);
-  }
-  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  TIFFClose(tiff);
-  huffman_image=DestroyImage(huffman_image);
-  (void) fclose(file);
-  (void) RelinquishUniqueFileResource(filename);
-  return(MagickTrue);
+  if (WriteBlob(image,length,group4) != (ssize_t) length)
+    status=MagickFalse;
+  group4=(unsigned char *) RelinquishMagickMemory(group4);
+  return(status);
 }
-#else
-static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image,Image *inject_image)
-{
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(inject_image != (Image *) NULL);
-  assert(inject_image->signature == MagickSignature);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (TIFF)",
-    image->filename);
-  return(MagickFalse);
-}
-#endif
 
 static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
 {
@@ -356,8 +243,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "      /Decode [0 1 0 1 0 1]",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
-      "      { /DataSource pixel_stream /%s filter }",
-      "      { /DataSource pixel_stream /%s filter } ifelse",
+      "      { /DataSource pixel_stream %s }",
+      "      { /DataSource pixel_stream %s } ifelse",
       "    >> image",
       "  }",
       "  {",
@@ -370,8 +257,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "      /Decode [1 0 1 0 1 0 1 0]",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
-      "      { /DataSource pixel_stream /%s filter }",
-      "      { /DataSource pixel_stream /%s filter } ifelse",
+      "      { /DataSource pixel_stream %s }",
+      "      { /DataSource pixel_stream %s } ifelse",
       "    >> image",
       "  } ifelse",
       "} bind def",
@@ -402,9 +289,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "      /Decode [0 1]",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
-      "      { /DataSource pixel_stream /%s filter }",
+      "      { /DataSource pixel_stream %s }",
       "      {",
-      "        /DataSource pixel_stream /%s filter",
+      "        /DataSource pixel_stream %s",
       "        <<",
       "           /K "CCITTParam,
       "           /Columns columns",
@@ -430,8 +317,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "      /Decode [0 255]",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
-      "      { /DataSource pixel_stream /%s filter }",
-      "      { /DataSource pixel_stream /%s filter } ifelse",
+      "      { /DataSource pixel_stream %s }",
+      "      { /DataSource pixel_stream %s } ifelse",
       "    >> image",
       "  } ifelse",
       "} bind def",
@@ -732,30 +619,31 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
             case NoCompression:
             {
               (void) FormatMagickString(buffer,MaxTextExtent,*q,
-                "ASCII85Decode");
+                "/ASCII85Decode filter");
               break;
             }
             case JPEGCompression:
             {
-              (void) FormatMagickString(buffer,MaxTextExtent,*q,"DCTDecode");
+              (void) FormatMagickString(buffer,MaxTextExtent,*q,
+                "/DCTDecode filter");
               break;
             }
             case LZWCompression:
             {
-              (void) FormatMagickString(buffer,MaxTextExtent,*q,"LZWDecode");
+              (void) FormatMagickString(buffer,MaxTextExtent,*q,
+                "/LZWDecode filter");
               break;
             }
             case FaxCompression:
             case Group4Compression:
             {
-              (void) FormatMagickString(buffer,MaxTextExtent,*q,
-                "ASCII85Decode");
+              (void) FormatMagickString(buffer,MaxTextExtent,*q," ");
               break;
             }
             default:
             {
               (void) FormatMagickString(buffer,MaxTextExtent,*q,
-                "RunLengthDecode");
+                "/RunLengthDecode filter");
               break;
             }
           }
