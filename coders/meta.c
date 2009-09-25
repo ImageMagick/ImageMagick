@@ -1639,10 +1639,10 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
       break;
     if (marker == IPTC_ID)
       {
-        *info=p; /* let the caller know were it is */
-        return(extent);
+        *info=p;
+        return(tag_length);
       }
-    if (tag_length & 0x01) 
+    if ((tag_length & 0x01) != 0)
       tag_length++;
     p+=tag_length;
     extent-=tag_length;
