@@ -1642,6 +1642,8 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
         *info=p; /* let the caller know were it is */
         return(extent);
       }
+    if (tag_length & 0x01) 
+      tag_length++;
     p+=tag_length;
     extent-=tag_length;
   }
