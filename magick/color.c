@@ -681,6 +681,13 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
+  if ((channel == RedChannel) && (pixel->colorspace == HSLColorspace))
+    {
+      (void) FormatMagickString(component,MaxTextExtent,"%g",
+        360.0*(QuantumScale*color));
+      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      return;
+    }
   if (pixel->depth > 8)
     {
       (void) FormatMagickString(component,MaxTextExtent,"%g%%",
@@ -3306,8 +3313,8 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
           PixelPacket
             pixel;
 
-          geometry_info.rho=fmod(fmod(geometry_info.rho,360.0)+360.0,360.0)/
-            360.0;
+          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
+            360.0)/360.0;
           geometry_info.sigma/=100.0;
           geometry_info.xi/=100.0;
           ConvertHSLToRGB(geometry_info.rho,geometry_info.sigma,
