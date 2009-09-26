@@ -3315,8 +3315,6 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
 
           geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
             360.0)/360.0;
-          geometry_info.sigma/=100.0;
-          geometry_info.xi/=100.0;
           ConvertHSLToRGB(geometry_info.rho,geometry_info.sigma,
             geometry_info.xi,&pixel.red,&pixel.green,&pixel.blue);
           color->colorspace=RGBColorspace;
