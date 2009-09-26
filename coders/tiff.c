@@ -2024,9 +2024,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   /*
     Write pyramid-encoded TIFF image.
   */
-  write_info=CloneImageInfo((Image *) NULL);
-  (void) CopyMagickString(write_info->filename,image_info->filename,
-    MaxTextExtent);
+  write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
   write_info->adjoin=MagickTrue;
   status=WriteTIFFImage(write_info,GetFirstImageInList(images));
