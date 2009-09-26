@@ -3313,11 +3313,11 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
           PixelPacket
             pixel;
 
-          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
-            360.0)/360.0;
           scale=1.0/255.0;
           if ((flags & PercentValue) != 0)
             scale=1.0/100.0;
+          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
+            360.0)/360.0;
           geometry_info.sigma*=scale;
           geometry_info.xi*=scale;
           ConvertHSLToRGB(geometry_info.rho,geometry_info.sigma,
