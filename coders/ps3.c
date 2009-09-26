@@ -87,7 +87,6 @@
 #define PS3_PseudoClass "1"
 
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-#include "tiffio.h"
 #define CCITTParam  "-1"
 #else
 #define CCITTParam  "0"

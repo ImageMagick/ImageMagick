@@ -365,7 +365,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   /*
     Read TIFF image.
   */
-  read_info=CloneImageInfo((Image *) NULL);
+  read_info=CloneImageInfo((ImageInfo *) NULL);
   (void) FormatMagickString(read_info->filename,MaxTextExtent,"%.1024s",
     filename);
   image=ReadTIFFImage(read_info,exception);
@@ -1887,7 +1887,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
     filename);
   (void) SetImageType(huffman_image,BilevelType);
-  write_info=CloneImageInfo((Image *) NULL);
+  write_info=CloneImageInfo((ImageInfo *) NULL);
   SetImageInfoFile(write_info,file);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
