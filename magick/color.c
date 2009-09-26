@@ -681,7 +681,10 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
-  if ((channel == RedChannel) && (pixel->colorspace == HSLColorspace))
+  if ((channel == RedChannel) &&
+      ((pixel->colorspace == HSBColorspace) ||
+       (pixel->colorspace == HSLColorspace) ||
+       (pixel->colorspace == HWBColorspace)))
     {
       (void) FormatMagickString(component,MaxTextExtent,"%g",
         360.0*(QuantumScale*color));
@@ -3308,19 +3311,57 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
             color->opacity=(MagickRealType) RoundToQuantum((MagickRealType)
               (QuantumRange-QuantumRange*geometry_info.sigma));
         }
+      if (LocaleCompare(colorspace,"HSB") == 0)
+        {
+          PixelPacket
+            pixel;
+
+          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
+            360.0)/360.0;
+          scale=1.0/255.0;
+          if ((flags & PercentValue) != 0)
+            scale=1.0/100.0;
+          geometry_info.sigma*=scale;
+          geometry_info.xi*=scale;
+          ConvertHSBToRGB(geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,&pixel.red,&pixel.green,&pixel.blue);
+          color->colorspace=RGBColorspace;
+          color->red=(MagickRealType) pixel.red;
+          color->green=(MagickRealType) pixel.green;
+          color->blue=(MagickRealType) pixel.blue;
+        }
       if (LocaleCompare(colorspace,"HSL") == 0)
         {
           PixelPacket
             pixel;
 
+          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
+            360.0)/360.0;
           scale=1.0/255.0;
           if ((flags & PercentValue) != 0)
             scale=1.0/100.0;
-          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
-            360.0)/360.0;
           geometry_info.sigma*=scale;
           geometry_info.xi*=scale;
           ConvertHSLToRGB(geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,&pixel.red,&pixel.green,&pixel.blue);
+          color->colorspace=RGBColorspace;
+          color->red=(MagickRealType) pixel.red;
+          color->green=(MagickRealType) pixel.green;
+          color->blue=(MagickRealType) pixel.blue;
+        }
+      if (LocaleCompare(colorspace,"HWB") == 0)
+        {
+          PixelPacket
+            pixel;
+
+          geometry_info.rho=fmod(fmod(scale*geometry_info.rho,360.0)+360.0,
+            360.0)/360.0;
+          scale=1.0/255.0;
+          if ((flags & PercentValue) != 0)
+            scale=1.0/100.0;
+          geometry_info.sigma*=scale;
+          geometry_info.xi*=scale;
+          ConvertHWBToRGB(geometry_info.rho,geometry_info.sigma,
             geometry_info.xi,&pixel.red,&pixel.green,&pixel.blue);
           color->colorspace=RGBColorspace;
           color->red=(MagickRealType) pixel.red;
