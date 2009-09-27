@@ -42,7 +42,7 @@ Here are just a few examples of what ImageMagick can do:
     * High dynamic-range images: accurately represent the wide range of
     * intensity levels found in real scenes ranging from the brightest direct
       sunlight to the deepest darkest shadows
-    * Large image support: read, process, or write mega- and giga-pixel image
+    * Large image support: read, process, or write mibi- and gibi-pixel image
       sizes
     * Encipher or decipher an image: convert ordinary images into
       unintelligible gibberish and back again
