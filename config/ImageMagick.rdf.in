@@ -50,7 +50,7 @@
             * High dynamic-range imaging: accurately represent the wide range of
               intensity levels found in real scenes ranging from the brightest direct
               sunlight to the deepest darkest shadows
-            * Large image support: read, process, or write mega- and giga-pixel image
+            * Large image support: read, process, or write mibi- and mibi-pixel image
               sizes</description>
 
     <maintainer>
