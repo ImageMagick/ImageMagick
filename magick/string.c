@@ -1012,7 +1012,10 @@ MagickExport long FormatMagickSize(const MagickSizeType size,char *format)
     j;
 
   static const char
-    *units[] = { "b", "kb", "mb", "gb", "tb", "pb", "eb", (char *) NULL };
+    *units[] =
+    {
+      "b", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", (char *) NULL
+    };
 
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
   length=(double) ((MagickOffsetType) size);
@@ -1021,7 +1024,7 @@ MagickExport long FormatMagickSize(const MagickSizeType size,char *format)
 #endif
   for (i=0; (length >= 1024.0) && (units[i+1] != (const char *) NULL); i++)
     length/=1024.0;
-  for (j=2; j < 10; j++)
+  for (j=2; j < 12; j++)
   {
     count=FormatMagickString(format,MaxTextExtent,"%.*g%s",(int) (i+j),length,
       units[i]);

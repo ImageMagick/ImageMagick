@@ -851,13 +851,13 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (resource_info.time_limit != MagickResourceInfinity)
     (void) FormatMagickString(time_limit,MaxTextExtent,"%lu",(unsigned long)
       resource_info.time_limit);
-  (void) fprintf(file,"File       Area     Memory        Map"
-    "       Disk  Thread       Time\n");
-  (void) fprintf(file,"-----------------------------------------------------"
-    "--------------\n");
-  (void) fprintf(file,"%4lu  %9s  %9s  %9s  %9s  %6lu  %9s\n",(unsigned long)
-    resource_info.file_limit,area_limit,memory_limit,map_limit,disk_limit,
-    (unsigned long) resource_info.thread_limit,time_limit);
+  (void) fprintf(file,"File        Area      Memory         Map"
+    "        Disk  Thread        Time\n");
+  (void) fprintf(file,"------------------------------------------------------"
+    "------------------\n");
+  (void) fprintf(file,"%4lu  %10s  %10s  %10s  %10s  %6lu  %10s\n",
+    (unsigned long) resource_info.file_limit,area_limit,memory_limit,map_limit,
+    disk_limit,(unsigned long) resource_info.thread_limit,time_limit);
   (void) fflush(file);
   RelinquishSemaphoreInfo(resource_semaphore);
   return(MagickTrue);
