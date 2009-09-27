@@ -10,7 +10,7 @@
 2009-09-22  6.5.6-4 Cristy  <quetzlzacatenango@image...>
   * Don't compile Huffman2DEncodeImage() unless the TIFF delegate library
     is enabled.
-  * Hue in hsl() format is 0-359 and does not use %.
+  * Hue in hsl() format is 0-360 and does not use %.
 
 2009-09-21  6.5.6-3 Cristy  <quetzlzacatenango@image...>
   * Deprecate LevelImageColors(), replace with LevelColorsImage().
