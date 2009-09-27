@@ -46,6 +46,9 @@ extern MagickExport FILE
 extern MagickExport int
   SystemCommand(const MagickBooleanType,const char *,ExceptionInfo *);
 
+extern MagickExport long
+  GetMagickPageSize(void);
+
 extern MagickExport MagickBooleanType
   AcquireUniqueFilename(char *),
   AcquireUniqueSymbolicLink(const char *,char *),

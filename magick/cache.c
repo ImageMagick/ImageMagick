@@ -4122,7 +4122,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     clone_image;
 
   long
-    pagesize;
+    page_size;
 
   MagickBooleanType
     status;
@@ -4134,14 +4134,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   assert(image->cache != (void *) NULL);
   assert(filename != (const char *) NULL);
   assert(offset != (MagickOffsetType *) NULL);
-  pagesize=(-1);
-#if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PAGESIZE)
-  pagesize=sysconf(_SC_PAGESIZE);
-#elif defined(MAGICKCORE_HAVE_GETPAGESIZE) && defined(MAGICKCORE_POSIX_SUPPORT)
-  pagesize=getpagesize();
-#endif
-  if (pagesize <= 0)
-    pagesize=4096;
+  page_size=GetMagickPageSize();
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (attach != MagickFalse)
@@ -4158,7 +4151,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       cache_info->offset=(*offset);
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
-      *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
+      *offset+=cache_info->length+page_size-(cache_info->length % page_size);
       return(MagickTrue);
     }
   if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
@@ -4179,8 +4172,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
             {
               (void) CopyMagickString(cache_info->cache_filename,filename,
                 MaxTextExtent);
-              *offset+=cache_info->length+pagesize-(cache_info->length %
-                pagesize);
+              *offset+=cache_info->length+page_size-(cache_info->length %
+                page_size);
               (void) UnlockSemaphoreInfo(cache_info->semaphore);
               cache_info=(CacheInfo *) ReferencePixelCache(cache_info);
               if (image->debug != MagickFalse)
@@ -4209,7 +4202,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       if (status != MagickFalse)
        status=ClonePixelCachePixels(cache_info,clone_info,&image->exception);
     }
-  *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
+  *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
   return(status);
 }

@@ -970,6 +970,43 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a g i c k P a g e S i z e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickPageSize() returns the memory page size.
+%
+%  The format of the GetMagickPageSize method is:
+%
+%      long GetMagickPageSize()
+%
+*/
+MagickExport long GetMagickPageSize(void)
+{
+  static long
+    page_size = -1;
+
+  if (page_size > 0)
+    return(page_size);
+#if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
+  page_size=sysconf(_SC_PAGE_SIZE);
+#endif
+#if defined(MAGICKCORE_HAVE_GETPAGESIZE)
+  if (page_size <= 0)
+    page_size=getpagesize();
+#endif
+  if (page_size <= 0)
+    page_size=16384;
+  return(page_size);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t P a t h A t t r i b u t e s                                         %
 %                                                                             %
 %                                                                             %
