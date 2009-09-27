@@ -707,12 +707,7 @@ MagickExport void InitializeMagickResources(void)
   /*
     Set Magick resource limits.
   */
-  pagesize=(-1);
-#if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PAGESIZE)
-  pagesize=sysconf(_SC_PAGESIZE);
-#elif defined(MAGICKCORE_HAVE_GETPAGESIZE) && defined(MAGICKCORE_POSIX_SUPPORT)
-  pagesize=getpagesize();
-#endif
+  pagesize=GetMagickPageSize();
   pages=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
   pages=sysconf(_SC_PHYS_PAGES);

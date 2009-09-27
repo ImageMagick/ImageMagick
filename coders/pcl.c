@@ -650,6 +650,9 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent];
 
+  const char
+    *option;
+
   long
     y;
 
@@ -782,7 +785,12 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,buffer);
           }
         }
-    (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */
+    option=GetImageOption(image_info,"pcl:fit-to-page");
+    if ((option != (const char *) NULL) &&
+        (IsMagickTrue(option) != MagickFalse))
+      (void) WriteBlobString(image,"\033*r3A");
+    else
+      (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */
     (void) WriteBlobString(image,"\033*b0Y");  /* set y offset */
     length=(image->columns*bits_per_pixel+7)/8;
     pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
