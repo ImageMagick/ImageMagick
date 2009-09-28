@@ -431,12 +431,12 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
       }
   }
 #endif
-#if defined(MAGICKCORE_HAVE_CLOCK_GETTIME) && defined(CLOCK_HIGHRES)
+#if defined(MAGICKCORE_HAVE_CLOCK_GETTIME) && defined(CLOCK_REALTIME_HR)
   {
     struct timespec
       timer;
 
-    if (clock_gettime(CLOCK_HIGHRES,&timer) == 0)
+    if (clock_gettime(CLOCK_REALTIME_HR,&timer) == 0)
       {
         seconds=timer.tv_sec;
         nanoseconds=timer.tv_nsec;
