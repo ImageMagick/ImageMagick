@@ -631,6 +631,9 @@ namespace Magick
     // photographic film to light during the development process)
     void            solarize ( const double factor_ = 50.0 );
     
+    // Splice the background color into the image.
+    void            splice ( const Geometry &geometry_ );
+
     // Spread pixels randomly within image by specified ammount
     void            spread ( const unsigned int amount_ = 3 );
     

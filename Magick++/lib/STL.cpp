@@ -1521,6 +1521,16 @@ void Magick::sizeImage::operator()( Magick::Image &image_ ) const
   image_.size( _geometry );
 }
 
+// Splice the background color into the image.
+Magick::spliceImage::spliceImage( const Magick::Geometry &geometry_ )
+  : _geometry( geometry_ )
+{
+}
+void Magick::spliceImage::operator()( Magick::Image &image_ ) const
+{
+  image_.splice( _geometry );
+}
+
 // Subimage of an image sequence
 Magick::subImageImage::subImageImage( const unsigned int subImage_ )
   : _subImage( subImage_ )

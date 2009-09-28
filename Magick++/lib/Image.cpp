@@ -3514,6 +3514,19 @@ Magick::Geometry Magick::Image::size ( void ) const
   return Magick::Geometry( constImage()->columns, constImage()->rows );
 }
 
+// Splice image
+void Magick::Image::splice( const Geometry &geometry_ )
+{
+  RectangleInfo spliceInfo = geometry_;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    SpliceImage( image(), &spliceInfo, &exceptionInfo);
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Obtain image statistics. Statistics are normalized to the range of
 // 0.0 to 1.0 and are output to the specified ImageStatistics
 // structure.

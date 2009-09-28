@@ -1015,6 +1015,18 @@ namespace Magick
     double _factor;
   };
 
+  // Splice the background color into the image.
+  class MagickDLLDecl spliceImage : public std::unary_function<Image&,void>
+  {
+  public:
+    spliceImage( const Geometry &geometry_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    Geometry _geometry;
+  };
+
   // Spread pixels randomly within image by specified ammount
   class MagickDLLDecl spreadImage : public std::unary_function<Image&,void>
   {
