@@ -194,7 +194,7 @@ static double ElapsedTime(void)
   struct tms
     timer;
 
-  return((double) (times(&timer)/CLK_TCK));
+  return((double) times(&timer)/CLK_TCK);
 #else
 #if defined(__WINDOWS__)
   return(NTElapsedTime());
