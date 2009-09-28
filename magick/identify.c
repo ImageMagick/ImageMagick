@@ -243,8 +243,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           (void) fprintf(file,"%s ",format);
         }
       if (elapsed_time > 0.06)
-        (void) fprintf(file,"%0.3fu %ld:%02ld",user_time,(long)
-          (elapsed_time/60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)));
+        (void) fprintf(file,"%0.3fu %ld:%02ld.%03ld",user_time,(long)
+          (elapsed_time/60.0+0.5),(long) floor(fmod(elapsed_time,60.0)),
+          (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
       (void) fprintf(file,"\n");
       (void) fflush(file);
       return(ferror(file) != 0 ? MagickFalse : MagickTrue);
@@ -992,8 +993,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->rows/elapsed_time+0.5),format);
       (void) fprintf(file,"  Pixels per second: %s\n",format);
       (void) fprintf(file,"  User time: %0.3fu\n",user_time);
-      (void) fprintf(file,"  Elapsed time: %ld:%02ld\n",(long) (elapsed_time/
-        60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)));
+      (void) fprintf(file,"  Elapsed time: %ld:%02ld.%03ld\n",(long) (
+        elapsed_time/60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)),
+        (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
     }
   (void) fprintf(file,"  Version: %s\n",GetMagickVersion(
     (unsigned long *) NULL));
