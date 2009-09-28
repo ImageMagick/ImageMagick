@@ -1,3 +1,6 @@
+2009-09-25  6.5.6-6 Cristy  <quetzlzacatenango@image...>
+  * Permit percentage of hue for HSL (e.g. hsl(12%,...)).
+
 2009-09-25  6.5.6-5 Cristy  <quetzlzacatenango@image...>
   * Support -clamp option.
   * Patch for IsMagickColorEqual() for HDRI.
