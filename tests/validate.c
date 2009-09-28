@@ -1208,7 +1208,6 @@ int main(int argc,char **argv)
 {
 #define DestroyValidate() \
 { \
-  timer=DestroyTimerInfo(timer); \
   image_info=DestroyImageInfo(image_info); \
   exception=DestroyExceptionInfo(exception); \
 }
@@ -1358,6 +1357,7 @@ int main(int argc,char **argv)
         ThrowValidateException(OptionError,"UnrecognizedOption",option)
     }
   }
+  timer=(TimerInfo *) NULL;
   if (iterations > 1)
     timer=AcquireTimerInfo();
   reference_image=ReadImage(image_info,exception);
