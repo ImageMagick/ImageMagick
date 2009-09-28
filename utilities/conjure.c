@@ -150,7 +150,7 @@ int main(int argc,char **argv)
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,"Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
         iterations,1.0*iterations/elapsed_time,user_time,(long)
-        (elapsed_time/60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)),
+        (elapsed_time/60.0+0.5),(long) floor(fmod(elapsed_time,60.0)),
         (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
       timer=DestroyTimerInfo(timer);
     }
