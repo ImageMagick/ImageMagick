@@ -115,7 +115,7 @@ int main(int argc,char **argv)
     i;
 
   TimerInfo
-    timer;
+    *timer;
 
   unsigned long
     iterations;
@@ -137,7 +137,9 @@ int main(int argc,char **argv)
     if (LocaleCompare("regard-warnings",option+1) == 0)
       regard_warnings=MagickTrue;
   }
-  GetTimerInfo(&timer);
+  timer=(TimerInfo *) NULL;
+  if (iterations > 1)
+    timer=AcquireTimerInfo();
   for (i=0; i < (long) iterations; i++)
   {
     image_info=AcquireImageInfo();
@@ -153,11 +155,13 @@ int main(int argc,char **argv)
   }
   if (iterations > 1)
     {
-      elapsed_time=GetElapsedTime(&timer);
-      user_time=GetUserTime(&timer);
-      (void) fprintf(stderr,"Performance: %lui %gips %0.3fu %ld:%02ld\n",
+      elapsed_time=GetElapsedTime(timer);
+      user_time=GetUserTime(timer);
+      (void) fprintf(stderr,"Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
         iterations,1.0*iterations/elapsed_time,user_time,(long)
-        (elapsed_time/60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)));
+        (elapsed_time/60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)),
+        (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+      timer=DestroyTimerInfo(timer);
     }
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
