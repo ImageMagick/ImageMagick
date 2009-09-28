@@ -113,8 +113,11 @@
 /* Define to 1 if you have the `clock' function. */
 #undef HAVE_CLOCK
 
-/* Define to 1 if you have the `clock_gettime' function. */
+/* Define to 1 if you have clock_gettime. */
 #undef HAVE_CLOCK_GETTIME
+
+/* Define to 1 if clock_gettime supports CLOCK_REALTIME. */
+#undef HAVE_CLOCK_REALTIME
 
 /* Define to 1 if you have the `closedir' function. */
 #undef HAVE_CLOSEDIR

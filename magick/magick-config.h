@@ -172,9 +172,14 @@
 #define MAGICKCORE_HAVE_CLOCK  1 
 #endif
 
-/* Define to 1 if you have the `clock_gettime' function. */
+/* Define to 1 if you have clock_gettime. */
 #ifndef MAGICKCORE_HAVE_CLOCK_GETTIME 
 #define MAGICKCORE_HAVE_CLOCK_GETTIME  1 
+#endif
+
+/* Define to 1 if clock_gettime supports CLOCK_REALTIME. */
+#ifndef MAGICKCORE_HAVE_CLOCK_REALTIME 
+#define MAGICKCORE_HAVE_CLOCK_REALTIME  1 
 #endif
 
 /* Define to 1 if you have the `closedir' function. */

@@ -987,7 +987,31 @@ AC_TYPE_SIGNAL
 AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 
-AC_CHECK_FUNCS([_exit atexit clock clock_gettime directio execvp floor fork ftime ftruncate getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r localtime_r lstat memmove memset mkstemp munmap _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign pow pread pwrite raise rand_r readlink readdir_r realpath select seekdir setlocale sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtol symlink sysconf sigemptyset sigaction strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times usleep vsprintf vsnprintf waitpid _wfopen _wstat])
+AC_CHECK_FUNCS([_exit atexit clock directio execvp floor fork ftime ftruncate getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r localtime_r lstat memmove memset mkstemp munmap _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign pow pread pwrite raise rand_r readlink readdir_r realpath select seekdir setlocale sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtol symlink sysconf sigemptyset sigaction strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times usleep vsprintf vsnprintf waitpid _wfopen _wstat])
+
+#
+# Check for clock_gettime().
+#
+AC_SEARCH_LIBS(clock_gettime, rt,
+[
+  AC_DEFINE([HAVE_CLOCK_GETTIME],[1],[Define to 1 if you have clock_gettime.])
+  AC_MSG_CHECKING([whether clock_gettime supports CLOCK_REALTIME])
+  AC_COMPILE_IFELSE(
+    AC_LANG_PROGRAM(
+      [[#include <time.h>]],
+       [[clockid_t clockType = CLOCK_REALTIME;]]),
+      [
+        AC_MSG_RESULT(yes)
+      	AC_DEFINE([HAVE_CLOCK_REALTIME],[1],
+          [Define to 1 if clock_gettime supports CLOCK_REALTIME.])
+      ],
+      AC_MSG_RESULT(no)
+    )
+  ],
+  [
+    AC_CHECK_FUNCS([gettimeofday ftime], [break])
+  ]
+)
 
 ########
 #
