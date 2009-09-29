@@ -85,7 +85,21 @@
 #define ulonglong  unsigned long long
 #endif
 
+#ifdef __VMS
+#define JAS_VERSION 1.700.0
+#define PACKAGE jasper
+#define VERSION 1.700.0
+#endif
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
 #include "jasper/jasper.h"
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+
 #endif
 
 /*
@@ -341,6 +355,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   QuantumAny
+    pixel,
     range[4];
 
   register long
@@ -353,7 +368,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned long
     maximum_component_depth,
     number_components,
-    pixel,
     x_step[4],
     y_step[4];
 
@@ -386,8 +400,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) jas_stream_close(jp2_stream);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
-  image->columns=jas_image_width(jp2_image);
-  image->rows=jas_image_height(jp2_image);
   switch (jas_clrspc_fam(jas_image_clrspc(jp2_image)))
   {
     case JAS_CLRSPC_FAM_RGB:
@@ -450,6 +462,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CoderError,"ColorspaceModelIsNotSupported");
     }
   }
+  image->columns=jas_image_width(jp2_image);
+  image->rows=jas_image_height(jp2_image);
   image->compression=JPEG2000Compression;
   for (i=0; i < (long) number_components; i++)
   {
@@ -461,27 +475,23 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       jas_image_cmpthstep(jp2_image,components[i]));
     height=(unsigned long) (jas_image_cmptheight(jp2_image,components[i])*
       jas_image_cmptvstep(jp2_image,components[i]));
+    x_step[i]=(unsigned int) jas_image_cmpthstep(jp2_image,components[i]);
+    y_step[i]=(unsigned int) jas_image_cmptvstep(jp2_image,components[i]);
     if ((width != image->columns) || (height != image->rows) ||
         (jas_image_cmpttlx(jp2_image,components[i]) != 0) ||
-        (jas_image_cmpttly(jp2_image,components[i]) != 0))
+        (jas_image_cmpttly(jp2_image,components[i]) != 0) ||
+        (x_step[i] != 1) || (y_step[i] != 1) ||
+        (jas_image_cmptsgnd(jp2_image,components[i]) != MagickFalse))
       {
         (void) jas_stream_close(jp2_stream);
         jas_image_destroy(jp2_image);
         ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported");
       }
-    x_step[i]=(unsigned int) jas_image_cmpthstep(jp2_image,components[i]);
-    y_step[i]=(unsigned int) jas_image_cmptvstep(jp2_image,components[i]);
   }
   /*
     Convert JPEG 2000 pixels.
   */
   image->matte=number_components > 3 ? MagickTrue : MagickFalse;
-  if (image_info->ping != MagickFalse)
-    {
-      (void) jas_stream_close(jp2_stream);
-      jas_image_destroy(jp2_image);
-      return(GetFirstImageInList(image));
-    }
   maximum_component_depth=0;
   for (i=0; i < (long) number_components; i++)
   {
@@ -491,14 +501,19 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels[i]=jas_matrix_create(1,(int) (image->columns/x_step[i]));
     if (pixels[i] == (jas_matrix_t *) NULL)
       {
+        for (--i; i >= 0; i--)
+          jas_matrix_destroy(pixels[i]);
         jas_image_destroy(jp2_image);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
   }
-  if (maximum_component_depth <= 8)
-    image->depth=(unsigned long) MagickMin(MAGICKCORE_QUANTUM_DEPTH,8);
-  else
-    image->depth=(unsigned long) MagickMin(MAGICKCORE_QUANTUM_DEPTH,16);
+  image->depth=maximum_component_depth;
+  if (image_info->ping != MagickFalse)
+    {
+      (void) jas_stream_close(jp2_stream);
+      jas_image_destroy(jp2_image);
+      return(GetFirstImageInList(image));
+    }
   for (i=0; i < (long) number_components; i++)
     range[i]=GetQuantumRange((unsigned long) jas_image_cmptprec(jp2_image,
       components[i]));
@@ -820,6 +835,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if ((image->columns != (unsigned int) image->columns) ||
       (image->rows != (unsigned int) image->rows))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+  (void) ResetMagickMemory(&component_info,0,sizeof(component_info));
   for (i=0; i < (long) number_components; i++)
   {
     component_info[i].tlx=0;
@@ -828,8 +844,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].vstep=1;
     component_info[i].width=(unsigned int) image->columns;
     component_info[i].height=(unsigned int) image->rows;
-    component_info[i].prec=(int) MagickMin(image->depth,16);
+    component_info[i].prec=(int) MagickMax(MagickMin(image->depth,16),2);
     component_info[i].sgnd=MagickFalse;
+    
   }
   jp2_image=jas_image_create((int) number_components,component_info,
     JAS_CLRSPC_UNKNOWN);
@@ -849,8 +866,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       /*
         sRGB.
       */
-      if (number_components == 4 )
-        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_SRGB);
       jas_image_setcmpttype(jp2_image,0,
         JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
@@ -858,6 +873,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
       jas_image_setcmpttype(jp2_image,2,
         JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
+      if (number_components == 4)
+        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
     }
   /*
     Convert to JPEG 2000 pixels.
@@ -932,7 +949,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if ((option == (const char *) NULL) &&
       (image_info->compression != LosslessJPEGCompression) &&
       (image->quality != UndefinedCompressionQuality) &&
-      (image->quality <= 99) && ((image->rows*image->columns) > 2500))
+      ((double) image->quality <= 99.5) &&
+      ((image->rows*image->columns) > 2500))
     {
       char
         option[MaxTextExtent];
