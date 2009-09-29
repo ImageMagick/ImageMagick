@@ -242,10 +242,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           (void) FormatMagickSize(GetBlobSize(image),format);
           (void) fprintf(file,"%s ",format);
         }
-      if (elapsed_time > 0.06)
-        (void) fprintf(file,"%0.3fu %ld:%02ld.%03ld",user_time,(long)
-          (elapsed_time/60.0+0.5),(long) floor(fmod(elapsed_time,60.0)),
-          (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+      (void) fprintf(file,"%0.3fu %ld:%02ld.%03ld",user_time,(long)
+        (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
+        (long) (1000.0*(elapsed_time-floor(elapsed_time))));
       (void) fprintf(file,"\n");
       (void) fflush(file);
       return(ferror(file) != 0 ? MagickFalse : MagickTrue);
@@ -987,18 +986,15 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) fprintf(file,"  Filesize: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,format);
   (void) fprintf(file,"  Number pixels: %s\n",format);
-  if (elapsed_time > 0.06)
-    {
-      (void) FormatMagickSize((MagickSizeType) ((double) image->columns*
-        image->rows/elapsed_time+0.5),format);
-      (void) fprintf(file,"  Pixels per second: %s\n",format);
-      (void) fprintf(file,"  User time: %0.3fu\n",user_time);
-      (void) fprintf(file,"  Elapsed time: %ld:%02ld.%03ld\n",(long) (
-        elapsed_time/60.0+0.5),(long) ceil(fmod(elapsed_time,60.0)),
-        (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
-    }
-  (void) fprintf(file,"  Version: %s\n",GetMagickVersion(
-    (unsigned long *) NULL));
+  (void) FormatMagickSize((MagickSizeType) ((double) image->columns*image->rows/
+    elapsed_time+0.5),format);
+  (void) fprintf(file,"  Pixels per second: %s\n",format);
+  (void) fprintf(file,"  User time: %0.3fu\n",user_time);
+  (void) fprintf(file,"  Elapsed time: %ld:%02ld.%03ld\n",(long)
+    (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),(long)
+    (1000.0*(elapsed_time-floor(elapsed_time))));
+  (void) fprintf(file,"  Version: %s\n",GetMagickVersion((unsigned long *)
+    NULL));
   (void) fflush(file);
   return(ferror(file) != 0 ? MagickFalse : MagickTrue);
 }
