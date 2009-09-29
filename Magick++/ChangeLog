@@ -1,3 +1,6 @@
+2009-09-28  6.5.6-6 Cristy  <quetzlzacatenango@image...>
+  * Add splice() method to splice the background color into the image.
+
 2009-04-01  6.5.1-1 Cristy  <quetzlzacatenango@image...>
   * Add virtualPixelMethod() method for image and options, required for
     distort().
