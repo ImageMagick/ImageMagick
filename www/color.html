@@ -124,6 +124,9 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20090501000200 -->
+</div>
+<div  class="sponsor">
   <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
 </div>
 <div  class="sponsor">
@@ -152,7 +155,7 @@
 <p class="navigation-index">[<a href="#usage">Example Usage</a> &bull; <a href="#models">Color Model Specification</a> &bull; <a href="#color_names">List of Color Names</a>]</p>
 
 <div class="doc-section">
-<p>A number of ImageMagick options and methods take a color as an argument. The color can then be given as a color name (there is a limited but large set of these; see below) or it can be given as a set of numbers (in decimal or hexadecimal), each corresponding to a channel in an RGB, RGBA,  HSL,  HSLA,  CMYK,  or CMYKA specification. These topics are briefly described in the sections below.</p>
+<p>A number of ImageMagick options and methods take a color as an argument. The color can then be given as a color name (there is a limited but large set of these; see below) or it can be given as a set of numbers (in decimal or hexadecimal), each corresponding to a channel in an RGB, RGBA,  HSL,  HSLA,  HSB, HSBA, CMYK, or CMYKA specification. These topics are briefly described in the sections below.</p>
 </div>
 
 <h2><a name="usage"></a>Example Usage</h2>
@@ -168,29 +171,30 @@
 <h2><a name="models"></a>Color Model Specification</h2>
 <div class="doc-section">
 
-<p>The RGB, CMYK, and HSL color models are used in numerical color specifications. These examples all specify the same red RGB color:</p>
+<p>The RGB, CMYK, HSL and HSB color models are used in numerical color specifications. These examples all specify the same red RGB color:</p>
 
 <pre class="text">
-  #f00                #rgb
-  #ff0000             #rrggbb
-  #ffff00000000       #rrrrggggbbbb
-  #ffff000000000ffff  #rrrrggggbbbbaaaa
-  rgb(255, 0, 0)      an integer in the range 0&mdash;255 for each component
+  #f00                      #rgb
+  #ff0000                   #rrggbb
+  #ffff00000000             #rrrrggggbbbb
+  #ffff00000000ffff         #rrrrggggbbbbaaaa
+  rgb(255, 0, 0)            an integer in the range 0&mdash;255 for each component
+  rgb(100.0%, 0.0%, 0.0%)   a float in the range 0&mdash;100% for each component
 </pre >
 
 <p>The format of an RGB value in hexadecimal notation is a '#' immediately followed by either three, six, or twelve hexadecimal characters. The three-digit RGB notation (#rgb) is converted into six-digit form (#rrggbb) by replicating digits, not by adding zeros. For example,  #fb0 expands to #ffbb00. This ensures that white (#ffffff) can be specified with the short notation (#fff) and removes any dependencies on the color depth of the image. Use the hexadecimal notation whenever performance is an issue.  ImageMagick does not need to load the expansive color table to interpret a hexadecimal color, e.g., <kbd>#000000</kbd>, but it does if <kbd>black</kbd> is used instead.</p>
 
-<p>The format of an RGB value in the functional notation is 'rgb(<em>r</em>,<em>g</em>,<em>b</em>)',  where  <em>r</em>, <em>g</em>, and <em>b</em> are either three integer values or three percentage values. RGB values range from 0 to 255 (or 0% to 100%). The integer value 255 corresponds to 100%, and to #F or #FF in the hexadecimal notation: rgb(255, 255, 255) = rgb(100%, 100%, 100%) = #FFF = #FFFFFF. </p>
+<p>The format of an RGB value in the functional notation is 'rgb(<em>r</em>,<em>g</em>,<em>b</em>)',  where  <em>r</em>, <em>g</em>, and <em>b</em> are either three integer or float values in the range 0&mdash;255 or three integer or float percentage values in the range 0&mdash;100%. The value 255 corresponds to 100%, and to #F or #FF in the hexadecimal notation: rgb(255, 255, 255) = rgb(100%, 100%, 100%) = #FFF = #FFFFFF. </p>
 
 <p>White space characters are allowed around the numerical values, at least if the entire color argument is enclosed in quotes ('single quotes' for Unix-like systems, "double quotes" for Windows).</p>
 
 <p>The RGB color model is extended in this specification to include <em>alpha</em> to allow specification of the transparency of a color. These examples all specify the same color:</p>
 
 <pre class="text">
-  rgb(255, 0, 0)                 integer range 0 - 255
+  rgb(255, 0, 0)                 range 0 - 255
   rgba(255, 0, 0, 1.0)           the same, with an explicit alpha value
-  rgb(100.0%, 0.0%, 0.0%)        float range 0.0% - 100.0%
-  rgba(100.0%, 0.0%, 0.0%, 1.0)  the same, with an explicit alpha value
+  rgb(100%, 0%, 0%)              range 0.0% - 100.0%
+  rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value
 </pre>
 
 <p>The format of an RGBA value in the functional notation is 'rgba(<em>r</em>,<em>g</em>,<em>b</em>,<em>a</em>)',  where  <em>r</em>, <em>g</em>, and <em>b</em> are as described above for the RGB functional notation, and where the alpha value <em>a</em> ranges from 0.0 (fully transparent) to 1.0 (fully opaque).</p>
@@ -204,30 +208,59 @@
   graya(50%, 0.5)  semi-transparent mid gray
 </pre>
 
-<p>The ImageMagick color model also supports hue-saturation-lightness (HSL) colors as a complement to numerical RGB colors. HSL colors are encoding as a triple (hue, saturation,  lightness). </p>
+<p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical RGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0&mdash;360, saturation 0&mdash;255, ligthness or brightness 0&mdash;255) or as percentage values relative to these ranges.</p>
 
-<p>Hue is represented as an angle of the color circle (i.e. the rainbow represented in a circle). This angle is so typically measured in degrees that the unit is implicit in CSS; syntactically,  only a <em>number</em> is given. By definition red=0=360,  and the other colors are spread around the circle,  so green=120,  blue=240,  etc. As an angle,  it implicitly wraps around such that -120=240 and 480=120, for instance. (Students of trigonometry would say that "coterminal angles are equivalent" here; an angle <em>&theta;</em> can be standardized by computing the equivalent angle, <em>&theta;</em>&nbsp;mod&nbsp;360.) </p>
+<p>The HSB color system is geometrically represented as a cone with its apex pointing downward. Hue is measured around the perimeter. Saturation is measured from the axis outward. Brightness is measured from the apex upward.</p>
 
-<p>Saturation and lightness are represented as percentages. 100% is full saturation,  and 0% is a shade of grey. 0% lightness is black,  100% lightness is white,  and 50% lightness is 'normal'.  For example:</p>
+<p>The HSL color system is geometrically represented as a stacked double cone with one apex pointing downward and the other pointing upward. The widest ends of both cones are stacked together one on top of the other. Hue is measured around the perimeter. Saturation is measured from the axis outward. Lightness is measured from the bottom apex upward.</p>
 
-<pre class="text">
-  hsl(0, 100%,  50%)    red
-  hsl(120, 100%,  50%)  green
-  hsl(120, 100%,  25%)  light green
-  hsl(120, 100%,  75%)  dark green
-  hsl(120, 50%,  50%)   pastel green
-</pre>
+<p>See <a href="http://en.wikipedia.org/wiki/HSL_and_HSV" target="_blank">http://en.wikipedia.org/wiki/HSL_and_HSV</a> for more details on HSL and HSB color systems.</p>
 
-<p>One advantage of HSL over RGB is that it can be more intuitive: you can guess at the colors you want, and then tweak. It is also easier to create sets of matching colors (by keeping the hue the same and varying the lightness and saturation, for example).</p>
+<p>Hue is represented as an angle of the color around the circular perimeter of the cone(s) (i.e. the rainbow represented in a circle). Hue values are either integer or floats in the range 0&mdash;360 or integer or float percentage values in the range 0&mdash;100%. By definition red=0=360 (or 0%=100%),  and the other colors are spread around the circle,  so green=120 (or 33.3333%),  blue=240 (or (66.6667%), etc. As an angle, it implicitly wraps around such that -120=240 and 480=120, for instance. (Students of trigonometry would say that "coterminal angles are equivalent" here; an angle <em>&theta;</em> can be standardized by computing the equivalent angle, <em>&theta;</em>&nbsp;mod&nbsp;360.)</p>
 
-<p>The format of an HSL color value in the functional notation is hsl(<em>h</em>,<em>s</em>,<em>l</em>).  The hue value <em>h</em> ranges from 0 to 360.  Saturation and lightness (<em>s</em> and <em>l</em>) range from 0 to 255</p>
+<p>Saturation is measure outward from the central axis of the cone(s) toward the perimeter of the cone(s). Saturation may be expressed as an integer or float in the range 0&mdash;255 or as an integer or float percentage in the range 0&mdash;100. Saturation may be thought of as the absence of any "white" mixed with the base color. Thus 255 or 100% is full saturation and corresponds to a point on the outside surface of the cone (HSB) or double cone (HSL). It will be the most "colorful" region. 0 or 0% is no saturation which results in some shade of gray. It occurs along the central axis of the cone or double cone with black at the bottom apex and white at the top.</p>
 
-<p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' functional notation has its 'hsla()' alpha counterpart. These examples specify the same color:</p>
+<p>Brightness and Lightness also may be represented as integers or floats in the range 0&mdash;255 or as integer or float percentages in the range 0&mdash;100%. Brightness and Lightness are measured from the bottom apex upward to the top of the cone or double cone along the cone(s) central axis. 0 or 0% corresponds to the bottom apex and 255 or 100% corresponds to the top center of the cone for Brightness and to the top apex of the double cone for Lightness.</p>
+
+<p>The HSB color system is a little easier to understand than the HSL color system. In the HSB color system, black is at the bottom apex and white is at the top center of the cone on the central axis. The most colorful or saturated colors will then be at the outer edge of the top of the cone at the widest part. Thus at Saturation=100% and Brightness=100%</p>
 
 <pre class="text">
-  hsl(120, 100%,  50%)         green
-  hsla(120, 100%,  50%,  1.0)  the same, with an alpha value of 1.0
+  hsb(0%, 100%,  100%)          or    hsl(0, 255,  255)          full red
+  hsb(33.3333%, 100%,  100%)    or    hsl(120, 255,   255)       full green
+  hsb(33.3333%, 100%,  75%)     or    hsl(120, 255,   191.25)    medium green
+  hsb(33.3333%, 100%,  50%)     or    hsl(120, 255,   127.5)     dark green
+  hsb(33.3333%, 100%,  25%)     or    hsl(120, 255,   63.75)     very dark green
+  hsb(33.3333%, 50%,   50%)     or    hsl(120, 127.5, 127.5)     pastel green
 </pre>
+
+<p>In the HSL color system, black is at the bottom apex and white is at the top apex. However, saturation is largest at the middle of the double cone on its outer perimeter and thus at a lightness value of 50%. The most colorful or saturated colors will then be at the outer edge of the double cone at its widest part. Thus at Saturation=100% and Brightness=50%</p>
+
+<pre class="text">
+  hsl(0%, 100%,  50%)           or    hsl(0, 255,  127.5)        full red
+  hsb(33.3333%, 100%,  100%)    or    hsl(120, 255,   255)       white
+  hsl(33.3333%, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
+  hsl(33.3333%, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
+  hsl(33.3333%, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
+  hsl(33.3333%, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
+</pre>
+
+<p>One advantage of HSB or HSL over RGB is that it can be more intuitive: you can guess at the colors you want, and then tweak. It is also easier to create sets of matching colors (by keeping the hue the same and varying the brightness or lightness and saturation, for example).</p>
+
+<p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' and 'hsb()' functional notations have their 'hsla()' 'hsba()' alpha counterparts. These examples specify the same color:</p>
+
+<pre class="text">
+  hsb(33.3333%, 100%,  100%)         full green in hsb
+  hsba(33.3333%, 100%,  100%,  1.0)  the same, with an alpha value of 1.0
+  hsb(120, 255,  255)                full green in hsb
+  hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
+
+  hsl(33.3333%, 100%,  50%)          full green in hsl
+  hsla(33.3333%, 100%,  50%,  1.0)   the same, with an alpha value of 1.0
+  hsl(120, 255,  127.5)              full green in hsl
+  hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
+</pre>
+
+<p>Prior to ImageMagick 6.5.6-6, HSL (HSB) could only be specified with Hue in range 0&mdash;360, but Saturation and Lightness (Brightness) as percent in range 0&mdash;100%.</p>
 
 </div>
 

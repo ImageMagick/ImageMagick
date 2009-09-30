@@ -31546,9 +31546,9 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_CLOCK_GETTIME 1
 _ACEOF
 
-    { $as_echo "$as_me:$LINENO: checking whether clock_gettime supports CLOCK_REALTIME" >&5
+  { $as_echo "$as_me:$LINENO: checking whether clock_gettime supports CLOCK_REALTIME" >&5
 $as_echo_n "checking whether clock_gettime supports CLOCK_REALTIME... " >&6; }
-    cat >conftest.$ac_ext <<_ACEOF
+  cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -31559,7 +31559,6 @@ int
 main ()
 {
 clockid_t clockType = CLOCK_REALTIME;
-
   ;
   return 0;
 }
@@ -31709,7 +31708,6 @@ done
 
 
 fi
-
 
 
 ########
