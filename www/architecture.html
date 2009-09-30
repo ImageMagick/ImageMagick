@@ -123,7 +123,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.buerodruck.de/stempel-service/index.html">Stempel bestellen</a><!-- 200910000035+ -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20090501000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
@@ -237,7 +237,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have using the <a href="../www/command-line-options.html#version">&#x2011;version</a> option, as with this command: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.6-5 2009-09-55 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.6-6 2009-10-01 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).</p>
 </div>
 
@@ -351,7 +351,7 @@
 <h3>Cache Storage and Resource Requirements</h3>
 <div class="doc-section">
 
-<p>We mentioned previously that this simple and elegant design of the ImageMagick pixel cache comes at a cost in terms of storage and processing speed.  The pixel cache storage requirements scales with the area of the image and the bit depth of the pixel components.  For example, if we have a 640 by 480 image and we're using the Q16 version of ImageMagick, the pixel cache consumes image <em>width * height * bit-depth / 8 * channels</em> bytes or approximately 2.3 megabytes (i.e. 640 * 480 * 2 * 4).  Not too bad, but what if your image is 25000 by 25000 pixels?  The pixel cache requires approximately 4.7 gigabytes of storage.  Ouch.  ImageMagick accounts for possible huge storage requirements by caching large images to disk rather than memory.  Typically the pixel cache is stored in memory using heap memory. If heap memory is exhausted, pixels are stored in in an anonymous map; if the anonymous memory map is exhausted, we create the pixel cache on disk and attempt to memory-map it; and if memory-map memory is exhausted, we simply use standard disk I/O.  Disk storage is cheap but it is also very slow, upwards of 1000 times slower than memory.  We can get some speed improvements, up to 5 times, if we use memory mapping to the disk-based cache.  These decisions about storage are made <em>automagically</em> by the pixel cache manager negotiating with the operating system.  However, you can influence how the pixel cache manager allocates the pixel cache with <em>cache resource limits</em>.  The limits include:</p>
+<p>We mentioned previously that this simple and elegant design of the ImageMagick pixel cache comes at a cost in terms of storage and processing speed.  The pixel cache storage requirements scales with the area of the image and the bit depth of the pixel components.  For example, if we have a 640 by 480 image and we're using the Q16 version of ImageMagick, the pixel cache consumes image <em>width * height * bit-depth / 8 * channels</em> bytes or approximately 2.3 mebibytes (i.e. 640 * 480 * 2 * 4).  Not too bad, but what if your image is 25000 by 25000 pixels?  The pixel cache requires approximately 4.7 gibibytes of storage.  Ouch.  ImageMagick accounts for possible huge storage requirements by caching large images to disk rather than memory.  Typically the pixel cache is stored in memory using heap memory. If heap memory is exhausted, pixels are stored in in an anonymous map; if the anonymous memory map is exhausted, we create the pixel cache on disk and attempt to memory-map it; and if memory-map memory is exhausted, we simply use standard disk I/O.  Disk storage is cheap but it is also very slow, upwards of 1000 times slower than memory.  We can get some speed improvements, up to 5 times, if we use memory mapping to the disk-based cache.  These decisions about storage are made <em>automagically</em> by the pixel cache manager negotiating with the operating system.  However, you can influence how the pixel cache manager allocates the pixel cache with <em>cache resource limits</em>.  The limits include:</p>
 
 <dl class="doc">
   <dt class="doc">files</dt>
@@ -368,10 +368,10 @@
 
 <p>To determine the current setting of these limits, use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'><pre>File       Area     Memory        Map       Disk  Thread       Time
--------------------------------------------------------------------
- 768   3.8187gb    2.864gb   7.6375gb       16eb       2  unlimited</pre></span></p>
-<p>You can set these limits either with  <a href="../www/resources.html#environment">environment variables</a>, the <a href="../www/command-line-options.html#limit">-limit</a> command line option, or the <a href="../www/api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, has an area limit of 64 megabytes, a memory limit of 128 megabytes and a map limit of 256 megabytes and a disk limit of 1 gigabytes.  Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.  Instead large images are cached to disk.  If the image is too large and exceeds the pixel cache disk limit, the program exits.  In addition, we place a 60 second time limit to prevent any run-away processing tasks.</p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'><pre>File        Area      Memory         Map        Disk  Thread        Time
+------------------------------------------------------------------------
+ 768   11.551GiB   8.6631GiB   23.102GiB       16EiB       8   unlimited</pre></span></p>
+<p>You can set these limits either with  <a href="../www/resources.html#environment">environment variables</a>, the <a href="../www/command-line-options.html#limit">-limit</a> command line option, or the <a href="../www/api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, has an area limit of 64 mebibytes, a memory limit of 128 mebibytes and a map limit of 256 mebibytes and a disk limit of 1 gibibytes.  Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.  Instead large images are cached to disk.  If the image is too large and exceeds the pixel cache disk limit, the program exits.  In addition, we place a 60 second time limit to prevent any run-away processing tasks.</p>
 
 <p>Note, the cache limits are global, meaning if you create several images, the combined resource requirements are compared to the limit to determine the pixel cache storage disposition.</p>
 </div>
@@ -1220,7 +1220,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
