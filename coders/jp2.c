@@ -592,7 +592,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
           q->blue=(Quantum) map[2][pixel];
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          q->opacity=(Quantum) map[3][QuantumRange-pixel];
+          q->opacity=(Quantum) map[3][(QuantumAny) (QuantumRange-pixel)];
           q++;
         }
         break;
