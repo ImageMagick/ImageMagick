@@ -105,7 +105,7 @@ static const ExifInfo
     { EXIFTAG_FNUMBER, TIFF_RATIONAL, "exif:FNumber" },
     { EXIFTAG_EXPOSUREPROGRAM, TIFF_SHORT, "exif:ExposureProgram" },
     { EXIFTAG_SPECTRALSENSITIVITY, TIFF_ASCII, "exif:SpectralSensitivity" },
-    { EXIFTAG_ISOSPEEDRATINGS, TIFF_SHORT, "exif:ISOSpeedRatings" }, 
+    { EXIFTAG_ISOSPEEDRATINGS, TIFF_SHORT, "exif:ISOSpeedRatings" },
     { EXIFTAG_OECF, TIFF_UNDEFINED, "exif:OptoelectricConversionFactor" },
     { EXIFTAG_EXIFVERSION, TIFF_UNDEFINED, "exif:ExifVersion" },
     { EXIFTAG_DATETIMEORIGINAL, TIFF_ASCII, "exif:DateTimeOriginal" },
@@ -1877,7 +1877,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
   if (unique_file != -1)
-    file=fdopen(unique_file,"wb"); 
+    file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
       ThrowFileException(&image->exception,FileOpenError,
@@ -2600,7 +2600,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
     if (image->colorspace == CMYKColorspace)
       {
         photometric=PHOTOMETRIC_SEPARATED;
@@ -2668,6 +2667,47 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 }
           }
       }
+    switch (image->endian)
+    {
+      case LSBEndian:
+      {
+        endian=FILLORDER_LSB2MSB;
+        break;
+      }
+      case MSBEndian:
+      {
+        endian=FILLORDER_MSB2LSB;
+        break;
+      }
+      case UndefinedEndian:
+      default:
+      {
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
+        break;
+      }
+    }
+    lsb_first=1;
+    image->endian=MSBEndian;
+    if ((int) (*(char *) &lsb_first) != 0)
+      image->endian=LSBEndian;
+    if ((compress_tag == COMPRESSION_JPEG) && (photometric != PHOTOMETRIC_RGB))
+      compress_tag=COMPRESSION_NONE;
+    else
+      if ((compress_tag == COMPRESSION_CCITTFAX3) &&
+          (photometric != PHOTOMETRIC_MINISWHITE))
+        {
+          compress_tag=COMPRESSION_NONE;
+          endian=FILLORDER_MSB2LSB;
+        }
+      else
+        if ((compress_tag == COMPRESSION_CCITTFAX4) &&
+           (photometric != PHOTOMETRIC_MINISWHITE))
+         {
+           compress_tag=COMPRESSION_NONE;
+           endian=FILLORDER_MSB2LSB;
+         }
+    (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
+    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,endian);
     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,quantum_info->depth);
     if (image->matte != MagickFalse)
       {
@@ -2716,30 +2756,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    switch (image->endian)
-    {
-      case LSBEndian:
-      {
-        endian=FILLORDER_LSB2MSB;
-        break;
-      }
-      case MSBEndian:
-      {
-        endian=FILLORDER_MSB2LSB;
-        break;
-      }
-      case UndefinedEndian:
-      default:
-      {
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
-        break;
-      }
-    }
-    lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
-    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,endian);
     (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)
