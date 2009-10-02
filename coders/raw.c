@@ -106,27 +106,17 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    scene;
+
   QuantumInfo
     *quantum_info;
 
   QuantumType
     quantum_type;
 
-  register const IndexPacket
-    *canvas_indexes;
-
-  register const PixelPacket
-    *p;
-
   register long
-    i,
-    x;
-
-  register IndexPacket
-    *indexes;
-
-  register PixelPacket
-    *q;
+    i;
 
   ssize_t
     count;
@@ -189,6 +179,9 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
           break;
       }
     }
+  scene=0;
+  count=0;
+  length=0;
   do
   {
     /*
@@ -197,12 +190,28 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    length=GetQuantumExtent(canvas_image,quantum_info,GrayQuantum);
-    count=ReadBlob(image,length,pixels);
-    if (count != (ssize_t) length)
-      break;
+    if (scene == 0)
+      {
+        length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
+        count=ReadBlob(image,length,pixels);
+      }
     for (y=0; y < (long) image->extract_info.height; y++)
     {
+      register const PixelPacket
+        *__restrict p;
+
+      register long
+        x;
+
+      register PixelPacket
+        *__restrict q;
+
+      if (count != (ssize_t) length)
+        {
+          ThrowFileException(exception,CorruptImageError,
+            "UnexpectedEndOfFile",image->filename);
+          break;
+        }
       q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
@@ -210,17 +219,15 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
         quantum_type,pixels,exception);
       if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
         break;
-      count=ReadBlob(image,length,pixels);
       if (((y-image->extract_info.y) >= 0) && 
           ((y-image->extract_info.y) < (long) image->rows))
         {
           p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
-            canvas_image->columns,1,exception);
-          q=QueueAuthenticPixels(image,0,y-image->extract_info.y,image->columns,1,exception);
+            image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,y-image->extract_info.y,image->columns,
+            1,exception);
           if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
-          canvas_indexes=GetVirtualIndexQueue(canvas_image);
-          indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < (long) image->columns; x++)
           {
             q->red=p->red;
@@ -238,6 +245,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
           if (status == MagickFalse)
             break;
         }
+      count=ReadBlob(image,length,pixels);
     }
     SetQuantumImageType(image,quantum_type);
     /*
@@ -263,6 +271,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
       }
+    scene++;
   } while (count == (ssize_t) length);
   quantum_info=DestroyQuantumInfo(quantum_info);
   InheritException(exception,&canvas_image->exception);
