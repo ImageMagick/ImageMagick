@@ -33,5 +33,5 @@ endif # WITH_MODULES
 filters_analyze_la_SOURCES      = filters/analyze.c
 filters_analyze_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 filters_analyze_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-filters_analyze_la_LIBADD       = $(MAGICKCORE_LIBS)
+filters_analyze_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 

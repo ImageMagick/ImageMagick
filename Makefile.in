@@ -86,8 +86,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
-#
 #  Makefile for building ImageMagick Coder library.
 
 #  Copyright 1999-2009 ImageMagick Studio LLC, a non-profit organization
@@ -103,8 +101,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
 #
 #  Makefile for building the MagickCore API.
 # 
@@ -165,8 +161,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
 #
 #  Makefile for building ImageMagick utilities.
 
@@ -539,7 +533,7 @@ coders_dps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_dps_la_LDFLAGS) $(LDFLAGS) -o $@
 @DPS_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_dps_la_rpath = -rpath \
 @DPS_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_dpx_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_dpx_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_dpx_la_OBJECTS = coders/coders_dpx_la-dpx.lo
 coders_dpx_la_OBJECTS = $(am_coders_dpx_la_OBJECTS)
 coders_dpx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -617,7 +611,7 @@ coders_gray_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_gray_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_gray_la_rpath = -rpath $(codersdir)
-coders_hald_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_hald_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_hald_la_OBJECTS = coders/coders_hald_la-hald.lo
 coders_hald_la_OBJECTS = $(am_coders_hald_la_OBJECTS)
 coders_hald_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -730,7 +724,8 @@ coders_map_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_map_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_map_la_rpath = -rpath $(codersdir)
-coders_mat_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_mat_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_mat_la_OBJECTS = coders/coders_mat_la-mat.lo
 coders_mat_la_OBJECTS = $(am_coders_mat_la_OBJECTS)
 coders_mat_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -897,7 +892,8 @@ coders_pix_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pix_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pix_la_rpath = -rpath $(codersdir)
-coders_plasma_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_plasma_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_coders_plasma_la_OBJECTS = coders/coders_plasma_la-plasma.lo
 coders_plasma_la_OBJECTS = $(am_coders_plasma_la_OBJECTS)
 coders_plasma_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -915,7 +911,7 @@ coders_png_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_png_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNG_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_png_la_rpath = -rpath \
 @PNG_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_pnm_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pnm_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_pnm_la_OBJECTS = coders/coders_pnm_la-pnm.lo
 coders_pnm_la_OBJECTS = $(am_coders_pnm_la_OBJECTS)
 coders_pnm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1244,7 +1240,8 @@ coders_yuv_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_yuv_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_yuv_la_rpath = -rpath $(codersdir)
-filters_analyze_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+filters_analyze_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_filters_analyze_la_OBJECTS = filters/filters_analyze_la-analyze.lo
 filters_analyze_la_OBJECTS = $(am_filters_analyze_la_OBJECTS)
 filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1636,7 +1633,8 @@ magick_libMagickCore_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(magick_libMagickCore_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 wand_libMagickWand_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am__objects_18 = wand/wand_libMagickWand_la-animate.lo \
 	wand/wand_libMagickWand_la-compare.lo \
 	wand/wand_libMagickWand_la-composite.lo \
@@ -3116,7 +3114,7 @@ coders_dps_la_LIBADD = $(MAGICKCORE_LIBS) $(DPS_LIBS) $(XEXT_LIBS) $(X11_LIBS)
 coders_dpx_la_SOURCES = coders/dpx.c
 coders_dpx_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_dpx_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_dpx_la_LIBADD = $(MAGICKCORE_LIBS) 
+coders_dpx_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # DOT coder module
 coders_dot_la_SOURCES = coders/dot.c
@@ -3188,7 +3186,7 @@ coders_histogram_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_hald_la_SOURCES = coders/hald.c
 coders_hald_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_hald_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_hald_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_hald_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES = coders/hrz.c
@@ -3266,7 +3264,7 @@ coders_map_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_mat_la_SOURCES = coders/mat.c
 coders_mat_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+coders_mat_la_LIBADD = $(MAGICKCORE_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # MATTE coder module
 coders_matte_la_SOURCES = coders/matte.c
@@ -3404,13 +3402,13 @@ coders_png_la_LIBADD = $(MAGICKCORE_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) 
 coders_plasma_la_SOURCES = coders/plasma.c
 coders_plasma_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_plasma_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_plasma_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_plasma_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # PNM coder module
 coders_pnm_la_SOURCES = coders/pnm.c
 coders_pnm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_pnm_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_pnm_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_pnm_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # PREVIEW coder module
 coders_preview_la_SOURCES = coders/preview.c
@@ -4061,7 +4059,7 @@ MAGICK_FILTER_SRCS = \
 filters_analyze_la_SOURCES = filters/analyze.c
 filters_analyze_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
-filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS)
+filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 wandincdir = $(topincludedir)/wand
 WAND_SOURCES = \
 	wand/MagickWand.h \
@@ -4165,7 +4163,7 @@ wand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
   -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
-wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(MATH_LIBS)
+wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 WAND_EXTRA_DIST = \
 	wand/ChangeLog \
 	wand/input_256c.miff \

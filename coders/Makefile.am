@@ -12,8 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
-#
 #  Makefile for building ImageMagick Coder library.
 
 # Where coder modules get installed
@@ -421,7 +419,7 @@ coders_dps_la_LIBADD       = $(MAGICKCORE_LIBS) $(DPS_LIBS) $(XEXT_LIBS) $(X11_L
 coders_dpx_la_SOURCES      = coders/dpx.c
 coders_dpx_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_dpx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_dpx_la_LIBADD       = $(MAGICKCORE_LIBS) 
+coders_dpx_la_LIBADD       = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # DOT coder module
 coders_dot_la_SOURCES      = coders/dot.c
@@ -493,7 +491,7 @@ coders_histogram_la_LIBADD  = $(MAGICKCORE_LIBS)
 coders_hald_la_SOURCES     = coders/hald.c
 coders_hald_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_hald_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_hald_la_LIBADD      = $(MAGICKCORE_LIBS)
+coders_hald_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES      = coders/hrz.c
@@ -571,7 +569,7 @@ coders_map_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_mat_la_SOURCES      = coders/mat.c
 coders_mat_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+coders_mat_la_LIBADD       = $(MAGICKCORE_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # MATTE coder module
 coders_matte_la_SOURCES    = coders/matte.c
@@ -710,13 +708,13 @@ coders_png_la_LIBADD       = $(MAGICKCORE_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(ZLIB_
 coders_plasma_la_SOURCES   = coders/plasma.c
 coders_plasma_la_CPPFLAGS  = $(MODULE_EXTRA_CPPFLAGS)
 coders_plasma_la_LDFLAGS   = $(MODULECOMMONFLAGS)
-coders_plasma_la_LIBADD    = $(MAGICKCORE_LIBS)
+coders_plasma_la_LIBADD    = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # PNM coder module
 coders_pnm_la_SOURCES      = coders/pnm.c
 coders_pnm_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pnm_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_pnm_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_pnm_la_LIBADD       = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # PREVIEW coder module
 coders_preview_la_SOURCES  = coders/preview.c
