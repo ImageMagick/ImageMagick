@@ -74,10 +74,10 @@ WriteMakefile
    #'LD' => $Config{'ld'} == $Config{'cc'} ? 'gcc -std=gnu99' : $Config{'ld'},
 
    # Linker flags for building an executable
-   'LDFLAGS' =>  "-L../magick/.libs -lMagickCore $Config{'ldflags'} -lfreetype",
+   'LDFLAGS' =>  "-L../magick/.libs -lMagickCore $Config{'ldflags'} ",
 
    # Linker flags for building a dynamically loadable module
-   'LDDLFLAGS' => "-L../magick/.libs -lMagickCore $Config{'lddlflags'} -lfreetype",
+   'LDDLFLAGS' => "-L../magick/.libs -lMagickCore $Config{'lddlflags'} ",
 
    # Install PerlMagick binary into ImageMagick bin directory
    'INSTALLBIN'	=> '/usr/local/bin',
