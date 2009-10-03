@@ -121,7 +121,7 @@ wand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 wand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
   -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(MATH_LIBS)
+wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
 WAND_EXTRA_DIST = \
 	wand/ChangeLog \
