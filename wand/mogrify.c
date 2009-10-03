@@ -1890,8 +1890,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 else
                   (void) QueryMagickColor("#ffffff",&white_point,exception);
               }
-            (void) LevelColorsImageChannel(*image,channel,&black_point,&white_point,
-              *option == '+' ? MagickTrue : MagickFalse);
+            (void) LevelColorsImageChannel(*image,channel,&black_point,
+              &white_point,*option == '+' ? MagickTrue : MagickFalse);
             break;
           }
         if (LocaleCompare("linear-stretch",option+1) == 0)
@@ -7219,8 +7219,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
   status=MagickTrue;
   for (i=0; i < (long) argc; i++)
   {
-if (*images == (Image *) NULL)
-  break;
+    if (*images == (Image *) NULL)
+      break;
     option=argv[i];
     if (IsMagickOption(option) == MagickFalse)
       continue;

@@ -2159,8 +2159,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             }
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
-          (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+          (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,&image->exception);
           do
           {
             zip_info.next_out=compress_pixels;
@@ -2214,8 +2214,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             }
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-          (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+          (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,&image->exception);
           do
           {
             bzip_info.next_out=(char *) compress_pixels;

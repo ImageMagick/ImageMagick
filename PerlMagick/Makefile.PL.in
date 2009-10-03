@@ -74,16 +74,16 @@ WriteMakefile
    #'LD' => $Config{'ld'} == $Config{'cc'} ? '@CC@' : $Config{'ld'},
 
    # Linker flags for building an executable
-   'LDFLAGS' =>  "-L../magick/.libs -lMagickCore -L../wand/.libs -lMagickWand $Config{'ldflags'} @LDFLAGS@",
+   'LDFLAGS' =>  "-L../magick/.libs -lMagickCore $Config{'ldflags'} @LDFLAGS@",
 
    # Linker flags for building a dynamically loadable module
-   'LDDLFLAGS' => "-L../magick/.libs -lMagickCore -L../wand/.libs -lMagickWand $Config{'lddlflags'} @LDFLAGS@",
+   'LDDLFLAGS' => "-L../magick/.libs -lMagickCore $Config{'lddlflags'} @LDFLAGS@",
 
    # Install PerlMagick binary into ImageMagick bin directory
    'INSTALLBIN'	=> '@BIN_DIR@',
 
    # Library specification
-   'LIBS' => [ '-L../magick/.libs -lMagickCore -L../wand/.libs -lMagickWand -lperl @MATH_LIBS@' ],
+   'LIBS' => [ '-L../magick/.libs -lMagickCore -L../wand/.libs -lperl @MATH_LIBS@' ],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
