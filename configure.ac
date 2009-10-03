@@ -1748,7 +1748,7 @@ if test "$with_freetype" != 'no'; then
     AC_MSG_RESULT([])
     failed=0
     passed=0
-    PERSIST_LDFLAGS="$LDFLAGS"
+    PERSIST_LIBS="$LIBS"
     PERSIST_CPPFLAGS="$CPPFLAGS"
     if test "$enable_delegate_build" != 'no' && test -d "$builddir/freetype/include"; then
         :
@@ -1758,7 +1758,7 @@ if test "$with_freetype" != 'no'; then
         if test -n "$freetype_config"; then
             freetype_cflags=`$freetype_config --cflags`
             freetype_libs=`$freetype_config --libs`
-            LDFLAGS="$LDFLAGS $freetype_libs"
+            LIBS="$LIBS $freetype_libs"
             CPPFLAGS="$freetype_cflags $CPPFLAGS"
         fi
     fi
@@ -1770,7 +1770,7 @@ dnl First see if there is a library
             passed=`expr $passed + 1`
         else
             failed=`expr $failed + 1`
-            LDFLAGS="$PERSIST_LDFLAGS"
+            LIBS="$PERSIST_LIBS"
         fi
     fi
 

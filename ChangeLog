@@ -1,6 +1,8 @@
 2009-10-03  6.5.6-8 Nick Wellnhofer <wellnhofer@aevum...>
-  * adds some missing libraries to the LIBADD entries in coders/Makefile.am,
+  * Add missing libraries to the LIBADD entries in coders/Makefile.am,
     filters/Makefile.am and wand/Makefile.am.
+  * Use LIBS rather than LDFLAGS in configure.ac for the Freetype delegate
+    library.
 
 2009-10-01  6.5.6-7 Cristy  <quetzlzacatenango@image...>
   * Don't use group4 compression if the image is truecolor.

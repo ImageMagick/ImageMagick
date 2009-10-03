@@ -19,7 +19,7 @@
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
-  <configure name="LDFLAGS" value="-L/usr/local/lib -lfreetype"/>
+  <configure name="LDFLAGS" value="-L/usr/local/lib "/>
   <configure name="LIBS" value="-lMagickCore -llcms -ltiff -lfreetype -ljpeg -lfftw3 -lfontconfig -lXext -lSM -lICE -lX11 -lXt -lbz2 -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -Wall -W -pthread"/>

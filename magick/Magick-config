@@ -49,7 +49,7 @@ while test $# -gt 0; do
       echo '-I/usr/local/include/ImageMagick'
       ;;
     --ldflags)
-      echo '-L/usr/local/lib -lfreetype'
+      echo '-L/usr/local/lib '
       ;;
     --libs)
       echo "-L${libdir} -lMagickCore -llcms -ltiff -lfreetype -ljpeg -lfftw3 -lfontconfig -lXext -lSM -lICE -lX11 -lXt -lbz2 -lz -lm -lgomp -lpthread -lltdl"

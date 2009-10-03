@@ -38456,7 +38456,7 @@ $as_echo_n "checking for FreeType 2.0... " >&6; }
 $as_echo "" >&6; }
     failed=0
     passed=0
-    PERSIST_LDFLAGS="$LDFLAGS"
+    PERSIST_LIBS="$LIBS"
     PERSIST_CPPFLAGS="$CPPFLAGS"
     if test "$enable_delegate_build" != 'no' && test -d "$builddir/freetype/include"; then
         :
@@ -38506,7 +38506,7 @@ done
         if test -n "$freetype_config"; then
             freetype_cflags=`$freetype_config --cflags`
             freetype_libs=`$freetype_config --libs`
-            LDFLAGS="$LDFLAGS $freetype_libs"
+            LIBS="$LIBS $freetype_libs"
             CPPFLAGS="$freetype_cflags $CPPFLAGS"
         fi
     fi
@@ -38585,7 +38585,7 @@ fi
             passed=`expr $passed + 1`
         else
             failed=`expr $failed + 1`
-            LDFLAGS="$PERSIST_LDFLAGS"
+            LIBS="$PERSIST_LIBS"
         fi
     fi
 
