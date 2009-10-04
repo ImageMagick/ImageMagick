@@ -1896,7 +1896,6 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         {
           (void) WriteProfileShort(endian,(unsigned short)
             image->orientation,p);
-          (void) WriteProfileLong(endian,1UL,p+4);
           break;
         }
         case 0x0128:

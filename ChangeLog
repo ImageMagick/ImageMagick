@@ -9,6 +9,7 @@
   * If image is gray, write grayscale DPX images.
   * We no longer lose a scanline when reading multi-frame raw images
     (Y, R, C, etc.).
+  * Properly update the EXIF orientation tag.
 
 2009-09-25  6.5.6-6 Cristy  <quetzlzacatenango@image...>
   * Permit percentage of hue for HSL (e.g. hsl(12%,...)).
