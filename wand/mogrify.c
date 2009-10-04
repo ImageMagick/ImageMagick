@@ -4598,23 +4598,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("fft",option+1) == 0)
-          {
-            Image
-              *fourier_image;
-
-            /*
-              Implements the discrete Fourier transform (DFT).
-            */
-            (void) SyncImageSettings(image_info,*images);
-            fourier_image=ForwardFourierTransformImage(*images,*option == '-' ?
-              MagickTrue : MagickFalse,exception);
-            if (fourier_image == (Image *) NULL)
-              break;
-            *images=DestroyImage(*images);
-            *images=fourier_image;
-            break;
-          }
         if (LocaleCompare("fill",option+1) == 0)
           {
             if (*option == '+')
@@ -7462,6 +7445,23 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 'f':
       {
+        if (LocaleCompare("fft",option+1) == 0)
+          {
+            Image
+              *fourier_image;
+
+            /*
+              Implements the discrete Fourier transform (DFT).
+            */
+            (void) SyncImageSettings(image_info,*images);
+            fourier_image=ForwardFourierTransformImage(*images,*option == '-' ?
+              MagickTrue : MagickFalse,exception);
+            if (fourier_image == (Image *) NULL)
+              break;
+            *images=DestroyImage(*images);
+            *images=fourier_image;
+            break;
+          }
         if (LocaleCompare("flatten",option+1) == 0)
           {
             Image
