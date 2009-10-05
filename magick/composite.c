@@ -1394,7 +1394,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           continue;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
-        q=QueueCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
+        q=GetCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
           composite_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           {

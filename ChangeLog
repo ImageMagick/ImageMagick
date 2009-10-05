@@ -1,3 +1,7 @@
+2009-10-04  6.5.6-9 Cristy  <quetzlzacatenango@image...>
+  * Use GetCacheViewAuthenticPixels() rather than
+    QueueCacheViewAuthenticPixels() for the CopyComposite OP optimization.
+
 2009-10-03  6.5.6-8 Nick Wellnhofer <wellnhofer@aevum...>
   * Add missing libraries to the LIBADD entries in coders/Makefile.am,
     filters/Makefile.am and wand/Makefile.am.
