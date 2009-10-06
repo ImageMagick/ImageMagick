@@ -128,13 +128,13 @@ typedef struct _DDSPixelFormat
 
 typedef struct _DDSInfo
 {
-	unsigned long
-		flags,
-		height,
-		width,
-		pitchOrLinearSize,
-		depth,
-		mipmapcount,
+  unsigned long
+    flags,
+    height,
+    width,
+    pitchOrLinearSize,
+    depth,
+    mipmapcount,
     ddscaps1,
     ddscaps2;
   
@@ -247,7 +247,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     compression;
 
   DDSInfo
-  	dds_info;
+    dds_info;
   
   DDSDecoder
     *decoder;
@@ -277,7 +277,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize image structure.
   */
   if (ReadDDSInfo(image, &dds_info) != MagickTrue) {
-	  ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
   
   if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP)
@@ -408,33 +408,33 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
 {
-	unsigned long
+  unsigned long
     hdr_size,
     required;
-	
-	/* Seek to start of header */
-	(void) SeekBlob(image, 4, SEEK_SET);
-	
-	/* Check header field */
-	hdr_size = ReadBlobLSBLong(image);
-	if (hdr_size != 124)
-		return MagickFalse;
-	
-	/* Fill in DDS info struct */
-	dds_info->flags = ReadBlobLSBLong(image);
   
-	/* Check required flags */
-	required=(unsigned long) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
+  /* Seek to start of header */
+  (void) SeekBlob(image, 4, SEEK_SET);
+  
+  /* Check header field */
+  hdr_size = ReadBlobLSBLong(image);
+  if (hdr_size != 124)
+    return MagickFalse;
+  
+  /* Fill in DDS info struct */
+  dds_info->flags = ReadBlobLSBLong(image);
+  
+  /* Check required flags */
+  required=(unsigned long) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
   if ((dds_info->flags & required) != required)
-		return MagickFalse;
+    return MagickFalse;
   
-	dds_info->height = ReadBlobLSBLong(image);
-	dds_info->width = ReadBlobLSBLong(image);
-	dds_info->pitchOrLinearSize = ReadBlobLSBLong(image);
-	dds_info->depth = ReadBlobLSBLong(image);
-	dds_info->mipmapcount = ReadBlobLSBLong(image);
+  dds_info->height = ReadBlobLSBLong(image);
+  dds_info->width = ReadBlobLSBLong(image);
+  dds_info->pitchOrLinearSize = ReadBlobLSBLong(image);
+  dds_info->depth = ReadBlobLSBLong(image);
+  dds_info->mipmapcount = ReadBlobLSBLong(image);
   
-	(void) SeekBlob(image, 44, SEEK_CUR); 	/* reserved region of 11 DWORDs */
+  (void) SeekBlob(image, 44, SEEK_CUR);   /* reserved region of 11 DWORDs */
   
   /* Read pixel format structure */
   hdr_size = ReadBlobLSBLong(image);
@@ -449,11 +449,11 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   dds_info->pixelformat.b_bitmask = ReadBlobLSBLong(image);
   dds_info->pixelformat.alpha_bitmask = ReadBlobLSBLong(image);
   
-	dds_info->ddscaps1 = ReadBlobLSBLong(image);
-	dds_info->ddscaps2 = ReadBlobLSBLong(image);
-	(void) SeekBlob(image, 12, SEEK_CUR); /* 3 reserved DWORDs */
+  dds_info->ddscaps1 = ReadBlobLSBLong(image);
+  dds_info->ddscaps2 = ReadBlobLSBLong(image);
+  (void) SeekBlob(image, 12, SEEK_CUR); /* 3 reserved DWORDs */
   
-	return MagickTrue;
+  return MagickTrue;
 }
 
 static void CalculateColors(unsigned short c0, unsigned short c1,
@@ -501,7 +501,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
   long
     j,
     y;
-	
+  
   PixelPacket
     *q;
   
@@ -512,10 +512,10 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
   unsigned char
     code;
   
-	unsigned short
+  unsigned short
     c0,
     c1;
-	
+  
   unsigned long
     bits;
 
@@ -526,7 +526,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
     {
       /* Get 4x4 patch of pixels to write on */
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
-	                     Min(4, dds_info->height - y),exception);
+                       Min(4, dds_info->height - y),exception);
       
       if (q == (PixelPacket *) NULL)
         return MagickFalse;

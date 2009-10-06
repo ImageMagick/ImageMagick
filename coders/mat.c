@@ -125,43 +125,43 @@ static const char *OsDesc=
 
 typedef enum
   {
-    miINT8 = 1,			/* 8 bit signed */
-    miUINT8,			/* 8 bit unsigned */
-    miINT16,			/* 16 bit signed */
-    miUINT16,			/* 16 bit unsigned */
-    miINT32,			/* 32 bit signed */
-    miUINT32,			/* 32 bit unsigned */
-    miSINGLE,			/* IEEE 754 single precision float */
+    miINT8 = 1,      /* 8 bit signed */
+    miUINT8,      /* 8 bit unsigned */
+    miINT16,      /* 16 bit signed */
+    miUINT16,      /* 16 bit unsigned */
+    miINT32,      /* 32 bit signed */
+    miUINT32,      /* 32 bit unsigned */
+    miSINGLE,      /* IEEE 754 single precision float */
     miRESERVE1,
-    miDOUBLE,			/* IEEE 754 double precision float */
+    miDOUBLE,      /* IEEE 754 double precision float */
     miRESERVE2,
     miRESERVE3,
-    miINT64,			/* 64 bit signed */
-    miUINT64,			/* 64 bit unsigned */
-    miMATRIX,		        /* MATLAB array */
-    miCOMPRESSED,	        /* Compressed Data */
-    miUTF8,		        /* Unicode UTF-8 Encoded Character Data */
-    miUTF16,		        /* Unicode UTF-16 Encoded Character Data */
-    miUTF32			/* Unicode UTF-32 Encoded Character Data */
+    miINT64,      /* 64 bit signed */
+    miUINT64,      /* 64 bit unsigned */
+    miMATRIX,            /* MATLAB array */
+    miCOMPRESSED,          /* Compressed Data */
+    miUTF8,            /* Unicode UTF-8 Encoded Character Data */
+    miUTF16,            /* Unicode UTF-16 Encoded Character Data */
+    miUTF32      /* Unicode UTF-32 Encoded Character Data */
   } mat5_data_type;
 
 typedef enum
   {
-    mxCELL_CLASS=1,		/* cell array */
-    mxSTRUCT_CLASS,		/* structure */
-    mxOBJECT_CLASS,		/* object */
-    mxCHAR_CLASS,		/* character array */
-    mxSPARSE_CLASS,		/* sparse array */
-    mxDOUBLE_CLASS,		/* double precision array */
-    mxSINGLE_CLASS,		/* single precision floating point */
-    mxINT8_CLASS,		/* 8 bit signed integer */
-    mxUINT8_CLASS,		/* 8 bit unsigned integer */
-    mxINT16_CLASS,		/* 16 bit signed integer */
-    mxUINT16_CLASS,		/* 16 bit unsigned integer */
-    mxINT32_CLASS,		/* 32 bit signed integer */
-    mxUINT32_CLASS,		/* 32 bit unsigned integer */
-    mxINT64_CLASS,		/* 64 bit signed integer */
-    mxUINT64_CLASS,		/* 64 bit unsigned integer */
+    mxCELL_CLASS=1,    /* cell array */
+    mxSTRUCT_CLASS,    /* structure */
+    mxOBJECT_CLASS,    /* object */
+    mxCHAR_CLASS,    /* character array */
+    mxSPARSE_CLASS,    /* sparse array */
+    mxDOUBLE_CLASS,    /* double precision array */
+    mxSINGLE_CLASS,    /* single precision floating point */
+    mxINT8_CLASS,    /* 8 bit signed integer */
+    mxUINT8_CLASS,    /* 8 bit unsigned integer */
+    mxINT16_CLASS,    /* 16 bit signed integer */
+    mxUINT16_CLASS,    /* 16 bit unsigned integer */
+    mxINT32_CLASS,    /* 32 bit signed integer */
+    mxUINT32_CLASS,    /* 32 bit unsigned integer */
+    mxINT64_CLASS,    /* 64 bit signed integer */
+    mxUINT64_CLASS,    /* 64 bit unsigned integer */
     mxFUNCTION_CLASS            /* Function handle */
   } arrayclasstype;
 
@@ -349,13 +349,13 @@ float *fltrow;
     ReadBlobDoublesXXX = ReadBlobDoublesLSB;
     ReadBlobFloatsXXX = ReadBlobFloatsLSB;   
   } 
-  else		/* MI */
+  else    /* MI */
   {    
     ReadBlobDoublesXXX = ReadBlobDoublesMSB;
     ReadBlobFloatsXXX = ReadBlobFloatsMSB;   
   }
 
-  filepos = TellBlob(image);	   /* Please note that file seeking occurs only in the case of doubles */
+  filepos = TellBlob(image);     /* Please note that file seeking occurs only in the case of doubles */
   for (i = 0; i < SizeY; i++)
   {
     if (CellType==miDOUBLE)
@@ -403,7 +403,7 @@ static void FixSignedValues(PixelPacket *q, int y)
   {
      /* Please note that negative values will overflow
         Q=8; QuantumRange=255: <0;127> + 127+1 = <128; 255> 
-		       <-1;-128> + 127+1 = <0; 127> */
+           <-1;-128> + 127+1 = <0; 127> */
     q->red += QuantumRange/2 + 1;
     q->green += QuantumRange/ + 1;
     q->blue += QuantumRange/ + 1;
@@ -465,7 +465,7 @@ size_t magick_size;
 int status;
 
   if(clone_info==NULL) return NULL;
-  if(clone_info->file)		/* Close file opened from previous transaction. */
+  if(clone_info->file)    /* Close file opened from previous transaction. */
   {
     fclose(clone_info->file);
     clone_info->file = NULL;
@@ -697,7 +697,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
     MATLAB_HDR.unknown3 = ReadBlobXXXLong(image2);
     if(image!=image2)
-      MATLAB_HDR.unknown4 = ReadBlobXXXLong(image2);	/* ??? don't understand why ?? */
+      MATLAB_HDR.unknown4 = ReadBlobXXXLong(image2);  /* ??? don't understand why ?? */
     MATLAB_HDR.unknown4 = ReadBlobXXXLong(image2);
     MATLAB_HDR.DimFlag = ReadBlobXXXLong(image2);
     MATLAB_HDR.SizeX = ReadBlobXXXLong(image2);
@@ -706,11 +706,11 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
     switch(MATLAB_HDR.DimFlag)
     {     
-      case  8: z=1; break;			/* 2D matrix*/
-      case 12: z = ReadBlobXXXLong(image2);	/* 3D matrix RGB*/
-  	       Unknown6 = ReadBlobXXXLong(image2);
-	       if(z!=3) ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
-	       break;
+      case  8: z=1; break;      /* 2D matrix*/
+      case 12: z = ReadBlobXXXLong(image2);  /* 3D matrix RGB*/
+           Unknown6 = ReadBlobXXXLong(image2);
+         if(z!=3) ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+         break;
       default: ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
     }  
 
@@ -720,22 +720,22 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
           "MATLAB_HDR.StructureClass %d",MATLAB_HDR.StructureClass);
     if (MATLAB_HDR.StructureClass != mxCHAR_CLASS && 
-        MATLAB_HDR.StructureClass != mxSINGLE_CLASS &&		/* float + complex float */
-        MATLAB_HDR.StructureClass != mxDOUBLE_CLASS &&		/* double + complex double */
+        MATLAB_HDR.StructureClass != mxSINGLE_CLASS &&    /* float + complex float */
+        MATLAB_HDR.StructureClass != mxDOUBLE_CLASS &&    /* double + complex double */
         MATLAB_HDR.StructureClass != mxINT8_CLASS &&
-        MATLAB_HDR.StructureClass != mxUINT8_CLASS &&		/* uint8 + uint8 3D */
+        MATLAB_HDR.StructureClass != mxUINT8_CLASS &&    /* uint8 + uint8 3D */
         MATLAB_HDR.StructureClass != mxINT16_CLASS &&
-        MATLAB_HDR.StructureClass != mxUINT16_CLASS &&		/* uint16 + uint16 3D */
+        MATLAB_HDR.StructureClass != mxUINT16_CLASS &&    /* uint16 + uint16 3D */
         MATLAB_HDR.StructureClass != mxINT32_CLASS &&
-        MATLAB_HDR.StructureClass != mxUINT32_CLASS &&		/* uint32 + uint32 3D */
+        MATLAB_HDR.StructureClass != mxUINT32_CLASS &&    /* uint32 + uint32 3D */
         MATLAB_HDR.StructureClass != mxINT64_CLASS &&
-        MATLAB_HDR.StructureClass != mxUINT64_CLASS)		/* uint64 + uint64 3D */
+        MATLAB_HDR.StructureClass != mxUINT64_CLASS)    /* uint64 + uint64 3D */
       ThrowReaderException(CoderError,"UnsupportedCellTypeInTheMatrix");
 
     switch (MATLAB_HDR.NameFlag)
     {
       case 0:
-        size = ReadBlobXXXLong(image2);	/* Object name string size */
+        size = ReadBlobXXXLong(image2);  /* Object name string size */
         size = 4 * (long) ((size + 3 + 1) / 4);
         (void) SeekBlob(image2, size, SEEK_CUR);
         break;
@@ -794,8 +794,8 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         image->depth = 32;        /* double type cell */
         (void) SetImageOption(clone_info,"quantum:format","floating-point");
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-	{					    /* complex float type cell */
-	}
+  {              /* complex float type cell */
+  }
         ldblk = (long) (4 * MATLAB_HDR.SizeX);
         break;
       case miDOUBLE:
@@ -805,8 +805,8 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         if (sizeof(double) != 8)
           ThrowReaderException(CoderError, "IncompatibleSizeOfDouble");
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-	{                         /* complex double type cell */        
-	}
+  {                         /* complex double type cell */        
+  }
         ldblk = (long) (8 * MATLAB_HDR.SizeX);
         break;
       default:
@@ -858,52 +858,52 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
     /* Main loop for reading all scanlines */
     if(z==1) z=0; /* read grey scanlines */
-		/* else read color scanlines */
+    /* else read color scanlines */
     do
     {
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
       {
         q=QueueAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
         if (q == (PixelPacket *)NULL)
-	{
-	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+  {
+    if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
-	  goto done_reading;		/* Skip image rotation, when cannot set image pixels	  */
-	}
+    goto done_reading;    /* Skip image rotation, when cannot set image pixels    */
+  }
         if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != (ssize_t) ldblk)
-	{
-	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+  {
+    if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
              "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
-	  goto ExitLoop;
-	}
+    goto ExitLoop;
+  }
         if((CellType==miINT8 || CellType==miUINT8) && (MATLAB_HDR.StructureFlag & FLAG_LOGICAL))
         {
           FixLogical((unsigned char *)BImgBuff,ldblk);
           if(ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,z2qtype[z],BImgBuff,exception) <= 0)
-	  {
+    {
 ImportQuantumPixelsFailed:
-	    if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT failed to ImportQuantumPixels for a row %u", (unsigned)(MATLAB_HDR.SizeY-i-1));
-	    break;
-	  }
+      break;
+    }
         }
         else
         {
           if(ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,z2qtype[z],BImgBuff,exception) <= 0)
-	    goto ImportQuantumPixelsFailed;
+      goto ImportQuantumPixelsFailed;
 
 
-          if (z<=1 &&			 /* fix only during a last pass z==0 || z==1 */
-	        (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
-	    FixSignedValues(q,MATLAB_HDR.SizeX);
+          if (z<=1 &&       /* fix only during a last pass z==0 || z==1 */
+          (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
+      FixSignedValues(q,MATLAB_HDR.SizeX);
         }
 
         if (!SyncAuthenticPixels(image,exception))
-	{
-	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+  {
+    if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
             "  MAT failed to sync image pixels for a row %u", (unsigned)(MATLAB_HDR.SizeY-i-1));
-	  goto ExitLoop;
-	}
+    goto ExitLoop;
+  }
       }
     } while(z-- >= 2);
 ExitLoop:
@@ -922,17 +922,17 @@ ExitLoop:
 
       if (CellType==miDOUBLE)
         for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
-	{
+  {
           ReadBlobDoublesXXX(image2, ldblk, (double *)BImgBuff);
           InsertComplexDoubleRow((double *)BImgBuff, i, image, MinVal, MaxVal);
-	}
+  }
 
       if (CellType==miSINGLE)
         for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
-	{
+  {
           ReadBlobFloatsXXX(image2, ldblk, (float *)BImgBuff);
           InsertComplexFloatRow((float *)BImgBuff, i, image, MinVal, MaxVal);
-	}    
+  }    
     }
 
       /* Image is gray when no complex flag is set and 2D Matrix AGAIN!!! */
@@ -967,14 +967,14 @@ done_reading:
       if(image2!=image)
       {
         DeleteImageFromList(&image2); 
-	if(clone_info)
-	{
+  if(clone_info)
+  {
           if(clone_info->file)
-	  {
+    {
             fclose(clone_info->file);
             clone_info->file = NULL;
             (void) unlink(clone_info->filename);
-	  }
+    }
         }    
       }
 
@@ -1023,7 +1023,7 @@ done_reading:
       p->scene=scene++;
   }
 
-  if(clone_info != NULL)	/* cleanup garbage file from compression */
+  if(clone_info != NULL)  /* cleanup garbage file from compression */
   {
     if(clone_info->file)
     {
