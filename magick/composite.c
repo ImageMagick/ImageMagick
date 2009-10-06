@@ -1358,11 +1358,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     }
     case CopyCompositeOp:
     {
-      if ((x_offset+(long) composite_image->columns) < 0)
+      if ((x_offset < 0) || (y_offset < 0))
         break;
       if ((x_offset+(long) composite_image->columns) >= (long) image->columns)
-        break;
-      if ((y_offset+(long) composite_image->rows) < 0)
         break;
       if ((y_offset+(long) composite_image->rows) >= (long) image->rows)
         break;
