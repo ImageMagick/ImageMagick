@@ -728,7 +728,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
       default:
         ThrowStreamException(OptionError,"UnrecognizedOption",option)
     }
-    fire=ParseMagickOption(MagickImageListOptions,MagickFalse,option+1) < 0 ? 
+    fire=ParseMagickOption(MagickImageListOptions,MagickFalse,option+1) < 0 ?
       MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);

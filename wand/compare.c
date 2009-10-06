@@ -34,7 +34,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use the compare program to mathematically and visually annotate the
-%  difference between an image and its reconstruction. 
+%  difference between an image and its reconstruction.
 %
 */
 

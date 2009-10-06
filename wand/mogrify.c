@@ -37,7 +37,7 @@
 %  draw on, flip, join, re-sample, and much more. This tool is similiar to
 %  convert except that the original image file is overwritten (unless you
 %  change the file suffix with the -format option) with any changes you
-%  request. 
+%  request.
 %
 */
 

@@ -5894,7 +5894,7 @@ WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if ((wand->filter_off != MagickFalse) && 
+  if ((wand->filter_off != MagickFalse) &&
       (CurrentContext->kerning != kerning))
     {
       CurrentContext->kerning=kerning;
@@ -5935,7 +5935,7 @@ WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if ((wand->filter_off != MagickFalse) && 
+  if ((wand->filter_off != MagickFalse) &&
       (CurrentContext->interline_spacing != interline_spacing))
     {
       CurrentContext->interline_spacing=interline_spacing;
@@ -5976,7 +5976,7 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if ((wand->filter_off != MagickFalse) && 
+  if ((wand->filter_off != MagickFalse) &&
       (CurrentContext->interword_spacing != interword_spacing))
     {
       CurrentContext->interword_spacing=interword_spacing;

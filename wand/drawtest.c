@@ -65,11 +65,11 @@ static void ScribbleImage (MagickWand *canvas)
       DrawPopClipPath(picasso);
     }
     DrawPopDefs(picasso);
-    
+
     (void) PushDrawingWand(picasso);
     {
       (void) DrawSetClipPath(picasso, "url(#clip_1)");
-      
+
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -85,7 +85,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawRectangle(picasso,72,72,144,144);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -101,7 +101,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawRoundRectangle(picasso,72,216,360,432,9,9);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[37] =
@@ -117,7 +117,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 346,114.8 },   { 347.1,111.5 }, { 348.9,108.5 }, { 351.4,105.8 },
           { 378.1,81.72 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,2.016);
         DrawSetStrokeLineCap(picasso,RoundCap);
@@ -131,7 +131,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,37,points);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -147,7 +147,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawEllipse(picasso,489.6,424.8,72,129.6,0,360);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[48] =
@@ -165,7 +165,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 204,55.3 },    { 204.3,44.35 }, { 204.9,39.6 },  { 205.9,35.42 },
           { 207.4,31.82 }, { 209.2,28.87 }, { 211.3,26.64},  { 213.8,25.13 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,3.024);
         DrawSetStrokeLineCap(picasso,RoundCap);
@@ -179,7 +179,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,48,points);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -218,7 +218,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 180,504 }, { 282.7,578.6 }, { 243.5,699.4 }, { 116.5,699.4 },
           { 77.26,578.6 }, { 180,504 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,9);
         DrawSetStrokeLineCap(picasso,RoundCap);
@@ -232,7 +232,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,6,points);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[11] =
@@ -241,7 +241,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 243.5,699.4 }, { 180,666 },     { 116.5,699.4 }, { 128.7,628.7 },
           { 77.26,578.6 }, { 148.2,568.3 }, { 180,504 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,9);
         DrawSetStrokeLineCap(picasso,RoundCap);
@@ -255,7 +255,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,11,points);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[15] =
@@ -265,7 +265,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 525.6,93.6 },  { 496.8,158.4 }, { 532.8,136.8 }, { 518.4,180 },
           { 540,172.8 },   { 540,223.2 },   { 540,288 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,5.976);
         DrawSetStrokeLineCap(picasso,RoundCap);
@@ -279,7 +279,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,15,points);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[7] =
@@ -287,7 +287,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 57.6,640.8 }, { 57.6,784.8 }, { 194.4,799.2 }, { 259.2,777.6 },
           { 151.2,756 }, { 86.4,748.8 }, { 57.6,640.8 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,5.976);
         DrawSetStrokeLineCap(picasso,RoundCap);
@@ -301,7 +301,7 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,7,points);
       }
       (void) PopDrawingWand(picasso);
-      
+
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[193] =
@@ -320,7 +320,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 428,531.2 },   { 434.6,532.9 }, { 436.7,533.8 }, { 437.8,534.9 },
           { 437.8,536.2 }, { 436.8,537.8 }, { 434.5,539.6 }, { 430.9,541.8 },
           { 419.3,547.6 }, { 401.3,555.2 }, { 342.4,577.9 }, {325.2,584.9 },
-          { 311,591.3 },   { 300,597.3 },   { 291.6,602.8 }, { 285.8,607.8 }, 
+          { 311,591.3 },   { 300,597.3 },   { 291.6,602.8 }, { 285.8,607.8 },
           { 282.3,612.3 }, { 281.4,614.4 }, { 280.9,616.2 }, { 281.2,619.6 },
           { 282.1,621.2 }, { 283.3,622.6 }, { 286.8,624.9 }, { 291.5,626.6 },
           { 297.1,627.8 }, { 303.6,628.3 }, { 310.5,628.3 }, { 317.9,627.6 },
@@ -356,7 +356,7 @@ static void ScribbleImage (MagickWand *canvas)
           { 27.86,597.4 }, { 27.29,595.2 }, { 26.64,588.7 }, { 26.86,578.8 },
           { 27.86,565.3 }
         };
-        
+
         DrawSetStrokeAntialias(picasso,MagickTrue);
         DrawSetStrokeWidth(picasso,5.904);
         DrawSetStrokeLineCap(picasso,RoundCap);
