@@ -975,7 +975,7 @@ WandExport MagickBooleanType MagickOpaqueImage(MagickWand *wand,
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-% 
+%
 %    o channel: the channel(s).
 %
 %    o fill: the floodfill color pixel wand.

@@ -387,7 +387,7 @@ int main(int argc,char **argv)
   MagickWand
     *clone_wand,
     *magick_wand;
- 
+
   PixelIterator
     *iterator;
 
@@ -403,7 +403,7 @@ int main(int argc,char **argv)
   size_t
     length;
 
-  unsigned char 
+  unsigned char
     *profile;
 
   unsigned int
@@ -685,5 +685,5 @@ int main(int argc,char **argv)
   profile=(unsigned char *) MagickRelinquishMemory(profile);
   magick_wand=DestroyMagickWand(magick_wand);
   (void) fprintf(stdout,"Wand tests pass.\n");
-  return(0); 
+  return(0);
 }

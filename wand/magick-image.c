@@ -8945,7 +8945,7 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %    o sigma: the standard deviation of the gaussian, in pixels.
 %
 %    o threshold: only pixels within this contrast threshold are included
-%      in the blur operation 
+%      in the blur operation.
 %
 */
 
