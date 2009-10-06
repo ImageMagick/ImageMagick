@@ -238,6 +238,14 @@ ModuleExport unsigned long RegisterDNGImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("3FR");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->format_type=ExplicitFormatType;
+  entry->description=ConstantString("Hasselblad CFV/H3D39II");
+  entry->module=ConstantString("DNG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ARW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->blob_support=MagickFalse;
@@ -405,4 +413,5 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("CR2");
   (void) UnregisterMagickInfo("DNG");
   (void) UnregisterMagickInfo("ARW");
+  (void) UnregisterMagickInfo("3FR");
 }
