@@ -120,7 +120,7 @@ static inline unsigned char *PopDoublePixel(const QuantumState *quantum_state,
     quantum[8];
 
   p=(double *) quantum;
-  *p=(double) (pixel*quantum_state->inverse_scale+quantum_state->minimum); 
+  *p=(double) (pixel*quantum_state->inverse_scale+quantum_state->minimum);
   if (quantum_state->endian != LSBEndian)
     {
       *pixels++=quantum[7];
@@ -155,7 +155,7 @@ static inline unsigned char *PopFloatPixel(const QuantumState *quantum_state,
 
   p=(float *) quantum;
   *p=(float) ((double) pixel*quantum_state->inverse_scale+
-    quantum_state->minimum); 
+    quantum_state->minimum);
   if (quantum_state->endian != LSBEndian)
     {
       *pixels++=quantum[3];

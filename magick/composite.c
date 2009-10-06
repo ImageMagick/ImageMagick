@@ -2514,14 +2514,14 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       {
         register long
           x;
-    
+
         if (status == MagickFalse)
           continue;
         for (x=0; x < (long) image->columns; x+=texture->columns)
         {
           MagickBooleanType
             thread_status;
-    
+
           thread_status=CompositeImage(image,image->compose,texture,x+
             texture->tile_offset.x,y+texture->tile_offset.y);
           if (thread_status == MagickFalse)
@@ -2534,7 +2534,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
           {
             MagickBooleanType
               proceed;
-    
+
 #if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_TextureImage)
 #endif

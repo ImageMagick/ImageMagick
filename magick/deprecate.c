@@ -4908,10 +4908,10 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     *random_info;
 
   static MagickRealType
-    o2[4]={0.2f, 0.6f, 0.8f, 0.4f}, 
-    o3[9]={0.1f, 0.6f, 0.3f, 0.7f, 0.5f, 0.8f, 0.4f, 0.9f, 0.2f}, 
+    o2[4]={0.2f, 0.6f, 0.8f, 0.4f},
+    o3[9]={0.1f, 0.6f, 0.3f, 0.7f, 0.5f, 0.8f, 0.4f, 0.9f, 0.2f},
     o4[16]={0.1f, 0.7f, 1.1f, 0.3f, 1.0f, 0.5f, 1.5f, 0.8f, 1.4f, 1.6f, 0.6f,
-      1.2f, 0.4f, 0.9f, 1.3f, 0.2f}, 
+      1.2f, 0.4f, 0.9f, 1.3f, 0.2f},
     threshold=128;
 
   unsigned long
@@ -5347,7 +5347,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 %
 %  SetImageAttribute() searches the list of image attributes and replaces the
 %  attribute value.  If it is not found in the list, the attribute name
-%  and value is added to the list.   
+%  and value is added to the list.
 %
 %  The format of the SetImageAttribute method is:
 %

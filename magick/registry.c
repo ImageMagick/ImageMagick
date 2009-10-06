@@ -394,7 +394,7 @@ static void *DestroyRegistryNode(void *registry_info)
 {
   register RegistryInfo
     *p;
-       
+
   p=(RegistryInfo *) registry_info;
   switch (p->type)
   {
@@ -414,7 +414,7 @@ static void *DestroyRegistryNode(void *registry_info)
       p->value=(void *) DestroyImageInfo((ImageInfo *) p->value);
       break;
     }
-  } 
+  }
   return(RelinquishMagickMemory(p));
 }
 

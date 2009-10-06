@@ -135,7 +135,7 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   x=X/0.9504559271;
   if (x > (216/24389.0))
     x=pow(x,1.0/3.0);
-  else 
+  else
     x=(7.787*x)+(16.0/116.0);
   y=Y/1.00000;
   if (y > (216/24389.0))

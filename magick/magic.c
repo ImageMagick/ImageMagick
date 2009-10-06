@@ -942,7 +942,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((magic_list == (LinkedListInfo *) NULL) || 
+  if ((magic_list == (LinkedListInfo *) NULL) ||
       (IsLinkedListEmpty(magic_list) != MagickFalse))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
