@@ -1021,7 +1021,7 @@ MagickExport MagickBooleanType LoadMimeLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((mime_list == (LinkedListInfo *) NULL) || 
+  if ((mime_list == (LinkedListInfo *) NULL) ||
       (IsLinkedListEmpty(mime_list) != MagickFalse))
     status|=LoadMimeList(MimeMap,"built-in",0,exception);
   else

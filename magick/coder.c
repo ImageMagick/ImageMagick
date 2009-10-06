@@ -852,7 +852,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((coder_list == (SplayTreeInfo *) NULL) || 
+  if ((coder_list == (SplayTreeInfo *) NULL) ||
       (GetNumberOfNodesInSplayTree(coder_list) == 0))
     status|=LoadCoderList(CoderMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);

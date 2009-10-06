@@ -61,7 +61,7 @@
   Typedef declarations.
 */
 struct _SignatureInfo
-{   
+{
   unsigned int
     digestsize,
     blocksize;

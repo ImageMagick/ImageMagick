@@ -584,7 +584,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GenerateDifferentialNoise() 
+%  GenerateDifferentialNoise() generates differentual noise.
 %
 %  The format of the GenerateDifferentialNoise method is:
 %
