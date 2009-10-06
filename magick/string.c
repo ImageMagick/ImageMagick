@@ -1437,14 +1437,14 @@ MagickExport long LocaleNCompare(const char *p,const char *q,
     register size_t
       n;
 
-    register unsigned char
+    register unsigned int
       c,
       d;
 
     for (n=length; n != 0; n--)
     {
-      c=(unsigned char) *p;
-      d=(unsigned char) *q;
+      c=(unsigned int) *p;
+      d=(unsigned int) *q;
       if (AsciiMap[c] != AsciiMap[d])
         return(AsciiMap[c]-AsciiMap[d]);
       if (c == '\0')
