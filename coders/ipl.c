@@ -161,11 +161,11 @@ static MagickBooleanType IsIPL(const unsigned char *magick,const size_t length)
  */
 
 void SetHeaderFromIPL(Image *image, IPLInfo *ipl){
-	image->columns = ipl->width;
-	image->rows = ipl->height;
-	image->depth = ipl->depth;
-	image->x_resolution = 1;
-	image->y_resolution = 1;
+  image->columns = ipl->width;
+  image->rows = ipl->height;
+  image->depth = ipl->depth;
+  image->x_resolution = 1;
+  image->y_resolution = 1;
 }
 
 
@@ -325,8 +325,8 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
      pixels=GetQuantumPixels(quantum_info); 
      if(image->columns != ipl_info.width){
 /*
- 		printf("Columns not set correctly!  Wanted: %lu, got: %lu\n",
- 			ipl_info.width, image->columns);
+     printf("Columns not set correctly!  Wanted: %lu, got: %lu\n",
+       ipl_info.width, image->columns);
 */
      }
 
@@ -340,11 +340,11 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
                 break;
-      	(void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+        (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GrayQuantum,pixels,exception);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-  	}
+    }
   }
   else{
       for(y = 0; y < (long) image->rows; y++){
@@ -352,8 +352,8 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
                 break;
-      	(void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-          RedQuantum,pixels,exception);	
+        (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          RedQuantum,pixels,exception);  
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
@@ -362,7 +362,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
                 break;
-      	(void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+        (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GreenQuantum,pixels,exception);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -372,7 +372,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
                 break;
-      	(void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+        (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           BlueQuantum,pixels,exception);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;

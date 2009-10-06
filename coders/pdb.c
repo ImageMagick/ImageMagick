@@ -37,9 +37,9 @@
     20071202 TS * rewrote RLE decoder - old version could cause buffer overflows
                 * failure of RLE decoding now thows error RLEDecoderError
                 * fixed bug in RLE decoding - now all rows are decoded, not just
-		  the first one
-		* fixed bug in reader - record offsets now handled correctly
-		* fixed bug in reader - only bits 0..2 indicate compression type
+      the first one
+    * fixed bug in reader - record offsets now handled correctly
+    * fixed bug in reader - only bits 0..2 indicate compression type
                 * in writer: now using image color count instead of depth
 */
 
@@ -168,33 +168,33 @@ static MagickBooleanType DecodeImage(Image *image, unsigned char *pixels,
 #define RLE_MODE_COPY  0
 #define RLE_MODE_RUN   1
 
-	int           data = 0, count = 0;
-	unsigned char *p;
-	int           mode = RLE_MODE_NONE;
+  int           data = 0, count = 0;
+  unsigned char *p;
+  int           mode = RLE_MODE_NONE;
 
-	for (p = pixels; p < pixels + length; p++) {
-		if (0 == count) {
-			data = ReadBlobByte( image );
-			if (-1 == data) return MagickFalse;
-			if (data > 128) {
-				mode  = RLE_MODE_RUN;
-				count = data - 128 + 1;
-				data  = ReadBlobByte( image );
-				if (-1 == data) return MagickFalse;
-			} else {
-				mode  = RLE_MODE_COPY;
-				count = data + 1;
-			}
-		}
+  for (p = pixels; p < pixels + length; p++) {
+    if (0 == count) {
+      data = ReadBlobByte( image );
+      if (-1 == data) return MagickFalse;
+      if (data > 128) {
+        mode  = RLE_MODE_RUN;
+        count = data - 128 + 1;
+        data  = ReadBlobByte( image );
+        if (-1 == data) return MagickFalse;
+      } else {
+        mode  = RLE_MODE_COPY;
+        count = data + 1;
+      }
+    }
 
-		if (RLE_MODE_COPY == mode) {
-			data = ReadBlobByte( image );
-			if (-1 == data) return MagickFalse;
-		}
-		*p = (unsigned char)data;
-		--count;
-	}
-	return MagickTrue;
+    if (RLE_MODE_COPY == mode) {
+      data = ReadBlobByte( image );
+      if (-1 == data) return MagickFalse;
+    }
+    *p = (unsigned char)data;
+    --count;
+  }
+  return MagickTrue;
 }
 
 /*
@@ -413,12 +413,12 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       image->compression=RLECompression;
       if (!DecodeImage(image, pixels, packets * image -> rows))
-      	ThrowReaderException( CorruptImageError, "RLEDecoderError" ); /* TS */
+        ThrowReaderException( CorruptImageError, "RLEDecoderError" ); /* TS */
       break;
     }
     default:
       ThrowReaderException(CorruptImageError,
-			   "UnrecognizedImageCompressionType" );
+         "UnrecognizedImageCompressionType" );
   }
   p=pixels;
   switch (bits_per_pixel)

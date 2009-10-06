@@ -3470,8 +3470,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (samples_per_pixel == 1)
               {
-            		long
-            		  pixel_value;
+                long
+                  pixel_value;
 
                 if (bytes_per_pixel == 1)
                   pixel_value=polarity != MagickFalse ?  (long) (max_value-
@@ -3503,13 +3503,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                       i++;
                     }
-       		      index=pixel_value;
+                 index=pixel_value;
                 if (window_width == 0)
-            		  {
+                  {
                     if (signed_data == 1)
-            		      index=pixel_value-32767;
-            		  }
-             		else
+                      index=pixel_value-32767;
+                  }
+                 else
                   {
                     long
                       window_max,
