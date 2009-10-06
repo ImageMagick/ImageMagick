@@ -1337,14 +1337,14 @@ MagickExport long LocaleCompare(const char *p,const char *q)
   return((long) strcasecmp(p,q));
 #else
   {
-    register unsigned int
+    register int
       c,
       d;
 
     for ( ; ; )
     {
-      c=(unsigned int) *p;
-      d=(unsigned int) *q;
+      c=(int) *p;
+      d=(int) *q;
       if ((c == '\0') || (AsciiMap[c] != AsciiMap[d]))
         break;
       p++;
@@ -1434,17 +1434,17 @@ MagickExport long LocaleNCompare(const char *p,const char *q,
   return((long) strncasecmp(p,q,length));
 #else
   {
-    register size_t
-      n;
-
-    register unsigned int
+    register int
       c,
       d;
 
+    register size_t
+      n;
+
     for (n=length; n != 0; n--)
     {
-      c=(unsigned int) *p;
-      d=(unsigned int) *q;
+      c=(int) *p;
+      d=(int) *q;
       if (AsciiMap[c] != AsciiMap[d])
         return(AsciiMap[c]-AsciiMap[d]);
       if (c == '\0')
