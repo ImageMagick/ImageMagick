@@ -344,7 +344,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=WriteLSBLong(file,(unsigned long) image_info->orientation);
   length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,image->columns);
+  length=WriteLSBLong(file,image->rows);
   length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
   offset=(ssize_t) ftell(file)-4;
   length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
@@ -1846,10 +1846,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   TIFF
     *tiff;
 
-  uint16
-    fillorder;
-
-  uint32
+  toff_t
     *byte_count,
     strip_size;
 
@@ -1874,6 +1871,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(MagickFalse);
     }
+  huffman_image->endian=MSBEndian;
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
   if (unique_file != -1)
@@ -1916,8 +1914,14 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   /*
     Allocate raw strip buffer.
   */
-  byte_count=0;
-  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  if (TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count) != 1)
+    {
+      TIFFClose(tiff);
+      huffman_image=DestroyImage(huffman_image);
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      return(MagickFalse);
+    }
   strip_size=byte_count[0];
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
@@ -1936,14 +1940,9 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
-  fillorder=FILLORDER_LSB2MSB;
-  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
   {
-    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(long)
-      byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(buffer,(unsigned long) count);
+    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,strip_size);
     if (WriteBlob(image,(size_t) count,buffer) != count)
       status=MagickFalse;
   }
@@ -2630,40 +2629,40 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if ((image_info->type != TrueColorType) &&
             (image_info->type != TrueColorMatteType))
           {
-            if (image->storage_class == PseudoClass)
+            if ((image_info->type != PaletteType) &&
+                (IsGrayImage(image,&image->exception) != MagickFalse))
               {
-                unsigned long
-                  depth;
-
-                /*
-                  Colormapped TIFF raster.
-                */
+                photometric=(uint16) (quantum_info->min_is_white !=
+                  MagickFalse ? PHOTOMETRIC_MINISWHITE :
+                  PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                photometric=PHOTOMETRIC_PALETTE;
-                depth=1;
-                while ((GetQuantumRange(depth)+1) < image->colors)
-                  depth<<=1;
-                status=SetQuantumDepth(image,quantum_info,depth);
-                if (status == MagickFalse)
-                  ThrowWriterException(ResourceLimitError,
-                    "MemoryAllocationFailed");
+                if ((image_info->depth == 0) &&
+                    (IsMonochromeImage(image,&image->exception) != MagickFalse))
+                  {
+                    status=SetQuantumDepth(image,quantum_info,1);
+                    if (status == MagickFalse)
+                      ThrowWriterException(ResourceLimitError,
+                        "MemoryAllocationFailed");
+                  }
               }
             else
-              if ((image_info->type != PaletteType) &&
-                  (IsGrayImage(image,&image->exception) != MagickFalse))
+              if (image->storage_class == PseudoClass)
                 {
-                  photometric=(uint16) (quantum_info->min_is_white !=
-                    MagickFalse ? PHOTOMETRIC_MINISWHITE :
-                    PHOTOMETRIC_MINISBLACK);
+                  unsigned long
+                    depth;
+
+                  /*
+                    Colormapped TIFF raster.
+                  */
                   (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                  if ((image_info->depth == 0) &&
-                      (IsMonochromeImage(image,&image->exception) != MagickFalse))
-                    {
-                      status=SetQuantumDepth(image,quantum_info,1);
-                      if (status == MagickFalse)
-                        ThrowWriterException(ResourceLimitError,
-                          "MemoryAllocationFailed");
-                    }
+                  photometric=PHOTOMETRIC_PALETTE;
+                  depth=1;
+                  while ((GetQuantumRange(depth)+1) < image->colors)
+                    depth<<=1;
+                  status=SetQuantumDepth(image,quantum_info,depth);
+                  if (status == MagickFalse)
+                    ThrowWriterException(ResourceLimitError,
+                      "MemoryAllocationFailed");
                 }
           }
       }

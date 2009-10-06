@@ -6,6 +6,7 @@
 <!ATTLIST coder name CDATA #REQUIRED>
 ]>
 <codermap>
+  <coder magick="3FR" name="DNG"/>
   <coder magick="8BIM" name="META"/>
   <coder magick="8BIMTEXT" name="META"/>
   <coder magick="8BIMWTEXT" name="META"/>
@@ -40,6 +41,7 @@
   <coder magick="EPS" name="PS"/>
   <coder magick="EPT2" name="EPT"/>
   <coder magick="EPT3" name="EPT"/>
+  <coder magick="ERF" name="DNG"/>
   <coder magick="EXIF" name="META"/>
   <coder magick="FILE" name="URL"/>
   <coder magick="FRACTAL" name="PLASMA"/>
@@ -52,6 +54,8 @@
   <coder magick="GRB" name="RGB"/>
   <coder magick="GRANITE" name="MAGICK"/>
   <coder magick="GROUP4" name="TIFF"/>
+  <coder magick="K25" name="DNG"/>
+  <coder magick="KDC" name="DNG"/>
   <coder magick="H" name="MAGICK"/>
   <coder magick="HTM" name="HTML"/>
   <coder magick="HTTP" name="URL"/>
@@ -116,6 +120,8 @@
   <coder magick="R" name="RAW"/>
   <coder magick="ROSE" name="MAGICK"/>
   <coder magick="SHTML" name="HTML"/>
+  <coder magick="SR2" name="DNG"/>
+  <coder magick="SRF" name="DNG"/>
   <coder magick="SVGZ" name="SVG"/>
   <coder magick="TEXT" name="TXT"/>
   <coder magick="TIFF64" name="TIFF"/>
