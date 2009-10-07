@@ -516,7 +516,7 @@ static MagickBooleanType ClonePixelCacheNexus(CacheInfo *destination,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C l o n e P i x e l C a c h e P i x e l s                                %
++   C l o n e P i x e l C a c h e P i x e l s                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
