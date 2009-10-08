@@ -872,6 +872,7 @@ namespace Magick
   using MagickCore::SignatureImage;
   using MagickCore::SolarizeImage;
   using MagickCore::SparseColorImage;
+  using MagickCore::SpliceImage;
   using MagickCore::SpreadImage;
   using MagickCore::SteganoImage;
   using MagickCore::StereoImage;
