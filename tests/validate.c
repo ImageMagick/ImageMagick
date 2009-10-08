@@ -479,9 +479,11 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
         Generate reference image.
       */
       CatchException(exception);
-      (void) fprintf(stdout,"  test %lu: %s/%s/%lu-bits",test++,
-        reference_formats[i].magick,MagickOptionToMnemonic(MagickTypeOptions,
-        reference_types[j].type),reference_types[j].depth);
+      (void) fprintf(stdout,"  test %lu: %s/%s/%s/%lu-bits",test++,
+        reference_formats[i].magick,MagickOptionToMnemonic(
+        MagickCompressOptions,reference_formats[i].compression),
+        MagickOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
+        reference_types[j].depth);
       (void) CopyMagickString(image_info->filename,reference_filename,
         MaxTextExtent);
       reference_image=ReadImage(image_info,exception);
@@ -518,6 +520,7 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
           reference_image=DestroyImage(reference_image);
           continue;
         }
+      reference_image->compression=reference_formats[i].compression;
       status=WriteImage(image_info,reference_image);
       InheritException(exception,&reference_image->exception);
       reference_image=DestroyImage(reference_image);
@@ -547,6 +550,7 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
       (void) CopyMagickString(image_info->magick,reference_formats[i].magick,
         MaxTextExtent);
       reference_image->depth=reference_types[j].depth;
+      reference_image->compression=reference_formats[i].compression;
       length=8192;
       blob=ImageToBlob(image_info,reference_image,&length,exception);
       if (blob == (unsigned char *) NULL)
@@ -685,9 +689,11 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
         Generate reference image.
       */
       CatchException(exception);
-      (void) fprintf(stdout,"  test %lu: %s/%s/%lu-bits",test++,
-        reference_formats[i].magick,MagickOptionToMnemonic(MagickTypeOptions,
-        reference_types[j].type),reference_types[j].depth);
+      (void) fprintf(stdout,"  test %lu: %s/%s/%s/%lu-bits",test++,
+        reference_formats[i].magick,MagickOptionToMnemonic(
+        MagickCompressOptions,reference_formats[i].compression),
+        MagickOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
+        reference_types[j].depth);
       (void) CopyMagickString(image_info->filename,reference_filename,
         MaxTextExtent);
       reference_image=ReadImage(image_info,exception);
@@ -724,6 +730,7 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
           reference_image=DestroyImage(reference_image);
           continue;
         }
+      reference_image->compression=reference_formats[i].compression;
       status=WriteImage(image_info,reference_image);
       InheritException(exception,&reference_image->exception);
       reference_image=DestroyImage(reference_image);
@@ -751,6 +758,7 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
       (void) FormatMagickString(reference_image->filename,MaxTextExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       reference_image->depth=reference_types[j].depth;
+      reference_image->compression=reference_formats[i].compression;
       status=WriteImage(image_info,reference_image);
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
