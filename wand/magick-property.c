@@ -1790,6 +1790,45 @@ WandExport MagickBooleanType MagickSetDepth(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t E x t r a c t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetExtract() sets the extract geometry before you read or write an
+%  image file.  Use it for inline cropping (e.g. 200x200+0+0) or resizing
+%  (e.g.200x200).
+%
+%  The format of the MagickSetExtract method is:
+%
+%      MagickBooleanType MagickSetExtract(MagickWand *wand,
+%        const char *geometry)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o geometry: the extract geometry.
+%
+*/
+WandExport MagickBooleanType MagickSetExtract(MagickWand *wand,
+  const char *geometry)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (geometry != (const char *) NULL)
+    (void) CopyMagickString(wand->image_info->extract,geometry,MaxTextExtent);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t F i l e n a m e                                         %
 %                                                                             %
 %                                                                             %

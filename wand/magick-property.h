@@ -89,6 +89,7 @@ extern WandExport MagickBooleanType
   MagickSetCompression(MagickWand *,const CompressionType),
   MagickSetCompressionQuality(MagickWand *,const unsigned long),
   MagickSetDepth(MagickWand *,const unsigned long),
+  MagickSetExtract(MagickWand *,const char *),
   MagickSetFilename(MagickWand *,const char *),
   MagickSetFormat(MagickWand *,const char *),
   MagickSetFont(MagickWand *,const char *),
