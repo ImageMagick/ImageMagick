@@ -235,7 +235,6 @@ struct ReferenceFormats
 static const struct ReferenceFormats
   reference_formats[] =
   {
-    { "AI", UndefinedCompression, 0.0 },
     { "ART", UndefinedCompression, 0.0 },
     { "AVS", UndefinedCompression, 0.0 },
     { "BMP", UndefinedCompression, 0.0 },
@@ -359,6 +358,7 @@ static const struct ReferenceFormats
     { "YCbCr", UndefinedCompression, 0.0 },
     { "YCbCrA", UndefinedCompression, 0.0 },
 #if defined(MAGICKCORE_GS_DELEGATE)
+    { "AI", UndefinedCompression, 0.0 },
     { "EPDF", UndefinedCompression, 0.0 },
     { "EPI", UndefinedCompression, 0.0 },
     { "EPS", UndefinedCompression, 0.0 },
