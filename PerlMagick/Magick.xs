@@ -1521,17 +1521,17 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             x=0;
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-            image_view=OpenCacheView(image);
-            p=GetCacheViewPixels(image_view,x,y,1,1);
+            image_view=AcquireCacheView(image);
+            p=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             if (p != (PixelPacket *) NULL)
               {
-                indexes=GetCacheViewIndexes(image_view);
+                indexes=GetCacheViewAuthenticIndexQueue(image_view);
                 items=sscanf(SvPV(sval,na),"%ld",&index);
                 if ((index >= 0) && (index < (long) image->colors))
                   *indexes=(IndexPacket) index;
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
-            image_view=CloseCacheView(image_view);
+            image_view=DestroyCacheView(image_view);
           }
           break;
         }
@@ -1751,9 +1751,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             x=0;
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-            image_view=OpenCacheView(image);
-            p=GetCacheViewPixels(image_view,x,y,1,1);
-            indexes=GetCacheViewIndexes(image_view);
+            image_view=AcquireCacheView(image);
+            p=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
+            indexes=GetCacheViewAuthenticIndexQueue(image_view);
             if (p != (PixelPacket *) NULL)
               {
                 if ((strchr(SvPV(sval,na),',') == 0) ||
@@ -1783,7 +1783,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                   *indexes=RoundToQuantum(pixel.index);
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
-            image_view=CloseCacheView(image_view);
+            image_view=DestroyCacheView(image_view);
           }
           break;
         }
@@ -4367,8 +4367,21 @@ Get(ref,...)
           if (LocaleCompare(attribute,"id") == 0)
             {
               if (image != (Image *) NULL)
-                s=newSViv(SetMagickRegistry(ImageRegistryType,image,0,
-                  &image->exception));
+                {
+                  char
+                    key[MaxTextExtent];
+
+                  MagickBooleanType
+                    status;
+
+                  static long
+                    id = 0;
+
+                  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",id);
+                  status=SetImageRegistry(ImageRegistryType,key,image,
+                    &image->exception);
+                  s=newSViv(id++);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4400,17 +4413,17 @@ Get(ref,...)
               x=0;
               y=0;
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-              image_view=OpenCacheView(image);
-              p=AcquireCacheViewPixels(image_view,x,y,1,1,&image->exception);
+              image_view=AcquireCacheView(image);
+              p=GetCacheViewVirtualPixels(image_view,x,y,1,1,&image->exception);
               if (p != (const PixelPacket *) NULL)
                 {
-                  indexes=AcquireCacheViewIndexes(image_view);
+                  indexes=GetCacheViewVirtualIndexQueue(image_view);
                   (void) FormatMagickString(name,MaxTextExtent,QuantumFormat,
                     *indexes);
                   s=newSVpv(name,0);
                   PUSHs(s ? sv_2mortal(s) : &sv_undef);
                 }
-              image_view=CloseCacheView(image_view);
+              image_view=DestroyCacheView(image_view);
               continue;
             }
           if (LocaleCompare(attribute,"iptc") == 0)
@@ -4660,7 +4673,7 @@ Get(ref,...)
               y=0;
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
               p=GetVirtualPixels(image,x,y,1,1,exception);
-              indexes=AcquireIndexes(image);
+              indexes=GetVirtualIndexQueue(image);
               if (image->colorspace != CMYKColorspace)
                 (void) FormatMagickString(tuple,MaxTextExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat,
@@ -5767,7 +5780,7 @@ GetPixel(ref,...)
         double
           scale;
 
-        indexes=AcquireIndexes(image);
+        indexes=GetVirtualIndexQueue(image);
         scale=1.0;
         if (normalize != MagickFalse)
           scale=1.0/QuantumRange;
@@ -7762,11 +7775,11 @@ Mogrify(ref,...)
                     argument_list[6].string_reference,QuantumRange));
                   if (composite_image->matte != MagickTrue)
                     (void) SetImageOpacity(composite_image,OpaqueOpacity);
-                  composite_view=OpenCacheView(composite_image);
+                  composite_view=AcquireCacheView(composite_image);
                   for (y=0; y < (long) composite_image->rows ; y++)
                   {
-                    q=GetCacheViewPixels(composite_view,0,y,(long)
-                      composite_image->columns,1);
+                    q=GetCacheViewAuthenticPixels(composite_view,0,y,(long)
+                      composite_image->columns,1,exception);
                     for (x=0; x < (long) composite_image->columns; x++)
                     {
                       if (q->opacity == OpaqueOpacity)
@@ -7777,7 +7790,7 @@ Mogrify(ref,...)
                     if (sync == MagickFalse)
                       break;
                   }
-                  composite_view=CloseCacheView(composite_view);
+                  composite_view=DestroyCacheView(composite_view);
                 }
             }
           if (attribute_flag[9] != 0)    /* "color=>" */
