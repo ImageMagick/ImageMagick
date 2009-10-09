@@ -1,3 +1,6 @@
+2009-10-08  6.5.6-10 <kmx@volny...>
+  * Improve PerlMagick.PL to work with Strawberry Perl under Windows.
+
 2009-08-02  6.5.4-8 Cristy  <quetzlzacatenango@image...>
   * Create a image registry to track which image objects must be cloned
     when a Perl thread is created.
