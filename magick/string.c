@@ -1975,21 +1975,25 @@ MagickExport double StringToDouble(const char *string,const double interval)
     *q;
 
   double
+    scale,
     value;
 
   assert(string != (char *) NULL);
   value=strtod(string,&q);
+  scale=1000.0;
+  if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
+    scale=1024.0;
   switch (tolower((int) ((unsigned char) *q)))
   {
-    case '%': value*=pow(1024.0,0)*interval/100.0; break;
-    case 'k': value*=pow(1024.0,1); break;
-    case 'm': value*=pow(1024.0,2); break;
-    case 'g': value*=pow(1024.0,3); break;
-    case 't': value*=pow(1024.0,4); break;
-    case 'p': value*=pow(1024.0,5); break;
-    case 'e': value*=pow(1024.0,6); break;
-    case 'z': value*=pow(1024.0,7); break;
-    case 'y': value*=pow(1024.0,8); break;
+    case '%': value*=pow(scale,0)*interval/100.0; break;
+    case 'k': value*=pow(scale,1); break;
+    case 'm': value*=pow(scale,2); break;
+    case 'g': value*=pow(scale,3); break;
+    case 't': value*=pow(scale,4); break;
+    case 'p': value*=pow(scale,5); break;
+    case 'e': value*=pow(scale,6); break;
+    case 'z': value*=pow(scale,7); break;
+    case 'y': value*=pow(scale,8); break;
     default:  break;
   }
   return(value);
