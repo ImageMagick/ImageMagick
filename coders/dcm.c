@@ -3363,7 +3363,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     signed_data=(unsigned long) (significant_bits == 16 ? 1 : 0);
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0) ||
-      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.90") == 0))
+      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.90") == 0) ||
+      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.91") == 0))
     {
       Image
         *images;
@@ -3456,11 +3457,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) fclose(file);
         (void) FormatMagickString(read_info->filename,MaxTextExtent,
           "jpeg:%s",filename);
-        if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.90") == 0)
+        if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.90") == 0) ||
+            (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.91") == 0))
           (void) FormatMagickString(read_info->filename,MaxTextExtent,
             "jp2:%s",filename);
         jpeg_image=ReadImage(read_info,exception);
-puts("c");
         if (jpeg_image != (Image *) NULL)
           {
             ResetImagePropertyIterator(image);
@@ -3796,6 +3797,12 @@ puts("c");
           GetBlobSize(image));
         if (status == MagickFalse)
           break;
+      }
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
       }
   }
   /*
