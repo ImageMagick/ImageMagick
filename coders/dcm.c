@@ -3775,6 +3775,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
         }
       }
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */
@@ -3797,12 +3803,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           GetBlobSize(image));
         if (status == MagickFalse)
           break;
-      }
-    if (EOFBlob(image) != MagickFalse)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
       }
   }
   /*
