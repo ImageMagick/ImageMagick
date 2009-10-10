@@ -426,17 +426,65 @@ href="#gravity">-gravity</a> setting. </p>
 
 <p>For a different encryption method, see <a href="#encipher">-encipher</a> and <a href="#decipher">-decipher</a>. </p>
 
+
+
 <div style="margin: auto;">
   <h4><a name="auto-gamma" id="auto-gamma"></a>-auto-gamma</h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Automagically adjust gamma level of image.</td><td style='text-align:right;'></td></tr></table>
 
+<p>This calculates the mean values of an image, then applies a calculated  <a
+href="#gamma" >-gamma</a> adjustment so that is the mean color exists in the
+image it will get a have a value of 50%. </p>
+
+<p>This means that any solid 'gray' image will become 50% gray. </p>
+
+<p>This works well for real-life images with little or no extreme dark and
+light areas, but tend to fail for images with large amounts of bright sky or
+dark shadows. It also does not work well for diagrmas or cartoon like images.
+</p>
+
+<p>It uses the <a href="#channel" >-channel</a> setting, (including the
+'<CODE>sync</CODE>' flag for channel syncronization), to determine which color
+values will be used and modified. As the default <a href="#channel"
+>-channel</a> setting is '<CODE>RGB,sync</CODE>', channels will be modified
+together by the same gamma value, preserving colors. </p>
+
+
+
 <div style="margin: auto;">
   <h4><a name="auto-level" id="auto-level"></a>-auto-level</h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Automagically adjust color levels of image.</td><td style='text-align:right;'></td></tr></table>
+
+<p>This is a 'perfect' image normalization operator.  It finds the exact
+mimimum and maximum color values in the image and then applies a <a
+href="#level" >-level</a> operator to stretch the values to the full range of
+values. </p>
+
+<p>the operator is not typically used for real-life images, image scans, or
+JPEG format images, as a single 'out-rider' pixel can set a bad min/max values
+for the <a href="#level" >-level</a> operation.  On the other hand it is the
+right operator to use for color stretching gradient images being used to
+generate Color lookup tables, distortion maps, or other 'mathematically'
+defined images.  </p>
+
+<p>The operator is very similar to the <a href="#normalize">-normalize</a>, <a
+href="#contrast-stretch" >-contrast-stretch</a>, and <a href="#linear-stretch"
+>-linear-stretch</a> operators, but without 'histogram binning' or 'clipping'
+problems that these operators may have. That is <a href="#auto-level"
+>-auto-level</a> is the perfect or ideal for of these operators. </p>
+
+<p>It uses the <a href="#channel" >-channel</a> setting, (including the
+special '<CODE>sync</CODE>' flag for channel syncronization), to determine
+which color values will be used and modified. As the default <a
+href="#channel" >+channel</a> setting is '<CODE>RGB,sync</CODE>', channels
+will be modified together by the same gamma value, preserving colors, and
+ignoring transparency. </p>
+
+
 
 <div style="margin: auto;">
   <h4><a name="auto-orient" id="auto-orient"></a>-auto-orient</h4>
@@ -658,21 +706,36 @@ pixels which are outside the image proper are blurred into the final result.
 
 <p>To print a complete list of channel types, use <a href="#list">-list channel</a>.</p>
 
-<p>The channels above can be specified as a comma-separated list or can be abbreviated as a
-concatenation of the letters '<kbd>R</kbd>', '<kbd>G</kbd>', '<kbd>B</kbd>',
-'<kbd>A</kbd>', '<kbd>O</kbd>', '<kbd>C</kbd>', '<kbd>M</kbd>', '<kbd>Y</kbd>',
-'<kbd>K</kbd>'.
+<p>The channels above can be specified as a comma-separated list or can be
+abbreviated as a concatenation of the letters '<kbd>R</kbd>', '<kbd>G</kbd>',
+'<kbd>B</kbd>', '<kbd>A</kbd>', '<kbd>O</kbd>', '<kbd>C</kbd>',
+'<kbd>M</kbd>', '<kbd>Y</kbd>', '<kbd>K</kbd>'.
 
 For example, to negate only the alpha channel of an image, use</p>
 <p class="crtsnip">
-    -channel Alpha -negate
+    -channel Alpha   -negate
 </p>
 
-<p>By default, ImageMagick sets <a href="#channel">-channel</a> to the value
-'<kbd>RGB</kbd>', which specifies that operators act on all channels except
-the opacity channel. Using the option <a href="#channel" >+channel</a> will reset the value back to this default. </p>
+Some operators also allow the use of a special channel flag
+'<code>sync</code>'.  If present operators that understand this flag will
+apply the exact same image modification to all the image channels in the image
+so as to ensure that colors are kept 'in-sync'.  Without this flag such
+operators will apply there function to each channel separately.  See <a
+href="#auto-level">-auto-level</a> and <a href="#auto-gamma">-auto-gamma</a>
+for examples of such an operator. </p>
 
-<p>Options that are affected by the <a href="#channel" >-channel</a> setting include the following.
+
+<p>By default, ImageMagick sets <a href="#channel">-channel</a> to the value
+'<kbd>RGB,sync</kbd>', which specifies that operators act on all channels
+except the opacity channel, and that all the color channels are to be modified
+in exactly the same way.  The 'plus' form <a href="#channel" >+channel</a>
+will reset the value back to this default. </p>
+
+<p>Options that are affected by the <a href="#channel" >-channel</a> setting
+include the following.
+
+<a href="#auto-gamma">-auto-gamma</a>,
+<a href="#auto-level">-auto-level</a>,
 <a href="#black-threshold">-black-threshold</a>,
 <a href="#blur">-blur</a>,
 <a href="#clamp">-clamp</a>,
@@ -682,8 +745,8 @@ the opacity channel. Using the option <a href="#channel" >+channel</a> will rese
 <a href="#evaluate">-evaluate</a>,
 <a href="#function">-function</a>,
 <a href="#fx">-fx</a>,
-<a href="#hald-clut">-hald-clut</a>,
 <a href="#gaussian-blur">-gaussian-blur</a>,
+<a href="#hald-clut">-hald-clut</a>,
 <a href="#motion-blur">-motion-blur</a>,
 <a href="#negate">-negate</a>,
 <a href="#normalize">-normalize</a>,
@@ -691,8 +754,30 @@ the opacity channel. Using the option <a href="#channel" >+channel</a> will rese
 <a href="#radial-blur">-radial-blur</a>,
 <a href="#random-threshold">-random-threshold</a>,
 <a href="#separate">-separate</a>, and
+<a href="#threshold">-threshold</a>, and
 <a href="#white-threshold">-white-threshold</a>.
 </p>
+
+<p>Warning, some operators behave differentally when the <a href="#channel"
+>+channel</a> default setting is in effect, verses ANY user defined <a
+href="#channel" >-channel</a> setting (including the equivelent of the
+default).  For example <a href="#threshold">-threshold</a> will by default
+gray-scale the image before thresholding, if no <a href="#channel"
+>-channel</a> setting has been defined. </p>
+
+<p>Also some operators such as <a href="#blur">-blur</a>, <a
+href="#gaussian-blur">-gaussian-blur</a>, will modify their handling of the
+color channels if the '<kbd>alpha</kbd>' channel is also enabled by <a
+href="#channel" >-channel</a>.  Generally this done to ensure that
+fully-transparent colors are treated as being fully-transparent, and thus any
+underlying 'hidden' color has no effect on the final results.  Typically
+resulting in 'halo' effects. </p>
+
+<p>As a alpha channel is optional within images some operators will read the
+color channels of an image as a greyscale alpha mask, when the image has no
+alpha channel present, but the <a href="#channel" >-channel</a> setting tells
+the operator to apply the alpha channel. The <a href="#clut">-clut</a>
+operator is a good example of this. </p>
 
 
 <div style="margin: auto;">
@@ -1564,14 +1649,39 @@ to '<kbd>false</kbd>'.  </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Increase the contrast in an image by <em>stretching</em> the range of intensity values.</td><td style='text-align:right;'></td></tr></table>
 
-<p>While performing the stretch, black-out at most <em class="arg">black-point</em> pixels and white-out at most <em class="arg">white-point</em> pixels. Or, if percent is used, black-out at most <em class="arg">black-point %</em> pixels and white-out at most <em class="arg">white-point %</em> pixels.</p>
+<p>While performing the stretch, black-out at most <em
+class="arg" >black-point</em> pixels and white-out at most <em
+class="arg" >white-point</em> pixels. Or, if percent is used, black-out at most
+<em class="arg" >black-point %</em> pixels and white-out at most <em
+class="arg" >white-point %</em> pixels.</p>
 
-<p>Prior to ImageMagick 6.4.7-0, <a href="#contrast-stretch">-contrast-stretch</a> will black-out at most <em class="arg">black-point</em> pixels and white-out at most <em class="arg">total pixels minus white-point</em> pixels. Or, if percent is used, black-out at most <em class="arg">black-point %</em> pixels and white-out at most <em class="arg">100% minus white-point %</em> pixels.</p>
+<p>Prior to ImageMagick 6.4.7-0, <a href="#contrast-stretch"
+>-contrast-stretch</a> will black-out at most <em class="arg"
+>black-point</em> pixels and white-out at most <em class="arg" >total pixels
+minus white-point</em> pixels. Or, if percent is used, black-out at most <em
+class="arg">black-point %</em> pixels and white-out at most <em class="arg"
+>100% minus white-point %</em> pixels.</p>
 
-<p>Note that <kbd>-contrast-stretch 0</kbd> will modify the image such that the image's
-min and max values are stretched to 0 and <em class="QR">QuantumRange</em>, respectively, without any loss of data due to burn-out at either end. This is not the same as <a href="#normalize">-normalize</a>, which is equivalent to <kbd>-contrast-stretch 2%x1%</kbd> (or prior to ImageMagick 6.4.7-0, <kbd>-contrast-stretch 2%x99%</kbd>).</p>
+<p>Note that <kbd>-contrast-stretch 0</kbd> will modify the image such that
+the image's min and max values are stretched to 0 and <em class="QR"
+>QuantumRange</em>, respectively, without any loss of data due to burn-out or
+clipping at either end. This is not the same as <a href="#normalize"
+>-normalize</a>, which is equivalent to <kbd>-contrast-stretch 2%x1%</kbd> (or
+prior to ImageMagick 6.4.7-0, <kbd>-contrast-stretch 2%x99%</kbd>).</p>
 
-<p>The channels are stretched in concert.  Specify <a href="#channel">-channel</a> to normalize the RGB channels individually.</p>
+<p>Internally operator works by creating a histogram bin, and then uses that
+bin to modify the image. As such some colors may be merged together when they
+originally fell into the same 'bin'. </p>
+
+<p>All the channels are normalized in concert by the came amount so as to
+preserve color integrity, when the default <a href="#channel" >+channel</a>
+setting is in use.  Specifing any other <a href="#channel" >-channel</a>
+setting will normalize the RGB channels independently.</p>
+
+<p>See also  <a href="#auto-level" >-auto-level</a> for a 'perfect'
+normalization of mathematical images. </p>
+
+<p>This operator is under review for re-development. </p>
 
 
 <div style="margin: auto;">
@@ -1580,18 +1690,30 @@ min and max values are stretched to 0 and <em class="QR">QuantumRange</em>, resp
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Convolve an image with a user-supplied convolution kernel.</td><td style='text-align:right;'></td></tr></table>
 
-<p>The <em class="arg">kernel</em> is a square matrix specified as a comma-separated list of integers (with no spaces), ordered left-to right, starting with the top row. Presently, only odd-dimensioned kernels are supported, and therefore the number of entries in the specified <em class="arg">kernel</em> must be 3<sup>2</sup>=9, 5<sup>2</sup>=25, 7<sup>2</sup>=49, etc. </p>
+<p>The <em class="arg">kernel</em> is a square matrix specified as
+a comma-separated list of integers (with no spaces), ordered left-to right,
+starting with the top row. Presently, only odd-dimensioned kernels are
+supported, and therefore the number of entries in the specified <em
+class="arg">kernel</em> must be 3<sup>2</sup>=9, 5<sup>2</sup>=25,
+7<sup>2</sup>=49, etc. </p>
 
-<p>Note that the <a href="../www/command-line-options.html#convolve">&#x2011;convolve</a> operator supports the <a href="../www/command-line-options.html#bias">&#x2011;bias</a> setting. This option shifts the convolution so that positive and negative results are relative to a user-specified bias value. This is important for non-HDRI compilations of ImageMagick when dealing with convolutions that contain negative as well as positive values. This is especially the case with convolutions involving high pass filters or edge detection. Without an output bias, the negative values is clipped at zero.
+<p>Note that the <a href="../www/command-line-options.html#convolve">&#x2011;convolve</a> operator supports the <a href="../www/command-line-options.html#bias">&#x2011;bias</a> setting. This option shifts the convolution so that
+positive and negative results are relative to a user-specified bias value.
+This is important for non-HDRI compilations of ImageMagick when dealing with
+convolutions that contain negative as well as positive values. This is
+especially the case with convolutions involving high pass filters or edge
+detection. Without an output bias, the negative values is clipped at zero.
 </p>
 
-<p>When using an ImageMagick with the HDRI compile-time setting, <a href="../www/command-line-options.html#bias">&#x2011;bias</a> is not needed,
-as ImageMagick is able to store/handle any negative results without
-clipping to the color value range (0..QuantumRange).</p>
+<p>When using an ImageMagick with the HDRI compile-time setting, <a href="../www/command-line-options.html#bias">&#x2011;bias</a> is not needed, as ImageMagick is able to store/handle any
+negative results without clipping to the color value range (0..QuantumRange).
+See the discussion on HDRI implementations of ImageMagick on the page <a
+href="/www/high-dynamic-range.html">High
+Dynamic-Range Images</a>. For more about HDRI go the ImageMagick <a
+href="http://www.imagemagick.org/Usage/basics/#hdri">Usage</a> pages or this
+<a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a>
+entry.  </p>
 
-<p>See the discussion on HDRI implementations of ImageMagick on the page
-<a href="/www/high-dynamic-range.html">High Dynamic-Range Images</a>. For more about HDRI go the ImageMagick <a href="http://www.imagemagick.org/Usage/basics/#hdri">Usage</a> pages or this <a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a> entry.
-</p>
 
 <div style="margin: auto;">
   <h4><a name="crop" id="crop"></a>-crop <em class="arg">geometry</em></h4>
@@ -3723,14 +3845,14 @@ color (+ form). </p>
 <p>The value for <kbd>file</kbd> is in number of files. The other limits are in bytes. By default the limits are 768 files, 2gb of image area, 1.5gb memory, 8gb memory map, and 16tb of disk.  These limits are adjusted relative to the available resources on your computer if this information is available.   When any limit is reached, ImageMagick fails in some fashion but attempts to take compensating actions, if possible. For example, the following limits memory:</p>
 
 <p class="crtsnip">
-  -limit memory 32mb -limit map 64mb
+  -limit memory 32MiB -limit map 64MiB
 </p>
 
 <p>Use <a href="#list">-list resource</a> to list the current limits. For example, our system shows these limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'><pre>File       Area     Memory        Map       Disk  Thread       Time
--------------------------------------------------------------------
- 768   3.8187gb    2.864gb   7.6375gb       16eb       2  unlimited</pre>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'><pre>File       Area      Memory         Map        Disk   Thread       Time
+-----------------------------------------------------------------------
+ 768   3.8187GiB    2.864GiB   7.6375GiB       16EiB       2  unlimited</pre>
 </span></p>
 <p>Requests for pixel storage to keep intermediate images are satisfied by one of three resource categories: in-memory pool, memory-mapped files pool, and disk pool (in that order) depending on the <a href="../www/command-line-options.html#limit">&#x2011;limit</a> settings and whether the system honors a resource request. If the total size of allocated pixel storage in the given pool reaches the corresponding limit, the request is passed to the next pool. Additionally, requests that exceed the  <kbd>area</kbd> limit automagically are allocated on disk.</p>
 
@@ -3763,6 +3885,25 @@ color (+ form). </p>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Linear with saturation stretch.</td><td style='text-align:right;'></td></tr></table>
+
+<p>This is very similar to <a href="#contrast-stretch" >-contrast-stretch</a>,
+and uses a 'histogram bin' to determine the range of color values that needs to
+be stretched.  However it then stretchs those colors using the <a
+href="#level" >-level</a> operator.</p>
+
+<p>As such while the initial determination may have 'binning' round off
+effects, the image colors are stretched mathematically, rather than using the
+histogram bins.  This makes the operator more accurate. </p>
+
+<p>note however that a <a href="#linear-stretch" >-linear-stretch</a> of
+'<kbd>0</kbd>' does nothing, while a value of '<kbd>1</kbd>' does a near
+perfect stretch of the color range. </p>
+
+<p>See also <a href="#auto-level" >-auto-level</a> for a 'perfect'
+normalization of mathematical images. </p>
+
+<p>This operator is under review for re-development. </p>
+
 
 <div style="margin: auto;">
   <h4><a name="linewidth" id="linewidth"></a>-linewidth</h4>
@@ -4087,23 +4228,39 @@ Uniform
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Increase the contrast in an image by <em>stretching</em> the range of intensity values.</td><td style='text-align:right;'></td></tr></table>
 
-<p>The intensity values are stretched to cover the entire range of possible values. While doing so, black-out at most <em>2%</em> of the pixels and white-out at most <em>1%</em> of the pixels.</p>
+<p>The intensity values are stretched to cover the entire range of possible
+values. While doing so, black-out at most <em>2%</em> of the pixels and
+white-out at most <em>1%</em> of the pixels.</p>
 
-<p>Note that as of ImageMagick 6.4.7-0, <a href="#normalize" >-normalize</a> is equivalent to <a href="#contrast-stretch" >-contrast-stretch 2%x1%</a>. (Before this
-version, it was equivalent to <a href="#contrast-stretch">-contrast-stretch 2%x99%)</a></p>
+<p>Note that as of ImageMagick 6.4.7-0, <a href="#normalize" >-normalize</a>
+is equivalent to <a href="#contrast-stretch" >-contrast-stretch 2%x1%</a>.
+(Before this version, it was equivalent to <a href="#contrast-stretch"
+>-contrast-stretch 2%x99%</a>).</p>
 
-<p>All the channels are normalized in concert by the came amount so as to preserve color integrity.  Specify <a href="#channel">-channel</a> to normalize the RGB channels independently.</p>
+<p>All the channels are normalized in concert by the came amount so as to
+preserve color integrity, when the default <a href="#channel" >+channel</a>
+setting is in use.  Specifing any other <a href="#channel" >-channel</a>
+setting will normalize the RGB channels independently.</p>
+
+<p>See  <a href="#contrast-stretch" >-contrast-stretch</A> for more details.
+Also see <a href="#auto-level" >-auto-level</a> for a 'perfect' normalization
+of mathematical images. </p>
+
+<p>This operator is under review for re-development. </p>
 
 
 <div style="margin: auto;">
   <h4><a name="ordered-dither" id="ordered-dither"></a>-ordered-dither <em class="arg">threshold_map</em>{,<em class="arg">level</em>...}</h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>dither the image using a pre-defined  ordered dither <em class="arg">threshold map</em> specified, and a uniform color map with the number of <em class="arg">levels</em> per color channel .  </td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>dither the image using a pre-defined  ordered dither <em
+class="arg">threshold map</em> specified, and a uniform color map with the
+given number of <em class="arg">levels</em> per color channel .  </td><td style='text-align:right;'></td></tr></table>
 
 <p>You can choose from these standard threshold maps:</p>
 
 <pre class="text">
+  threshold
   checks
   o2x2
   o3x3
@@ -4118,23 +4275,25 @@ version, it was equivalent to <a href="#contrast-stretch">-contrast-stretch 2%x9
   h16x16o
 </pre>
 
-<p>The '<kbd>o</kbd>' are ordered diffused pixel threshold maps, while the
-'<kbd>h</kbd>' maps are halftone threshold maps which are either 'a' angled,
-or 'o' orthogonal. The '<kbd>checks</kbd>' produce a 3 level checkerbord
-dither pattern.  Or you can define your own <em class="arg">threshold
-map</em> in a personal or system "<kbd>thresholds.xml</kbd>" XML file. </p>
+<p>The '<kbd>o</kbd>' maps are ordered diffused pixel threshold maps, while the
+'<kbd>h</kbd>' maps are halftone threshold maps which are either 'a' angled, or
+'o' orthogonal. The '<kbd>checks</kbd>' produce a 3 level checkerbord dither
+pattern.  Or you can define your own <em class="arg" >threshold map</em> in a
+personal or system "<kbd>thresholds.xml</kbd>" XML file. </p>
 
-<p>To print a complete list of threshold, use the <a href="#list">-list threshold</a> option.</p>
+<p>To print a complete list of threshold, use the <a href="#list" >-list
+threshold</a> option.</p>
 
-<p>It is recommended that the <a href="#map">+map</a> operator be used after
-applying <a href="#ordered-dither">-ordered-dither</a> to reduce the number of
+<p>It is recommended that the <a href="#map" >+map</a> operator be used after
+applying <a href="#ordered-dither" >-ordered-dither</a> to reduce the number of
 colors an animated image sequence, to less that 256 colors. This ensures that
 a common or global color table is used when saving the result to a color
 limited file format such as GIF.  </p>
 
-<p>Note that at this time the exact same map is used for all color channels, no
-attempt is made to offset or rotate the dither map for different channels is
-made, at this point in time. (possible future expansion) </p>
+<p>Note that at this time the exact same threshold dithering map is used for
+all color channels, no attempt is made to offset or rotate the map for
+different channels is made, to create an offset printing effect. (possible
+future expansion) </p>
 
 
 <div style="margin: auto;">
@@ -4143,16 +4302,19 @@ made, at this point in time. (possible future expansion) </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>change this color to the fill color within the image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>The <em class="arg">color</em> argument is defined using the format
-described under the <a href="#fill">-fill</a> option.
-The <a href="#fuzz">-fuzz</a> setting can be used to match and replace colors similar
-to the one given.</p>
+<p>The <em class="arg" >color</em> argument is defined using the format
+described under the <a href="#fill" >-fill</a> option.  The <a href="#fuzz"
+>-fuzz</a> setting can be used to match and replace colors similar to the one
+given.</p>
 
-<p>The <a href="#transparent">-transparent</a>  operator is exactly the same
-as <a href="#opaque">-opaque</a> but makes the matching color transparent,
+<p>The <a href="#transparent" >-transparent</a>  operator is exactly the same
+as <a href="#opaque" >-opaque</a> but makes the matching color transparent,
 rather than the same as the current <a href="#fill">-fill</a> color. </p>
 
-<p>Use <em class="arg">+opaque</em> to paint any pixel that does not match the target color.</p>
+<p>Use <em class="arg" >+opaque</em> to paint any pixel that does not match
+the target color.</p>
+
+
 
 <div style="margin: auto;">
   <h4><a name="orient" id="orient"></a>-orient <em class="arg">image orientation</em></h4>
@@ -4174,7 +4336,8 @@ rather than the same as the current <a href="#fill">-fill</a> color. </p>
   undefined
 </pre>
 
-<p>To print a complete list of orientations, use the <a href="#list">-list orientation</a> option.</p>
+<p>To print a complete list of orientations, use the <a href="#list" >-list
+orientation</a> option.</p>
 
 
 <div style="margin: auto;">
@@ -5535,7 +5698,7 @@ percentage, which defaults to 100 percent (no color change). </p>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
