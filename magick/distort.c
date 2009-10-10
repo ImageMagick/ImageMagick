@@ -131,21 +131,28 @@ static inline double MagickRound(double x)
   return((double) ((long) (x-0.5)));
 }
 
+/*
+ * Polynomial Term Defining Functions
+ *
+ * Order must either be an integer, or 1.5 to produce
+ * the 2 number_valuesal polyminal function...
+ *    affine     1 (3)      u = c0 + c1*x + c2*y
+ *    bilinear  1.5 (4)     u = '' + c3*x*y
+ *    quadratic  2 (6)      u = '' + c4*x*x + c5*y*y
+ *    cubic      3 (10)     u = '' + c6*x^3 + c7*x*x*y + c8*x*y*y + c9*y^3
+ *    quartic    4 (15)     u = '' + c10*x^4 + ... + c14*y^4
+ *    quintic    5 (21)     u = '' + c15*x^5 + ... + c20*y^5
+ * number in parenthesis minimum number of points needed.
+ * Anything beyond quintic, has not been implemented until
+ * a more automated way of determined terms is found.
+
+ * Note the slight re-ordering of the terms for a quadratic polynomial
+ * which is to allow the use of a bi-linear (order=1.5) polynomial.
+ * All the later polynomials are ordered simply from x^N to y^N
+ */
 static unsigned long poly_number_terms(double order)
 {
-  /* Return the number of terms for a 2d polynomial
-     Order must either be an integer, or 1.5 to produce
-     the 2 number_valuesal polyminal function...
-        affine     1 (3)      u = c0 + c1*x + c2*y
-        bilinear  1.5 (4)     u = '' + c3*x*y
-        quadratic  2 (6)      u = '' + c4*x*x + c5*y*y
-        cubic      3 (10)     u = '' + c6*x^3 + c7*x*x*y + c8*x*y*y + c9*y^3
-        quartic    4 (15)     u = '' + c10*x^4 + ... + c14*y^4
-        quintic    5 (21)     u = '' + c15*x^5 + ... + c20*y^5
-     number in parenthesis minimum number of points needed.
-     Anything beyond quintic, has not been implemented until
-     a more automated way of determined terms is found.
-   */
+ /* Return the number of terms for a 2d polynomial */
   if ( order < 1 || order > 5 ||
        ( order != floor(order) && (order-1.5) > MagickEpsilon) )
     return 0; /* invalid polynomial order */
@@ -154,7 +161,7 @@ static unsigned long poly_number_terms(double order)
 
 static double poly_basis_fn(long n, double x, double y)
 {
-  /* return the result for this polynomial term */
+  /* Return the result for this polynomial term */
   switch(n) {
     case  0:  return( 1.0 ); /* constant */
     case  1:  return(  x  );
@@ -385,14 +392,19 @@ static double *GenerateCoefficients(const Image *image,
       The rest are constants as they are only used for image distorts
     */
     case BilinearForwardDistortion:
-      number_coeff=11; /* 2*4 coeff plus 3 constants */
-      cp_x = 0;        /* Reverse src/destination for forward mapping */
+      number_coeff=10; /* 2*4 coeff plus 2 constants */
+      cp_x = 0;        /* Reverse src/dest coords for forward mapping */
       cp_y = 1;
       cp_values = 2;
       break;
+#if 0
+    case QuadraterialDistortion:
+      number_coeff=19; /* BilinearForward + BilinearReverse */
+#endif
+      break;
     case ShepardsDistortion:
     case VoronoiColorInterpolate:
-      number_coeff=1;  /* may not be used, but provide some type of return */
+      number_coeff=1;  /* not used, but provide some type of return */
       break;
     case ArcDistortion:
       number_coeff=5;
@@ -403,7 +415,6 @@ static double *GenerateCoefficients(const Image *image,
       break;
     case PolarDistortion:
     case DePolarDistortion:
-      number_coeff=8;
       number_coeff=8;
       break;
     case PerspectiveDistortion:
@@ -590,7 +601,7 @@ static double *GenerateCoefficients(const Image *image,
             x,y     'center' of transforms     (default = image center)
             sx,sy   scale image by this amount (default = 1)
             a       angle of rotation          (argument required)
-            nx,ny   move 'center' here         (default = no movement)
+            nx,ny   move 'center' here         (default = x,y or no movement)
          And convert to affine mapping coefficients
 
          ScaleRotateTranslate Distortion Notes...
@@ -807,9 +818,13 @@ static double *GenerateCoefficients(const Image *image,
     case BilinearForwardDistortion:
     case BilinearReverseDistortion:
     {
-      /* Bilinear Distortion
+      /* Bilinear Distortion (Forward mapping)
             v = c0*x + c1*y + c2*x*y + c3;
          for each 'value' given
+
+         This is actually a simple polynomial Distortion!  The difference
+         however is when we need to reverse the above equation to generate a
+         BilinearForwardDistortion (see below).
 
          Input Arguments are sets of control points...
          For Distort Images    u,v, x,y  ...
@@ -873,37 +888,57 @@ static double *GenerateCoefficients(const Image *image,
 
          where u,v are in the destination image, NOT the source.
 
-         Reverse mapping however request the reverse of these functions.
-         This requires a full page of algbra to work out the reversed
-         mapping formula, but resolves down to the following...
+         Reverse Pixel mapping however needs to use reverse of these
+         functions.  It required a full page of algbra to work out the
+         reversed mapping formula, but resolves down to the following...
 
-            a = c2*c5-c1*c6;
             c8 = c0*c5-c1*c4;
-            c9 = 4*a;
-            c10 = 1/(2*a);
+            c9 = 2*(c2*c5-c1*c6);   // '2*a' in the quadratic formula
 
             i = i - c3;   j = j - c7;
-            b = c6*i - c2*j + c8;
-            r = b*b - 2*c9*(c4*ii -  c0*jj);
+            b = c6*i - c2*j + c8;   // So that   a*y^2 + b*y + c == 0
+            c = c4*i -  c0*j;       // y = ( -b +- sqrt(bb - 4ac) ) / (2*a)
 
-            y = ( -b + sqrt(r) ) * c10;
+            r = b*b - c9*(c+c);
+            if ( c9 != 0 )
+              y = ( -b + sqrt(r) ) / c9;
+            else
+              y = -c/b;
+
             x = ( i - c1*y) / ( c1 - c2*y );
 
          NB: if 'r' is negative there is no solution!
          NB: the sign of the sqrt() should be negative if image becomes
-         flipped or flopped.
+             flipped or flopped, or crosses over itself.
+         NB: techniqually coefficient c5 is not needed, anymore,
+             but kept for completness.
 
-         For details see Anthony Thyssen <A.Thyssen@griffith.edu.au>
+         See Anthony Thyssen <A.Thyssen@griffith.edu.au>
+         or  Fred Weinhaus <fmw@alink.net>  for more details.
 
-         constants needed for forward mapped bilinear...
          */
-         double a = coeff[2]*coeff[5] - coeff[1]*coeff[6];
          coeff[8] = coeff[0]*coeff[5] - coeff[1]*coeff[4];
-         coeff[9] = 4*a;
-         coeff[10] = 1/(2*a);
+         coeff[9] = 2*(coeff[2]*coeff[5] - coeff[1]*coeff[6]);
       }
       return(coeff);
     }
+#if 0
+    case QuadrilateralDistortion:
+    {
+      /* Map a Quadrilateral to a unit square using BilinearReverse
+         Then map that unit square back to the final Quadrilateral
+         using BilinearForward.
+
+         Input Arguments are sets of control points...
+         For Distort Images    u,v, x,y  ...
+         For Sparse Gradients  x,y, r,g,b  ...
+
+      */
+      /* UNDER CONSTRUCTION */
+      return(coeff);
+    }
+#endif
+
     case PolynomialDistortion:
     {
       /* Polynomial Distortion
@@ -924,9 +959,8 @@ static double *GenerateCoefficients(const Image *image,
          Polynomial Distortion Notes...
            + UNDER DEVELOPMENT -- Do not expect this to remain as is.
            + Currently polynomial is a reversed mapped distortion.
-           + Should be used to generate a 'grid' of bilinear distortions
-             so that it will be 'forward' mapped.
            + Order 1.5 is fudged to map into a bilinear distortion.
+             though it is not the same order as that distortion.
       */
       double
         **matrix,
@@ -1538,6 +1572,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       case ShepardsDistortion:
       case BilinearForwardDistortion:
       case BilinearReverseDistortion:
+#if 0
+      case QuadrilateralDistortion:
+#endif
       case PolynomialDistortion:
       case BarrelDistortion:
       case BarrelInverseDistortion:
@@ -1611,8 +1648,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         fprintf(stderr, "Affine Projection:\n");
         fprintf(stderr, "  -distort AffineProjection \\\n      '");
         for (i=0; i<5; i++)
-          fprintf(stderr, "%lg,", inverse[i]);
-        fprintf(stderr, "%lg'\n", inverse[5]);
+          fprintf(stderr, "%lf,", inverse[i]);
+        fprintf(stderr, "%lf'\n", inverse[5]);
         inverse = (double *) RelinquishMagickMemory(inverse);
 
         fprintf(stderr, "Affine Distort, FX Equivelent:\n");
@@ -1643,11 +1680,11 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         fprintf(stderr, "Perspective Projection:\n");
         fprintf(stderr, "  -distort PerspectiveProjection \\\n      '");
         for (i=0; i<4; i++)
-          fprintf(stderr, "%lg,", inverse[i]);
+          fprintf(stderr, "%lf, ", inverse[i]);
         fprintf(stderr, "\n       ");
         for (; i<7; i++)
-          fprintf(stderr, "%lg,", inverse[i]);
-        fprintf(stderr, "%lg'\n", inverse[7]);
+          fprintf(stderr, "%lf, ", inverse[i]);
+        fprintf(stderr, "%lf'\n", inverse[7]);
         inverse = (double *) RelinquishMagickMemory(inverse);
 
         fprintf(stderr, "Perspective Distort, FX Equivelent:\n");
@@ -1665,32 +1702,48 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       }
 
       case BilinearForwardDistortion:
-        fprintf(stderr, "Bilinear Forward Mapping Equations:\n");
+        fprintf(stderr, "BilinearForward Mapping Equations:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "    i = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
             coeff[0], coeff[1], coeff[2], coeff[3]);
         fprintf(stderr, "    j = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
             coeff[4], coeff[5], coeff[6], coeff[7]);
-        for ( i=8; i<11; i++ )
-          fprintf(stderr, "   c%ld = %+lf", i, coeff[i]);
-        fprintf(stderr, "\n");
-        fprintf(stderr, "Bilinear Forward Distort, FX Equivelent:\n");
+#if 0
+        /* for debugging */
+        fprintf(stderr, "   c8 = %+lf  c9 = 2*a = %+lf;\n",
+            coeff[8], coeff[9]);
+#endif
+        fprintf(stderr, "BilinearForward Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
             0.5-coeff[3], 0.5-coeff[7]);
         fprintf(stderr, "       bb=%lf*ii %+lf*jj %+lf;\n",
             coeff[6], -coeff[2], coeff[8]);
-        fprintf(stderr, "       rt=bb*bb %+lf*(%lf*ii%+lf*jj);\n",
-            -coeff[9], coeff[4], -coeff[0]);
-        fprintf(stderr, "       yy=( -bb + sqrt(rt) ) * %+lf;\n",
-             coeff[10]);
+        /* Handle Special degenerate (non-quadratic) or trapezoidal case */
+        if ( coeff[9] != 0 ) {
+          fprintf(stderr, "       rt=bb*bb %+lf*(%lf*ii%+lf*jj);\n",
+              -2*coeff[9],  coeff[4], -coeff[0]);
+          fprintf(stderr, "       yy=( -bb + sqrt(rt) ) / %lf;\n",
+               coeff[9]);
+        } else
+          fprintf(stderr, "       yy=(%lf*ii%+lf*jj)/bb;\n",
+                -coeff[4], coeff[0]);
         fprintf(stderr, "       xx=(ii %+lf*yy)/(%lf %+lf*yy);\n",
              -coeff[1], coeff[0], coeff[2]);
-        fprintf(stderr, "       (rt < 0 ) ? red : %s'\n", lookup);
+        if ( coeff[9] != 0 )
+          fprintf(stderr, "       (rt < 0 ) ? red : %s'\n", lookup);
+        else
+          fprintf(stderr, "       %s'\n", lookup);
         break;
 
       case BilinearReverseDistortion:
-        fprintf(stderr, "Bilinear Reverse Distort, FX Equivelent:\n");
+        fprintf(stderr, "BilinearReverse Distort, as a Polynomial Distort:\n");
+        fprintf(stderr, "  -distort Polynomial \\\n");
+        fprintf(stderr, "      '%lf, %lf, %lf, %lf,\n",
+            coeff[3], coeff[0], coeff[1], coeff[2]);
+        fprintf(stderr, "       %lf, %lf, %lf, %lf'\n",
+            coeff[7], coeff[4], coeff[5], coeff[6]);
+        fprintf(stderr, "BilinearReverse Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
         fprintf(stderr, "       xx=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
@@ -1988,8 +2041,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           }
           case BilinearReverseDistortion:
           {
-            s.x=coeff[0]*d.x+coeff[1]*d.y
-                    +coeff[2]*d.x*d.y+coeff[3];
+            /* Reversed Mapped is just a simple polynomial */
+            s.x=coeff[0]*d.x+coeff[1]*d.y+coeff[2]*d.x*d.y+coeff[3];
             s.y=coeff[4]*d.x+coeff[5]*d.y
                     +coeff[6]*d.x*d.y+coeff[7];
             /* Bilinear partial derivitives of scaling vectors */
@@ -2002,32 +2055,43 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           }
           case BilinearForwardDistortion:
           {
-            double b,r;
-#if 0
-fprintf(stderr, "  d=%lf,%lf => ", d.x,d.y);
-#endif
+            /* Forward mapped needs reversed polynomial equations
+             * which unfortunatally requires a square root!  */
+            double b,c;
             d.x -= coeff[3];  d.y -= coeff[7];
             b = coeff[6]*d.x - coeff[2]*d.y + coeff[8];
-            r = b*b - coeff[9]*( coeff[4]*d.x - coeff[0]*d.y );
+            c = coeff[4]*d.x - coeff[0]*d.y;
 
-            validity = ( r < 0.0 ) ? 0.0 : 1.0;
-            if ( validity > 0.0 ) {
-              s.y = ( -b + sqrt(r) ) * coeff[10];
-              s.x = ( d.x - coeff[1]*s.y) / ( coeff[0] + coeff[2]*s.y );
+            validity = 1.0;
+            /* Handle Special degenerate (non-quadratic) case */
+            if ( fabs(coeff[9]) < MagickEpsilon )
+              s.y =  -c/b;
+            else {
+              c = b*b - 2*coeff[9]*c;
+              if ( c < 0.0 )
+                validity = 0.0;
+              else
+                s.y = ( -b + sqrt(c) )/coeff[9];
             }
-#if 0
-fprintf(stderr, "s=%lf,%lf   b=%lf  r=%lf\n", s.x,s.y,b,r );
-#endif
+            if ( validity > 0.0 )
+              s.x = ( d.x - coeff[1]*s.y) / ( coeff[0] + coeff[2]*s.y );
+
             /* NOTE: the sign of the square root should be -ve for parts
-               where the source image becomes 'flipped' or 'mirrored'.
-               At the moment it will produce 'unknown' results.
+                     where the source image becomes 'flipped' or 'mirrored'.
+               FUTURE: Horizon handling
+               FUTURE: Scaling factors or Deritives (how?)
             */
-            /* FUTURE: Horizon handling */
-            /* FUTURE: Scaling factors or Deritives */
             break;
           }
+#if 0
+          case QuadrilateralDistortion:
+            /* Bilinear mapping of any Quadrilateral to any Quadrilateral */
+            /* UNDER DEVELOPMENT */
+            break;
+#endif
           case PolynomialDistortion:
           {
+            /* multi-ordered polynomial */
             register long
               k;
             long

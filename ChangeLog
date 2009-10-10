@@ -1,3 +1,6 @@
+2009-10-10  6.5.6-10 Anthony Thyssen <A.Thyssen@griffith...>
+  * Bug Fixes for degerate 'affine' cases of BilinearForward distortion
+
 2009-10-04  6.5.6-9 Cristy  <quetzlzacatenango@image...>
   * Use GetCacheViewAuthenticPixels() rather than
     QueueCacheViewAuthenticPixels() for the CopyComposite OP optimization.
