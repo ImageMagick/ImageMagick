@@ -924,6 +924,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_decompress(&jpeg_info);
+      InheritException(exception,&image->exception);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
@@ -1081,6 +1082,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (unsigned char *) NULL)
         jpeg_pixels=(unsigned char *) RelinquishMagickMemory(jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
+      InheritException(exception,&image->exception);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
