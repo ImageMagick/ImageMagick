@@ -945,33 +945,18 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           blend_source,(unsigned int) blend_dest);
                     }
                   }
-                combinedlength+=length + 4;  /* +4 for length */
+                combinedlength+=length+4;
+                /*
+                  Layer name.
+                */
                 length=(size_t) ReadBlobByte(image);
-                if (length != 0)
-                  {
-                    /*
-                      Layer name.
-                    */
-                    for (j=0; j < (long) (length); j++)
-                      layer_info[i].name[j]=(unsigned char) ReadBlobByte(image);
-                    layer_info[i].name[j]='\0';
-                    if (image->debug != MagickFalse)
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      layer name: %s",layer_info[i].name);
-                 }
-#if     0
-          if ( length == 0 )
-            padBytes = 3;
-          else
-            padBytes = (4 - (length % 4));
-          if ( padBytes != 0 ) { /* we need to pad */
-            for ( i=0; i < padBytes; i++)
-              (void) ReadBlobByte(image);
-          }
-                combinedlength += length + padBytes + 1;  /* +1 for length */
-#else
-               combinedlength+=length + 1;  /* +1 for length */
-#endif
+                for (j=0; j < (long) length; j++)
+                  layer_info[i].name[j]=(unsigned char) ReadBlobByte(image);
+                layer_info[i].name[j]='\0';
+                if (image->debug != MagickFalse)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "      layer name: %s",layer_info[i].name);
+                combinedlength+=length+1;
 
 #if     0  /* still in development */
           /*
@@ -1096,109 +1081,113 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
 #endif
               compression=ReadBlobMSBShort(layer_info[i].image);
-              if (compression == 1)
+              if ((layer_info[i].page.height != 0) &&
+                  (layer_info[i].page.width != 0))
                 {
+                  if (compression == 1)
+                    {
+                      /*
+                        Read RLE compressed data.
+                      */
+                      if (image->debug != MagickFalse)
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "      layer data is RLE compressed");
+                      for (y=0; y < (long) layer_info[i].image->rows; y++)
+                        (void) ReadBlobMSBShort(layer_info[i].image);
+                      (void) DecodeImage(layer_info[i].image,
+                         layer_info[i].channel_info[j].type);
+                      continue;
+                    }
                   /*
-                    Read RLE compressed data.
+                    Read uncompressed pixel datas separate planes.
                   */
                   if (image->debug != MagickFalse)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "      layer data is RLE compressed");
-                  for (y=0; y < (long) layer_info[i].image->rows; y++)
-                    (void) ReadBlobMSBShort(layer_info[i].image);
-                  (void) DecodeImage(layer_info[i].image,
-                     layer_info[i].channel_info[j].type);
-                  continue;
-                }
-              /*
-                Read uncompressed pixel datas separate planes.
-              */
-              if (image->debug != MagickFalse)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "      layer data is uncompressed");
-              packet_size=1;
-              if (layer_info[i].image->storage_class == PseudoClass)
-                {
-                  if (layer_info[i].image->colors > 256)
-                    packet_size++;
-                }
-              else
-                if (layer_info[i].image->depth > 8)
-                  packet_size++;
-              for (y=0; y < (long) layer_info[i].image->rows; y++)
-              {
-                q=GetAuthenticPixels(layer_info[i].image,0,y,
-                  layer_info[i].image->columns,1,exception);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                indexes=GetAuthenticIndexQueue(layer_info[i].image);
-                for (x=0; x < (long) layer_info[i].image->columns; x++)
-                {
-                  if (packet_size == 1)
-                    pixel=(unsigned long) ScaleCharToQuantum((unsigned char)
-                      ReadBlobByte(layer_info[i].image));
+                      "      layer data is uncompressed");
+                  packet_size=1;
+                  if (layer_info[i].image->storage_class == PseudoClass)
+                    {
+                      if (layer_info[i].image->colors > 256)
+                        packet_size++;
+                    }
                   else
-                    pixel=(unsigned long) ScaleShortToQuantum(ReadBlobMSBShort(
-                      layer_info[i].image));
-                  switch (layer_info[i].channel_info[j].type)
+                    if (layer_info[i].image->depth > 8)
+                      packet_size++;
+                  for (y=0; y < (long) layer_info[i].image->rows; y++)
                   {
-                    case -1:  /* transparency mask */
-                    {
-                      q->opacity=(Quantum) (QuantumRange-pixel);
+                    q=GetAuthenticPixels(layer_info[i].image,0,y,
+                      layer_info[i].image->columns,1,exception);
+                    if (q == (PixelPacket *) NULL)
                       break;
-                    }
-                    case 0:  /* first component (Red, Cyan, Gray or Index) */
+                    indexes=GetAuthenticIndexQueue(layer_info[i].image);
+                    for (x=0; x < (long) layer_info[i].image->columns; x++)
                     {
-                      q->red=(Quantum) pixel;
-                      if (layer_info[i].image->storage_class == PseudoClass)
+                      if (packet_size == 1)
+                        pixel=(unsigned long) ScaleCharToQuantum((unsigned char)
+                          ReadBlobByte(layer_info[i].image));
+                      else
+                        pixel=(unsigned long) ScaleShortToQuantum(
+                          ReadBlobMSBShort(layer_info[i].image));
+                      switch (layer_info[i].channel_info[j].type)
+                      {
+                        case -1:  /* transparency mask */
                         {
-                          if (packet_size == 1)
-                            indexes[x]=(IndexPacket) ScaleQuantumToChar(
-                              (Quantum) pixel);
-                          else
-                            indexes[x]=(IndexPacket) ScaleQuantumToShort(
-                              (Quantum) pixel);
-                          q->red=layer_info[i].image->colormap[(long) *indexes].red;
-                          q->green=layer_info[i].image->colormap[(long) *indexes].green;
-                          q->blue=layer_info[i].image->colormap[(long) *indexes].blue;
+                          q->opacity=(Quantum) (QuantumRange-pixel);
+                          break;
                         }
-                      break;
+                        case 0:  /* first component (Red, Cyan, Gray or Index) */
+                        {
+                          q->red=(Quantum) pixel;
+                          if (layer_info[i].image->storage_class == PseudoClass)
+                            {
+                              if (packet_size == 1)
+                                indexes[x]=(IndexPacket) ScaleQuantumToChar(
+                                  (Quantum) pixel);
+                              else
+                                indexes[x]=(IndexPacket) ScaleQuantumToShort(
+                                  (Quantum) pixel);
+                              q->red=layer_info[i].image->colormap[(long) *indexes].red;
+                              q->green=layer_info[i].image->colormap[(long) *indexes].green;
+                              q->blue=layer_info[i].image->colormap[(long) *indexes].blue;
+                            }
+                          break;
+                        }
+                        case 1:  /* second component (Green, Magenta, or opacity) */
+                        {
+                          if (layer_info[i].image->storage_class == PseudoClass)
+                            q->opacity=(Quantum) (QuantumRange-pixel);
+                          else
+                            q->green=(Quantum) pixel;
+                          break;
+                        }
+                        case 2:  /* third component (Blue or Yellow) */
+                        {
+                          q->blue=(Quantum) pixel;
+                          break;
+                        }
+                        case 3:  /* fourth component (Opacity or Black) */
+                        {
+                          if (image->colorspace == CMYKColorspace)
+                            indexes[x]=(Quantum) pixel;
+                          else
+                            q->opacity=(Quantum) (QuantumRange-pixel);
+                          break;
+                        }
+                        case 4:  /* fifth component (opacity) */
+                        {
+                          q->opacity=(Quantum) (QuantumRange-pixel);
+                          break;
+                        }
+                        default:
+                          break;
+                      }
+                      q++;
                     }
-                    case 1:  /* second component (Green, Magenta, or opacity) */
-                    {
-                      if (layer_info[i].image->storage_class == PseudoClass)
-                        q->opacity=(Quantum) (QuantumRange-pixel);
-                      else
-                        q->green=(Quantum) pixel;
-                      break;
-                    }
-                    case 2:  /* third component (Blue or Yellow) */
-                    {
-                      q->blue=(Quantum) pixel;
-                      break;
-                    }
-                    case 3:  /* fourth component (Opacity or Black) */
-                    {
-                      if (image->colorspace == CMYKColorspace)
-                        indexes[x]=(Quantum) pixel;
-                      else
-                        q->opacity=(Quantum) (QuantumRange-pixel);
-                      break;
-                    }
-                    case 4:  /* fifth component (opacity) */
-                    {
-                      q->opacity=(Quantum) (QuantumRange-pixel);
-                      break;
-                    }
-                    default:
+                    if (SyncAuthenticPixels(layer_info[i].image,exception) == MagickFalse)
                       break;
                   }
-                  q++;
+                  }
                 }
-                if (SyncAuthenticPixels(layer_info[i].image,exception) == MagickFalse)
-                  break;
-              }
-            }
             if (layer_info[i].opacity != OpaqueOpacity)
               {
                 /*

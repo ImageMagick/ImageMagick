@@ -2785,8 +2785,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     explicit_vr[MaxTextExtent],
     implicit_vr[MaxTextExtent],
     magick[MaxTextExtent],
-    photometric[MaxTextExtent],
-    transfer_syntax[MaxTextExtent];
+    photometric[MaxTextExtent];
 
   DCMStreamInfo
     *stream_info;
@@ -2847,7 +2846,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     high_bit,
     mask,
     max_value,
-    msb_first,
     number_scenes,
     quantum,
     samples_per_pixel,
@@ -2905,7 +2903,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   explicit_vr[2]='\0';
   explicit_file=MagickFalse;
   graymap=(int *) NULL;
-  group=0;
   height=0;
   max_value=255UL;
   mask=0xffff;
@@ -2914,13 +2911,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   scale=(Quantum *) NULL;
   signed_data=(~0UL);
   significant_bits=0;
-  *transfer_syntax='\0';
   use_explicit=MagickFalse;
   explicit_retry = MagickFalse;
   width=0;
   window_center=0;
   window_width=0;
-  while ((group != 0x7FE0) || (element != 0x0010))
+  for (group=0; (group != 0x7FE0) || (element != 0x0010); )
   {
     /*
       Read a group.
@@ -3069,12 +3065,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           case 0x0010:
           {
+            char
+              transfer_syntax[MaxTextExtent];
+
             /*
               Transfer Syntax.
             */
-            if (image_info->verbose != MagickFalse)
-              (void) fprintf(stderr,"transfer_syntax=%s\n",(const char*)
-                transfer_syntax);
             if ((datum == 0) && (explicit_retry == MagickFalse))
               {
                 explicit_retry=MagickTrue;
@@ -3086,11 +3082,52 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "Corrupted image - trying explicit format\n");
                 break;
               }
+            *transfer_syntax='\0';
             if (data != (unsigned char *) NULL)
               (void) CopyMagickString(transfer_syntax,(char *) data,
                 MaxTextExtent);
-            if (strcmp(transfer_syntax,"1.2.840.10008.1.2.5") == 0)
-              image->compression=RLECompression;
+            if (image_info->verbose != MagickFalse)
+              (void) fprintf(stderr,"transfer_syntax=%s\n",(const char*)
+                transfer_syntax);
+            if (strncmp(transfer_syntax,"1.2.840.10008.1.2",17) == 0)
+              {
+                int
+                  subtype,
+                  type;
+
+                type=0;
+                subtype=0;
+                (void) sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
+                switch (type)
+                {
+                  case 1:
+                  {
+                    image->endian=LSBEndian;
+                    break;
+                  }
+                  case 2:
+                  {
+                    image->endian=MSBEndian;
+                    break;
+                  }
+                  case 4:
+                  {
+                    if ((subtype >= 80) && (subtype <= 81))
+                      image->compression=JPEGCompression;
+                    else
+                      if ((subtype >= 90) && (subtype <= 93))
+                        image->compression=JPEG2000Compression;
+                      else
+                        image->compression=JPEGCompression;
+                    break;
+                  }
+                  case 5:
+                  {
+                    image->compression=RLECompression;
+                    break;
+                  }
+                }
+              }
             break;
           }
           default:
@@ -3361,10 +3398,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=(unsigned long) height;
   if (signed_data == 0xffff)
     signed_data=(unsigned long) (significant_bits == 16 ? 1 : 0);
-  if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
-      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0) ||
-      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.90") == 0) ||
-      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.91") == 0))
+  if ((image->compression == JPEGCompression) ||
+      (image->compression == JPEG2000Compression))
     {
       Image
         *images;
@@ -3457,8 +3492,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) fclose(file);
         (void) FormatMagickString(read_info->filename,MaxTextExtent,
           "jpeg:%s",filename);
-        if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.90") == 0) ||
-            (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.91") == 0))
+        if (image->compression == JPEG2000Compression)
           (void) FormatMagickString(read_info->filename,MaxTextExtent,
             "jp2:%s",filename);
         jpeg_image=ReadImage(read_info,exception);
@@ -3499,8 +3533,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (long) (GetQuantumRange(image->depth)+1); i++)
         scale[i]=ScaleAnyToQuantum((unsigned long) i,range);
     }
-  msb_first=strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0 ? MagickTrue :
-    MagickFalse;
   if (image->compression == RLECompression)
     {
       unsigned int
@@ -3664,7 +3696,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 else
                   if ((bits_allocated != 12) || (significant_bits != 12))
                     {
-                      if (msb_first != MagickFalse)
+                      if (image->endian == MSBEndian)
                         pixel_value=(int) (polarity != MagickFalse ? (max_value-
                           ReadDCMMSBShort(stream_info,image)) :
                           ReadDCMMSBShort(stream_info,image));
@@ -3682,7 +3714,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           byte;
                       else
                         {
-                          if (msb_first != MagickFalse)
+                          if (image->endian == MSBEndian)
                             pixel_value=(int) ReadDCMMSBShort(stream_info,
                               image);
                           else
@@ -3737,7 +3769,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 else
                   {
-                    if (msb_first != MagickFalse)
+                    if (image->endian == MSBEndian)
                       {
                         pixel.red=ReadDCMMSBShort(stream_info,image);
                         pixel.green=ReadDCMMSBShort(stream_info,image);
