@@ -3405,7 +3405,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             stream_info->offsets[i]+=offset;
         }
       /*
-        Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
+        Handle non-native image formats.
       */
       read_info=CloneImageInfo(image_info);
       SetImageInfoBlob(read_info,(void *) NULL,0);
