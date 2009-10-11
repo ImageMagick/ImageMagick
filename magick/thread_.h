@@ -24,7 +24,7 @@ extern "C" {
 
 #if defined(MAGICKCORE_HAVE_PTHREAD)
 typedef pthread_t MagickThreadType;
-#elif defined(MAGICKORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
 typedef DWORD MagickThreadType;
 #else
 typedef pid_t MagickThreadType;
@@ -32,7 +32,7 @@ typedef pid_t MagickThreadType;
 
 #if defined(MAGICKCORE_HAVE_PTHREAD)
 typedef pthread_key_t MagickThreadKey;
-#elif defined(MAGICKORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
 typedef DWORD MagickThreadKey;
 #else
 typedef unsigned long *MagickThreadKey;

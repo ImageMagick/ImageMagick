@@ -65,7 +65,7 @@ MagickExport MagickBooleanType MagickCreateThreadKey(MagickThreadKey *key)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   return(pthread_key_create(key,NULL) == 0 ? MagickTrue : MagickFalse);
-#elif defined(MAGICKORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
   *key=TlsAlloc();
   return(*key != TLS_OUT_OF_INDEXES ? MagickTrue : MagickFalse);
 #else
@@ -100,7 +100,7 @@ MagickExport MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   return(pthread_key_delete(key) == 0 ? MagickTrue : MagickFalse);
-#elif defined(MAGICKORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
   return(TlsFree(key) != 0 ? MagickTrue : MagickFalse);
 #else
   key=(MagickThreadKey) RelinquishMagickMemory(key);
@@ -135,7 +135,7 @@ MagickExport void *MagickGetThreadValue(MagickThreadKey key)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   return(pthread_getspecific(key));
-#elif defined(MAGICKORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
   return(TlsGetValue(key));
 #else
   return((void *) (*key));
@@ -172,7 +172,7 @@ MagickExport MagickBooleanType MagickSetThreadValue(MagickThreadKey key,
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   return(pthread_setspecific(key,value) == 0 ? MagickTrue : MagickFalse);
-#elif defined(MAGICKORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
   return(TlsSetValue(key,(void *) value) != 0 ? MagickTrue : MagickFalse);
 #else
   *key=(unsigned long) value;

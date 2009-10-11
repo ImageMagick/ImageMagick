@@ -189,7 +189,7 @@ extern "C" {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
 # include <pthread.h>
 #elif defined(__WINDOWS__)
-#  define MAGICKORE_HAVE_WINTHREADS  1
+#  define MAGICKCORE_HAVE_WINTHREADS  1
 #include <windows.h>
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
