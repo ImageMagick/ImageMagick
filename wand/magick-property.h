@@ -28,6 +28,8 @@ extern WandExport char
   *MagickGetFormat(MagickWand *),
   *MagickGetFont(MagickWand *),
   *MagickGetHomeURL(void),
+  *MagickGetImageArtifact(MagickWand *,const char *),
+  **MagickGetImageArtifacts(MagickWand *,const char *,unsigned long *),
   **MagickGetImageProfiles(MagickWand *,const char *,unsigned long *),
   *MagickGetImageProperty(MagickWand *,const char *),
   **MagickGetImageProperties(MagickWand *,const char *,unsigned long *),
@@ -75,8 +77,9 @@ extern WandExport OrientationType
   MagickGetOrientation(MagickWand *);
 
 extern WandExport MagickBooleanType
-  MagickDeleteOption(MagickWand *,const char *),
+  MagickDeleteImageArtifact(MagickWand *,const char *),
   MagickDeleteImageProperty(MagickWand *,const char *),
+  MagickDeleteOption(MagickWand *,const char *),
   MagickGetAntialias(const MagickWand *),
   MagickGetPage(const MagickWand *,unsigned long *,unsigned long *,long *,
     long *),
@@ -94,6 +97,7 @@ extern WandExport MagickBooleanType
   MagickSetFormat(MagickWand *,const char *),
   MagickSetFont(MagickWand *,const char *),
   MagickSetGravity(MagickWand *,const GravityType),
+  MagickSetImageArtifact(MagickWand *,const char *,const char *),
   MagickSetImageProfile(MagickWand *,const char *,const void *,const size_t),
   MagickSetImageProperty(MagickWand *,const char *,const char *),
   MagickSetInterlaceScheme(MagickWand *,const InterlaceType),
