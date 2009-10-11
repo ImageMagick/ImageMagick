@@ -137,7 +137,12 @@ typedef struct _MagickMemoryMethods
   Global declarations.
 */
 static MagickMemoryMethods
-  memory_methods = { malloc, realloc, free };
+  memory_methods =
+  {
+    (AcquireMemoryHandler) malloc,
+    (ResizeMemoryHandler) realloc,
+    (DestroyMemoryHandler)free
+  };
 
 #if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
 static MemoryInfo

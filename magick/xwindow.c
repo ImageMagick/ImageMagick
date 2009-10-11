@@ -5453,9 +5453,9 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
             }
         }
       width=(unsigned int) window->image->columns;
-      assert(width == window->image->columns);
+      assert((unsigned long) width == window->image->columns);
       height=(unsigned int) window->image->rows;
-      assert(height == window->image->rows);
+      assert((unsigned long) height == window->image->rows);
     }
   /*
     Create X image.
