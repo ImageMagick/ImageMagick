@@ -839,24 +839,24 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Initialize CIE XYZ tables (ITU-R 709 RGB):
 
-          X = 0.4124240*R+0.3575790*G+0.1804640*B
-          Y = 0.2126560*R+0.7151580*G+0.0721856*B
-          Z = 0.0193324*R+0.1191930*G+0.9504440*B
+          X = 0.4124564*R+0.3575761*G+0.1804375*B
+          Y = 0.2126729*R+0.7151522*G+0.0721750*B
+          Z = 0.0193339*R+0.1191920*G+0.9503041*B
       */
 #if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for
 #endif
       for (i=0; i <= (long) MaxMap; i++)
       {
-        x_map[i].x=0.4124240f*(MagickRealType) i;
-        y_map[i].x=0.3575790f*(MagickRealType) i;
-        z_map[i].x=0.1804640f*(MagickRealType) i;
-        x_map[i].y=0.2126560f*(MagickRealType) i;
-        y_map[i].y=0.7151580f*(MagickRealType) i;
-        z_map[i].y=0.0721856f*(MagickRealType) i;
-        x_map[i].z=0.0193324f*(MagickRealType) i;
-        y_map[i].z=0.1191930f*(MagickRealType) i;
-        z_map[i].z=0.9504440f*(MagickRealType) i;
+        x_map[i].x=0.4124564f*(MagickRealType) i;
+        y_map[i].x=0.3575761f*(MagickRealType) i;
+        z_map[i].x=0.1804375f*(MagickRealType) i;
+        x_map[i].y=0.2126729f*(MagickRealType) i;
+        y_map[i].y=0.7151522f*(MagickRealType) i;
+        z_map[i].y=0.0721750f*(MagickRealType) i;
+        x_map[i].z=0.0193339f*(MagickRealType) i;
+        y_map[i].z=0.1191920f*(MagickRealType) i;
+        z_map[i].z=0.9503041f*(MagickRealType) i;
       }
       break;
     }
@@ -2009,24 +2009,24 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       /*
         Initialize CIE XYZ tables (ITU R-709 RGB):
 
-          R =  3.2407100*X-1.5372600*Y-0.4985710*Z
-          G = -0.9692580*X+1.8759900*Y+0.0415557*Z
-          B =  0.0556352*X-0.2039960*Y+1.0570700*Z
+          R =  3.2404542*X-1.5371385*Y-0.4985314*Z
+          G = -0.9692660*X+1.8760108*Y+0.0415560*Z
+          B =  0.0556434*X-0.2040259*Y+1.057225*Z
       */
 #if defined(_OPENMP) && (_OPENMP >= 200203)
   #pragma omp parallel for
 #endif
       for (i=0; i <= (long) MaxMap; i++)
       {
-        x_map[i].x=3.2407100f*(MagickRealType) i;
-        x_map[i].y=(-0.9692580f)*(MagickRealType) i;
-        x_map[i].z=0.0556352f*(MagickRealType) i;
-        y_map[i].x=(-1.5372600f)*(MagickRealType) i;
-        y_map[i].y=1.8759900f*(MagickRealType) i;
-        y_map[i].z=(-0.2039960f)*(MagickRealType) i;
-        z_map[i].x=(-0.4985710f)*(MagickRealType) i;
-        z_map[i].y=0.0415557f*(MagickRealType) i;
-        z_map[i].z=1.0570700f*(MagickRealType) i;
+        x_map[i].x=3.2404542f*(MagickRealType) i;
+        x_map[i].y=(-0.9692660f)*(MagickRealType) i;
+        x_map[i].z=0.0556434f*(MagickRealType) i;
+        y_map[i].x=(-1.5371385f)*(MagickRealType) i;
+        y_map[i].y=1.8760108f*(MagickRealType) i;
+        y_map[i].z=(-0.2040259f)*(MagickRealType) i;
+        z_map[i].x=(-0.4985314f)*(MagickRealType) i;
+        z_map[i].y=0.0415560f*(MagickRealType) i;
+        z_map[i].z=1.0572252f*(MagickRealType) i;
       }
       break;
     }
