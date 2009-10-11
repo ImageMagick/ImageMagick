@@ -706,7 +706,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   status=MagickTrue;
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -757,7 +757,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   RadonProjection(source_cells,destination_cells,-1,projection);
   (void) ResetRadonCells(source_cells);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1074,7 +1074,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress, status)
+  #pragma omp parallel for shared(progress, status)
 #endif
       for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height)
       {
@@ -1188,7 +1188,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
         Rotate 180 degrees.
       */
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress, status)
+  #pragma omp parallel for shared(progress, status)
 #endif
       for (y=0; y < (long) image->rows; y++)
       {
@@ -1264,7 +1264,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress, status)
+  #pragma omp parallel for shared(progress, status)
 #endif
       for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height)
       {
@@ -1460,7 +1460,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress, status)
+  #pragma omp parallel for shared(progress, status)
 #endif
   for (y=0; y < (long) height; y++)
   {
@@ -1680,7 +1680,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress, status)
+  #pragma omp parallel for shared(progress, status)
 #endif
   for (x=0; x < (long) width; x++)
   {

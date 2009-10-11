@@ -126,7 +126,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   image->rows=(unsigned long) (level*cube_size);
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP > 200505)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y+=(long) level)
   {

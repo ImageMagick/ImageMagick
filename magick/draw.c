@@ -1169,7 +1169,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   image_view=AcquireCacheView(image);
   source_view=AcquireCacheView(source);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=(long) (edge.y1+0.5); y <= (long) (edge.y2+0.5); y++)
   {
@@ -3273,7 +3273,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=bounding_box.y; y < (long) bounding_box.height; y++)
   {
@@ -3928,7 +3928,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=(long) (bounds.y1+0.5); y <= (long) (bounds.y2+0.5); y++)
   {
