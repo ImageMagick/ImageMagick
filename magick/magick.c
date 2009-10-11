@@ -1247,7 +1247,9 @@ MagickExport void MagickCoreGenesis(const char *path,
   */
   InitializeMagickResources();
   exception=AcquireExceptionInfo();
-  (void) GetMagickInfo((char *) NULL,exception);
+#if defined(MAGICKCORE_MODULES_SUPPORT)
+  InitializeModuleList(exception);
+#endif
   exception=DestroyExceptionInfo(exception);
 }
 

@@ -101,7 +101,6 @@ static const ModuleInfo
 
 static MagickBooleanType
   GetMagickModulePath(const char *,MagickModuleType,char *,ExceptionInfo *),
-  InitializeModuleList(ExceptionInfo *),
   UnregisterModule(const ModuleInfo *,ExceptionInfo *);
 
 static void
@@ -805,7 +804,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e M o d u l e L i s t                                   %
+%   I n i t i a l i z e M o d u l e L i s t                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -843,7 +842,7 @@ static void *DestroyModuleNode(void *module_info)
   return(RelinquishMagickMemory(p));
 }
 
-static MagickBooleanType InitializeModuleList(
+MagickExport MagickBooleanType InitializeModuleList(
   ExceptionInfo *magick_unused(exception))
 {
   if ((module_list == (SplayTreeInfo *) NULL) &&
