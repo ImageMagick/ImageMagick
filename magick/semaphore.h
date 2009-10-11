@@ -37,9 +37,7 @@ extern MagickExport void
   DestroySemaphore(void),
   DestroySemaphoreInfo(SemaphoreInfo **),
   InitializeSemaphore(void),
-  LockMagickMutex(void),
-  RelinquishSemaphoreInfo(SemaphoreInfo *),
-  UnlockMagickMutex(void);
+  RelinquishSemaphoreInfo(SemaphoreInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

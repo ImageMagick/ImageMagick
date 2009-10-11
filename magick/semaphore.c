@@ -83,6 +83,13 @@ static long
 #endif
 
 /*
+  Forward declaractions.
+*/
+static void
+  LockMagickMutex(void),
+  UnlockMagickMutex(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -275,7 +282,7 @@ MagickExport void InitializeSemaphore(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o c k M a g i c k M u t e x                                             %
++   L o c k M a g i c k M u t e x                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -289,7 +296,7 @@ MagickExport void InitializeSemaphore(void)
 %      void LockMagickMutex(void)
 %
 */
-MagickExport void LockMagickMutex(void)
+static void LockMagickMutex(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   if (pthread_mutex_lock(&semaphore_mutex) != 0)
@@ -400,7 +407,7 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o c k M a g i c k M u t e x                                         %
++   U n l o c k M a g i c k M u t e x                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -413,7 +420,7 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %      void UnlockMagickMutex(void)
 %
 */
-MagickExport void UnlockMagickMutex(void)
+static void UnlockMagickMutex(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   if (pthread_mutex_unlock(&semaphore_mutex) != 0)
