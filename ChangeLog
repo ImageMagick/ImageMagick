@@ -1,6 +1,10 @@
 2009-10-10  6.5.7-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Bug Fixes for degenerate 'affine' cases of BilinearForward distortion.
 
+2009-10-06  6.5.6-10 Cristy  <quetzlzacatenango@image...>
+  * Declare the  MagickCore method SpliceImage() in Magick++/Include.h.
+
+    QueueCacheViewAuthenticPixels() for the CopyComposite optimization.
 2009-10-04  6.5.6-9 Cristy  <quetzlzacatenango@image...>
   * Use GetCacheViewAuthenticPixels() rather than
     QueueCacheViewAuthenticPixels() for the CopyComposite optimization.
