@@ -663,6 +663,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) QueryColorname(image,&image->transparent_color,SVGCompliance,color,
     &image->exception);
   (void) fprintf(file,"  Transparent color: %s\n",color);
+  (void) fprintf(file,"  Compose: %s\n",MagickOptionToMnemonic(
+    MagickComposeOptions,(long) image->compose));
   if ((image->page.width != 0) || (image->page.height != 0) ||
       (image->page.x != 0) || (image->page.y != 0))
     (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
