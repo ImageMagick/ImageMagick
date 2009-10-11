@@ -66,6 +66,47 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k D e l e t e I m a g e A r t i f a c t                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickDeleteImageArtifact() deletes a wand artifact.
+%
+%  The format of the MagickDeleteImageArtifact method is:
+%
+%      MagickBooleanType MagickDeleteImageArtifact(MagickWand *wand,
+%        const char *artifact)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o artifact: the image artifact.
+%
+*/
+WandExport MagickBooleanType MagickDeleteImageArtifact(MagickWand *wand,
+  const char *artifact)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return(MagickFalse);
+    }
+  return(DeleteImageArtifact(wand->images,artifact));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k D e l e t e I m a g e P r o p e r t y                         %
 %                                                                             %
 %                                                                             %
@@ -479,6 +520,143 @@ WandExport GravityType MagickGetGravity(MagickWand *wand)
 WandExport char *MagickGetHomeURL(void)
 {
   return(GetMagickHomeURL());
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e A r t i f a c t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageArtifact() returns a value associated with the specified
+%  artifact.  Use MagickRelinquishMemory() to free the value when you are
+%  finished with it.
+%
+%  The format of the MagickGetImageArtifact method is:
+%
+%      char *MagickGetImageArtifact(MagickWand *wand,const char *artifact)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o artifact: the artifact.
+%
+*/
+WandExport char *MagickGetImageArtifact(MagickWand *wand,const char *artifact)
+{
+  const char
+    *value;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return((char *) NULL);
+    }
+  value=GetImageArtifact(wand->images,artifact);
+  if (value == (const char *) NULL)
+    return((char *) NULL);
+  return(ConstantString(value));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e P r o p e r t i e s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageArtifacts() returns all the artifact names that match the
+%  specified pattern associated with a wand.  Use MagickGetImageProperty() to
+%  return the value of a particular artifact.  Use MagickRelinquishMemory() to
+%  free the value when you are finished with it.
+%
+%  The format of the MagickGetImageArtifacts method is:
+%
+%      char *MagickGetImageArtifacts(MagickWand *wand,
+%        const char *pattern,unsigned long *number_artifacts)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o pattern: Specifies a pointer to a text string containing a pattern.
+%
+%    o number_artifacts: the number artifacts associated with this wand.
+%
+*/
+WandExport char **MagickGetImageArtifacts(MagickWand *wand,
+  const char *pattern,unsigned long *number_artifacts)
+{
+  char
+    **artifacts;
+
+  const char
+    *artifact;
+
+  register long
+    i;
+
+  size_t
+    length;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return((char **) NULL);
+    }
+  (void) GetImageProperty(wand->images,"exif:*");
+  length=1024;
+  artifacts=(char **) AcquireQuantumMemory(length,sizeof(*artifacts));
+  if (artifacts == (char **) NULL)
+    return((char **) NULL);
+  ResetImagePropertyIterator(wand->images);
+  artifact=GetNextImageProperty(wand->images);
+  for (i=0; artifact != (const char *) NULL; )
+  {
+    if ((*artifact != '[') &&
+        (GlobExpression(artifact,pattern,MagickFalse) != MagickFalse))
+      {
+        if ((i+1) >= (long) length)
+          {
+            length<<=1;
+            artifacts=(char **) ResizeQuantumMemory(artifacts,length,
+              sizeof(*artifacts));
+            if (artifacts == (char **) NULL)
+              {
+                (void) ThrowMagickException(wand->exception,GetMagickModule(),
+                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  wand->name);
+                return((char **) NULL);
+              }
+          }
+        artifacts[i]=ConstantString(artifact);
+        i++;
+      }
+    artifact=GetNextImageProperty(wand->images);
+  }
+  artifacts[i]=(char *) NULL;
+  *number_artifacts=(unsigned long) i;
+  return(artifacts);
 }
 
 /*
@@ -1981,6 +2159,51 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   status=SetImageOption(wand->image_info,"gravity",MagickOptionToMnemonic(
     MagickGravityOptions,(long) type));
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e A r t i f r c t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageArtifact() associates a artifact with an image.
+%
+%  The format of the MagickSetImageArtifact method is:
+%
+%      MagickBooleanType MagickSetImageArtifact(MagickWand *wand,
+%        const char *artifact,const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o artifact: the artifact.
+%
+%    o value: the value.
+%
+*/
+WandExport MagickBooleanType MagickSetImageArtifact(MagickWand *wand,
+  const char *artifact,const char *value)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=SetImageArtifact(wand->images,artifact,value);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
   return(status);
 }
 
