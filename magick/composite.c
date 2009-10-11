@@ -1369,7 +1369,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       image_view=AcquireCacheView(image);
       composite_view=AcquireCacheView(composite_image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-#pragma omp parallel for schedule(static,1) shared(status)
+#pragma omp parallel for shared(status)
 #endif
       for (y=0; y < (long) composite_image->rows; y++)
       {
@@ -1845,7 +1845,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -2506,7 +2506,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
         Tile texture onto the image background.
       */
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
       for (y=0; y < (long) image->rows; y+=texture->rows)
       {
@@ -2553,7 +2553,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   image_view=AcquireCacheView(image);
   texture_view=AcquireCacheView(texture);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-#pragma omp parallel for schedule(static,1) shared(status)
+#pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {

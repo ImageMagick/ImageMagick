@@ -2336,7 +2336,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   image_view=AcquireCacheView(image);
   sample_view=AcquireCacheView(sample_image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) sample_image->rows; y++)
   {

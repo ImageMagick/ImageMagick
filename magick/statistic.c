@@ -228,7 +228,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   number_images=GetImageListLength(image);
   average_view=AcquireCacheView(average_image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) average_image->rows; y++)
   {
@@ -420,7 +420,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   status=MagickTrue;
   GetMagickPixelPacket(image,&zero);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -576,7 +576,7 @@ MagickExport unsigned long GetImageChannelDepth(const Image *image,
 
       p=image->colormap;
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
       for (i=0; i < (long) image->colors; i++)
       {
@@ -617,7 +617,7 @@ MagickExport unsigned long GetImageChannelDepth(const Image *image,
     }
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1576,7 +1576,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1635,7 +1635,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       p=image->colormap;
       range=GetQuantumRange(depth);
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for shared(status)
 #endif
       for (i=0; i < (long) image->colors; i++)
       {
