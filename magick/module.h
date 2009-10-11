@@ -73,6 +73,7 @@ extern MagickExport const ModuleInfo
   **GetModuleInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  InitializeModuleList(ExceptionInfo *),
   InvokeDynamicImageFilter(const char *,Image **,const int,const char **,
     ExceptionInfo *),
   ListModuleInfo(FILE *,ExceptionInfo *),
