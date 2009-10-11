@@ -2132,7 +2132,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
     }
   (void) UnlockSemaphoreInfo(cache_info->semaphore);
   if (destroy != MagickFalse)
-    DestroyPixelCache(cache_info);
+    cache_info=DestroyPixelCache(cache_info);
   if (status != MagickFalse)
     {
       /*
