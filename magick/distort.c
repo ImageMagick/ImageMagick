@@ -1737,12 +1737,14 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         break;
 
       case BilinearReverseDistortion:
-        fprintf(stderr, "BilinearReverse Distort, as a Polynomial Distort:\n");
-        fprintf(stderr, "  -distort Polynomial \\\n");
-        fprintf(stderr, "      '%lf, %lf, %lf, %lf,\n",
+#if 0
+        fprintf(stderr, "Polynomial Projection Distort:\n");
+        fprintf(stderr, "  -distort PolynomialProjection \\\n");
+        fprintf(stderr, "      '1.5, %lf, %lf, %lf, %lf,\n",
             coeff[3], coeff[0], coeff[1], coeff[2]);
-        fprintf(stderr, "       %lf, %lf, %lf, %lf'\n",
+        fprintf(stderr, "            %lf, %lf, %lf, %lf'\n",
             coeff[7], coeff[4], coeff[5], coeff[6]);
+#endif
         fprintf(stderr, "BilinearReverse Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
