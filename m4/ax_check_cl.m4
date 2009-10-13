@@ -74,7 +74,7 @@ m4_define([AX_CHECK_CL_PROGRAM],
 # else
 #   error no OpenCL.h
 # endif]],
-                           [[clCreateContext(0)]])])
+                           [[clCreateContextFromType(0,0,0,0,0)]])])
 
 AC_CACHE_CHECK([for OpenCL library], [ax_cv_check_cl_libcl],
 [ax_cv_check_cl_libcl=no
