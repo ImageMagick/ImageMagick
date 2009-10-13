@@ -1867,7 +1867,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
                   (contribution[i].pixel-contribution[0].pixel);
                 alpha=contribution[i].weight*QuantumScale*((MagickRealType)
                   QuantumRange-(p+j)->opacity);
-                gamma+=alpha;
+                pixel.index+=alpha*indexes[j];
               }
               resize_indexes[y]=(IndexPacket) RoundToQuantum(gamma*pixel.index);
             }
