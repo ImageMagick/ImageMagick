@@ -7,8 +7,8 @@
 # "CL_LIBS", respectively.  If no usable CL implementation is found, "no_cl"
 # is set to "yes".
 #
-# If the header "CL/cl.h" is found, "HAVE_CL_CL_H" is defined.  If the header
-# "OpenCL/cl.h" is found, HAVE_OPENCL_CL_H is defined.  These preprocessor
+# If the header "CL/OpenCL.h" is found, "HAVE_CL_OPENCL_H" is defined.  If the header
+# "OpenCL/OpenCL.h" is found, HAVE_OPENCL_OPENCL_H is defined.  These preprocessor
 # definitions may not be mutually exclusive.
 #
 # Based on AX_CHECK_GL, version: 2.4 author: Braden McDaniel
@@ -57,7 +57,7 @@ AS_IF([test X$no_x != Xyes],
 
 ax_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
-AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h])
+AC_CHECK_HEADERS([CL/OpenCL.h OpenCL/OpenCL.h])
 CPPFLAGS=$ax_save_CPPFLAGS
 
 AC_CHECK_HEADERS([windows.h])
@@ -67,14 +67,14 @@ m4_define([AX_CHECK_CL_PROGRAM],
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_CL_H
+# ifdef HAVE_CL_OPENCL_H
 #   include <CL/cl.h>
-# elif defined(HAVE_OPENCL_CL_H)
-#   include <OpenCL/cl.h>
+# elif defined(HAVE_OPENCL_OPENCL_H)
+#   include <OpenCL/OpenCL.h>
 # else
-#   error no cl.h
+#   error no OpenCL.h
 # endif]],
-                           [[clBegin(0)]])])
+                           [[clCreateContext(0)]])])
 
 AC_CACHE_CHECK([for OpenCL library], [ax_cv_check_cl_libcl],
 [ax_cv_check_cl_libcl=no

@@ -8081,7 +8081,7 @@ ax_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
 
 
-for ac_header in CL/cl.h OpenCL/cl.h
+for ac_header in CL/OpenCL.h OpenCL/OpenCL.h
 do
 as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
@@ -8420,17 +8420,17 @@ cat >>conftest.$ac_ext <<_ACEOF
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_CL_H
+# ifdef HAVE_CL_OPENCL_H
 #   include <CL/cl.h>
-# elif defined(HAVE_OPENCL_CL_H)
-#   include <OpenCL/cl.h>
+# elif defined(HAVE_OPENCL_OPENCL_H)
+#   include <OpenCL/OpenCL.h>
 # else
-#   error no cl.h
+#   error no OpenCL.h
 # endif
 int
 main ()
 {
-clBegin(0)
+clCreateContext(0)
   ;
   return 0;
 }
@@ -8472,17 +8472,17 @@ cat >>conftest.$ac_ext <<_ACEOF
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_CL_H
+# ifdef HAVE_CL_OPENCL_H
 #   include <CL/cl.h>
-# elif defined(HAVE_OPENCL_CL_H)
-#   include <OpenCL/cl.h>
+# elif defined(HAVE_OPENCL_OPENCL_H)
+#   include <OpenCL/OpenCL.h>
 # else
-#   error no cl.h
+#   error no OpenCL.h
 # endif
 int
 main ()
 {
-clBegin(0)
+clCreateContext(0)
   ;
   return 0;
 }
@@ -8524,17 +8524,17 @@ cat >>conftest.$ac_ext <<_ACEOF
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_CL_H
+# ifdef HAVE_CL_OPENCL_H
 #   include <CL/cl.h>
-# elif defined(HAVE_OPENCL_CL_H)
-#   include <OpenCL/cl.h>
+# elif defined(HAVE_OPENCL_OPENCL_H)
+#   include <OpenCL/OpenCL.h>
 # else
-#   error no cl.h
+#   error no OpenCL.h
 # endif
 int
 main ()
 {
-clBegin(0)
+clCreateContext(0)
   ;
   return 0;
 }
@@ -8595,17 +8595,17 @@ cat >>conftest.$ac_ext <<_ACEOF
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_CL_H
+# ifdef HAVE_CL_OPENCL_H
 #   include <CL/cl.h>
-# elif defined(HAVE_OPENCL_CL_H)
-#   include <OpenCL/cl.h>
+# elif defined(HAVE_OPENCL_OPENCL_H)
+#   include <OpenCL/OpenCL.h>
 # else
-#   error no cl.h
+#   error no OpenCL.h
 # endif
 int
 main ()
 {
-clBegin(0)
+clCreateContext(0)
   ;
   return 0;
 }

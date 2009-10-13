@@ -187,8 +187,8 @@
 #define MAGICKCORE_HAVE_CLOSEDIR  1 
 #endif
 
-/* Define to 1 if you have the <CL/cl.h> header file. */
-/* #undef HAVE_CL_CL_H */
+/* Define to 1 if you have the <CL/OpenCL.h> header file. */
+/* #undef HAVE_CL_OPENCL_H */
 
 /* Define to 1 if you have the <complex.h> header file. */
 #ifndef MAGICKCORE_HAVE_COMPLEX_H 
@@ -464,8 +464,8 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
 
-/* Define to 1 if you have the <OpenCL/cl.h> header file. */
-/* #undef HAVE_OPENCL_CL_H */
+/* Define to 1 if you have the <OpenCL/OpenCL.h> header file. */
+/* #undef HAVE_OPENCL_OPENCL_H */
 
 /* Define to 1 if you have the `opendir' function. */
 #ifndef MAGICKCORE_HAVE_OPENDIR 
