@@ -55,17 +55,7 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   GetImageRange(const Image *,double *,double *,ExceptionInfo *),
   GetImageMean(const Image *,double *,double *,ExceptionInfo *),
-  GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *),
-  SetImageChannelDepth(Image *,const ChannelType,const unsigned long),
-  SetImageDepth(Image *,const unsigned long);
-
-extern MagickExport RectangleInfo
-  GetImageBoundingBox(const Image *,ExceptionInfo *exception);
-
-extern MagickExport unsigned long
-  GetImageChannelDepth(const Image *,const ChannelType,ExceptionInfo *),
-  GetImageDepth(const Image *,ExceptionInfo *),
-  GetImageQuantumDepth(const Image *,const MagickBooleanType);
+  GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

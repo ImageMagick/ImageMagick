@@ -47,6 +47,7 @@
 */
 #include "magick/studio.h"
 #include "magick/artifact.h"
+#include "magick/attribute.h"
 #include "magick/blob-private.h"
 #include "magick/cache-private.h"
 #include "magick/color-private.h"
