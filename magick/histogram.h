@@ -22,8 +22,31 @@
 extern "C" {
 #endif
 
+typedef struct _ColorPacket
+{
+  PixelPacket
+    pixel;
+
+  IndexPacket
+    index;
+
+  MagickSizeType
+    count;
+} ColorPacket;
+
+extern MagickExport ColorPacket
+  *GetImageHistogram(const Image *,unsigned long *,ExceptionInfo *);
+
+extern MagickExport Image
+  *UniqueImageColors(const Image *,ExceptionInfo *);
+
 extern MagickExport MagickBooleanType
+  IsHistogramImage(const Image *,ExceptionInfo *),
+  IsPaletteImage(const Image *,ExceptionInfo *),
   MinMaxStretchImage(Image *,const ChannelType,const double,const double);
+
+extern MagickExport unsigned long
+  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

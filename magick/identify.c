@@ -60,6 +60,7 @@
 #include "magick/exception-private.h"
 #include "magick/gem.h"
 #include "magick/geometry.h"
+#include "magick/histogram.h"
 #include "magick/identify.h"
 #include "magick/image.h"
 #include "magick/image-private.h"

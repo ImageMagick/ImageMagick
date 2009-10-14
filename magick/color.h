@@ -58,18 +58,6 @@ typedef struct _ColorInfo
     signature;
 } ColorInfo;
 
-typedef struct _ColorPacket
-{
-  PixelPacket
-    pixel;
-
-  IndexPacket
-    index;
-
-  MagickSizeType
-    count;
-} ColorPacket;
-
 typedef struct _ErrorInfo
 {
   double
@@ -85,22 +73,14 @@ extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *),
   **GetColorInfoList(const char *,unsigned long *,ExceptionInfo *);
 
-extern MagickExport ColorPacket
-  *GetImageHistogram(const Image *,unsigned long *,ExceptionInfo *);
-
-extern MagickExport Image
-  *UniqueImageColors(const Image *,ExceptionInfo *);
-
 extern MagickExport MagickBooleanType
   IsColorSimilar(const Image *,const PixelPacket *,const PixelPacket *),
   IsGrayImage(const Image *,ExceptionInfo *),
-  IsHistogramImage(const Image *,ExceptionInfo *),
   IsImageSimilar(const Image *,const Image *,long *x,long *y,ExceptionInfo *),
   IsMagickColorSimilar(const MagickPixelPacket *,const MagickPixelPacket *),
   IsMonochromeImage(const Image *,ExceptionInfo *),
   IsOpacitySimilar(const Image *,const PixelPacket *,const PixelPacket *),
   IsOpaqueImage(const Image *,ExceptionInfo *),
-  IsPaletteImage(const Image *,ExceptionInfo *),
   ListColorInfo(FILE *,ExceptionInfo *),
   QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *),
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
@@ -108,9 +88,6 @@ extern MagickExport MagickBooleanType
   QueryMagickColor(const char *,MagickPixelPacket *,ExceptionInfo *),
   QueryMagickColorname(const Image *,const MagickPixelPacket *,
     const ComplianceType,char *,ExceptionInfo *);
-
-extern MagickExport unsigned long
-  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 extern MagickExport void
   ConcatenateColorComponent(const MagickPixelPacket *,const ChannelType,

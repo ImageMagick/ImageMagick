@@ -53,6 +53,8 @@
 #include "magick/fx-private.h"
 #include "magick/gem.h"
 #include "magick/geometry.h"
+#include "magick/histogram.h"
+#include "magick/image.h"
 #include "magick/image.h"
 #include "magick/layer.h"
 #include "magick/list.h"
