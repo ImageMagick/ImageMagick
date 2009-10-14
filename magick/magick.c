@@ -805,6 +805,7 @@ static void *DestroyMagickNode(void *magick_info)
 
 static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 {
+  (void) exception;
   if ((magick_list == (SplayTreeInfo *) NULL) &&
       (instantiate_magick == MagickFalse))
     {

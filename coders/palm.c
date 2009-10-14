@@ -52,6 +52,7 @@
 #include "magick/colorspace.h"
 #include "magick/constitute.h"
 #include "magick/exception.h"
+#include "magick/histogram.h"
 #include "magick/image.h"
 #include "magick/list.h"
 #include "magick/magick.h"

@@ -182,6 +182,7 @@
 #include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/histogram.h"
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/list.h"
