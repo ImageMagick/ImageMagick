@@ -388,6 +388,8 @@ AC_SUBST(OPENMP_CFLAGS)
 
 # Enable support for OpenCL
 AX_CHECK_CL
+CFLAGS="$CL_CFLAGS $CFLAGS"
+LIBS="$CL_LIBS $LIBS"
 
 ########
 #

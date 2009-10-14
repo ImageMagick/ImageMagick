@@ -187,7 +187,7 @@
 #define MAGICKCORE_HAVE_CLOSEDIR  1 
 #endif
 
-/* Define to 1 if you have the <CL/OpenCL.h> header file. */
+/* Define to 1 if you have the <CL/opencl.h> header file. */
 /* #undef HAVE_CL_OPENCL_H */
 
 /* Define to 1 if you have the <complex.h> header file. */
