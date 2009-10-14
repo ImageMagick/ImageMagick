@@ -1638,69 +1638,6 @@ MagickExport long GetImageReferenceCount(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e T y p e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageType() returns the potential type of image:
-%
-%        Bilevel         Grayscale        GrayscaleMatte
-%        Palette         PaletteMatte     TrueColor
-%        TrueColorMatte  ColorSeparation  ColorSeparationMatte
-%
-%  To ensure the image type matches its potential, use SetImageType():
-%
-%    (void) SetImageType(image,GetImageType(image));
-%
-%  The format of the GetImageType method is:
-%
-%      ImageType GetImageType(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->colorspace == CMYKColorspace)
-    {
-      if (image->matte == MagickFalse)
-        return(ColorSeparationType);
-      return(ColorSeparationMatteType);
-    }
-  if (IsMonochromeImage(image,exception) != MagickFalse)
-    return(BilevelType);
-  if (IsGrayImage(image,exception) != MagickFalse)
-    {
-      if (image->matte != MagickFalse)
-        return(GrayscaleMatteType);
-      return(GrayscaleType);
-    }
-  if (IsPaletteImage(image,exception) != MagickFalse)
-    {
-      if (image->matte != MagickFalse)
-        return(PaletteMatteType);
-      return(PaletteType);
-    }
-  if (image->matte != MagickFalse)
-    return(TrueColorMatteType);
-  return(TrueColorType);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t I m a g e V i r t u a l P i x e l M e t h o d                       %
 %                                                                             %
 %                                                                             %

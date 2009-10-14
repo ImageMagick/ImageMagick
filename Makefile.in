@@ -1317,7 +1317,8 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/MagickCore.h magick/animate.c magick/animate.h \
 	magick/animate-private.h magick/annotate.c magick/annotate.h \
-	magick/api.h magick/artifact.c magick/artifact.h magick/blob.c \
+	magick/api.h magick/artifact.c magick/artifact.h \
+	magick/attribute.c magick/attribute.h magick/blob.c \
 	magick/blob.h magick/blob-private.h magick/cache.c \
 	magick/cache.h magick/cache-private.h magick/cache-view.c \
 	magick/cache-view.h magick/cipher.c magick/cipher.h \
@@ -1411,6 +1412,7 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 am__objects_2 = magick/magick_libMagickCore_la-animate.lo \
 	magick/magick_libMagickCore_la-annotate.lo \
 	magick/magick_libMagickCore_la-artifact.lo \
+	magick/magick_libMagickCore_la-attribute.lo \
 	magick/magick_libMagickCore_la-blob.lo \
 	magick/magick_libMagickCore_la-cache.lo \
 	magick/magick_libMagickCore_la-cache-view.lo \
@@ -3703,6 +3705,8 @@ MAGICK_BASE_SRCS = \
 	magick/api.h \
 	magick/artifact.c \
 	magick/artifact.h \
+	magick/attribute.c \
+	magick/attribute.h \
 	magick/blob.c \
 	magick/blob.h \
 	magick/blob-private.h \
@@ -3911,6 +3915,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/annotate.h \
 	magick/api.h \
 	magick/artifact.h \
+	magick/attribute.h \
 	magick/blob.h \
 	magick/cache.h \
 	magick/cache-view.h \
@@ -5401,6 +5406,8 @@ magick/magick_libMagickCore_la-annotate.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-artifact.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-attribute.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-blob.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-cache.lo: magick/$(am__dirstamp) \
@@ -6678,6 +6685,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libMagickCore_la-annotate.lo
 	-rm -f magick/magick_libMagickCore_la-artifact.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-artifact.lo
+	-rm -f magick/magick_libMagickCore_la-attribute.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-attribute.lo
 	-rm -f magick/magick_libMagickCore_la-blob.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-blob.lo
 	-rm -f magick/magick_libMagickCore_la-cache-view.$(OBJEXT)
@@ -7181,6 +7190,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-animate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-annotate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-artifact.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-attribute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-blob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-cache-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-cache.Plo@am__quote@
@@ -8339,6 +8349,14 @@ magick/magick_libMagickCore_la-artifact.lo: magick/artifact.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/artifact.c' object='magick/magick_libMagickCore_la-artifact.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-artifact.lo `test -f 'magick/artifact.c' || echo '$(srcdir)/'`magick/artifact.c
+
+magick/magick_libMagickCore_la-attribute.lo: magick/attribute.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-attribute.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-attribute.Tpo -c -o magick/magick_libMagickCore_la-attribute.lo `test -f 'magick/attribute.c' || echo '$(srcdir)/'`magick/attribute.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-attribute.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-attribute.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/attribute.c' object='magick/magick_libMagickCore_la-attribute.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-attribute.lo `test -f 'magick/attribute.c' || echo '$(srcdir)/'`magick/attribute.c
 
 magick/magick_libMagickCore_la-blob.lo: magick/blob.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-blob.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-blob.Tpo -c -o magick/magick_libMagickCore_la-blob.lo `test -f 'magick/blob.c' || echo '$(srcdir)/'`magick/blob.c

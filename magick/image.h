@@ -497,9 +497,6 @@ extern MagickExport ImageInfo
   *CloneImageInfo(const ImageInfo *),
   *DestroyImageInfo(ImageInfo *);
 
-extern MagickExport ImageType
-  GetImageType(const Image *,ExceptionInfo *);
-
 extern MagickExport long
   GetImageReferenceCount(Image *);
 

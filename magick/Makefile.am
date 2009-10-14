@@ -62,6 +62,8 @@ MAGICK_BASE_SRCS = \
 	magick/api.h \
 	magick/artifact.c \
 	magick/artifact.h \
+	magick/attribute.c \
+	magick/attribute.h \
 	magick/blob.c \
 	magick/blob.h \
 	magick/blob-private.h \
@@ -275,6 +277,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/annotate.h \
 	magick/api.h \
 	magick/artifact.h \
+	magick/attribute.h \
 	magick/blob.h \
 	magick/cache.h \
 	magick/cache-view.h \

@@ -25,6 +25,7 @@ $write sys$output "Making Magick..."
 $call Make animate.c
 $call Make annotate.c
 $call Make artifact.c
+$call Make attribute.c
 $call Make blob.c
 $call Make cache.c
 $call Make cache-view.c
@@ -130,12 +131,12 @@ $ set default [-.magick]
 $ deass magick
 $ deass wand
 $library/create libMagick.olb -
-  animate, annotate, artifact, blob, cache, cache-view, cipher, client, coder, -
-  color, colormap, colorspace, compare, composite, compress, configure, -
-  constitute, decorate, delegate, deprecate, display, distort, draw, -
-  effect, enhance, exception, fx, gem, geometry, hashmap, histogram, identify, -
-  image, layer, list, locale, log, magic, magick, matrix, memory, mime, -
-  module, monitor, montage, option, paint, pixel, PreRvIcccm, profile, -
+  animate, annotate, artifact, attribute, blob, cache, cache-view, cipher, -
+  client, coder, color, colormap, colorspace, compare, composite, compress, -
+  configure, constitute, decorate, delegate, deprecate, display, distort, -
+  draw, effect, enhance, exception, fx, gem, geometry, hashmap, histogram, -
+  identify, image, layer, list, locale, log, magic, magick, matrix, memory, -
+  mime, module, monitor, montage, option, paint, pixel, PreRvIcccm, profile, -
   quantize, quantum,quantum-export,quantum-import,random, registry, resample, -
   resize, resource, segment, semaphore, -
   shear, signature, splay-tree, static, stream, string, thread, timer, token, -
