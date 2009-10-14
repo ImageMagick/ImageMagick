@@ -36,7 +36,6 @@
 #
 AC_DEFUN([AX_CHECK_CL],
 [AC_REQUIRE([AC_CANONICAL_HOST])dnl
-AC_REQUIRE([AC_PATH_X])dnl
 AC_REQUIRE([AC_PROG_SED])dnl
 AC_REQUIRE([ACX_PTHREAD])dnl
 
@@ -45,19 +44,9 @@ AX_LANG_COMPILER_MS
 AS_IF([test X$ax_compiler_ms = Xno],
       [CL_CFLAGS="${PTHREAD_CFLAGS}"; CL_LIBS="${PTHREAD_LIBS} -lm"])
 
-#
-# Use x_includes and x_libraries if they have been set (presumably by
-# AC_PATH_X).
-#
-AS_IF([test X$no_x != Xyes],
-      [AS_IF([test -n "$x_includes"],
-             [CL_CFLAGS="-I$x_includes $CL_CFLAGS"])]
-       AS_IF([test -n "$x_libraries"],
-             [CL_LIBS="-L$x_libraries -lX11 $CL_LIBS"]))
-
 ax_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
-AC_CHECK_HEADERS([CL/OpenCL.h OpenCL/OpenCL.h])
+AC_CHECK_HEADERS([CL/opencl.h OpenCL/OpenCL.h])
 CPPFLAGS=$ax_save_CPPFLAGS
 
 AC_CHECK_HEADERS([windows.h])
@@ -68,7 +57,7 @@ m4_define([AX_CHECK_CL_PROGRAM],
 #   include <windows.h>
 # endif
 # ifdef HAVE_CL_OPENCL_H
-#   include <CL/cl.h>
+#   include <CL/opencl.h>
 # elif defined(HAVE_OPENCL_OPENCL_H)
 #   include <OpenCL/OpenCL.h>
 # else
