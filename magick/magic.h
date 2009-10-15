@@ -39,6 +39,7 @@ typedef struct _MagicInfo
     offset;
 
   MagickBooleanType
+    exempt,
     stealth;
 
   struct _MagicInfo

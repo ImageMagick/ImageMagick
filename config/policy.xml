@@ -9,7 +9,7 @@
 <!ATTLIST policy value CDATA #IMPLIED>
 ]>
 <!--
-  ImageMagick policies.
+  Configure ImageMagick policies.
 
   Domains include delegate, coder, filter, path, or resource.
 
