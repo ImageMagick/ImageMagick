@@ -561,17 +561,6 @@ if test "$enable_hdri" = 'yes'; then
 fi
 AC_SUBST(MAGICK_HDRI)dnl
 
-# Enable verbose output from libtool (enable libtool's default)
-AC_ARG_ENABLE([libtool-verbose],
-    [AC_HELP_STRING([--enable-libtool-verbose],
-                    [enable verbose libtool output])],
-    [enable_libtool_verbose=$enableval],
-    [enable_libtool_verbose='no'])
-
-if test "$enable_libtool_verbose" = 'no'; then
-    LIBTOOL="$LIBTOOL --silent"
-fi
-
 # Build a version of ImageMagick with assert statements.
 AC_ARG_ENABLE([assert],
     [AC_HELP_STRING([--disable-assert],
