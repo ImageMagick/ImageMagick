@@ -66,7 +66,7 @@ typedef struct _MagicMapInfo
   const char
     *name;
 
-  unsigned char
+  const unsigned char
     *magic;
 
   size_t
@@ -77,7 +77,7 @@ typedef struct _MagicMapInfo
 } MagicMapInfo;
 
 #define MagicTransform(name,offset,magic) \
-   { name, (unsigned char *) magic, sizeof(magic)-1, offset }
+   { name, (const unsigned char *) magic, sizeof(magic)-1, offset }
 
 static const MagicMapInfo
   MagicMap[] =
