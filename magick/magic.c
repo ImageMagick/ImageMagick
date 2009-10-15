@@ -61,109 +61,137 @@
 /*
   Static declarations.
 */
-static const char
-  *MagicMap = (const char *)
-    "<?xml version=\"1.0\"?>"
-    "<magicmap>"
-    "  <magic name=\"AVI\" offset=\"0\" target=\"RIFF\" />"
-    "  <magic name=\"8BIMWTEXT\" offset=\"0\" target=\"8\\000B\\000I\\000M\\000#\" />"
-    "  <magic name=\"8BIMTEXT\" offset=\"0\" target=\"8BIM#\" />"
-    "  <magic name=\"8BIM\" offset=\"0\" target=\"8BIM\" />"
-    "  <magic name=\"BMP\" offset=\"0\" target=\"BA\" />"
-    "  <magic name=\"BMP\" offset=\"0\" target=\"BM\" />"
-    "  <magic name=\"BMP\" offset=\"0\" target=\"CI\" />"
-    "  <magic name=\"BMP\" offset=\"0\" target=\"CP\" />"
-    "  <magic name=\"BMP\" offset=\"0\" target=\"IC\" />"
-    "  <magic name=\"BMP\" offset=\"0\" target=\"PI\" />"
-    "  <magic name=\"CIN\" offset=\"0\" target=\"\\200\\052\\137\\327\" />"
-    "  <magic name=\"CGM\" offset=\"0\" target=\"BEGMF\" />"
-    "  <magic name=\"DCM\" offset=\"128\" target=\"DICM\" />"
-    "  <magic name=\"DCX\" offset=\"0\" target=\"\\261\\150\\336\\72\" />"
-    "  <magic name=\"DDS\" offset=\"0\" target=\"DDS \" />"
-    "  <magic name=\"DIB\" offset=\"0\" target=\"\\050\\000\" />"
-    "  <magic name=\"DJVU\" offset=\"0\" target=\"AT&TFORM\" />"
-    "  <magic name=\"DOT\" offset=\"0\" target=\"digraph\" />"
-    "  <magic name=\"DPX\" offset=\"0\" target=\"SDPX\" />"
-    "  <magic name=\"DPX\" offset=\"0\" target=\"XPDS\" />"
-    "  <magic name=\"EMF\" offset=\"40\" target=\"\\040\\105\\115\\106\\000\\000\\001\\000\" />"
-    "  <magic name=\"EPT\" offset=\"0\" target=\"\\305\\320\\323\\306\" />"
-    "  <magic name=\"EXR\" offset=\"0\" target=\"\\166\\057\\061\\001\" />"
-    "  <magic name=\"FAX\" offset=\"0\" target=\"DFAX\" />"
-    "  <magic name=\"FIG\" offset=\"0\" target=\"#FIG\" />"
-    "  <magic name=\"FITS\" offset=\"0\" target=\"IT0\" />"
-    "  <magic name=\"FITS\" offset=\"0\" target=\"SIMPLE\" />"
-    "  <magic name=\"FPX\" offset=\"0\" target=\"\\320\\317\\021\\340\" />"
-    "  <magic name=\"GIF\" offset=\"0\" target=\"GIF8\" />"
-    "  <magic name=\"GPLT\" offset=\"0\" target=\"#!/usr/local/bin/gnuplot\" />"
-    "  <magic name=\"HDF\" offset=\"1\" target=\"HDF\" />"
-    "  <magic name=\"HPGL\" offset=\"0\" target=\"IN;\" />"
-    "  <magic name=\"HTML\" offset=\"1\" target=\"HTML\" />"
-    "  <magic name=\"HTML\" offset=\"1\" target=\"html\" />"
-    "  <magic name=\"ILBM\" offset=\"8\" target=\"ILBM\" />"
-    "  <magic name=\"IPTCWTEXT\" offset=\"0\" target=\"\\062\\000#\\000\\060\\000=\\000\\042\\000&\\000#\\000\\060\\000;\\000&\\000#\\000\\062\\000;\\000\\042\\000\" />"
-    "  <magic name=\"IPTCTEXT\" offset=\"0\" target=\"2#0=\\042&#0;&#2;\\042\" />"
-    "  <magic name=\"IPTC\" offset=\"0\" target=\"\\034\\002\" />"
-    "  <magic name=\"JNG\" offset=\"0\" target=\"\\213JNG\\r\\n\\032\\n\" />"
-    "  <magic name=\"JPEG\" offset=\"0\" target=\"\\377\\330\\377\" />"
-    "  <magic name=\"JPC\" offset=\"0\" target=\"\\377\\117\" />"
-    "  <magic name=\"JP2\" offset=\"4\" target=\"\\152\\120\\040\\040\\015\" />"
-    "  <magic name=\"MIFF\" offset=\"0\" target=\"Id=ImageMagick\" />"
-    "  <magic name=\"MIFF\" offset=\"0\" target=\"id=ImageMagick\" />"
-    "  <magic name=\"MNG\" offset=\"0\" target=\"\\212MNG\\r\\n\\032\\n\" />"
-    "  <magic name=\"MPC\" offset=\"0\" target=\"id=MagickCache\" />"
-    "  <magic name=\"MPEG\" offset=\"0\" target=\"\\000\\000\\001\\263\" />"
-    "  <magic name=\"MVG\" offset=\"0\" target=\"push graphic-context\" />"
-    "  <magic name=\"PCD\" offset=\"2048\" target=\"PCD_\" />"
-    "  <magic name=\"PCL\" offset=\"0\" target=\"\\033E\\033\" />"
-    "  <magic name=\"PCX\" offset=\"0\" target=\"\\012\\002\" />"
-    "  <magic name=\"PCX\" offset=\"0\" target=\"\\012\\005\" />"
-    "  <magic name=\"PDB\" offset=\"60\" target=\"vIMGView\" />"
-    "  <magic name=\"PDF\" offset=\"0\" target=\"%PDF-\" />"
-    "  <magic name=\"PFA\" offset=\"0\" target=\"%!PS-AdobeFont-1.0\" />"
-    "  <magic name=\"PFB\" offset=\"6\" target=\"%!PS-AdobeFont-1.0\" />"
-    "  <magic name=\"PGX\" offset=\"0\" target=\"\\050\\107\\020\\115\\046\" />"
-    "  <magic name=\"PICT\" offset=\"522\" target=\"\\000\\021\\002\\377\\014\\000\" />"
-    "  <magic name=\"PNG\" offset=\"0\" target=\"\\211PNG\\r\\n\\032\\n\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P1\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P2\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P3\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P4\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P5\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P6\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"P7\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"PF\" />"
-    "  <magic name=\"PNM\" offset=\"0\" target=\"Pf\" />"
-    "  <magic name=\"PS\" offset=\"0\" target=\"%!\" />"
-    "  <magic name=\"PS\" offset=\"0\" target=\"\\004%!\" />"
-    "  <magic name=\"PS\" offset=\"0\" target=\"\\305\\320\\323\\306\" />"
-    "  <magic name=\"PSD\" offset=\"0\" target=\"8BPS\" />"
-    "  <magic name=\"PWP\" offset=\"0\" target=\"SFW95\" />"
-    "  <magic name=\"RAD\" offset=\"0\" target=\"#?RADIANCE\" />"
-    "  <magic name=\"RAD\" offset=\"0\" target=\"VIEW= \" />"
-    "  <magic name=\"RLE\" offset=\"0\" target=\"\\122\\314\" />"
-    "  <magic name=\"SCT\" offset=\"0\" target=\"CT\" />"
-    "  <magic name=\"SFW\" offset=\"0\" target=\"SFW94\" />"
-    "  <magic name=\"SGI\" offset=\"0\" target=\"\\001\\332\" />"
-    "  <magic name=\"SUN\" offset=\"0\" target=\"\\131\\246\\152\\225\" />"
-    "  <magic name=\"SVG\" offset=\"1\" target=\"?XML\" />"
-    "  <magic name=\"SVG\" offset=\"1\" target=\"?xml\" />"
-    "  <magic name=\"TXT\" offset=\"0\" target=\"# ImageMagick pixel enumeration:\" />"
-    "  <magic name=\"TIFF\" offset=\"0\" target=\"\\115\\115\\000\\052\" />"
-    "  <magic name=\"TIFF\" offset=\"0\" target=\"\\111\\111\\052\\000\" />"
-    "  <magic name=\"TIFF64\" offset=\"0\" target=\"\\115\\115\\000\\053\\000\\010\\000\\000\" />"
-    "  <magic name=\"TIFF64\" offset=\"0\" target=\"\\115\\115\\000\\053\\000\\010\\000\\000\" />"
-    "  <magic name=\"VICAR\" offset=\"0\" target=\"LBLSIZE\" />"
-    "  <magic name=\"VICAR\" offset=\"0\" target=\"NJPL1I\" />"
-    "  <magic name=\"VIFF\" offset=\"0\" target=\"\\253\\001\" />"
-    "  <magic name=\"WMF\" offset=\"0\" target=\"\\327\\315\\306\\232\" />"
-    "  <magic name=\"WMF\" offset=\"0\" target=\"\\001\\000\\011\\000\" />"
-    "  <magic name=\"WPG\" offset=\"0\" target=\"\\377WPC\" />"
-    "  <magic name=\"XBM\" offset=\"0\" target=\"#define\" />"
-    "  <magic name=\"XCF\" offset=\"0\" target=\"gimp xcf\" />"
-    "  <magic name=\"XPM\" offset=\"1\" target=\"* XPM *\" />"
-    "  <magic name=\"XWD\" offset=\"4\" target=\"\\007\\000\\000\" />"
-    "  <magic name=\"XWD\" offset=\"5\" target=\"\\000\\000\\007\" />"
-    "</magicmap>";
+typedef struct _MagicMapInfo
+{
+  const char
+    *name;
+
+  unsigned char
+    *magic;
+
+  size_t
+    length;
+
+  ssize_t
+    offset;
+} MagicMapInfo;
+
+#define MagicTransform(name,offset,magic) \
+   { name, (unsigned char *) magic,sizeof(magic)-1, offset }
+
+static const MagicMapInfo
+  MagicMap[] =
+  {
+    MagicTransform("AVI", 0, "RIFF"),
+    MagicTransform("8BIMWTEXT", 0, "8\000B\000I\000M\000#"),
+    MagicTransform("8BIMTEXT", 0, "8BIM#"),
+    MagicTransform("8BIM", 0, "8BIM"),
+    MagicTransform("BMP", 0, "BA"),
+    MagicTransform("BMP", 0, "BM"),
+    MagicTransform("BMP", 0, "CI"),
+    MagicTransform("BMP", 0, "CP"),
+    MagicTransform("BMP", 0, "IC"),
+    MagicTransform("BMP", 0, "PI"),
+    MagicTransform("CALS", 21, "version: MIL-STD-1840"),
+    MagicTransform("CALS", 0, "srcdocid:"),
+    MagicTransform("CALS", 9, "srcdocid:"),
+    MagicTransform("CALS", 8, "rorient:"),
+    MagicTransform("CGM", 0, "BEGMF"),
+    MagicTransform("CIN", 0, "\200\052\137\327"),
+    MagicTransform("CRW", 0, "II\x1a\x00\x00\x00HEAPCCDR"),
+    MagicTransform("DCM", 128, "DICM"),
+    MagicTransform("DCX", 0, "\261\150\336\72"),
+    MagicTransform("DIB", 0, "\050\000"),
+    MagicTransform("DDS", 0, "DDS "),
+    MagicTransform("DJVU", 0, "AT&TFORM"),
+    MagicTransform("DOT", 0, "digraph"),
+    MagicTransform("DPX", 0, "SDPX"),
+    MagicTransform("DPX", 0, "XPDS"),
+    MagicTransform("EMF", 40, "\040\105\115\106\000\000\001\000"),
+    MagicTransform("EPT", 0, "\305\320\323\306"),
+    MagicTransform("EXR", 0, "\166\057\061\001"),
+    MagicTransform("FAX", 0, "DFAX"),
+    MagicTransform("FIG", 0, "#FIG"),
+    MagicTransform("FITS", 0, "IT0"),
+    MagicTransform("FITS", 0, "SIMPLE"),
+    MagicTransform("FPX", 0, "\320\317\021\340"),
+    MagicTransform("GIF", 0, "GIF8"),
+    MagicTransform("GPLT", 0, "#!/usr/local/bin/gnuplot"),
+    MagicTransform("HDF", 1, "HDF"),
+    MagicTransform("HPGL", 0, "IN;"),
+    MagicTransform("HPGL", 0, "\033E\033"),
+    MagicTransform("HTML", 1, "HTML"),
+    MagicTransform("HTML", 1, "html"),
+    MagicTransform("ILBM", 8, "ILBM"),
+    MagicTransform("IPTCWTEXT", 0, "\062\000#\000\060\000=\000\042\000&\000#\000\060\000;\000&\000#\000\062\000;\000\042\000"),
+    MagicTransform("IPTCTEXT", 0, "2#0=\042&#0;&#2;\042"),
+    MagicTransform("IPTC", 0, "\034\002"),
+    MagicTransform("JNG", 0, "\213JNG\r\n\032\n"),
+    MagicTransform("JPEG", 0, "\377\330\377"),
+    MagicTransform("JPC", 0, "\377\117"),
+    MagicTransform("JP2", 4, "\152\120\040\040\015"),
+    MagicTransform("MIFF", 0, "Id=ImageMagick"),
+    MagicTransform("MIFF", 0, "id=ImageMagick"),
+    MagicTransform("MNG", 0, "\212MNG\r\n\032\n"),
+    MagicTransform("MPC", 0, "id=MagickCache"),
+    MagicTransform("MPEG", 0, "\000\000\001\263"),
+    MagicTransform("MRW", 0, "\x00MRM"),
+    MagicTransform("MVG", 0, "push graphic-context"),
+    MagicTransform("ORF", 0, "IIRO\x08\x00\x00\x00"),
+    MagicTransform("PCD", 2048, "PCD_"),
+    MagicTransform("PCL", 0, "\033E\033"),
+    MagicTransform("PCX", 0, "\012\002"),
+    MagicTransform("PCX", 0, "\012\005"),
+    MagicTransform("PDB", 60, "vIMGView"),
+    MagicTransform("PDF", 0, "%PDF-"),
+    MagicTransform("PFA", 0, "%!PS-AdobeFont-1.0"),
+    MagicTransform("PFB", 6, "%!PS-AdobeFont-1.0"),
+    MagicTransform("PGX", 0, "\050\107\020\115\046"),
+    MagicTransform("PICT", 522, "\000\021\002\377\014\000"),
+    MagicTransform("PNG", 0, "\211PNG\r\n\032\n"),
+    MagicTransform("PNM", 0, "P1"),
+    MagicTransform("PNM", 0, "P2"),
+    MagicTransform("PNM", 0, "P3"),
+    MagicTransform("PNM", 0, "P4"),
+    MagicTransform("PNM", 0, "P5"),
+    MagicTransform("PNM", 0, "P6"),
+    MagicTransform("PNM", 0, "P7"),
+    MagicTransform("PNM", 0, "PF"),
+    MagicTransform("PNM", 0, "Pf"),
+    MagicTransform("PS", 0, "%!"),
+    MagicTransform("PS", 0, "\004%!"),
+    MagicTransform("PS", 0, "\305\320\323\306"),
+    MagicTransform("PSD", 0, "8BPS"),
+    MagicTransform("PWP", 0, "SFW95"),
+    MagicTransform("RAF", 0, "FUJIFILMCCD-RAW "),
+    MagicTransform("RAD", 0, "#?RADIANCE"),
+    MagicTransform("RAD", 0, "VIEW= "),
+    MagicTransform("RLE", 0, "\122\314"),
+    MagicTransform("SCT", 0, "CT"),
+    MagicTransform("SFW", 0, "SFW94"),
+    MagicTransform("SGI", 0, "\001\332"),
+    MagicTransform("SUN", 0, "\131\246\152\225"),
+    MagicTransform("SVG", 1, "?XML"),
+    MagicTransform("SVG", 1, "?xml"),
+    MagicTransform("TIFF", 0, "\115\115\000\052"),
+    MagicTransform("TIFF", 0, "\111\111\052\000"),
+    MagicTransform("TIFF64", 0, "\115\115\000\053\000\010\000\000"),
+    MagicTransform("TIFF64", 0, "\111\111\053\000\010\000\000\000"),
+    MagicTransform("TXT", 0, "# ImageMagick pixel enumeration:"),
+    MagicTransform("VICAR", 0, "LBLSIZE"),
+    MagicTransform("VICAR", 0, "NJPL1I"),
+    MagicTransform("VIFF", 0, "\253\001"),
+    MagicTransform("WMF", 0, "\327\315\306\232"),
+    MagicTransform("WMF", 0, "\001\000\011\000"),
+    MagicTransform("WPG", 0, "\377WPC"),
+    MagicTransform("XBM", 0, "#define"),
+    MagicTransform("XCF", 0, "gimp xcf"),
+    MagicTransform("XEF", 0, "FOVb"),
+    MagicTransform("XPM", 1, "* XPM *"),
+    MagicTransform("XWD", 4, "\007\000\000"),
+    MagicTransform("XWD", 5, "\000\000\007"),
+    MagicTransform((const char *) NULL, 0, (const char *) NULL)
+ };
 
 static LinkedListInfo
   *magic_list = (LinkedListInfo *) NULL;
@@ -206,14 +234,17 @@ static void *DestroyMagicElement(void *magic_info)
     *p;
 
   p=(MagicInfo *) magic_info;
-  if (p->path != (char *) NULL)
-    p->path=DestroyString(p->path);
-  if (p->name != (char *) NULL)
-    p->name=DestroyString(p->name);
-  if (p->target != (char *) NULL)
-    p->target=DestroyString(p->target);
-  if (p->magic != (unsigned char *) NULL)
-    p->magic=(unsigned char *) RelinquishMagickMemory(p->magic);
+  if (p->exempt == MagickFalse)
+    {
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+      if (p->target != (char *) NULL)
+        p->target=DestroyString(p->target);
+      if (p->magic != (unsigned char *) NULL)
+        p->magic=(unsigned char *) RelinquishMagickMemory(p->magic);
+    }
   p=(MagicInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }
@@ -366,7 +397,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_aliases != (unsigned long *) NULL);
   *number_aliases=0;
-  p=GetMagicInfo((const unsigned char *) "*",0,exception);
+  p=GetMagicInfo((const unsigned char *) NULL,0,exception);
   if (p == (const MagicInfo *) NULL)
     return((const MagicInfo **) NULL);
   aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
@@ -461,7 +492,7 @@ MagickExport char **GetMagicList(const char *pattern,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_aliases != (unsigned long *) NULL);
   *number_aliases=0;
-  p=GetMagicInfo((const unsigned char *) "*",0,exception);
+  p=GetMagicInfo((const unsigned char *) NULL,0,exception);
   if (p == (const MagicInfo *) NULL)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
@@ -622,7 +653,16 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
       (void) fprintf(file," ");
     (void) fprintf(file,"%6ld ",(long) magic_info[i]->offset);
     if (magic_info[i]->target != (char *) NULL)
-      (void) fprintf(file,"%s",magic_info[i]->target);
+      {
+        register long
+          j;
+
+        for (j=0; magic_info[i]->target[j] != '\0'; j++)
+          if (isprint((int) ((unsigned char) magic_info[i]->target[j])) != 0)
+            (void) fprintf(file,"%c",magic_info[i]->target[j]);
+          else
+            (void) fprintf(file,"%#o",magic_info[i]->target[j]);
+      }
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
@@ -651,9 +691,9 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %
 %  A description of each parameter follows:
 %
-%    o xml:  The magic list in XML format.
+%    o xml: The magic list in XML format.
 %
-%    o filename:  The magic list filename.
+%    o filename: The magic list filename.
 %
 %    o depth: depth of <include /> statements.
 %
@@ -930,7 +970,40 @@ static MagickBooleanType LoadMagicLists(const char *filename,
   MagickStatusType
     status;
 
+  register const MagicMapInfo
+    *p;
+
+  /*
+    Load built-in magic map.
+  */
   status=MagickFalse;
+  if (magic_list == (LinkedListInfo *) NULL)
+    magic_list=NewLinkedList(0);
+  for (p=MagicMap; p->name != (const char *) NULL; p++)
+  {
+    MagicInfo
+      *magic_info;
+
+    magic_info=(MagicInfo *) AcquireMagickMemory(sizeof(*magic_info));
+    if (magic_info == (MagicInfo *) NULL)
+      ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
+    magic_info->path="[built-in]";
+    magic_info->name=(char *) p->name;
+    magic_info->offset=p->offset;
+    magic_info->target=(char *) p->magic;
+    magic_info->magic=p->magic;
+    magic_info->length=p->length;
+    magic_info->exempt=MagickTrue;
+    magic_info->signature=MagickSignature;
+    status=AppendValueToLinkedList(magic_list,magic_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
+  }
+  /*
+    Load external magic map.
+  */
   *path='\0';
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
@@ -942,13 +1015,6 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((magic_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(magic_list) != MagickFalse))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
-        "UnableToOpenConfigureFile","`%s'",path);
-      status|=LoadMagicList(MagicMap,"built-in",0,exception);
-    }
   return(status != 0 ? MagickTrue : MagickFalse);
 #endif
 }
