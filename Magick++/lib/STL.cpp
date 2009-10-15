@@ -885,7 +885,7 @@ Magick::shadeImage::shadeImage( const double azimuth_,
 }
 void Magick::shadeImage::operator()( Magick::Image &image_ ) const
 {
-  image_.shade( _clusterThreshold, _smoothingThreshold );
+  image_.shade( _azimuth, _elevation, _colorShading );
 }
 
 // Sharpen pixels in image
