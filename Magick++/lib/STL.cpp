@@ -875,10 +875,12 @@ void Magick::segmentImage::operator()( Magick::Image &image_ ) const
 }
 
 // Shade image using distant light source
-Magick::shadeImage::shadeImage( const double clusterThreshold_, 
-                                const double smoothingThreshold_ )
-  : _clusterThreshold( clusterThreshold_ ),
-    _smoothingThreshold( smoothingThreshold_ )
+Magick::shadeImage::shadeImage( const double azimuth_,
+                                const double elevation_,
+        const bool colorShading_)
+  : _azimuth( azimuth_ ),
+    _elevation( elevation_ ),
+    _colorShading (colorShading_)
 {
 }
 void Magick::shadeImage::operator()( Magick::Image &image_ ) const

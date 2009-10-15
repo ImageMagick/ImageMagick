@@ -952,14 +952,16 @@ namespace Magick
   class MagickDLLDecl shadeImage : public std::unary_function<Image&,void>
   {
   public:
-    shadeImage( const double clusterThreshold_ = 1.0, 
-    const double smoothingThreshold_ = 1.5 );
+    shadeImage( const double azimuth_ = 30,
+    const double elevation_ = 30,
+    const bool   colorShading_ = false );
 
     void operator()( Image &image_ ) const;
 
   private:
-    double  _clusterThreshold;
-    double  _smoothingThreshold;
+    double  _azimuth;
+    double  _elevation;
+    bool    _colorShading;
   };
 
   // Sharpen pixels in image
