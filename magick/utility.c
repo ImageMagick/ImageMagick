@@ -905,28 +905,28 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 
   *path='\0';
   cwd=getcwd(path,(unsigned long) extent);
-#if defined(MAGICKCORE_HAVE_GETPID) && defined(MAGICKCORE_HAVE_READLINK)
+#if defined(MAGICKCORE_HAVE_GETPID) && defined(MAGICKCORE_HAVE_READLINK) && defined(PATH_MAX)
   {
     char
       link_path[MaxTextExtent],
-      real_path[PATH_MAX+1];
+      execution_path[PATH_MAX+1];
 
     ssize_t
       count;
 
     (void) FormatMagickString(link_path,MaxTextExtent,"/proc/%ld/exe",
       (long) getpid());
-    count=readlink(link_path,real_path,PATH_MAX);
+    count=readlink(link_path,execution_path,PATH_MAX);
     if (count == -1)
       {
         (void) FormatMagickString(link_path,MaxTextExtent,"/proc/%ld/file",
           (long) getpid());
-        count=readlink(link_path,real_path,PATH_MAX);
+        count=readlink(link_path,execution_path,PATH_MAX);
       }
     if ((count > 0) && (count <= (ssize_t) PATH_MAX))
       {
-        real_path[count]='\0';
-        (void) CopyMagickString(path,real_path,extent);
+        execution_path[count]='\0';
+        (void) CopyMagickString(path,execution_path,extent);
       }
   }
 #endif
@@ -934,15 +934,15 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
   {
     char
       executable_path[PATH_MAX << 1],
-      real_path[PATH_MAX+1];
+      execution_path[PATH_MAX+1];
 
     uint32_t
       length;
 
     length=sizeof(executable_path);
     if ((_NSGetExecutablePath(executable_path,&length) == 0) &&
-        (realpath(executable_path,real_path) != (char *) NULL))
-      (void) CopyMagickString(path,real_path,extent);
+        (realpath(executable_path,execution_path) != (char *) NULL))
+      (void) CopyMagickString(path,execution_path,extent);
   }
 #endif
 #if defined(MAGICKCORE_HAVE_GETEXECNAME)
@@ -961,6 +961,42 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 #endif
 #if defined(__WINDOWS__)
   NTGetExecutionPath(path,extent);
+#endif
+#if defined(__GNU__)
+  {
+    char
+      *program_name,
+      *execution_path;
+
+    long
+      count;
+
+    count=0;
+    execution_path=(char *) NULL;
+    program_name=program_invocation_name;
+    if (*program_invocation_name != '/')
+      {
+        size_t
+          extent;
+
+        extent=strlen(cwd)+strlen(program_name)+1;
+        program_name=AcquireQuantumMemory(extent,sizeof(*program_name));
+        if (program_name == (char *) NULL)
+          program_name=program_invocation_name;
+        else
+          count=FormatMagickString(program_name,extent,"%s/%s",cwd,
+            program_invocation_name);
+      }
+    if (count != -1)
+      {
+        execution_path=realpath(program_name,NULL);
+        if (execution_path != (char *) NULL)
+          (void) CopyMagickString(path,execution_path,extent);
+      }
+    if (program_name != program_invocation_name)
+      program_name=(char *) RelinquishMagickMemory(program_name);
+    execution_path=(char *) RelinquishMagickMemory(execution_path);
+  }
 #endif
   return(IsPathAccessible(path));
 }
