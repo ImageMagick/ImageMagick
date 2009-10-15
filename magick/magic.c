@@ -72,12 +72,12 @@ typedef struct _MagicMapInfo
   size_t
     length;
 
-  ssize_t
+  MagickOffsetType
     offset;
 } MagicMapInfo;
 
 #define MagicTransform(name,offset,magic) \
-   { name, (unsigned char *) magic,sizeof(magic)-1, offset }
+   { name, (unsigned char *) magic, sizeof(magic)-1, offset }
 
 static const MagicMapInfo
   MagicMap[] =
@@ -661,7 +661,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
           if (isprint((int) ((unsigned char) magic_info[i]->target[j])) != 0)
             (void) fprintf(file,"%c",magic_info[i]->target[j]);
           else
-            (void) fprintf(file,"%#o",magic_info[i]->target[j]);
+            (void) fprintf(file,"\\%03o",(unsigned int)
+              ((unsigned char) magic_info[i]->target[j]));
       }
     (void) fprintf(file,"\n");
   }
