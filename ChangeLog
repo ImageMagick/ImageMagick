@@ -1,3 +1,6 @@
+2009-10-14  6.5.7-0 Pino Toscano  <pino@kde...>
+  * ImageMagick fails to build in GNU/HURD due to absence of PATH_MAX.
+
 2009-10-14  6.5.7-0 Cristy  <quetzlzacatenango@image...>
   * Black channel is now set properly when resizing CMYKA images.
 
