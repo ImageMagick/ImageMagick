@@ -587,7 +587,6 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
 %    o pixels: A pointer to an array of characters where the packed
 %      characters are stored.
 %
-%
 */
 static size_t EncodeImage(Image *image,const unsigned char *scanline,
   const unsigned long bytes_per_line,unsigned char *pixels)
