@@ -1712,7 +1712,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        PNG_LIBPNG_VER_STRING);
 #endif
 
-  quantum_info = NULL;
+  quantum_info = (QuantumInfo *) NULL;
   image=mng_info->image;
 
   /*
@@ -2272,9 +2272,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (setjmp(ping->jmpbuf))
     {
       /*
@@ -2299,6 +2296,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
       return(GetFirstImageInList(image));
     }
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image->storage_class == DirectClass)
     for (pass=0; pass < num_passes; pass++)
     {
@@ -6276,6 +6276,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   AcquireSemaphoreInfo(&png_semaphore);
 #endif
 
+  quantum_info = (QuantumInfo *) NULL;
   image_colors=image->colors;
   image_depth=image->depth;
   image_matte=image->matte;
@@ -7407,9 +7408,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Initialize image scanlines.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   if (setjmp(ping->jmpbuf))
     {
       /*
@@ -7429,6 +7427,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
       return(MagickFalse);
     }
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   quantum_info->format=UndefinedQuantumFormat;
   quantum_info->depth=image_depth;
   num_passes=png_set_interlace_handling(ping);
