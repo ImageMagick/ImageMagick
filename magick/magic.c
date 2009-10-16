@@ -964,9 +964,6 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
 static MagickBooleanType LoadMagicLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
-  return(LoadMagicList(MagicMap,"built-in",0,exception));
-#else
   char
     path[MaxTextExtent];
 
@@ -1009,7 +1006,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
         continue;
       }
     (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
-    magic_info->path="[built-in]";
+    magic_info->path=(char *) "[built-in]";
     magic_info->name=(char *) p->name;
     magic_info->offset=p->offset;
     magic_info->target=(char *) p->magic;
@@ -1037,5 +1034,4 @@ static MagickBooleanType LoadMagicLists(const char *filename,
   }
   options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
-#endif
 }

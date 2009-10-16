@@ -79,13 +79,13 @@ typedef struct _ColorMapInfo
   const char
     *name;
 
-  const double
+  const float
     red,
     green,
     blue,
     alpha;
 
-  const ComplianceType
+  const long
     compliance;
 } ColorMapInfo;
 
@@ -2106,9 +2106,6 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
 static MagickBooleanType LoadColorLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
-  return(LoadColorList(ColorMap,"built-in",0,exception));
-#else
   const StringInfo
     *option;
 
@@ -2152,7 +2149,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
         continue;
       }
     (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
-    color_info->path="[built-in]";
+    color_info->path=(char *) "[built-in]";
     color_info->name=(char *) p->name;
     GetMagickPixelPacket((Image *) NULL,&color_info->color);
     color_info->color.red=scale*p->red;
@@ -2160,7 +2157,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
     color_info->color.blue=scale*p->blue;
     color_info->color.opacity=(MagickRealType) (QuantumRange-QuantumRange*
       p->alpha);
-    color_info->compliance=p->compliance;
+    color_info->compliance=(ComplianceType) p->compliance;
     color_info->exempt=MagickTrue;
     color_info->signature=MagickSignature;
     status=AppendValueToLinkedList(color_list,color_info);
@@ -2181,7 +2178,6 @@ static MagickBooleanType LoadColorLists(const char *filename,
   }
   options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
-#endif
 }
 
 /*

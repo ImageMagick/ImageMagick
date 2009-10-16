@@ -884,7 +884,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
         continue;
       }
     (void) ResetMagickMemory(coder_info,0,sizeof(*coder_info));
-    coder_info->path="[built-in]";
+    coder_info->path=(char *) "[built-in]";
     coder_info->magick=(char *) p->magick;
     coder_info->name=(char *) p->name;
     coder_info->exempt=MagickTrue;
