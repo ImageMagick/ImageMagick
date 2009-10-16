@@ -1993,7 +1993,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         (void) WriteBlobString(image,buffer);
       }
     if (quantum_info->format == FloatingPointQuantumFormat)
-      SetImageProperty(image,"quantum:format","floating-point");
+      (void) SetImageProperty(image,"quantum:format","floating-point");
     ResetImagePropertyIterator(image);
     property=GetNextImageProperty(image);
     while (property != (const char *) NULL)
