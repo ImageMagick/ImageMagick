@@ -64,149 +64,159 @@
 #define MagickCoderFilename  "coder.xml"
 
 /*
-  Declare coder map.
-*/
-static const char
-  *CoderMap = (const char *)
-    "<?xml version=\"1.0\"?>"
-    "<codermap>"
-    "  <coder magick=\"3FR\" name=\"DNG\" />"
-    "  <coder magick=\"8BIM\" name=\"META\" />"
-    "  <coder magick=\"8BIMTEXT\" name=\"META\" />"
-    "  <coder magick=\"8BIMWTEXT\" name=\"META\" />"
-    "  <coder magick=\"A\" name=\"RAW\" />"
-    "  <coder magick=\"AI\" name=\"PDF\" />"
-    "  <coder magick=\"AFM\" name=\"TTF\" />"
-    "  <coder magick=\"APP1JPEG\" name=\"META\" />"
-    "  <coder magick=\"APP1\" name=\"META\" />"
-    "  <coder magick=\"ARW\" name=\"DNG\" />"
-    "  <coder magick=\"BIE\" name=\"JBIG\" />"
-    "  <coder magick=\"BMP2\" name=\"BMP\" />"
-    "  <coder magick=\"BMP3\" name=\"BMP\" />"
-    "  <coder magick=\"B\" name=\"GRAY\" />"
-    "  <coder magick=\"BRF\" name=\"BRAILLE\" />"
-    "  <coder magick=\"CMYKA\" name=\"CMYK\" />"
-    "  <coder magick=\"C\" name=\"GRAY\" />"
-    "  <coder magick=\"CAL\" name=\"CALS\" />"
-    "  <coder magick=\"CR2\" name=\"DNG\" />"
-    "  <coder magick=\"CRW\" name=\"DNG\" />"
-    "  <coder magick=\"CUR\" name=\"ICON\" />"
-    "  <coder magick=\"DCR\" name=\"DNG\" />"
-    "  <coder magick=\"DCX\" name=\"PCX\" />"
-    "  <coder magick=\"DFONT\" name=\"TTF\" />"
-    "  <coder magick=\"EMF\" name=\"EMF\" />"
-    "  <coder magick=\"EPDF\" name=\"PDF\" />"
-    "  <coder magick=\"EPI\" name=\"PS\" />"
-    "  <coder magick=\"EPS2\" name=\"PS2\" />"
-    "  <coder magick=\"EPS3\" name=\"PS3\" />"
-    "  <coder magick=\"EPSF\" name=\"PS\" />"
-    "  <coder magick=\"EPSI\" name=\"PS\" />"
-    "  <coder magick=\"EPS\" name=\"PS\" />"
-    "  <coder magick=\"EPT2\" name=\"EPT\" />"
-    "  <coder magick=\"EPT3\" name=\"EPT\" />"
-    "  <coder magick=\"ERF\" name=\"DNG\" />"
-    "  <coder magick=\"EXIF\" name=\"META\" />"
-    "  <coder magick=\"FILE\" name=\"URL\" />"
-    "  <coder magick=\"FRACTAL\" name=\"PLASMA\" />"
-    "  <coder magick=\"FTP\" name=\"URL\" />"
-    "  <coder magick=\"FTS\" name=\"FITS\" />"
-    "  <coder magick=\"G3\" name=\"FAX\" />"
-    "  <coder magick=\"GIF87\" name=\"GIF\" />"
-    "  <coder magick=\"G\" name=\"GRAY\" />"
-    "  <coder magick=\"GRANITE\" name=\"MAGICK\" />"
-    "  <coder magick=\"GROUP4\" name=\"TIFF\" />"
-    "  <coder magick=\"H\" name=\"MAGICK\" />"
-    "  <coder magick=\"HTM\" name=\"HTML\" />"
-    "  <coder magick=\"HTTP\" name=\"URL\" />"
-    "  <coder magick=\"ICB\" name=\"TGA\" />"
-    "  <coder magick=\"ICC\" name=\"META\" />"
-    "  <coder magick=\"ICM\" name=\"META\" />"
-    "  <coder magick=\"ICO\" name=\"ICON\" />"
-    "  <coder magick=\"IMPLICIT\" name=\"***\" />"
-    "  <coder magick=\"IPTC\" name=\"META\" />"
-    "  <coder magick=\"IPTCTEXT\" name=\"META\" />"
-    "  <coder magick=\"IPTCWTEXT\" name=\"META\" />"
-    "  <coder magick=\"ISOBRL\" name=\"BRAILLE\" />"
-    "  <coder magick=\"JBG\" name=\"JBIG\" />"
-    "  <coder magick=\"JNG\" name=\"PNG\" />"
-    "  <coder magick=\"JPC\" name=\"JP2\" />"
-    "  <coder magick=\"JPG\" name=\"JPEG\" />"
-    "  <coder magick=\"JPX\" name=\"JP2\" />"
-    "  <coder magick=\"K\" name=\"GRAY\" />"
-    "  <coder magick=\"K25\" name=\"DNG\" />"
-    "  <coder magick=\"KDC\" name=\"DNG\" />"
-    "  <coder magick=\"LOGO\" name=\"MAGICK\" />"
-    "  <coder magick=\"M2V\" name=\"MPEG\" />"
-    "  <coder magick=\"M4V\" name=\"MPEG\" />"
-    "  <coder magick=\"M\" name=\"GRAY\" />"
-    "  <coder magick=\"MNG\" name=\"PNG\" />"
-    "  <coder magick=\"MOV\" name=\"MPEG\" />"
-    "  <coder magick=\"MPG\" name=\"MPEG\" />"
-    "  <coder magick=\"MP4\" name=\"MPEG\" />"
-    "  <coder magick=\"MPRI\" name=\"MPR\" />"
-    "  <coder magick=\"MRW\" name=\"DNG\" />"
-    "  <coder magick=\"MSVG\" name=\"SVG\" />"
-    "  <coder magick=\"NEF\" name=\"DNG\" />"
-    "  <coder magick=\"NETSCAPE\" name=\"MAGICK\" />"
-    "  <coder magick=\"O\" name=\"GRAY\" />"
-    "  <coder magick=\"ORF\" name=\"DNG\" />"
-    "  <coder magick=\"OTF\" name=\"TTF\" />"
-    "  <coder magick=\"P7\" name=\"PNM\" />"
-    "  <coder magick=\"PAL\" name=\"UYVY\" />"
-    "  <coder magick=\"PAM\" name=\"PNM\" />"
-    "  <coder magick=\"PBM\" name=\"PNM\" />"
-    "  <coder magick=\"PCDS\" name=\"PCD\" />"
-    "  <coder magick=\"PCT\" name=\"PICT\" />"
-    "  <coder magick=\"PDFA\" name=\"PDF\" />"
-    "  <coder magick=\"PEF\" name=\"DNG\" />"
-    "  <coder magick=\"PFA\" name=\"TTF\" />"
-    "  <coder magick=\"PFB\" name=\"TTF\" />"
-    "  <coder magick=\"PFM\" name=\"PNM\" />"
-    "  <coder magick=\"PGM\" name=\"PNM\" />"
-    "  <coder magick=\"PGX\" name=\"JP2\" />"
-    "  <coder magick=\"PICON\" name=\"XPM\" />"
-    "  <coder magick=\"PJPEG\" name=\"JPEG\" />"
-    "  <coder magick=\"PM\" name=\"XPM\" />"
-    "  <coder magick=\"PNG24\" name=\"PNG\" />"
-    "  <coder magick=\"PNG32\" name=\"PNG\" />"
-    "  <coder magick=\"PNG8\" name=\"PNG\" />"
-    "  <coder magick=\"PPM\" name=\"PNM\" />"
-    "  <coder magick=\"PTIF\" name=\"TIFF\" />"
-    "  <coder magick=\"RADIAL-GRADIENT\" name=\"GRADIENT\" />"
-    "  <coder magick=\"RAF\" name=\"DNG\" />"
-    "  <coder magick=\"RAS\" name=\"SUN\" />"
-    "  <coder magick=\"RGBA\" name=\"RGB\" />"
-    "  <coder magick=\"RGBO\" name=\"RGB\" />"
-    "  <coder magick=\"R\" name=\"GRAY\" />"
-    "  <coder magick=\"ROSE\" name=\"MAGICK\" />"
-    "  <coder magick=\"SHTML\" name=\"HTML\" />"
-    "  <coder magick=\"SR2\" name=\"DNG\" />"
-    "  <coder magick=\"SRF\" name=\"DNG\" />"
-    "  <coder magick=\"SVGZ\" name=\"SVG\" />"
-    "  <coder magick=\"TEXT\" name=\"TXT\" />"
-    "  <coder magick=\"TIFF64\" name=\"TIFF\" />"
-    "  <coder magick=\"TIF\" name=\"TIFF\" />"
-    "  <coder magick=\"TTC\" name=\"TTF\" />"
-    "  <coder magick=\"UBRL\" name=\"BRAILLE\" />"
-    "  <coder magick=\"VDA\" name=\"TGA\" />"
-    "  <coder magick=\"VST\" name=\"TGA\" />"
-    "  <coder magick=\"WMFWIN32\" name=\"EMF\" />"
-    "  <coder magick=\"WMV\" name=\"MPEG\" />"
-    "  <coder magick=\"X3F\" name=\"DNG\" />"
-    "  <coder magick=\"XTRNARRAY\" name=\"XTRN\" />"
-    "  <coder magick=\"XTRNBLOB\" name=\"XTRN\" />"
-    "  <coder magick=\"XTRNBSTR\" name=\"XTRN\" />"
-    "  <coder magick=\"XTRNFILE\" name=\"XTRN\" />"
-    "  <coder magick=\"XTRNIMAGE\" name=\"XTRN\" />"
-    "  <coder magick=\"XTRNSTREAM\" name=\"XTRN\" />"
-    "  <coder magick=\"XV\" name=\"VIFF\" />"
-    "  <coder magick=\"Y\" name=\"GRAY\" />"
-    "  <coder magick=\"YCbCrA\" name=\"YCbCr\" />"
-    "</codermap>";
-
-/*
   Static declarations.
 */
+typedef struct _CoderMapInfo
+{
+  const char
+    *magick,
+    *name;
+} CoderMapInfo;
+
+static const CoderMapInfo
+  CoderMap[] =
+  {
+    { "3FR", "DNG" },
+    { "8BIM", "META" },
+    { "8BIMTEXT", "META" },
+    { "8BIMWTEXT", "META" },
+    { "AFM", "TTF" },
+    { "A", "RAW" },
+    { "AI", "PDF" },
+    { "APP1JPEG", "META" },
+    { "APP1", "META" },
+    { "ARW", "DNG" },
+    { "BIE", "JBIG" },
+    { "BMP2", "BMP" },
+    { "BMP3", "BMP" },
+    { "B", "RAW" },
+    { "BRF", "BRAILLE" },
+    { "BGR", "RGB" },
+    { "BRG", "RGB" },
+    { "CMYKA", "CMYK" },
+    { "C", "RAW" },
+    { "CAL", "CALS" },
+    { "CR2", "DNG" },
+    { "CRW", "DNG" },
+    { "CUR", "ICON" },
+    { "DCR", "DNG" },
+    { "DCX", "PCX" },
+    { "DFONT", "TTF" },
+    { "EPDF", "PDF" },
+    { "EPI", "PS" },
+    { "EPS2", "PS2" },
+    { "EPS3", "PS3" },
+    { "EPSF", "PS" },
+    { "EPSI", "PS" },
+    { "EPS", "PS" },
+    { "EPT2", "EPT" },
+    { "EPT3", "EPT" },
+    { "ERF", "DNG" },
+    { "EXIF", "META" },
+    { "FILE", "URL" },
+    { "FRACTAL", "PLASMA" },
+    { "FTP", "URL" },
+    { "FTS", "FITS" },
+    { "G3", "FAX" },
+    { "GIF87", "GIF" },
+    { "G", "RAW" },
+    { "GBR", "RGB" },
+    { "GRB", "RGB" },
+    { "GRANITE", "MAGICK" },
+    { "GROUP4", "TIFF" },
+    { "K25", "DNG" },
+    { "KDC", "DNG" },
+    { "H", "MAGICK" },
+    { "HTM", "HTML" },
+    { "HTTP", "URL" },
+    { "ICB", "TGA" },
+    { "ICC", "META" },
+    { "ICM", "META" },
+    { "ICO", "ICON" },
+    { "IMPLICIT", "***" },
+    { "IPTC", "META" },
+    { "IPTCTEXT", "META" },
+    { "IPTCWTEXT", "META" },
+    { "ISOBRL", "BRAILLE" },
+    { "JBG", "JBIG" },
+    { "JNG", "PNG" },
+    { "JPC", "JP2" },
+    { "JPG", "JPEG" },
+    { "JPX", "JP2" },
+    { "K", "RAW" },
+    { "LOGO", "MAGICK" },
+    { "M2V", "MPEG" },
+    { "M4V", "MPEG" },
+    { "M", "RAW" },
+    { "MNG", "PNG" },
+    { "MOV", "PNG" },
+    { "MP4", "MPEG" },
+    { "MPG", "MPEG" },
+    { "MPRI", "MPR" },
+    { "MRW", "DNG" },
+    { "MSVG", "SVG" },
+    { "NEF", "DNG" },
+    { "NETSCAPE", "MAGICK" },
+    { "O", "RAW" },
+    { "ORF", "DNG" },
+    { "OTF", "TTF" },
+    { "P7", "PNM" },
+    { "PAL", "UYVY" },
+    { "PAM", "PNM" },
+    { "PBM", "PNM" },
+    { "PCDS", "PCD" },
+    { "PDFA", "PDF" },
+    { "PEF", "DNG" },
+    { "PEF", "DNG" },
+    { "PFA", "TTF" },
+    { "PFB", "TTF" },
+    { "PFM", "PNM" },
+    { "PGM", "PNM" },
+    { "PGX", "JP2" },
+    { "PICON", "XPM" },
+    { "PJPEG", "JPEG" },
+    { "PM", "XPM" },
+    { "PNG24", "PNG" },
+    { "PNG32", "PNG" },
+    { "PNG8", "PNG" },
+    { "PPM", "PNM" },
+    { "PTIF", "TIFF" },
+    { "RADIAL-GRADIENT", "GRADIENT" },
+    { "RAF", "DNG" },
+    { "RAS", "SUN" },
+    { "RBG", "RGB" },
+    { "RGBA", "RGB" },
+    { "RGBO", "RGB" },
+    { "R", "RAW" },
+    { "ROSE", "MAGICK" },
+    { "SHTML", "HTML" },
+    { "SR2", "DNG" },
+    { "SRF", "DNG" },
+    { "SVGZ", "SVG" },
+    { "TEXT", "TXT" },
+    { "TIFF64", "TIFF" },
+    { "TIF", "TIFF" },
+    { "TTC", "TTF" },
+    { "UBRL", "BRAILLE" },
+    { "VDA", "TGA" },
+    { "VST", "TGA" },
+    { "WMV", "MPEG" },
+    { "WMFWIN32", "EMF" },
+    { "WMZ", "WMF" },
+    { "X3f", "DNG" },
+    { "XMP", "META" },
+    { "XTRNARRAY", "XTRN" },
+    { "XTRNBLOB", "XTRN" },
+    { "XTRNBSTR", "XTRN" },
+    { "XTRNFILE", "XTRN" },
+    { "XTRNIMAGE", "XTRN" },
+    { "XTRNSTREAM", "XTRN" },
+    { "XV", "VIFF" },
+    { "Y", "RAW" },
+    { "YCbCrA", "YCbCr" },
+    { (const char *) NULL, (const char *) NULL }
+ };
+
 static SemaphoreInfo
   *coder_semaphore = (SemaphoreInfo *) NULL;
 
@@ -616,12 +626,15 @@ static void *DestroyCoderNode(void *coder_info)
     *p;
 
   p=(CoderInfo *) coder_info;
-  if (p->path != (char *) NULL)
-    p->path=DestroyString(p->path);
-  if (p->name != (char *) NULL)
-    p->name=DestroyString(p->name);
-  if (p->magick != (char *) NULL)
-    p->magick=DestroyString(p->magick);
+  if (p->exempt == MagickFalse)
+    {
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+      if (p->magick != (char *) NULL)
+        p->magick=DestroyString(p->magick);
+    }
   return(RelinquishMagickMemory(p));
 }
 
@@ -741,6 +754,7 @@ static MagickBooleanType LoadCoderList(const char *xml,const char *filename,
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(coder_info,0,sizeof(*coder_info));
         coder_info->path=ConstantString(filename);
+        coder_info->exempt=MagickFalse;
         coder_info->signature=MagickSignature;
         continue;
       }
@@ -830,9 +844,6 @@ static MagickBooleanType LoadCoderList(const char *xml,const char *filename,
 static MagickBooleanType LoadCoderLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
-  return(LoadCoderList(CoderMap,"built-in",0,exception));
-#else
   const StringInfo
     *option;
 
@@ -842,7 +853,51 @@ static MagickBooleanType LoadCoderLists(const char *filename,
   MagickStatusType
     status;
 
+  register const CoderMapInfo
+    *p;
+
+  /*
+    Load built-in coder map.
+  */
   status=MagickFalse;
+  if (coder_list == (SplayTreeInfo *) NULL)
+    {
+      coder_list=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+        DestroyCoderNode);
+      if (coder_list == (SplayTreeInfo *) NULL)
+        {
+          ThrowFileException(exception,ResourceLimitError,
+            "MemoryAllocationFailed",filename);
+          return(MagickFalse);
+        }
+    }
+  for (p=CoderMap; p->magick != (const char *) NULL; p++)
+  {
+    CoderInfo
+      *coder_info;
+
+    coder_info=(CoderInfo *) AcquireMagickMemory(sizeof(*coder_info));
+    if (coder_info == (CoderInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",coder_info->name);
+        continue;
+      }
+    (void) ResetMagickMemory(coder_info,0,sizeof(*coder_info));
+    coder_info->path="[built-in]";
+    coder_info->magick=(char *) p->magick;
+    coder_info->name=(char *) p->name;
+    coder_info->exempt=MagickTrue;
+    coder_info->signature=MagickSignature;
+    status=AddValueToSplayTree(coder_list,ConstantString(coder_info->magick),
+      coder_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",coder_info->name);
+  }
+  /*
+    Load external coder map.
+  */
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
@@ -852,9 +907,5 @@ static MagickBooleanType LoadCoderLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((coder_list == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(coder_list) == 0))
-    status|=LoadCoderList(CoderMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
-#endif
 }
