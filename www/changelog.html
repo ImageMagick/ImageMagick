@@ -151,8 +151,16 @@
 
 <div class="main">
 
-<ul><dt>2009-10-04  6.5.6-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Use GetCacheViewAuthenticPixels() rather than    QueueCacheViewAuthenticPixels() for the CopyComposite OP optimization.</li><br />
+<ul><dt>2009-10-14  6.5.7-0 Pino Toscano  &lt;pino@kde...&gt;</dt>
+  <li> ImageMagick fails to build in GNU/HURD due to absence of PATH_MAX.</li><br />
+<dt>2009-10-14  6.5.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Black channel is now set properly when resizing CMYKA images.</li><br />
+<dt>2009-10-10  6.5.7-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Bug Fixes for degenerate 'affine' cases of BilinearForward distortion.</li><br />
+<dt>2009-10-06  6.5.6-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Declare the  MagickCore method SpliceImage() in Magick++/Include.h.</li><br />
+    QueueCacheViewAuthenticPixels() for the CopyComposite optimization.<dt>2009-10-04  6.5.6-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Use GetCacheViewAuthenticPixels() rather than    QueueCacheViewAuthenticPixels() for the CopyComposite optimization.</li><br />
 <dt>2009-10-03  6.5.6-8 Nick Wellnhofer &lt;wellnhofer@aevum...&gt;</dt>
   <li> Add missing libraries to the LIBADD entries in coders/Makefile.am,    filters/Makefile.am and wand/Makefile.am.</li>
   <li> Use LIBS rather than LDFLAGS in configure.ac for the Freetype delegate    library.</li><br />
@@ -1258,7 +1266,7 @@
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
