@@ -140,7 +140,7 @@ foreach $delegate (qw/@DELEGATES@/) {
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
 my $INC_magick = '-I../ -I@top_srcdir@ @CPPFLAGS@ -I"' . $Config{'usrinc'} . '/ImageMagick"';
-my $LIBS_magick = '-L../magick/.libs -lMagickCore -L../wand/.libs -lperl @MATH_LIBS@';
+my $LIBS_magick = '-L../magick/.libs -lMagickCore -lperl @MATH_LIBS@';
 my $CCFLAGS_magick = "$Config{'ccflags'} @CFLAGS@";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
