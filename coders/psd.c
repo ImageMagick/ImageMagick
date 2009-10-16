@@ -691,8 +691,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
     {
-      if (AcquireImageColormap(image,256) == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       image->matte=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1338,6 +1336,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 0:
               {
                 q->red=(Quantum) pixel;
+                if (psd_info.channels == 1)
+                  {
+                    q->green=q->red;
+                    q->blue=q->red;
+                  }
                 if (image->storage_class == PseudoClass)
                   {
                     if (packet_size == 1)
