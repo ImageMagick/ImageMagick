@@ -898,10 +898,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (LCMS)",
         image->filename);
 #else
-      if (icc_profile == (StringInfo *) NULL)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          ImageWarning,"AssociateProfile","`%s'",name);
-      else
+      if (icc_profile != (StringInfo *) NULL)
         {
           CacheView
             *image_view;
