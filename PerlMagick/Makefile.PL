@@ -140,7 +140,7 @@ foreach $delegate (qw/bzlib djvu fftw fontconfig freetype jpeg jng jp2 lcms mpeg
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
 my $INC_magick = '-I../ -I.. -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
-my $LIBS_magick = '-L../magick/.libs -lMagickCore -L../wand/.libs -lperl -lm';
+my $LIBS_magick = '-L../magick/.libs -lMagickCore -lperl -lm';
 my $CCFLAGS_magick = "$Config{'ccflags'} -fopenmp -g -O2 -Wall -W -pthread";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
