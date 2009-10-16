@@ -1692,18 +1692,22 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0x1f2);
-      (void) WriteBlobMSBShort(image,(unsigned short) (GetStringInfoLength(profile)+4));
+      (void) WriteBlobMSBShort(image,(unsigned short)
+        (GetStringInfoLength(profile)+4));
       (void) WriteBlobString(image,"8BIM");
-      (void) WriteBlob(image,GetStringInfoLength(profile),GetStringInfoDatum(profile));
+      (void) WriteBlob(image,GetStringInfoLength(profile),
+        GetStringInfoDatum(profile));
     }
   profile=GetImageProfile(image,"icc");
   if (profile != (StringInfo *) NULL)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
-      (void) WriteBlobMSBShort(image,(unsigned short) (GetStringInfoLength(profile)+4));
+      (void) WriteBlobMSBShort(image,(unsigned short)
+        (GetStringInfoLength(profile)+4));
       (void) WriteBlobMSBLong(image,0x00000000UL);
-      (void) WriteBlob(image,GetStringInfoLength(profile),GetStringInfoDatum(profile));
+      (void) WriteBlob(image,GetStringInfoLength(profile),
+        GetStringInfoDatum(profile));
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
       (void) WriteBlobMSBShort(image,4);
