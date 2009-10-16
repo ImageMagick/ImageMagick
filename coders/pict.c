@@ -741,7 +741,6 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %
 %    o length: Specifies the length of the magick string.
 %
-%
 */
 static MagickBooleanType IsPICT(const unsigned char *magick,const size_t length)
 {
@@ -1169,7 +1168,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             {
               if (p > (pixels+extent+image->columns))
                 ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
-              q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
+              q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,
+                exception);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetAuthenticIndexQueue(tile_image);
@@ -1508,14 +1508,14 @@ ModuleExport void UnregisterPICTImage(void)
 %
 %  The format of the WritePICTImage method is:
 %
-%      MagickBooleanType WritePICTImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePICTImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
-%
 %
 */
 static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
