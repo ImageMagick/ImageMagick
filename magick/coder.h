@@ -30,6 +30,7 @@ typedef struct _CoderInfo
     *name;
                                                                                 
   MagickBooleanType
+    exempt,
     stealth;
                                                                                 
   struct _CoderInfo

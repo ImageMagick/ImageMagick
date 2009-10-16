@@ -48,6 +48,7 @@ typedef struct _ColorInfo
     color;
 
   MagickBooleanType
+    exempt,
     stealth;
 
   struct _ColorInfo

@@ -72,267 +72,708 @@
 #define ColorFilename  "colors.xml"
 
 /*
-  Declare color map.
+  Static declarations.
 */
-static const char
-  *ColorMap = (const char *)
-    "<?xml version=\"1.0\"?>"
-    "<colormap>"
-    "  <color name=\"none\" color=\"rgba(0,0,0,0)\" compliance=\"SVG\" />"
-    "  <color name=\"black\" color=\"rgb(0,0,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"red\" color=\"rgb(255,0,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"magenta\" color=\"rgb(255,0,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"green\" color=\"rgb(0,128,0)\" compliance=\"SVG\" />"
-    "  <color name=\"cyan\" color=\"rgb(0,255,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"blue\" color=\"rgb(0,0,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"yellow\" color=\"rgb(255,255,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"white\" color=\"rgb(255,255,255)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"AliceBlue\" color=\"rgb(240,248,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"AntiqueWhite\" color=\"rgb(250,235,215)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"aqua\" color=\"rgb(0,255,255)\" compliance=\"SVG\" />"
-    "  <color name=\"aquamarine\" color=\"rgb(127,255,212)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"azure\" color=\"rgb(240,255,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"beige\" color=\"rgb(245,245,220)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"bisque\" color=\"rgb(255,228,196)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"BlanchedAlmond\" color=\"rgb(255,235,205)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"BlueViolet\" color=\"rgb(138,43,226)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"brown\" color=\"rgb(165,42,42)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"burlywood\" color=\"rgb(222,184,135)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"CadetBlue\" color=\"rgb(95,158,160)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"chartreuse\" color=\"rgb(127,255,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"chocolate\" color=\"rgb(210,105,30)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"coral\" color=\"rgb(255,127,80)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"CornflowerBlue\" color=\"rgb(100,149,237)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"cornsilk\" color=\"rgb(255,248,220)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"crimson\" color=\"rgb(220,20,60)\" compliance=\"SVG\" />"
-    "  <color name=\"DarkBlue\" color=\"rgb(0,0,139)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkCyan\" color=\"rgb(0,139,139)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkGoldenrod\" color=\"rgb(184,134,11)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkGray\" color=\"rgb(169,169,169)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkGreen\" color=\"rgb(0,100,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkGrey\" color=\"rgb(169,169,169)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkKhaki\" color=\"rgb(189,183,107)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkMagenta\" color=\"rgb(139,0,139)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkOliveGreen\" color=\"rgb(85,107,47)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkOrange\" color=\"rgb(255,140,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkOrchid\" color=\"rgb(153,50,204)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkRed\" color=\"rgb(139,0,0)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkSalmon\" color=\"rgb(233,150,122)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkSeaGreen\" color=\"rgb(143,188,143)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkSlateBlue\" color=\"rgb(72,61,139)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkSlateGray\" color=\"rgb(47,79,79)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkSlateGrey\" color=\"rgb(47,79,79)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DarkTurquoise\" color=\"rgb(0,206,209)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DarkViolet\" color=\"rgb(148,0,211)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DeepPink\" color=\"rgb(255,20,147)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DeepSkyBlue\" color=\"rgb(0,191,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DimGray\" color=\"rgb(105,105,105)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"DimGrey\" color=\"rgb(105,105,105)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"DodgerBlue\" color=\"rgb(30,144,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"firebrick\" color=\"rgb(178,34,34)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"FloralWhite\" color=\"rgb(255,250,240)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"ForestGreen\" color=\"rgb(34,139,34)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"fractal\" color=\"rgb(128,128,128)\" compliance=\"SVG\" />"
-    "  <color name=\"fuchsia\" color=\"rgb(255,0,255)\" compliance=\"SVG\" />"
-    "  <color name=\"gainsboro\" color=\"rgb(220,220,220)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"GhostWhite\" color=\"rgb(248,248,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"gold\" color=\"rgb(255,215,0)\" compliance=\"X11, XPM\" />"
-    "  <color name=\"goldenrod\" color=\"rgb(218,165,32)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"gray\" color=\"rgb(126,126,126)\" compliance=\"SVG\" />"
-    "  <color name=\"gray74\" color=\"rgb(189,189,189)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"gray100\" color=\"rgb(255,255,255)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey\" color=\"rgb(190,190,190)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey0\" color=\"rgb(0,0,0)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey1\" color=\"rgb(3,3,3)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey10\" color=\"rgb(26,26,26)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey100\" color=\"rgb(255,255,255)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey11\" color=\"rgb(28,28,28)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey12\" color=\"rgb(31,31,31)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey13\" color=\"rgb(33,33,33)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey14\" color=\"rgb(36,36,36)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey15\" color=\"rgb(38,38,38)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey16\" color=\"rgb(41,41,41)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey17\" color=\"rgb(43,43,43)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey18\" color=\"rgb(45,45,45)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey19\" color=\"rgb(48,48,48)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey2\" color=\"rgb(5,5,5)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey20\" color=\"rgb(51,51,51)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey21\" color=\"rgb(54,54,54)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey22\" color=\"rgb(56,56,56)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey23\" color=\"rgb(59,59,59)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey24\" color=\"rgb(61,61,61)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey25\" color=\"rgb(64,64,64)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey26\" color=\"rgb(66,66,66)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey27\" color=\"rgb(69,69,69)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey28\" color=\"rgb(71,71,71)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey29\" color=\"rgb(74,74,74)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey3\" color=\"rgb(8,8,8)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey30\" color=\"rgb(77,77,77)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey31\" color=\"rgb(79,79,79)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey32\" color=\"rgb(82,82,82)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey33\" color=\"rgb(84,84,84)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey34\" color=\"rgb(87,87,87)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey35\" color=\"rgb(89,89,89)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey36\" color=\"rgb(92,92,92)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey37\" color=\"rgb(94,94,94)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey38\" color=\"rgb(97,97,97)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey39\" color=\"rgb(99,99,99)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey4\" color=\"rgb(10,10,10)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey40\" color=\"rgb(102,102,102)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey41\" color=\"rgb(105,105,105)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey42\" color=\"rgb(107,107,107)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey43\" color=\"rgb(110,110,110)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey44\" color=\"rgb(112,112,112)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey45\" color=\"rgb(115,115,115)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey45\" color=\"rgb(117,117,117)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey47\" color=\"rgb(120,120,120)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey48\" color=\"rgb(122,122,122)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey49\" color=\"rgb(125,125,125)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey5\" color=\"rgb(13,13,13)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey50\" color=\"rgb(50%,50%,50%)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey51\" color=\"rgb(130,130,130)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey52\" color=\"rgb(133,133,133)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey53\" color=\"rgb(135,135,135)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey54\" color=\"rgb(138,138,138)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey55\" color=\"rgb(140,140,140)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey56\" color=\"rgb(143,143,143)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey57\" color=\"rgb(145,145,145)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey58\" color=\"rgb(148,148,148)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey59\" color=\"rgb(150,150,150)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey6\" color=\"rgb(15,15,15)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey60\" color=\"rgb(153,153,153)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey61\" color=\"rgb(156,156,156)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey62\" color=\"rgb(158,158,158)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey63\" color=\"rgb(161,161,161)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey64\" color=\"rgb(163,163,163)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey65\" color=\"rgb(166,166,166)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey66\" color=\"rgb(168,168,168)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey67\" color=\"rgb(171,171,171)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey68\" color=\"rgb(173,173,173)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey69\" color=\"rgb(176,176,176)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey7\" color=\"rgb(18,18,18)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey70\" color=\"rgb(179,179,179)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey71\" color=\"rgb(181,181,181)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey72\" color=\"rgb(184,184,184)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey73\" color=\"rgb(186,186,186)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey74\" color=\"rgb(189,189,189)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey75\" color=\"rgb(191,191,191)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey76\" color=\"rgb(194,194,194)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey77\" color=\"rgb(196,196,196)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey78\" color=\"rgb(199,199,199)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey79\" color=\"rgb(201,201,201)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey8\" color=\"rgb(20,20,20)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey80\" color=\"rgb(204,204,204)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey81\" color=\"rgb(207,207,207)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey82\" color=\"rgb(209,209,209)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey83\" color=\"rgb(212,212,212)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey84\" color=\"rgb(214,214,214)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey85\" color=\"rgb(217,217,217)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey86\" color=\"rgb(219,219,219)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey87\" color=\"rgb(222,222,222)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey88\" color=\"rgb(224,224,224)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey89\" color=\"rgb(227,227,227)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey9\" color=\"rgb(23,23,23)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey90\" color=\"rgb(229,229,229)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey91\" color=\"rgb(232,232,232)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey92\" color=\"rgb(235,235,235)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey93\" color=\"rgb(237,237,237)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey94\" color=\"rgb(240,240,240)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey95\" color=\"rgb(242,242,242)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey96\" color=\"rgb(245,245,245)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey97\" color=\"rgb(247,247,247)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey98\" color=\"rgb(250,250,250)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"grey99\" color=\"rgb(252,252,252)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"honeydew\" color=\"rgb(240,255,240)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"HotPink\" color=\"rgb(255,105,180)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"IndianRed\" color=\"rgb(205,92,92)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"indigo\" color=\"rgb(75,0,130)\" compliance=\"SVG\" />"
-    "  <color name=\"ivory\" color=\"rgb(255,255,240)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"khaki\" color=\"rgb(240,230,140)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"lavender\" color=\"rgb(230,230,250)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LavenderBlush\" color=\"rgb(255,240,245)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LawnGreen\" color=\"rgb(124,252,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LemonChiffon\" color=\"rgb(255,250,205)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightBlue\" color=\"rgb(173,216,230)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightCoral\" color=\"rgb(240,128,128)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightCyan\" color=\"rgb(224,255,255)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightGoldenrodYellow\" color=\"rgb(250,250,210)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightGray\" color=\"rgb(211,211,211)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightGreen\" color=\"rgb(144,238,144)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"LightGrey\" color=\"rgb(211,211,211)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"LightPink\" color=\"rgb(255,182,193)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightSalmon\" color=\"rgb(255,160,122)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightSeaGreen\" color=\"rgb(32,178,170)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightSkyBlue\" color=\"rgb(135,206,250)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightSlateGray\" color=\"rgb(119,136,153)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightSlateGrey\" color=\"rgb(119,136,153)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"LightSteelBlue\" color=\"rgb(176,196,222)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"LightYellow\" color=\"rgb(255,255,224)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"lime\" color=\"rgb(0,255,0)\" compliance=\"SVG\" />"
-    "  <color name=\"LimeGreen\" color=\"rgb(50,205,50)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"linen\" color=\"rgb(250,240,230)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"maroon\" color=\"rgb(128,0,0)\" compliance=\"SVG\" />"
-    "  <color name=\"MediumAquamarine\" color=\"rgb(102,205,170)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumBlue\" color=\"rgb(0,0,205)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumOrchid\" color=\"rgb(186,85,211)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumPurple\" color=\"rgb(147,112,219)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumSeaGreen\" color=\"rgb(60,179,113)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumSlateBlue\" color=\"rgb(123,104,238)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumSpringGreen\" color=\"rgb(0,250,154)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumTurquoise\" color=\"rgb(72,209,204)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MediumVioletRed\" color=\"rgb(199,21,133)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MidnightBlue\" color=\"rgb(25,25,112)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MintCream\" color=\"rgb(245,255,250)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"MistyRose\" color=\"rgb(255,228,225)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"moccasin\" color=\"rgb(255,228,181)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"NavajoWhite\" color=\"rgb(255,222,173)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"navy\" color=\"rgb(0,0,128)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"matte\" color=\"rgb(0,0,0,0)\" compliance=\"SVG\" />"
-    "  <color name=\"OldLace\" color=\"rgb(253,245,230)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"olive\" color=\"rgb(128,128,0)\" compliance=\"SVG\" />"
-    "  <color name=\"OliveDrab\" color=\"rgb(107,142,35)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"opaque\" color=\"rgb(0,0,0)\" compliance=\"SVG\" />"
-    "  <color name=\"orange\" color=\"rgb(255,165,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"OrangeRed\" color=\"rgb(255,69,0)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"orchid\" color=\"rgb(218,112,214)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PaleGoldenrod\" color=\"rgb(238,232,170)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PaleGreen\" color=\"rgb(152,251,152)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PaleTurquoise\" color=\"rgb(175,238,238)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PaleVioletRed\" color=\"rgb(219,112,147)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PapayaWhip\" color=\"rgb(255,239,213)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PeachPuff\" color=\"rgb(255,218,185)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"peru\" color=\"rgb(205,133,63)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"pink\" color=\"rgb(255,192,203)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"plum\" color=\"rgb(221,160,221)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"PowderBlue\" color=\"rgb(176,224,230)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"purple\" color=\"rgb(128,0,128)\" compliance=\"SVG\" />"
-    "  <color name=\"RosyBrown\" color=\"rgb(188,143,143)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"RoyalBlue\" color=\"rgb(65,105,225)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SaddleBrown\" color=\"rgb(139,69,19)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"salmon\" color=\"rgb(250,128,114)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SandyBrown\" color=\"rgb(244,164,96)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SeaGreen\" color=\"rgb(45,139,87)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"seashell\" color=\"rgb(255,245,238)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"sienna\" color=\"rgb(160,82,45)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"silver\" color=\"rgb(192,192,192)\" compliance=\"SVG\" />"
-    "  <color name=\"SkyBlue\" color=\"rgb(135,206,235)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SlateBlue\" color=\"rgb(106,90,205)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SlateGray\" color=\"rgb(112,128,144)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SlateGrey\" color=\"rgb(112,128,144)\" compliance=\"SVG, X11\" />"
-    "  <color name=\"snow\" color=\"rgb(255,250,250)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SpringGreen\" color=\"rgb(0,255,127)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"SteelBlue\" color=\"rgb(70,130,180)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"tan\" color=\"rgb(210,180,140)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"teal\" color=\"rgb(0,128,128)\" compliance=\"SVG\" />"
-    "  <color name=\"thistle\" color=\"rgb(216,191,216)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"tomato\" color=\"rgb(255,99,71)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"transparent\" color=\"rgba(0,0,0,0)\" compliance=\"SVG\" />"
-    "  <color name=\"turquoise\" color=\"rgb(64,224,208)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"violet\" color=\"rgb(238,130,238)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"wheat\" color=\"rgb(245,222,179)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"WhiteSmoke\" color=\"rgb(245,245,245)\" compliance=\"SVG, X11, XPM\" />"
-    "  <color name=\"YellowGreen\" color=\"rgb(154,205,50)\" compliance=\"SVG, X11, XPM\" />"
-    "</colormap>";
+typedef struct _ColorMapInfo
+{
+  const char
+    *name;
+
+  const double
+    red,
+    green,
+    blue,
+    alpha;
+
+  const ComplianceType
+    compliance;
+} ColorMapInfo;
+
+static const ColorMapInfo
+  ColorMap[] =
+  {
+    { "none", 0, 0, 0, 0, SVGCompliance },
+    { "black", 0, 0, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "red", 255, 0, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "magenta", 255, 0, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "green", 0, 128, 0, 1, SVGCompliance },
+    { "cyan", 0, 255, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "blue", 0, 0, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "yellow", 255, 255, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "white", 255, 255, 255, 1, SVGCompliance | X11Compliance },
+    { "AliceBlue", 240, 248, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "AntiqueWhite", 250, 235, 215, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "AntiqueWhite1", 255, 239, 219, 1, X11Compliance },
+    { "AntiqueWhite2", 238, 223, 204, 1, X11Compliance },
+    { "AntiqueWhite3", 205, 192, 176, 1, X11Compliance },
+    { "AntiqueWhite4", 139, 131, 120, 1, X11Compliance },
+    { "aqua", 0, 255, 255, 1, SVGCompliance },
+    { "aquamarine", 127, 255, 212, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "aquamarine1", 127, 255, 212, 1, X11Compliance },
+    { "aquamarine2", 118, 238, 198, 1, X11Compliance },
+    { "aquamarine3", 102, 205, 170, 1, X11Compliance },
+    { "aquamarine4", 69, 139, 116, 1, X11Compliance },
+    { "azure", 240, 255, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "azure1", 240, 255, 255, 1, X11Compliance },
+    { "azure2", 224, 238, 238, 1, X11Compliance },
+    { "azure3", 193, 205, 205, 1, X11Compliance },
+    { "azure4", 131, 139, 139, 1, X11Compliance },
+    { "beige", 245, 245, 220, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "bisque", 255, 228, 196, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "bisque1", 255, 228, 196, 1, X11Compliance },
+    { "bisque2", 238, 213, 183, 1, X11Compliance },
+    { "bisque3", 205, 183, 158, 1, X11Compliance },
+    { "bisque4", 139, 125, 107, 1, X11Compliance },
+    { "BlanchedAlmond", 255, 235, 205, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "blue1", 0, 0, 255, 1, X11Compliance },
+    { "blue2", 0, 0, 238, 1, X11Compliance },
+    { "blue3", 0, 0, 205, 1, X11Compliance },
+    { "blue4", 0, 0, 139, 1, X11Compliance },
+    { "BlueViolet", 138, 43, 226, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "brown", 165, 42, 42, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "brown1", 255, 64, 64, 1, X11Compliance },
+    { "brown2", 238, 59, 59, 1, X11Compliance },
+    { "brown3", 205, 51, 51, 1, X11Compliance },
+    { "brown4", 139, 35, 35, 1, X11Compliance },
+    { "burlywood", 222, 184, 135, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "burlywood1", 255, 211, 155, 1, X11Compliance },
+    { "burlywood2", 238, 197, 145, 1, X11Compliance },
+    { "burlywood3", 205, 170, 125, 1, X11Compliance },
+    { "burlywood4", 139, 115, 85, 1, X11Compliance },
+    { "cadet blue", 95, 158, 160, 1, X11Compliance },
+    { "CadetBlue", 95, 158, 160, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "CadetBlue1", 152, 245, 255, 1, X11Compliance },
+    { "CadetBlue2", 142, 229, 238, 1, X11Compliance },
+    { "CadetBlue3", 122, 197, 205, 1, X11Compliance },
+    { "CadetBlue4", 83, 134, 139, 1, X11Compliance },
+    { "chartreuse", 127, 255, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "chartreuse1", 127, 255, 0, 1, X11Compliance },
+    { "chartreuse2", 118, 238, 0, 1, X11Compliance },
+    { "chartreuse3", 102, 205, 0, 1, X11Compliance },
+    { "chartreuse4", 69, 139, 0, 1, X11Compliance },
+    { "chocolate", 210, 105, 30, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "chocolate1", 255, 127, 36, 1, X11Compliance },
+    { "chocolate2", 238, 118, 33, 1, X11Compliance },
+    { "chocolate3", 205, 102, 29, 1, X11Compliance },
+    { "chocolate4", 139, 69, 19, 1, X11Compliance },
+    { "coral", 255, 127, 80, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "coral1", 255, 114, 86, 1, X11Compliance },
+    { "coral2", 238, 106, 80, 1, X11Compliance },
+    { "coral3", 205, 91, 69, 1, X11Compliance },
+    { "coral4", 139, 62, 47, 1, X11Compliance },
+    { "CornflowerBlue", 100, 149, 237, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "cornsilk", 255, 248, 220, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "cornsilk1", 255, 248, 220, 1, X11Compliance },
+    { "cornsilk2", 238, 232, 205, 1, X11Compliance },
+    { "cornsilk3", 205, 200, 177, 1, X11Compliance },
+    { "cornsilk4", 139, 136, 120, 1, X11Compliance },
+    { "crimson", 220, 20, 60, 1, SVGCompliance },
+    { "cyan1", 0, 255, 255, 1, X11Compliance },
+    { "cyan2", 0, 238, 238, 1, X11Compliance },
+    { "cyan3", 0, 205, 205, 1, X11Compliance },
+    { "cyan4", 0, 139, 139, 1, X11Compliance },
+    { "dark violet", 148, 0, 211, 1, X11Compliance },
+    { "DarkBlue", 0, 0, 139, 1, SVGCompliance | X11Compliance },
+    { "DarkCyan", 0, 139, 139, 1, SVGCompliance | X11Compliance },
+    { "DarkGoldenrod", 184, 134, 11, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkGoldenrod1", 255, 185, 15, 1, X11Compliance },
+    { "DarkGoldenrod2", 238, 173, 14, 1, X11Compliance },
+    { "DarkGoldenrod3", 205, 149, 12, 1, X11Compliance },
+    { "DarkGoldenrod4", 139, 101, 8, 1, X11Compliance },
+    { "DarkGray", 169, 169, 169, 1, SVGCompliance | X11Compliance },
+    { "DarkGreen", 0, 100, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkGrey", 169, 169, 169, 1, SVGCompliance | X11Compliance },
+    { "DarkKhaki", 189, 183, 107, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkMagenta", 139, 0, 139, 1, SVGCompliance | X11Compliance },
+    { "DarkOliveGreen", 85, 107, 47, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkOliveGreen1", 202, 255, 112, 1, X11Compliance },
+    { "DarkOliveGreen2", 188, 238, 104, 1, X11Compliance },
+    { "DarkOliveGreen3", 162, 205, 90, 1, X11Compliance },
+    { "DarkOliveGreen4", 110, 139, 61, 1, X11Compliance },
+    { "DarkOrange", 255, 140, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkOrange1", 255, 127, 0, 1, X11Compliance },
+    { "DarkOrange2", 238, 118, 0, 1, X11Compliance },
+    { "DarkOrange3", 205, 102, 0, 1, X11Compliance },
+    { "DarkOrange4", 139, 69, 0, 1, X11Compliance },
+    { "DarkOrchid", 153, 50, 204, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkOrchid1", 191, 62, 255, 1, X11Compliance },
+    { "DarkOrchid2", 178, 58, 238, 1, X11Compliance },
+    { "DarkOrchid3", 154, 50, 205, 1, X11Compliance },
+    { "DarkOrchid4", 104, 34, 139, 1, X11Compliance },
+    { "DarkRed", 139, 0, 0, 1, SVGCompliance | X11Compliance },
+    { "DarkSalmon", 233, 150, 122, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkSeaGreen", 143, 188, 143, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkSeaGreen1", 193, 255, 193, 1, X11Compliance },
+    { "DarkSeaGreen2", 180, 238, 180, 1, X11Compliance },
+    { "DarkSeaGreen3", 155, 205, 155, 1, X11Compliance },
+    { "DarkSeaGreen4", 105, 139, 105, 1, X11Compliance },
+    { "DarkSlateBlue", 72, 61, 139, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkSlateGray", 47, 79, 79, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkSlateGray1", 151, 255, 255, 1, X11Compliance },
+    { "DarkSlateGray2", 141, 238, 238, 1, X11Compliance },
+    { "DarkSlateGray3", 121, 205, 205, 1, X11Compliance },
+    { "DarkSlateGray4", 82, 139, 139, 1, X11Compliance },
+    { "DarkSlateGrey", 47, 79, 79, 1, SVGCompliance | X11Compliance },
+    { "DarkTurquoise", 0, 206, 209, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DarkViolet", 148, 0, 211, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DeepPink", 255, 20, 147, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DeepPink1", 255, 20, 147, 1, X11Compliance },
+    { "DeepPink2", 238, 18, 137, 1, X11Compliance },
+    { "DeepPink3", 205, 16, 118, 1, X11Compliance },
+    { "DeepPink4", 139, 10, 80, 1, X11Compliance },
+    { "DeepSkyBlue", 0, 191, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DeepSkyBlue1", 0, 191, 255, 1, X11Compliance },
+    { "DeepSkyBlue2", 0, 178, 238, 1, X11Compliance },
+    { "DeepSkyBlue3", 0, 154, 205, 1, X11Compliance },
+    { "DeepSkyBlue4", 0, 104, 139, 1, X11Compliance },
+    { "DimGray", 105, 105, 105, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DimGrey", 105, 105, 105, 1, SVGCompliance | X11Compliance },
+    { "DodgerBlue", 30, 144, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "DodgerBlue1", 30, 144, 255, 1, X11Compliance },
+    { "DodgerBlue2", 28, 134, 238, 1, X11Compliance },
+    { "DodgerBlue3", 24, 116, 205, 1, X11Compliance },
+    { "DodgerBlue4", 16, 78, 139, 1, X11Compliance },
+    { "firebrick", 178, 34, 34, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "firebrick1", 255, 48, 48, 1, X11Compliance },
+    { "firebrick2", 238, 44, 44, 1, X11Compliance },
+    { "firebrick3", 205, 38, 38, 1, X11Compliance },
+    { "firebrick4", 139, 26, 26, 1, X11Compliance },
+    { "FloralWhite", 255, 250, 240, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "ForestGreen", 34, 139, 34, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "fractal", 128, 128, 128, 1, SVGCompliance },
+    { "freeze", 0, 0, 0, 0, SVGCompliance },
+    { "fuchsia", 255, 0, 255, 1, SVGCompliance },
+    { "gainsboro", 220, 220, 220, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "GhostWhite", 248, 248, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "gold", 255, 215, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "gold1", 255, 215, 0, 1, X11Compliance },
+    { "gold2", 238, 201, 0, 1, X11Compliance },
+    { "gold3", 205, 173, 0, 1, X11Compliance },
+    { "gold4", 139, 117, 0, 1, X11Compliance },
+    { "goldenrod", 218, 165, 32, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "goldenrod1", 255, 193, 37, 1, X11Compliance },
+    { "goldenrod2", 238, 180, 34, 1, X11Compliance },
+    { "goldenrod3", 205, 155, 29, 1, X11Compliance },
+    { "goldenrod4", 139, 105, 20, 1, X11Compliance },
+    { "gray", 126, 126, 126, 1, SVGCompliance },
+    { "gray", 190, 190, 190, 1, X11Compliance | XPMCompliance },
+    { "gray0", 0, 0, 0, 1, X11Compliance | XPMCompliance },
+    { "gray1", 3, 3, 3, 1, X11Compliance | XPMCompliance },
+    { "gray10", 26, 26, 26, 1, X11Compliance | XPMCompliance },
+    { "gray100", 255, 255, 255, 1, X11Compliance | XPMCompliance },
+    { "gray100", 255, 255, 255, 1, X11Compliance | XPMCompliance },
+    { "gray11", 28, 28, 28, 1, X11Compliance | XPMCompliance },
+    { "gray12", 31, 31, 31, 1, X11Compliance | XPMCompliance },
+    { "gray13", 33, 33, 33, 1, X11Compliance | XPMCompliance },
+    { "gray14", 36, 36, 36, 1, X11Compliance | XPMCompliance },
+    { "gray15", 38, 38, 38, 1, X11Compliance | XPMCompliance },
+    { "gray16", 41, 41, 41, 1, X11Compliance | XPMCompliance },
+    { "gray17", 43, 43, 43, 1, X11Compliance | XPMCompliance },
+    { "gray18", 46, 46, 46, 1, X11Compliance | XPMCompliance },
+    { "gray19", 48, 48, 48, 1, X11Compliance | XPMCompliance },
+    { "gray2", 5, 5, 5, 1, X11Compliance | XPMCompliance },
+    { "gray20", 51, 51, 51, 1, X11Compliance | XPMCompliance },
+    { "gray21", 54, 54, 54, 1, X11Compliance | XPMCompliance },
+    { "gray22", 56, 56, 56, 1, X11Compliance | XPMCompliance },
+    { "gray23", 59, 59, 59, 1, X11Compliance | XPMCompliance },
+    { "gray24", 61, 61, 61, 1, X11Compliance | XPMCompliance },
+    { "gray25", 64, 64, 64, 1, X11Compliance | XPMCompliance },
+    { "gray26", 66, 66, 66, 1, X11Compliance | XPMCompliance },
+    { "gray27", 69, 69, 69, 1, X11Compliance | XPMCompliance },
+    { "gray28", 71, 71, 71, 1, X11Compliance | XPMCompliance },
+    { "gray29", 74, 74, 74, 1, X11Compliance | XPMCompliance },
+    { "gray3", 8, 8, 8, 1, X11Compliance | XPMCompliance },
+    { "gray30", 77, 77, 77, 1, X11Compliance | XPMCompliance },
+    { "gray31", 79, 79, 79, 1, X11Compliance | XPMCompliance },
+    { "gray32", 82, 82, 82, 1, X11Compliance | XPMCompliance },
+    { "gray33", 84, 84, 84, 1, X11Compliance | XPMCompliance },
+    { "gray34", 87, 87, 87, 1, X11Compliance | XPMCompliance },
+    { "gray35", 89, 89, 89, 1, X11Compliance | XPMCompliance },
+    { "gray36", 92, 92, 92, 1, X11Compliance | XPMCompliance },
+    { "gray37", 94, 94, 94, 1, X11Compliance | XPMCompliance },
+    { "gray38", 97, 97, 97, 1, X11Compliance | XPMCompliance },
+    { "gray39", 99, 99, 99, 1, X11Compliance | XPMCompliance },
+    { "gray4", 10, 10, 10, 1, X11Compliance | XPMCompliance },
+    { "gray40", 102, 102, 102, 1, X11Compliance | XPMCompliance },
+    { "gray41", 105, 105, 105, 1, X11Compliance | XPMCompliance },
+    { "gray42", 107, 107, 107, 1, X11Compliance | XPMCompliance },
+    { "gray43", 110, 110, 110, 1, X11Compliance | XPMCompliance },
+    { "gray44", 112, 112, 112, 1, X11Compliance | XPMCompliance },
+    { "gray45", 115, 115, 115, 1, X11Compliance | XPMCompliance },
+    { "gray46", 117, 117, 117, 1, X11Compliance | XPMCompliance },
+    { "gray47", 120, 120, 120, 1, X11Compliance | XPMCompliance },
+    { "gray48", 122, 122, 122, 1, X11Compliance | XPMCompliance },
+    { "gray49", 125, 125, 125, 1, X11Compliance | XPMCompliance },
+    { "gray5", 13, 13, 13, 1, X11Compliance | XPMCompliance },
+    { "gray50", 127.5, 127.5, 127.5, 1, X11Compliance | XPMCompliance },
+    { "gray51", 130, 130, 130, 1, X11Compliance | XPMCompliance },
+    { "gray52", 133, 133, 133, 1, X11Compliance | XPMCompliance },
+    { "gray53", 135, 135, 135, 1, X11Compliance | XPMCompliance },
+    { "gray54", 138, 138, 138, 1, X11Compliance | XPMCompliance },
+    { "gray55", 140, 140, 140, 1, X11Compliance | XPMCompliance },
+    { "gray56", 143, 143, 143, 1, X11Compliance | XPMCompliance },
+    { "gray57", 145, 145, 145, 1, X11Compliance | XPMCompliance },
+    { "gray58", 148, 148, 148, 1, X11Compliance | XPMCompliance },
+    { "gray59", 150, 150, 150, 1, X11Compliance | XPMCompliance },
+    { "gray6", 15, 15, 15, 1, X11Compliance | XPMCompliance },
+    { "gray60", 153, 153, 153, 1, X11Compliance | XPMCompliance },
+    { "gray61", 156, 156, 156, 1, X11Compliance | XPMCompliance },
+    { "gray62", 158, 158, 158, 1, X11Compliance | XPMCompliance },
+    { "gray63", 161, 161, 161, 1, X11Compliance | XPMCompliance },
+    { "gray64", 163, 163, 163, 1, X11Compliance | XPMCompliance },
+    { "gray65", 166, 166, 166, 1, X11Compliance | XPMCompliance },
+    { "gray66", 168, 168, 168, 1, X11Compliance | XPMCompliance },
+    { "gray67", 171, 171, 171, 1, X11Compliance | XPMCompliance },
+    { "gray68", 173, 173, 173, 1, X11Compliance | XPMCompliance },
+    { "gray69", 176, 176, 176, 1, X11Compliance | XPMCompliance },
+    { "gray7", 18, 18, 18, 1, X11Compliance | XPMCompliance },
+    { "gray70", 179, 179, 179, 1, X11Compliance | XPMCompliance },
+    { "gray71", 181, 181, 181, 1, X11Compliance | XPMCompliance },
+    { "gray72", 184, 184, 184, 1, X11Compliance | XPMCompliance },
+    { "gray73", 186, 186, 186, 1, X11Compliance | XPMCompliance },
+    { "gray74", 189, 189, 189, 1, X11Compliance | XPMCompliance },
+    { "gray75", 191, 191, 191, 1, X11Compliance | XPMCompliance },
+    { "gray76", 194, 194, 194, 1, X11Compliance | XPMCompliance },
+    { "gray77", 196, 196, 196, 1, X11Compliance | XPMCompliance },
+    { "gray78", 199, 199, 199, 1, X11Compliance | XPMCompliance },
+    { "gray79", 201, 201, 201, 1, X11Compliance | XPMCompliance },
+    { "gray8", 20, 20, 20, 1, X11Compliance | XPMCompliance },
+    { "gray80", 204, 204, 204, 1, X11Compliance | XPMCompliance },
+    { "gray81", 207, 207, 207, 1, X11Compliance | XPMCompliance },
+    { "gray82", 209, 209, 209, 1, X11Compliance | XPMCompliance },
+    { "gray83", 212, 212, 212, 1, X11Compliance | XPMCompliance },
+    { "gray84", 214, 214, 214, 1, X11Compliance | XPMCompliance },
+    { "gray85", 217, 217, 217, 1, X11Compliance | XPMCompliance },
+    { "gray86", 219, 219, 219, 1, X11Compliance | XPMCompliance },
+    { "gray87", 222, 222, 222, 1, X11Compliance | XPMCompliance },
+    { "gray88", 224, 224, 224, 1, X11Compliance | XPMCompliance },
+    { "gray89", 227, 227, 227, 1, X11Compliance | XPMCompliance },
+    { "gray9", 23, 23, 23, 1, X11Compliance | XPMCompliance },
+    { "gray90", 229, 229, 229, 1, X11Compliance | XPMCompliance },
+    { "gray91", 232, 232, 232, 1, X11Compliance | XPMCompliance },
+    { "gray92", 235, 235, 235, 1, X11Compliance | XPMCompliance },
+    { "gray93", 237, 237, 237, 1, X11Compliance | XPMCompliance },
+    { "gray94", 240, 240, 240, 1, X11Compliance | XPMCompliance },
+    { "gray95", 242, 242, 242, 1, X11Compliance | XPMCompliance },
+    { "gray96", 245, 245, 245, 1, X11Compliance | XPMCompliance },
+    { "gray97", 247, 247, 247, 1, X11Compliance | XPMCompliance },
+    { "gray98", 250, 250, 250, 1, X11Compliance | XPMCompliance },
+    { "gray99", 252, 252, 252, 1, X11Compliance | XPMCompliance },
+    { "green", 0, 255, 0, 1, X11Compliance | XPMCompliance },
+    { "green1", 0, 255, 0, 1, X11Compliance },
+    { "green2", 0, 238, 0, 1, X11Compliance },
+    { "green3", 0, 205, 0, 1, X11Compliance },
+    { "green4", 0, 139, 0, 1, X11Compliance },
+    { "GreenYellow", 173, 255, 47, 1, X11Compliance | XPMCompliance },
+    { "grey", 190, 190, 190, 1, SVGCompliance | X11Compliance },
+    { "grey0", 0, 0, 0, 1, SVGCompliance | X11Compliance },
+    { "grey1", 3, 3, 3, 1, SVGCompliance | X11Compliance },
+    { "grey10", 26, 26, 26, 1, SVGCompliance | X11Compliance },
+    { "grey100", 255, 255, 255, 1, SVGCompliance | X11Compliance },
+    { "grey11", 28, 28, 28, 1, SVGCompliance | X11Compliance },
+    { "grey12", 31, 31, 31, 1, SVGCompliance | X11Compliance },
+    { "grey13", 33, 33, 33, 1, SVGCompliance | X11Compliance },
+    { "grey14", 36, 36, 36, 1, SVGCompliance | X11Compliance },
+    { "grey15", 38, 38, 38, 1, SVGCompliance | X11Compliance },
+    { "grey16", 41, 41, 41, 1, SVGCompliance | X11Compliance },
+    { "grey17", 43, 43, 43, 1, SVGCompliance | X11Compliance },
+    { "grey18", 46, 46, 46, 1, SVGCompliance | X11Compliance },
+    { "grey19", 48, 48, 48, 1, SVGCompliance | X11Compliance },
+    { "grey2", 5, 5, 5, 1, SVGCompliance | X11Compliance },
+    { "grey20", 51, 51, 51, 1, SVGCompliance | X11Compliance },
+    { "grey21", 54, 54, 54, 1, SVGCompliance | X11Compliance },
+    { "grey22", 56, 56, 56, 1, SVGCompliance | X11Compliance },
+    { "grey23", 59, 59, 59, 1, SVGCompliance | X11Compliance },
+    { "grey24", 61, 61, 61, 1, SVGCompliance | X11Compliance },
+    { "grey25", 64, 64, 64, 1, SVGCompliance | X11Compliance },
+    { "grey26", 66, 66, 66, 1, SVGCompliance | X11Compliance },
+    { "grey27", 69, 69, 69, 1, SVGCompliance | X11Compliance },
+    { "grey28", 71, 71, 71, 1, SVGCompliance | X11Compliance },
+    { "grey29", 74, 74, 74, 1, SVGCompliance | X11Compliance },
+    { "grey3", 8, 8, 8, 1, SVGCompliance | X11Compliance },
+    { "grey30", 77, 77, 77, 1, SVGCompliance | X11Compliance },
+    { "grey31", 79, 79, 79, 1, SVGCompliance | X11Compliance },
+    { "grey32", 82, 82, 82, 1, SVGCompliance | X11Compliance },
+    { "grey33", 84, 84, 84, 1, SVGCompliance | X11Compliance },
+    { "grey34", 87, 87, 87, 1, SVGCompliance | X11Compliance },
+    { "grey35", 89, 89, 89, 1, SVGCompliance | X11Compliance },
+    { "grey36", 92, 92, 92, 1, SVGCompliance | X11Compliance },
+    { "grey37", 94, 94, 94, 1, SVGCompliance | X11Compliance },
+    { "grey38", 97, 97, 97, 1, SVGCompliance | X11Compliance },
+    { "grey39", 99, 99, 99, 1, SVGCompliance | X11Compliance },
+    { "grey4", 10, 10, 10, 1, SVGCompliance | X11Compliance },
+    { "grey40", 102, 102, 102, 1, SVGCompliance | X11Compliance },
+    { "grey41", 105, 105, 105, 1, SVGCompliance | X11Compliance },
+    { "grey42", 107, 107, 107, 1, SVGCompliance | X11Compliance },
+    { "grey43", 110, 110, 110, 1, SVGCompliance | X11Compliance },
+    { "grey44", 112, 112, 112, 1, SVGCompliance | X11Compliance },
+    { "grey45", 115, 115, 115, 1, SVGCompliance | X11Compliance },
+    { "grey46", 117, 117, 117, 1, SVGCompliance | X11Compliance },
+    { "grey47", 120, 120, 120, 1, SVGCompliance | X11Compliance },
+    { "grey48", 122, 122, 122, 1, SVGCompliance | X11Compliance },
+    { "grey49", 125, 125, 125, 1, SVGCompliance | X11Compliance },
+    { "grey5", 13, 13, 13, 1, SVGCompliance | X11Compliance },
+    { "grey50", 127, 127, 127, 1, SVGCompliance | X11Compliance },
+    { "grey51", 130, 130, 130, 1, SVGCompliance | X11Compliance },
+    { "grey52", 133, 133, 133, 1, SVGCompliance | X11Compliance },
+    { "grey53", 135, 135, 135, 1, SVGCompliance | X11Compliance },
+    { "grey54", 138, 138, 138, 1, SVGCompliance | X11Compliance },
+    { "grey55", 140, 140, 140, 1, SVGCompliance | X11Compliance },
+    { "grey56", 143, 143, 143, 1, SVGCompliance | X11Compliance },
+    { "grey57", 145, 145, 145, 1, SVGCompliance | X11Compliance },
+    { "grey58", 148, 148, 148, 1, SVGCompliance | X11Compliance },
+    { "grey59", 150, 150, 150, 1, SVGCompliance | X11Compliance },
+    { "grey6", 15, 15, 15, 1, SVGCompliance | X11Compliance },
+    { "grey60", 153, 153, 153, 1, SVGCompliance | X11Compliance },
+    { "grey61", 156, 156, 156, 1, SVGCompliance | X11Compliance },
+    { "grey62", 158, 158, 158, 1, SVGCompliance | X11Compliance },
+    { "grey63", 161, 161, 161, 1, SVGCompliance | X11Compliance },
+    { "grey64", 163, 163, 163, 1, SVGCompliance | X11Compliance },
+    { "grey65", 166, 166, 166, 1, SVGCompliance | X11Compliance },
+    { "grey66", 168, 168, 168, 1, SVGCompliance | X11Compliance },
+    { "grey67", 171, 171, 171, 1, SVGCompliance | X11Compliance },
+    { "grey68", 173, 173, 173, 1, SVGCompliance | X11Compliance },
+    { "grey69", 176, 176, 176, 1, SVGCompliance | X11Compliance },
+    { "grey7", 18, 18, 18, 1, SVGCompliance | X11Compliance },
+    { "grey70", 179, 179, 179, 1, SVGCompliance | X11Compliance },
+    { "grey71", 181, 181, 181, 1, SVGCompliance | X11Compliance },
+    { "grey72", 184, 184, 184, 1, SVGCompliance | X11Compliance },
+    { "grey73", 186, 186, 186, 1, SVGCompliance | X11Compliance },
+    { "grey74", 189, 189, 189, 1, SVGCompliance | X11Compliance },
+    { "grey75", 191, 191, 191, 1, SVGCompliance | X11Compliance },
+    { "grey76", 194, 194, 194, 1, SVGCompliance | X11Compliance },
+    { "grey77", 196, 196, 196, 1, SVGCompliance | X11Compliance },
+    { "grey78", 199, 199, 199, 1, SVGCompliance | X11Compliance },
+    { "grey79", 201, 201, 201, 1, SVGCompliance | X11Compliance },
+    { "grey8", 20, 20, 20, 1, SVGCompliance | X11Compliance },
+    { "grey80", 204, 204, 204, 1, SVGCompliance | X11Compliance },
+    { "grey81", 207, 207, 207, 1, SVGCompliance | X11Compliance },
+    { "grey82", 209, 209, 209, 1, SVGCompliance | X11Compliance },
+    { "grey83", 212, 212, 212, 1, SVGCompliance | X11Compliance },
+    { "grey84", 214, 214, 214, 1, SVGCompliance | X11Compliance },
+    { "grey85", 217, 217, 217, 1, SVGCompliance | X11Compliance },
+    { "grey86", 219, 219, 219, 1, SVGCompliance | X11Compliance },
+    { "grey87", 222, 222, 222, 1, SVGCompliance | X11Compliance },
+    { "grey88", 224, 224, 224, 1, SVGCompliance | X11Compliance },
+    { "grey89", 227, 227, 227, 1, SVGCompliance | X11Compliance },
+    { "grey9", 23, 23, 23, 1, SVGCompliance | X11Compliance },
+    { "grey90", 229, 229, 229, 1, SVGCompliance | X11Compliance },
+    { "grey91", 232, 232, 232, 1, SVGCompliance | X11Compliance },
+    { "grey92", 235, 235, 235, 1, SVGCompliance | X11Compliance },
+    { "grey93", 237, 237, 237, 1, SVGCompliance | X11Compliance },
+    { "grey94", 240, 240, 240, 1, SVGCompliance | X11Compliance },
+    { "grey95", 242, 242, 242, 1, SVGCompliance | X11Compliance },
+    { "grey96", 245, 245, 245, 1, SVGCompliance | X11Compliance },
+    { "grey97", 247, 247, 247, 1, SVGCompliance | X11Compliance },
+    { "grey98", 250, 250, 250, 1, SVGCompliance | X11Compliance },
+    { "grey99", 252, 252, 252, 1, SVGCompliance | X11Compliance },
+    { "honeydew", 240, 255, 240, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "honeydew1", 240, 255, 240, 1, X11Compliance },
+    { "honeydew2", 224, 238, 224, 1, X11Compliance },
+    { "honeydew3", 193, 205, 193, 1, X11Compliance },
+    { "honeydew4", 131, 139, 131, 1, X11Compliance },
+    { "HotPink", 255, 105, 180, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "HotPink1", 255, 110, 180, 1, X11Compliance },
+    { "HotPink2", 238, 106, 167, 1, X11Compliance },
+    { "HotPink3", 205, 96, 144, 1, X11Compliance },
+    { "HotPink4", 139, 58, 98, 1, X11Compliance },
+    { "IndianRed", 205, 92, 92, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "IndianRed1", 255, 106, 106, 1, X11Compliance },
+    { "IndianRed2", 238, 99, 99, 1, X11Compliance },
+    { "IndianRed3", 205, 85, 85, 1, X11Compliance },
+    { "IndianRed4", 139, 58, 58, 1, X11Compliance },
+    { "indigo", 75, 0, 130, 1, SVGCompliance },
+    { "ivory", 255, 255, 240, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "ivory1", 255, 255, 240, 1, X11Compliance },
+    { "ivory2", 238, 238, 224, 1, X11Compliance },
+    { "ivory3", 205, 205, 193, 1, X11Compliance },
+    { "ivory4", 139, 139, 131, 1, X11Compliance },
+    { "khaki", 240, 230, 140, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "khaki1", 255, 246, 143, 1, X11Compliance },
+    { "khaki2", 238, 230, 133, 1, X11Compliance },
+    { "khaki3", 205, 198, 115, 1, X11Compliance },
+    { "khaki4", 139, 134, 78, 1, X11Compliance },
+    { "lavender", 230, 230, 250, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LavenderBlush", 255, 240, 245, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LavenderBlush1", 255, 240, 245, 1, X11Compliance },
+    { "LavenderBlush2", 238, 224, 229, 1, X11Compliance },
+    { "LavenderBlush3", 205, 193, 197, 1, X11Compliance },
+    { "LavenderBlush4", 139, 131, 134, 1, X11Compliance },
+    { "LawnGreen", 124, 252, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LemonChiffon", 255, 250, 205, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LemonChiffon1", 255, 250, 205, 1, X11Compliance },
+    { "LemonChiffon2", 238, 233, 191, 1, X11Compliance },
+    { "LemonChiffon3", 205, 201, 165, 1, X11Compliance },
+    { "LemonChiffon4", 139, 137, 112, 1, X11Compliance },
+    { "LightBlue", 173, 216, 230, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightBlue1", 191, 239, 255, 1, X11Compliance },
+    { "LightBlue2", 178, 223, 238, 1, X11Compliance },
+    { "LightBlue3", 154, 192, 205, 1, X11Compliance },
+    { "LightBlue4", 104, 131, 139, 1, X11Compliance },
+    { "LightCoral", 240, 128, 128, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightCyan", 224, 255, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightCyan1", 224, 255, 255, 1, X11Compliance },
+    { "LightCyan2", 209, 238, 238, 1, X11Compliance },
+    { "LightCyan3", 180, 205, 205, 1, X11Compliance },
+    { "LightCyan4", 122, 139, 139, 1, X11Compliance },
+    { "LightGoldenrod", 238, 221, 130, 1, X11Compliance | XPMCompliance },
+    { "LightGoldenrod1", 255, 236, 139, 1, X11Compliance },
+    { "LightGoldenrod2", 238, 220, 130, 1, X11Compliance },
+    { "LightGoldenrod3", 205, 190, 112, 1, X11Compliance },
+    { "LightGoldenrod4", 139, 129, 76, 1, X11Compliance },
+    { "LightGoldenrodYellow", 250, 250, 210, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightGray", 211, 211, 211, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightGreen", 144, 238, 144, 1, SVGCompliance | X11Compliance },
+    { "LightGrey", 211, 211, 211, 1, SVGCompliance | X11Compliance },
+    { "LightPink", 255, 182, 193, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightPink1", 255, 174, 185, 1, X11Compliance },
+    { "LightPink2", 238, 162, 173, 1, X11Compliance },
+    { "LightPink3", 205, 140, 149, 1, X11Compliance },
+    { "LightPink4", 139, 95, 101, 1, X11Compliance },
+    { "LightSalmon", 255, 160, 122, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightSalmon1", 255, 160, 122, 1, X11Compliance },
+    { "LightSalmon2", 238, 149, 114, 1, X11Compliance },
+    { "LightSalmon3", 205, 129, 98, 1, X11Compliance },
+    { "LightSalmon4", 139, 87, 66, 1, X11Compliance },
+    { "LightSeaGreen", 32, 178, 170, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightSkyBlue", 135, 206, 250, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightSkyBlue1", 176, 226, 255, 1, X11Compliance },
+    { "LightSkyBlue2", 164, 211, 238, 1, X11Compliance },
+    { "LightSkyBlue3", 141, 182, 205, 1, X11Compliance },
+    { "LightSkyBlue4", 96, 123, 139, 1, X11Compliance },
+    { "LightSlateBlue", 132, 112, 255, 1, X11Compliance | XPMCompliance },
+    { "LightSlateGray", 119, 136, 153, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightSlateGrey", 119, 136, 153, 1, SVGCompliance | X11Compliance },
+    { "LightSteelBlue", 176, 196, 222, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightSteelBlue1", 202, 225, 255, 1, X11Compliance },
+    { "LightSteelBlue2", 188, 210, 238, 1, X11Compliance },
+    { "LightSteelBlue3", 162, 181, 205, 1, X11Compliance },
+    { "LightSteelBlue4", 110, 123, 139, 1, X11Compliance },
+    { "LightYellow", 255, 255, 224, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "LightYellow1", 255, 255, 224, 1, X11Compliance },
+    { "LightYellow2", 238, 238, 209, 1, X11Compliance },
+    { "LightYellow3", 205, 205, 180, 1, X11Compliance },
+    { "LightYellow4", 139, 139, 122, 1, X11Compliance },
+    { "lime", 0, 255, 0, 1, SVGCompliance },
+    { "LimeGreen", 50, 205, 50, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "linen", 250, 240, 230, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "magenta1", 255, 0, 255, 1, X11Compliance },
+    { "magenta2", 238, 0, 238, 1, X11Compliance },
+    { "magenta3", 205, 0, 205, 1, X11Compliance },
+    { "magenta4", 139, 0, 139, 1, X11Compliance },
+    { "maroon", 128, 0, 0, 1, SVGCompliance },
+    { "maroon", 176, 48, 96, 1, X11Compliance | XPMCompliance },
+    { "maroon1", 255, 52, 179, 1, X11Compliance },
+    { "maroon2", 238, 48, 167, 1, X11Compliance },
+    { "maroon3", 205, 41, 144, 1, X11Compliance },
+    { "maroon4", 139, 28, 98, 1, X11Compliance },
+    { "MediumAquamarine", 102, 205, 170, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumBlue", 0, 0, 205, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumForestGreen", 50, 129, 75, 1, X11Compliance | XPMCompliance },
+    { "MediumGoldenRod", 209, 193, 102, 1, X11Compliance | XPMCompliance },
+    { "MediumOrchid", 186, 85, 211, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumOrchid1", 224, 102, 255, 1, X11Compliance },
+    { "MediumOrchid2", 209, 95, 238, 1, X11Compliance },
+    { "MediumOrchid3", 180, 82, 205, 1, X11Compliance },
+    { "MediumOrchid4", 122, 55, 139, 1, X11Compliance },
+    { "MediumPurple", 147, 112, 219, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumPurple1", 171, 130, 255, 1, X11Compliance },
+    { "MediumPurple2", 159, 121, 238, 1, X11Compliance },
+    { "MediumPurple3", 137, 104, 205, 1, X11Compliance },
+    { "MediumPurple4", 93, 71, 139, 1, X11Compliance },
+    { "MediumSeaGreen", 60, 179, 113, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumSlateBlue", 123, 104, 238, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumSpringGreen", 0, 250, 154, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumTurquoise", 72, 209, 204, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MediumVioletRed", 199, 21, 133, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MidnightBlue", 25, 25, 112, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MintCream", 245, 255, 250, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MistyRose", 255, 228, 225, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "MistyRose1", 255, 228, 225, 1, X11Compliance },
+    { "MistyRose2", 238, 213, 210, 1, X11Compliance },
+    { "MistyRose3", 205, 183, 181, 1, X11Compliance },
+    { "MistyRose4", 139, 125, 123, 1, X11Compliance },
+    { "moccasin", 255, 228, 181, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "NavajoWhite", 255, 222, 173, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "NavajoWhite1", 255, 222, 173, 1, X11Compliance },
+    { "NavajoWhite2", 238, 207, 161, 1, X11Compliance },
+    { "NavajoWhite3", 205, 179, 139, 1, X11Compliance },
+    { "NavajoWhite4", 139, 121, 94, 1, X11Compliance },
+    { "navy", 0, 0, 128, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "NavyBlue", 0, 0, 128, 1, X11Compliance | XPMCompliance },
+    { "matte", 0, 0, 0, 0, SVGCompliance },
+    { "OldLace", 253, 245, 230, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "olive", 128, 128, 0, 1, SVGCompliance },
+    { "OliveDrab", 107, 142, 35, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "OliveDrab1", 192, 255, 62, 1, X11Compliance },
+    { "OliveDrab2", 179, 238, 58, 1, X11Compliance },
+    { "OliveDrab3", 154, 205, 50, 1, X11Compliance },
+    { "OliveDrab4", 105, 139, 34, 1, X11Compliance },
+    { "opaque", 0, 0, 0, 1, SVGCompliance },
+    { "orange", 255, 165, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "orange1", 255, 165, 0, 1, X11Compliance },
+    { "orange2", 238, 154, 0, 1, X11Compliance },
+    { "orange3", 205, 133, 0, 1, X11Compliance },
+    { "orange4", 139, 90, 0, 1, X11Compliance },
+    { "OrangeRed", 255, 69, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "OrangeRed1", 255, 69, 0, 1, X11Compliance },
+    { "OrangeRed2", 238, 64, 0, 1, X11Compliance },
+    { "OrangeRed3", 205, 55, 0, 1, X11Compliance },
+    { "OrangeRed4", 139, 37, 0, 1, X11Compliance },
+    { "orchid", 218, 112, 214, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "orchid1", 255, 131, 250, 1, X11Compliance },
+    { "orchid2", 238, 122, 233, 1, X11Compliance },
+    { "orchid3", 205, 105, 201, 1, X11Compliance },
+    { "orchid4", 139, 71, 137, 1, X11Compliance },
+    { "PaleGoldenrod", 238, 232, 170, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "PaleGreen", 152, 251, 152, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "PaleGreen1", 154, 255, 154, 1, X11Compliance },
+    { "PaleGreen2", 144, 238, 144, 1, X11Compliance },
+    { "PaleGreen3", 124, 205, 124, 1, X11Compliance },
+    { "PaleGreen4", 84, 139, 84, 1, X11Compliance },
+    { "PaleTurquoise", 175, 238, 238, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "PaleTurquoise1", 187, 255, 255, 1, X11Compliance },
+    { "PaleTurquoise2", 174, 238, 238, 1, X11Compliance },
+    { "PaleTurquoise3", 150, 205, 205, 1, X11Compliance },
+    { "PaleTurquoise4", 102, 139, 139, 1, X11Compliance },
+    { "PaleVioletRed", 219, 112, 147, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "PaleVioletRed1", 255, 130, 171, 1, X11Compliance },
+    { "PaleVioletRed2", 238, 121, 159, 1, X11Compliance },
+    { "PaleVioletRed3", 205, 104, 137, 1, X11Compliance },
+    { "PaleVioletRed4", 139, 71, 93, 1, X11Compliance },
+    { "PapayaWhip", 255, 239, 213, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "PeachPuff", 255, 218, 185, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "PeachPuff1", 255, 218, 185, 1, X11Compliance },
+    { "PeachPuff2", 238, 203, 173, 1, X11Compliance },
+    { "PeachPuff3", 205, 175, 149, 1, X11Compliance },
+    { "PeachPuff4", 139, 119, 101, 1, X11Compliance },
+    { "peru", 205, 133, 63, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "pink", 255, 192, 203, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "pink1", 255, 181, 197, 1, X11Compliance },
+    { "pink2", 238, 169, 184, 1, X11Compliance },
+    { "pink3", 205, 145, 158, 1, X11Compliance },
+    { "pink4", 139, 99, 108, 1, X11Compliance },
+    { "plum", 221, 160, 221, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "plum1", 255, 187, 255, 1, X11Compliance },
+    { "plum2", 238, 174, 238, 1, X11Compliance },
+    { "plum3", 205, 150, 205, 1, X11Compliance },
+    { "plum4", 139, 102, 139, 1, X11Compliance },
+    { "PowderBlue", 176, 224, 230, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "purple", 128, 0, 128, 1, SVGCompliance },
+    { "purple", 160, 32, 240, 1, X11Compliance | XPMCompliance },
+    { "purple1", 155, 48, 255, 1, X11Compliance },
+    { "purple2", 145, 44, 238, 1, X11Compliance },
+    { "purple3", 125, 38, 205, 1, X11Compliance },
+    { "purple4", 85, 26, 139, 1, X11Compliance },
+    { "red1", 255, 0, 0, 1, X11Compliance },
+    { "red2", 238, 0, 0, 1, X11Compliance },
+    { "red3", 205, 0, 0, 1, X11Compliance },
+    { "red4", 139, 0, 0, 1, X11Compliance },
+    { "RosyBrown", 188, 143, 143, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "RosyBrown1", 255, 193, 193, 1, X11Compliance },
+    { "RosyBrown2", 238, 180, 180, 1, X11Compliance },
+    { "RosyBrown3", 205, 155, 155, 1, X11Compliance },
+    { "RosyBrown4", 139, 105, 105, 1, X11Compliance },
+    { "RoyalBlue", 65, 105, 225, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "RoyalBlue1", 72, 118, 255, 1, X11Compliance },
+    { "RoyalBlue2", 67, 110, 238, 1, X11Compliance },
+    { "RoyalBlue3", 58, 95, 205, 1, X11Compliance },
+    { "RoyalBlue4", 39, 64, 139, 1, X11Compliance },
+    { "SaddleBrown", 139, 69, 19, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "salmon", 250, 128, 114, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "salmon1", 255, 140, 105, 1, X11Compliance },
+    { "salmon2", 238, 130, 98, 1, X11Compliance },
+    { "salmon3", 205, 112, 84, 1, X11Compliance },
+    { "salmon4", 139, 76, 57, 1, X11Compliance },
+    { "SandyBrown", 244, 164, 96, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SeaGreen", 46, 139, 87, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SeaGreen1", 84, 255, 159, 1, X11Compliance },
+    { "SeaGreen2", 78, 238, 148, 1, X11Compliance },
+    { "SeaGreen3", 67, 205, 128, 1, X11Compliance },
+    { "SeaGreen4", 46, 139, 87, 1, X11Compliance },
+    { "seashell", 255, 245, 238, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "seashell1", 255, 245, 238, 1, X11Compliance },
+    { "seashell2", 238, 229, 222, 1, X11Compliance },
+    { "seashell3", 205, 197, 191, 1, X11Compliance },
+    { "seashell4", 139, 134, 130, 1, X11Compliance },
+    { "sienna", 160, 82, 45, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "sienna1", 255, 130, 71, 1, X11Compliance },
+    { "sienna2", 238, 121, 66, 1, X11Compliance },
+    { "sienna3", 205, 104, 57, 1, X11Compliance },
+    { "sienna4", 139, 71, 38, 1, X11Compliance },
+    { "silver", 192, 192, 192, 1, SVGCompliance },
+    { "SkyBlue", 135, 206, 235, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SkyBlue1", 135, 206, 255, 1, X11Compliance },
+    { "SkyBlue2", 126, 192, 238, 1, X11Compliance },
+    { "SkyBlue3", 108, 166, 205, 1, X11Compliance },
+    { "SkyBlue4", 74, 112, 139, 1, X11Compliance },
+    { "SlateBlue", 106, 90, 205, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SlateBlue1", 131, 111, 255, 1, X11Compliance },
+    { "SlateBlue2", 122, 103, 238, 1, X11Compliance },
+    { "SlateBlue3", 105, 89, 205, 1, X11Compliance },
+    { "SlateBlue4", 71, 60, 139, 1, X11Compliance },
+    { "SlateGray", 112, 128, 144, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SlateGray1", 198, 226, 255, 1, X11Compliance },
+    { "SlateGray2", 185, 211, 238, 1, X11Compliance },
+    { "SlateGray3", 159, 182, 205, 1, X11Compliance },
+    { "SlateGray4", 108, 123, 139, 1, X11Compliance },
+    { "SlateGrey", 112, 128, 144, 1, SVGCompliance | X11Compliance },
+    { "snow", 255, 250, 250, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "snow1", 255, 250, 250, 1, X11Compliance },
+    { "snow2", 238, 233, 233, 1, X11Compliance },
+    { "snow3", 205, 201, 201, 1, X11Compliance },
+    { "snow4", 139, 137, 137, 1, X11Compliance },
+    { "SpringGreen", 0, 255, 127, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SpringGreen1", 0, 255, 127, 1, X11Compliance },
+    { "SpringGreen2", 0, 238, 118, 1, X11Compliance },
+    { "SpringGreen3", 0, 205, 102, 1, X11Compliance },
+    { "SpringGreen4", 0, 139, 69, 1, X11Compliance },
+    { "SteelBlue", 70, 130, 180, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "SteelBlue1", 99, 184, 255, 1, X11Compliance },
+    { "SteelBlue2", 92, 172, 238, 1, X11Compliance },
+    { "SteelBlue3", 79, 148, 205, 1, X11Compliance },
+    { "SteelBlue4", 54, 100, 139, 1, X11Compliance },
+    { "tan", 210, 180, 140, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "tan1", 255, 165, 79, 1, X11Compliance },
+    { "tan2", 238, 154, 73, 1, X11Compliance },
+    { "tan3", 205, 133, 63, 1, X11Compliance },
+    { "tan4", 139, 90, 43, 1, X11Compliance },
+    { "teal", 0, 128, 128, 1, SVGCompliance },
+    { "thistle", 216, 191, 216, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "thistle1", 255, 225, 255, 1, X11Compliance },
+    { "thistle2", 238, 210, 238, 1, X11Compliance },
+    { "thistle3", 205, 181, 205, 1, X11Compliance },
+    { "thistle4", 139, 123, 139, 1, X11Compliance },
+    { "tomato", 255, 99, 71, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "tomato1", 255, 99, 71, 1, X11Compliance },
+    { "tomato2", 238, 92, 66, 1, X11Compliance },
+    { "tomato3", 205, 79, 57, 1, X11Compliance },
+    { "tomato4", 139, 54, 38, 1, X11Compliance },
+    { "transparent", 0, 0, 0, 0, SVGCompliance },
+    { "turquoise", 64, 224, 208, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "turquoise1", 0, 245, 255, 1, X11Compliance },
+    { "turquoise2", 0, 229, 238, 1, X11Compliance },
+    { "turquoise3", 0, 197, 205, 1, X11Compliance },
+    { "turquoise4", 0, 134, 139, 1, X11Compliance },
+    { "violet", 238, 130, 238, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "VioletRed", 208, 32, 144, 1, X11Compliance | XPMCompliance },
+    { "VioletRed1", 255, 62, 150, 1, X11Compliance },
+    { "VioletRed2", 238, 58, 140, 1, X11Compliance },
+    { "VioletRed3", 205, 50, 120, 1, X11Compliance },
+    { "VioletRed4", 139, 34, 82, 1, X11Compliance },
+    { "wheat", 245, 222, 179, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "wheat1", 255, 231, 186, 1, X11Compliance },
+    { "wheat2", 238, 216, 174, 1, X11Compliance },
+    { "wheat3", 205, 186, 150, 1, X11Compliance },
+    { "wheat4", 139, 126, 102, 1, X11Compliance },
+    { "WhiteSmoke", 245, 245, 245, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { "yellow1", 255, 255, 0, 1, X11Compliance },
+    { "yellow2", 238, 238, 0, 1, X11Compliance },
+    { "yellow3", 205, 205, 0, 1, X11Compliance },
+    { "yellow4", 139, 139, 0, 1, X11Compliance },
+    { "YellowGreen", 154, 205, 50, 1, SVGCompliance | X11Compliance | XPMCompliance },
+    { (const char *) NULL, 0, 0, 0, 0, UndefinedCompliance }
+  };
 
 /*
   Static declarations.
@@ -487,10 +928,13 @@ static void *DestroyColorElement(void *color_info)
     *p;
 
   p=(ColorInfo *) color_info;
-  if (p->path != (char *) NULL)
-    p->path=DestroyString(p->path);
-  if (p->name != (char *) NULL)
-    p->name=DestroyString(p->name);
+  if (p->exempt  == MagickFalse)
+    {
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+    }
   p=(ColorInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }
@@ -1558,6 +2002,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
         color_info->path=ConstantString(filename);
+        color_info->exempt=MagickFalse;
         color_info->signature=MagickSignature;
         continue;
       }
@@ -1670,10 +2115,62 @@ static MagickBooleanType LoadColorLists(const char *filename,
   LinkedListInfo
     *options;
 
+  MagickRealType
+    scale;
+
   MagickStatusType
     status;
 
+  register const ColorMapInfo
+    *p;
+
+  /*
+    Load built-in color map.
+  */
   status=MagickFalse;
+  if (color_list == (LinkedListInfo *) NULL)
+    {
+      color_list=NewLinkedList(0);
+      if (color_list == (LinkedListInfo *) NULL)
+        {
+          ThrowFileException(exception,ResourceLimitError,
+            "MemoryAllocationFailed",filename);
+          return(MagickFalse);
+        }
+    }
+  scale=(MagickRealType) ScaleCharToQuantum(1);
+  for (p=ColorMap; p->name != (const char *) NULL; p++)
+  {
+    ColorInfo
+      *color_info;
+
+    color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
+    if (color_info == (ColorInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
+        continue;
+      }
+    (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
+    color_info->path="[built-in]";
+    color_info->name=(char *) p->name;
+    GetMagickPixelPacket((Image *) NULL,&color_info->color);
+    color_info->color.red=scale*p->red;
+    color_info->color.green=scale*p->green;
+    color_info->color.blue=scale*p->blue;
+    color_info->color.opacity=(MagickRealType) (QuantumRange-QuantumRange*
+      p->alpha);
+    color_info->compliance=p->compliance;
+    color_info->exempt=MagickTrue;
+    color_info->signature=MagickSignature;
+    status=AppendValueToLinkedList(color_list,color_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
+  }
+  /*
+    Load external color map.
+  */
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
@@ -1683,9 +2180,6 @@ static MagickBooleanType LoadColorLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((color_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(color_list) != MagickFalse))
-    status|=LoadColorList(ColorMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 #endif
 }
