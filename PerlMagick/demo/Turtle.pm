@@ -1,4 +1,6 @@
-package Turtle;
+package
+%
+  Turtle;
 
 # Written by jreed@itis.com, adapted by John Cristy.
 
