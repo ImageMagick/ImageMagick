@@ -112,7 +112,7 @@ static MagickBooleanType ImportUsage(void)
       "-colors value        preferred number of colors in the image",
       "-crop geometry       preferred size and location of the cropped image",
       "-encipher filename   convert plain pixels to cipher pixels",
-      "-geometry geometry   perferred size or location of the image",
+      "-geometry geometry   preferred size or location of the image",
       "-help                print program options",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",

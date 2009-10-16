@@ -3482,7 +3482,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-gamma value         level of gamma correction",
       "-gaussian-blur geometry",
       "                     reduce image noise and reduce detail levels",
-      "-geometry geometry   perferred size or location of the image",
+      "-geometry geometry   preferred size or location of the image",
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
