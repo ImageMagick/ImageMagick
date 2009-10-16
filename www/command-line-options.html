@@ -464,7 +464,7 @@ mimimum and maximum color values in the image and then applies a <a
 href="#level" >-level</a> operator to stretch the values to the full range of
 values. </p>
 
-<p>the operator is not typically used for real-life images, image scans, or
+<p>The operator is not typically used for real-life images, image scans, or
 JPEG format images, as a single 'out-rider' pixel can set a bad min/max values
 for the <a href="#level" >-level</a> operation.  On the other hand it is the
 right operator to use for color stretching gradient images being used to
@@ -475,14 +475,15 @@ defined images.  </p>
 href="#contrast-stretch" >-contrast-stretch</a>, and <a href="#linear-stretch"
 >-linear-stretch</a> operators, but without 'histogram binning' or 'clipping'
 problems that these operators may have. That is <a href="#auto-level"
->-auto-level</a> is the perfect or ideal for of these operators. </p>
+>-auto-level</a> is the perfect or ideal version these operators. </p>
 
 <p>It uses the <a href="#channel" >-channel</a> setting, (including the
 special '<CODE>sync</CODE>' flag for channel syncronization), to determine
 which color values will be used and modified. As the default <a
-href="#channel" >+channel</a> setting is '<CODE>RGB,sync</CODE>', channels
-will be modified together by the same gamma value, preserving colors, and
-ignoring transparency. </p>
+href="#channel" >+channel</a> setting is '<CODE>RGB,sync</CODE>', the
+'<CODE>sync</CODE>' will ensure that the color channels will be modified
+together by the same gamma value, preserving colors, and ignoring
+transparency. </p>
 
 
 
@@ -492,6 +493,18 @@ ignoring transparency. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Automagically orient (rotate) an image created by a digital camera.</td><td style='text-align:right;'></td></tr></table>
 
+<p>This operator reads and resets the EXIF image profile setting 'Orientation'
+and then performs the appropriate 90 degree rotation on the image to orient
+the image, for correct viewing. </p>
+
+<p>This EXIF profile setting is usually set using a gravity sensor in digital
+camara, however photos taken directly downward or upward may not have an
+appropriate value.  Also images that have been orientation 'corrected' without
+reseting this setting, may be 'corrected' again resulting in a incorrect
+result.  If the he EXIF profile was previously stripped, the  <a
+href="#auto-orient" >-auto-orient</a> operator will do nothing. </p>
+
+
 <div style="margin: auto;">
   <h4><a name="average" id="average"></a>-average</h4>
 </div>
@@ -500,7 +513,6 @@ ignoring transparency. </p>
 
 <p>An error results if the images are not identically sized.</p>
 
-<p>The sequence of images is terminated by the appearance of any option. If the <a href="#average">-average</a> option appears after all of the input images, all images are averaged.</p>
 
 <div style="margin: auto;">
   <h4><a name="backdrop" id="backdrop"></a>-backdrop</h4>
@@ -4221,6 +4233,10 @@ Uniform
 
 <p>To print a complete list of noises, use the <a href="#list">-list noise</a> option.</p>
 
+<p>Also see the <a href="#evaluate">-evaluate</a> noise functions that allos
+the use of a controlling value to specify teh amount of noise that should be
+added to an image. </p>
+
 
 <div style="margin: auto;">
   <h4><a name="normalize" id="normalize"></a>-normalize</h4>
@@ -4244,7 +4260,7 @@ setting will normalize the RGB channels independently.</p>
 
 <p>See  <a href="#contrast-stretch" >-contrast-stretch</A> for more details.
 Also see <a href="#auto-level" >-auto-level</a> for a 'perfect' normalization
-of mathematical images. </p>
+that is better suited to mathematically generated images. </p>
 
 <p>This operator is under review for re-development. </p>
 
@@ -5698,7 +5714,7 @@ percentage, which defaults to 100 percent (no color change). </p>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

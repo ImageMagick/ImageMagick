@@ -151,8 +151,77 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#MinMaxStretchImage">MinMaxStretchImage</a>]</p>
+<p class="navigation-index">[<a href="#GetImageHistogram">GetImageHistogram</a> &bull; <a href="#IsHistogramImage">IsHistogramImage</a> &bull; <a href="#IsPaletteImage">IsPaletteImage</a> &bull; <a href="#MinMaxStretchImage">MinMaxStretchImage</a> &bull; <a href="#GetNumberColors">GetNumberColors</a> &bull; <a href="#UniqueImageColors">UniqueImageColors</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
+_8c.html" target="source" name="GetImageHistogram">GetImageHistogram</a></h2>
+<div class="doc-section">
+
+<p>GetImageHistogram() returns the unique colors in an image.</p></ol>
+
+<p>The format of the GetImageHistogram method is:</p>
+
+<pre class="code">
+  unsigned long GetImageHistogram(const Image *image,
+    unsigned long *number_colors,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>file</h5>
+<ol><p>Write a histogram of the color distribution to this file handle.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
+_8c.html" target="source" name="IsHistogramImage">IsHistogramImage</a></h2>
+<div class="doc-section">
+
+<p>IsHistogramImage() returns MagickTrue if the image has 1024 unique colors or less.</p></ol>
+
+<p>The format of the IsHistogramImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsHistogramImage(const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
+_8c.html" target="source" name="IsPaletteImage">IsPaletteImage</a></h2>
+<div class="doc-section">
+
+<p>IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256 unique colors or less.</p></ol>
+
+<p>The format of the IsPaletteImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsPaletteImage(const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
 _8c.html" target="source" name="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 <div class="doc-section">
@@ -185,6 +254,52 @@ _8c.html" target="source" name="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 <ol><p>Move the Black/White Point inward from the minimum and maximum points by this color value.</p></ol>
 
  </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
+_8c.html" target="source" name="GetNumberColors">GetNumberColors</a></h2>
+<div class="doc-section">
+
+<p>GetNumberColors() returns the number of unique colors in an image.</p></ol>
+
+<p>The format of the GetNumberColors method is:</p>
+
+<pre class="code">
+  unsigned long GetNumberColors(const Image *image,FILE *file,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>file</h5>
+<ol><p>Write a histogram of the color distribution to this file handle.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
+_8c.html" target="source" name="UniqueImageColors">UniqueImageColors</a></h2>
+<div class="doc-section">
+
+<p>UniqueImageColors() returns the unique colors of an image.</p></ol>
+
+<p>The format of the UniqueImageColors method is:</p>
+
+<pre class="code">
+  Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
 
 </div>
 
@@ -193,7 +308,7 @@ _8c.html" target="source" name="MinMaxStretchImage">MinMaxStretchImage</a></h2>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

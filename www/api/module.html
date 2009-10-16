@@ -151,7 +151,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AcquireModuleInfo">AcquireModuleInfo</a> &bull; <a href="#DestroyModuleList">DestroyModuleList</a> &bull; <a href="#GetModuleInfo">GetModuleInfo</a> &bull; <a href="#GetModuleInfoList">GetModuleInfoList</a> &bull; <a href="#GetModuleList">GetModuleList</a> &bull; <a href="#GetMagickModulePath">GetMagickModulePath</a> &bull; <a href="#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &bull; <a href="#ListModuleInfo">ListModuleInfo</a> &bull; <a href="#OpenModule">OpenModule</a> &bull; <a href="#OpenModules">OpenModules</a> &bull; <a href="#RegisterModule">RegisterModule</a> &bull; <a href="#TagToCoderModuleName">TagToCoderModuleName</a> &bull; <a href="#TagToFilterModuleName">TagToFilterModuleName</a> &bull; <a href="#TagToModuleName">TagToModuleName</a> &bull; <a href="#UnregisterModule">UnregisterModule</a>]</p>
+<p class="navigation-index">[<a href="#AcquireModuleInfo">AcquireModuleInfo</a> &bull; <a href="#DestroyModuleList">DestroyModuleList</a> &bull; <a href="#GetModuleInfo">GetModuleInfo</a> &bull; <a href="#GetModuleInfoList">GetModuleInfoList</a> &bull; <a href="#GetModuleList">GetModuleList</a> &bull; <a href="#GetMagickModulePath">GetMagickModulePath</a> &bull; <a href="#InitializeModuleList">InitializeModuleList</a> &bull; <a href="#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &bull; <a href="#ListModuleInfo">ListModuleInfo</a> &bull; <a href="#OpenModule">OpenModule</a> &bull; <a href="#OpenModules">OpenModules</a> &bull; <a href="#RegisterModule">RegisterModule</a> &bull; <a href="#TagToCoderModuleName">TagToCoderModuleName</a> &bull; <a href="#TagToFilterModuleName">TagToFilterModuleName</a> &bull; <a href="#TagToModuleName">TagToModuleName</a> &bull; <a href="#UnregisterModule">UnregisterModule</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/module
 _8c.html" target="source" name="AcquireModuleInfo">AcquireModuleInfo</a></h2>
@@ -281,6 +281,24 @@ _8c.html" target="source" name="GetMagickModulePath">GetMagickModulePath</a></h2
 
 <h5>path</h5>
 <ol><p>the path associated with the filename.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module
+_8c.html" target="source" name="InitializeModuleList">InitializeModuleList</a></h2>
+<div class="doc-section">
+
+<p>InitializeModuleList() initializes the module loader.</p></ol>
+
+<p>The format of the InitializeModuleList() method is:</p>
+
+<pre class="code">
+  InitializeModuleList(Exceptioninfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>

@@ -151,7 +151,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#GetColorInfoList">GetColorInfoList</a> &bull; <a href="#GetColorList">GetColorList</a> &bull; <a href="#GetImageHistogram">GetImageHistogram</a> &bull; <a href="#GetNumberColors">GetNumberColors</a> &bull; <a href="#IsGrayImage">IsGrayImage</a> &bull; <a href="#IsHistogramImage">IsHistogramImage</a> &bull; <a href="#IsMonochromeImage">IsMonochromeImage</a> &bull; <a href="#IsOpaqueImage">IsOpaqueImage</a> &bull; <a href="#IsPaletteImage">IsPaletteImage</a> &bull; <a href="#ListColorInfo">ListColorInfo</a> &bull; <a href="#LoadColorList">LoadColorList</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorname">QueryColorname</a> &bull; <a href="#QueryMagickColor">QueryMagickColor</a> &bull; <a href="#QueryMagickColorname">QueryMagickColorname</a> &bull; <a href="#UniqueImageColors">UniqueImageColors</a>]</p>
+<p class="navigation-index">[<a href="#GetColorInfoList">GetColorInfoList</a> &bull; <a href="#GetColorList">GetColorList</a> &bull; <a href="#ListColorInfo">ListColorInfo</a> &bull; <a href="#LoadColorList">LoadColorList</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorname">QueryColorname</a> &bull; <a href="#QueryMagickColor">QueryMagickColor</a> &bull; <a href="#QueryMagickColorname">QueryMagickColorname</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color
 _8c.html" target="source" name="GetColorInfoList">GetColorInfoList</a></h2>
@@ -198,166 +198,6 @@ _8c.html" target="source" name="GetColorList">GetColorList</a></h2>
 
 <h5>number_colors</h5>
 <ol><p>This integer returns the number of colors in the list.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="GetImageHistogram">GetImageHistogram</a></h2>
-<div class="doc-section">
-
-<p>GetImageHistogram() returns the unique colors in an image.</p></ol>
-
-<p>The format of the GetImageHistogram method is:</p>
-
-<pre class="code">
-  unsigned long GetImageHistogram(const Image *image,
-    unsigned long *number_colors,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>file</h5>
-<ol><p>Write a histogram of the color distribution to this file handle.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="GetNumberColors">GetNumberColors</a></h2>
-<div class="doc-section">
-
-<p>GetNumberColors() returns the number of unique colors in an image.</p></ol>
-
-<p>The format of the GetNumberColors method is:</p>
-
-<pre class="code">
-  unsigned long GetNumberColors(const Image *image,FILE *file,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>file</h5>
-<ol><p>Write a histogram of the color distribution to this file handle.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="IsGrayImage">IsGrayImage</a></h2>
-<div class="doc-section">
-
-<p>IsGrayImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities.</p></ol>
-
-<p>The format of the IsGrayImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsGrayImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="IsHistogramImage">IsHistogramImage</a></h2>
-<div class="doc-section">
-
-<p>IsHistogramImage() returns MagickTrue if the image has 1024 unique colors or less.</p></ol>
-
-<p>The format of the IsHistogramImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsHistogramImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="IsMonochromeImage">IsMonochromeImage</a></h2>
-<div class="doc-section">
-
-<p>IsMonochromeImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange.</p></ol>
-
-<p>The format of the IsMonochromeImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsMonochromeImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="IsOpaqueImage">IsOpaqueImage</a></h2>
-<div class="doc-section">
-
-<p>IsOpaqueImage() returns MagickTrue if none of the pixels in the image have an opacity value other than opaque (0).</p></ol>
-
-<p>The format of the IsOpaqueImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsOpaqueImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="IsPaletteImage">IsPaletteImage</a></h2>
-<div class="doc-section">
-
-<p>IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256 unique colors or less.</p></ol>
-
-<p>The format of the IsPaletteImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsPaletteImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
@@ -515,27 +355,6 @@ _8c.html" target="source" name="QueryMagickColorname">QueryMagickColorname</a></
 
 <h5>name</h5>
 <ol><p>Return the color name or hex value.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="UniqueImageColors">UniqueImageColors</a></h2>
-<div class="doc-section">
-
-<p>UniqueImageColors() returns the unique colors of an image.</p></ol>
-
-<p>The format of the UniqueImageColors method is:</p>
-
-<pre class="code">
-  Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
