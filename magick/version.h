@@ -77,7 +77,6 @@ extern MagickExport char
 
 extern MagickExport const char
   *GetMagickCopyright(void),
-  *GetMagickFeatures(void),
   *GetMagickPackageName(void),
   *GetMagickQuantumDepth(unsigned long *),
   *GetMagickQuantumRange(unsigned long *),
