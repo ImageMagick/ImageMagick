@@ -2057,19 +2057,28 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (long) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
-        q->red=gamma_map[ScaleQuantumToMap(q->red)];
-      if ((channel & GreenChannel) != 0)
-        q->green=gamma_map[ScaleQuantumToMap(q->green)];
-      if ((channel & BlueChannel) != 0)
-        q->blue=gamma_map[ScaleQuantumToMap(q->blue)];
-      if ((channel & OpacityChannel) != 0)
+      if (channel == DefaultChannels)
         {
-          if (image->matte == MagickFalse)
-            q->opacity=gamma_map[ScaleQuantumToMap(q->opacity)];
-          else
-            q->opacity=(Quantum) QuantumRange-gamma_map[
-              ScaleQuantumToMap((Quantum) (QuantumRange-q->opacity))];
+          q->red=gamma_map[ScaleQuantumToMap(q->red)];
+          q->green=gamma_map[ScaleQuantumToMap(q->green)];
+          q->blue=gamma_map[ScaleQuantumToMap(q->blue)];
+        }
+      else
+        {
+          if ((channel & RedChannel) != 0)
+            q->red=gamma_map[ScaleQuantumToMap(q->red)];
+          if ((channel & GreenChannel) != 0)
+            q->green=gamma_map[ScaleQuantumToMap(q->green)];
+          if ((channel & BlueChannel) != 0)
+            q->blue=gamma_map[ScaleQuantumToMap(q->blue)];
+          if ((channel & OpacityChannel) != 0)
+            {
+              if (image->matte == MagickFalse)
+                q->opacity=gamma_map[ScaleQuantumToMap(q->opacity)];
+              else
+                q->opacity=(Quantum) QuantumRange-gamma_map[
+                  ScaleQuantumToMap((Quantum) (QuantumRange-q->opacity))];
+            }
         }
       q++;
     }
