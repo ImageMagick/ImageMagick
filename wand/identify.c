@@ -145,6 +145,7 @@ static MagickBooleanType IdentifyUsage(void)
 
   (void) printf("Version: %s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %s\n\n",GetMagickCopyright());
+  (void) printf("Features: %s\n",GetMagickFeatures());
   (void) printf("Usage: %s [options ...] file [ [options ...] "
     "file ... ]\n",GetClientName());
   (void) printf("\nImage Settings:\n");

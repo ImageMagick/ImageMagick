@@ -268,7 +268,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   edge_view=AcquireCacheView(edge_image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) blur_image->rows; y++)
@@ -379,7 +379,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_AdaptiveBlurImageChannel)
 #endif
         proceed=SetImageProgress(image,AdaptiveBlurImageTag,progress++,
@@ -586,7 +586,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   edge_view=AcquireCacheView(edge_image);
   sharp_view=AcquireCacheView(sharp_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) sharp_image->rows; y++)
@@ -697,7 +697,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_AdaptiveSharpenImageChannel)
 #endif
         proceed=SetImageProgress(image,AdaptiveSharpenImageTag,progress++,
@@ -907,7 +907,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   bias=image->bias;
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) blur_image->rows; y++)
@@ -1070,7 +1070,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_BlurImageChannel)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,blur_image->rows+
@@ -1086,7 +1086,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   */
   image_view=AcquireCacheView(blur_image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (x=0; x < (long) blur_image->columns; x++)
@@ -1248,7 +1248,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_BlurImageChannel)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,blur_image->rows+
@@ -1498,7 +1498,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   status=MagickTrue;
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (channel=0; channel <= 3; channel++)
@@ -1595,7 +1595,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_DespeckleImage)
 #endif
         proceed=SetImageProgress(image,DespeckleImageTag,channel,3);
@@ -2243,7 +2243,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   progress=0;
   image_view=AcquireCacheView(image);
   median_view=AcquireCacheView(median_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) median_image->rows; y++)
@@ -2315,7 +2315,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_MedianFilterImage)
 #endif
         proceed=SetImageProgress(image,MedianFilterImageTag,progress++,
@@ -2515,7 +2515,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -2634,7 +2634,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_MotionBlurImageChannel)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
@@ -3290,7 +3290,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) blur_image->rows; y++)
@@ -3438,7 +3438,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_RadialBlurImageChannel)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
@@ -3601,7 +3601,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   progress=0;
   image_view=AcquireCacheView(image);
   noise_view=AcquireCacheView(noise_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) noise_image->rows; y++)
@@ -3673,7 +3673,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ReduceNoiseImage)
 #endif
         proceed=SetImageProgress(image,ReduceNoiseImageTag,progress++,
@@ -3858,7 +3858,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   bias=image->bias;
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -4089,7 +4089,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_SelectiveBlurImageChannel)
 #endif
         proceed=SetImageProgress(image,SelectiveBlurImageTag,progress++,
@@ -4194,7 +4194,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   progress=0;
   image_view=AcquireCacheView(image);
   shade_view=AcquireCacheView(shade_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -4286,7 +4286,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ShadeImage)
 #endif
         proceed=SetImageProgress(image,ShadeImageTag,progress++,image->rows);
@@ -4491,7 +4491,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(spread_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) spread_image->rows; y++)
@@ -4536,7 +4536,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_SpreadImage)
 #endif
         proceed=SetImageProgress(image,SpreadImageTag,progress++,image->rows);
@@ -4650,7 +4650,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
   unsharp_view=AcquireCacheView(unsharp_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -4745,7 +4745,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_UnsharpMaskImageChannel)
 #endif
         proceed=SetImageProgress(image,SharpenImageTag,progress++,image->rows);

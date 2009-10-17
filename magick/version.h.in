@@ -52,19 +52,25 @@ extern "C" {
 #define MagickQuantumRange  "?"
 #endif
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-#define MagickHDRISupport ""
+#define MagickHDRIFeature ""
 #else
-#define MagickHDRISupport "HDRI "
+#define MagickHDRIFeature "HDRI "
 #endif
-#if !defined(_OPENMP)
-#define MagickOPENMPSupport ""
+#if !defined(MAGICKCORE_OPENMP_SUPPORT)
+#define MagickOPENMPFeature ""
 #else
-#define MagickOPENMPSupport "OpenMP "
+#define MagickOPENMPFeature "OpenMP "
 #endif
-#define MagickSupport MagickHDRISupport MagickOPENMPSupport
-#define MagickVersion MagickPackageName " " MagickLibVersionText \
-  MagickLibSubversion " " MagickReleaseDate " " MagickQuantumDepth " " \
-  MagickSupport MagickAuthoritativeURL
+#if !defined(MAGICKCORE_OPENCL_SUPPORT)
+#define MagickOPENCLFeature ""
+#else
+#define MagickOPENCLFeature "OpenCL "
+#endif
+#define MagickFeatures \
+  MagickHDRIFeature MagickOPENMPFeature MagickOPENCLFeature
+#define MagickVersion  \
+  MagickPackageName " " MagickLibVersionText MagickLibSubversion " " \
+  MagickReleaseDate " " MagickQuantumDepth " " MagickAuthoritativeURL
 
 extern MagickExport char
   *GetMagickHomeURL(void);

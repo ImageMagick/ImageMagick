@@ -1150,7 +1150,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           status=MagickTrue;
           progress=0;
           image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
           #pragma omp parallel for shared(status)
 #endif
           for (y=0; y < (long) image->rows; y++)
@@ -1227,7 +1227,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 MagickBooleanType
                   proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ProfileImage)
 #endif
                 proceed=SetImageProgress(image,ProfileImageTag,progress++,

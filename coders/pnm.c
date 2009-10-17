@@ -593,7 +593,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetQuantumMinIsWhite(quantum_info,MagickTrue);
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp parallel for shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -619,7 +619,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadPNMImage)
 #endif
           {
@@ -675,7 +675,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp parallel for shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -704,7 +704,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadPNMImage)
 #endif
           {
@@ -793,7 +793,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp parallel for shared(row,status,type)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -825,7 +825,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadPNMImage)
 #endif
           {
@@ -967,7 +967,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp parallel for shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -996,7 +996,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadPNMImage)
 #endif
           {
@@ -1210,7 +1210,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           fabs(quantum_scale));
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp parallel for shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -1236,7 +1236,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(_OPENMP) && (_OPENMP > 200505)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadPNMImage)
 #endif
           {

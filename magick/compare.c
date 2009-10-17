@@ -197,7 +197,7 @@ MagickExport Image *CompareImageChannels(Image *image,
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
   highlight_view=AcquireCacheView(highlight_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -369,7 +369,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -432,7 +432,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
       p++;
       q++;
     }
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GetAbsoluteError)
 #endif
     for (i=0; i <= (long) AllChannels; i++)
@@ -485,7 +485,7 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
   status=MagickTrue;
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -559,7 +559,7 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
       p++;
       q++;
     }
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GetMeanAbsoluteError)
 #endif
     for (i=0; i <= (long) AllChannels; i++)
@@ -722,7 +722,7 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
   status=MagickTrue;
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -797,7 +797,7 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
       p++;
       q++;
     }
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GetMeanSquaredError)
 #endif
     for (i=0; i <= (long) AllChannels; i++)
@@ -828,7 +828,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
   status=MagickTrue;
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -913,7 +913,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
       p++;
       q++;
     }
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GetPeakAbsoluteError)
 #endif
     for (i=0; i <= (long) AllChannels; i++)
@@ -1404,7 +1404,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   similarity=0.0;
   image_view=AcquireCacheView(image);
   reference_view=AcquireCacheView(reference);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) reference->rows; y++)
@@ -1460,7 +1460,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
             reference_indexes[x]);
           thread_similarity+=distance*distance;
         }
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GetSimilarityMetric)
 #endif
       similarity+=thread_similarity;
@@ -1523,7 +1523,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   status=MagickTrue;
   progress=0;
   similarity_view=AcquireCacheView(similarity_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) (image->rows-reference->rows+1); y++)
@@ -1549,7 +1549,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
     for (x=0; x < (long) (image->columns-reference->columns+1); x++)
     {
       similarity=GetSimilarityMetric(image,reference,x,y,exception);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_SimilarityImage)
 #endif
       if (similarity < *similarity_metric)
@@ -1570,7 +1570,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_SimilarityImage)
 #endif
         proceed=SetImageProgress(image,SimilarityImageTag,progress++,

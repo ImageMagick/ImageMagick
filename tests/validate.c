@@ -1202,6 +1202,7 @@ static MagickBooleanType ValidateUsage(void)
 
   (void) printf("Version: %s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %s\n\n",GetMagickCopyright());
+  (void) printf("Features: %s\n",GetMagickFeatures());
   (void) printf("Usage: %s [options ...] reference-file\n",GetClientName());
   (void) printf("\nValidate Settings:\n");
   for (p=settings; *p != (char *) NULL; p++)
