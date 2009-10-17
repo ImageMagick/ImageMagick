@@ -459,7 +459,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   if (cdl_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for
 #endif
   for (i=0; i <= (long) MaxMap; i++)
@@ -479,7 +479,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       /*
         Apply transfer function to colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -505,7 +505,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -545,7 +545,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ColorDecisionListImageChannel)
 #endif
         proceed=SetImageProgress(image,ColorDecisionListCorrectImageTag,
@@ -653,7 +653,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   resample_filter=AcquireResampleFilterThreadSet(clut_image,MagickTrue,
     exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -769,7 +769,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ClutImageChannel)
 #endif
         proceed=SetImageProgress(image,ClutImageTag,progress++,image->rows);
@@ -886,7 +886,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -917,7 +917,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ContrastImage)
 #endif
         proceed=SetImageProgress(image,ContrastImageTag,progress++,image->rows);
@@ -1224,7 +1224,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     Stretch the histogram to create the stretched image mapping.
   */
   (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*sizeof(*stretch_map));
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (i=0; i <= (long) MaxMap; i++)
@@ -1306,7 +1306,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       /*
         Stretch colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -1342,7 +1342,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   */
   status=MagickTrue;
   progress=0;
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1406,7 +1406,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ContrastStretchImageChannel)
 #endif
         proceed=SetImageProgress(image,ContrastStretchImageTag,progress++,
@@ -1521,7 +1521,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireCacheView(image);
   enhance_view=AcquireCacheView(enhance_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1597,7 +1597,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_EnhanceImage)
 #endif
         proceed=SetImageProgress(image,EnhanceImageTag,progress++,image->rows);
@@ -1754,7 +1754,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   black=map[0];
   white=map[(int) MaxMap];
   (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*sizeof(*equalize_map));
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (i=0; i <= (long) MaxMap; i++)
@@ -1785,7 +1785,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
       /*
         Equalize colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -1812,7 +1812,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1861,7 +1861,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_EqualizeImageChannel)
 #endif
         proceed=SetImageProgress(image,EqualizeImageTag,progress++,image->rows);
@@ -1988,7 +1988,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       image->filename);
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
   if (gamma != 0.0)
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for
 #endif
     for (i=0; i <= (long) MaxMap; i++)
@@ -1999,7 +1999,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       /*
         Gamma-correct colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -2032,7 +2032,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -2093,7 +2093,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_GammaImageChannel)
 #endif
         proceed=SetImageProgress(image,GammaCorrectImageTag,progress++,
@@ -2220,7 +2220,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   resample_filter=AcquireResampleFilterThreadSet(hald_image,MagickTrue,
     exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -2307,7 +2307,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_HaldClutImageChannel)
 #endif
         proceed=SetImageProgress(image,HaldClutImageTag,progress++,image->rows);
@@ -2491,7 +2491,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
     for (i=0; i < (long) image->colors; i++)
@@ -2515,7 +2515,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -2561,7 +2561,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_LevelImageChannel)
 #endif
         proceed=SetImageProgress(image,LevelImageTag,progress++,image->rows);
@@ -2648,7 +2648,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
     for (i=0; i < (long) image->colors; i++)
@@ -2672,7 +2672,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -2718,7 +2718,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_LevelizeImageChannel)
 #endif
         proceed=SetImageProgress(image,LevelizeImageTag,progress++,image->rows);
@@ -3121,7 +3121,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       /*
         Modulate colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -3158,7 +3158,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -3210,7 +3210,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_ModulateImage)
 #endif
         proceed=SetImageProgress(image,ModulateImageTag,progress++,image->rows);
@@ -3293,7 +3293,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
       /*
         Negate colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -3322,7 +3322,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
   image_view=AcquireCacheView(image);
   if (grayscale != MagickFalse)
     {
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (y=0; y < (long) image->rows; y++)
@@ -3377,7 +3377,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_NegateImageChannel)
 #endif
             proceed=SetImageProgress(image,NegateImageTag,progress++,
@@ -3392,7 +3392,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
   /*
     Negate image.
   */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -3437,7 +3437,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_NegateImageChannel)
 #endif
         proceed=SetImageProgress(image,NegateImageTag,progress++,image->rows);
@@ -3601,7 +3601,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (i=0; i <= (long) MaxMap; i++)
@@ -3631,7 +3631,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
       /*
         Sigmoidal-contrast enhance colormap.
       */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
       for (i=0; i < (long) image->colors; i++)
@@ -3657,7 +3657,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -3703,7 +3703,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical (MagickCore_SigmoidalContrastImageChannel)
 #endif
         proceed=SetImageProgress(image,SigmoidalContrastImageTag,progress++,

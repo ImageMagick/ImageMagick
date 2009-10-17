@@ -87,7 +87,7 @@ static inline MagickBooleanType IsMagickThreadEqual(const MagickThreadType id)
 */
 static inline unsigned long GetOpenMPMaximumThreads(void)
 {
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   {
     static unsigned long
       maximum_threads = 1UL;
@@ -102,7 +102,7 @@ static inline unsigned long GetOpenMPMaximumThreads(void)
 
 static inline long GetOpenMPThreadId(void)
 {
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   return(omp_get_thread_num());
 #else
   return(0);
@@ -111,7 +111,7 @@ static inline long GetOpenMPThreadId(void)
 
 static inline void SetOpenMPMaximumThreads(const unsigned long threads)
 {
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   omp_set_num_threads(threads);
 #else
   (void) threads;

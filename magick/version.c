@@ -79,6 +79,31 @@ MagickExport const char *GetMagickCopyright(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a g i c k F e a t u r e s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickFeatures() returns the ImageMagick features.
+%
+%  The format of the GetMagickFeatures method is:
+%
+%      const char *GetMagickFeatures(void)
+%
+%  No parameters are required.
+%
+*/
+MagickExport const char *GetMagickFeatures(void)
+{
+  return(MagickFeatures);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k H o m e U R L                                           %
 %                                                                             %
 %                                                                             %

@@ -227,7 +227,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   GetMagickPixelPacket(image,&zero);
   number_images=GetImageListLength(image);
   average_view=AcquireCacheView(average_image);
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp parallel for shared(progress,status)
 #endif
   for (y=0; y < (long) average_image->rows; y++)
@@ -324,7 +324,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
         MagickBooleanType
           proceed;
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
         #pragma omp critical (MagickCore_AverageImages)
 #endif
         proceed=SetImageProgress(image,AverageImageTag,progress++,
