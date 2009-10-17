@@ -349,8 +349,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 %
 %    o pattern: Specifies a pointer to a text string containing a pattern.
 %
-%    o number_aliases:  This integer returns the number of aliases in the
-%      list.
+%    o number_aliases:  This integer returns the number of aliases in the list.
 %
 %    o exception: return any errors or warnings in this structure.
 %
