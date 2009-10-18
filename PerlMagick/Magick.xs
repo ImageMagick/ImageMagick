@@ -333,7 +333,7 @@ static struct
       {"fuzz", StringReference}, {"invert", MagickBooleanOptions} } },
     { "Modulate", { {"factor", StringReference}, {"hue", RealReference},
       {"saturation", RealReference}, {"whiteness", RealReference},
-      {"brightness", RealReference}, {"luminosity", RealReference},
+      {"brightness", RealReference}, {"lightness", RealReference},
       {"blackness", RealReference} } },
     { "Negate", { {"gray", MagickBooleanOptions},
       {"channel", MagickChannelOptions} } },
