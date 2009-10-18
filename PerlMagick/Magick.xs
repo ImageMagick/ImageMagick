@@ -9259,19 +9259,20 @@ Mogrify(ref,...)
         }
         case 93:  /* Extent */
         {
-          GravityType
-            gravity;
-
-          gravity=image->gravity;
           if (attribute_flag[7] != 0)
-            gravity=(GravityType) argument_list[7].long_reference;
+            image->gravity=(GravityType) argument_list[7].long_reference;
           if (attribute_flag[0] != 0)
             {
-              SetGeometry(image,&geometry);
-              (void) ParseAbsoluteGeometry(argument_list[0].string_reference,
-                &geometry);
-              GravityAdjustGeometry(image->columns,image->rows,image->gravity,
-                &geometry);
+              int
+                flags;
+
+              flags=ParseGravityGeometry(image,
+                argument_list[0].string_reference,&geometry,exception);
+              if ((geometry.width != 0) || (geometry.height != 0))
+                {
+                  geometry.x=(-geometry.x);
+                  geometry.y=(-geometry.y);
+                }
             }
           if (attribute_flag[1] != 0)
             geometry.width=argument_list[1].long_reference;
@@ -9287,7 +9288,6 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0)
             (void) QueryColorDatabase(argument_list[6].string_reference,
               &image->background_color,exception);
-          GravityAdjustGeometry(image->columns,image->rows,gravity,&geometry);
           image=ExtentImage(image,&geometry,exception);
           break;
         }
