@@ -1352,7 +1352,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         file=(FILE *) NULL;
         unique_file=AcquireUniqueFileResource(read_info->filename);
         if (unique_file != -1)
-          file=OpenMagickStream(read_info->filename,"wb");
+          file=fdopen(unique_file,"wb");
         if ((unique_file == -1) || (file == (FILE *) NULL))
           {
             (void) CopyMagickString(image->filename,read_info->filename,

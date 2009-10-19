@@ -1,3 +1,6 @@
+2009-10-19  6.5.7-1 Wang Dataton <wang@datat...>
+  * Use fdopen() rather than MagickOpenStream() in coders/pict.c.
+
 2009-10-18  6.5.7-1 Cristy  <quetzlzacatenango@image...>
   * Alpha blending is not required for ScaleImage().
 
