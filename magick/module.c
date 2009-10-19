@@ -884,20 +884,20 @@ MagickExport MagickBooleanType InitializeModuleList(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e M o d u l e F a c i l i t y                         %
++   I n s t a n t i a t e M o d u l e C o m p o n e n t                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateModuleFacility() instantiates the module facility.
+%  InstantiateModuleComponent() instantiates the module component.
 %
-%  The format of the InstantiateModuleFacility method is:
+%  The format of the InstantiateModuleComponent method is:
 %
-%      MagickBooleanType InstantiateModuleFacility(void)
+%      MagickBooleanType InstantiateModuleComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateModuleFacility(void)
+MagickExport MagickBooleanType InstantiateModuleComponent(void)
 {
   AcquireSemaphoreInfo(&module_semaphore);
   RelinquishSemaphoreInfo(module_semaphore);

@@ -55,12 +55,12 @@ extern MagickExport const PolicyInfo
   **GetPolicyInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiatePolicyFacility(void),
+  InstantiatePolicyComponent(void),
   IsRightsAuthorized(const PolicyDomain,const PolicyRights,const char *),
   ListPolicyInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyPolicyFacility(void);
+  DestroyPolicyComponent(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

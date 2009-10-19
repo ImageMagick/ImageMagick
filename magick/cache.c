@@ -1579,13 +1579,13 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C a c h e F a c i l i t y                                   %
++   D e s t r o y C a c h e C o m p o n e n t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyCacheFaclity() destroys the cache facility.
+%  DestroyCacheFaclity() destroys the cache component.
 %
 %  The format of the DestroyCacheFaclity() method is:
 %
@@ -3674,20 +3674,20 @@ MagickExport const PixelPacket *GetVirtualPixelsNexus(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e C a c h e F a c i l i t y                           %
++   I n s t a n t i a t e C a c h e C o m p o n e n t                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateCacheFacility() instantiates the cache facility.
+%  InstantiateCacheComponent() instantiates the cache component.
 %
-%  The format of the InstantiateCacheFacility method is:
+%  The format of the InstantiateCacheComponent method is:
 %
-%      MagickBooleanType InstantiateCacheFacility(void)
+%      MagickBooleanType InstantiateCacheComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateCacheFacility(void)
+MagickExport MagickBooleanType InstantiateCacheComponent(void)
 {
   AcquireSemaphoreInfo(&cache_semaphore);
   RelinquishSemaphoreInfo(cache_semaphore);

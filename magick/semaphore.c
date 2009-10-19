@@ -172,7 +172,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(
           semaphore_info);
         ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInstantiateSemaphoreFacility");
+          "UnableToInstantiateSemaphoreComponent");
       }
     status=pthread_mutex_init(&semaphore_info->mutex,&mutex_info);
     (void) pthread_mutexattr_destroy(&mutex_info);
@@ -181,7 +181,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(
           semaphore_info);
         ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInstantiateSemaphoreFacility");
+          "UnableToInstantiateSemaphoreComponent");
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -198,20 +198,20 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y S e m a p h o r e F a c i l i t y                           %
+%   D e s t r o y S e m a p h o r e C o m p o n e n t                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroySemaphoreFacility() destroys the semaphore facility.
+%  DestroySemaphoreComponent() destroys the semaphore component.
 %
-%  The format of the DestroySemaphoreFacility method is:
+%  The format of the DestroySemaphoreComponent method is:
 %
-%      DestroySemaphoreFacility(void)
+%      DestroySemaphoreComponent(void)
 %
 */
-MagickExport void DestroySemaphoreFacility(void)
+MagickExport void DestroySemaphoreComponent(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   if (pthread_mutex_destroy(&semaphore_mutex) != 0)
@@ -273,14 +273,14 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateSemaphoreFacility() instantiates the semaphore environment.
+%  InstantiateSemaphoreComponent() instantiates the semaphore environment.
 %
-%  The format of the InstantiateSemaphoreFacility method is:
+%  The format of the InstantiateSemaphoreComponent method is:
 %
-%      MagickBooleanType InstantiateSemaphoreFacility(void)
+%      MagickBooleanType InstantiateSemaphoreComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateSemaphoreFacility(void)
+MagickExport MagickBooleanType InstantiateSemaphoreComponent(void)
 {
   LockMagickMutex();
   UnlockMagickMutex();

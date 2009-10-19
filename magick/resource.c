@@ -265,22 +265,22 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A s y n c h r o n o u s D e s t r o y R e s o u r c e F a c i l i t y     %
++   A s y n c h r o n o u s D e s t r o y R e s o u r c e C o m p o n e n t   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AsynchronousDestroyResourceFacility() destroys the resource environment.
-%  It differs from DestroyResourceFacility() in that it can be called from a
+%  AsynchronousDestroyResourceComponent() destroys the resource environment.
+%  It differs from DestroyResourceComponent() in that it can be called from a
 %  asynchronous signal handler.
 %
-%  The format of the DestroyResourceFacility() method is:
+%  The format of the DestroyResourceComponent() method is:
 %
-%      DestroyResourceFacility(void)
+%      DestroyResourceComponent(void)
 %
 */
-MagickExport void AsynchronousDestroyResourceFacility(void)
+MagickExport void AsynchronousDestroyResourceComponent(void)
 {
   const char
     *path;
@@ -482,20 +482,20 @@ MagickExport int AcquireUniqueFileResource(char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y R e s o u r c e F a c i l i t y                             %
++   D e s t r o y R e s o u r c e C o m p o n e n t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyResourceFacility() destroys the resource facility.
+%  DestroyResourceComponent() destroys the resource component.
 %
-%  The format of the DestroyResourceFacility() method is:
+%  The format of the DestroyResourceComponent() method is:
 %
-%      DestroyResourceFacility(void)
+%      DestroyResourceComponent(void)
 %
 */
-MagickExport void DestroyResourceFacility(void)
+MagickExport void DestroyResourceComponent(void)
 {
   AcquireSemaphoreInfo(&resource_semaphore);
   if (temporary_resources != (SplayTreeInfo *) NULL)
@@ -657,17 +657,17 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e R e s o u r c e F a c i l i t y                     %
++   I n s t a n t i a t e R e s o u r c e C o m p o n e n t                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateResourcesFacility() instantiates the resource facility.
+%  InstantiateResourcesComponent() instantiates the resource component.
 %
-%  The format of the InstantiateResourcesFacility method is:
+%  The format of the InstantiateResourcesComponent method is:
 %
-%      MagickBooleanType InstantiateResourcesFacility(void)
+%      MagickBooleanType InstantiateResourcesComponent(void)
 %
 */
 
@@ -691,7 +691,7 @@ static inline MagickSizeType StringToSizeType(const char *string,
   return((MagickSizeType) value);
 }
 
-MagickExport MagickBooleanType InstantiateResourcesFacility(void)
+MagickExport MagickBooleanType InstantiateResourcesComponent(void)
 {
   char
     *limit;

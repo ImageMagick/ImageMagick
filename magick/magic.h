@@ -57,7 +57,7 @@ extern MagickExport const char
   *GetMagicName(const MagicInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiateMagicFacility(void),
+  InstantiateMagicComponent(void),
   ListMagicInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport const MagicInfo
@@ -65,7 +65,7 @@ extern MagickExport const MagicInfo
   **GetMagicInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyMagicFacility(void);
+  DestroyMagicComponent(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -133,20 +133,20 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y T y p e F a c i l i t y                                     %
++   D e s t r o y T y p e C o m p o n e n t                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyTypeFacility() destroy type facility.
+%  DestroyTypeComponent() destroy type component.
 %
-%  The format of the DestroyTypeFacility method is:
+%  The format of the DestroyTypeComponent method is:
 %
-%      void DestroyTypeFacility(void)
+%      void DestroyTypeComponent(void)
 %
 */
-MagickExport void DestroyTypeFacility(void)
+MagickExport void DestroyTypeComponent(void)
 {
   AcquireSemaphoreInfo(&type_semaphore);
   if (type_list != (SplayTreeInfo *) NULL)
@@ -822,20 +822,20 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e T y p e F a c i l i t y                             %
++   I n s t a n t i a t e T y p e C o m p o n e n t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateTypeFacility() instantiates the type facility.
+%  InstantiateTypeComponent() instantiates the type component.
 %
-%  The format of the InstantiateTypeFacility method is:
+%  The format of the InstantiateTypeComponent method is:
 %
-%      MagickBooleanType InstantiateTypeFacility(void)
+%      MagickBooleanType InstantiateTypeComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateTypeFacility(void)
+MagickExport MagickBooleanType InstantiateTypeComponent(void)
 {
   AcquireSemaphoreInfo(&type_semaphore);
   RelinquishSemaphoreInfo(type_semaphore);

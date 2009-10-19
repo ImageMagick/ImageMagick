@@ -38,7 +38,7 @@ extern MagickExport double
   GetPseudoRandomValue(RandomInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiateRandomFacility(void);
+  InstantiateRandomComponent(void);
 
 extern MagickExport RandomInfo
   *AcquireRandomInfo(void),
@@ -48,7 +48,7 @@ extern MagickExport StringInfo
   *GetRandomKey(RandomInfo *,const size_t);
 
 extern MagickExport void
-  DestroyRandomFacility(void),
+  DestroyRandomComponent(void),
   SeedPseudoRandomGenerator(const unsigned long),
   SetRandomKey(RandomInfo *,const size_t,unsigned char *),
   SetRandomTrueRandom(const MagickBooleanType);

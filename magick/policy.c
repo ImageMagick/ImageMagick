@@ -124,17 +124,17 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y P o l i c y F a c i l i t y                                 %
++   D e s t r o y P o l i c y C o m p o n e n t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyPolicyFacility() destroys the policy facility.
+%  DestroyPolicyComponent() destroys the policy component.
 %
-%  The format of the DestroyPolicyFacility method is:
+%  The format of the DestroyPolicyComponent method is:
 %
-%      DestroyPolicyFacility(void)
+%      DestroyPolicyComponent(void)
 %
 */
 
@@ -156,7 +156,7 @@ static void *DestroyPolicyElement(void *policy_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyPolicyFacility(void)
+MagickExport void DestroyPolicyComponent(void)
 {
   AcquireSemaphoreInfo(&policy_semaphore);
   if (policy_list != (LinkedListInfo *) NULL)
@@ -479,20 +479,20 @@ static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e P o l i c y F a c i l i t y                         %
++   I n s t a n t i a t e P o l i c y C o m p o n e n t                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiatePolicyFacility() instantiates the policy facility.
+%  InstantiatePolicyComponent() instantiates the policy component.
 %
-%  The format of the InstantiatePolicyFacility method is:
+%  The format of the InstantiatePolicyComponent method is:
 %
-%      MagickBooleanType InstantiatePolicyFacility(void)
+%      MagickBooleanType InstantiatePolicyComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiatePolicyFacility(void)
+MagickExport MagickBooleanType InstantiatePolicyComponent(void)
 {
   AcquireSemaphoreInfo(&policy_semaphore);
   RelinquishSemaphoreInfo(policy_semaphore);

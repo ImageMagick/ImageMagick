@@ -163,20 +163,20 @@ MagickExport MagickBooleanType DeleteImageRegistry(const char *key)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y R e g i s t r y F a c i l i t y                             %
+%   D e s t r o y R e g i s t r y C o m p o n e n t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyRegistryFacility() destroys the registry facility.
+%  DestroyRegistryComponent() destroys the registry component.
 %
 %  The format of the DestroyDefines method is:
 %
-%      void DestroyRegistryFacility(void)
+%      void DestroyRegistryComponent(void)
 %
 */
-MagickExport void DestroyRegistryFacility(void)
+MagickExport void DestroyRegistryComponent(void)
 {
   AcquireSemaphoreInfo(&registry_semaphore);
   if (IsEventLogging() != MagickFalse)
@@ -314,20 +314,20 @@ MagickExport char *GetNextImageRegistry(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e R e g i s t r y F a c i l i t y                     %
++   I n s t a n t i a t e R e g i s t r y C o m p o n e n t                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateRegistryFacility() instantiates the registry facility.
+%  InstantiateRegistryComponent() instantiates the registry component.
 %
-%  The format of the InstantiateRegistryFacility method is:
+%  The format of the InstantiateRegistryComponent method is:
 %
-%      MagickBooleanType InstantiateRegistryFacility(void)
+%      MagickBooleanType InstantiateRegistryComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateRegistryFacility(void)
+MagickExport MagickBooleanType InstantiateRegistryComponent(void)
 {
   AcquireSemaphoreInfo(&registry_semaphore);
   RelinquishSemaphoreInfo(registry_semaphore);

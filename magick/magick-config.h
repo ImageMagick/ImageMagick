@@ -905,7 +905,7 @@
 /* Define to 1 if you have the <windows.h> header file. */
 /* #undef HAVE_WINDOWS_H */
 
-/* This value is set to 1 to indicate that the system argz facility works */
+/* This value is set to 1 to indicate that the system argz component works */
 #ifndef MAGICKCORE_HAVE_WORKING_ARGZ 
 #define MAGICKCORE_HAVE_WORKING_ARGZ  1 
 #endif
