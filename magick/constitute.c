@@ -163,20 +163,20 @@ MagickExport Image *ConstituteImage(const unsigned long columns,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o n s t i t u t e F a c i l i t y                         %
++   D e s t r o y C o n s t i t u t e C o m p o n e n t                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyConstituteFacility() destroys the constitute facility.
+%  DestroyConstituteComponent() destroys the constitute component.
 %
-%  The format of the DestroyConstituteFacility method is:
+%  The format of the DestroyConstituteComponent method is:
 %
-%      DestroyConstituteFacility(void)
+%      DestroyConstituteComponent(void)
 %
 */
-MagickExport void DestroyConstituteFacility(void)
+MagickExport void DestroyConstituteComponent(void)
 {
   if (constitute_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&constitute_semaphore);
@@ -187,20 +187,20 @@ MagickExport void DestroyConstituteFacility(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e C o n s t i t u t e F a c i l i t y                 %
++   I n s t a n t i a t e C o n s t i t u t e C o m p o n e n t               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateConstituteFacility() instantiates the constitute facility.
+%  InstantiateConstituteComponent() instantiates the constitute component.
 %
-%  The format of the InstantiateConstituteFacility method is:
+%  The format of the InstantiateConstituteComponent method is:
 %
-%      MagickBooleanType InstantiateConstituteFacility(void)
+%      MagickBooleanType InstantiateConstituteComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateConstituteFacility(void)
+MagickExport MagickBooleanType InstantiateConstituteComponent(void)
 {
   AcquireSemaphoreInfo(&constitute_semaphore);
   RelinquishSemaphoreInfo(constitute_semaphore);

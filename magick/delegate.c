@@ -149,17 +149,17 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y D e l e g a t e F a c i l i t y                             %
+%   D e s t r o y D e l e g a t e C o m p o n e n t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyDelegateFacility() destroys the delegate facility.
+%  DestroyDelegateComponent() destroys the delegate component.
 %
-%  The format of the DestroyDelegateFacility method is:
+%  The format of the DestroyDelegateComponent method is:
 %
-%      DestroyDelegateFacility(void)
+%      DestroyDelegateComponent(void)
 %
 */
 
@@ -182,7 +182,7 @@ static void *DestroyDelegate(void *delegate_info)
 }
 
 
-MagickExport void DestroyDelegateFacility(void)
+MagickExport void DestroyDelegateComponent(void)
 {
   AcquireSemaphoreInfo(&delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
@@ -698,20 +698,20 @@ static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e D e l e g a t e F a c i l i t y                     %
++   I n s t a n t i a t e D e l e g a t e C o m p o n e n t                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateDelegateFacility() instantiates the delegate facility.
+%  InstantiateDelegateComponent() instantiates the delegate component.
 %
-%  The format of the InstantiateDelegateFacility method is:
+%  The format of the InstantiateDelegateComponent method is:
 %
-%      MagickBooleanType InstantiateDelegateFacility(void)
+%      MagickBooleanType InstantiateDelegateComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateDelegateFacility(void)
+MagickExport MagickBooleanType InstantiateDelegateComponent(void)
 {
   AcquireSemaphoreInfo(&delegate_semaphore);
   RelinquishSemaphoreInfo(delegate_semaphore);

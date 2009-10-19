@@ -72,7 +72,7 @@ extern MagickExport LogEventType
   SetLogEventMask(const char *);
 
 extern MagickExport MagickBooleanType
-  InstantiateLogFacility(void),
+  InstantiateLogComponent(void),
   IsEventLogging(void),
   ListLogInfo(FILE *,ExceptionInfo *),
   LogMagickEvent(const LogEventType,const char *,const char *,
@@ -84,7 +84,7 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport void
   CloseMagickLog(void),
-  DestroyLogFacility(void),
+  DestroyLogComponent(void),
   SetLogFormat(const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

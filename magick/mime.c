@@ -131,17 +131,17 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y M i m e F a c i l i t y                                     %
++   D e s t r o y M i m e C o m p o n e n t                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMimeFacility() destroys the mime facility.
+%  DestroyMimeComponent() destroys the mime component.
 %
-%  The format of the DestroyMimeFacility method is:
+%  The format of the DestroyMimeComponent method is:
 %
-%      DestroyMimeFacility(void)
+%      DestroyMimeComponent(void)
 %
 */
 
@@ -165,7 +165,7 @@ static void *DestroyMimeElement(void *mime_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyMimeFacility(void)
+MagickExport void DestroyMimeComponent(void)
 {
   AcquireSemaphoreInfo(&mime_semaphore);
   if (mime_list != (LinkedListInfo *) NULL)
@@ -670,20 +670,20 @@ static MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e M i m e F a c i l i t y                             %
++   I n s t a n t i a t e M i m e C o m p o n e n t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateMimeFacility() instantiates the mime facility.
+%  InstantiateMimeComponent() instantiates the mime component.
 %
-%  The format of the InstantiateMimeFacility method is:
+%  The format of the InstantiateMimeComponent method is:
 %
-%      MagickBooleanType InstantiateMimeFacility(void)
+%      MagickBooleanType InstantiateMimeComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateMimeFacility(void)
+MagickExport MagickBooleanType InstantiateMimeComponent(void)
 {
   AcquireSemaphoreInfo(&mime_semaphore);
   RelinquishSemaphoreInfo(mime_semaphore);

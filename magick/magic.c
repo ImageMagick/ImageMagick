@@ -213,17 +213,17 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y M a g i c F a c i l i t y                                   %
++   D e s t r o y M a g i c C o m p o n e n t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagicFacility() destroys the magic facility.
+%  DestroyMagicComponent() destroys the magic component.
 %
-%  The format of the DestroyMagicFacility method is:
+%  The format of the DestroyMagicComponent method is:
 %
-%      DestroyMagicFacility(void)
+%      DestroyMagicComponent(void)
 %
 */
 
@@ -248,7 +248,7 @@ static void *DestroyMagicElement(void *magic_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyMagicFacility(void)
+MagickExport void DestroyMagicComponent(void)
 {
   AcquireSemaphoreInfo(&magic_semaphore);
   if (magic_list != (LinkedListInfo *) NULL)
@@ -588,20 +588,20 @@ static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e M a g i c F a c i l i t y                           %
++   I n s t a n t i a t e M a g i c C o m p o n e n t                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateMagicFacility() instantiates the magic facility.
+%  InstantiateMagicComponent() instantiates the magic component.
 %
-%  The format of the InstantiateMagicFacility method is:
+%  The format of the InstantiateMagicComponent method is:
 %
-%      MagickBooleanType InstantiateMagicFacility(void)
+%      MagickBooleanType InstantiateMagicComponent(void)
 %
 */
-MagickExport MagickBooleanType InstantiateMagicFacility(void)
+MagickExport MagickBooleanType InstantiateMagicComponent(void)
 {
   AcquireSemaphoreInfo(&magic_semaphore);
   RelinquishSemaphoreInfo(magic_semaphore);

@@ -63,12 +63,12 @@ extern MagickExport long
 
 extern MagickExport MagickBooleanType
   GetDelegateThreadSupport(const DelegateInfo *),
-  InstantiateDelegateFacility(void),
+  InstantiateDelegateComponent(void),
   InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyDelegateFacility(void);
+  DestroyDelegateComponent(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
