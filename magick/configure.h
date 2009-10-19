@@ -59,10 +59,11 @@ extern MagickExport LinkedListInfo
   *GetConfigureOptions(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  InstantiateConfigureFacility(void),
   ListConfigureInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyConfigureList(void);
+  DestroyConfigureFacility(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

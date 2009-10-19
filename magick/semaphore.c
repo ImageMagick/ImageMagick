@@ -81,6 +81,9 @@ static LONG
 static long
   semaphore_mutex = 0;
 #endif
+
+static MagickBooleanType
+  instantiate_semaphore = MagickFalse;
 
 /*
   Forward declaractions.
@@ -169,7 +172,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(
           semaphore_info);
         ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
+          "UnableToInstantiateSemaphoreFacility");
       }
     status=pthread_mutex_init(&semaphore_info->mutex,&mutex_info);
     (void) pthread_mutexattr_destroy(&mutex_info);
@@ -178,7 +181,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(
           semaphore_info);
         ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
+          "UnableToInstantiateSemaphoreFacility");
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -195,26 +198,30 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y S e m a p h o r e                                           %
+%   D e s t r o y S e m a p h o r e F a c i l i t y                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroySemaphore() destroys the semaphore environment.
+%  DestroySemaphoreFacility() destroys the semaphore facility.
 %
-%  The format of the DestroySemaphore method is:
+%  The format of the DestroySemaphoreFacility method is:
 %
-%      DestroySemaphore(void)
+%      DestroySemaphoreFacility(void)
 %
 */
-MagickExport void DestroySemaphore(void)
+MagickExport void DestroySemaphoreFacility(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   if (pthread_mutex_destroy(&semaphore_mutex) != 0)
     (void) fprintf(stderr,"pthread_mutex_destroy failed %s\n",
       GetExceptionMessage(errno));
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  if (instantiate_semaphore == MagickFalse)
+    DeleteCriticalSection(&semaphore_mutex);
 #endif
+  instantiate_semaphore=MagickFalse;
 }
 
 /*
@@ -260,21 +267,24 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n i t i a l i z e S e m a p h o r e                                     %
+%   I n s t a n t i a t e S e m a p h o r e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeSemaphore() initializes the semaphore environment.
+%  InstantiateSemaphoreFacility() instantiates the semaphore environment.
 %
-%  The format of the InitializeSemaphore method is:
+%  The format of the InstantiateSemaphoreFacility method is:
 %
-%      InitializeSemaphore(void)
+%      MagickBooleanType InstantiateSemaphoreFacility(void)
 %
 */
-MagickExport void InitializeSemaphore(void)
+MagickExport MagickBooleanType InstantiateSemaphoreFacility(void)
 {
+  LockMagickMutex();
+  UnlockMagickMutex();
+  return(MagickTrue);
 }
 
 /*
@@ -303,6 +313,9 @@ static void LockMagickMutex(void)
     (void) fprintf(stderr,"pthread_mutex_lock failed %s\n",
       GetExceptionMessage(errno));
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  if (instantiate_semaphore == MagickFalse)
+    InitializeCriticalSection(&semaphore_mutex);
+  instantiate_semaphore=MagickTrue;
   while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
     Sleep(10);
 #endif

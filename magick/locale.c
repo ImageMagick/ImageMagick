@@ -98,20 +98,20 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y L o c a l e L i s t                                         %
++   D e s t r o y L o c a l e F a c i l i t y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyLocaleList() deallocates memory associated with the locale list.
+%  DestroyLocaleFacility() destroys the locale facility.
 %
-%  The format of the DestroyLocaleList method is:
+%  The format of the DestroyLocaleFacility method is:
 %
-%      DestroyLocaleList(void)
+%      DestroyLocaleFacility(void)
 %
 */
-MagickExport void DestroyLocaleList(void)
+MagickExport void DestroyLocaleFacility(void)
 {
   AcquireSemaphoreInfo(&locale_semaphore);
   if (locale_list != (SplayTreeInfo *) NULL)
@@ -610,6 +610,31 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(locale_semaphore);
     }
   return(locale_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e L o c a l e F a c i l i t y                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateLocaleFacility() instantiates the locale facility.
+%
+%  The format of the InstantiateLocaleFacility method is:
+%
+%      MagickBooleanType InstantiateLocaleFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateLocaleFacility(void)
+{
+  AcquireSemaphoreInfo(&locale_semaphore);
+  RelinquishSemaphoreInfo(locale_semaphore);
+  return(MagickTrue);
 }
 
 /*
