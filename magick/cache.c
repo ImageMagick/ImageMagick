@@ -1579,20 +1579,20 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y P i x e l C a c h e R e s o u r c e s                       %
++   D e s t r o y C a c h e F a c i l i t y                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyPixelCacheResources() destroys the cache resources.
+%  DestroyCacheFaclity() destroys the cache facility.
 %
-%  The format of the DestroyPixelCacheResources() method is:
+%  The format of the DestroyCacheFaclity() method is:
 %
-%      DestroyPixelCacheResources(void)
+%      DestroyCacheFaclity(void)
 %
 */
-MagickExport void DestroyPixelCacheResources(void)
+MagickExport void DestroyCacheFaclity(void)
 {
   AcquireSemaphoreInfo(&cache_semaphore);
   if (cache_resources != (SplayTreeInfo *) NULL)
@@ -3667,6 +3667,31 @@ MagickExport const PixelPacket *GetVirtualPixelsNexus(const Cache cache,
   if (cache_info->storage_class == UndefinedClass)
     return((PixelPacket *) NULL);
   return((const PixelPacket *) nexus_info->pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e C a c h e F a c i l i t y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateCacheFacility() instantiates the cache facility.
+%
+%  The format of the InstantiateCacheFacility method is:
+%
+%      MagickBooleanType InstantiateCacheFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateCacheFacility(void)
+{
+  AcquireSemaphoreInfo(&cache_semaphore);
+  RelinquishSemaphoreInfo(cache_semaphore);
+  return(MagickTrue);
 }
 
 /*

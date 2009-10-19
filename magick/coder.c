@@ -238,20 +238,20 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o d e r L i s t                                           %
++   D e s t r o y C o d e r F a c i l i t y                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyCoderList() deallocates memory associated with the font list.
+%  DestroyCoderFacility() destroys the coder facility.
 %
-%  The format of the DestroyCoderList method is:
+%  The format of the DestroyCoderFacility method is:
 %
-%      DestroyCoderList(void)
+%      DestroyCoderFacility(void)
 %
 */
-MagickExport void DestroyCoderList(void)
+MagickExport void DestroyCoderFacility(void)
 {
   AcquireSemaphoreInfo(&coder_semaphore);
   if (coder_list != (SplayTreeInfo *) NULL)
@@ -513,6 +513,31 @@ static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(coder_semaphore);
     }
   return(coder_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e C o d e r F a c i l i t y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateCoderFacility() instantiates the coder facility.
+%
+%  The format of the InstantiateCoderFacility method is:
+%
+%      MagickBooleanType InstantiateCoderFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateCoderFacility(void)
+{
+  AcquireSemaphoreInfo(&coder_semaphore);
+  RelinquishSemaphoreInfo(coder_semaphore);
+  return(MagickTrue);
 }
 
 /*

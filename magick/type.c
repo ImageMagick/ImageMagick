@@ -133,20 +133,20 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y T y p e L i s t                                             %
++   D e s t r o y T y p e F a c i l i t y                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyTypeList() deallocates memory associated with the font list.
+%  DestroyTypeFacility() destroy type facility.
 %
-%  The format of the DestroyTypeList method is:
+%  The format of the DestroyTypeFacility method is:
 %
-%      void DestroyTypeList(void)
+%      void DestroyTypeFacility(void)
 %
 */
-MagickExport void DestroyTypeList(void)
+MagickExport void DestroyTypeFacility(void)
 {
   AcquireSemaphoreInfo(&type_semaphore);
   if (type_list != (SplayTreeInfo *) NULL)
@@ -815,6 +815,31 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(type_semaphore);
     }
   return(type_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e T y p e F a c i l i t y                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateTypeFacility() instantiates the type facility.
+%
+%  The format of the InstantiateTypeFacility method is:
+%
+%      MagickBooleanType InstantiateTypeFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateTypeFacility(void)
+{
+  AcquireSemaphoreInfo(&type_semaphore);
+  RelinquishSemaphoreInfo(type_semaphore);
+  return(MagickTrue);
 }
 
 /*

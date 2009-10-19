@@ -252,6 +252,31 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D e s t r o y R a n d o m F a c i l i t y                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyRandomFacility() destroys the random facility.
+%
+%  The format of the DestroyRandomFacility method is:
+%
+%      DestroyRandomFacility(void)
+%
+*/
+MagickExport void DestroyRandomFacility(void)
+{
+  AcquireSemaphoreInfo(&random_semaphore);
+  (void) UnlockSemaphoreInfo(random_semaphore);
+  DestroySemaphoreInfo(&random_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y R a n d o m I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -289,32 +314,6 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
   DestroySemaphoreInfo(&random_info->semaphore);
   random_info=(RandomInfo *) RelinquishAlignedMemory(random_info);
   return(random_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y R a n d o m R e s e r v i o r                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyRandomReservoir() deallocates memory associated with the random
-%  reservoir.
-%
-%  The format of the DestroyRandomReservoir method is:
-%
-%      DestroyRandomReservoir(void)
-%
-*/
-MagickExport void DestroyRandomReservoir(void)
-{
-  AcquireSemaphoreInfo(&random_semaphore);
-  (void) UnlockSemaphoreInfo(random_semaphore);
-  DestroySemaphoreInfo(&random_semaphore);
 }
 
 /*
@@ -708,6 +707,31 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
     SetRandomKey(random_info,sizeof(key),(unsigned char *) &key);
   } while (key == range);
   return((double) key/range);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e R a n d o m F a c i l i t y                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateRandomFacility() instantiates the random facility.
+%
+%  The format of the InstantiateRandomFacility method is:
+%
+%      MagickBooleanType InstantiateRandomFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateRandomFacility(void)
+{
+  AcquireSemaphoreInfo(&random_semaphore);
+  RelinquishSemaphoreInfo(random_semaphore);
+  return(MagickTrue);
 }
 
 /*

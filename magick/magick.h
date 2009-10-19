@@ -112,6 +112,7 @@ extern MagickExport MagickBooleanType
   GetMagickEndianSupport(const MagickInfo *),
   GetMagickRawSupport(const MagickInfo *),
   GetMagickSeekableStream(const MagickInfo *),
+  InstantiateMagickFacility(void),
   IsMagickInstantiated(void),
   UnregisterMagickInfo(const char *);
 
@@ -127,7 +128,7 @@ extern MagickExport MagickStatusType
   GetMagickThreadSupport(const MagickInfo *);
 
 extern MagickExport void
-  DestroyMagickList(void),
+  DestroyMagickFacility(void),
   MagickCoreGenesis(const char *,const MagickBooleanType),
   MagickCoreTerminus(void);
 

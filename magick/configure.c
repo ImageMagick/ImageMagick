@@ -90,17 +90,17 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o n f i g u r e L i s t                                   %
++   D e s t r o y C o n f i g u r e F a c i l i t y                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyConfigureList() deallocates memory associated with the configure list.
+%  DestroyConfigureFacility() destroys the configure facility.
 %
-%  The format of the DestroyConfigureList method is:
+%  The format of the DestroyConfigureFacility method is:
 %
-%      DestroyConfigureList(void)
+%      DestroyConfigureFacility(void)
 %
 */
 
@@ -120,7 +120,7 @@ static void *DestroyConfigureElement(void *configure_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyConfigureList(void)
+MagickExport void DestroyConfigureFacility(void)
 {
   AcquireSemaphoreInfo(&configure_semaphore);
   if (configure_list != (LinkedListInfo *) NULL)
@@ -841,6 +841,31 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(configure_semaphore);
     }
   return(configure_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e C o n f i g u r e F a c i l i t y                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateConfigureFacility() instantiates the configure facility.
+%
+%  The format of the InstantiateConfigureFacility method is:
+%
+%      MagickBooleanType InstantiateConfigureFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateConfigureFacility(void)
+{
+  AcquireSemaphoreInfo(&configure_semaphore);
+  RelinquishSemaphoreInfo(configure_semaphore);
+  return(MagickTrue);
 }
 
 /*

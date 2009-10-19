@@ -233,17 +233,17 @@ MagickExport void CloseMagickLog(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y L o g L i s t                                               %
++   D e s t r o y L o g F a c i l i t y                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyLogList() deallocates memory associated with the log list.
+%  DestroyLogFacility() destroys the logging facility.
 %
-%  The format of the DestroyLogList method is:
+%  The format of the DestroyLogFacility method is:
 %
-%      DestroyLogList(void)
+%      DestroyLogFacility(void)
 %
 */
 
@@ -270,7 +270,7 @@ static void *DestroyLogElement(void *log_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyLogList(void)
+MagickExport void DestroyLogFacility(void)
 {
   AcquireSemaphoreInfo(&log_semaphore);
   if (log_list != (LinkedListInfo *) NULL)
@@ -584,6 +584,31 @@ static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(log_semaphore);
     }
   return(log_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e L o g F a c i l i t y                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateLogFacility() instantiates the log facility.
+%
+%  The format of the InstantiateLogFacility method is:
+%
+%      MagickBooleanType InstantiateLogFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateLogFacility(void)
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  RelinquishSemaphoreInfo(log_semaphore);
+  return(MagickFalse);
 }
 
 /*

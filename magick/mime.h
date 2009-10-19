@@ -34,6 +34,7 @@ extern MagickExport const char
   *GetMimeType(const MimeInfo *);
 
 extern MagickExport MagickBooleanType
+  InstantiateMimeFacility(void),
   ListMimeInfo(FILE *,ExceptionInfo *),
   LoadMimeLists(const char *,ExceptionInfo *);
 
@@ -42,7 +43,7 @@ extern MagickExport const MimeInfo
   **GetMimeInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyMimeList(void);
+  DestroyMimeFacility(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

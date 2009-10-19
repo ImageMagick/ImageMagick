@@ -1383,7 +1383,7 @@ MagickExport MagickBooleanType DeleteMagickRegistry(const long id)
 */
 MagickExport void DestroyMagickRegistry(void)
 {
-  DestroyImageRegistry();
+  DestroyRegistryFacility();
 }
 
 /*

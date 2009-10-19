@@ -937,8 +937,8 @@
           <message name="UnableToAllocateImagePixels">
             unable to allocate image pixels
           </message>
-          <message name="UnableToInitializeSemaphore">
-            unable to initialize semaphore
+          <message name="UnableToInstantiateSemaphore">
+            unable to instantiate semaphore
           </message>
           <message name="UnableToAcquireString">
             unable to allocate string

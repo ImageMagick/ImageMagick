@@ -57,10 +57,11 @@ extern MagickExport LinkedListInfo
   *GetLocaleOptions(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  InstantiateLocaleFacility(void),
   ListLocaleInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyLocaleList(void);
+  DestroyLocaleFacility(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

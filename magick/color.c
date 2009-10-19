@@ -908,17 +908,17 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o l o r L i s t                                           %
++   D e s t r o y C o l o r F a c i l i t y                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyColorList() deallocates memory associated with the color list.
+%  DestroyColorFacility() destroys the color facility.
 %
-%  The format of the DestroyColorList method is:
+%  The format of the DestroyColorFacility method is:
 %
-%      DestroyColorList(void)
+%      DestroyColorFacility(void)
 %
 */
 
@@ -939,7 +939,7 @@ static void *DestroyColorElement(void *color_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyColorList(void)
+MagickExport void DestroyColorFacility(void)
 {
   AcquireSemaphoreInfo(&color_semaphore);
   if (color_list != (LinkedListInfo *) NULL)
@@ -1429,6 +1429,31 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(color_semaphore);
     }
   return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e C o l o r F a c i l i t y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateColorFacility() instantiates the color facility.
+%
+%  The format of the InstantiateColorFacility method is:
+%
+%      MagickBooleanType InstantiateColorFacility(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateColorFacility(void)
+{
+  AcquireSemaphoreInfo(&color_semaphore);
+  RelinquishSemaphoreInfo(color_semaphore);
+  return(MagickTrue);
 }
 
 /*
