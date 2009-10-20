@@ -142,7 +142,7 @@ my $INC_magick = '-I../ -I@top_srcdir@ @CPPFLAGS@ -I"' . $Config{'usrinc'} . '/I
 my $LIBS_magick = '-L../magick/.libs -lMagickCore -lperl @MATH_LIBS@';
 my $CCFLAGS_magick = "$Config{'ccflags'} @CFLAGS@";
 my $LDFLAGS_magick   = "-L../magick/.libs -lMagickCore $Config{'ldflags'} @LDFLAGS@";
-my $LDDLFLAGS_magick = "-L../magick/.libs -lMagickCore $Config{'lddlflags'} @LDDFLAGS@";
+my $LDDLFLAGS_magick = "-L../magick/.libs -lMagickCore $Config{'lddlflags'} @LDFLAGS@";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
   # a special setup for strawberry perl
