@@ -708,6 +708,7 @@ MagickExport MagickBooleanType InstantiateResourcesComponent(void)
     Set Magick resource limits.
   */
   AcquireSemaphoreInfo(&resource_semaphore);
+  RelinquishSemaphoreInfo(resource_semaphore);
   pagesize=GetMagickPageSize();
   pages=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
@@ -804,7 +805,6 @@ MagickExport MagickBooleanType InstantiateResourcesComponent(void)
       (void) SetMagickResourceLimit(TimeResource,StringToSizeType(limit,100.0));
       limit=DestroyString(limit);
     }
-  RelinquishSemaphoreInfo(resource_semaphore);
   return(MagickTrue);
 }
 
