@@ -74,6 +74,29 @@ Installation
     information. You are now ready to utilize the PerlMagick routines from
     within your Perl scripts.
 
+Installation - Win32 Strawberry perl
+
+   On Win32 Strawberry perl the prefered way of installing PerlMagick is the
+   following:
+
+   1) Download and install ImageMagick Windows binaries from
+      http://www.imagemagick.org/script/binary-releases.php#windows
+
+   2) You HAVE TO choose dynamic (DLL) ImageMagick binaries.  Note: it is not
+      possible to mix 32/64bit binaries of perl and ImageMagick
+
+   3) During installation select that you want to install ImageMagick's
+      development files (libraries+headers)
+
+   4) You NEED TO have ImageMagick's directory in your PATH.  Note: we are
+      checking the presence of convert.exe or identify.exe tools
+
+   5) You might need Visual C++ Redistributable Package installed on your
+      system.  See instructions on ImageMagick's Binary Release webpage.
+
+   6) If you have all prerequisites 1)...5) you can simply install
+      ImageMagick by running: cpan -i Image::Magick
+
 
 Testing PerlMagick
 
