@@ -145,8 +145,11 @@ my $LDFLAGS_magick   = "-L../magick/.libs -lMagickCore $Config{'ldflags'} @LDFLA
 my $LDDLFLAGS_magick = "-L../magick/.libs -lMagickCore $Config{'lddlflags'} @LDFLAGS@";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
-  # a special setup for strawberry perl
-  my ($Ipaths, $Lpaths) = AutodetectWin32gcc();
+  my($Ipaths, $Lpaths) = AutodetectWin32gcc();
+
+  #
+  # Setup for strawberry perl.
+  #
   $INC_magick       = "$Ipaths";
   $LIBS_magick      = "-lMagickCore";
   $CCFLAGS_magick   = "$Config{'ccflags'}";
@@ -164,7 +167,7 @@ WriteMakefile
    # Perl module name is Image::Magick
    'NAME'	=> 'Image::Magick',
 
-    Module author
+   # Module author
    'AUTHOR' => 'ImageMagick Studio LLC',
 
    # Module version
