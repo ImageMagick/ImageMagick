@@ -123,6 +123,7 @@ struct _LogInfo
 
   MagickBooleanType
     append,
+    exempt,
     stealth;
 
   TimerInfo
@@ -131,9 +132,22 @@ struct _LogInfo
   unsigned long
     signature;
 };
+
+typedef struct _LogMapInfo
+{
+  const LogEventType
+    event_mask;
+
+  const LogHandlerType
+    handler_mask;
+
+  const char
+    *filename,
+    *format;
+} LogMapInfo;
 
 /*
-  Declare log map.
+  Static declarations.
 */
 static const HandlerInfo
   LogHandlers[] =
@@ -148,19 +162,13 @@ static const HandlerInfo
     { (char *) NULL, UndefinedHandler }
   };
 
-static const char
-  *LogMap = (const char *)
-    "<?xml version=\"1.0\"?>"
-    "<logmap>"
-    "  <log events=\"None\" />"
-    "  <log output=\"console\" />"
-    "  <log filename=\"Magick-%d.log\" />"
-    "  <log format=\"%t %r %u %v %d %c[%p]: %m/%f/%l/%d\n  %e\" />"
-    "</logmap>";
-
-/*
-  Static declarations.
-*/
+static const LogMapInfo
+  LogMap[] =
+  {
+    { NoEvents, ConsoleHandler, "Magick-%d.log",
+      "%t %r %u %v %d %c[%p]: %m/%f/%l/%d\n  %e" }
+  };
+
 static char
   log_name[MaxTextExtent] = "Magick";
 
@@ -260,12 +268,15 @@ static void *DestroyLogElement(void *log_info)
       (void) fclose(p->file);
       p->file=(FILE *) NULL;
     }
-  if (p->filename != (char *) NULL)
-    p->filename=DestroyString(p->filename);
-  if (p->path != (char *) NULL)
-    p->path=DestroyString(p->path);
-  if (p->format != (char *) NULL)
-    p->format=DestroyString(p->format);
+  if (p->exempt == MagickFalse)
+    {
+      if (p->format != (char *) NULL)
+        p->format=DestroyString(p->format);
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->filename != (char *) NULL)
+        p->filename=DestroyString(p->filename);
+    }
   p=(LogInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }
@@ -1369,6 +1380,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
         (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
         log_info->path=ConstantString(filename);
         GetTimerInfo((TimerInfo *) &log_info->timer);
+        log_info->exempt=MagickFalse;
         log_info->signature=MagickSignature;
         continue;
       }
@@ -1501,9 +1513,6 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
 static MagickBooleanType LoadLogLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
-  return(LoadLogList(LogMap,"built-in",0,exception));
-#else
   const StringInfo
     *option;
 
@@ -1513,7 +1522,56 @@ static MagickBooleanType LoadLogLists(const char *filename,
   MagickStatusType
     status;
 
+  register long
+    i;
+
+  /*
+    Load built-in log map.
+  */
   status=MagickFalse;
+  if (log_list == (LinkedListInfo *) NULL)
+    {
+      log_list=NewLinkedList(0);
+      if (log_list == (LinkedListInfo *) NULL)
+        {
+          ThrowFileException(exception,ResourceLimitError,
+            "MemoryAllocationFailed",filename);
+          return(MagickFalse);
+        }
+    }
+  for (i=0; i < (long) (sizeof(LogMap)/sizeof(*LogMap)); i++)
+  {
+    LogInfo
+      *log_info;
+
+    register const LogMapInfo
+      *p;
+
+    p=LogMap+i;
+    log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
+    if (log_info == (LogInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
+        continue;
+      }
+    (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
+    log_info->path=(char *) "[built-in]";
+    GetTimerInfo((TimerInfo *) &log_info->timer);
+    log_info->event_mask=p->event_mask;
+    log_info->handler_mask=p->handler_mask;
+    log_info->filename=(char *) p->filename;
+    log_info->format=(char *) p->format;
+    log_info->exempt=MagickTrue;
+    log_info->signature=MagickSignature;
+    status=AppendValueToLinkedList(log_list,log_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
+  }
+  /*
+    Load external log map.
+  */
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
@@ -1523,11 +1581,7 @@ static MagickBooleanType LoadLogLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((log_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(log_list) != MagickFalse))
-    status|=LoadLogList(LogMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
-#endif
 }
 
 /*
