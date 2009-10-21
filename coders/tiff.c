@@ -2529,27 +2529,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
-#if defined(MAGICKCORE_HAVE_TIFFGETCONFIGUREDCODECS) || (TIFFLIB_VERSION > 20040919)
-    if (compress_tag != COMPRESSION_NONE)
+#if defined(MAGICKCORE_HAVE_TIFFISCODECCONFIGURED) || (TIFFLIB_VERSION > 20040919)
+    if ((compress_tag != COMPRESSION_NONE) &&
+        (TIFFIsCODECConfigured(compress_tag) == 0))
       {
-        TIFFCodec
-          *codec;
-
-        codec=TIFFGetConfiguredCODECs();
-        while ((codec != (TIFFCodec *) NULL) && (codec->name != (char *) NULL))
-        {
-          if (codec->scheme == compress_tag)
-            break;
-          codec++;
-        }
-        if (((codec == (TIFFCodec *) NULL)) || (codec->scheme != compress_tag))
-          {
-            (void) ThrowMagickException(&image->exception,GetMagickModule(),
-              CoderError,"CompressionNotSupported","`%s'",
-              MagickOptionToMnemonic(MagickCompressOptions,(long) compression));
-            compress_tag=COMPRESSION_NONE;
-            compression=NoCompression;
-          }
+        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          CoderError,"CompressionNotSupported","`%s'",MagickOptionToMnemonic(
+          MagickCompressOptions,(long) compression));
+        compress_tag=COMPRESSION_NONE;
+        compression=NoCompression;
       }
 #else
       switch (compress_tag)
