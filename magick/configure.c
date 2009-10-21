@@ -60,14 +60,22 @@
 #define ConfigureFilename  "configure.xml"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _ConfigureMapInfo
+{
+  const char
+    *name,
+    *value;
+} ConfigureMapInfo;
+
+/*
   Static declarations.
 */
-static const char
-  *ConfigureMap = (char *)
-    "<?xml version=\"1.0\"?>"
-    "<configuremap>"
-    "  <configure stealth=\"True\" />"
-    "</configuremap>";
+static const ConfigureMapInfo
+  ConfigureMap[] =
+  {
+  };
 
 static LinkedListInfo
   *configure_list = (LinkedListInfo *) NULL;
@@ -110,12 +118,15 @@ static void *DestroyConfigureElement(void *configure_info)
     *p;
 
   p=(ConfigureInfo *) configure_info;
-  if (p->path != (char *) NULL)
-    p->path=DestroyString(p->path);
-  if (p->name != (char *) NULL)
-    p->name=DestroyString(p->name);
-  if (p->value != (char *) NULL)
-    p->value=DestroyString(p->value);
+  if (p->exempt == MagickFalse)
+    {
+      if (p->value != (char *) NULL)
+        p->value=DestroyString(p->value);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+    }
   p=(ConfigureInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }
@@ -1014,10 +1025,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
     }
   status=MagickTrue;
   configure_info=(ConfigureInfo *) NULL;
-  if (xml == (char *) NULL)
-    token=AcquireString(ConfigureMap);
-  else
-    token=AcquireString((char *) xml);
+  token=AcquireString((char *) xml);
   for (q=(char *) xml; *q != '\0'; )
   {
     /*
@@ -1098,6 +1106,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
         configure_info->path=ConstantString(filename);
+        configure_info->exempt=MagickFalse;
         configure_info->signature=MagickSignature;
         continue;
       }
@@ -1189,9 +1198,6 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
 static MagickBooleanType LoadConfigureLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
-  return(LoadConfigureList(ConfigureMap,"built-in",0,exception));
-#else
   const StringInfo
     *option;
 
@@ -1201,7 +1207,56 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
   MagickStatusType
     status;
 
+  register long
+    i;
+
+  /*
+    Load built-in configure map.
+  */
   status=MagickFalse;
+  if (configure_list == (LinkedListInfo *) NULL)
+    {
+      configure_list=NewLinkedList(0);
+      if (configure_list == (LinkedListInfo *) NULL)
+        {
+          ThrowFileException(exception,ResourceLimitError,
+            "MemoryAllocationFailed",filename);
+          return(MagickFalse);
+        }
+    }
+  for (i=0; i < (long) (sizeof(ConfigureMap)/sizeof(*ConfigureMap)); i++)
+  {
+    ConfigureInfo
+      *configure_info;
+
+    register const ConfigureMapInfo
+      *p;
+
+    p=ConfigureMap+i;
+    configure_info=(ConfigureInfo *) AcquireMagickMemory(
+      sizeof(*configure_info));
+    if (configure_info == (ConfigureInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",
+          configure_info->name);
+        continue;
+      }
+    (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
+    configure_info->path=(char *) "[built-in]";
+    configure_info->name=(char *) p->name;
+    configure_info->value=(char *) p->value;
+    configure_info->exempt=MagickTrue;
+    configure_info->signature=MagickSignature;
+    status=AppendValueToLinkedList(configure_list,configure_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        configure_info->name);
+  }
+  /*
+    Load external configure map.
+  */
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
@@ -1211,9 +1266,5 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  if ((configure_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(configure_list) != MagickFalse))
-    status|=LoadConfigureList(ConfigureMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
-#endif
 }

@@ -72,7 +72,7 @@
 #define ColorFilename  "colors.xml"
 
 /*
-  Static declarations.
+  Typedef declarations.
 */
 typedef struct _ColorMapInfo
 {
@@ -88,7 +88,10 @@ typedef struct _ColorMapInfo
   const long
     compliance;
 } ColorMapInfo;
-
+
+/*
+  Static declarations.
+*/
 static const ColorMapInfo
   ColorMap[] =
   {
@@ -771,8 +774,7 @@ static const ColorMapInfo
     { "yellow2", 238, 238, 0, 1, X11Compliance },
     { "yellow3", 205, 205, 0, 1, X11Compliance },
     { "yellow4", 139, 139, 0, 1, X11Compliance },
-    { "YellowGreen", 154, 205, 50, 1, SVGCompliance | X11Compliance | XPMCompliance },
-    { (const char *) NULL, 0, 0, 0, 0, UndefinedCompliance }
+    { "YellowGreen", 154, 205, 50, 1, SVGCompliance | X11Compliance | XPMCompliance }
   };
 
 /*
@@ -2143,8 +2145,8 @@ static MagickBooleanType LoadColorLists(const char *filename,
   MagickStatusType
     status;
 
-  register const ColorMapInfo
-    *p;
+  register long
+    i;
 
   /*
     Load built-in color map.
@@ -2161,11 +2163,15 @@ static MagickBooleanType LoadColorLists(const char *filename,
         }
     }
   scale=(MagickRealType) ScaleCharToQuantum(1);
-  for (p=ColorMap; p->name != (const char *) NULL; p++)
+  for (i=0; i < (long) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
   {
     ColorInfo
       *color_info;
 
+    register const ColorMapInfo
+      *p;
+
+    p=ColorMap+i;
     color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
     if (color_info == (ColorInfo *) NULL)
       {
