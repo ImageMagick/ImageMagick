@@ -64,7 +64,7 @@
 #define MagickCoderFilename  "coder.xml"
 
 /*
-  Static declarations.
+  Typedef declarations.
 */
 typedef struct _CoderMapInfo
 {
@@ -72,7 +72,10 @@ typedef struct _CoderMapInfo
     *magick,
     *name;
 } CoderMapInfo;
-
+
+/*
+  Static declarations.
+*/
 static const CoderMapInfo
   CoderMap[] =
   {
@@ -213,8 +216,7 @@ static const CoderMapInfo
     { "XTRNSTREAM", "XTRN" },
     { "XV", "VIFF" },
     { "Y", "RAW" },
-    { "YCbCrA", "YCbCr" },
-    { (const char *) NULL, (const char *) NULL }
+    { "YCbCrA", "YCbCr" }
  };
 
 static SemaphoreInfo
@@ -878,8 +880,8 @@ static MagickBooleanType LoadCoderLists(const char *filename,
   MagickStatusType
     status;
 
-  register const CoderMapInfo
-    *p;
+  register long
+    i;
 
   /*
     Load built-in coder map.
@@ -896,11 +898,15 @@ static MagickBooleanType LoadCoderLists(const char *filename,
           return(MagickFalse);
         }
     }
-  for (p=CoderMap; p->magick != (const char *) NULL; p++)
+  for (i=0; i < (long) (sizeof(CoderMap)/sizeof(*CoderMap)); i++)
   {
     CoderInfo
       *coder_info;
 
+    register const CoderMapInfo
+      *p;
+
+    p=CoderMap+i;
     coder_info=(CoderInfo *) AcquireMagickMemory(sizeof(*coder_info));
     if (coder_info == (CoderInfo *) NULL)
       {

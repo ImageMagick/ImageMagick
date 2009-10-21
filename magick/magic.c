@@ -57,9 +57,10 @@
   Define declarations.
 */
 #define MagicFilename  "magic.xml"
+#define MagickString(magic)  (const unsigned char *) (magic), sizeof(magic)-1
 
 /*
-  Static declarations.
+  Typedef declarations.
 */
 typedef struct _MagicMapInfo
 {
@@ -75,9 +76,10 @@ typedef struct _MagicMapInfo
   const size_t
     length;
 } MagicMapInfo;
-
-#define MagickString(magic)  (const unsigned char *) (magic), sizeof(magic)-1
-
+
+/*
+  Static declarations.
+*/
 static const MagicMapInfo
   MagicMap[] =
   {
@@ -188,8 +190,7 @@ static const MagicMapInfo
     { "XEF", 0, MagickString("FOVb") },
     { "XPM", 1, MagickString("* XPM *") },
     { "XWD", 4, MagickString("\007\000\000") },
-    { "XWD", 5, MagickString("\000\000\007") },
-    { (const char *) NULL, 0, MagickString((const char *) NULL) }
+    { "XWD", 5, MagickString("\000\000\007") }
  };
 
 static LinkedListInfo
@@ -1000,8 +1001,8 @@ static MagickBooleanType LoadMagicLists(const char *filename,
   MagickStatusType
     status;
 
-  register const MagicMapInfo
-    *p;
+  register long
+    i;
 
   /*
     Load built-in magic map.
@@ -1017,11 +1018,15 @@ static MagickBooleanType LoadMagicLists(const char *filename,
           return(MagickFalse);
         }
     }
-  for (p=MagicMap; p->name != (const char *) NULL; p++)
+  for (i=0; i < (long) (sizeof(MagicMap)/sizeof(*MagicMap)); i++)
   {
     MagicInfo
       *magic_info;
 
+    register const MagicMapInfo
+      *p;
+
+    p=MagicMap+i;
     magic_info=(MagicInfo *) AcquireMagickMemory(sizeof(*magic_info));
     if (magic_info == (MagicInfo *) NULL)
       {

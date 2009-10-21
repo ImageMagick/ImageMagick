@@ -32,6 +32,7 @@ typedef struct _ConfigureInfo
     *value;
                                                                                 
   MagickBooleanType
+    exempt,
     stealth;
                                                                                 
   struct _ConfigureInfo
