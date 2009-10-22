@@ -3,6 +3,7 @@
 
 2009-10-18  6.5.7-1 Cristy  <quetzlzacatenango@image...>
   * Alpha blending is not required for ScaleImage().
+  * Guassian noise operator is not longer discontinuous.
 
 2009-10-14  6.5.7-0 Pino Toscano  <pino@kde...>
   * ImageMagick fails to build in GNU/HURD due to absence of PATH_MAX.
