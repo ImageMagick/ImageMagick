@@ -333,8 +333,8 @@ static MagickBooleanType CompositeUsage(void)
 
 
   (void) printf("Version: %s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %s\n\n",GetMagickCopyright());
-  (void) printf("Features: %s\n",GetMagickFeatures());
+  (void) printf("Copyright: %s\n",GetMagickCopyright());
+  (void) printf("Features: %s\n\n",GetMagickFeatures());
   (void) printf("Usage: %s [options ...] image [options ...] composite\n"
     "  [ [options ...] mask ] [options ...] composite\n",
     GetClientName());
