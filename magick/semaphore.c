@@ -81,9 +81,6 @@ static LONG
 static long
   semaphore_mutex = 0;
 #endif
-
-static MagickBooleanType
-  instantiate_semaphore = MagickFalse;
 
 /*
   Forward declaractions.
@@ -172,7 +169,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(
           semaphore_info);
         ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInstantiateSemaphoreComponent");
+          "UnableToInitializeSemaphore");
       }
     status=pthread_mutex_init(&semaphore_info->mutex,&mutex_info);
     (void) pthread_mutexattr_destroy(&mutex_info);
@@ -181,7 +178,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(
           semaphore_info);
         ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInstantiateSemaphoreComponent");
+          "UnableToInitializeSemaphore");
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -217,11 +214,7 @@ MagickExport void DestroySemaphoreComponent(void)
   if (pthread_mutex_destroy(&semaphore_mutex) != 0)
     (void) fprintf(stderr,"pthread_mutex_destroy failed %s\n",
       GetExceptionMessage(errno));
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
-  if (instantiate_semaphore == MagickFalse)
-    DeleteCriticalSection(&semaphore_mutex);
 #endif
-  instantiate_semaphore=MagickFalse;
 }
 
 /*
@@ -313,9 +306,6 @@ static void LockMagickMutex(void)
     (void) fprintf(stderr,"pthread_mutex_lock failed %s\n",
       GetExceptionMessage(errno));
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
-  if (instantiate_semaphore == MagickFalse)
-    InitializeCriticalSection(&semaphore_mutex);
-  instantiate_semaphore=MagickTrue;
   while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
     Sleep(10);
 #endif
