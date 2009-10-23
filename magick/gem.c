@@ -611,14 +611,13 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
   const Quantum pixel,const NoiseType noise_type,const MagickRealType attenuate)
 {
 #define NoiseEpsilon  (attenuate*1.0e-5)
-#define SigmaUniform  ScaleCharToQuantum((unsigned char) (attenuate*4.0+0.5))
-#define SigmaGaussian  4.0
+#define SigmaUniform  (attenuate*4.0)
+#define SigmaGaussian  (attenuate*4.0)
 #define SigmaImpulse  (attenuate*0.10)
-#define SigmaLaplacian ScaleCharToQuantum((unsigned char) (attenuate*10.0+0.5))
-#define SigmaMultiplicativeGaussian \
-  ScaleCharToQuantum((unsigned char) (attenuate*1.0+0.5))
+#define SigmaLaplacian (attenuate*10.0)
+#define SigmaMultiplicativeGaussian  (attenuate*1.0)
 #define SigmaPoisson  (attenuate*0.05)
-#define TauGaussian  20.0
+#define TauGaussian  (attenuate*20.0)
 
   double
     alpha,
@@ -632,7 +631,8 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
     case UniformNoise:
     default:
     {
-      noise=(double) pixel+SigmaUniform*(alpha-0.5);
+      noise=(double) pixel+ScaleCharToQuantum((unsigned char)
+        (SigmaUniform*(alpha)));
       break;
     }
     case GaussianNoise:
@@ -645,7 +645,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       beta=GetPseudoRandomValue(random_info);
       sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
       tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
-      noise=(double) pixel+attenuate*sqrt((double) pixel)*SigmaGaussian*sigma+
+      noise=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
         TauGaussian*tau;
       break;
     }
