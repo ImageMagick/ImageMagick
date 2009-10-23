@@ -175,6 +175,10 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   const char
     *value;
 
+  int
+    unicode = 0,
+    iso_11548_1 = 0;
+
   long
     y;
 
@@ -195,8 +199,6 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
 
   unsigned long
     cell_height = 4;
-  int
-    unicode = 0, iso_11548_1 = 0;
 
   /*
     Open output image file.
@@ -205,21 +207,18 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-
   if (LocaleCompare(image_info->magick, "UBRL") == 0)
-    unicode = 1;
+    unicode=1;
   else
     if (LocaleCompare(image_info->magick, "ISOBRL") == 0)
-      iso_11548_1 = 1;
+      iso_11548_1=1;
     else
-      cell_height = 3;
-
+      cell_height=3;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-
   if (!iso_11548_1)
     {
       value=GetImageProperty(image,"Label");
@@ -229,30 +228,34 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       }
       if (image->page.x)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"X: %ld\n", image->page.x);
+        (void) FormatMagickString(buffer,MaxTextExtent,"X: %ld\n",
+          image->page.x);
         (void) WriteBlobString(image,buffer);
       }
       if (image->page.y)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"Y: %ld\n", image->page.y);
+        (void) FormatMagickString(buffer,MaxTextExtent,"Y: %ld\n",
+          image->page.y);
         (void) WriteBlobString(image,buffer);
       }
       (void) FormatMagickString(buffer,MaxTextExtent,"Width: %lu\n",
         image->columns+(image->columns % 2));
       (void) WriteBlobString(image,buffer);
-      (void) FormatMagickString(buffer,MaxTextExtent,"Height: %lu\n", image->rows);
+      (void) FormatMagickString(buffer,MaxTextExtent,"Height: %lu\n",
+        image->rows);
       (void) WriteBlobString(image,buffer);
-
       (void) WriteBlobString(image,"\n");
     }
-
   (void) SetImageType(image,BilevelType);
-  polarity=(IndexPacket) (PixelIntensityToQuantum(&image->colormap[0]) >=
-    (Quantum) (QuantumRange/2));
-  if (image->colors == 2)
-    polarity=(IndexPacket)
-      (PixelIntensityToQuantum(&image->colormap[0]) >=
-       PixelIntensityToQuantum(&image->colormap[1]));
+  if (image->storage_class == PseudoClass) {
+    polarity=(IndexPacket) (PixelIntensityToQuantum(&image->colormap[0]) >=
+      (Quantum) (QuantumRange/2));
+    if (image->colors == 2)
+      polarity=(IndexPacket)
+        (PixelIntensityToQuantum(&image->colormap[0]) >=
+         PixelIntensityToQuantum(&image->colormap[1]));
+    polarity = 0;
+  }
   for (y=0; y < (long) image->rows; y+=cell_height)
   {
     if ((y+cell_height) > image->rows)
@@ -262,7 +265,6 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-
     for (x=0; x < (long) image->columns; x+=2)
     {
       unsigned char cell = 0;
@@ -270,8 +272,12 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
 
       do
       {
-#define do_cell(dx,dy,bit) \
-        cell |= (indexes[x+dx+dy*image->columns]==polarity)<<bit;
+#define do_cell(dx,dy,bit) do { \
+        if (image->storage_class == PseudoClass) \
+          cell |= (indexes[x+dx+dy*image->columns] == polarity) << bit; \
+        else \
+          cell |= (p[x+dx+dy*image->columns].green == 0) << bit; \
+} while (0) 
 
         do_cell(0,0,0);
         if (two_columns)
