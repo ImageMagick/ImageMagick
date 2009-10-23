@@ -75,6 +75,7 @@ typedef struct _ConfigureMapInfo
 static const ConfigureMapInfo
   ConfigureMap[] =
   {
+    { "NAME", "ImageMagick" }
   };
 
 static LinkedListInfo
