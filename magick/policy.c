@@ -112,6 +112,8 @@ typedef struct _PolicyMapInfo
 static const PolicyMapInfo
   PolicyMap[] =
   {
+    { UndefinedPolicyDomain, UndefinedPolicyRights, (const char *) NULL,
+      (const char *) NULL, (const char *) NULL }
   };
 
 static LinkedListInfo
