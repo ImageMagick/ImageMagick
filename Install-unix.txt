@@ -513,7 +513,8 @@ Makefile Build Targets
         make install
 
   * Run tests using the installed ImageMagick ('make install' must be done
-    first!).
+    first!).  Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF
+    tests will fail.
 
         make check
 
