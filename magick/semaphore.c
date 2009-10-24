@@ -195,33 +195,6 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y S e m a p h o r e C o m p o n e n t                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroySemaphoreComponent() destroys the semaphore component.
-%
-%  The format of the DestroySemaphoreComponent method is:
-%
-%      DestroySemaphoreComponent(void)
-%
-*/
-MagickExport void DestroySemaphoreComponent(void)
-{
-#if defined(MAGICKCORE_HAVE_PTHREAD)
-  if (pthread_mutex_destroy(&semaphore_mutex) != 0)
-    (void) fprintf(stderr,"pthread_mutex_destroy failed %s\n",
-      GetExceptionMessage(errno));
-#endif
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   D e s t r o y S e m a p h o r e I n f o                                   %
 %                                                                             %
 %                                                                             %
@@ -253,31 +226,6 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   (*semaphore_info)->signature=(~MagickSignature);
   *semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(*semaphore_info);
   UnlockMagickMutex();
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n s t a n t i a t e S e m a p h o r e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateSemaphoreComponent() instantiates the semaphore environment.
-%
-%  The format of the InstantiateSemaphoreComponent method is:
-%
-%      MagickBooleanType InstantiateSemaphoreComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateSemaphoreComponent(void)
-{
-  LockMagickMutex();
-  UnlockMagickMutex();
-  return(MagickTrue);
 }
 
 /*
@@ -403,6 +351,58 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
   (void) UnlockSemaphoreInfo(semaphore_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e m a p h o r e C o m p o n e n t G e n e s i s                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SemaphoreComponentGenesis() instantiates the semaphore environment.
+%
+%  The format of the SemaphoreComponentGenesis method is:
+%
+%      MagickBooleanType SemaphoreComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType SemaphoreComponentGenesis(void)
+{
+  LockMagickMutex();
+  UnlockMagickMutex();
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e m a p h o r e C o m p o n e n t T e r m i n u s                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SemaphoreComponentTerminus() destroys the semaphore component.
+%
+%  The format of the SemaphoreComponentTerminus method is:
+%
+%      SemaphoreComponentTerminus(void)
+%
+*/
+MagickExport void SemaphoreComponentTerminus(void)
+{
+#if defined(MAGICKCORE_HAVE_PTHREAD)
+  if (pthread_mutex_destroy(&semaphore_mutex) != 0)
+    (void) fprintf(stderr,"pthread_mutex_destroy failed %s\n",
+      GetExceptionMessage(errno));
+#endif
 }
 
 /*

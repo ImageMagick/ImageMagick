@@ -57,15 +57,15 @@ extern MagickExport const char
   *GetMagicName(const MagicInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiateMagicComponent(void),
-  ListMagicInfo(FILE *,ExceptionInfo *);
+  ListMagicInfo(FILE *,ExceptionInfo *),
+  MagicComponentGenesis(void);
 
 extern MagickExport const MagicInfo
   *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *),
   **GetMagicInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyMagicComponent(void);
+  MagicComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

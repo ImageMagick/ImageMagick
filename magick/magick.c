@@ -124,34 +124,6 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y M a g i c k C o m p o n e n t                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyMagickComponent() destroys the magick component.
-%
-%  The format of the DestroyMagickComponent method is:
-%
-%      void DestroyMagickComponent(void)
-%
-*/
-MagickExport void DestroyMagickComponent(void)
-{
-  AcquireSemaphoreInfo(&magick_semaphore);
-  if (magick_list != (SplayTreeInfo *) NULL)
-    magick_list=DestroySplayTree(magick_list);
-  instantiate_magick=MagickFalse;
-  RelinquishSemaphoreInfo(magick_semaphore);
-  DestroySemaphoreInfo(&magick_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t I m a g e D e c o d e r                                             %
 %                                                                             %
 %                                                                             %
@@ -855,31 +827,6 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e M a g i c k C o m p o n e n t                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateMagickComponent() instantiates the magick component.
-%
-%  The format of the InstantiateMagickComponent method is:
-%
-%      MagickBooleanType InstantiateMagickComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateMagickComponent(void)
-{
-  AcquireSemaphoreInfo(&magick_semaphore);
-  RelinquishSemaphoreInfo(magick_semaphore);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   I s M a g i c k C o n f l i c t                                           %
 %                                                                             %
 %                                                                             %
@@ -1067,6 +1014,59 @@ MagickExport MagickBooleanType IsMagickInstantiated(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   M a g i c k C o m p o n e n t G e n e s i s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickComponentGenesis() instantiates the magick component.
+%
+%  The format of the MagickComponentGenesis method is:
+%
+%      MagickBooleanType MagickComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType MagickComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&magick_semaphore);
+  RelinquishSemaphoreInfo(magick_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k C o m p o n e n t T e r m i n u s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickComponentTerminus() destroys the magick component.
+%
+%  The format of the MagickComponentTerminus method is:
+%
+%      void MagickComponentTerminus(void)
+%
+*/
+MagickExport void MagickComponentTerminus(void)
+{
+  AcquireSemaphoreInfo(&magick_semaphore);
+  if (magick_list != (SplayTreeInfo *) NULL)
+    magick_list=DestroySplayTree(magick_list);
+  instantiate_magick=MagickFalse;
+  RelinquishSemaphoreInfo(magick_semaphore);
+  DestroySemaphoreInfo(&magick_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C o r e G e n e s i s                                         %
 %                                                                             %
 %                                                                             %
@@ -1127,7 +1127,7 @@ static void MagickSignalHandler(int signal_number)
 #if !defined(MAGICKCORE_HAVE_SIGACTION)
   (void) signal(signal_number,SIG_IGN);
 #endif
-  AsynchronousDestroyResourceComponent();
+  AsynchronousResourceComponentTerminus();
   instantiate_magick=MagickFalse;
   (void) SetMagickSignalHandler(signal_number,signal_handlers[signal_number]);
 #if defined(MAGICKCORE_HAVE_RAISE)
@@ -1177,19 +1177,15 @@ MagickExport void MagickCoreGenesis(const char *path,
     execution_path[MaxTextExtent],
     filename[MaxTextExtent];
 
-  time_t
-    seconds;
-
   /*
     Initialize the Magick environment.
   */
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-  (void) InstantiateSemaphoreComponent();
-  (void) InstantiateLogComponent();
-  (void) InstantiateLocaleComponent();
-  (void) InstantiateRandomComponent();
-  seconds=time((time_t *) NULL);
+  (void) SemaphoreComponentGenesis();
+  (void) LogComponentGenesis();
+  (void) LocaleComponentGenesis();
+  (void) RandomComponentGenesis();
   events=GetEnvironmentValue("MAGICK_DEBUG");
   if (events != (char *) NULL)
     {
@@ -1265,23 +1261,23 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Instantiate magick resources.
   */
-  (void) InstantiatePolicyComponent();
-  (void) InstantiateCacheComponent();
-  (void) InstantiateRegistryComponent();
-  (void) InstantiateResourcesComponent();
-  (void) InstantiateCoderComponent();
-  (void) InstantiateMagickComponent();
+  (void) PolicyComponentGenesis();
+  (void) CacheComponentGenesis();
+  (void) RegistryComponentGenesis();
+  (void) ResourceComponentGenesis();
+  (void) CoderComponentGenesis();
+  (void) MagickComponentGenesis();
 #if defined(MAGICKCORE_MODULES_SUPPORT)
-  (void) InstantiateModuleComponent();
+  (void) ModuleComponentGenesis();
 #endif
-  (void) InstantiateDelegateComponent();
-  (void) InstantiateMagicComponent();
-  (void) InstantiateColorComponent();
-  (void) InstantiateTypeComponent();
-  (void) InstantiateConfigureComponent();
-  (void) InstantiateMimeComponent();
-  (void) InstantiateConstituteComponent();
-  (void) InstantiateXComponent();
+  (void) DelegateComponentGenesis();
+  (void) MagicComponentGenesis();
+  (void) ColorComponentGenesis();
+  (void) TypeComponentGenesis();
+  (void) ConfigureComponentGenesis();
+  (void) MimeComponentGenesis();
+  (void) ConstituteComponentGenesis();
+  (void) XComponentGenesis();
 }
 
 /*
@@ -1297,7 +1293,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 %
 %  MagickCoreTerminus() destroys the MagickCore environment.
 %
-%  The format of the DestroyMagick function is:
+%  The format of the MagickCoreTerminus function is:
 %
 %      MagickCoreTerminus(void)
 %
@@ -1305,34 +1301,34 @@ MagickExport void MagickCoreGenesis(const char *path,
 MagickExport void MagickCoreTerminus(void)
 {
 #if defined(MAGICKCORE_X11_DELEGATE)
-  DestroyXComponent();
+  XComponentTerminus();
 #endif
-  DestroyConstituteComponent();
-  DestroyMimeComponent();
-  DestroyConfigureComponent();
-  DestroyTypeComponent();
-  DestroyColorComponent();
+  ConstituteComponentTerminus();
+  MimeComponentTerminus();
+  ConfigureComponentTerminus();
+  TypeComponentTerminus();
+  ColorComponentTerminus();
 #if defined(__WINDOWS__)
   NTGhostscriptUnLoadDLL();
 #endif
-  DestroyMagicComponent();
-  DestroyDelegateComponent();
-  DestroyMagickComponent();
+  MagicComponentTerminus();
+  DelegateComponentTerminus();
+  MagickComponentTerminus();
 #if !defined(MAGICKCORE_BUILD_MODULES)
   UnregisterStaticModules();
 #endif
 #if defined(MAGICKCORE_MODULES_SUPPORT)
-  DestroyModuleComponent();
+  ModuleComponentTerminus();
 #endif
-  DestroyCoderComponent();
-  DestroyResourceComponent();
-  DestroyRegistryComponent();
-  DestroyCacheFaclity();
-  DestroyPolicyComponent();
-  DestroyRandomComponent();
-  DestroyLocaleComponent();
-  DestroyLogComponent();
-  DestroySemaphoreComponent();
+  CoderComponentTerminus();
+  ResourceComponentTerminus();
+  RegistryComponentTerminus();
+  CacheComponentTerminus();
+  PolicyComponentTerminus();
+  RandomComponentTerminus();
+  LocaleComponentTerminus();
+  LogComponentTerminus();
+  SemaphoreComponentTerminus();
   instantiate_magick=MagickFalse;
 }
 

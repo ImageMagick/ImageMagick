@@ -22,7 +22,6 @@ $
 $
 $write sys$output "Making Coders..."
 $call Make art.c
-$call Make avi.c
 $call Make avs.c
 $call Make bmp.c
 $call Make braille.c
@@ -132,7 +131,7 @@ $call Make magick.c
 $call Make scr.c
 $deass magick
 $deass wand
-$library/create libCoders.olb art,avi,avs,bmp,braille,clip,clipboard,cip,cmyk, -
+$library/create libCoders.olb art,avs,bmp,braille,clip,clipboard,cip,cmyk, -
   cut,dcm,dds,dib,dng,dps,dpx,emf,ept,exr,fax,fits,fpx,gif,gradient,gray, -
   hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2,label,cals, -
   caption,palm,map,mat,matte, -

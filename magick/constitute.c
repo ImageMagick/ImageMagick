@@ -79,6 +79,55 @@ static SemaphoreInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o n s t i t u t e C o m p o n e n t G e n e s i s                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConstituteComponentGenesis() instantiates the constitute component.
+%
+%  The format of the ConstituteComponentGenesis method is:
+%
+%      MagickBooleanType ConstituteComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType ConstituteComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&constitute_semaphore);
+  RelinquishSemaphoreInfo(constitute_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o n s t i t u t e C o m p o n e n t T e r m i n u s                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConstituteComponentTerminus() destroys the constitute component.
+%
+%  The format of the ConstituteComponentTerminus method is:
+%
+%      ConstituteComponentTerminus(void)
+%
+*/
+MagickExport void ConstituteComponentTerminus(void)
+{
+  if (constitute_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&constitute_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n s t i t u t e I m a g e                                             %
 %                                                                             %
 %                                                                             %
@@ -156,55 +205,6 @@ MagickExport Image *ConstituteImage(const unsigned long columns,
       image=DestroyImage(image);
     }
   return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y C o n s t i t u t e C o m p o n e n t                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyConstituteComponent() destroys the constitute component.
-%
-%  The format of the DestroyConstituteComponent method is:
-%
-%      DestroyConstituteComponent(void)
-%
-*/
-MagickExport void DestroyConstituteComponent(void)
-{
-  if (constitute_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&constitute_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n s t a n t i a t e C o n s t i t u t e C o m p o n e n t               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateConstituteComponent() instantiates the constitute component.
-%
-%  The format of the InstantiateConstituteComponent method is:
-%
-%      MagickBooleanType InstantiateConstituteComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateConstituteComponent(void)
-{
-  AcquireSemaphoreInfo(&constitute_semaphore);
-  RelinquishSemaphoreInfo(constitute_semaphore);
-  return(MagickTrue);
 }
 
 /*

@@ -241,61 +241,6 @@ MagickExport void CloseMagickLog(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y L o g C o m p o n e n t                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyLogComponent() destroys the logging component.
-%
-%  The format of the DestroyLogComponent method is:
-%
-%      DestroyLogComponent(void)
-%
-*/
-
-static void *DestroyLogElement(void *log_info)
-{
-  register LogInfo
-    *p;
-
-  p=(LogInfo *) log_info;
-  if (p->file != (FILE *) NULL)
-    {
-      if (p->append == MagickFalse)
-        (void) fprintf(p->file,"</log>\n");
-      (void) fclose(p->file);
-      p->file=(FILE *) NULL;
-    }
-  if (p->exempt == MagickFalse)
-    {
-      if (p->format != (char *) NULL)
-        p->format=DestroyString(p->format);
-      if (p->path != (char *) NULL)
-        p->path=DestroyString(p->path);
-      if (p->filename != (char *) NULL)
-        p->filename=DestroyString(p->filename);
-    }
-  p=(LogInfo *) RelinquishMagickMemory(p);
-  return((void *) NULL);
-}
-
-MagickExport void DestroyLogComponent(void)
-{
-  AcquireSemaphoreInfo(&log_semaphore);
-  if (log_list != (LinkedListInfo *) NULL)
-    log_list=DestroyLinkedList(log_list,DestroyLogElement);
-  instantiate_log=MagickFalse;
-  RelinquishSemaphoreInfo(log_semaphore);
-  DestroySemaphoreInfo(&log_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t L o g I n f o                                                       %
 %                                                                             %
 %                                                                             %
@@ -602,31 +547,6 @@ static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e L o g C o m p o n e n t                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateLogComponent() instantiates the log component.
-%
-%  The format of the InstantiateLogComponent method is:
-%
-%      MagickBooleanType InstantiateLogComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateLogComponent(void)
-{
-  AcquireSemaphoreInfo(&log_semaphore);
-  RelinquishSemaphoreInfo(log_semaphore);
-  return(MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  I s E v e n t L o g g i n g                                                %
 %                                                                             %
 %                                                                             %
@@ -740,6 +660,86 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
   (void) fflush(file);
   log_info=(const LogInfo **) RelinquishMagickMemory((void *) log_info);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L o g C o m p o n e n t G e n e s i s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LogComponentGenesis() instantiates the log component.
+%
+%  The format of the LogComponentGenesis method is:
+%
+%      MagickBooleanType LogComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType LogComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  RelinquishSemaphoreInfo(log_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L o g C o m p o n e n t T e r m i n u s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LogComponentTerminus() destroys the logging component.
+%
+%  The format of the LogComponentTerminus method is:
+%
+%      LogComponentTerminus(void)
+%
+*/
+
+static void *DestroyLogElement(void *log_info)
+{
+  register LogInfo
+    *p;
+
+  p=(LogInfo *) log_info;
+  if (p->file != (FILE *) NULL)
+    {
+      if (p->append == MagickFalse)
+        (void) fprintf(p->file,"</log>\n");
+      (void) fclose(p->file);
+      p->file=(FILE *) NULL;
+    }
+  if (p->exempt == MagickFalse)
+    {
+      if (p->format != (char *) NULL)
+        p->format=DestroyString(p->format);
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->filename != (char *) NULL)
+        p->filename=DestroyString(p->filename);
+    }
+  p=(LogInfo *) RelinquishMagickMemory(p);
+  return((void *) NULL);
+}
+
+MagickExport void LogComponentTerminus(void)
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  if (log_list != (LinkedListInfo *) NULL)
+    log_list=DestroyLinkedList(log_list,DestroyLogElement);
+  instantiate_log=MagickFalse;
+  RelinquishSemaphoreInfo(log_semaphore);
+  DestroySemaphoreInfo(&log_semaphore);
 }
 
 /*

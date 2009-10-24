@@ -149,17 +149,42 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y D e l e g a t e C o m p o n e n t                           %
++   D e l e g a t e C o m p o n e n t T e r m i n u s                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyDelegateComponent() destroys the delegate component.
+%  DelegateComponentGenesis() instantiates the delegate component.
 %
-%  The format of the DestroyDelegateComponent method is:
+%  The format of the DelegateComponentGenesis method is:
 %
-%      DestroyDelegateComponent(void)
+%      MagickBooleanType DelegateComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType DelegateComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&delegate_semaphore);
+  RelinquishSemaphoreInfo(delegate_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e l e g a t e C o m p o n e n t T e r m i n u s                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DelegateComponentTerminus() destroys the delegate component.
+%
+%  The format of the DelegateComponentTerminus method is:
+%
+%      DelegateComponentTerminus(void)
 %
 */
 
@@ -182,7 +207,7 @@ static void *DestroyDelegate(void *delegate_info)
 }
 
 
-MagickExport void DestroyDelegateComponent(void)
+MagickExport void DelegateComponentTerminus(void)
 {
   AcquireSemaphoreInfo(&delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
@@ -691,31 +716,6 @@ static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(delegate_semaphore);
     }
   return(delegate_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n s t a n t i a t e D e l e g a t e C o m p o n e n t                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateDelegateComponent() instantiates the delegate component.
-%
-%  The format of the InstantiateDelegateComponent method is:
-%
-%      MagickBooleanType InstantiateDelegateComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateDelegateComponent(void)
-{
-  AcquireSemaphoreInfo(&delegate_semaphore);
-  RelinquishSemaphoreInfo(delegate_semaphore);
-  return(MagickTrue);
 }
 
 /*

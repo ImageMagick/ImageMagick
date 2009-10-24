@@ -205,6 +205,12 @@ ModuleExport unsigned long RegisterMPEGImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("AVI");
+  entry->decoder=(DecodeImageHandler *) ReadAVIImage;
+  entry->magick=(IsImageFormatHandler *) IsAVI;
+  entry->description=ConstantString("Microsoft Audio/Visual Interleaved");
+  entry->module=ConstantString("AVI");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MOV");
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
@@ -292,6 +298,7 @@ ModuleExport void UnregisterMPEGImage(void)
   (void) UnregisterMagickInfo("MPG");
   (void) UnregisterMagickInfo("MPEG");
   (void) UnregisterMagickInfo("MOV");
+  (void) UnregisterMagickInfo("AVI");
 }
 
 /*

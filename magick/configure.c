@@ -99,17 +99,42 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o n f i g u r e C o m p o n e n t                         %
++   C o n f i g u r e C o m p o n e n t G e n e s i s                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyConfigureComponent() destroys the configure component.
+%  ConfigureComponentGenesis() instantiates the configure component.
 %
-%  The format of the DestroyConfigureComponent method is:
+%  The format of the ConfigureComponentGenesis method is:
 %
-%      DestroyConfigureComponent(void)
+%      MagickBooleanType ConfigureComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType ConfigureComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&configure_semaphore);
+  RelinquishSemaphoreInfo(configure_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o n f i g u r e C o m p o n e n t T e r m i n u s                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConfigureComponentTerminus() destroys the configure component.
+%
+%  The format of the ConfigureComponentTerminus method is:
+%
+%      ConfigureComponentTerminus(void)
 %
 */
 
@@ -132,7 +157,7 @@ static void *DestroyConfigureElement(void *configure_info)
   return((void *) NULL);
 }
 
-MagickExport void DestroyConfigureComponent(void)
+MagickExport void ConfigureComponentTerminus(void)
 {
   AcquireSemaphoreInfo(&configure_semaphore);
   if (configure_list != (LinkedListInfo *) NULL)
@@ -853,31 +878,6 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(configure_semaphore);
     }
   return(configure_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n s t a n t i a t e C o n f i g u r e C o m p o n e n t                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateConfigureComponent() instantiates the configure component.
-%
-%  The format of the InstantiateConfigureComponent method is:
-%
-%      MagickBooleanType InstantiateConfigureComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateConfigureComponent(void)
-{
-  AcquireSemaphoreInfo(&configure_semaphore);
-  RelinquishSemaphoreInfo(configure_semaphore);
-  return(MagickTrue);
 }
 
 /*

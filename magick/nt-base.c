@@ -350,7 +350,7 @@ MagickExport int NTCloseLibrary(void *handle)
 static BOOL ControlHandler(DWORD type)
 {
   (void) type;
-  AsynchronousDestroyResourceComponent();
+  AsynchronousResourceComponentTerminus();
   return(FALSE);
 }
 
