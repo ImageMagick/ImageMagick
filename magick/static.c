@@ -164,7 +164,6 @@ MagickExport void RegisterStaticModules(void)
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
   (void) RegisterARTImage();
-  (void) RegisterAVIImage();
   (void) RegisterAVSImage();
   (void) RegisterBMPImage();
   (void) RegisterCAPTIONImage();
@@ -329,7 +328,6 @@ MagickExport void UnregisterStaticModules(void)
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
   UnregisterARTImage();
-  UnregisterAVIImage();
   UnregisterAVSImage();
   UnregisterBMPImage();
   UnregisterBRAILLEImage();

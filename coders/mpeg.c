@@ -72,6 +72,40 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s A V I                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsAVI() returns MagickTrue if the image format type, identified by the
+%  magick string, is Audio/Video Interleaved file format.
+%
+%  The format of the IsAVI method is:
+%
+%      unsigned long IsAVI(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
+static MagickBooleanType IsAVI(const unsigned char *magick,const size_t length)
+{
+  if (length < 4)
+    return(MagickFalse);
+  if (memcmp(magick,"RIFF",4) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s M P E G                                                               %
 %                                                                             %
 %                                                                             %
@@ -206,7 +240,7 @@ ModuleExport unsigned long RegisterMPEGImage(void)
     *entry;
 
   entry=SetMagickInfo("AVI");
-  entry->decoder=(DecodeImageHandler *) ReadAVIImage;
+  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsAVI;
   entry->description=ConstantString("Microsoft Audio/Visual Interleaved");
   entry->module=ConstantString("AVI");
