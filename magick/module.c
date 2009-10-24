@@ -184,7 +184,6 @@ MagickExport void DestroyModuleList(void)
 #endif
   instantiate_module=MagickFalse;
   RelinquishSemaphoreInfo(module_semaphore);
-  DestroySemaphoreInfo(&module_semaphore);
 }
 
 /*
