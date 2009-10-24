@@ -192,6 +192,30 @@ MagickExport void DestroyModuleList(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D e s t r o y M o d u l e C o m p o n e n t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyModuleComponent() destroys the module component.
+%
+%  The format of the DestroyModuleComponent method is:
+%
+%      DestroyModuleComponent(void)
+%
+*/
+MagickExport void DestroyModuleComponent(void)
+{
+  DestroyModuleList();
+  DestroySemaphoreInfo(&module_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M o d u l e I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -899,8 +923,12 @@ MagickExport MagickBooleanType InitializeModuleList(
 */
 MagickExport MagickBooleanType InstantiateModuleComponent(void)
 {
-  AcquireSemaphoreInfo(&module_semaphore);
-  RelinquishSemaphoreInfo(module_semaphore);
+  ExceptionInfo
+    *exception;
+
+  exception=AcquireExceptionInfo();
+  InitializeModuleList(exception);
+  exception=DestroyExceptionInfo(exception);
   return(MagickTrue);
 }
 
