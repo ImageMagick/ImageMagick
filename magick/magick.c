@@ -145,12 +145,6 @@ MagickExport void DestroyMagickComponent(void)
   instantiate_magick=MagickFalse;
   RelinquishSemaphoreInfo(magick_semaphore);
   DestroySemaphoreInfo(&magick_semaphore);
-#if !defined(MAGICKCORE_BUILD_MODULES)
-  UnregisterStaticModules();
-#endif
-#if defined(MAGICKCORE_MODULES_SUPPORT)
-  DestroyModuleList();
-#endif
 }
 
 /*
@@ -1183,9 +1177,6 @@ MagickExport void MagickCoreGenesis(const char *path,
     execution_path[MaxTextExtent],
     filename[MaxTextExtent];
 
-  ExceptionInfo
-    *exception;
-
   time_t
     seconds;
 
@@ -1272,7 +1263,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 #endif
     }
   /*
-    Initialize magick resources.
+    Instantiate magick resources.
   */
   (void) InstantiatePolicyComponent();
   (void) InstantiateCacheComponent();
@@ -1280,7 +1271,9 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) InstantiateResourcesComponent();
   (void) InstantiateCoderComponent();
   (void) InstantiateMagickComponent();
+#if defined(MAGICKCORE_MODULES_SUPPORT)
   (void) InstantiateModuleComponent();
+#endif
   (void) InstantiateDelegateComponent();
   (void) InstantiateMagicComponent();
   (void) InstantiateColorComponent();
@@ -1288,12 +1281,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) InstantiateConfigureComponent();
   (void) InstantiateMimeComponent();
   (void) InstantiateConstituteComponent();
-  exception=AcquireExceptionInfo();
-#if defined(MAGICKCORE_MODULES_SUPPORT)
-  InitializeModuleList(exception);
-#endif
-  exception=DestroyExceptionInfo(exception);
-  (void) InstantiateLogComponent();
+  (void) InstantiateXComponent();
 }
 
 /*
@@ -1317,7 +1305,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 MagickExport void MagickCoreTerminus(void)
 {
 #if defined(MAGICKCORE_X11_DELEGATE)
-  DestroyXResources();
+  DestroyXComponent();
 #endif
   DestroyConstituteComponent();
   DestroyMimeComponent();
@@ -1330,6 +1318,12 @@ MagickExport void MagickCoreTerminus(void)
   DestroyMagicComponent();
   DestroyDelegateComponent();
   DestroyMagickComponent();
+#if !defined(MAGICKCORE_BUILD_MODULES)
+  UnregisterStaticModules();
+#endif
+#if defined(MAGICKCORE_MODULES_SUPPORT)
+  DestroyModuleComponent();
+#endif
   DestroyCoderComponent();
   DestroyResourceComponent();
   DestroyRegistryComponent();

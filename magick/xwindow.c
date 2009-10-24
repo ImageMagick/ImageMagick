@@ -1790,6 +1790,29 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D e s t r o y X C o m p o n e n t                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyXComponent() destroys the module component.
+%
+%  The format of the DestroyXComponent method is:
+%
+%      DestroyXComponent(void)
+%
+*/
+MagickExport void DestroyXComponent(void)
+{
+  DestroyXResources();
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   X D e s t r o y R e s o u r c e I n f o                                   %
 %                                                                             %
 %                                                                             %
@@ -5231,6 +5254,29 @@ MagickExport XWindows *XInitializeWindows(Display *display,
           XWindowByName(display,root_window,resource_info->window_group);
     }
   return(windows);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n s t a n t i a t e X C o m p o n e n t                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InstantiateXComponent() instantiates the X component.
+%
+%  The format of the InstantiateXComponent method is:
+%
+%      MagickBooleanType InstantiateXComponent(void)
+%
+*/
+MagickExport MagickBooleanType InstantiateXComponent(void)
+{
+  return(MagickTrue);
 }
 
 /*

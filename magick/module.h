@@ -86,6 +86,7 @@ extern MagickExport ModuleInfo
 
 extern MagickExport void
   DestroyModuleList(void),
+  DestroyModuleComponent(void),
   RegisterStaticModules(void),
   UnregisterStaticModules(void);
 
