@@ -252,31 +252,6 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y R a n d o m C o m p o n e n t                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyRandomComponent() destroys the random component.
-%
-%  The format of the DestroyRandomComponent method is:
-%
-%      DestroyRandomComponent(void)
-%
-*/
-MagickExport void DestroyRandomComponent(void)
-{
-  AcquireSemaphoreInfo(&random_semaphore);
-  (void) UnlockSemaphoreInfo(random_semaphore);
-  DestroySemaphoreInfo(&random_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   D e s t r o y R a n d o m I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -714,24 +689,49 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e R a n d o m C o m p o n e n t                       %
++   R a n d o m C o m p o n e n t G e n e s i s                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InstantiateRandomComponent() instantiates the random component.
+%  RandomComponentGenesis() instantiates the random component.
 %
-%  The format of the InstantiateRandomComponent method is:
+%  The format of the RandomComponentGenesis method is:
 %
-%      MagickBooleanType InstantiateRandomComponent(void)
+%      MagickBooleanType RandomComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType InstantiateRandomComponent(void)
+MagickExport MagickBooleanType RandomComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&random_semaphore);
   RelinquishSemaphoreInfo(random_semaphore);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R a n d o m C o m p o n e n t T e r m i n u s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RandomComponentTerminus() destroys the random component.
+%
+%  The format of the RandomComponentTerminus method is:
+%
+%      RandomComponentTerminus(void)
+%
+*/
+MagickExport void RandomComponentTerminus(void)
+{
+  AcquireSemaphoreInfo(&random_semaphore);
+  (void) UnlockSemaphoreInfo(random_semaphore);
+  DestroySemaphoreInfo(&random_semaphore);
 }
 
 /*

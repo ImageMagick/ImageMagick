@@ -516,8 +516,8 @@ extern MagickExport int
   XError(Display *,XErrorEvent *);
 
 extern MagickExport MagickBooleanType
-  InstantiateXComponent(void),
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
+  XComponentGenesis(void),
   XDrawImage(Display *,const XPixelInfo *,XDrawInfo *,Image *),
   XGetWindowColor(Display *,XWindows *,char *),
   XMagickProgressMonitor(const char *,const MagickOffsetType,
@@ -528,12 +528,12 @@ extern MagickExport MagickBooleanType
   XRemoteCommand(Display *,const char *,const char *);
 
 extern MagickExport void
-  DestroyXComponent(void),
   DestroyXResources(void),
   XBestIconSize(Display *,XWindowInfo *,Image *),
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),
   XCheckRefreshWindows(Display *,XWindows *),
   XClientMessage(Display *,const Window,const Atom,const Atom,const Time),
+  XComponentTerminus(void),
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const unsigned long),

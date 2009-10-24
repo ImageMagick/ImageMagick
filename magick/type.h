@@ -88,8 +88,8 @@ extern MagickExport char
   **GetTypeList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiateTypeComponent(void),
-  ListTypeInfo(FILE *,ExceptionInfo *);
+  ListTypeInfo(FILE *,ExceptionInfo *),
+  TypeComponentGenesis(void);
 
 extern MagickExport const TypeInfo
   *GetTypeInfo(const char *,ExceptionInfo *),
@@ -98,7 +98,7 @@ extern MagickExport const TypeInfo
   **GetTypeInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 MagickExport void
-  DestroyTypeComponent(void);
+  TypeComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

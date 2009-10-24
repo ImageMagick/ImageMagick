@@ -214,56 +214,6 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y M a g i c C o m p o n e n t                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyMagicComponent() destroys the magic component.
-%
-%  The format of the DestroyMagicComponent method is:
-%
-%      DestroyMagicComponent(void)
-%
-*/
-
-static void *DestroyMagicElement(void *magic_info)
-{
-  register MagicInfo
-    *p;
-
-  p=(MagicInfo *) magic_info;
-  if (p->exempt == MagickFalse)
-    {
-      if (p->path != (char *) NULL)
-        p->path=DestroyString(p->path);
-      if (p->name != (char *) NULL)
-        p->name=DestroyString(p->name);
-      if (p->target != (char *) NULL)
-        p->target=DestroyString(p->target);
-      if (p->magic != (unsigned char *) NULL)
-        p->magic=(unsigned char *) RelinquishMagickMemory(p->magic);
-    }
-  p=(MagicInfo *) RelinquishMagickMemory(p);
-  return((void *) NULL);
-}
-
-MagickExport void DestroyMagicComponent(void)
-{
-  AcquireSemaphoreInfo(&magic_semaphore);
-  if (magic_list != (LinkedListInfo *) NULL)
-    magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
-  instantiate_magic=MagickFalse;
-  RelinquishSemaphoreInfo(magic_semaphore);
-  DestroySemaphoreInfo(&magic_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t M a g i c I n f o                                                   %
 %                                                                             %
 %                                                                             %
@@ -582,31 +532,6 @@ static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(magic_semaphore);
     }
   return(magic_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n s t a n t i a t e M a g i c C o m p o n e n t                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateMagicComponent() instantiates the magic component.
-%
-%  The format of the InstantiateMagicComponent method is:
-%
-%      MagickBooleanType InstantiateMagicComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateMagicComponent(void)
-{
-  AcquireSemaphoreInfo(&magic_semaphore);
-  RelinquishSemaphoreInfo(magic_semaphore);
-  return(MagickTrue);
 }
 
 /*
@@ -1063,4 +988,79 @@ static MagickBooleanType LoadMagicLists(const char *filename,
   }
   options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c C o m p o n e n t G e n e s i s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagicComponentGenesis() instantiates the magic component.
+%
+%  The format of the MagicComponentGenesis method is:
+%
+%      MagickBooleanType MagicComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType MagicComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&magic_semaphore);
+  RelinquishSemaphoreInfo(magic_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c C o m p o n e n t T e r m i n u s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagicComponentTerminus() destroys the magic component.
+%
+%  The format of the MagicComponentTerminus method is:
+%
+%      MagicComponentTerminus(void)
+%
+*/
+
+static void *DestroyMagicElement(void *magic_info)
+{
+  register MagicInfo
+    *p;
+
+  p=(MagicInfo *) magic_info;
+  if (p->exempt == MagickFalse)
+    {
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+      if (p->target != (char *) NULL)
+        p->target=DestroyString(p->target);
+      if (p->magic != (unsigned char *) NULL)
+        p->magic=(unsigned char *) RelinquishMagickMemory(p->magic);
+    }
+  p=(MagicInfo *) RelinquishMagickMemory(p);
+  return((void *) NULL);
+}
+
+MagickExport void MagicComponentTerminus(void)
+{
+  AcquireSemaphoreInfo(&magic_semaphore);
+  if (magic_list != (LinkedListInfo *) NULL)
+    magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
+  instantiate_magic=MagickFalse;
+  RelinquishSemaphoreInfo(magic_semaphore);
+  DestroySemaphoreInfo(&magic_semaphore);
 }

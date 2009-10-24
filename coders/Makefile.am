@@ -79,7 +79,6 @@ endif
 
 MAGICK_CODER_SRCS = \
 	coders/art.c \
-	coders/avi.c \
 	coders/avs.c \
 	coders/bmp.c \
 	coders/braille.c \
@@ -190,7 +189,6 @@ MAGICK_CODER_SRCS = \
 if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/art.la \
-	coders/avi.la \
 	coders/avs.la \
 	coders/bmp.la \
 	coders/braille.la \
@@ -306,12 +304,6 @@ coders_art_la_SOURCES      = coders/art.c
 coders_art_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_art_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_art_la_LIBADD       = $(MAGICKCORE_LIBS)
-
-# AVI coder module
-coders_avi_la_SOURCES      = coders/avi.c
-coders_avi_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
-coders_avi_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_avi_la_LIBADD       = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 
 # AVS coder module
 coders_avs_la_SOURCES      = coders/avs.c

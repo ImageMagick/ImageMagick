@@ -240,20 +240,45 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o d e r C o m p o n e n t                                 %
++   C o d e r C o m p o n e n t G e n e s i s                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyCoderComponent() destroys the coder component.
+%  CoderComponentGenesis() instantiates the coder component.
 %
-%  The format of the DestroyCoderComponent method is:
+%  The format of the CoderComponentGenesis method is:
 %
-%      DestroyCoderComponent(void)
+%      MagickBooleanType CoderComponentGenesis(void)
 %
 */
-MagickExport void DestroyCoderComponent(void)
+MagickExport MagickBooleanType CoderComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&coder_semaphore);
+  RelinquishSemaphoreInfo(coder_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o d e r C o m p o n e n t T e r m i n u s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CoderComponentTerminus() destroys the coder component.
+%
+%  The format of the CoderComponentTerminus method is:
+%
+%      CoderComponentTerminus(void)
+%
+*/
+MagickExport void CoderComponentTerminus(void)
 {
   AcquireSemaphoreInfo(&coder_semaphore);
   if (coder_list != (SplayTreeInfo *) NULL)
@@ -515,31 +540,6 @@ static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(coder_semaphore);
     }
   return(coder_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n s t a n t i a t e C o d e r C o m p o n e n t                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateCoderComponent() instantiates the coder component.
-%
-%  The format of the InstantiateCoderComponent method is:
-%
-%      MagickBooleanType InstantiateCoderComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateCoderComponent(void)
-{
-  AcquireSemaphoreInfo(&coder_semaphore);
-  RelinquishSemaphoreInfo(coder_semaphore);
-  return(MagickTrue);
 }
 
 /*

@@ -98,34 +98,6 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y L o c a l e C o m p o n e n t                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyLocaleComponent() destroys the locale component.
-%
-%  The format of the DestroyLocaleComponent method is:
-%
-%      DestroyLocaleComponent(void)
-%
-*/
-MagickExport void DestroyLocaleComponent(void)
-{
-  AcquireSemaphoreInfo(&locale_semaphore);
-  if (locale_list != (SplayTreeInfo *) NULL)
-    locale_list=DestroySplayTree(locale_list);
-  instantiate_locale=MagickFalse;
-  RelinquishSemaphoreInfo(locale_semaphore);
-  DestroySemaphoreInfo(&locale_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   D e s t r o y L o c a l e O p t i o n s                                   %
 %                                                                             %
 %                                                                             %
@@ -617,31 +589,6 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s t a n t i a t e L o c a l e C o m p o n e n t                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateLocaleComponent() instantiates the locale component.
-%
-%  The format of the InstantiateLocaleComponent method is:
-%
-%      MagickBooleanType InstantiateLocaleComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateLocaleComponent(void)
-{
-  AcquireSemaphoreInfo(&locale_semaphore);
-  RelinquishSemaphoreInfo(locale_semaphore);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  L i s t L o c a l e I n f o                                                %
 %                                                                             %
 %                                                                             %
@@ -1079,4 +1026,57 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
     status|=LoadLocaleList(LocaleMap,"built-in",locale,0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 #endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L o c a l e C o m p o n e n t G e n e s i s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LocaleComponentGenesis() instantiates the locale component.
+%
+%  The format of the LocaleComponentGenesis method is:
+%
+%      MagickBooleanType LocaleComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType LocaleComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&locale_semaphore);
+  RelinquishSemaphoreInfo(locale_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L o c a l e C o m p o n e n t T e r m i n u s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LocaleComponentTerminus() destroys the locale component.
+%
+%  The format of the LocaleComponentTerminus method is:
+%
+%      LocaleComponentTerminus(void)
+%
+*/
+MagickExport void LocaleComponentTerminus(void)
+{
+  AcquireSemaphoreInfo(&locale_semaphore);
+  if (locale_list != (SplayTreeInfo *) NULL)
+    locale_list=DestroySplayTree(locale_list);
+  instantiate_locale=MagickFalse;
+  RelinquishSemaphoreInfo(locale_semaphore);
+  DestroySemaphoreInfo(&locale_semaphore);
 }

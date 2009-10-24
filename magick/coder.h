@@ -49,11 +49,11 @@ extern MagickExport const CoderInfo
   **GetCoderInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiateCoderComponent(void),
+  CoderComponentGenesis(void),
   ListCoderInfo(FILE *,ExceptionInfo *);
 
 MagickExport void
-  DestroyCoderComponent(void);
+  CoderComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

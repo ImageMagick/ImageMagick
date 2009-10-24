@@ -75,7 +75,7 @@ extern MagickExport const ColorInfo
   **GetColorInfoList(const char *,unsigned long *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  InstantiateColorComponent(void),
+  ColorComponentGenesis(void),
   IsColorSimilar(const Image *,const PixelPacket *,const PixelPacket *),
   IsGrayImage(const Image *,ExceptionInfo *),
   IsImageSimilar(const Image *,const Image *,long *x,long *y,ExceptionInfo *),
@@ -92,9 +92,9 @@ extern MagickExport MagickBooleanType
     const ComplianceType,char *,ExceptionInfo *);
 
 extern MagickExport void
+  ColorComponentTerminus(void),
   ConcatenateColorComponent(const MagickPixelPacket *,const ChannelType,
     const ComplianceType,char *),
-  DestroyColorComponent(void),
   GetColorTuple(const MagickPixelPacket *,const MagickBooleanType,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

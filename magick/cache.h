@@ -36,6 +36,7 @@ extern MagickExport IndexPacket
   *GetAuthenticIndexQueue(const Image *);
 
 extern MagickExport MagickBooleanType
+  CacheComponentGenesis(void),
   GetOneVirtualMagickPixel(const Image *,const long,const long,
     MagickPixelPacket *,ExceptionInfo *),
   GetOneVirtualPixel(const Image *,const long,const long,PixelPacket *,
@@ -44,7 +45,6 @@ extern MagickExport MagickBooleanType
     const long,PixelPacket *,ExceptionInfo *),
   GetOneAuthenticPixel(Image *,const long,const long,PixelPacket *,
     ExceptionInfo *),
-  InstantiateCacheComponent(void),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
   SyncAuthenticPixels(Image *,ExceptionInfo *);
@@ -64,7 +64,7 @@ extern MagickExport VirtualPixelMethod
   SetPixelCacheVirtualMethod(const Image *,const VirtualPixelMethod);
 
 extern MagickExport void
-  DestroyCacheFaclity(void);
+  CacheComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

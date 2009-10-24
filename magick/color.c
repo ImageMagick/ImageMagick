@@ -801,6 +801,161 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o l o r C o m p o n e n t G e n e s i s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ColorComponentGenesis() instantiates the color component.
+%
+%  The format of the ColorComponentGenesis method is:
+%
+%      MagickBooleanType ColorComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType ColorComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&color_semaphore);
+  RelinquishSemaphoreInfo(color_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o l o r C o m p o n e n t T e r m i n u s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ColorComponentTerminus() destroys the color component.
+%
+%  The format of the ColorComponentTerminus method is:
+%
+%      ColorComponentTerminus(void)
+%
+*/
+
+static void *DestroyColorElement(void *color_info)
+{
+  register ColorInfo
+    *p;
+
+  p=(ColorInfo *) color_info;
+  if (p->exempt  == MagickFalse)
+    {
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+    }
+  p=(ColorInfo *) RelinquishMagickMemory(p);
+  return((void *) NULL);
+}
+
+MagickExport void ColorComponentTerminus(void)
+{
+  AcquireSemaphoreInfo(&color_semaphore);
+  if (color_list != (LinkedListInfo *) NULL)
+    color_list=DestroyLinkedList(color_list,DestroyColorElement);
+  instantiate_color=MagickFalse;
+  RelinquishSemaphoreInfo(color_semaphore);
+  DestroySemaphoreInfo(&color_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t C o l o r I n f o                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetColorInfo() searches the color list for the specified name and if found
+%  returns attributes for that color.
+%
+%  The format of the GetColorInfo method is:
+%
+%      const PixelPacket *GetColorInfo(const char *name,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o color_info: search the color list for the specified name and if found
+%      return attributes for that color.
+%
+%    o name: the color name.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport const ColorInfo *GetColorInfo(const char *name,
+  ExceptionInfo *exception)
+{
+  char
+    colorname[MaxTextExtent];
+
+  register const ColorInfo
+    *p;
+
+  register char
+    *q;
+
+  assert(exception != (ExceptionInfo *) NULL);
+  if ((color_list == (LinkedListInfo *) NULL) ||
+      (instantiate_color == MagickFalse))
+    if (InitializeColorList(exception) == MagickFalse)
+      return((const ColorInfo *) NULL);
+  if ((color_list == (LinkedListInfo *) NULL) ||
+      (IsLinkedListEmpty(color_list) != MagickFalse))
+    return((const ColorInfo *) NULL);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    return((const ColorInfo *) GetValueFromLinkedList(color_list,0));
+  /*
+    Strip names of whitespace.
+  */
+  (void) CopyMagickString(colorname,name,MaxTextExtent);
+  for (q=colorname; *q != '\0'; q++)
+  {
+    if (isspace((int) ((unsigned char) *q)) == 0)
+      continue;
+    (void) CopyMagickString(q,q+1,MaxTextExtent);
+    q--;
+  }
+  /*
+    Search for color tag.
+  */
+  AcquireSemaphoreInfo(&color_semaphore);
+  ResetLinkedListIterator(color_list);
+  p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  while (p != (const ColorInfo *) NULL)
+  {
+    if (LocaleCompare(colorname,p->name) == 0)
+      break;
+    p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  }
+  if (p == (ColorInfo *) NULL)
+    (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+      "UnrecognizedColor","`%s'",name);
+  else
+    (void) InsertValueInLinkedList(color_list,0,
+      RemoveElementByValueFromLinkedList(color_list,p));
+  RelinquishSemaphoreInfo(color_semaphore);
+  return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C o n c a t e n a t e C o l o r C o m p o n e n t                         %
 %                                                                             %
 %                                                                             %
@@ -903,136 +1058,6 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
   (void) FormatMagickString(component,MaxTextExtent,"%d",
     ScaleQuantumToChar(RoundToQuantum(color)));
   (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y C o l o r C o m p o n e n t                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyColorComponent() destroys the color component.
-%
-%  The format of the DestroyColorComponent method is:
-%
-%      DestroyColorComponent(void)
-%
-*/
-
-static void *DestroyColorElement(void *color_info)
-{
-  register ColorInfo
-    *p;
-
-  p=(ColorInfo *) color_info;
-  if (p->exempt  == MagickFalse)
-    {
-      if (p->path != (char *) NULL)
-        p->path=DestroyString(p->path);
-      if (p->name != (char *) NULL)
-        p->name=DestroyString(p->name);
-    }
-  p=(ColorInfo *) RelinquishMagickMemory(p);
-  return((void *) NULL);
-}
-
-MagickExport void DestroyColorComponent(void)
-{
-  AcquireSemaphoreInfo(&color_semaphore);
-  if (color_list != (LinkedListInfo *) NULL)
-    color_list=DestroyLinkedList(color_list,DestroyColorElement);
-  instantiate_color=MagickFalse;
-  RelinquishSemaphoreInfo(color_semaphore);
-  DestroySemaphoreInfo(&color_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t C o l o r I n f o                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetColorInfo() searches the color list for the specified name and if found
-%  returns attributes for that color.
-%
-%  The format of the GetColorInfo method is:
-%
-%      const PixelPacket *GetColorInfo(const char *name,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o color_info: search the color list for the specified name and if found
-%      return attributes for that color.
-%
-%    o name: the color name.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport const ColorInfo *GetColorInfo(const char *name,
-  ExceptionInfo *exception)
-{
-  char
-    colorname[MaxTextExtent];
-
-  register const ColorInfo
-    *p;
-
-  register char
-    *q;
-
-  assert(exception != (ExceptionInfo *) NULL);
-  if ((color_list == (LinkedListInfo *) NULL) ||
-      (instantiate_color == MagickFalse))
-    if (InitializeColorList(exception) == MagickFalse)
-      return((const ColorInfo *) NULL);
-  if ((color_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(color_list) != MagickFalse))
-    return((const ColorInfo *) NULL);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return((const ColorInfo *) GetValueFromLinkedList(color_list,0));
-  /*
-    Strip names of whitespace.
-  */
-  (void) CopyMagickString(colorname,name,MaxTextExtent);
-  for (q=colorname; *q != '\0'; q++)
-  {
-    if (isspace((int) ((unsigned char) *q)) == 0)
-      continue;
-    (void) CopyMagickString(q,q+1,MaxTextExtent);
-    q--;
-  }
-  /*
-    Search for color tag.
-  */
-  AcquireSemaphoreInfo(&color_semaphore);
-  ResetLinkedListIterator(color_list);
-  p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
-  while (p != (const ColorInfo *) NULL)
-  {
-    if (LocaleCompare(colorname,p->name) == 0)
-      break;
-    p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
-  }
-  if (p == (ColorInfo *) NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-      "UnrecognizedColor","`%s'",name);
-  else
-    (void) InsertValueInLinkedList(color_list,0,
-      RemoveElementByValueFromLinkedList(color_list,p));
-  RelinquishSemaphoreInfo(color_semaphore);
-  return(p);
 }
 
 /*
@@ -1431,31 +1456,6 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
       RelinquishSemaphoreInfo(color_semaphore);
     }
   return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n s t a n t i a t e C o l o r C o m p o n e n t                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InstantiateColorComponent() instantiates the color component.
-%
-%  The format of the InstantiateColorComponent method is:
-%
-%      MagickBooleanType InstantiateColorComponent(void)
-%
-*/
-MagickExport MagickBooleanType InstantiateColorComponent(void)
-{
-  AcquireSemaphoreInfo(&color_semaphore);
-  RelinquishSemaphoreInfo(color_semaphore);
-  return(MagickTrue);
 }
 
 /*
