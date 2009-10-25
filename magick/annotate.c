@@ -1806,7 +1806,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
       (void) XSetErrorHandler(XError);
       image_info=AcquireImageInfo();
       client_name=GetClientName();
-      resource_database=XGetResourceDatabase(display,client_name,
+      resource_database=XGetResourceDatabase(display,client_name);
       XGetResourceInfo(image_info,resource_database,client_name,&resource_info);
       resource_info.close_server=MagickFalse;
       resource_info.colormap=PrivateColormap;
