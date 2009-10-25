@@ -228,7 +228,7 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
   if (p == (const MagickInfo *) NULL)
     return(MagickFalse);
   status=MagickFalse;
-  AcquireSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   while (p != (const MagickInfo *) NULL)
@@ -242,7 +242,7 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
       }
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   }
-  RelinquishSemaphoreInfo(magick_semaphore);
+  UnlockSemaphoreInfo(magick_semaphore);
   return(status);
 }
 
@@ -412,16 +412,16 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       if (LocaleCompare(name,"*") == 0)
         (void) OpenModules(exception);
 #endif
-      AcquireSemaphoreInfo(&magick_semaphore);
+      LockSemaphoreInfo(magick_semaphore);
       ResetSplayTreeIterator(magick_list);
       p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      RelinquishSemaphoreInfo(magick_semaphore);
+      UnlockSemaphoreInfo(magick_semaphore);
       return(p);
     }
   /*
     Find name in list.
   */
-  AcquireSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   while (p != (const MagickInfo *) NULL)
@@ -445,7 +445,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       }
     }
 #endif
-  RelinquishSemaphoreInfo(magick_semaphore);
+  UnlockSemaphoreInfo(magick_semaphore);
   return(p);
 }
 
@@ -526,7 +526,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
   /*
     Generate magick list.
   */
-  AcquireSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   for (i=0; p != (const MagickInfo *) NULL; )
@@ -536,7 +536,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
       formats[i++]=p;
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   }
-  RelinquishSemaphoreInfo(magick_semaphore);
+  UnlockSemaphoreInfo(magick_semaphore);
   qsort((void *) formats,(size_t) i,sizeof(*formats),MagickInfoCompare);
   formats[i]=(MagickInfo *) NULL;
   *number_formats=(unsigned long) i;
@@ -616,7 +616,7 @@ MagickExport char **GetMagickList(const char *pattern,
     GetNumberOfNodesInSplayTree(magick_list)+1UL,sizeof(*formats));
   if (formats == (char **) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   for (i=0; p != (const MagickInfo *) NULL; )
@@ -626,7 +626,7 @@ MagickExport char **GetMagickList(const char *pattern,
       formats[i++]=ConstantString(p->name);
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   }
-  RelinquishSemaphoreInfo(magick_semaphore);
+  UnlockSemaphoreInfo(magick_semaphore);
   qsort((void *) formats,(size_t) i,sizeof(*formats),MagickCompare);
   formats[i]=(char *) NULL;
   *number_formats=(unsigned long) i;
@@ -776,6 +776,7 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
       (instantiate_magick == MagickFalse))
     {
       AcquireSemaphoreInfo(&magick_semaphore);
+      LockSemaphoreInfo(magick_semaphore);
       if ((magick_list == (SplayTreeInfo *) NULL) &&
           (instantiate_magick == MagickFalse))
         {
@@ -817,7 +818,7 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 #endif
           instantiate_magick=MagickTrue;
         }
-      RelinquishSemaphoreInfo(magick_semaphore);
+      UnlockSemaphoreInfo(magick_semaphore);
     }
   return(magick_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
@@ -1029,8 +1030,8 @@ MagickExport MagickBooleanType IsMagickInstantiated(void)
 */
 MagickExport MagickBooleanType MagickComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&magick_semaphore);
-  RelinquishSemaphoreInfo(magick_semaphore);
+  assert(magick_semaphore == (SemaphoreInfo *) NULL);
+  magick_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1054,11 +1055,13 @@ MagickExport MagickBooleanType MagickComponentGenesis(void)
 */
 MagickExport void MagickComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&magick_semaphore);
+  if (magick_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
   if (magick_list != (SplayTreeInfo *) NULL)
     magick_list=DestroySplayTree(magick_list);
   instantiate_magick=MagickFalse;
-  RelinquishSemaphoreInfo(magick_semaphore);
+  UnlockSemaphoreInfo(magick_semaphore);
   DestroySemaphoreInfo(&magick_semaphore);
 }
 
@@ -1261,6 +1264,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Instantiate magick resources.
   */
+  (void) ConfigureComponentGenesis();
   (void) PolicyComponentGenesis();
   (void) CacheComponentGenesis();
   (void) RegistryComponentGenesis();
@@ -1274,7 +1278,6 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) MagicComponentGenesis();
   (void) ColorComponentGenesis();
   (void) TypeComponentGenesis();
-  (void) ConfigureComponentGenesis();
   (void) MimeComponentGenesis();
   (void) ConstituteComponentGenesis();
   (void) XComponentGenesis();
@@ -1305,7 +1308,6 @@ MagickExport void MagickCoreTerminus(void)
 #endif
   ConstituteComponentTerminus();
   MimeComponentTerminus();
-  ConfigureComponentTerminus();
   TypeComponentTerminus();
   ColorComponentTerminus();
 #if defined(__WINDOWS__)
@@ -1325,6 +1327,7 @@ MagickExport void MagickCoreTerminus(void)
   RegistryComponentTerminus();
   CacheComponentTerminus();
   PolicyComponentTerminus();
+  ConfigureComponentTerminus();
   RandomComponentTerminus();
   LocaleComponentTerminus();
   LogComponentTerminus();
@@ -1461,7 +1464,7 @@ MagickExport MagickBooleanType UnregisterMagickInfo(const char *name)
     return(MagickFalse);
   if (GetNumberOfNodesInSplayTree(magick_list) == 0)
     return(MagickFalse);
-  AcquireSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   while (p != (const MagickInfo *) NULL)
@@ -1471,6 +1474,6 @@ MagickExport MagickBooleanType UnregisterMagickInfo(const char *name)
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   }
   status=DeleteNodeByValueFromSplayTree(magick_list,p);
-  RelinquishSemaphoreInfo(magick_semaphore);
+  UnlockSemaphoreInfo(magick_semaphore);
   return(status);
 }

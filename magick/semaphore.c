@@ -118,7 +118,6 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
   UnlockMagickMutex();
-  (void) LockSemaphoreInfo(*semaphore_info);
 }
 
 /*

@@ -255,8 +255,8 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType CoderComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&coder_semaphore);
-  RelinquishSemaphoreInfo(coder_semaphore);
+  assert(coder_semaphore == (SemaphoreInfo *) NULL);
+  coder_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -280,11 +280,13 @@ MagickExport MagickBooleanType CoderComponentGenesis(void)
 */
 MagickExport void CoderComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&coder_semaphore);
+  if (coder_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&coder_semaphore);
+  LockSemaphoreInfo(coder_semaphore);
   if (coder_list != (SplayTreeInfo *) NULL)
     coder_list=DestroySplayTree(coder_list);
   instantiate_coder=MagickFalse;
-  RelinquishSemaphoreInfo(coder_semaphore);
+  UnlockSemaphoreInfo(coder_semaphore);
   DestroySemaphoreInfo(&coder_semaphore);
 }
 
@@ -401,7 +403,7 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
   /*
     Generate coder list.
   */
-  AcquireSemaphoreInfo(&coder_semaphore);
+  LockSemaphoreInfo(coder_semaphore);
   ResetSplayTreeIterator(coder_list);
   p=(const CoderInfo *) GetNextValueInSplayTree(coder_list);
   for (i=0; p != (const CoderInfo *) NULL; )
@@ -411,7 +413,7 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
       coder_map[i++]=p;
     p=(const CoderInfo *) GetNextValueInSplayTree(coder_list);
   }
-  RelinquishSemaphoreInfo(coder_semaphore);
+  UnlockSemaphoreInfo(coder_semaphore);
   qsort((void *) coder_map,(size_t) i,sizeof(*coder_map),CoderInfoCompare);
   coder_map[i]=(CoderInfo *) NULL;
   *number_coders=(unsigned long) i;
@@ -486,7 +488,7 @@ MagickExport char **GetCoderList(const char *pattern,
   /*
     Generate coder list.
   */
-  AcquireSemaphoreInfo(&coder_semaphore);
+  LockSemaphoreInfo(coder_semaphore);
   ResetSplayTreeIterator(coder_list);
   p=(const CoderInfo *) GetNextValueInSplayTree(coder_list);
   for (i=0; p != (const CoderInfo *) NULL; )
@@ -496,7 +498,7 @@ MagickExport char **GetCoderList(const char *pattern,
       coder_map[i++]=ConstantString(p->name);
     p=(const CoderInfo *) GetNextValueInSplayTree(coder_list);
   }
-  RelinquishSemaphoreInfo(coder_semaphore);
+  UnlockSemaphoreInfo(coder_semaphore);
   qsort((void *) coder_map,(size_t) i,sizeof(*coder_map),CoderCompare);
   coder_map[i]=(char *) NULL;
   *number_coders=(unsigned long) i;
@@ -531,13 +533,14 @@ static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
       (instantiate_coder == MagickFalse))
     {
       AcquireSemaphoreInfo(&coder_semaphore);
+      LockSemaphoreInfo(coder_semaphore);
       if ((coder_list == (SplayTreeInfo *) NULL) &&
           (instantiate_coder == MagickFalse))
         {
           (void) LoadCoderLists(MagickCoderFilename,exception);
           instantiate_coder=MagickTrue;
         }
-      RelinquishSemaphoreInfo(coder_semaphore);
+      UnlockSemaphoreInfo(coder_semaphore);
     }
   return(coder_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }

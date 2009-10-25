@@ -254,7 +254,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
   /*
     Generate locale list.
   */
-  AcquireSemaphoreInfo(&locale_semaphore);
+  LockSemaphoreInfo(locale_semaphore);
   ResetSplayTreeIterator(locale_list);
   p=(const LocaleInfo *) GetNextValueInSplayTree(locale_list);
   for (i=0; p != (const LocaleInfo *) NULL; )
@@ -264,7 +264,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
       messages[i++]=p;
     p=(const LocaleInfo *) GetNextValueInSplayTree(locale_list);
   }
-  RelinquishSemaphoreInfo(locale_semaphore);
+  UnlockSemaphoreInfo(locale_semaphore);
   qsort((void *) messages,(size_t) i,sizeof(*messages),LocaleInfoCompare);
   messages[i]=(LocaleInfo *) NULL;
   *number_messages=(unsigned long) i;
@@ -342,13 +342,11 @@ MagickExport char **GetLocaleList(const char *pattern,
   p=GetLocaleInfo_("*",exception);
   if (p == (const LocaleInfo *) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&locale_semaphore);
-  RelinquishSemaphoreInfo(locale_semaphore);
   messages=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfNodesInSplayTree(locale_list)+1UL,sizeof(*messages));
   if (messages == (char **) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&locale_semaphore);
+  LockSemaphoreInfo(locale_semaphore);
   p=(const LocaleInfo *) GetNextValueInSplayTree(locale_list);
   for (i=0; p != (const LocaleInfo *) NULL; )
   {
@@ -357,7 +355,7 @@ MagickExport char **GetLocaleList(const char *pattern,
       messages[i++]=ConstantString(p->tag);
     p=(const LocaleInfo *) GetNextValueInSplayTree(locale_list);
   }
-  RelinquishSemaphoreInfo(locale_semaphore);
+  UnlockSemaphoreInfo(locale_semaphore);
   qsort((void *) messages,(size_t) i,sizeof(*messages),LocaleTagCompare);
   messages[i]=(char *) NULL;
   *number_messages=(unsigned long) i;
@@ -552,6 +550,7 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
       (instantiate_locale == MagickFalse))
     {
       AcquireSemaphoreInfo(&locale_semaphore);
+      LockSemaphoreInfo(locale_semaphore);
       if ((locale_list == (SplayTreeInfo *) NULL) &&
           (instantiate_locale == MagickFalse))
         {
@@ -579,7 +578,7 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
           locale=DestroyString(locale);
           instantiate_locale=MagickTrue;
         }
-      RelinquishSemaphoreInfo(locale_semaphore);
+      UnlockSemaphoreInfo(locale_semaphore);
     }
   return(locale_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
@@ -1048,8 +1047,8 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
 */
 MagickExport MagickBooleanType LocaleComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&locale_semaphore);
-  RelinquishSemaphoreInfo(locale_semaphore);
+  assert(locale_semaphore == (SemaphoreInfo *) NULL);
+  locale_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1073,10 +1072,12 @@ MagickExport MagickBooleanType LocaleComponentGenesis(void)
 */
 MagickExport void LocaleComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&locale_semaphore);
+  if (locale_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&locale_semaphore);
+  LockSemaphoreInfo(locale_semaphore);
   if (locale_list != (SplayTreeInfo *) NULL)
     locale_list=DestroySplayTree(locale_list);
   instantiate_locale=MagickFalse;
-  RelinquishSemaphoreInfo(locale_semaphore);
+  UnlockSemaphoreInfo(locale_semaphore);
   DestroySemaphoreInfo(&locale_semaphore);
 }

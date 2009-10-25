@@ -1627,9 +1627,9 @@ MagickExport long GetImageReferenceCount(Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  AcquireSemaphoreInfo(&image->semaphore);
+  LockSemaphoreInfo(image->semaphore);
   reference_count=image->reference_count;
-  RelinquishSemaphoreInfo(image->semaphore);
+  UnlockSemaphoreInfo(image->semaphore);
   return(reference_count);
 }
 
@@ -2066,9 +2066,9 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
   if (GetImageReferenceCount(*image) <= 1)
     return(MagickTrue);
   clone_image=CloneImage(*image,0,0,MagickTrue,exception);
-  AcquireSemaphoreInfo(&(*image)->semaphore);
+  LockSemaphoreInfo((*image)->semaphore);
   (*image)->reference_count--;
-  RelinquishSemaphoreInfo((*image)->semaphore);
+  UnlockSemaphoreInfo((*image)->semaphore);
   *image=clone_image;
   return(MagickTrue);
 }

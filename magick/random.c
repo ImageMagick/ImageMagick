@@ -689,7 +689,7 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R a n d o m C o m p o n e n t G e n e s i s                                %
++   R a n d o m C o m p o n e n t G e n e s i s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -704,8 +704,8 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
 */
 MagickExport MagickBooleanType RandomComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&random_semaphore);
-  RelinquishSemaphoreInfo(random_semaphore);
+  assert(random_semaphore == (SemaphoreInfo *) NULL);
+  random_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -729,8 +729,8 @@ MagickExport MagickBooleanType RandomComponentGenesis(void)
 */
 MagickExport void RandomComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&random_semaphore);
-  (void) UnlockSemaphoreInfo(random_semaphore);
+  if (random_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&random_semaphore);
   DestroySemaphoreInfo(&random_semaphore);
 }
 
