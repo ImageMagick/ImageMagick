@@ -94,7 +94,7 @@ int main(int argc,char **argv)
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   status=MagickCommandGenesis(image_info,ImportImageCommand,argc,argv,
-    (char *) NULL,exception);
+    (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
