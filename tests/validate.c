@@ -1358,6 +1358,7 @@ int main(int argc,char **argv)
             (void) fprintf(stdout,"Version: %s\n",
               GetMagickVersion((unsigned long *) NULL));
             (void) fprintf(stdout,"Copyright: %s\n\n",GetMagickCopyright());
+            (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
             return(0);
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)

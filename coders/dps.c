@@ -100,6 +100,9 @@ static inline double MagickMin(const double x,const double y)
 
 static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const char
+    *client_name;
+
   Display
     *display;
 
@@ -184,8 +187,9 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Get user defaults from X resource database.
   */
-  resource_database=XGetResourceDatabase(display,GetClientName());
-  XGetResourceInfo(image_info,resource_database,GetClientName(),&resource_info);
+  client_name=GetClientName();
+  resource_database=XGetResourceDatabase(display,client_name);
+  XGetResourceInfo(image_info,resource_database,client_name,&resource_info);
   /*
     Allocate standard colormap.
   */
