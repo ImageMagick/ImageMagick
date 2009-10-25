@@ -47,11 +47,8 @@
 /*
   Include declarations.
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <math.h>
+#include "magick/studio.h"
+#include "magick/thread-private.h"
 #include "wand/MagickWand.h"
 #if defined(__WINDOWS__)
 #include <windows.h>
@@ -76,6 +73,7 @@ int main(int argc,char **argv)
     *option;
 
   double
+    duration,
     elapsed_time,
     user_time;
 
@@ -85,7 +83,11 @@ int main(int argc,char **argv)
   ImageInfo
     *image_info;
 
+  long
+    j;
+
   MagickBooleanType
+    concurrent,
     regard_warnings,
     status;
 
@@ -99,9 +101,11 @@ int main(int argc,char **argv)
     iterations;
 
   MagickCoreGenesis(*argv,MagickTrue);
+  concurrent=MagickFalse;
+  duration=(-1.0);
   exception=AcquireExceptionInfo();
   iterations=1;
-  status=MagickFalse;
+  status=MagickTrue;
   regard_warnings=MagickFalse;
   for (i=1; i < (long) (argc-1); i++)
   {
@@ -110,26 +114,47 @@ int main(int argc,char **argv)
       continue;
     if (LocaleCompare("bench",option+1) == 0)
       iterations=(unsigned long) atol(argv[++i]);
+    if (LocaleCompare("concurrent",option+1) == 0)
+      concurrent=MagickTrue;
     if (LocaleCompare("debug",option+1) == 0)
       (void) SetLogEventMask(argv[++i]);
+    if (LocaleCompare("duration",option+1) == 0)
+      duration=(unsigned long) atof(argv[++i]);
     if (LocaleCompare("regard-warnings",option+1) == 0)
       regard_warnings=MagickTrue;
   }
   timer=(TimerInfo *) NULL;
   if (iterations > 1)
     timer=AcquireTimerInfo();
-  for (i=0; i < (long) iterations; i++)
+  if (concurrent != MagickFalse)
+    SetOpenMPNested(1);
+  # pragma omp parallel for shared(status)
+  for (i=0; i < (long) (concurrent != MagickFalse ? iterations : 1); i++)
   {
-    image_info=AcquireImageInfo();
-    status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,exception);
-    if (exception->severity != UndefinedException)
-      {
-        if ((exception->severity > ErrorException) ||
-            (regard_warnings != MagickFalse))
-          status=MagickTrue;
-        CatchException(exception);
-      }
-    image_info=DestroyImageInfo(image_info);
+    if (status == MagickFalse)
+      continue;
+    if (GetElapsedTime(timer) > duration)
+      continue;
+    ContinueTimer(timer);
+    for (j=0; j < (long) (concurrent == MagickFalse ? iterations : 1); j++)
+    {
+      if (status == MagickFalse)
+        break;
+      if (GetElapsedTime(timer) > duration)
+        break;
+      ContinueTimer(timer);
+      image_info=AcquireImageInfo();
+      status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,exception);
+      # pragma omp critical (MagickCore_Convert_Utility)
+      if (exception->severity != UndefinedException)
+        {
+          if ((exception->severity > ErrorException) ||
+              (regard_warnings != MagickFalse))
+            status=MagickTrue;
+          CatchException(exception);
+        }
+      image_info=DestroyImageInfo(image_info);
+    }
   }
   if (iterations > 1)
     {
