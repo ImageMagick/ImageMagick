@@ -1022,14 +1022,6 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
     default:
       break;
   }
-  if ((pixel->colorspace == HSLColorspace) ||
-      (pixel->colorspace == HSBColorspace))
-    {
-      (void) FormatMagickString(component,MaxTextExtent,"%g%%",
-        (double) (100.0*QuantumScale*color));
-      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
-      return;
-    }
   if (compliance != SVGCompliance)
     {
       if (pixel->depth > 16)
@@ -1055,6 +1047,14 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
     {
       (void) FormatMagickString(component,MaxTextExtent,"%g",
         (double) (QuantumScale*color));
+      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      return;
+    }
+  if ((pixel->colorspace == HSLColorspace) ||
+      (pixel->colorspace == HSBColorspace))
+    {
+      (void) FormatMagickString(component,MaxTextExtent,"%g%%",
+        (double) (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
