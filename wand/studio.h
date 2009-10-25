@@ -428,6 +428,10 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #define O_BINARY  0x00
 #endif
 
+#if !defined(PATH_MAX)
+#define PATH_MAX  4096
+#endif
+
 /*
   I/O defines.
 */

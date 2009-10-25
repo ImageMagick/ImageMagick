@@ -9236,6 +9236,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
     specifier[MaxTextExtent];
 
   const char
+    *client_name,
     *value;
 
   XrmDatabase
@@ -9245,46 +9246,42 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
     Save user preferences to the client configuration file.
   */
   assert(resource_info != (XResourceInfo *) NULL);
+  client_name=GetClientName();
   preferences_database=XrmGetStringDatabase("");
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.backdrop",
-    GetClientName());
+  (void) FormatMagickString(specifier,MaxTextExtent,"%s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.colormap",
-    GetClientName());
+  (void) FormatMagickString(specifier,MaxTextExtent,"%s.colormap",client_name);
   value=resource_info->colormap == SharedColormap ? "Shared" : "Private";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.confirmExit",
-    GetClientName());
+    client_name);
   value=resource_info->confirm_exit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.confirmEdit",
-    GetClientName());
+    client_name);
   value=resource_info->confirm_edit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.displayWarnings",
-    GetClientName());
+    client_name);
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.dither",
-    GetClientName());
+  (void) FormatMagickString(specifier,MaxTextExtent,"%s.dither",client_name);
   value=resource_info->quantize_info->dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.gammaCorrect",
-    GetClientName());
+    client_name);
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.undoCache",
-    GetClientName());
+  (void) FormatMagickString(specifier,MaxTextExtent,"%s.undoCache",client_name);
   (void) FormatMagickString(cache,MaxTextExtent,"%lu",
     resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.usePixmap",
-    GetClientName());
+  (void) FormatMagickString(specifier,MaxTextExtent,"%s.usePixmap",client_name);
   value=resource_info->use_pixmap ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(filename,MaxTextExtent,"%s%src",
-    X11_PREFERENCES_PATH,GetClientName());
+    X11_PREFERENCES_PATH,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
 #endif

@@ -420,6 +420,7 @@ int main(int argc,char **argv)
 
   (void) argc;
   (void) argv;
+  MagickWandGenesis();
   magick_wand=NewMagickWand();
   (void) MagickSetSize(magick_wand,640,480);
   (void) MagickGetSize(magick_wand,&columns,&rows);

@@ -1784,6 +1784,9 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
 
   if (display == (Display *) NULL)
     {
+      const char
+        *client_name;
+
       ImageInfo
         *image_info;
 
@@ -1802,9 +1805,9 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
       */
       (void) XSetErrorHandler(XError);
       image_info=AcquireImageInfo();
-      resource_database=XGetResourceDatabase(display,GetClientName());
-      XGetResourceInfo(image_info,resource_database,GetClientName(),
-        &resource_info);
+      client_name=GetClientName();
+      resource_database=XGetResourceDatabase(display,client_name,
+      XGetResourceInfo(image_info,resource_database,client_name,&resource_info);
       resource_info.close_server=MagickFalse;
       resource_info.colormap=PrivateColormap;
       resource_info.font=AcquireString(draw_info->font);
