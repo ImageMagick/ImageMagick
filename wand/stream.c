@@ -382,6 +382,8 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("concurrent",option+1) == 0)
+          break;
         ThrowStreamException(OptionError,"UnrecognizedOption",option)
       }
       case 'd':
@@ -400,7 +402,6 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (event < 0)
               ThrowStreamException(OptionError,"UnrecognizedEventType",argv[i]);
             (void) SetLogEventMask(argv[i]);
-            break;
             break;
           }
         if (LocaleCompare("define",option+1) == 0)
@@ -437,6 +438,17 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (long) argc)
+              ThrowStreamException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowStreamInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("duration",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
               ThrowStreamException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowStreamInvalidArgumentException(option,argv[i]);

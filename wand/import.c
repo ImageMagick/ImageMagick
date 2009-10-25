@@ -600,6 +600,8 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("concurrent",option+1) == 0)
+          break;
         if (LocaleCompare("crop",option+1) == 0)
           {
             if (*option == '+')
@@ -731,6 +733,17 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
                 argv[i]);
             quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) method;
+            break;
+          }
+        if (LocaleCompare("duration",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowImportException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowImportInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowImportException(OptionError,"UnrecognizedOption",option);
