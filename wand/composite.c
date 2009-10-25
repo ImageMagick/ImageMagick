@@ -744,6 +744,8 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
                 "UnrecognizedImageCompression",argv[i]);
             break;
           }
+        if (LocaleCompare("concurrent",option+1) == 0)
+          break;
         ThrowCompositeException(OptionError,"UnrecognizedOption",option)
       }
       case 'd':
@@ -880,7 +882,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             composite_options.compose=DistortCompositeOp;
             break;
           }
-        if (LocaleCompare("method",option+1) == 0)
+        if (LocaleCompare("dither",option+1) == 0)
           {
             long
               method;
@@ -894,6 +896,17 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             if (method < 0)
               ThrowCompositeException(OptionError,"UnrecognizedDitherMethod",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("duration",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowCompositeException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompositeInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowCompositeException(OptionError,"UnrecognizedOption",option)

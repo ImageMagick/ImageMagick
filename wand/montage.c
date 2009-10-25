@@ -706,6 +706,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("concurrent",option+1) == 0)
+          break;
         if (LocaleCompare("crop",option+1) == 0)
           {
             if (*option == '+')
@@ -825,6 +827,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (long) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("duration",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowMontageException(OptionError,"UnrecognizedOption",option)

@@ -859,6 +859,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("concurrent",option+1) == 0)
+          break;
         if (LocaleCompare("contrast",option+1) == 0)
           break;
         if (LocaleCompare("crop",option+1) == 0)
@@ -1007,6 +1009,17 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 argv[i]);
             quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) method;
+            break;
+          }
+        if (LocaleCompare("duration",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowDisplayException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowDisplayInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);
