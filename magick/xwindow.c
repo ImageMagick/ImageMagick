@@ -1577,7 +1577,6 @@ MagickExport void XClientMessage(Display *display,const Window window,
 %
 %    o target_window: Specifies the window to find a WM_STATE property.
 %
-%
 */
 static Window XClientWindow(Display *display,Window target_window)
 {
@@ -1615,29 +1614,6 @@ static Window XClientWindow(Display *display,Window target_window)
   if (client_window == (Window) NULL)
     return(target_window);
   return(client_window);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   X C o m p o n e n t G e n e s i s                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  XComponentGenesis() instantiates the X component.
-%
-%  The format of the XComponentGenesis method is:
-%
-%      MagickBooleanType XComponentGenesis(void)
-%
-*/
-MagickExport MagickBooleanType XComponentGenesis(void)
-{
-  return(MagickTrue);
 }
 
 /*
@@ -9648,6 +9624,29 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   X C o m p o n e n t G e n e s i s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  XComponentGenesis() instantiates the X component.
+%
+%  The format of the XComponentGenesis method is:
+%
+%      MagickBooleanType XComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType XComponentGenesis(void)
+{
+  return(MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
