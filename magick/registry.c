@@ -525,7 +525,8 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
   if ((registry == (SplayTreeInfo *) NULL) &&
       (instantiate_registry == MagickFalse))
     {
-      AcquireSemaphoreInfo(&registry_semaphore);
+      if (registry_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&registry_semaphore);
       LockSemaphoreInfo(registry_semaphore);
       if ((registry == (SplayTreeInfo *) NULL) &&
           (instantiate_registry == MagickFalse))

@@ -61,9 +61,6 @@
 */
 int main(int argc,char **argv)
 {
-  char
-    *metadata;
-
   ExceptionInfo
     *exception;
 
@@ -76,11 +73,8 @@ int main(int argc,char **argv)
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
-  metadata=(char *) NULL;
   status=MagickCommandGenesis(image_info,StreamImageCommand,argc,argv,
-    &metadata,exception);
-  if (metadata != (char *) NULL)
-    metadata=DestroyString(metadata);
+    (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();

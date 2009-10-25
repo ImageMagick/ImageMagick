@@ -775,7 +775,8 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
   if ((magick_list == (SplayTreeInfo *) NULL) &&
       (instantiate_magick == MagickFalse))
     {
-      AcquireSemaphoreInfo(&magick_semaphore);
+      if (magick_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&magick_semaphore);
       LockSemaphoreInfo(magick_semaphore);
       if ((magick_list == (SplayTreeInfo *) NULL) &&
           (instantiate_magick == MagickFalse))

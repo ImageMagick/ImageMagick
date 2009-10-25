@@ -771,7 +771,8 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
   if ((type_list == (SplayTreeInfo *) NULL) &&
       (instantiate_type == MagickFalse))
     {
-      AcquireSemaphoreInfo(&type_semaphore);
+      if (type_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&type_semaphore);
       LockSemaphoreInfo(type_semaphore);
       if ((type_list == (SplayTreeInfo *) NULL) &&
           (instantiate_type == MagickFalse))

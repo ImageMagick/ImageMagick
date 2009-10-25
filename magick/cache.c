@@ -203,7 +203,8 @@ MagickExport Cache AcquirePixelCache(const unsigned long number_threads)
   if ((cache_resources == (SplayTreeInfo *) NULL) &&
       (instantiate_cache == MagickFalse))
     {
-      AcquireSemaphoreInfo(&cache_semaphore);
+      if (cache_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&cache_semaphore);
       LockSemaphoreInfo(cache_semaphore);
       if ((cache_resources == (SplayTreeInfo *) NULL) &&
           (instantiate_cache == MagickFalse))

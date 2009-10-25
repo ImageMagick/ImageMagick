@@ -847,7 +847,8 @@ MagickExport MagickBooleanType InitializeModuleList(
   if ((module_list == (SplayTreeInfo *) NULL) &&
       (instantiate_module == MagickFalse))
     {
-      AcquireSemaphoreInfo(&module_semaphore);
+      if (module_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&module_semaphore);
       LockSemaphoreInfo(module_semaphore);
       if ((module_list == (SplayTreeInfo *) NULL) &&
           (instantiate_module == MagickFalse))

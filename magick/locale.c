@@ -549,7 +549,8 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
   if ((locale_list == (SplayTreeInfo *) NULL) &&
       (instantiate_locale == MagickFalse))
     {
-      AcquireSemaphoreInfo(&locale_semaphore);
+      if (locale_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&locale_semaphore);
       LockSemaphoreInfo(locale_semaphore);
       if ((locale_list == (SplayTreeInfo *) NULL) &&
           (instantiate_locale == MagickFalse))

@@ -532,7 +532,8 @@ static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
   if ((coder_list == (SplayTreeInfo *) NULL) &&
       (instantiate_coder == MagickFalse))
     {
-      AcquireSemaphoreInfo(&coder_semaphore);
+      if (coder_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&coder_semaphore);
       LockSemaphoreInfo(coder_semaphore);
       if ((coder_list == (SplayTreeInfo *) NULL) &&
           (instantiate_coder == MagickFalse))

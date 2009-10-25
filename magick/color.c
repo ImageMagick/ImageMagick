@@ -1456,7 +1456,8 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
   if ((color_list == (LinkedListInfo *) NULL) &&
       (instantiate_color == MagickFalse))
     {
-      AcquireSemaphoreInfo(&color_semaphore);
+      if (color_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&color_semaphore);
       LockSemaphoreInfo(color_semaphore);
       if ((color_list == (LinkedListInfo *) NULL) &&
           (instantiate_color == MagickFalse))

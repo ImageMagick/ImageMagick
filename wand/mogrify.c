@@ -182,7 +182,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
               status=MagickTrue;
             CatchException(exception);
           }
-        if (*metadata != (char *) NULL)
+        if ((metadata != (char *) NULL) && (*metadata != (char *) NULL))
           {
             (void) fputs(*metadata,stdout);
             (void) fputc('\n',stdout);
