@@ -868,7 +868,8 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
   if ((configure_list == (LinkedListInfo *) NULL) &&
       (instantiate_configure == MagickFalse))
     {
-      AcquireSemaphoreInfo(&configure_semaphore);
+      if (configure_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&configure_semaphore);
       LockSemaphoreInfo(configure_semaphore);
       if ((configure_list == (LinkedListInfo *) NULL) &&
           (instantiate_configure == MagickFalse))

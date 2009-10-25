@@ -428,7 +428,8 @@ static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
   if ((policy_list == (LinkedListInfo *) NULL) &&
       (instantiate_policy == MagickFalse))
     {
-      AcquireSemaphoreInfo(&policy_semaphore);
+      if (policy_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&policy_semaphore);
       LockSemaphoreInfo(policy_semaphore);
       if ((policy_list == (LinkedListInfo *) NULL) &&
           (instantiate_policy == MagickFalse))

@@ -530,7 +530,8 @@ static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
 {
   if ((log_list == (LinkedListInfo *) NULL) && (instantiate_log == MagickFalse))
     {
-      AcquireSemaphoreInfo(&log_semaphore);
+      if (log_semaphore == (SemaphoreInfo *) NULL)
+        AcquireSemaphoreInfo(&log_semaphore);
       LockSemaphoreInfo(log_semaphore);
       if ((log_list == (LinkedListInfo *) NULL) &&
           (instantiate_log == MagickFalse))
