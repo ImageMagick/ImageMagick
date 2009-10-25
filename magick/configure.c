@@ -161,12 +161,12 @@ MagickExport void ConfigureComponentTerminus(void)
 {
   if (configure_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&configure_semaphore);
-  LockSemaphoreInfo(configure_semaphore);
+  (void) LockSemaphoreInfo(configure_semaphore);
   if (configure_list != (LinkedListInfo *) NULL)
     configure_list=DestroyLinkedList(configure_list,DestroyConfigureElement);
   configure_list=(LinkedListInfo *) NULL;
   instantiate_configure=MagickFalse;
-  UnlockSemaphoreInfo(configure_semaphore);
+  (void) UnlockSemaphoreInfo(configure_semaphore);
   DestroySemaphoreInfo(&configure_semaphore);
 }
 
@@ -254,7 +254,7 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   /*
     Search for configure tag.
   */
-  LockSemaphoreInfo(configure_semaphore);
+  (void) LockSemaphoreInfo(configure_semaphore);
   ResetLinkedListIterator(configure_list);
   p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   while (p != (const ConfigureInfo *) NULL)
@@ -266,7 +266,7 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   if (p != (ConfigureInfo *) NULL)
     (void) InsertValueInLinkedList(configure_list,0,
       RemoveElementByValueFromLinkedList(configure_list,p));
-  UnlockSemaphoreInfo(configure_semaphore);
+  (void) UnlockSemaphoreInfo(configure_semaphore);
   return(p);
 }
 
@@ -350,7 +350,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   /*
     Generate configure list.
   */
-  LockSemaphoreInfo(configure_semaphore);
+  (void) LockSemaphoreInfo(configure_semaphore);
   ResetLinkedListIterator(configure_list);
   p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   for (i=0; p != (const ConfigureInfo *) NULL; )
@@ -360,7 +360,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
       options[i++]=p;
     p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   }
-  UnlockSemaphoreInfo(configure_semaphore);
+  (void) UnlockSemaphoreInfo(configure_semaphore);
   qsort((void *) options,(size_t) i,sizeof(*options),ConfigureInfoCompare);
   options[i]=(ConfigureInfo *) NULL;
   *number_options=(unsigned long) i;
@@ -441,7 +441,7 @@ MagickExport char **GetConfigureList(const char *pattern,
     GetNumberOfElementsInLinkedList(configure_list)+1UL,sizeof(*options));
   if (options == (char **) NULL)
     return((char **) NULL);
-  LockSemaphoreInfo(configure_semaphore);
+  (void) LockSemaphoreInfo(configure_semaphore);
   ResetLinkedListIterator(configure_list);
   p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   for (i=0; p != (const ConfigureInfo *) NULL; )
@@ -451,7 +451,7 @@ MagickExport char **GetConfigureList(const char *pattern,
       options[i++]=ConstantString(p->name);
     p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   }
-  UnlockSemaphoreInfo(configure_semaphore);
+  (void) UnlockSemaphoreInfo(configure_semaphore);
   qsort((void *) options,(size_t) i,sizeof(*options),ConfigureCompare);
   options[i]=(char *) NULL;
   *number_options=(unsigned long) i;
@@ -870,14 +870,14 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
     {
       if (configure_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&configure_semaphore);
-      LockSemaphoreInfo(configure_semaphore);
+      (void) LockSemaphoreInfo(configure_semaphore);
       if ((configure_list == (LinkedListInfo *) NULL) &&
           (instantiate_configure == MagickFalse))
         {
           (void) LoadConfigureLists(ConfigureFilename,exception);
           instantiate_configure=MagickTrue;
         }
-      UnlockSemaphoreInfo(configure_semaphore);
+      (void) UnlockSemaphoreInfo(configure_semaphore);
     }
   return(configure_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }

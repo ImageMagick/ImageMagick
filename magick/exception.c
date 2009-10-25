@@ -158,7 +158,7 @@ MagickExport void ClearMagickException(ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if (exception->exceptions  == (void *) NULL)
     return;
-  LockSemaphoreInfo(exception->semaphore);
+  (void) LockSemaphoreInfo(exception->semaphore);
   p=(ExceptionInfo *) RemoveLastElementFromLinkedList((LinkedListInfo *)
     exception->exceptions);
   while (p != (ExceptionInfo *) NULL)
@@ -170,7 +170,7 @@ MagickExport void ClearMagickException(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   exception->reason=(char *) NULL;
   exception->description=(char *) NULL;
-  UnlockSemaphoreInfo(exception->semaphore);
+  (void) UnlockSemaphoreInfo(exception->semaphore);
   errno=0;
 }
 
@@ -206,7 +206,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if (exception->exceptions  == (void *) NULL)
     return;
-  LockSemaphoreInfo(exception->semaphore);
+  (void) LockSemaphoreInfo(exception->semaphore);
   ResetLinkedListIterator((LinkedListInfo *) exception->exceptions);
   p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
     exception->exceptions);
@@ -221,7 +221,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
     p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
       exception->exceptions);
   }
-  UnlockSemaphoreInfo(exception->semaphore);
+  (void) UnlockSemaphoreInfo(exception->semaphore);
   ClearMagickException(exception);
 }
 
@@ -378,7 +378,7 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
 
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  LockSemaphoreInfo(exception->semaphore);
+  (void) LockSemaphoreInfo(exception->semaphore);
   exception->severity=UndefinedException;
   if (exception->exceptions != (void *) NULL)
     exception->exceptions=(void *) DestroyLinkedList((LinkedListInfo *)
@@ -386,7 +386,7 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
   relinquish=exception->relinquish;
   if (exception->relinquish != MagickFalse)
     exception->signature=(~MagickSignature);
-  UnlockSemaphoreInfo(exception->semaphore);
+  (void) UnlockSemaphoreInfo(exception->semaphore);
   DestroySemaphoreInfo(&exception->semaphore);
   if (relinquish != MagickFalse)
     exception=(ExceptionInfo *) RelinquishMagickMemory(exception);
@@ -613,7 +613,7 @@ MagickExport void InheritException(ExceptionInfo *exception,
   assert(relative->signature == MagickSignature);
   if (relative->exceptions == (void *) NULL)
     return;
-  LockSemaphoreInfo(exception->semaphore);
+  (void) LockSemaphoreInfo(exception->semaphore);
   ResetLinkedListIterator((LinkedListInfo *) relative->exceptions);
   p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
     relative->exceptions);
@@ -623,7 +623,7 @@ MagickExport void InheritException(ExceptionInfo *exception,
     p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
       relative->exceptions);
   }
-  UnlockSemaphoreInfo(exception->semaphore);
+  (void) UnlockSemaphoreInfo(exception->semaphore);
 }
 
 /*

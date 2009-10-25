@@ -192,7 +192,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   /*
     Search for policy tag.
   */
-  LockSemaphoreInfo(policy_semaphore);
+  (void) LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_list);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_list);
   while (p != (PolicyInfo *) NULL)
@@ -207,7 +207,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   else
     (void) InsertValueInLinkedList(policy_list,0,
       RemoveElementByValueFromLinkedList(policy_list,p));
-  UnlockSemaphoreInfo(policy_semaphore);
+  (void) UnlockSemaphoreInfo(policy_semaphore);
   return(p);
 }
 
@@ -267,7 +267,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   /*
     Generate policy list.
   */
-  LockSemaphoreInfo(policy_semaphore);
+  (void) LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_list);
   p=(const PolicyInfo *) GetNextValueInLinkedList(policy_list);
   for (i=0; p != (const PolicyInfo *) NULL; )
@@ -277,7 +277,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
       policies[i++]=p;
     p=(const PolicyInfo *) GetNextValueInLinkedList(policy_list);
   }
-  UnlockSemaphoreInfo(policy_semaphore);
+  (void) UnlockSemaphoreInfo(policy_semaphore);
   policies[i]=(PolicyInfo *) NULL;
   *number_policies=(unsigned long) i;
   return(policies);
@@ -339,7 +339,7 @@ MagickExport char **GetPolicyList(const char *pattern,
   /*
     Generate policy list.
   */
-  LockSemaphoreInfo(policy_semaphore);
+  (void) LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_list);
   p=(const PolicyInfo *) GetNextValueInLinkedList(policy_list);
   for (i=0; p != (const PolicyInfo *) NULL; )
@@ -349,7 +349,7 @@ MagickExport char **GetPolicyList(const char *pattern,
       policies[i++]=ConstantString(p->name);
     p=(const PolicyInfo *) GetNextValueInLinkedList(policy_list);
   }
-  UnlockSemaphoreInfo(policy_semaphore);
+  (void) UnlockSemaphoreInfo(policy_semaphore);
   policies[i]=(char *) NULL;
   *number_policies=(unsigned long) i;
   return(policies);
@@ -430,14 +430,14 @@ static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
     {
       if (policy_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&policy_semaphore);
-      LockSemaphoreInfo(policy_semaphore);
+      (void) LockSemaphoreInfo(policy_semaphore);
       if ((policy_list == (LinkedListInfo *) NULL) &&
           (instantiate_policy == MagickFalse))
         {
           (void) LoadPolicyLists(PolicyFilename,exception);
           instantiate_policy=MagickTrue;
         }
-      UnlockSemaphoreInfo(policy_semaphore);
+      (void) UnlockSemaphoreInfo(policy_semaphore);
     }
   return(policy_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
@@ -495,7 +495,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   if (policy_info == (PolicyInfo *) NULL)
     return(MagickTrue);
   authorized=MagickTrue;
-  LockSemaphoreInfo(policy_semaphore);
+  (void) LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_list);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_list);
   while ((p != (PolicyInfo *) NULL) && (authorized != MagickFalse))
@@ -515,7 +515,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       }
     p=(PolicyInfo *) GetNextValueInLinkedList(policy_list);
   }
-  UnlockSemaphoreInfo(policy_semaphore);
+  (void) UnlockSemaphoreInfo(policy_semaphore);
   return(authorized);
 }
 
@@ -1015,10 +1015,10 @@ MagickExport void PolicyComponentTerminus(void)
 {
   if (policy_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&policy_semaphore);
-  LockSemaphoreInfo(policy_semaphore);
+  (void) LockSemaphoreInfo(policy_semaphore);
   if (policy_list != (LinkedListInfo *) NULL)
     policy_list=DestroyLinkedList(policy_list,DestroyPolicyElement);
   instantiate_policy=MagickFalse;
-  UnlockSemaphoreInfo(policy_semaphore);
+  (void) UnlockSemaphoreInfo(policy_semaphore);
   DestroySemaphoreInfo(&policy_semaphore);
 }
