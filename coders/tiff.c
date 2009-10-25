@@ -1662,14 +1662,14 @@ ModuleExport unsigned long RegisterTIFFImage(void)
   
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
     tiff_semaphore=AllocateSemaphoreInfo();
-  LockSemaphoreInfo(tiff_semaphore);
+  (void) LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key == MagickFalse)
     {
       if (MagickCreateThreadKey(&tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       instantiate_key=MagickTrue;
     }
-  UnlockSemaphoreInfo(tiff_semaphore);
+  (void) UnlockSemaphoreInfo(tiff_semaphore);
   *version='\0';
 #if defined(TIFF_VERSION)
   (void) FormatMagickString(version,MaxTextExtent,"%d",TIFF_VERSION);
@@ -1784,12 +1784,12 @@ ModuleExport void UnregisterTIFFImage(void)
   (void) UnregisterMagickInfo("TIF");
   (void) UnregisterMagickInfo("TIFF");
   (void) UnregisterMagickInfo("TIFF64");
-  LockSemaphoreInfo(tiff_semaphore);
+  (void) LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key != MagickFalse)
     if (MagickDeleteThreadKey(tiff_exception) == MagickFalse)
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   instantiate_key=MagickFalse;
-  UnlockSemaphoreInfo(tiff_semaphore);
+  (void) UnlockSemaphoreInfo(tiff_semaphore);
   DestroySemaphoreInfo(&tiff_semaphore);
 }
 

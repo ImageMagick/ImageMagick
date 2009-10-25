@@ -200,7 +200,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   */
   mime_info=(const MimeInfo *) NULL;
   lsb_first=1;
-  LockSemaphoreInfo(mime_semaphore);
+  (void) LockSemaphoreInfo(mime_semaphore);
   ResetLinkedListIterator(mime_list);
   p=(const MimeInfo *) GetNextValueInLinkedList(mime_list);
   while (p != (const MimeInfo *) NULL)
@@ -324,7 +324,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   if (p != (const MimeInfo *) NULL)
     (void) InsertValueInLinkedList(mime_list,0,
       RemoveElementByValueFromLinkedList(mime_list,p));
-  UnlockSemaphoreInfo(mime_semaphore);
+  (void) UnlockSemaphoreInfo(mime_semaphore);
   return(mime_info);
 }
 
@@ -408,7 +408,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   /*
     Generate mime list.
   */
-  LockSemaphoreInfo(mime_semaphore);
+  (void) LockSemaphoreInfo(mime_semaphore);
   ResetLinkedListIterator(mime_list);
   p=(const MimeInfo *) GetNextValueInLinkedList(mime_list);
   for (i=0; p != (const MimeInfo *) NULL; )
@@ -418,7 +418,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
       aliases[i++]=p;
     p=(const MimeInfo *) GetNextValueInLinkedList(mime_list);
   }
-  UnlockSemaphoreInfo(mime_semaphore);
+  (void) UnlockSemaphoreInfo(mime_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeInfoCompare);
   aliases[i]=(MimeInfo *) NULL;
   *number_aliases=(unsigned long) i;
@@ -500,7 +500,7 @@ MagickExport char **GetMimeList(const char *pattern,
     GetNumberOfElementsInLinkedList(mime_list)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
-  LockSemaphoreInfo(mime_semaphore);
+  (void) LockSemaphoreInfo(mime_semaphore);
   ResetLinkedListIterator(mime_list);
   p=(const MimeInfo *) GetNextValueInLinkedList(mime_list);
   for (i=0; p != (const MimeInfo *) NULL; )
@@ -510,7 +510,7 @@ MagickExport char **GetMimeList(const char *pattern,
       aliases[i++]=ConstantString(p->type);
     p=(const MimeInfo *) GetNextValueInLinkedList(mime_list);
   }
-  UnlockSemaphoreInfo(mime_semaphore);
+  (void) UnlockSemaphoreInfo(mime_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeCompare);
   aliases[i]=(char *) NULL;
   *number_aliases=(unsigned long) i;
@@ -606,14 +606,14 @@ static MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
     {
       if (mime_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&mime_semaphore);
-      LockSemaphoreInfo(mime_semaphore);
+      (void) LockSemaphoreInfo(mime_semaphore);
       if ((mime_list == (LinkedListInfo *) NULL) &&
           (instantiate_mime == MagickFalse))
         {
           (void) LoadMimeLists(MimeFilename,exception);
           instantiate_mime=MagickTrue;
         }
-      UnlockSemaphoreInfo(mime_semaphore);
+      (void) UnlockSemaphoreInfo(mime_semaphore);
     }
   return(mime_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
@@ -1100,10 +1100,10 @@ MagickExport void MimeComponentTerminus(void)
 {
   if (mime_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&mime_semaphore);
-  LockSemaphoreInfo(mime_semaphore);
+  (void) LockSemaphoreInfo(mime_semaphore);
   if (mime_list != (LinkedListInfo *) NULL)
     mime_list=DestroyLinkedList(mime_list,DestroyMimeElement);
   instantiate_mime=MagickFalse;
-  UnlockSemaphoreInfo(mime_semaphore);
+  (void) UnlockSemaphoreInfo(mime_semaphore);
   DestroySemaphoreInfo(&mime_semaphore);
 }

@@ -3758,7 +3758,7 @@ MagickExport void LiberateMemory(void **memory)
 MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  UnlockSemaphoreInfo(*semaphore_info);
+  (void) UnlockSemaphoreInfo(*semaphore_info);
 }
 
 /*
