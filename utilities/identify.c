@@ -42,15 +42,8 @@
 /*
   Include declarations.
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <time.h>
+#include "wand/studio.h"
 #include "wand/MagickWand.h"
-#if defined(__WINDOWS__)
-#include <windows.h>
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,12 +61,7 @@
 int main(int argc,char **argv)
 {
   char
-    *metadata,
-    *option;
-
-  double
-    elapsed_time,
-    user_time;
+    *metadata;
 
   ExceptionInfo
     *exception;
@@ -82,69 +70,18 @@ int main(int argc,char **argv)
     *image_info;
 
   MagickBooleanType
-    regard_warnings,
     status;
-
-  register long
-    i;
-
-  TimerInfo
-    *timer;
-
-  unsigned long
-    iterations;
 
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
-  iterations=1;
-  status=MagickFalse;
-  regard_warnings=MagickFalse;
-  for (i=1; i < (long) (argc-1); i++)
-  {
-    option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      continue;
-    if (LocaleCompare("bench",option+1) == 0)
-      iterations=(unsigned long) atol(argv[++i]);
-    if (LocaleCompare("debug",option+1) == 0)
-      (void) SetLogEventMask(argv[++i]);
-    if (LocaleCompare("regard-warnings",option+1) == 0)
-      regard_warnings=MagickTrue;
-  }
-  timer=(TimerInfo *) NULL;
-  if (iterations > 1)
-    timer=AcquireTimerInfo();
-  for (i=0; i < (long) iterations; i++)
-  {
-    image_info=AcquireImageInfo();
-    metadata=(char *) NULL;
-    status=IdentifyImageCommand(image_info,argc,argv,&metadata,exception);
-    if (exception->severity != UndefinedException)
-      {
-        if ((exception->severity > ErrorException) ||
-            (regard_warnings != MagickFalse))
-          status=MagickTrue;
-        CatchException(exception);
-      }
-    if (metadata != (char *) NULL)
-      {
-        (void) fputs(metadata,stdout);
-        (void) fputc('\n',stdout);
-        metadata=DestroyString(metadata);
-      }
-    image_info=DestroyImageInfo(image_info);
-  }
-  if (iterations > 1)
-    {
-      elapsed_time=GetElapsedTime(timer);
-      user_time=GetUserTime(timer);
-      (void) fprintf(stderr,"Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
-        iterations,1.0*iterations/elapsed_time,user_time,(long)
-        (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
-        (long) (1000.0*(elapsed_time-floor(elapsed_time))));
-      timer=DestroyTimerInfo(timer);
-    }
+  image_info=AcquireImageInfo();
+  metadata=(char *) NULL;
+  status=MagickCommandGenesis(image_info,IdentifyImageCommand,argc,argv,
+    &metadata,exception);
+  if (metadata != (char *) NULL)
+    metadata=DestroyString(metadata);
+  image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
