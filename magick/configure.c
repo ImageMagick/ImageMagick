@@ -114,8 +114,8 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType ConfigureComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&configure_semaphore);
-  RelinquishSemaphoreInfo(configure_semaphore);
+  assert(configure_semaphore == (SemaphoreInfo *) NULL);
+  configure_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -159,12 +159,14 @@ static void *DestroyConfigureElement(void *configure_info)
 
 MagickExport void ConfigureComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&configure_semaphore);
+  if (configure_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&configure_semaphore);
+  LockSemaphoreInfo(configure_semaphore);
   if (configure_list != (LinkedListInfo *) NULL)
     configure_list=DestroyLinkedList(configure_list,DestroyConfigureElement);
   configure_list=(LinkedListInfo *) NULL;
   instantiate_configure=MagickFalse;
-  RelinquishSemaphoreInfo(configure_semaphore);
+  UnlockSemaphoreInfo(configure_semaphore);
   DestroySemaphoreInfo(&configure_semaphore);
 }
 
@@ -252,7 +254,7 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   /*
     Search for configure tag.
   */
-  AcquireSemaphoreInfo(&configure_semaphore);
+  LockSemaphoreInfo(configure_semaphore);
   ResetLinkedListIterator(configure_list);
   p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   while (p != (const ConfigureInfo *) NULL)
@@ -264,7 +266,7 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   if (p != (ConfigureInfo *) NULL)
     (void) InsertValueInLinkedList(configure_list,0,
       RemoveElementByValueFromLinkedList(configure_list,p));
-  RelinquishSemaphoreInfo(configure_semaphore);
+  UnlockSemaphoreInfo(configure_semaphore);
   return(p);
 }
 
@@ -348,7 +350,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   /*
     Generate configure list.
   */
-  AcquireSemaphoreInfo(&configure_semaphore);
+  LockSemaphoreInfo(configure_semaphore);
   ResetLinkedListIterator(configure_list);
   p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   for (i=0; p != (const ConfigureInfo *) NULL; )
@@ -358,7 +360,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
       options[i++]=p;
     p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   }
-  RelinquishSemaphoreInfo(configure_semaphore);
+  UnlockSemaphoreInfo(configure_semaphore);
   qsort((void *) options,(size_t) i,sizeof(*options),ConfigureInfoCompare);
   options[i]=(ConfigureInfo *) NULL;
   *number_options=(unsigned long) i;
@@ -435,13 +437,11 @@ MagickExport char **GetConfigureList(const char *pattern,
   p=GetConfigureInfo("*",exception);
   if (p == (const ConfigureInfo *) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&configure_semaphore);
-  RelinquishSemaphoreInfo(configure_semaphore);
   options=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(configure_list)+1UL,sizeof(*options));
   if (options == (char **) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&configure_semaphore);
+  LockSemaphoreInfo(configure_semaphore);
   ResetLinkedListIterator(configure_list);
   p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   for (i=0; p != (const ConfigureInfo *) NULL; )
@@ -451,7 +451,7 @@ MagickExport char **GetConfigureList(const char *pattern,
       options[i++]=ConstantString(p->name);
     p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
   }
-  RelinquishSemaphoreInfo(configure_semaphore);
+  UnlockSemaphoreInfo(configure_semaphore);
   qsort((void *) options,(size_t) i,sizeof(*options),ConfigureCompare);
   options[i]=(char *) NULL;
   *number_options=(unsigned long) i;
@@ -869,13 +869,14 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
       (instantiate_configure == MagickFalse))
     {
       AcquireSemaphoreInfo(&configure_semaphore);
+      LockSemaphoreInfo(configure_semaphore);
       if ((configure_list == (LinkedListInfo *) NULL) &&
           (instantiate_configure == MagickFalse))
         {
           (void) LoadConfigureLists(ConfigureFilename,exception);
           instantiate_configure=MagickTrue;
         }
-      RelinquishSemaphoreInfo(configure_semaphore);
+      UnlockSemaphoreInfo(configure_semaphore);
     }
   return(configure_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }

@@ -164,8 +164,8 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType DelegateComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&delegate_semaphore);
-  RelinquishSemaphoreInfo(delegate_semaphore);
+  assert(delegate_semaphore == (SemaphoreInfo *) NULL);
+  delegate_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -209,11 +209,13 @@ static void *DestroyDelegate(void *delegate_info)
 
 MagickExport void DelegateComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  if (delegate_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
     delegate_list=DestroyLinkedList(delegate_list,DestroyDelegate);
   instantiate_delegate=MagickFalse;
-  RelinquishSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
 
@@ -379,7 +381,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   /*
     Search for named delegate.
   */
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   while (p != (const DelegateInfo *) NULL)
@@ -412,7 +414,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   if (p != (const DelegateInfo *) NULL)
     (void) InsertValueInLinkedList(delegate_list,0,
       RemoveElementByValueFromLinkedList(delegate_list,p));
-  RelinquishSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return(p);
 }
 
@@ -503,7 +505,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   /*
     Generate delegate list.
   */
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   for (i=0; p != (const DelegateInfo *) NULL; )
@@ -514,7 +516,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
       delegates[i++]=p;
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   }
-  RelinquishSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateInfoCompare);
   delegates[i]=(DelegateInfo *) NULL;
   *number_delegates=(unsigned long) i;
@@ -596,7 +598,7 @@ MagickExport char **GetDelegateList(const char *pattern,
     GetNumberOfElementsInLinkedList(delegate_list)+1UL,sizeof(*delegates));
   if (delegates == (char **) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   for (i=0; p != (const DelegateInfo *) NULL; )
@@ -609,7 +611,7 @@ MagickExport char **GetDelegateList(const char *pattern,
       delegates[i++]=ConstantString(p->encode);
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   }
-  RelinquishSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateCompare);
   delegates[i]=(char *) NULL;
   *number_delegates=(unsigned long) i;
@@ -707,13 +709,14 @@ static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
       (instantiate_delegate == MagickFalse))
     {
       AcquireSemaphoreInfo(&delegate_semaphore);
+      LockSemaphoreInfo(delegate_semaphore);
       if ((delegate_list == (LinkedListInfo *) NULL) &&
           (instantiate_delegate == MagickFalse))
         {
           (void) LoadDelegateLists(DelegateFilename,exception);
           instantiate_delegate=MagickTrue;
         }
-      RelinquishSemaphoreInfo(delegate_semaphore);
+      UnlockSemaphoreInfo(delegate_semaphore);
     }
   return(delegate_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }

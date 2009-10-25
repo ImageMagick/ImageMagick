@@ -372,20 +372,16 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *brightness=(double) (QuantumScale*max);
   if (delta == 0.0)
     return;
-  if (red == max)
-    *hue=((((max-blue)/6.0)+(delta/2.0))-(((max-green)/6.0)+(delta/2.0)))/delta;
+  if ((MagickRealType) red == max)
+    *hue=(double) ((green-(MagickRealType) blue)/delta);
   else
-    if (green == max)
-      *hue=(1.0/3.0)+((((max-red)/6.0)+(delta/2.0))-(((max-blue)/6.0)+
-        (delta/2.0)))/delta;
+    if ((MagickRealType) green == max)
+      *hue=(double) (2.0+(blue-(MagickRealType) red)/delta);
     else
-      if (blue == max)
-        *hue=(2.0/3.0)+((((max-green)/6.0)+(delta/2.0))-(((max-red)/6.0)+
-          (delta/2.0)))/delta;
+      *hue=(double) (4.0+(red-(MagickRealType) green)/delta);
+  *hue/=6.0;
   if (*hue < 0.0)
     *hue+=1.0;
-  if (*hue > 1.0)
-    *hue-=1.0;
 }
 
 /*

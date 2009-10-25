@@ -204,6 +204,7 @@ MagickExport Cache AcquirePixelCache(const unsigned long number_threads)
       (instantiate_cache == MagickFalse))
     {
       AcquireSemaphoreInfo(&cache_semaphore);
+      LockSemaphoreInfo(cache_semaphore);
       if ((cache_resources == (SplayTreeInfo *) NULL) &&
           (instantiate_cache == MagickFalse))
         {
@@ -211,7 +212,7 @@ MagickExport Cache AcquirePixelCache(const unsigned long number_threads)
             NULL,(void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
           instantiate_cache=MagickTrue;
         }
-      RelinquishSemaphoreInfo(cache_semaphore);
+      UnlockSemaphoreInfo(cache_semaphore);
     }
   (void) AddValueToSplayTree(cache_resources,cache_info,cache_info);
   return((Cache ) cache_info);
@@ -283,8 +284,8 @@ MagickExport NexusInfo **AcquirePixelCacheNexus(
 */
 MagickExport MagickBooleanType CacheComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&cache_semaphore);
-  RelinquishSemaphoreInfo(cache_semaphore);
+  assert(cache_semaphore == (SemaphoreInfo *) NULL);
+  cache_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -308,11 +309,13 @@ MagickExport MagickBooleanType CacheComponentGenesis(void)
 */
 MagickExport void CacheComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&cache_semaphore);
+  if (cache_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&cache_semaphore);
+  LockSemaphoreInfo(cache_semaphore);
   if (cache_resources != (SplayTreeInfo *) NULL)
     cache_resources=DestroySplayTree(cache_resources);
   instantiate_cache=MagickFalse;
-  RelinquishSemaphoreInfo(cache_semaphore);
+  UnlockSemaphoreInfo(cache_semaphore);
   DestroySemaphoreInfo(&cache_semaphore);
 }
 
@@ -597,11 +600,11 @@ static MagickBooleanType ClosePixelCacheOnDisk(CacheInfo *cache_info)
   int
     status;
 
-  AcquireSemaphoreInfo(&cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->disk_semaphore);
   status=close(cache_info->file);
   cache_info->file=(-1);
   RelinquishMagickResource(FileResource,1);
-  RelinquishSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->disk_semaphore);
   return(status == -1 ? MagickFalse : MagickTrue);
 }
 
@@ -616,10 +619,10 @@ static void LimitPixelCacheDescriptors(void)
   */
   if (GetMagickResource(FileResource) < GetMagickResourceLimit(FileResource))
     return;
-  AcquireSemaphoreInfo(&cache_semaphore);
+  LockSemaphoreInfo(cache_semaphore);
   if (cache_resources == (SplayTreeInfo *) NULL)
     {
-      RelinquishSemaphoreInfo(cache_semaphore);
+      UnlockSemaphoreInfo(cache_semaphore);
       return;
     }
   ResetSplayTreeIterator(cache_resources);
@@ -645,7 +648,7 @@ static void LimitPixelCacheDescriptors(void)
   }
   if (q != (CacheInfo *) NULL)
     (void) ClosePixelCacheOnDisk(q);  /* relinquish least recently used cache */
-  RelinquishSemaphoreInfo(cache_semaphore);
+  UnlockSemaphoreInfo(cache_semaphore);
 }
 
 static inline MagickSizeType MagickMax(const MagickSizeType x,
@@ -673,10 +676,10 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
-  AcquireSemaphoreInfo(&cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->disk_semaphore);
   if (cache_info->file != -1)
     {
-      RelinquishSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return(MagickTrue);  /* cache already open */
     }
   LimitPixelCacheDescriptors();
@@ -710,13 +713,13 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
     }
   if (file == -1)
     {
-      RelinquishSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return(MagickFalse);
     }
   (void) AcquireMagickResource(FileResource,1);
   cache_info->file=file;
   cache_info->timestamp=time(0);
-  RelinquishSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->disk_semaphore);
   return(MagickTrue);
 }
 

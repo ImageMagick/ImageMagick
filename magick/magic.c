@@ -259,7 +259,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   /*
     Search for magic tag.
   */
-  AcquireSemaphoreInfo(&magic_semaphore);
+  LockSemaphoreInfo(magic_semaphore);
   ResetLinkedListIterator(magic_list);
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   while (p != (const MagicInfo *) NULL)
@@ -273,7 +273,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   if (p != (const MagicInfo *) NULL)
     (void) InsertValueInLinkedList(magic_list,0,
       RemoveElementByValueFromLinkedList(magic_list,p));
-  RelinquishSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_semaphore);
   return(p);
 }
 
@@ -356,7 +356,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   /*
     Generate magic list.
   */
-  AcquireSemaphoreInfo(&magic_semaphore);
+  LockSemaphoreInfo(magic_semaphore);
   ResetLinkedListIterator(magic_list);
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
@@ -366,7 +366,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
       aliases[i++]=p;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  RelinquishSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
   aliases[i]=(MagicInfo *) NULL;
   *number_aliases=(unsigned long) i;
@@ -448,7 +448,7 @@ MagickExport char **GetMagicList(const char *pattern,
     GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
-  AcquireSemaphoreInfo(&magic_semaphore);
+  LockSemaphoreInfo(magic_semaphore);
   ResetLinkedListIterator(magic_list);
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
@@ -458,7 +458,7 @@ MagickExport char **GetMagicList(const char *pattern,
       aliases[i++]=ConstantString(p->name);
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  RelinquishSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
   aliases[i]=(char *) NULL;
   *number_aliases=(unsigned long) i;
@@ -523,13 +523,14 @@ static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
       (instantiate_magic == MagickFalse))
     {
       AcquireSemaphoreInfo(&magic_semaphore);
+      LockSemaphoreInfo(magic_semaphore);
       if ((magic_list == (LinkedListInfo *) NULL) &&
           (instantiate_magic == MagickFalse))
         {
           (void) LoadMagicLists(MagicFilename,exception);
           instantiate_magic=MagickTrue;
         }
-      RelinquishSemaphoreInfo(magic_semaphore);
+      UnlockSemaphoreInfo(magic_semaphore);
     }
   return(magic_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
@@ -1010,8 +1011,8 @@ static MagickBooleanType LoadMagicLists(const char *filename,
 */
 MagickExport MagickBooleanType MagicComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&magic_semaphore);
-  RelinquishSemaphoreInfo(magic_semaphore);
+  assert(magic_semaphore == (SemaphoreInfo *) NULL);
+  magic_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1057,10 +1058,12 @@ static void *DestroyMagicElement(void *magic_info)
 
 MagickExport void MagicComponentTerminus(void)
 {
-  AcquireSemaphoreInfo(&magic_semaphore);
+  if (magic_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&magic_semaphore);
+  LockSemaphoreInfo(magic_semaphore);
   if (magic_list != (LinkedListInfo *) NULL)
     magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
   instantiate_magic=MagickFalse;
-  RelinquishSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_semaphore);
   DestroySemaphoreInfo(&magic_semaphore);
 }
