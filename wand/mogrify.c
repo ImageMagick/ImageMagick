@@ -47,6 +47,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/thread-private.h"
 
 /*
   Define declarations.
@@ -60,6 +61,148 @@ static const char
   BackgroundColor[] = "#fff",  /* white */
   BorderColor[] = "#dfdfdf",  /* gray */
   MatteColor[] = "#bdbdbd";  /* gray */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++     M a g i c k C o m m a n d G e n e s i s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCommandGenesis() applies image processing options to an image as
+%  prescribed by command line options.
+%
+%  The format of the MagickCommandGenesis method is:
+%
+%      MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
+%        MagickCommand command,const int argc,const char **argv,Image **image)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o command: the magick command.
+%
+%    o argc: Specifies a pointer to an integer describing the number of
+%      elements in the argument vector.
+%
+%    o argv: Specifies a pointer to a text array containing the command line
+%      arguments.
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
+  MagickCommand command,int argc,char **argv,char **metadata,
+  ExceptionInfo *exception)
+{
+  char
+    *option;
+
+  double
+    duration,
+    elapsed_time,
+    user_time;
+
+  long
+    j;
+
+  MagickBooleanType
+    concurrent,
+    regard_warnings,
+    status;
+
+  register long
+    i;
+
+  TimerInfo
+    *timer;
+
+  unsigned long
+    iterations;
+
+  concurrent=MagickFalse;
+  duration=(-1.0);
+  iterations=1;
+  status=MagickTrue;
+  regard_warnings=MagickFalse;
+  for (i=1; i < (long) (argc-1); i++)
+  {
+    option=argv[i];
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      continue;
+    if (LocaleCompare("bench",option+1) == 0)
+      iterations=(unsigned long) atol(argv[++i]);
+    if (LocaleCompare("concurrent",option+1) == 0)
+      concurrent=MagickTrue;
+    if (LocaleCompare("debug",option+1) == 0)
+      (void) SetLogEventMask(argv[++i]);
+    if (LocaleCompare("duration",option+1) == 0)
+      duration=atof(argv[++i]);
+    if (LocaleCompare("regard-warnings",option+1) == 0)
+      regard_warnings=MagickTrue;
+  }
+  timer=AcquireTimerInfo();
+  if (concurrent != MagickFalse)
+    SetOpenMPNested(1);
+  # pragma omp parallel for shared(status)
+  for (i=0; i < (long) (concurrent != MagickFalse ? iterations : 1); i++)
+  {
+    if (status == MagickFalse)
+      continue;
+    if (duration > 0)
+      {
+        if (GetElapsedTime(timer) > duration)
+          continue;
+        (void) ContinueTimer(timer);
+      }
+    for (j=0; j < (long) (concurrent == MagickFalse ? iterations : 1); j++)
+    {
+      if (status == MagickFalse)
+        break;
+      if (duration > 0)
+        {
+          if (GetElapsedTime(timer) > duration)
+            break;
+          (void) ContinueTimer(timer);
+        }
+      status=command(image_info,argc,argv,metadata,exception);
+      # pragma omp critical (MagickCore_Launch_Command)
+      {
+        if (exception->severity != UndefinedException)
+          {
+            if ((exception->severity > ErrorException) ||
+                (regard_warnings != MagickFalse))
+              status=MagickTrue;
+            CatchException(exception);
+          }
+        if (*metadata != (char *) NULL)
+          {
+            (void) fputs(*metadata,stdout);
+            (void) fputc('\n',stdout);
+            *metadata=DestroyString(*metadata);
+          }
+      }
+    }
+  }
+  if (iterations > 1)
+    {
+      elapsed_time=GetElapsedTime(timer);
+      user_time=GetUserTime(timer);
+      (void) fprintf(stderr,"Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
+        iterations,1.0*iterations/elapsed_time,user_time,(long)
+        (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
+        (long) (1000.0*(elapsed_time-floor(elapsed_time))));
+    }
+  timer=DestroyTimerInfo(timer);
+  return(status == MagickFalse ? 0 : 1);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
