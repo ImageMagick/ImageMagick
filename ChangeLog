@@ -1,4 +1,8 @@
-2009-10-23  6.5.6-1 Samuel Thibault  <samuel.thibault@ens-l...>
+2009-10-26  6.5.7-2 Chris Madison  <madisonblu@gmail...>
+  * Only call InstantiateXComponent() if X11 support is included.
+  * Correct hue computation for the HSB colorspace.
+
+2009-10-23  6.5.7-1 Samuel Thibault  <samuel.thibault@ens-l...>
   * Braille coder fix for DirectClass images
 
 2009-10-19  6.5.7-1 Wang Dataton <wang@datat...>
@@ -7,7 +11,6 @@
 2009-10-18  6.5.7-1 Cristy  <quetzlzacatenango@image...>
   * Alpha blending is not required for ScaleImage().
   * Guassian noise operator is not longer discontinuous.
-  * Correct hue computation for the HSB colorspace.
 
 2009-10-14  6.5.7-0 Pino Toscano  <pino@kde...>
   * ImageMagick fails to build in GNU/HURD due to absence of PATH_MAX.
