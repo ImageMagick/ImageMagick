@@ -12,7 +12,9 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-/* #undef BUILD_MODULES */
+#ifndef MAGICKCORE_BUILD_MODULES 
+#define MAGICKCORE_BUILD_MODULES  1 
+#endif
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE 
@@ -987,7 +989,9 @@
 /* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
-/* #undef LTDL_DELEGATE */
+#ifndef MAGICKCORE_LTDL_DELEGATE 
+#define MAGICKCORE_LTDL_DELEGATE  1 
+#endif
 
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 /* #undef LTDL_DLOPEN_DEPLIBS */
@@ -1225,7 +1229,9 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have wmflite library */
-/* #undef WMFLITE_DELEGATE */
+#ifndef MAGICKCORE_WMFLITE_DELEGATE 
+#define MAGICKCORE_WMFLITE_DELEGATE  1 
+#endif
 
 /* Define if you have wmf library */
 /* #undef WMF_DELEGATE */
