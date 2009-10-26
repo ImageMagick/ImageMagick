@@ -114,10 +114,13 @@ static void
 MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-  LockMagickMutex();
   if (*semaphore_info == (SemaphoreInfo *) NULL)
-    *semaphore_info=AllocateSemaphoreInfo();
-  UnlockMagickMutex();
+    {
+      LockMagickMutex();
+      if (*semaphore_info == (SemaphoreInfo *) NULL)
+        *semaphore_info=AllocateSemaphoreInfo();
+      UnlockMagickMutex();
+    }
 }
 
 /*
@@ -283,7 +286,6 @@ static void LockMagickMutex(void)
 MagickExport MagickBooleanType LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   {
     int
@@ -459,7 +461,6 @@ MagickExport MagickBooleanType UnlockSemaphoreInfo(
   SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
 #if defined(MAGICKCORE_DEBUG)
   assert(IsMagickThreadEqual(semaphore_info->id) != MagickFalse);
   if (semaphore_info->reference_count == 0)
