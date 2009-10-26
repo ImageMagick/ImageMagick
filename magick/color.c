@@ -816,8 +816,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType ColorComponentGenesis(void)
 {
-  assert(color_semaphore == (SemaphoreInfo *) NULL);
-  color_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&color_semaphore);
   return(MagickTrue);
 }
 

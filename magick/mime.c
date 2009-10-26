@@ -1052,8 +1052,7 @@ MagickExport char *MagickToMime(const char *magick)
 */
 MagickExport MagickBooleanType MimeComponentGenesis(void)
 {
-  assert(mime_semaphore == (SemaphoreInfo *) NULL);
-  mime_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&mime_semaphore);
   return(MagickTrue);
 }
 

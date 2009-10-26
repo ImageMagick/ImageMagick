@@ -684,8 +684,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
 */
 MagickExport MagickBooleanType LogComponentGenesis(void)
 {
-  assert(log_semaphore == (SemaphoreInfo *) NULL);
-  log_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&log_semaphore);
   return(MagickTrue);
 }
 

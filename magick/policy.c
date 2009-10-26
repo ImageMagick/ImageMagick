@@ -966,8 +966,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
 */
 MagickExport MagickBooleanType PolicyComponentGenesis(void)
 {
-  assert(policy_semaphore == (SemaphoreInfo *) NULL);
-  policy_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&policy_semaphore);
   return(MagickTrue);
 }
 

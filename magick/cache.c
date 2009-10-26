@@ -285,8 +285,7 @@ MagickExport NexusInfo **AcquirePixelCacheNexus(
 */
 MagickExport MagickBooleanType CacheComponentGenesis(void)
 {
-  assert(cache_semaphore == (SemaphoreInfo *) NULL);
-  cache_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&cache_semaphore);
   return(MagickTrue);
 }
 

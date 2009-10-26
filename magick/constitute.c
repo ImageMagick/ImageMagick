@@ -94,8 +94,7 @@ static SemaphoreInfo
 */
 MagickExport MagickBooleanType ConstituteComponentGenesis(void)
 {
-  assert(constitute_semaphore == (SemaphoreInfo *) NULL);
-  constitute_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&constitute_semaphore);
   return(MagickTrue);
 }
 

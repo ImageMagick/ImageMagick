@@ -1344,8 +1344,7 @@ static MagickBooleanType LoadTypeLists(const char *filename,
 */
 MagickExport MagickBooleanType TypeComponentGenesis(void)
 {
-  assert(type_semaphore == (SemaphoreInfo *) NULL);
-  type_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&type_semaphore);
   return(MagickTrue);
 }
 

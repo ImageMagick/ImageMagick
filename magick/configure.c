@@ -114,8 +114,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType ConfigureComponentGenesis(void)
 {
-  assert(configure_semaphore == (SemaphoreInfo *) NULL);
-  configure_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&configure_semaphore);
   return(MagickTrue);
 }
 

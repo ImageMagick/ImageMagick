@@ -1048,8 +1048,7 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
 */
 MagickExport MagickBooleanType LocaleComponentGenesis(void)
 {
-  assert(locale_semaphore == (SemaphoreInfo *) NULL);
-  locale_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&locale_semaphore);
   return(MagickTrue);
 }
 
