@@ -255,8 +255,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType CoderComponentGenesis(void)
 {
-  assert(coder_semaphore == (SemaphoreInfo *) NULL);
-  coder_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&coder_semaphore);
   return(MagickTrue);
 }
 

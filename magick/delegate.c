@@ -164,8 +164,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType DelegateComponentGenesis(void)
 {
-  assert(delegate_semaphore == (SemaphoreInfo *) NULL);
-  delegate_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&delegate_semaphore);
   return(MagickTrue);
 }
 

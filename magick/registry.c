@@ -299,8 +299,7 @@ MagickExport char *GetNextImageRegistry(void)
 */
 MagickExport MagickBooleanType RegistryComponentGenesis(void)
 {
-  assert(registry_semaphore == (SemaphoreInfo *) NULL);
-  registry_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&registry_semaphore);
   return(MagickTrue);
 }
 

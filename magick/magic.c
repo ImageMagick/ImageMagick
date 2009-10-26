@@ -1012,8 +1012,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
 */
 MagickExport MagickBooleanType MagicComponentGenesis(void)
 {
-  assert(magic_semaphore == (SemaphoreInfo *) NULL);
-  magic_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&magic_semaphore);
   return(MagickTrue);
 }
 

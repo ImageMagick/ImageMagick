@@ -1107,8 +1107,7 @@ MagickExport MagickBooleanType ModuleComponentGenesis(void)
   ExceptionInfo
     *exception;
 
-  assert(module_semaphore == (SemaphoreInfo *) NULL);
-  module_semaphore=AllocateSemaphoreInfo();
+  AcquireSemaphoreInfo(&module_semaphore);
   exception=AcquireExceptionInfo();
   InitializeModuleList(exception);
   exception=DestroyExceptionInfo(exception);
