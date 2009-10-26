@@ -122,6 +122,8 @@ static inline void SetOpenMPNested(const int value)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   omp_set_nested(value);
+#else
+  (void) value;
 #endif
 }
 
