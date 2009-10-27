@@ -1659,8 +1659,18 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
         */
         for (i=0; i < 3; i++)
         {
-          y=(long) ReadPropertyMSBLong(&blob,&length);
-          x=(long) ReadPropertyMSBLong(&blob,&length);
+          unsigned long 
+            xx,
+            yy;
+
+          yy=ReadPropertyMSBLong(&blob,&length);
+          xx=ReadPropertyMSBLong(&blob,&length);
+          x=(long) xx;
+          if (xx > 2147483647)
+            x=xx-4294967295-1;
+          y=(long) yy;
+          if (yy > 2147483647)
+            y=yy-4294967295-1;
           point[i].x=(double) x/4096/4096;
           point[i].y=1.0-(double) y/4096/4096;
         }
@@ -1839,65 +1849,73 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             */
             blob+=24;
             length-=24;
+            break;
+          }
+        /*
+          Add sub-path knot
+        */
+        for (i=0; i < 3; i++)
+        {
+          unsigned long 
+            xx,
+            yy;
+
+          yy=ReadPropertyMSBLong(&blob,&length);
+          xx=ReadPropertyMSBLong(&blob,&length);
+          x=(long) xx;
+          if (xx > 2147483647)
+            x=xx-4294967295-1;
+          y=(long) yy;
+          if (yy > 2147483647)
+            y=yy-4294967295-1;
+          point[i].x=(double) x*columns/4096/4096;
+          point[i].y=(double) y*rows/4096/4096;
+        }
+        if (in_subpath == MagickFalse)
+          {
+            (void) FormatMagickString(message,MaxTextExtent,"M %g,%g\n",
+              point[1].x,point[1].y);
+            for (i=0; i < 3; i++)
+            {
+              first[i]=point[i];
+              last[i]=point[i];
+            }
           }
         else
           {
-            /*
-              Add sub-path knot
-            */
+            if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
+                (point[0].x == point[1].x) && (point[0].y == point[1].y))
+              (void) FormatMagickString(message,MaxTextExtent,"L %g,%g\n",
+                point[1].x,point[1].y);
+            else
+              (void) FormatMagickString(message,MaxTextExtent,
+                "C %g,%g %g,%g %g,%g\n",last[2].x,last[2].y,
+                point[0].x,point[0].y,point[1].x,point[1].y);
             for (i=0; i < 3; i++)
-            {
-              y=(long) ReadPropertyMSBLong(&blob,&length);
-              x=(long) ReadPropertyMSBLong(&blob,&length);
-              point[i].x=(double) x*columns/4096/4096;
-              point[i].y=(double) y*rows/4096/4096;
-            }
-            if (in_subpath == MagickFalse)
-              {
-                (void) FormatMagickString(message,MaxTextExtent,"M %g,%g\n",
-                  point[1].x,point[1].y);
-                for (i=0; i < 3; i++)
-                {
-                  first[i]=point[i];
-                  last[i]=point[i];
-                }
-              }
+              last[i]=point[i];
+          }
+        (void) ConcatenateString(&path,message);
+        in_subpath=MagickTrue;
+        knot_count--;
+        /*
+          Close the subpath if there are no more knots.
+        */
+        if (knot_count == 0)
+          {
+            if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
+                (first[0].x == first[1].x) && (first[0].y == first[1].y))
+              (void) FormatMagickString(message,MaxTextExtent,"L %g,%g Z\n",
+                first[1].x,first[1].y);
             else
               {
-                if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
-                    (point[0].x == point[1].x) && (point[0].y == point[1].y))
-                  (void) FormatMagickString(message,MaxTextExtent,"L %g,%g\n",
-                    point[1].x,point[1].y);
-                else
-                  (void) FormatMagickString(message,MaxTextExtent,
-                    "C %g,%g %g,%g %g,%g\n",last[2].x,last[2].y,
-                    point[0].x,point[0].y,point[1].x,point[1].y);
-                for (i=0; i < 3; i++)
-                  last[i]=point[i];
+                (void) FormatMagickString(message,MaxTextExtent,
+                  "C %g,%g %g,%g %g,%g Z\n",last[2].x,last[2].y,
+                  first[0].x,first[0].y,first[1].x,first[1].y);
+                (void) ConcatenateString(&path,message);
               }
-            (void) ConcatenateString(&path,message);
-            in_subpath=MagickTrue;
-            knot_count--;
-            /*
-              Close the subpath if there are no more knots.
-            */
-            if (knot_count == 0)
-              {
-                if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
-                    (first[0].x == first[1].x) && (first[0].y == first[1].y))
-                  (void) FormatMagickString(message,MaxTextExtent,"L %g,%g Z\n",
-                    first[1].x,first[1].y);
-                else
-                  {
-                    (void) FormatMagickString(message,MaxTextExtent,
-                      "C %g,%g %g,%g %g,%g Z\n",last[2].x,last[2].y,
-                      first[0].x,first[0].y,first[1].x,first[1].y);
-                    (void) ConcatenateString(&path,message);
-                  }
-                in_subpath=MagickFalse;
-              }
+            in_subpath=MagickFalse;
           }
-          break;
+        break;
       }
       case 6:
       case 7:

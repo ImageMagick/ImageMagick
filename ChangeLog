@@ -1,6 +1,7 @@
 2009-10-26  6.5.7-2 Chris Madison  <madisonblu@gmail...>
   * Only call InstantiateXComponent() if X11 support is included.
   * Correct hue computation for the HSB colorspace.
+  * Convert SVG clipping path points from unsigned to long.
 
 2009-10-23  6.5.7-1 Samuel Thibault  <samuel.thibault@ens-l...>
   * Braille coder fix for DirectClass images
