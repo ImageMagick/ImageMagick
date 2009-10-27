@@ -595,8 +595,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     scene++;
   } while (count == (ssize_t) length);
-  InheritException(exception,&image->exception);
   quantum_info=DestroyQuantumInfo(quantum_info);
+  InheritException(&image->exception,&canvas_image->exception);
   canvas_image=DestroyImage(canvas_image);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
