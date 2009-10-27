@@ -1754,11 +1754,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  exit ReadOnePNGImage() with error.");
       if (image != (Image *) NULL)
-        {
-          if (image->exception.severity > exception->severity)
-            InheritException(exception,&image->exception);
-          image->columns=0;
-        }
+        image->columns=0;
       return(GetFirstImageInList(image));
     }
   /*
@@ -2289,11 +2285,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  exit ReadOnePNGImage() with error.");
       if (image != (Image *) NULL)
-        {
-          if (image->exception.severity > exception->severity)
-            InheritException(exception,&image->exception);
-          image->columns=0;
-        }
+        image->columns=0;
       return(GetFirstImageInList(image));
     }
   quantum_info=AcquireQuantumInfo(image_info,image);
