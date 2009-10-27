@@ -1025,20 +1025,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_info.quantize_colors=MagickTrue;
       jpeg_info.desired_number_of_colors=(int) image_info->colors;
     }
-  option=GetImageOption(image_info,"jpeg:dct-method");
-  if (option != (const char *) NULL)
-    {
-      if (LocaleCompare(value,"ISLOW") == 0)
-        jpeg_info.dct_method=JDCT_ISLOW;
-      if (LocaleCompare(value,"IFAST") == 0)
-        jpeg_info.dct_method=JDCT_IFAST;
-      if (LocaleCompare(value,"FLOAT") == 0)
-        jpeg_info.dct_method=JDCT_FLOAT;
-      if (LocaleCompare(value,"DEFAULT") == 0)
-        jpeg_info.dct_method=JDCT_DEFAULT;
-      if (LocaleCompare(value,"FASTEST") == 0)
-        jpeg_info.dct_method=JDCT_FASTEST;
-    }
   option=GetImageOption(image_info,"jpeg:block-smoothing");
   if (option != (const char *) NULL)
     {
