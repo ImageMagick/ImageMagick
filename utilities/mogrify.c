@@ -73,7 +73,7 @@ int main(int argc,char **argv)
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
-  status=MagickCommandGenesis(image_info,ImportImageCommand,argc,argv,
+  status=MagickCommandGenesis(image_info,MogrifyImageCommand,argc,argv,
     (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
