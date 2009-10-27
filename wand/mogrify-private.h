@@ -41,7 +41,10 @@ extern "C" {
   ResetImageOptions(image_info); \
   FireImageStack(MagickTrue,advance,MagickTrue); \
   if (image != (Image *) NULL) \
-    (void) SyncImagesSettings(image_info,image); \
+    { \
+      InheritException(exception,&(image)->exception); \
+      (void) SyncImagesSettings(image_info,image); \
+    } \
 }
 #define FireImageStack(postfix,advance,fire) \
   if ((j <= i) && (i < argc)) \
