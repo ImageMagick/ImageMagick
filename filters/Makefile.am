@@ -12,19 +12,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
-#
 #  Makefile for building ImageMagick filter modules.
 
 # Where filter modules get installed
 filtersdir = $(FILTER_PATH)
 
 MAGICK_FILTER_SRCS = \
-	filters/analyze.c
+	filters/analyze.c \
+	filters/boost.c
 
 if WITH_MODULES
 filters_LTLIBRARIES = \
-	filters/analyze.la
+	filters/analyze.la \
+	filters/boost.la
 else
 filters_LTLIBRARIES =
 endif # WITH_MODULES
@@ -35,3 +35,8 @@ filters_analyze_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 filters_analyze_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
+# boost filter module
+filters_boost_la_SOURCES      = filters/boost.c
+filters_boost_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+filters_boost_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+filters_boost_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
