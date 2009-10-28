@@ -190,7 +190,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 
     if (status == MagickFalse)
       continue;
-#if defined(HAVEMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
 #endif
     bounding_box=bounds;
@@ -219,7 +219,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         bounding_box.height=(unsigned long) y;
       p++;
     }
-#if defined(HAVEMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
 #endif
     {
