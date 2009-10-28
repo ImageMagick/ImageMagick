@@ -110,9 +110,6 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     elapsed_time,
     user_time;
 
-  long
-    j;
-
   MagickBooleanType
     concurrent,
     regard_warnings,
@@ -149,32 +146,19 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       regard_warnings=MagickTrue;
   }
   timer=AcquireTimerInfo();
-  if (concurrent != MagickFalse)
-    SetOpenMPNested(1);
-  # pragma omp parallel for shared(status)
-  for (i=0; i < (long) (concurrent != MagickFalse ? iterations : 1); i++)
-  {
-    if (status == MagickFalse)
-      continue;
-    if (duration > 0)
-      {
-        if (GetElapsedTime(timer) > duration)
-          continue;
-        (void) ContinueTimer(timer);
-      }
-    for (j=0; j < (long) (concurrent == MagickFalse ? iterations : 1); j++)
+  if (concurrent == MagickFalse)
     {
-      if (status == MagickFalse)
-        break;
-      if (duration > 0)
-        {
-          if (GetElapsedTime(timer) > duration)
-            break;
-          (void) ContinueTimer(timer);
-        }
-      status=command(image_info,argc,argv,metadata,exception);
-      # pragma omp critical (MagickCore_Launch_Command)
+      for (i=0; i < (long) iterations; i++)
       {
+        if (status == MagickFalse)
+          continue;
+        if (duration > 0)
+          {
+            if (GetElapsedTime(timer) > duration)
+              continue;
+            (void) ContinueTimer(timer);
+          }
+        status=command(image_info,argc,argv,metadata,exception);
         if (exception->severity != UndefinedException)
           {
             if ((exception->severity > ErrorException) ||
@@ -190,7 +174,43 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
           }
       }
     }
-  }
+  else
+    {
+      SetOpenMPNested(1);
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+  # pragma omp parallel for shared(status)
+#endif
+      for (i=0; i < (long) iterations; i++)
+      {
+        if (status == MagickFalse)
+          continue;
+        if (duration > 0)
+          {
+            if (GetElapsedTime(timer) > duration)
+              continue;
+            (void) ContinueTimer(timer);
+          }
+        status=command(image_info,argc,argv,metadata,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+  # pragma omp critical (MagickCore_Launch_Command)
+#endif
+        {
+          if (exception->severity != UndefinedException)
+            {
+              if ((exception->severity > ErrorException) ||
+                  (regard_warnings != MagickFalse))
+                status=MagickTrue;
+              CatchException(exception);
+            }
+          if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+            {
+              (void) fputs(*metadata,stdout);
+              (void) fputc('\n',stdout);
+              *metadata=DestroyString(*metadata);
+            }
+        }
+      }
+    }
   if (iterations > 1)
     {
       elapsed_time=GetElapsedTime(timer);
