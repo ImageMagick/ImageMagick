@@ -12,7 +12,7 @@
 %                                                                             %
 %                               Software Design                               %
 %                                 John Cristy                                 %
-%                                December 1998                                %
+%                                November 2009                                %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2009 ImageMagick Studio LLC, a non-profit organization      %
@@ -30,6 +30,9 @@
 %  limitations under the License.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Boost certain algorithms by executing in concert across heterogeneous
+% platforms consisting of CPUs, GPUs, and other processors (in development).
 %
 */
 
@@ -75,9 +78,23 @@
 ModuleExport unsigned long boostImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
-  (void) images;
+  assert(images != (Image **) NULL);
+  assert(*images != (Image *) NULL);
+  assert((*images)->signature == MagickSignature);
+#if !defined(MAGICKCORE_OPENCL_SUPPORT)
   (void) argc;
   (void) argv;
-  (void) exception;
+  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
+    "DelegateLibrarySupportNotBuiltIn","`%s' (OpenCL)",(*images)->filename);
+#else
+  {
+    Image
+      *image;
+
+    (void) argc;
+    (void) argv;
+    (void) exception;
+  }
+#endif
   return(MagickImageFilterSignature);
 }
