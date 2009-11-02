@@ -1,5 +1,6 @@
 2009-11-01  6.5.7-4 Cristy  <quetzlzacatenango@image...>
   * Use -define delegate:bimodal=true to activate any bimodal delegates.
+  * Make sure MagickWand semaphore is acquired before locking it.
 
 2009-10-28  6.5.7-3 Cristy  <quetzlzacatenango@image...>
   * Convert SVG clipping path points from unsigned to long.

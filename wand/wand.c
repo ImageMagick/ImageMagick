@@ -113,6 +113,8 @@ WandExport unsigned long AcquireWandId(void)
 */
 WandExport void DestroyWandIds(void)
 {
+  if (wand_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&wand_semaphore);
   (void) LockSemaphoreInfo(wand_semaphore);
   if (wand_ids != (SplayTreeInfo *) NULL)
     wand_ids=DestroySplayTree(wand_ids);
