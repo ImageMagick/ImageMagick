@@ -201,10 +201,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
       break;
     p=(PolicyInfo *) GetNextValueInLinkedList(policy_list);
   }
-  if (p == (PolicyInfo *) NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-      "UnrecognizedPolicy","`%s'",name);
-  else
+  if (p != (PolicyInfo *) NULL)
     (void) InsertValueInLinkedList(policy_list,0,
       RemoveElementByValueFromLinkedList(policy_list,p));
   (void) UnlockSemaphoreInfo(policy_semaphore);
