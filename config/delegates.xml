@@ -54,6 +54,8 @@
     %x  input image x resolution
     %y  input image y resolution
 
+  Set option delegate:bimodal=true to process bimodal delegates otherwise they
+  are ignored.
 -->
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command="&quot;convert&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;autotrace&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
