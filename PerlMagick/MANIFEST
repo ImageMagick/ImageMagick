@@ -1,6 +1,4 @@
-build_manifest.sh
 Changelog
-check.sh
 check.sh.in
 demo/annotate.pl
 demo/button.pl
