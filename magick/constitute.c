@@ -965,6 +965,9 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   char
     filename[MaxTextExtent];
 
+  const char
+    *option;
+
   const DelegateInfo
     *delegate_info;
 
@@ -1044,7 +1047,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
          }
     }
   (void) SyncImageProfiles(image);
-  if ((write_info->page == (char *) NULL) &&
+  option=GetImageOption(image_info,"delegate:bimodal");
+  if ((option != (const char *) NULL) && 
+      (IsMagickTrue(option) != MagickFalse) &&
+      (write_info->page == (char *) NULL) &&
       (GetPreviousImageInList(image) == (Image *) NULL) &&
       (GetNextImageInList(image) == (Image *) NULL) &&
       (IsTaintImage(image) == MagickFalse))
