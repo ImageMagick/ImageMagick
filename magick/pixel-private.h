@@ -83,6 +83,16 @@ static inline void SetMagickPixelPacket(const Image *image,
     pixel->index=(MagickRealType) *index;
 }
 
+static inline void SetMagickPixelPacketBias(const Image *image,
+  MagickPixelPacket *pixel)
+{
+  pixel->red=image->bias;
+  pixel->green=image->bias;
+  pixel->blue=image->bias;
+  pixel->opacity=image->bias;
+  pixel->index=image->bias;
+}
+
 static inline void SetPixelPacket(const Image *image,
   const MagickPixelPacket *pixel,PixelPacket *color,IndexPacket *index)
 {

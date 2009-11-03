@@ -865,10 +865,9 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     status;
 
   MagickPixelPacket
-    zero;
+    bias;
 
   MagickRealType
-    bias,
     gamma;
 
   register long
@@ -954,8 +953,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  GetMagickPixelPacket(image,&zero);
-  bias=image->bias;
+  GetMagickPixelPacket(image,&bias);
+  SetMagickPixelPacketBias(image,&bias);
   image_view=AcquireCacheView(image);
   convolve_view=AcquireCacheView(convolve_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
@@ -1011,7 +1010,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
       register long
         u;
 
-      pixel=zero;
+      pixel=bias;
       k=normal_kernel;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
@@ -1028,11 +1027,11 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
             kernel_pixels+=image->columns+width;
           }
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(pixel.red+bias);
+            q->red=RoundToQuantum(pixel.red);
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(pixel.green+bias);
+            q->green=RoundToQuantum(pixel.green);
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(pixel.blue+bias);
+            q->blue=RoundToQuantum(pixel.blue);
           if ((channel & OpacityChannel) != 0)
             {
               k=normal_kernel;
@@ -1046,7 +1045,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 }
                 kernel_pixels+=image->columns+width;
               }
-              q->opacity=RoundToQuantum(pixel.opacity+bias);
+              q->opacity=RoundToQuantum(pixel.opacity);
             }
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
@@ -1065,7 +1064,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 }
                 kernel_indexes+=image->columns+width;
               }
-              convolve_indexes[x]=RoundToQuantum(pixel.index+bias);
+              convolve_indexes[x]=RoundToQuantum(pixel.index);
             }
         }
       else
@@ -1092,11 +1091,11 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(gamma*pixel.red+bias);
+            q->red=RoundToQuantum(gamma*pixel.red);
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(gamma*pixel.green+bias);
+            q->green=RoundToQuantum(gamma*pixel.green);
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(gamma*pixel.blue+bias);
+            q->blue=RoundToQuantum(gamma*pixel.blue);
           if ((channel & OpacityChannel) != 0)
             {
               k=normal_kernel;
@@ -1110,7 +1109,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 }
                 kernel_pixels+=image->columns+width;
               }
-              q->opacity=RoundToQuantum(pixel.opacity+bias);
+              q->opacity=RoundToQuantum(pixel.opacity);
             }
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
@@ -1133,7 +1132,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 kernel_pixels+=image->columns+width;
                 kernel_indexes+=image->columns+width;
               }
-              convolve_indexes[x]=RoundToQuantum(gamma*pixel.index+bias);
+              convolve_indexes[x]=RoundToQuantum(gamma*pixel.index);
             }
         }
       p++;
