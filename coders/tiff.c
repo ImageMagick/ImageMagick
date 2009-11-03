@@ -1300,13 +1300,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (i=0; i < (long) samples_per_pixel; i++)
         {
-          register PixelPacket
-            *__restrict q;
-
-          for (i=0; i < (long) samples_per_pixel; i++)
+          for (y=0; y < (long) image->rows; y++)
           {
+            register PixelPacket
+              *__restrict q;
+
             int
               status;
 
@@ -1326,7 +1326,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 case 3: quantum_type=AlphaQuantum; break;
                 default: quantum_type=UndefinedQuantum; break;
               }
-           else
+            else
               switch (i)
               {
                 case 0: quantum_type=CyanQuantum; break;
