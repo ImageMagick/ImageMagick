@@ -799,7 +799,7 @@ static double *GetBlurKernel(unsigned long width,const MagickRealType sigma)
   {
     alpha=exp((-((double) (i*i))/(double) (2.0*KernelRank*KernelRank*
       MagickSigma*MagickSigma)));
-    kernel[(i)/KernelRank]+=(double) (alpha/(MagickSQ2PI*sigma));
+    kernel[(i+bias)/KernelRank]+=(double) (alpha/(MagickSQ2PI*sigma));
   }
   normalize=0.0;
   for (i=0; i < (long) width; i++)
