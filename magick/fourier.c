@@ -490,7 +490,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
       source=(double *) RelinquishMagickMemory(source);
       return(MagickFalse);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ForwardFourierTransform)
 #endif
   fftw_r2c_plan=fftw_plan_dft_r2c_2d(fourier_info->width,fourier_info->width,
@@ -653,8 +653,8 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
             AppendImageToList(&fourier_image,phase_image);
             status=MagickTrue;
             is_gray=IsGrayImage(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
             for (i=0L; i < 5L; i++)
             {
@@ -1033,7 +1033,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_InverseFourierTransform)
 #endif
   fftw_c2r_plan=fftw_plan_dft_c2r_2d(fourier_info->width,fourier_info->height,
@@ -1196,8 +1196,8 @@ MagickExport Image *InverseFourierTransformImage(const Image *images,
         is_gray=IsGrayImage(images,exception);
         if ((is_gray != MagickFalse) && (images->next != (Image *) NULL))
           is_gray=IsGrayImage(images->next,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-        #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
         for (i=0L; i < 5L; i++)
         {

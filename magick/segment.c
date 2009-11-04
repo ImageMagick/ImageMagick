@@ -394,7 +394,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_Classify)
 #endif
         proceed=SetImageProgress(image,SegmentImageTag,progress++,
@@ -519,8 +519,8 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   */
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -632,7 +632,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_Classify)
 #endif
         proceed=SetImageProgress(image,SegmentImageTag,progress++,

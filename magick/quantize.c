@@ -3022,8 +3022,8 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       status=MagickTrue;
       exception=(&image->exception);
       image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (y=0; y < (long) image->rows; y++)
       {
@@ -3054,7 +3054,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
           intensity=ScaleQuantumToMap(q->red);
           if (colormap_index[intensity] < 0)
             {
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_SetGrayscaleImage)
 #endif
               if (colormap_index[intensity] < 0)
@@ -3098,8 +3098,8 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   status=MagickTrue;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {

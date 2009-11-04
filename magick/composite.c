@@ -1368,8 +1368,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       exception=(&image->exception);
       image_view=AcquireCacheView(image);
       composite_view=AcquireCacheView(composite_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-#pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (y=0; y < (long) composite_image->rows; y++)
       {
@@ -1414,7 +1414,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp critical (MagickCore_TextureImage)
 #endif
             proceed=SetImageProgress(image,CompositeImageTag,y,image->rows);
@@ -1844,8 +1844,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -2431,7 +2431,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_CompositeImageChannel)
 #endif
         proceed=SetImageProgress(image,CompositeImageTag,progress++,
@@ -2505,8 +2505,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       /*
         Tile texture onto the image background.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (y=0; y < (long) image->rows; y+=texture->rows)
       {
@@ -2533,7 +2533,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_TextureImage)
 #endif
             proceed=SetImageProgress(image,TextureImageTag,y,image->rows);
@@ -2552,8 +2552,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
   texture_view=AcquireCacheView(texture);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-#pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -2614,7 +2614,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp critical (MagickCore_TextureImage)
 #endif
         proceed=SetImageProgress(image,TextureImageTag,y,image->rows);

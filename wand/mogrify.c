@@ -177,7 +177,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   else
     {
       SetOpenMPNested(1);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   # pragma omp parallel for shared(status)
 #endif
       for (i=0; i < (long) iterations; i++)
@@ -191,7 +191,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             (void) ContinueTimer(timer);
           }
         status=command(image_info,argc,argv,metadata,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   # pragma omp critical (MagickCore_Launch_Command)
 #endif
         {

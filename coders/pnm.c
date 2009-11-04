@@ -594,7 +594,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
-  #pragma omp parallel for shared(row,status,quantum_type)
+  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
         {
@@ -676,7 +676,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
-  #pragma omp parallel for shared(row,status,quantum_type)
+  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
         {
@@ -794,7 +794,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
-  #pragma omp parallel for shared(row,status,type)
+  #pragma omp parallel for schedule(static,1) shared(row,status,type)
 #endif
         for (y=0; y < (long) image->rows; y++)
         {
@@ -968,7 +968,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
-  #pragma omp parallel for shared(row,status,quantum_type)
+  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1211,7 +1211,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
-  #pragma omp parallel for shared(row,status,quantum_type)
+  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
 #endif
         for (y=0; y < (long) image->rows; y++)
         {
