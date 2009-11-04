@@ -285,7 +285,7 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
   progress=0;
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=source->region.y; y < (long) source->region.height; y++)
   {
