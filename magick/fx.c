@@ -334,7 +334,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   noise_view=AcquireCacheView(noise_image);
 #if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
-  #pragma omp parallel for shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -399,7 +399,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_AverageImages)
 #endif
         proceed=SetImageProgress(image,AddNoiseImageTag,progress++,
@@ -490,7 +490,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
   image_view=AcquireCacheView(image);
   shift_view=AcquireCacheView(shift_image);
 #if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
-  #pragma omp parallel for shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -737,7 +737,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   image_view=AcquireCacheView(image);
   colorize_view=AcquireCacheView(colorize_image);
 #if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
-  #pragma omp parallel for shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -957,8 +957,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   SetMagickPixelPacketBias(image,&bias);
   image_view=AcquireCacheView(image);
   convolve_view=AcquireCacheView(convolve_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1146,7 +1146,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ConvolveImageChannel)
 #endif
         proceed=SetImageProgress(image,ConvolveImageTag,progress++,image->rows);
@@ -1472,8 +1472,8 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1526,7 +1526,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_EvaluateImageChannel)
 #endif
         proceed=SetImageProgress(image,EvaluateImageTag,progress++,image->rows);
@@ -1704,8 +1704,8 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1760,7 +1760,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_FunctionImageChannel)
 #endif
         proceed=SetImageProgress(image,FunctionImageTag,progress++,image->rows);
@@ -3540,8 +3540,8 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
   status=MagickTrue;
   progress=0;
   fx_view=AcquireCacheView(fx_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) fx_image->rows; y++)
   {
@@ -3616,7 +3616,7 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_FxImageChannel)
 #endif
         proceed=SetImageProgress(image,FxImageTag,progress++,image->rows);
@@ -3743,8 +3743,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   implode_view=AcquireCacheView(implode_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -3813,7 +3813,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ImplodeImage)
 #endif
         proceed=SetImageProgress(image,ImplodeImageTag,progress++,image->rows);
@@ -3965,8 +3965,8 @@ MagickExport Image *MorphImages(const Image *image,
         }
       image_view=AcquireCacheView(morph_image);
       morph_view=AcquireCacheView(morph_images);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (y=0; y < (long) morph_images->rows; y++)
       {
@@ -4028,7 +4028,7 @@ MagickExport Image *MorphImages(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_MorphImages)
 #endif
         proceed=SetImageProgress(image,MorphImageTag,scene,
@@ -4592,8 +4592,8 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   k=color_matrix;
   image_view=AcquireCacheView(image);
   recolor_view=AcquireCacheView(recolor_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -4716,7 +4716,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_RecolorImage)
 #endif
         proceed=SetImageProgress(image,RecolorImageTag,progress++,image->rows);
@@ -4805,8 +4805,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
   progress=0;
   image_view=AcquireCacheView(image);
   sepia_view=AcquireCacheView(sepia_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -4859,7 +4859,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SepiaToneImage)
 #endif
         proceed=SetImageProgress(image,SepiaToneImageTag,progress++,
@@ -4963,8 +4963,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(border_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) border_image->rows; y++)
   {
@@ -5002,7 +5002,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ShadowImage)
 #endif
         proceed=SetImageProgress(image,ShadowImageTag,progress++,
@@ -5252,8 +5252,8 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -5289,7 +5289,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SolarizeImage)
 #endif
         proceed=SetImageProgress(image,SolarizeImageTag,progress++,image->rows);
@@ -5693,8 +5693,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   swirl_view=AcquireCacheView(swirl_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -5764,7 +5764,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SwirlImage)
 #endif
         proceed=SetImageProgress(image,SwirlImageTag,progress++,image->rows);
@@ -5890,8 +5890,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   progress=0;
   image_view=AcquireCacheView(image);
   tint_view=AcquireCacheView(tint_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -5945,7 +5945,7 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_TintImage)
 #endif
         proceed=SetImageProgress(image,TintImageTag,progress++,image->rows);
@@ -6156,8 +6156,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   GetMagickPixelPacket(wave_image,&zero);
   resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
   wave_view=AcquireCacheView(wave_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) wave_image->rows; y++)
   {
@@ -6202,7 +6202,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_WaveImage)
 #endif
         proceed=SetImageProgress(image,WaveImageTag,progress++,image->rows);

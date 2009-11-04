@@ -1721,7 +1721,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for shared(status)
 #endif
   for (x=0; x < (long) resize_image->columns; x++)
@@ -1890,7 +1890,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_HorizontalFilter)
 #endif
         proceed=SetImageProgress(image,ResizeImageTag,(*quantum)++,span);
@@ -1962,7 +1962,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) resize_image->rows; y++)
@@ -2131,7 +2131,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_VerticalFilter)
 #endif
         proceed=SetImageProgress(image,ResizeImageTag,(*quantum)++,span);
@@ -2335,8 +2335,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   progress=0;
   image_view=AcquireCacheView(image);
   sample_view=AcquireCacheView(sample_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) sample_image->rows; y++)
   {
@@ -2388,7 +2388,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_SampleImage)
 #endif
         proceed=SetImageProgress(image,SampleImageTag,progress++,image->rows);

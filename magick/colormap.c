@@ -118,8 +118,8 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   status=MagickTrue;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -247,8 +247,8 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   /*
     Assign index values to colormap entries.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
   for (i=0; i < (long) image->colors; i++)
     image->colormap[i].opacity=(IndexPacket) i;
@@ -260,8 +260,8 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   /*
     Update image colormap indexes to sorted colormap order.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp parallel for shared(status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
   for (i=0; i < (long) image->colors; i++)
     pixels[(long) image->colormap[i].opacity]=(unsigned short) i;
