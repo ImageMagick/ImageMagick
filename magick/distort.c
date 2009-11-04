@@ -348,7 +348,7 @@ static double *GenerateCoefficients(const Image *image,
   /* If not enough control point pairs are found for specific distortions
     fall back to Affine distortion (allowing 0 to 3 point pairs)
   */
-  if ( number_arguments < 4*cp_size &&
+  if ( number_arguments < 4*cp_size && 
        (  *method == BilinearForwardDistortion
        || *method == BilinearReverseDistortion
        || *method == PerspectiveDistortion
@@ -375,7 +375,7 @@ static double *GenerateCoefficients(const Image *image,
       if ( i == 0 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
                    "InvalidArgument","%s : '%s'","Polynomial",
-                   "Invalid order, should be 1 to 5, or 1.5");
+                   "Invalid order, should be interger 1 to 5, or 1.5");
         return((double *) NULL);
       }
       if ( number_arguments < 1+i*cp_size ) {
@@ -732,6 +732,14 @@ static double *GenerateCoefficients(const Image *image,
       MagickBooleanType
         status;
 
+      if ( number_arguments%cp_size != 0 ||
+           number_arguments < cp_size*4 ) {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+               "InvalidArgument", "%s : 'require at least %ld CPs'",
+               "Perspective", 4L);
+        coeff=(double *) RelinquishMagickMemory(coeff);
+        return((double *) NULL);
+      }
       /* fake 1x8 vectors matrix directly using the coefficients array */
       vectors[0] = &(coeff[0]);
       /* 8x8 least-squares matrix (zeroed) */
@@ -839,6 +847,16 @@ static double *GenerateCoefficients(const Image *image,
       MagickBooleanType
         status;
 
+      /* check the number of arguments */
+      if ( number_arguments%cp_size != 0 ||
+           number_arguments < cp_size*4 ) {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+               "InvalidArgument", "%s : 'require at least %ld CPs'",
+               *method == BilinearForwardDistortion ? "BilinearForward" :
+               "BilinearReverse", 4L);
+        coeff=(double *) RelinquishMagickMemory(coeff);
+        return((double *) NULL);
+      }
       /* create matrix, and a fake vectors matrix */
       matrix = AcquireMagickMatrix(4UL,4UL);
       vectors = (double **) AcquireQuantumMemory(number_values,sizeof(*vectors));
@@ -1002,7 +1020,7 @@ static double *GenerateCoefficients(const Image *image,
       for (i=0; i < number_values; i++)
         vectors[i] = &(coeff[2+i*nterms]);
       /* Add given control point pairs for least squares solving */
-      for (i=0; i < number_arguments; i+=cp_size) {
+      for (i=1; i < number_arguments; i+=cp_size) { /* NB: start = 1 not 0 */
         for (j=0; j < (long) nterms; j++)
           terms[j] = poly_basis_fn(j,arguments[i+cp_x],arguments[i+cp_y]);
         LeastSquaresAddTerms(matrix,vectors,terms,

@@ -1,3 +1,6 @@
+2009-11-04  6.5.7-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Bug Fix for Polynomial distortion. which is now working.
+
 2009-11-01  6.5.7-4 Cristy  <quetzlzacatenango@image...>
   * Use -define delegate:bimodal=true to activate any bimodal delegates.
   * Make sure MagickWand semaphore is acquired before locking it.
