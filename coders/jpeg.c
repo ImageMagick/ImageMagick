@@ -928,6 +928,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
         return(GetFirstImageInList(image));
+      InheritException(exception,&image->exception);
       return(DestroyImage(image));
     }
   jpeg_info.client_data=(void *) &error_manager;
