@@ -127,7 +127,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   concurrent=MagickFalse;
   duration=(-1.0);
   iterations=1;
-  status=MagickTrue;
+  status=MagickFalse;
   regard_warnings=MagickFalse;
   for (i=1; i < (long) (argc-1); i++)
   {
@@ -150,7 +150,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     {
       for (i=0; i < (long) iterations; i++)
       {
-        if (status == MagickFalse)
+        if (status != MagickFalse)
           continue;
         if (duration > 0)
           {
@@ -182,7 +182,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 #endif
       for (i=0; i < (long) iterations; i++)
       {
-        if (status == MagickFalse)
+        if (status != MagickFalse)
           continue;
         if (duration > 0)
           {
