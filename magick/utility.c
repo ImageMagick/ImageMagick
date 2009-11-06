@@ -702,7 +702,6 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     Expand any wildcard filenames.
   */
   *home_directory='\0';
-  cwd=getcwd(home_directory,MaxTextExtent);
   count=0;
   for (i=0; i < (long) *number_arguments; i++)
   {
@@ -758,6 +757,8 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         GetPathComponent(option,HeadPath,path);
         GetPathComponent(option,SubimagePath,subimage);
         ExpandFilename(path);
+        if (*home_directory == '\0')
+          cwd=getcwd(home_directory,MaxTextExtent-1);
         filelist=ListFiles(*path == '\0' ? home_directory : path,filename,
           &number_files);
       }
