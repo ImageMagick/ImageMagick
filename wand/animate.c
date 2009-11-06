@@ -1422,6 +1422,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
     if (fire != MagickFalse)
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }
+  i--;
   if (k != 0)
     ThrowAnimateException(OptionError,"UnbalancedParenthesis",argv[i]);
   if (image == (Image *) NULL)
