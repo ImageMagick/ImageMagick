@@ -4591,10 +4591,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
-    MagickPixelPacket
-      pixel,
-      recolor_pixel;
-
     register const double
       *__restrict k;
 
@@ -4625,94 +4621,104 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     recolor_indexes=GetCacheViewAuthenticIndexQueue(recolor_view);
-    pixel=zero;
-    recolor_pixel=zero;
     k=color_matrix;
-    for (x=0; x < (long) image->columns; x++)
+    switch (order)
     {
-      pixel.red=(MagickRealType) p->red;
-      pixel.green=(MagickRealType) p->green;
-      pixel.blue=(MagickRealType) p->blue;
-      if (image->matte != MagickFalse)
-        pixel.opacity=(MagickRealType) p->opacity;
-      if (image->colorspace == CMYKColorspace)
-        pixel.index=(MagickRealType) indexes[x];
-      recolor_pixel=pixel;
-      switch (order)
+      case 0:
+        break;
+      case 1:
       {
-        case 0:
-          break;
-        case 1:
+        for (x=0; x < (long) image->columns; x++)
         {
-          recolor_pixel.red=k[0]*pixel.red;
-          break;
+          q->red=RoundToQuantum(k[0]*p->red);
+          p++;
+          q++;
         }
-        case 2:
-        {
-          recolor_pixel.red=k[0]*pixel.red+k[1]*pixel.green;
-          recolor_pixel.green=k[2]*pixel.red+k[3]*pixel.green;
-          break;
-        }
-        case 3:
-        {
-          recolor_pixel.red=k[0]*pixel.red+k[1]*pixel.green+k[2]*pixel.blue;
-          recolor_pixel.green=k[3]*pixel.red+k[4]*pixel.green+k[5]*pixel.blue;
-          recolor_pixel.blue=k[6]*pixel.red+k[7]*pixel.green+k[8]*pixel.blue;
-          break;
-        }
-        case 4:
-        {
-          recolor_pixel.red=k[0]*pixel.red+k[1]*pixel.green+k[2]*pixel.blue+
-            k[12]*QuantumRange;
-          recolor_pixel.green=k[4]*pixel.red+k[5]*pixel.green+k[6]*pixel.blue+
-            k[13]*QuantumRange;
-          recolor_pixel.blue=k[8]*pixel.red+k[9]*pixel.green+k[10]*pixel.blue+
-            k[14]*QuantumRange;
-          break;
-        }
-        case 5:
-        {
-          recolor_pixel.red=k[0]*pixel.red+k[1]*pixel.green+k[2]*pixel.blue+
-            k[3]*(QuantumRange-pixel.opacity)+k[20]*QuantumRange;
-          recolor_pixel.green=k[5]*pixel.red+k[6]*pixel.green+k[7]*pixel.blue+
-            k[8]*(QuantumRange-pixel.opacity)+k[21]*QuantumRange;
-          recolor_pixel.blue=k[10]*pixel.red+k[11]*pixel.green+k[12]*pixel.blue+
-            k[13]*(QuantumRange-pixel.opacity)+k[22]*QuantumRange;
-          recolor_pixel.opacity=(MagickRealType) QuantumRange-(k[15]*pixel.red+
-            k[16]*pixel.green+k[17]*pixel.blue+k[18]*(QuantumRange-
-            pixel.opacity)+k[23]*QuantumRange);
-          break;
-        }
-        default:
-        {
-          recolor_pixel.red=k[0]*pixel.red+k[1]*pixel.green+k[2]*pixel.blue+
-            k[3]*pixel.index+k[4]*((Quantum) QuantumRange-pixel.opacity)+
-            k[30]*QuantumRange;
-          recolor_pixel.green=k[6]*pixel.red+k[7]*pixel.green+k[8]*pixel.blue+
-            k[9]*pixel.index+k[10]*((Quantum) QuantumRange-pixel.opacity)+
-            k[31]*QuantumRange;
-          recolor_pixel.blue=k[12]*pixel.red+k[13]*pixel.green+k[14]*pixel.blue+
-            k[15]*pixel.index+k[16]*((Quantum) QuantumRange-pixel.opacity)+
-            k[32]*QuantumRange;
-          if (image->colorspace == CMYKColorspace)
-            recolor_pixel.index=k[18]*pixel.red+k[19]*pixel.green+k[20]*
-              pixel.blue+k[21]*pixel.index+k[22]*((Quantum) QuantumRange-
-              pixel.opacity)+k[33]*QuantumRange;
-          recolor_pixel.opacity=(MagickRealType) QuantumRange-(k[24]*pixel.red+
-            k[25]*pixel.green+k[26]*pixel.blue+k[27]*pixel.index+k[28]*
-            (QuantumRange-pixel.opacity)+k[34]*QuantumRange);
-          break;
-        }
+        break;
       }
-      q->red=RoundToQuantum(recolor_pixel.red);
-      q->green=RoundToQuantum(recolor_pixel.green);
-      q->blue=RoundToQuantum(recolor_pixel.blue);
-      if (image->matte != MagickFalse)
-        q->opacity=RoundToQuantum(recolor_pixel.opacity);
-      if (image->colorspace == CMYKColorspace)
-        recolor_indexes[x]=RoundToQuantum(recolor_pixel.index);
-      p++;
-      q++;
+      case 2:
+      {
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green);
+          q->green=RoundToQuantum(k[2]*p->red+k[3]*p->green);
+          p++;
+          q++;
+        }
+        break;
+      }
+      case 3:
+      {
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue);
+          q->green=RoundToQuantum(k[3]*p->red+k[4]*p->green+k[5]*p->blue);
+          q->blue=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*p->blue);
+          p++;
+          q++;
+        }
+        break;
+      }
+      case 4:
+      {
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
+            k[12]*QuantumRange);
+          q->green=RoundToQuantum(k[4]*p->red+k[5]*p->green+k[6]*p->blue+
+            k[13]*QuantumRange);
+          q->blue=RoundToQuantum(k[8]*p->red+k[9]*p->green+k[10]*p->blue+
+            k[14]*QuantumRange);
+          p++;
+          q++;
+        }
+        break;
+      }
+      case 5:
+      {
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
+            k[3]*(QuantumRange-p->opacity)+k[20]*QuantumRange);
+          q->green=RoundToQuantum(k[5]*p->red+k[6]*p->green+k[7]*p->blue+
+            k[8]*(QuantumRange-p->opacity)+k[21]*QuantumRange);
+          q->blue=RoundToQuantum(k[10]*p->red+k[11]*p->green+k[12]*p->blue+
+            k[13]*(QuantumRange-p->opacity)+k[22]*QuantumRange);
+          if (image->matte != MagickFalse)
+            q->opacity=RoundToQuantum((MagickRealType) QuantumRange-(k[15]*
+              p->red+k[16]*p->green+k[17]*p->blue+k[18]*(QuantumRange-
+              p->opacity)+k[23]*QuantumRange));
+          p++;
+          q++;
+        }
+        break;
+      }
+      default:
+      {
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
+            k[3]*indexes[x]+k[4]*((Quantum) QuantumRange-p->opacity)+
+            k[30]*QuantumRange);
+          q->green=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*p->blue+
+            k[9]*indexes[x]+k[10]*((Quantum) QuantumRange-p->opacity)+
+            k[31]*QuantumRange);
+          q->blue=RoundToQuantum(k[12]*p->red+k[13]*p->green+k[14]*p->blue+
+            k[15]*indexes[x]+k[16]*((Quantum) QuantumRange-p->opacity)+
+            k[32]*QuantumRange);
+          if (image->matte != MagickFalse)
+            q->opacity=RoundToQuantum((MagickRealType) QuantumRange-(k[24]*
+              p->red+k[25]*p->green+k[26]*p->blue+k[27]*indexes[x]+
+              k[28]*(QuantumRange-p->opacity)+k[34]*QuantumRange));
+          if (image->colorspace == CMYKColorspace)
+            recolor_indexes[x]=RoundToQuantum(k[18]*p->red+k[19]*p->green+k[20]*
+              p->blue+k[21]*indexes[x]+k[22]*((Quantum) QuantumRange-
+              p->opacity)+k[33]*QuantumRange);
+          p++;
+          q++;
+        }
+        break;
+      }
     }
     if (SyncCacheViewAuthenticPixels(recolor_view,exception) == MagickFalse)
       status=MagickFalse;
