@@ -4516,6 +4516,10 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
 {
 #define RecolorImageTag  "Recolor/Image"
 
+  CacheView
+    *image_view,
+    *recolor_view;
+
   Image
     *recolor_image;
 
@@ -4526,13 +4530,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   MagickBooleanType
     status;
 
-  MagickPixelPacket
-    zero;
-
-  CacheView
-    *image_view,
-    *recolor_view;
-
   /*
     Initialize image attributes.
   */
@@ -4542,8 +4539,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  recolor_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  recolor_image=CloneImage(image,0,0,MagickTrue,exception);
   if (recolor_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(recolor_image,DirectClass) == MagickFalse)
@@ -4588,7 +4584,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   */
   status=MagickTrue;
   progress=0;
-  GetMagickPixelPacket(image,&zero);
   image_view=AcquireCacheView(image);
   recolor_view=AcquireCacheView(recolor_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4601,7 +4596,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       recolor_pixel;
 
     register const double
-      *k;
+      *__restrict k;
 
     register const IndexPacket
       *__restrict indexes;
@@ -4621,7 +4616,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(recolor_view,0,y,recolor_image->columns,1,
+    q=GetCacheViewAuthenticPixels(recolor_view,0,y,recolor_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
@@ -4635,8 +4630,14 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     k=color_matrix;
     for (x=0; x < (long) image->columns; x++)
     {
-      SetMagickPixelPacket(image,p,indexes,&pixel);
-      SetMagickPixelPacket(recolor_image,p,indexes,&recolor_pixel);
+      pixel.red=(MagickRealType) p->red;
+      pixel.green=(MagickRealType) p->green;
+      pixel.blue=(MagickRealType) p->blue;
+      if (image->matte != MagickFalse)
+        pixel.opacity=(MagickRealType) p->opacity;
+      if (image->colorspace == CMYKColorspace)
+        pixel.index=(MagickRealType) indexes[x];
+      recolor_pixel=pixel;
       switch (order)
       {
         case 0:
@@ -4706,7 +4707,8 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       q->red=RoundToQuantum(recolor_pixel.red);
       q->green=RoundToQuantum(recolor_pixel.green);
       q->blue=RoundToQuantum(recolor_pixel.blue);
-      q->opacity=RoundToQuantum(recolor_pixel.opacity);
+      if (image->matte != MagickFalse)
+        q->opacity=RoundToQuantum(recolor_pixel.opacity);
       if (image->colorspace == CMYKColorspace)
         recolor_indexes[x]=RoundToQuantum(recolor_pixel.index);
       p++;
