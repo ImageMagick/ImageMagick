@@ -4529,9 +4529,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   MagickPixelPacket
     zero;
 
-  register const double
-    *k;
-
   CacheView
     *image_view,
     *recolor_view;
@@ -4565,6 +4562,9 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
         u,
         v;
 
+      register const double
+        *k;
+
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
         "  Recolor image with %ldx%ld color matrix:",order,order);
       message=AcquireString("");
@@ -4589,7 +4589,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(image,&zero);
-  k=color_matrix;
   image_view=AcquireCacheView(image);
   recolor_view=AcquireCacheView(recolor_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4600,6 +4599,9 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     MagickPixelPacket
       pixel,
       recolor_pixel;
+
+    register const double
+      *k;
 
     register const IndexPacket
       *__restrict indexes;
@@ -4630,6 +4632,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     recolor_indexes=GetCacheViewAuthenticIndexQueue(recolor_view);
     pixel=zero;
     recolor_pixel=zero;
+    k=color_matrix;
     for (x=0; x < (long) image->columns; x++)
     {
       SetMagickPixelPacket(image,p,indexes,&pixel);
