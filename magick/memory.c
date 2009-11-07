@@ -546,6 +546,8 @@ MagickExport void DestroyMagickMemory(void)
   register long
     i;
 
+  if (memory_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&memory_semaphore);
   (void) LockSemaphoreInfo(memory_semaphore);
   (void) UnlockSemaphoreInfo(memory_semaphore);
   for (i=0; i < (long) memory_info.number_segments; i++)
