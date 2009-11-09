@@ -1,6 +1,8 @@
-2009-11-08  6.5.5-7 Glenn Randers-Pehrson <glennrp@image...>
-  * Added some #defines to coders/png.c to stifle some new pedantic
-    warnings from libpng-1.2.41 and 1.4.0.
+2009-11-09  6.5.7-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Suppress libpng pedantic warnings.
+
+2009-11-09  6.5.7-7 Cristy  <quetzlzacatenango@image...>
+  * Bump library age.
 
 2009-11-06  6.5.7-6 Cristy  <quetzlzacatenango@image...>
   * Animate command line options are no longer ignored.
