@@ -79,6 +79,14 @@
 #include "magick/transform.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_PNG_DELEGATE)
+
+/* Suppress libpng pedantic warnings */
+#define PNG_DEPRECATED  /* use of this function is deprecated */
+#define PNG_USE_RESULT  /* the result of this function must be checked */
+#define PNG_NORETURN    /* this function does not return */
+#define PNG_ALLOCATED   /* the result of the function is new memory */
+#define PNG_DEPSTRUCT   /* access to this struct member is deprecated */
+
 #include "png.h"
 #include "zlib.h"
 
