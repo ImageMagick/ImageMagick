@@ -29,9 +29,9 @@ extern "C" {
 #define MagickCopyright  "Copyright (C) 1999-2009 ImageMagick Studio LLC"
 #define MagickLibVersion  0x657
 #define MagickLibVersionText  "6.5.7"
-#define MagickLibVersionNumber  2,0,0
+#define MagickLibVersionNumber  3,0,0
 #define MagickLibSubversion  "-7"
-#define MagickReleaseDate  "2009-11-08"
+#define MagickReleaseDate  "2009-11-09"
 #define MagickChangeDate   "20091106"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.5.7/index.html"
