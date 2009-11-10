@@ -8,8 +8,8 @@
 <configuremap>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="LIB_VERSION" value="0x657"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,5,7,7"/>
-  <configure name="RELEASE_DATE" value="2009-11-09"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,5,7,8"/>
+  <configure name="RELEASE_DATE" value="2009-11-10"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
