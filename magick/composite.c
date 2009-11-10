@@ -2580,8 +2580,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(texture_view,0,y % texture->rows,
-      texture->columns,1,exception);
+    p=GetCacheViewVirtualPixels(texture_view,texture->tile_offset.x,(y+
+      texture->tile_offset.y) % texture->rows,texture->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
