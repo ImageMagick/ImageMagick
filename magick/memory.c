@@ -389,6 +389,8 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 #if !defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
   memory=memory_methods.acquire_memory_handler(size == 0 ? 1UL : size);
 #else
+  if (memory_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&memory_semaphore);
   if (free_segments == (DataSegmentInfo *) NULL)
     {
       (void) LockSemaphoreInfo(memory_semaphore);
