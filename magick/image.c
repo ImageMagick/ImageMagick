@@ -143,6 +143,9 @@ const double
 */
 MagickExport Image *AcquireImage(const ImageInfo *image_info)
 {
+  const char
+    *option;
+
   Image
     *image;
 
@@ -247,6 +250,16 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   if (image_info->depth != 0)
     image->depth=image_info->depth;
   image->dither=image_info->dither;
+  option=GetImageOption(image_info,"tile-offset");
+  if (option != (const char *) NULL)
+    {
+      char
+        *geometry;
+
+      geometry=GetPageGeometry(option);
+      flags=ParseAbsoluteGeometry(geometry,&image->tile_offset);
+      geometry=DestroyString(geometry);
+    }
   image->background_color=image_info->background_color;
   image->border_color=image_info->border_color;
   image->matte_color=image_info->matte_color;
