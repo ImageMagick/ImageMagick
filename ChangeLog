@@ -3,6 +3,7 @@
 
 2009-11-09  6.5.7-7 Cristy  <quetzlzacatenango@image...>
   * Bump library age.
+  * Restore -tile-offset functionality (bug report from Anthony).
 
 2009-11-06  6.5.7-6 Cristy  <quetzlzacatenango@image...>
   * Animate command line options are no longer ignored.
