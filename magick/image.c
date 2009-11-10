@@ -143,9 +143,6 @@ const double
 */
 MagickExport Image *AcquireImage(const ImageInfo *image_info)
 {
-  const char
-    *option;
-
   Image
     *image;
 
@@ -250,16 +247,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   if (image_info->depth != 0)
     image->depth=image_info->depth;
   image->dither=image_info->dither;
-  option=GetImageOption(image_info,"tile-offset");
-  if (option != (const char *) NULL)
-    {
-      char
-        *geometry;
-
-      geometry=GetPageGeometry(option);
-      flags=ParseAbsoluteGeometry(geometry,&image->tile_offset);
-      geometry=DestroyString(geometry);
-    }
   image->background_color=image_info->background_color;
   image->border_color=image_info->border_color;
   image->matte_color=image_info->matte_color;
@@ -269,6 +256,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
   (void) SetImageVirtualPixelMethod(image,image_info->virtual_pixel_method);
+  SyncImageSettings(image_info,image);
   return(image);
 }
 
@@ -3861,4 +3849,311 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     (void) ThrowMagickException(&image->exception,GetMagickModule(),
       CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S y n c I m a g e S e t t i n g s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncImageSettings() sync the image info options to the image.
+%
+%  The format of the SyncImageSettings method is:
+%
+%      MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
+%        Image *image)
+%      MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o image: the image.
+%
+*/
+
+MagickExport MagickBooleanType SyncImagesSettings(ImageInfo *image_info,
+  Image *images)
+{
+  Image
+    *image;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  image=images;
+  for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
+    (void) SyncImageSettings(image_info,image);
+  (void) DeleteImageOption(image_info,"page");
+  return(MagickTrue);
+}
+
+MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
+  Image *image)
+{
+  char
+    property[MaxTextExtent];
+
+  const char
+    *value,
+    *option;
+
+  GeometryInfo
+    geometry_info;
+
+  MagickStatusType
+    flags;
+
+  /*
+    Sync image options.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  option=GetImageOption(image_info,"background");
+  if (option != (const char *) NULL)
+    (void) QueryColorDatabase(option,&image->background_color,
+      &image->exception);
+  option=GetImageOption(image_info,"bias");
+  if (option != (const char *) NULL)
+    image->bias=StringToDouble(option,QuantumRange);
+  option=GetImageOption(image_info,"black-point-compensation");
+  if (option != (const char *) NULL)
+    image->black_point_compensation=(MagickBooleanType) ParseMagickOption(
+      MagickBooleanOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"blue-primary");
+  if (option != (const char *) NULL)
+    {
+      flags=ParseGeometry(option,&geometry_info);
+      image->chromaticity.blue_primary.x=geometry_info.rho;
+      image->chromaticity.blue_primary.y=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->chromaticity.blue_primary.y=image->chromaticity.blue_primary.x;
+    }
+  option=GetImageOption(image_info,"bordercolor");
+  if (option != (const char *) NULL)
+    (void) QueryColorDatabase(option,&image->border_color,&image->exception);
+  option=GetImageOption(image_info,"colors");
+  if (option != (const char *) NULL)
+    image->colors=(unsigned long) atol(option);
+  option=GetImageOption(image_info,"compose");
+  if (option != (const char *) NULL)
+    image->compose=(CompositeOperator) ParseMagickOption(MagickComposeOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"compress");
+  if (option != (const char *) NULL)
+    image->compression=(CompressionType) ParseMagickOption(
+      MagickCompressOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"debug");
+  if (option != (const char *) NULL)
+    image->debug=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"delay");
+  if (option != (const char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      flags=ParseGeometry(option,&geometry_info);
+      if ((flags & GreaterValue) != 0)
+        {
+          if (image->delay > (unsigned long) (geometry_info.rho+0.5))
+            image->delay=(unsigned long) (geometry_info.rho+0.5);
+        }
+      else
+        if ((flags & LessValue) != 0)
+          {
+            if (image->delay < (unsigned long) (geometry_info.rho+0.5))
+              image->ticks_per_second=(long) (geometry_info.sigma+0.5);
+          }
+        else
+          image->delay=(unsigned long) (geometry_info.rho+0.5);
+      if ((flags & SigmaValue) != 0)
+        image->ticks_per_second=(long) (geometry_info.sigma+0.5);
+    }
+  option=GetImageOption(image_info,"density");
+  if (option != (const char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      /*
+        Set image density.
+      */
+      flags=ParseGeometry(option,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+    }
+  option=GetImageOption(image_info,"depth");
+  if (option != (const char *) NULL)
+    image->depth=(unsigned long) atol(option);
+  option=GetImageOption(image_info,"dispose");
+  if (option != (const char *) NULL)
+    image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"endian");
+  if (option != (const char *) NULL)
+    image->endian=(EndianType) ParseMagickOption(MagickEndianOptions,
+      MagickFalse,option);
+  if (image_info->extract != (char *) NULL)
+    (void) ParseAbsoluteGeometry(image_info->extract,&image->extract_info);
+  option=GetImageOption(image_info,"filter");
+  if (option != (const char *) NULL)
+    image->filter=(FilterTypes) ParseMagickOption(MagickFilterOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"fuzz");
+  if (option != (const char *) NULL)
+    image->fuzz=StringToDouble(option,QuantumRange);
+  option=GetImageOption(image_info,"gravity");
+  if (option != (const char *) NULL)
+    image->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"green-primary");
+  if (option != (const char *) NULL)
+    {
+      flags=ParseGeometry(option,&geometry_info);
+      image->chromaticity.green_primary.x=geometry_info.rho;
+      image->chromaticity.green_primary.y=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->chromaticity.green_primary.y=image->chromaticity.green_primary.x;
+    }
+  option=GetImageOption(image_info,"intent");
+  if (option != (const char *) NULL)
+    image->rendering_intent=(RenderingIntent) ParseMagickOption(
+      MagickIntentOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"interlace");
+  if (option != (const char *) NULL)
+    image->interlace=(InterlaceType) ParseMagickOption(MagickInterlaceOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"interpolate");
+  if (option != (const char *) NULL)
+    image->interpolate=(InterpolatePixelMethod) ParseMagickOption(
+      MagickInterpolateOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"loop");
+  if (option != (const char *) NULL)
+    image->iterations=(unsigned long) atol(option);
+  option=GetImageOption(image_info,"mattecolor");
+  if (option != (const char *) NULL)
+    (void) QueryColorDatabase(option,&image->matte_color,&image->exception);
+  option=GetImageOption(image_info,"orient");
+  if (option != (const char *) NULL)
+    image->orientation=(OrientationType) ParseMagickOption(
+      MagickOrientationOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"quality");
+  if (option != (const char *) NULL)
+    image->quality=(unsigned long) atol(option);
+  option=GetImageOption(image_info,"page");
+  if (option != (const char *) NULL)
+    {
+      char
+        *geometry;
+
+      geometry=GetPageGeometry(option);
+      flags=ParseAbsoluteGeometry(geometry,&image->page);
+      geometry=DestroyString(geometry);
+    }
+  option=GetImageOption(image_info,"red-primary");
+  if (option != (const char *) NULL)
+    {
+      flags=ParseGeometry(option,&geometry_info);
+      image->chromaticity.red_primary.x=geometry_info.rho;
+      image->chromaticity.red_primary.y=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->chromaticity.red_primary.y=image->chromaticity.red_primary.x;
+    }
+  if (image_info->quality != UndefinedCompressionQuality)
+    image->quality=image_info->quality;
+  option=GetImageOption(image_info,"scene");
+  if (option != (const char *) NULL)
+    image->scene=(unsigned long) atol(option);
+  option=GetImageOption(image_info,"taint");
+  if (option != (const char *) NULL)
+    image->taint=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,
+      MagickFalse,option);
+  option=GetImageOption(image_info,"tile-offset");
+  if (option != (const char *) NULL)
+    {
+      char
+        *geometry;
+
+      geometry=GetPageGeometry(option);
+      flags=ParseAbsoluteGeometry(geometry,&image->tile_offset);
+      geometry=DestroyString(geometry);
+    }
+  option=GetImageOption(image_info,"transparent-color");
+  if (option != (const char *) NULL)
+    (void) QueryColorDatabase(option,&image->transparent_color,
+      &image->exception);
+  option=GetImageOption(image_info,"type");
+  if (option != (const char *) NULL)
+    image->type=(ImageType) ParseMagickOption(MagickTypeOptions,MagickFalse,
+      option);
+  option=GetImageOption(image_info,"units");
+  if (option != (const char *) NULL)
+    image->units=(ResolutionType) ParseMagickOption(MagickResolutionOptions,
+      MagickFalse,option);
+  if (image_info->units != UndefinedResolution)
+    {
+      if (image->units != image_info->units)
+        switch (image->units)
+        {
+          case PixelsPerInchResolution:
+          {
+            if (image_info->units == PixelsPerCentimeterResolution)
+              {
+                image->x_resolution/=2.54;
+                image->y_resolution/=2.54;
+              }
+            break;
+          }
+          case PixelsPerCentimeterResolution:
+          {
+            if (image_info->units == PixelsPerInchResolution)
+              {
+                image->x_resolution*=2.54;
+                image->y_resolution*=2.54;
+              }
+            break;
+          }
+          default:
+            break;
+        }
+      image->units=image_info->units;
+    }
+  option=GetImageOption(image_info,"white-point");
+  if (option != (const char *) NULL)
+    {
+      flags=ParseGeometry(option,&geometry_info);
+      image->chromaticity.white_point.x=geometry_info.rho;
+      image->chromaticity.white_point.y=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->chromaticity.white_point.y=image->chromaticity.white_point.x;
+    }
+  ResetImageOptionIterator(image_info);
+  for (option=GetNextImageOption(image_info); option != (const char *) NULL; )
+  {
+    value=GetImageOption(image_info,option);
+    if (value != (const char *) NULL)
+      {
+        (void) FormatMagickString(property,MaxTextExtent,"%s",option);
+        (void) SetImageArtifact(image,property,value);
+      }
+    option=GetNextImageOption(image_info);
+  }
+  return(MagickTrue);
 }

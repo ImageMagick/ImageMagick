@@ -34,9 +34,7 @@ extern WandExport MagickBooleanType
   MogrifyImageList(ImageInfo *,const int,const char **,Image **,
     ExceptionInfo *),
   MogrifyImages(ImageInfo *,const MagickBooleanType,const int,const char **,
-    Image **,ExceptionInfo *),
-  SyncImageSettings(const ImageInfo *,Image *),
-  SyncImagesSettings(ImageInfo *,Image *);
+    Image **,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

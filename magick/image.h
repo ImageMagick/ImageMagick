@@ -523,7 +523,9 @@ extern MagickExport MagickBooleanType
   SetImageStorageClass(Image *,const ClassType),
   SetImageType(Image *,const ImageType),
   StripImage(Image *),
-  SyncImage(Image *);
+  SyncImage(Image *),
+  SyncImageSettings(const ImageInfo *,Image *),
+  SyncImagesSettings(ImageInfo *,Image *);
 
 extern MagickExport size_t
   InterpretImageFilename(const ImageInfo *,Image *,const char *,int,char *);
