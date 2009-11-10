@@ -98,8 +98,18 @@
 #define first_scene scene
 
 #if PNG_LIBPNG_VER < 10400
-#define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
-#define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
+#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#else
+   /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
+    * Just don't use libpng-1.4.0beta32-34 or beta67-73
+    */
+#  ifndef  PNG_USER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
+#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
+#  endif
+#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
+#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#  endif
 #endif
 
 #if PNG_LIBPNG_VER > 95
