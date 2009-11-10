@@ -1,5 +1,6 @@
 2009-11-09  6.5.7-7 Glenn Randers-Pehrson <glennrp@image...>
-  * Suppress libpng pedantic warnings.
+  * Suppress libpng pedantic warnings and warn about using old libpng-1.4.0
+    beta versions.
 
 2009-11-09  6.5.7-7 Cristy  <quetzlzacatenango@image...>
   * Bump library age.
