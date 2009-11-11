@@ -280,7 +280,7 @@ static MagickBooleanType IsITUFaxImage(const Image *image)
   const unsigned char
     *datum;
 
-  profile=GetImageProfile(image,"icc");
+  profile=GetImageProfile(image,"8bim");
   if (profile == (const StringInfo *) NULL)
     return(MagickFalse);
   if (GetStringInfoLength(profile) < 5)
