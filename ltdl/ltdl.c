@@ -529,7 +529,8 @@ find_module (lt_dlhandle *handle, const char *dir, const char *libdir,
   /* Try to open the old library first; if it was dlpreopened,
      we want the preopened version of it, even if a dlopenable
      module is available.  */
-  if (old_name && tryall_dlopen (handle, old_name, advise, 0) == 0)
+  if (old_name && tryall_dlopen (handle, old_name, advise,
+				 lt_dlloader_find ("lt_preopen")) == 0)
     {
       return 0;
     }
