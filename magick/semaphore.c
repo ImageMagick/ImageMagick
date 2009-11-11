@@ -399,11 +399,6 @@ MagickExport MagickBooleanType SemaphoreComponentGenesis(void)
 */
 MagickExport void SemaphoreComponentTerminus(void)
 {
-#if defined(MAGICKCORE_HAVE_PTHREAD)
-  if (pthread_mutex_destroy(&semaphore_mutex) != 0)
-    (void) fprintf(stderr,"pthread_mutex_destroy failed %s\n",
-      GetExceptionMessage(errno));
-#endif
 }
 
 /*
