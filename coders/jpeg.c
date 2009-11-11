@@ -272,6 +272,26 @@ static void InitializeSource(j_decompress_ptr cinfo)
   source->start_of_blob=TRUE;
 }
 
+static MagickBooleanType IsITUFaxImage(const Image *image)
+{
+  const StringInfo
+    *profile;
+
+  const unsigned char
+    *datum;
+
+  profile=GetImageProfile(image,"icc");
+  if (profile == (const StringInfo *) NULL)
+    return(MagickFalse);
+  if (GetStringInfoLength(profile) < 5)
+    return(MagickFalse);
+  datum=GetStringInfoDatum(profile);
+  if ((datum[0] == 0x47) && (datum[1] == 0x33) && (datum[2] == 0x46) &&
+      (datum[3] == 0x41) && (datum[4] == 0x58))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
   ErrorManager
@@ -945,6 +965,14 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (image_info->colorspace == Rec601YCbCrColorspace) ||
       (image_info->colorspace == Rec709YCbCrColorspace))
     jpeg_info.out_color_space=JCS_YCbCr;
+  if (IsITUFaxImage(image) != MagickFalse)
+    {
+      image->colorspace=LabColorspace;
+      jpeg_info.out_color_space=JCS_YCbCr;
+    }
+  else
+    if (jpeg_info.out_color_space == JCS_CMYK)
+      image->colorspace=CMYKColorspace;
   /*
     Set image resolution.
   */
