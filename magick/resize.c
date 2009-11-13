@@ -2927,8 +2927,8 @@ MagickExport Image *ThumbnailImage(const Image *image,
   }
   (void) DeleteImageProperty(thumbnail_image,"comment");
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
-  if (strstr(image->magick_filename,"///") == (char *) NULL)
-    (void) FormatMagickString(value,MaxTextExtent,"file:///%s",
+  if (strstr(image->magick_filename,"//") == (char *) NULL)
+    (void) FormatMagickString(value,MaxTextExtent,"file://%s",
       image->magick_filename);
   (void) SetImageProperty(thumbnail_image,"Thumb::URI",value);
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
