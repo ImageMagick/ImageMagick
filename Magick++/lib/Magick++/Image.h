@@ -360,6 +360,7 @@ namespace Magick
                             const int outerBevel_ = 6 );
 
     // Applies a mathematical expression to the image.
+    void            fx ( const std::string expression );
     void            fx ( const std::string expression,
                          const Magick::ChannelType channel );
     

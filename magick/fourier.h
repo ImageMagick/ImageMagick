@@ -25,8 +25,8 @@ extern "C" {
 extern MagickExport Image
  *ForwardFourierTransformImage(const Image *,const MagickBooleanType,
    ExceptionInfo *),
- *InverseFourierTransformImage(const Image *,const MagickBooleanType,
-   ExceptionInfo *);
+ *InverseFourierTransformImage(const Image *,const Image *,
+   const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
