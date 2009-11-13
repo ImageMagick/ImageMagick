@@ -1,3 +1,6 @@
+2009-11-12  6.5.7-8 Cristy  <quetzlzacatenango@image...>
+  * Thumb::URI file URI now has the correct number of forward slashes.
+
 2009-11-09  6.5.7-7 Glenn Randers-Pehrson <glennrp@image...>
   * Suppress libpng pedantic warnings and warn about using old libpng-1.4.0
     beta versions.
