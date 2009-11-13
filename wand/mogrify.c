@@ -7703,7 +7703,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               Implements the inverse fourier discrete Fourier transform (DFT).
             */
             (void) SyncImagesSettings(image_info,*images);
-            fourier_image=InverseFourierTransformImage(*images,
+            fourier_image=InverseFourierTransformImage(*images,(*images)->next,
               *option == '-' ? MagickTrue : MagickFalse,exception);
             if (fourier_image == (Image *) NULL)
               break;

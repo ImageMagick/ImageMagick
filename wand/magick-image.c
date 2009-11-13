@@ -6287,30 +6287,42 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
 %  The format of the MagickInverseFourierTransformImage method is:
 %
 %      MagickBooleanType MagickInverseFourierTransformImage(
-%        MagickWand *wand,const MagickBooleanType magnitude)
+%        MagickWand *magnitude_wand,MagickWand *phase_wand,
+%        const MagickBooleanType magnitude)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o magnitude_wand: the magnitude or real wand.
+%
+%    o phase_wand: the phase or imaginary wand.
 %
 %    o magnitude: if true, return as magnitude / phase pair otherwise a real /
 %      imaginary image pair.
 %
 */
 WandExport MagickBooleanType MagickInverseFourierTransformImage(
-  MagickWand *wand,const MagickBooleanType magnitude)
+  MagickWand *magnitude_wand,MagickWand *phase_wand,
+  const MagickBooleanType magnitude)
 {
   Image
     *inverse_image;
 
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  inverse_image=InverseFourierTransformImage(wand->images,magnitude,
-    wand->exception);
+  MagickWand
+    *wand;
+
+  assert(magnitude_wand != (MagickWand *) NULL);
+  assert(magnitude_wand->signature == WandSignature);
+  if (magnitude_wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",
+      magnitude_wand->name);
+  wand=magnitude_wand;
+  if (magnitude_wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",
+      magnitude_wand->name);
+  assert(phase_wand != (MagickWand *) NULL);
+  assert(phase_wand->signature == WandSignature);
+  inverse_image=InverseFourierTransformImage(magnitude_wand->images,
+    phase_wand->images,magnitude,wand->exception);
   if (inverse_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,inverse_image);

@@ -9933,7 +9933,7 @@ Mogrify(ref,...)
         }
         case 125:  /* InverseFourierTransformImage */
         {
-          image=InverseFourierTransformImage(image,
+          image=InverseFourierTransformImage(image,image->next,
             argument_list[0].long_reference != 0 ? MagickTrue : MagickFalse,
             exception);
           break;

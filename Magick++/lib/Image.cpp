@@ -1066,7 +1066,17 @@ void Magick::Image::frame ( const unsigned int width_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-// Convolve image.  Applies a mathematical expression to the image.
+// Fx image.  Applies a mathematical expression to the image.
+void Magick::Image::fx ( const std::string expression )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    FxImageChannel ( image(), DefaultChannels, expression.c_str(), &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
 void Magick::Image::fx ( const std::string expression,
                          const Magick::ChannelType channel )
 {
