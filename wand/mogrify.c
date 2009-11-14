@@ -7686,7 +7686,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             (void) HaldClutImageChannel(image,channel,hald_image);
             hald_image=DestroyImage(hald_image);
             InheritException(exception,&image->exception);
-            *images=DestroyImageList(*images);
+            if (*images != (Image *) NULL)
+              *images=DestroyImageList(*images);
             *images=image;
             break;
           }
@@ -7716,7 +7717,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               phase_image,*option == '-' ? MagickTrue : MagickFalse,exception);
             if (fourier_image == (Image *) NULL)
               break;
-            *images=DestroyImage(*images);
+            if (*images != (Image *) NULL)
+              *images=DestroyImage(*images);
             *images=fourier_image;
             break;
           }
