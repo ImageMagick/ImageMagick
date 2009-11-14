@@ -1025,6 +1025,29 @@ void Magick::Image::flop ( void )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+// Implements the discrete Fourier transform (DFT) of the image either as a
+// magnitude / phase or real / imaginary image pair.
+void Magick::Image::forwardFourierTransform ( void )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = ForwardFourierTransformImage ( image(),
+    MagickTrue, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+void Magick::Image::forwardFourierTransform ( const bool magnitude )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = ForwardFourierTransformImage ( image(),
+    magnitude == true ? MagickTrue : MagickFalse, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Frame image
 void Magick::Image::frame ( const Geometry &geometry_ )
 {
