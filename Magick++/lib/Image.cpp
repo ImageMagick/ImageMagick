@@ -1037,12 +1037,12 @@ void Magick::Image::forwardFourierTransform ( void )
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
-void Magick::Image::forwardFourierTransform ( const bool magnitude )
+void Magick::Image::forwardFourierTransform ( const bool magnitude_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage = ForwardFourierTransformImage ( image(),
-    magnitude == true ? MagickTrue : MagickFalse, &exceptionInfo );
+    magnitude_ == true ? MagickTrue : MagickFalse, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1178,6 +1178,31 @@ void Magick::Image::implode ( const double factor_ )
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
     ImplodeImage( image(), factor_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+// implements the inverse discrete Fourier transform (IFT) of the image either
+// as a magnitude / phase or real / imaginary image pair.
+void Magick::Image::inverseFourierTransform ( const Image &phase_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = InverseFourierTransformImage( image(),
+		 phase_.constImage(), MagickTrue, &exceptionInfo);
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+void Magick::Image::inverseFourierTransform ( const Image &phase_,
+   const bool magnitude_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = InverseFourierTransformImage( image(),
+		 phase_.constImage(), magnitude_ == true ? MagickTrue : MagickFalse,
+     &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
