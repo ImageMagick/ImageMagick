@@ -580,6 +580,17 @@ void Magick::implodeImage::operator()( Magick::Image &image_ ) const
   image_.implode( _factor );
 }
 
+// Implements the inverse discrete Fourier transform (IFT) of the image
+// either as a magnitude / phase or real / imaginary image pair.
+Magick::inverseFourierTransformImage::inverseFourierTransformImage( const Magick::Image &phaseImage_ )
+  : _phaseImage( phaseImage_ )
+{
+}
+void Magick::inverseFourierTransformImage::operator()( Magick::Image &image_ ) const
+{
+  image_.inverseFourierTransform( _phaseImage );
+}
+
 // Set image validity. Valid images become empty (inValid) if argument
 // is false.
 Magick::isValidImage::isValidImage( const bool isValid_  )

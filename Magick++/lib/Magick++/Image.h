@@ -391,6 +391,12 @@ namespace Magick
     // Implode image (special effect)
     void            implode ( const double factor_ );
     
+    // implements the inverse discrete Fourier transform (DFT) of the image
+    // either as a magnitude / phase or real / imaginary image pair.
+    //
+    void            inverseFourierTransform ( const Image &phase_ );
+    void            inverseFourierTransform ( const Image &phase_,
+                                              const bool magnitude_ );
     // Label image
     void            label ( const std::string &label_ );
 

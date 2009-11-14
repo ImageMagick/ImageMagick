@@ -598,6 +598,19 @@ namespace Magick
     double _factor;
   };
 
+  // implements the inverse discrete Fourier transform (IFT) of the image
+  // either as a magnitude / phase or real / imaginary image pair.
+  class MagickDLLDecl inverseFourierTransformImage : public std::unary_function<Image&,void>
+  {
+  public:
+    inverseFourierTransformImage( const Image &phaseImage_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    Image _phaseImage;
+  };
+
   // Set image validity. Valid images become empty (inValid) if
   // argument is false.
   class MagickDLLDecl isValidImage : public std::unary_function<Image&,void>
