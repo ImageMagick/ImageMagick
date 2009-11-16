@@ -3170,13 +3170,17 @@ _8c.html" target="source" name="MagickInverseFourierTransformImage">MagickInvers
 
 <pre class="code">
   MagickBooleanType MagickInverseFourierTransformImage(
-    MagickWand *wand,const MagickBooleanType magnitude)
+    MagickWand *magnitude_wand,MagickWand *phase_wand,
+    const MagickBooleanType magnitude)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
 
-<h5>wand</h5>
-<ol><p>the magick wand.</p></ol>
+<h5>magnitude_wand</h5>
+<ol><p>the magnitude or real wand.</p></ol>
+
+<h5>phase_wand</h5>
+<ol><p>the phase or imaginary wand.</p></ol>
 
 <h5>magnitude</h5>
 <ol><p>if true, return as magnitude / phase pair otherwise a real / imaginary image pair.</p></ol>
@@ -6335,7 +6339,7 @@ _8c.html" target="source" name="MagickWriteImagesFile">MagickWriteImagesFile</a>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
