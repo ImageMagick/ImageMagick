@@ -871,14 +871,15 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
               *product_family=products[i];
               *major_version=major;
               *minor_version=minor;
-              status=MagickTrue;
+              status=TRUE;
             }
        }
        (void) RegCloseKey(hkey);
      }
   }
-  if (status == MagickFalse)
+  if (status == FALSE)
     {
+      i=0;
       *major_version=0;
       *minor_version=0;
     }
