@@ -1182,7 +1182,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "ImageSequenceRequired","`%s'",magnitude_image->filename);
-      return(MagickFalse);
+      return((Image *) NULL);
     }
 #if !defined(MAGICKCORE_FFTW_DELEGATE)
   fourier_image=(Image *) NULL;
