@@ -221,7 +221,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
         (long) (1000.0*(elapsed_time-floor(elapsed_time))));
     }
   timer=DestroyTimerInfo(timer);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*

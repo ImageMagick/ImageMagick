@@ -231,7 +231,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if !defined(wand_attribute)
-#  if !defined(__GNUC__)
+#  if (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__))
 #    define wand_attribute(x)  /* nothing */
 #  else
 #    define wand_attribute  __attribute__

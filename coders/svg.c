@@ -2666,38 +2666,6 @@ static void SVGSetImageSize(int *width,int *height,gpointer context)
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  xmlSAXHandler
-    SAXModules =
-    {
-      SVGInternalSubset,
-      SVGIsStandalone,
-      SVGHasInternalSubset,
-      SVGHasExternalSubset,
-      SVGResolveEntity,
-      SVGGetEntity,
-      SVGEntityDeclaration,
-      SVGNotationDeclaration,
-      SVGAttributeDeclaration,
-      SVGElementDeclaration,
-      SVGUnparsedEntityDeclaration,
-      SVGSetDocumentLocator,
-      SVGStartDocument,
-      SVGEndDocument,
-      SVGStartElement,
-      SVGEndElement,
-      SVGReference,
-      SVGCharacters,
-      SVGIgnorableWhitespace,
-      SVGProcessingInstructions,
-      SVGComment,
-      SVGWarning,
-      SVGError,
-      SVGError,
-      SVGGetParameterEntity,
-      SVGCDataBlock,
-      SVGExternalSubset
-    };
-
   char
     filename[MaxTextExtent];
 
@@ -2719,6 +2687,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     message[MaxTextExtent];
+
+  xmlSAXHandler
+    SAXModules;
 
   xmlSAXHandlerPtr
     sax_handler;
@@ -2936,6 +2907,34 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"begin SAX");
   xmlInitParser();
   (void) xmlSubstituteEntitiesDefault(1);
+  (void) ResetMagickMemory(&SAXModules,0,sizeof(SAXModules));
+  SAXModules.internalSubset=SVGInternalSubset;
+  SAXModules.isStandalone=SVGIsStandalone;
+  SAXModules.hasInternalSubset=SVGHasInternalSubset;
+  SAXModules.hasExternalSubset=SVGHasExternalSubset;
+  SAXModules.resolveEntity=SVGResolveEntity;
+  SAXModules.getEntity=SVGGetEntity;
+  SAXModules.entityDecl=SVGEntityDeclaration;
+  SAXModules.notationDecl=SVGNotationDeclaration;
+  SAXModules.attributeDecl=SVGAttributeDeclaration;
+  SAXModules.elementDecl=SVGElementDeclaration;
+  SAXModules.unparsedEntityDecl=SVGUnparsedEntityDeclaration;
+  SAXModules.setDocumentLocator=SVGSetDocumentLocator;
+  SAXModules.startDocument=SVGStartDocument;
+  SAXModules.endDocument=SVGEndDocument;
+  SAXModules.startElement=SVGStartElement;
+  SAXModules.endElement=SVGEndElement;
+  SAXModules.reference=SVGReference;
+  SAXModules.characters=SVGCharacters;
+  SAXModules.ignorableWhitespace=SVGIgnorableWhitespace;
+  SAXModules.processingInstruction=SVGProcessingInstructions;
+  SAXModules.comment=SVGComment;
+  SAXModules.warning=SVGWarning;
+  SAXModules.error=SVGError;
+  SAXModules.fatalError=SVGError;
+  SAXModules.getParameterEntity=SVGGetParameterEntity;
+  SAXModules.cdataBlock=SVGCDataBlock;
+  SAXModules.externalSubset=SVGExternalSubset;
   sax_handler=(&SAXModules);
   n=ReadBlob(image,MaxTextExtent,message);
   if (n > 0)

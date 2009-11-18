@@ -288,8 +288,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
 static HENHMETAFILE ReadEnhMetaFile(const char *path,long *width,
   long *height)
 {
-#pragma pack( push )
-#pragma pack( 2 )
+#pragma pack( push, 2 )
   typedef struct
   {
     DWORD dwKey;
