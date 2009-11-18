@@ -42,9 +42,9 @@ noinst_LTLIBRARIES	+= $(LT_DLLOADERS)
 
 if INSTALL_LTDL
 ltdlincludedir		= $(includedir)/libltdl
-ltdlinclude_HEADERS	= ltdl/ltdl/lt_system.h \
-			  ltdl/ltdl/lt_error.h \
-			  ltdl/ltdl/lt_dlloader.h
+ltdlinclude_HEADERS	= ltdl/libltdl/lt_system.h \
+			  ltdl/libltdl/lt_error.h \
+			  ltdl/libltdl/lt_dlloader.h
 include_HEADERS	       += ltdl/ltdl.h
 lib_LTLIBRARIES	       += ltdl/libltdl.la
 endif
@@ -53,15 +53,15 @@ if CONVENIENCE_LTDL
 noinst_LTLIBRARIES     += ltdl/libltdlc.la
 endif
 
-ltdl_ltdl_la_SOURCES = ltdl/ltdl/lt__alloc.h \
-			  ltdl/ltdl/lt__dirent.h \
-			  ltdl/ltdl/lt__glibc.h \
-			  ltdl/ltdl/lt__private.h \
-			  ltdl/ltdl/lt__strl.h \
-			  ltdl/ltdl/lt_dlloader.h \
-			  ltdl/ltdl/lt_error.h \
-	                  ltdl/ltdl/lt_system.h \
-			  ltdl/ltdl/slist.h \
+ltdl_libltdl_la_SOURCES = ltdl/libltdl/lt__alloc.h \
+			  ltdl/libltdl/lt__dirent.h \
+			  ltdl/libltdl/lt__glibc.h \
+			  ltdl/libltdl/lt__private.h \
+			  ltdl/libltdl/lt__strl.h \
+			  ltdl/libltdl/lt_dlloader.h \
+			  ltdl/libltdl/lt_error.h \
+	                  ltdl/libltdl/lt_system.h \
+			  ltdl/libltdl/slist.h \
 			  ltdl/loaders/preopen.c \
 			  ltdl/lt__alloc.c \
 			  ltdl/lt_dlloader.c \
@@ -73,16 +73,16 @@ ltdl_ltdl_la_SOURCES = ltdl/ltdl/lt__alloc.h \
 EXTRA_DIST	       += ltdl/lt__dirent.c \
 			  ltdl/lt__strl.c
 
-ltdl_ltdl_la_CPPFLAGS	= -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
-ltdl_ltdl_la_LDFLAGS	= $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
-ltdl_ltdl_la_LIBADD	= $(ltdl_LTLIBOBJS)
-ltdl_ltdl_la_DEPENDENCIES	= $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
+ltdl_libltdl_la_CPPFLAGS	= -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
+ltdl_libltdl_la_LDFLAGS	= $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
+ltdl_libltdl_la_LIBADD	= $(ltdl_LTLIBOBJS)
+ltdl_libltdl_la_DEPENDENCIES	= $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
 
-ltdl_libltdlc_la_SOURCES	= $(ltdl_ltdl_la_SOURCES)
+ltdl_libltdlc_la_SOURCES	= $(ltdl_libltdl_la_SOURCES)
 ltdl_libltdlc_la_CPPFLAGS	= -DLTDLOPEN=$(LTDLOPEN)c $(AM_CPPFLAGS)
 ltdl_libltdlc_la_LDFLAGS	= $(AM_LDFLAGS) $(LT_DLPREOPEN)
-ltdl_libltdlc_la_LIBADD	= $(ltdl_ltdl_la_LIBADD)
-ltdl_libltdlc_la_DEPENDENCIES= $(ltdl_ltdl_la_DEPENDENCIES)
+ltdl_libltdlc_la_LIBADD	= $(ltdl_libltdl_la_LIBADD)
+ltdl_libltdlc_la_DEPENDENCIES= $(ltdl_libltdl_la_DEPENDENCIES)
 
 ## The loaders are preopened by libltdl, itself always built from
 ## pic-objects (either as a shared library, or a convenience library),
