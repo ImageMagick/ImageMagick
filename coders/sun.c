@@ -924,7 +924,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlobByte(image,(unsigned char) indexes[x]);
               p++;
             }
-            if (image->columns & 0x01)
+            if ((image->columns & 0x01) != 0)
               (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               {
