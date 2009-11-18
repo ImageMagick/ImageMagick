@@ -231,7 +231,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if !defined(magick_attribute)
-#  if !defined(__GNUC__)
+#  if (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__))
 #    define magick_attribute(x)  /* nothing */
 #  else
 #    define magick_attribute  __attribute__
