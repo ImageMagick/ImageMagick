@@ -80,8 +80,10 @@ extern MagickExport int
   CompareStringInfo(const StringInfo *,const StringInfo *);
 
 extern MagickExport size_t
-  ConcatenateMagickString(char *,const char *,const size_t),
-  CopyMagickString(char *,const char *,const size_t),
+  ConcatenateMagickString(char *,const char *,const size_t)
+    magick_attribute((nonnull)),
+  CopyMagickString(char *,const char *,const size_t)
+    magick_attribute((nonnull)),
   GetStringInfoLength(const StringInfo *);
 
 extern MagickExport StringInfo
@@ -97,7 +99,8 @@ extern MagickExport unsigned char
   *GetStringInfoDatum(const StringInfo *);
 
 extern MagickExport void
-  ConcatenateStringInfo(StringInfo *,const StringInfo *),
+  ConcatenateStringInfo(StringInfo *,const StringInfo *)
+    magick_attribute((nonnull)),
   LocaleLower(char *),
   LocaleUpper(char *),
   PrintStringInfo(FILE *file,const char *,const StringInfo *),

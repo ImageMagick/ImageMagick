@@ -231,16 +231,16 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if !defined(wand_attribute)
-#  if (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__))
-#    define wand_attribute(x)  /* nothing */
-#  else
+#  if (defined(__GNUC__) && (__GNUC__ > 3) && !defined( __STRICT_ANSI__))
 #    define wand_attribute  __attribute__
+#  else
+#    define wand_attribute(x)  /* nothing */
 #  endif
 #endif
 
 #if !defined(wand_unused)
-#  if defined(__GNUC__)
-#     define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
+#  if (defined(__GNUC__) && (__GNUC__ > 3) && !defined( __STRICT_ANSI__))
+#    define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
 #  elif defined(__LCLINT__)
 #    define wand_unused(x) /*@unused@*/ x
 #  else
