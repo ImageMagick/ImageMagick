@@ -311,7 +311,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=sun_info.height;
     if ((sun_info.depth == 0) || (sun_info.depth > 32))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    image->depth=sun_info.depth <= 8 ? sun_info.depth : MAGICKCORE_QUANTUM_DEPTH;
+    image->depth=sun_info.depth <= 8 ? sun_info.depth :
+      MAGICKCORE_QUANTUM_DEPTH;
     if (sun_info.depth < 24)
       {
         image->storage_class=PseudoClass;
@@ -495,8 +496,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       else
         {
-          length=image->rows*((image->columns*(image->matte != MagickFalse ? 4 :
-            3))+image->columns % 2);
+          size_t
+            bytes_per_pixel;
+
+          bytes_per_pixel=3;
+          if (image->matte != MagickFalse)
+            bytes_per_pixel++;
+          length=image->rows*((bytes_per_line*image->columns)+
+            image->columns % 2);
           if (((sun_info.type == RT_ENCODED) &&
                (length > (bytes_per_line*image->rows))) ||
               ((sun_info.type != RT_ENCODED) && (length > sun_info.length)))
@@ -530,7 +537,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               q++;
             }
-            if ((image->columns % 2) != 0)
+            if (((bytes_per_pixel*image->columns) % 2) != 0)
               p++;
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -759,9 +766,9 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         /*
           Full color SUN raster.
         */
-        sun_info.depth=(image->matte ? 32U : 24U);
+        sun_info.depth=image->matte ? 32U : 24U;
         sun_info.length=(unsigned int) ((image->matte ? 4 : 3)*number_pixels);
-        sun_info.length+=image->columns & 0x01 ? image->rows : 0;
+        sun_info.length+=sun_info.length & 0x01 ? image->rows : 0;
       }
     else
       if (IsMonochromeImage(image,&image->exception))
@@ -808,6 +815,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           *q;
 
         size_t
+          bytes_per_pixel,
           length;
 
         unsigned char
@@ -816,6 +824,9 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate memory for pixels.
         */
+        bytes_per_pixel=3;
+        if (image->matte != MagickFalse)
+          bytes_per_pixel++;
         length=image->columns;
         pixels=(unsigned char *) AcquireQuantumMemory(length,4*sizeof(*pixels));
         if (pixels == (unsigned char *) NULL)
@@ -838,8 +849,8 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(p->blue);
             p++;
           }
-          if (image->columns & 0x01)
-            *q++=0;  /* pad scanline */
+          if (((bytes_per_pixel*image->columns) & 0x01) != 0)
+            *q++='\0';  /* pad scanline */
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           if (image->previous == (Image *) NULL)
             {
@@ -924,7 +935,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlobByte(image,(unsigned char) indexes[x]);
               p++;
             }
-            if ((image->columns & 0x01) != 0)
+            if (image->columns & 0x01)
               (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               {
