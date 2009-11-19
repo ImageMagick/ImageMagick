@@ -1268,9 +1268,16 @@ ltdl_dyld_la_OBJECTS = $(am_ltdl_dyld_la_OBJECTS)
 ltdl_dyld_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(ltdl_dyld_la_LDFLAGS) $(LDFLAGS) -o $@
-ltdl_libltdl_la_LIBADD =
-ltdl_libltdl_la_SOURCES = ltdl/libltdl.c
-ltdl_libltdl_la_OBJECTS = ltdl/libltdl.lo
+am_ltdl_libltdl_la_OBJECTS = ltdl/loaders/ltdl_libltdl_la-preopen.lo \
+	ltdl/ltdl_libltdl_la-lt__alloc.lo \
+	ltdl/ltdl_libltdl_la-lt_dlloader.lo \
+	ltdl/ltdl_libltdl_la-lt_error.lo ltdl/ltdl_libltdl_la-ltdl.lo \
+	ltdl/ltdl_libltdl_la-slist.lo
+ltdl_libltdl_la_OBJECTS = $(am_ltdl_libltdl_la_OBJECTS)
+ltdl_libltdl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(ltdl_libltdl_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 @INSTALL_LTDL_TRUE@am_ltdl_libltdl_la_rpath = -rpath $(libdir)
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 am__objects_1 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
@@ -1964,7 +1971,7 @@ SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
 	$(filters_analyze_la_SOURCES) $(filters_boost_la_SOURCES) \
 	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
-	$(ltdl_dyld_la_SOURCES) ltdl/libltdl.c \
+	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
 	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
 	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
 	$(magick_libMagickCore_la_SOURCES) \
@@ -2052,7 +2059,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
 	$(filters_analyze_la_SOURCES) $(filters_boost_la_SOURCES) \
 	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
-	$(ltdl_dyld_la_SOURCES) ltdl/libltdl.c \
+	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
 	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
 	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
 	$(am__magick_libMagickCore_la_SOURCES_DIST) \
@@ -2088,8 +2095,8 @@ MANS = $(man_MANS)
 DATA = $(configlib_DATA) $(configshare_DATA) $(doc_DATA) \
 	$(pkgconfig_DATA)
 am__include_HEADERS_DIST = ltdl/ltdl.h
-am__ltdlinclude_HEADERS_DIST = ltdl/ltdl/lt_system.h \
-	ltdl/ltdl/lt_error.h ltdl/ltdl/lt_dlloader.h
+am__ltdlinclude_HEADERS_DIST = ltdl/libltdl/lt_system.h \
+	ltdl/libltdl/lt_error.h ltdl/libltdl/lt_dlloader.h
 am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h Magick++/lib/Magick++/Drawable.h \
@@ -2501,7 +2508,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 ltdl_LIBOBJS = @ltdl_LIBOBJS@
 ltdl_LTLIBOBJS = @ltdl_LTLIBOBJS@
 mandir = @mandir@
@@ -2697,19 +2703,19 @@ CONFIG_EXTRA_DIST = \
 
 LTDL_VERSION_INFO = -version-info 9:1:2
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
-@INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/ltdl/lt_system.h \
-@INSTALL_LTDL_TRUE@			  ltdl/ltdl/lt_error.h \
-@INSTALL_LTDL_TRUE@			  ltdl/ltdl/lt_dlloader.h
+@INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
+@INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \
+@INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_dlloader.h
 
-ltdl_ltdl_la_SOURCES = ltdl/ltdl/lt__alloc.h \
-			  ltdl/ltdl/lt__dirent.h \
-			  ltdl/ltdl/lt__glibc.h \
-			  ltdl/ltdl/lt__private.h \
-			  ltdl/ltdl/lt__strl.h \
-			  ltdl/ltdl/lt_dlloader.h \
-			  ltdl/ltdl/lt_error.h \
-	                  ltdl/ltdl/lt_system.h \
-			  ltdl/ltdl/slist.h \
+ltdl_libltdl_la_SOURCES = ltdl/libltdl/lt__alloc.h \
+			  ltdl/libltdl/lt__dirent.h \
+			  ltdl/libltdl/lt__glibc.h \
+			  ltdl/libltdl/lt__private.h \
+			  ltdl/libltdl/lt__strl.h \
+			  ltdl/libltdl/lt_dlloader.h \
+			  ltdl/libltdl/lt_error.h \
+	                  ltdl/libltdl/lt_system.h \
+			  ltdl/libltdl/slist.h \
 			  ltdl/loaders/preopen.c \
 			  ltdl/lt__alloc.c \
 			  ltdl/lt_dlloader.c \
@@ -2718,15 +2724,15 @@ ltdl_ltdl_la_SOURCES = ltdl/ltdl/lt__alloc.h \
 			  ltdl/ltdl.h \
 			  ltdl/slist.c
 
-ltdl_ltdl_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
-ltdl_ltdl_la_LDFLAGS = $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
-ltdl_ltdl_la_LIBADD = $(ltdl_LTLIBOBJS)
-ltdl_ltdl_la_DEPENDENCIES = $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
-ltdl_libltdlc_la_SOURCES = $(ltdl_ltdl_la_SOURCES)
+ltdl_libltdl_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
+ltdl_libltdl_la_LDFLAGS = $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
+ltdl_libltdl_la_LIBADD = $(ltdl_LTLIBOBJS)
+ltdl_libltdl_la_DEPENDENCIES = $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
+ltdl_libltdlc_la_SOURCES = $(ltdl_libltdl_la_SOURCES)
 ltdl_libltdlc_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN)c $(AM_CPPFLAGS)
 ltdl_libltdlc_la_LDFLAGS = $(AM_LDFLAGS) $(LT_DLPREOPEN)
-ltdl_libltdlc_la_LIBADD = $(ltdl_ltdl_la_LIBADD)
-ltdl_libltdlc_la_DEPENDENCIES = $(ltdl_ltdl_la_DEPENDENCIES)
+ltdl_libltdlc_la_LIBADD = $(ltdl_libltdl_la_LIBADD)
+ltdl_libltdlc_la_DEPENDENCIES = $(ltdl_libltdl_la_DEPENDENCIES)
 ltdl_dlopen_la_SOURCES = ltdl/loaders/dlopen.c
 ltdl_dlopen_la_LDFLAGS = -module -avoid-version
 ltdl_dlopen_la_LIBADD = $(LIBADD_DLOPEN)
@@ -5343,12 +5349,23 @@ ltdl/loaders/dyld.lo: ltdl/loaders/$(am__dirstamp) \
 	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
 ltdl/dyld.la: $(ltdl_dyld_la_OBJECTS) $(ltdl_dyld_la_DEPENDENCIES) ltdl/$(am__dirstamp)
 	$(AM_V_CCLD)$(ltdl_dyld_la_LINK)  $(ltdl_dyld_la_OBJECTS) $(ltdl_dyld_la_LIBADD) $(LIBS)
+ltdl/loaders/ltdl_libltdl_la-preopen.lo: ltdl/loaders/$(am__dirstamp) \
+	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
 ltdl/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) ltdl/$(DEPDIR)
 	@: > ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/libltdl.lo: ltdl/$(am__dirstamp) ltdl/$(DEPDIR)/$(am__dirstamp)
+ltdl/ltdl_libltdl_la-lt__alloc.lo: ltdl/$(am__dirstamp) \
+	ltdl/$(DEPDIR)/$(am__dirstamp)
+ltdl/ltdl_libltdl_la-lt_dlloader.lo: ltdl/$(am__dirstamp) \
+	ltdl/$(DEPDIR)/$(am__dirstamp)
+ltdl/ltdl_libltdl_la-lt_error.lo: ltdl/$(am__dirstamp) \
+	ltdl/$(DEPDIR)/$(am__dirstamp)
+ltdl/ltdl_libltdl_la-ltdl.lo: ltdl/$(am__dirstamp) \
+	ltdl/$(DEPDIR)/$(am__dirstamp)
+ltdl/ltdl_libltdl_la-slist.lo: ltdl/$(am__dirstamp) \
+	ltdl/$(DEPDIR)/$(am__dirstamp)
 ltdl/libltdl.la: $(ltdl_libltdl_la_OBJECTS) $(ltdl_libltdl_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(LINK) $(am_ltdl_libltdl_la_rpath) $(ltdl_libltdl_la_OBJECTS) $(ltdl_libltdl_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(ltdl_libltdl_la_LINK) $(am_ltdl_libltdl_la_rpath) $(ltdl_libltdl_la_OBJECTS) $(ltdl_libltdl_la_LIBADD) $(LIBS)
 ltdl/loaders/ltdl_libltdlc_la-preopen.lo:  \
 	ltdl/loaders/$(am__dirstamp) \
 	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
@@ -6623,8 +6640,6 @@ mostlyclean-compile:
 	-rm -f filters/magick_libMagickCore_la-analyze.lo
 	-rm -f filters/magick_libMagickCore_la-boost.$(OBJEXT)
 	-rm -f filters/magick_libMagickCore_la-boost.lo
-	-rm -f ltdl/libltdl.$(OBJEXT)
-	-rm -f ltdl/libltdl.lo
 	-rm -f ltdl/loaders/dld_link.$(OBJEXT)
 	-rm -f ltdl/loaders/dld_link.lo
 	-rm -f ltdl/loaders/dlopen.$(OBJEXT)
@@ -6635,10 +6650,22 @@ mostlyclean-compile:
 	-rm -f ltdl/loaders/load_add_on.lo
 	-rm -f ltdl/loaders/loadlibrary.$(OBJEXT)
 	-rm -f ltdl/loaders/loadlibrary.lo
+	-rm -f ltdl/loaders/ltdl_libltdl_la-preopen.$(OBJEXT)
+	-rm -f ltdl/loaders/ltdl_libltdl_la-preopen.lo
 	-rm -f ltdl/loaders/ltdl_libltdlc_la-preopen.$(OBJEXT)
 	-rm -f ltdl/loaders/ltdl_libltdlc_la-preopen.lo
 	-rm -f ltdl/loaders/shl_load.$(OBJEXT)
 	-rm -f ltdl/loaders/shl_load.lo
+	-rm -f ltdl/ltdl_libltdl_la-lt__alloc.$(OBJEXT)
+	-rm -f ltdl/ltdl_libltdl_la-lt__alloc.lo
+	-rm -f ltdl/ltdl_libltdl_la-lt_dlloader.$(OBJEXT)
+	-rm -f ltdl/ltdl_libltdl_la-lt_dlloader.lo
+	-rm -f ltdl/ltdl_libltdl_la-lt_error.$(OBJEXT)
+	-rm -f ltdl/ltdl_libltdl_la-lt_error.lo
+	-rm -f ltdl/ltdl_libltdl_la-ltdl.$(OBJEXT)
+	-rm -f ltdl/ltdl_libltdl_la-ltdl.lo
+	-rm -f ltdl/ltdl_libltdl_la-slist.$(OBJEXT)
+	-rm -f ltdl/ltdl_libltdl_la-slist.lo
 	-rm -f ltdl/ltdl_libltdlc_la-lt__alloc.$(OBJEXT)
 	-rm -f ltdl/ltdl_libltdlc_la-lt__alloc.lo
 	-rm -f ltdl/ltdl_libltdlc_la-lt_dlloader.$(OBJEXT)
@@ -7140,7 +7167,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_boost_la-boost.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libMagickCore_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libMagickCore_la-boost.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/libltdl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt__alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_dlloader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_error.Plo@am__quote@
@@ -7151,6 +7182,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/dyld.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/load_add_on.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/loadlibrary.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/shl_load.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-PreRvIcccm.Plo@am__quote@
@@ -8196,6 +8228,54 @@ filters/filters_boost_la-boost.lo: filters/boost.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/boost.c' object='filters/filters_boost_la-boost.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_boost_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/filters_boost_la-boost.lo `test -f 'filters/boost.c' || echo '$(srcdir)/'`filters/boost.c
+
+ltdl/loaders/ltdl_libltdl_la-preopen.lo: ltdl/loaders/preopen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/loaders/ltdl_libltdl_la-preopen.lo -MD -MP -MF ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Tpo -c -o ltdl/loaders/ltdl_libltdl_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Tpo ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/loaders/preopen.c' object='ltdl/loaders/ltdl_libltdl_la-preopen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/loaders/ltdl_libltdl_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
+
+ltdl/ltdl_libltdl_la-lt__alloc.lo: ltdl/lt__alloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-lt__alloc.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Tpo -c -o ltdl/ltdl_libltdl_la-lt__alloc.lo `test -f 'ltdl/lt__alloc.c' || echo '$(srcdir)/'`ltdl/lt__alloc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/lt__alloc.c' object='ltdl/ltdl_libltdl_la-lt__alloc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-lt__alloc.lo `test -f 'ltdl/lt__alloc.c' || echo '$(srcdir)/'`ltdl/lt__alloc.c
+
+ltdl/ltdl_libltdl_la-lt_dlloader.lo: ltdl/lt_dlloader.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-lt_dlloader.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Tpo -c -o ltdl/ltdl_libltdl_la-lt_dlloader.lo `test -f 'ltdl/lt_dlloader.c' || echo '$(srcdir)/'`ltdl/lt_dlloader.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/lt_dlloader.c' object='ltdl/ltdl_libltdl_la-lt_dlloader.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-lt_dlloader.lo `test -f 'ltdl/lt_dlloader.c' || echo '$(srcdir)/'`ltdl/lt_dlloader.c
+
+ltdl/ltdl_libltdl_la-lt_error.lo: ltdl/lt_error.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-lt_error.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Tpo -c -o ltdl/ltdl_libltdl_la-lt_error.lo `test -f 'ltdl/lt_error.c' || echo '$(srcdir)/'`ltdl/lt_error.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/lt_error.c' object='ltdl/ltdl_libltdl_la-lt_error.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-lt_error.lo `test -f 'ltdl/lt_error.c' || echo '$(srcdir)/'`ltdl/lt_error.c
+
+ltdl/ltdl_libltdl_la-ltdl.lo: ltdl/ltdl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-ltdl.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Tpo -c -o ltdl/ltdl_libltdl_la-ltdl.lo `test -f 'ltdl/ltdl.c' || echo '$(srcdir)/'`ltdl/ltdl.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/ltdl.c' object='ltdl/ltdl_libltdl_la-ltdl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-ltdl.lo `test -f 'ltdl/ltdl.c' || echo '$(srcdir)/'`ltdl/ltdl.c
+
+ltdl/ltdl_libltdl_la-slist.lo: ltdl/slist.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-slist.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Tpo -c -o ltdl/ltdl_libltdl_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/slist.c' object='ltdl/ltdl_libltdl_la-slist.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
 
 ltdl/loaders/ltdl_libltdlc_la-preopen.lo: ltdl/loaders/preopen.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/loaders/ltdl_libltdlc_la-preopen.lo -MD -MP -MF ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Tpo -c -o ltdl/loaders/ltdl_libltdlc_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
