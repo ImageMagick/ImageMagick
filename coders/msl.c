@@ -7539,38 +7539,6 @@ static void MSLExternalSubset(void *context,const xmlChar *name,
 static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **image,
   ExceptionInfo *exception)
 {
-  xmlSAXHandler
-    SAXModules =
-    {
-      MSLInternalSubset,
-      MSLIsStandalone,
-      MSLHasInternalSubset,
-      MSLHasExternalSubset,
-      MSLResolveEntity,
-      MSLGetEntity,
-      MSLEntityDeclaration,
-      MSLNotationDeclaration,
-      MSLAttributeDeclaration,
-      MSLElementDeclaration,
-      MSLUnparsedEntityDeclaration,
-      MSLSetDocumentLocator,
-      MSLStartDocument,
-      MSLEndDocument,
-      MSLStartElement,
-      MSLEndElement,
-      MSLReference,
-      MSLCharacters,
-      MSLIgnorableWhitespace,
-      MSLProcessingInstructions,
-      MSLComment,
-      MSLWarning,
-      MSLError,
-      MSLError,
-      MSLGetParameterEntity,
-      MSLCDataBlock,
-      MSLExternalSubset
-    };
-
   char
     message[MaxTextExtent];
 
@@ -7586,8 +7554,11 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
   MSLInfo
     msl_info;
 
+  xmlSAXHandler
+    sax_modules;
+
   xmlSAXHandlerPtr
-    SAXHandler;
+    sax_handler;
 
   /*
     Open image file.
@@ -7595,7 +7566,8 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image_info->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   assert(image != (Image **) NULL);
   msl_image=AcquireImage(image_info);
   status=OpenBlob(image_info,msl_image,ReadBinaryBlobMode,exception);
@@ -7638,8 +7610,36 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
   (void) xmlSubstituteEntitiesDefault(1);
-  SAXHandler=(&SAXModules);
-  msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0,
+  (void) ResetMagickMemory(&sax_modules,0,sizeof(sax_modules));
+  sax_modules.internalSubset=MSLInternalSubset;
+  sax_modules.isStandalone=MSLIsStandalone;
+  sax_modules.hasInternalSubset=MSLHasInternalSubset;
+  sax_modules.hasExternalSubset=MSLHasExternalSubset;
+  sax_modules.resolveEntity=MSLResolveEntity;
+  sax_modules.getEntity=MSLGetEntity;
+  sax_modules.entityDecl=MSLEntityDeclaration;
+  sax_modules.notationDecl=MSLNotationDeclaration;
+  sax_modules.attributeDecl=MSLAttributeDeclaration;
+  sax_modules.elementDecl=MSLElementDeclaration;
+  sax_modules.unparsedEntityDecl=MSLUnparsedEntityDeclaration;
+  sax_modules.setDocumentLocator=MSLSetDocumentLocator;
+  sax_modules.startDocument=MSLStartDocument;
+  sax_modules.endDocument=MSLEndDocument;
+  sax_modules.startElement=MSLStartElement;
+  sax_modules.endElement=MSLEndElement;
+  sax_modules.reference=MSLReference;
+  sax_modules.characters=MSLCharacters;
+  sax_modules.ignorableWhitespace=MSLIgnorableWhitespace;
+  sax_modules.processingInstruction=MSLProcessingInstructions;
+  sax_modules.comment=MSLComment;
+  sax_modules.warning=MSLWarning;
+  sax_modules.error=MSLError;
+  sax_modules.fatalError=MSLError;
+  sax_modules.getParameterEntity=MSLGetParameterEntity;
+  sax_modules.cdataBlock=MSLCDataBlock;
+  sax_modules.externalSubset=MSLExternalSubset;
+  sax_handler=(&sax_modules);
+  msl_info.parser=xmlCreatePushParserCtxt(sax_handler,&msl_info,(char *) NULL,0,
     msl_image->filename);
   while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
@@ -7662,7 +7662,9 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
     msl_info.group_info);
   if (*image == (Image *) NULL)
     *image=(*msl_info.image);
-  return((MagickBooleanType) ((*msl_info.image)->exception.severity == UndefinedException));
+  if ((*msl_info.image)->exception.severity != UndefinedException)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
