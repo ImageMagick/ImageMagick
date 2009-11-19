@@ -156,7 +156,7 @@ vm_open (lt_user_data LT__UNUSED loader_data, const char *filename,
 	  /* Append a `.' to stop Windows from adding an
 	     implicit `.dll' extension. */
 	  if (!len)
-	    len = LT_STRLEN (wpath);
+	    len = strlen (wpath);
 
 	  if (len + 1 >= MAX_PATH)
 	    {
