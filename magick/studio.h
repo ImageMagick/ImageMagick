@@ -231,7 +231,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if !defined(magick_attribute)
-#  if (defined(__GNUC__) && (__GNUC__ > 2))
+#  if (defined(__GNUC__) && (__GNUC__ >= 3))
 #    define magick_attribute  __attribute__
 #  else
 #    define magick_attribute(x)  /* nothing */
@@ -239,7 +239,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if !defined(magick_unused)
-#  if (defined(__GNUC__) && (__GNUC__ > 2))
+#  if (defined(__GNUC__) && (__GNUC__ >= 3))
 #     define magick_unused(x)  magick_unused_ ## x __attribute__((unused))
 #  elif defined(__LCLINT__)
 #    define magick_unused(x) /*@unused@*/ x
