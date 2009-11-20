@@ -68,6 +68,7 @@ $call Make mime.c
 $call Make module.c
 $call Make monitor.c
 $call Make montage.c
+$call Make morphology.c
 $call Make option.c
 $call Make paint.c
 $call Make pixel.c
@@ -136,9 +137,9 @@ $library/create libMagick.olb -
   configure, constitute, decorate, delegate, deprecate, display, distort, -
   draw, effect, enhance, exception, fx, gem, geometry, hashmap, histogram, -
   identify, image, layer, list, locale, log, magic, magick, matrix, memory, -
-  mime, module, monitor, montage, option, paint, pixel, PreRvIcccm, profile, -
-  quantize, quantum,quantum-export,quantum-import,random, registry, resample, -
-  resize, resource, segment, semaphore, -
+  mime, module, monitor, montage, morphology, option, paint, pixel, -
+  PreRvIcccm, profile, quantize, quantum, quantum-export, quantum-import, -
+  random, registry, resample, resize, resource, segment, semaphore, -
   shear, signature, splay-tree, static, stream, string, thread, timer, token, -
   transform, threshold, type, utility, version, vms, widget, xwindow, -
 	statistic, prepress, property, xml-tree, -

@@ -1350,14 +1350,15 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/memory_.h magick/methods.h magick/mime.c magick/mime.h \
 	magick/module.c magick/module.h magick/monitor.c \
 	magick/monitor.h magick/monitor-private.h magick/montage.c \
-	magick/montage.h magick/nt-base.h magick/nt-feature.h \
-	magick/option.c magick/option.h magick/paint.c magick/paint.h \
-	magick/pixel.c magick/pixel.h magick/pixel-private.h \
-	magick/policy.c magick/policy.h magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h magick/prepress.c magick/prepress.h \
-	magick/property.c magick/property.h magick/profile.c \
-	magick/profile.h magick/quantize.c magick/quantize.h \
-	magick/quantum.c magick/quantum.h magick/quantum-export.c \
+	magick/montage.h magick/morphology.c magick/morphology.h \
+	magick/nt-base.h magick/nt-feature.h magick/option.c \
+	magick/option.h magick/paint.c magick/paint.h magick/pixel.c \
+	magick/pixel.h magick/pixel-private.h magick/policy.c \
+	magick/policy.h magick/PreRvIcccm.c magick/PreRvIcccm.h \
+	magick/prepress.c magick/prepress.h magick/property.c \
+	magick/property.h magick/profile.c magick/profile.h \
+	magick/quantize.c magick/quantize.h magick/quantum.c \
+	magick/quantum.h magick/quantum-export.c \
 	magick/quantum-import.c magick/quantum-private.h \
 	magick/random.c magick/random_.h magick/random-private.h \
 	magick/registry.c magick/registry.h magick/resample.c \
@@ -1455,6 +1456,7 @@ am__objects_2 = magick/magick_libMagickCore_la-animate.lo \
 	magick/magick_libMagickCore_la-module.lo \
 	magick/magick_libMagickCore_la-monitor.lo \
 	magick/magick_libMagickCore_la-montage.lo \
+	magick/magick_libMagickCore_la-morphology.lo \
 	magick/magick_libMagickCore_la-option.lo \
 	magick/magick_libMagickCore_la-paint.lo \
 	magick/magick_libMagickCore_la-pixel.lo \
@@ -3801,6 +3803,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor-private.h \
 	magick/montage.c \
 	magick/montage.h \
+	magick/morphology.c \
+	magick/morphology.h \
 	magick/nt-base.h \
 	magick/nt-feature.h \
 	magick/option.c \
@@ -3953,6 +3957,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/module.h \
 	magick/monitor.h \
 	magick/montage.h \
+	magick/morphology.h \
 	magick/option.h \
 	magick/paint.h \
 	magick/pixel.h \
@@ -5493,6 +5498,8 @@ magick/magick_libMagickCore_la-monitor.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-montage.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-morphology.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-option.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-paint.lo: magick/$(am__dirstamp) \
@@ -6772,6 +6779,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libMagickCore_la-monitor.lo
 	-rm -f magick/magick_libMagickCore_la-montage.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-montage.lo
+	-rm -f magick/magick_libMagickCore_la-morphology.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-morphology.lo
 	-rm -f magick/magick_libMagickCore_la-nt-base.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-nt-base.lo
 	-rm -f magick/magick_libMagickCore_la-nt-feature.$(OBJEXT)
@@ -7233,6 +7242,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-montage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-morphology.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-nt-base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-nt-feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-option.Plo@am__quote@
@@ -8700,6 +8710,14 @@ magick/magick_libMagickCore_la-montage.lo: magick/montage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/montage.c' object='magick/magick_libMagickCore_la-montage.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-montage.lo `test -f 'magick/montage.c' || echo '$(srcdir)/'`magick/montage.c
+
+magick/magick_libMagickCore_la-morphology.lo: magick/morphology.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-morphology.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-morphology.Tpo -c -o magick/magick_libMagickCore_la-morphology.lo `test -f 'magick/morphology.c' || echo '$(srcdir)/'`magick/morphology.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-morphology.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-morphology.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/morphology.c' object='magick/magick_libMagickCore_la-morphology.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-morphology.lo `test -f 'magick/morphology.c' || echo '$(srcdir)/'`magick/morphology.c
 
 magick/magick_libMagickCore_la-option.lo: magick/option.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-option.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-option.Tpo -c -o magick/magick_libMagickCore_la-option.lo `test -f 'magick/option.c' || echo '$(srcdir)/'`magick/option.c
