@@ -1784,6 +1784,8 @@ ModuleExport void UnregisterTIFFImage(void)
   (void) UnregisterMagickInfo("TIF");
   (void) UnregisterMagickInfo("TIFF");
   (void) UnregisterMagickInfo("TIFF64");
+  if (tiff_semaphore == (SemaphoreInfo *) NULL)
+    tiff_semaphore=AllocateSemaphoreInfo();
   (void) LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key != MagickFalse)
     if (MagickDeleteThreadKey(tiff_exception) == MagickFalse)

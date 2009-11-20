@@ -6004,7 +6004,8 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG32");
   (void) UnregisterMagickInfo("JNG");
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  DestroySemaphoreInfo(&png_semaphore);
+  if (png_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&png_semaphore);
 #endif
 }
 
