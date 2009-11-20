@@ -167,6 +167,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor-private.h \
 	magick/montage.c \
 	magick/montage.h \
+	magick/morphology.c \
+	magick/morphology.h \
 	magick/nt-base.h \
 	magick/nt-feature.h \
 	magick/option.c \
@@ -324,6 +326,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/module.h \
 	magick/monitor.h \
 	magick/montage.h \
+	magick/morphology.h \
 	magick/option.h \
 	magick/paint.h \
 	magick/pixel.h \
