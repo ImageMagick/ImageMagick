@@ -2852,6 +2852,22 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           fill_color.blue=ScaleCharToQuantum(*p++);
 #endif
           fill_color.opacity=QuantumRange-ScaleCharToQuantum(*p++);
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+          {
+            double
+              gamma;
+
+            /*
+              CAIRO_FORMAT_ARGB32: http://library.gnome.org/devel/cairo/stable/
+                cairo-image-surface.html#cairo-format-t
+            */
+            gamma=1.0-QuantumScale*fill_color.opacity;
+            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            fill_color.blue*=gamma;
+            fill_color.green*=gamma;
+            fill_color.red*=gamma;
+          }
+#endif
           MagickCompositeOver(&fill_color,fill_color.opacity,q,(MagickRealType)
             q->opacity,q);
           q++;
