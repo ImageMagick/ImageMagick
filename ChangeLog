@@ -1,5 +1,6 @@
 2009-11-19  6.5.7-10 Cristy  <quetzlzacatenango@image...>
   * Add magick/morphlogy.{c,h} source templates.
+  * Sync image option when reading MPR images.
 
 2009-11-18  6.5.7-9 Cristy  <quetzlzacatenango@image...>
   * Read / write 32-bit SUN raster images with a odd width.

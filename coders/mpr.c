@@ -99,6 +99,8 @@ static Image *ReadMPRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=(Image *) GetImageRegistry(ImageRegistryType,image_info->filename,
     exception);
+  if (image != (Image *) NULL)
+    (void) SyncImageSettings(image_info,image);
   return(image);
 }
 
