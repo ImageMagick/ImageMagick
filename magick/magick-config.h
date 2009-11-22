@@ -756,6 +756,11 @@
    */
 /* #undef HAVE_SYS_NDIR_H */
 
+/* Define to 1 if you have the <sys/param.h> header file. */
+#ifndef MAGICKCORE_HAVE_SYS_PARAM_H 
+#define MAGICKCORE_HAVE_SYS_PARAM_H  1 
+#endif
+
 /* Define to 1 if you have the <sys/resource.h> header file. */
 #ifndef MAGICKCORE_HAVE_SYS_RESOURCE_H 
 #define MAGICKCORE_HAVE_SYS_RESOURCE_H  1 
@@ -998,7 +1003,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH 
-#define MAGICKCORE_LT_DLSEARCH_PATH  "/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/xulrunner-1.9.1" 
+#define MAGICKCORE_LT_DLSEARCH_PATH  "/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/xulrunner-1.9.2" 
 #endif
 
 /* The archive extension */
