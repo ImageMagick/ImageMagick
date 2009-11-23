@@ -326,7 +326,8 @@ static struct
     { "Gamma", { {"gamma", StringReference}, {"channel", MagickChannelOptions},
       {"red", RealReference}, {"green", RealReference},
       {"blue", RealReference} } },
-    { "Map", { {"image", ImageReference}, {"dither", MagickBooleanOptions} } },
+    { "Map", { {"image", ImageReference}, {"dither", MagickBooleanOptions},
+      {"dither-method", MagickDitherOptions} } },
     { "MatteFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"opacity", StringReference}, {"bordercolor", StringReference},
@@ -495,7 +496,7 @@ static struct
     { "Decipher", { {"passphrase", StringReference} } },
     { "Deskew", { {"geometry", StringReference},
       {"threshold", StringReference} } },
-    { "Remap", { {"image", ImageReference},
+    { "Remap", { {"image", ImageReference}, {"dither", MagickBooleanOptions},
       {"dither-method", MagickDitherOptions} } },
     { "SparseColor", { {"points", ArrayReference},
       {"method", MagickSparseColorOptions},
@@ -8221,6 +8222,9 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             quantize_info->dither=(MagickBooleanType)
               argument_list[1].long_reference;
+          if (attribute_flag[2] != 0)
+            quantize_info->dither_method=(DitherMethod)
+              argument_list[2].long_reference;
           (void) RemapImages(quantize_info,image,
             argument_list[0].image_reference);
           quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -9779,9 +9783,12 @@ Mogrify(ref,...)
               goto PerlException;
             }
           quantize_info=AcquireQuantizeInfo(info->image_info);
-          if (attribute_flag[1] == 0)
-            quantize_info->dither_method=(DitherMethod)
+          if (attribute_flag[1] != 0)
+            quantize_info->dither=(MagickBooleanType)
               argument_list[1].long_reference;
+          if (attribute_flag[2] != 0)
+            quantize_info->dither_method=(DitherMethod)
+              argument_list[2].long_reference;
           (void) RemapImages(quantize_info,image,
             argument_list[0].image_reference);
           quantize_info=DestroyQuantizeInfo(quantize_info);
