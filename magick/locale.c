@@ -736,6 +736,9 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
   const char
     *q;
 
+  FatalErrorHandler
+    fatal_handler;
+
   LocaleInfo
     *locale_info;
 
@@ -757,17 +760,14 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
       locale_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
         DestroyLocaleNode);
       if (locale_list == (SplayTreeInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
+        return(MagickFalse);
     }
   status=MagickTrue;
   locale_info=(LocaleInfo *) NULL;
   *tag='\0';
   *message='\0';
   *keyword='\0';
+  fatal_handler=SetFatalErrorHandler((ErrorHandler) NULL);
   token=AcquireString(xml);
   for (q=(char *) xml; *q != '\0'; )
   {
@@ -952,6 +952,7 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
       continue;
   }
   token=(char *) RelinquishMagickMemory(token);
+  (void) SetFatalErrorHandler(fatal_handler);
   return(status);
 }
 
