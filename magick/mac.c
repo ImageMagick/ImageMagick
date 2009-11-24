@@ -554,7 +554,6 @@ MagickExport void MACErrorHandler(const ExceptionType error,const char *reason,
 %
 %    o description: Specifies any description to the reason.
 %
-%
 */
 static void MACFatalErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
