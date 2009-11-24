@@ -15,7 +15,7 @@
 #  Copyright (C) 2003 - 2008 GraphicsMagick Group
 
 AC_PREREQ(2.63)
-AC_INIT([ImageMagick],[6.5.7],[http://www.imagemagick.org],[ImageMagick])
+AC_INIT([ImageMagick],[6.5.8],[http://www.imagemagick.org],[ImageMagick])
 AC_CONFIG_SRCDIR([magick/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
