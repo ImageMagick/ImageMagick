@@ -724,6 +724,21 @@ static void *DestroyLocaleNode(void *locale_info)
   return(RelinquishMagickMemory(p));
 }
 
+static void LocaleFatalErrorHandler(
+  const ExceptionType magick_unused(severity),
+  const char *reason,const char *description)
+{
+  if (reason == (char *) NULL)
+    return;
+  (void) fprintf(stderr,"%s: %s",GetClientName(),reason);
+  if (description != (char *) NULL)
+    (void) fprintf(stderr," (%s)",description);
+  (void) fprintf(stderr,".\n");
+  (void) fflush(stderr);
+  exit(1);
+}
+
+
 static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
   const char *locale,const unsigned long depth,ExceptionInfo *exception)
 {
@@ -767,7 +782,7 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
   *tag='\0';
   *message='\0';
   *keyword='\0';
-  fatal_handler=SetFatalErrorHandler((ErrorHandler) NULL);
+  fatal_handler=SetFatalErrorHandler(LocaleFatalErrorHandler);
   token=AcquireString(xml);
   for (q=(char *) xml; *q != '\0'; )
   {
