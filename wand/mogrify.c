@@ -3635,7 +3635,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                     floodfill the image with color",
       "-flop                flop image horizontally",
       "-frame geometry      surround image with an ornamental border",
-      "-function name paramters",
+      "-function name parameters",
       "                     apply function over image values",
       "-gamma value         level of gamma correction",
       "-gaussian-blur geometry",
