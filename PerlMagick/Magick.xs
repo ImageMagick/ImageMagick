@@ -9272,11 +9272,12 @@ Mogrify(ref,...)
 
               flags=ParseGravityGeometry(image,
                 argument_list[0].string_reference,&geometry,exception);
-              if ((geometry.width != 0) || (geometry.height != 0))
-                {
-                  geometry.x=(-geometry.x);
-                  geometry.y=(-geometry.y);
-                }
+              if (geometry.width == 0)
+                geometry.width=image->columns;
+              if (geometry.height == 0)
+                geometry.height=image->rows;
+              geometry.x=(-geometry.x);
+              geometry.y=(-geometry.y);
             }
           if (attribute_flag[1] != 0)
             geometry.width=argument_list[1].long_reference;

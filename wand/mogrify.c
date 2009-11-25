@@ -1563,8 +1563,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(image_info,*image);
             flags=ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
-            if ((geometry.width == 0) && (geometry.height == 0))
-              break;
+            if (geometry.width == 0)
+              geometry.width=image->columns;
+            if (geometry.height == 0)
+              geometry.height=image->rows;
             geometry.x=(-geometry.x);
             geometry.y=(-geometry.y);
             extent_image=ExtentImage(*image,&geometry,exception);
@@ -5331,8 +5333,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("opaque",option+1) == 0)
           {
-            if (*option == '+')
-              break;
             i++;
             if (i == (long) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
