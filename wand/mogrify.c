@@ -1564,9 +1564,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(image_info,*image);
             flags=ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
             if (geometry.width == 0)
-              geometry.width=image->columns;
+              geometry.width=(*image)->columns;
             if (geometry.height == 0)
-              geometry.height=image->rows;
+              geometry.height=(*image)->rows;
             geometry.x=(-geometry.x);
             geometry.y=(-geometry.y);
             extent_image=ExtentImage(*image,&geometry,exception);
