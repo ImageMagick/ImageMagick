@@ -516,7 +516,9 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           continue;
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
-        iterations=image->iterations;
+        iterations=0;
+        if (i == (argc-1))
+          iterations=image->iterations;
         do
         {
           /*
