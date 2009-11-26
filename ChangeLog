@@ -1,5 +1,8 @@
+2009-11-26  6.5.8-1 Dr. Ingo Bremer <bremer@wias-...>
+  * Escape single quote in when writing the UIL format.
+
 2009-11-25  6.5.8-1 Jee Teck  <jee.teck@cteca...>
-  * The mogridy program +opaque option now recognizes its required argument.
+  * The mogrify program +opaque option now recognizes its required argument.
 
 2009-11-19  6.5.8-0 Cristy  <quetzlzacatenango@image...>
   * Add magick/morphlogy.{c,h} source templates.
