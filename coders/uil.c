@@ -160,7 +160,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     basename[MaxTextExtent],
     buffer[MaxTextExtent],
     name[MaxTextExtent],
-    symbol[MaxTextExtent];
+    *symbol;
 
   ExceptionInfo
     *exception;
@@ -294,6 +294,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
   /*
     UIL header.
   */
+  symbol=AcquireString("");
   (void) WriteBlobString(image,"/* UIL */\n");
   GetPathComponent(image->filename,BasePath,basename);
   (void) FormatMagickString(buffer,MaxTextExtent,
@@ -324,6 +325,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
+    (void) SubstituteString(&symbol,"'","''");
     if (LocaleCompare(name,"None") == 0)
       (void) FormatMagickString(buffer,MaxTextExtent,
         "    background color = '%s'",symbol);
@@ -372,6 +374,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     if (status == MagickFalse)
       break;
   }
+  symbol=DestroyString(symbol);
   (void) CloseBlob(image);
   return(MagickTrue);
 }
