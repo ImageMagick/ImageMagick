@@ -255,16 +255,16 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     quantum_state;
 
   register const IndexPacket
-    *indexes;
+    *restrict indexes;
 
   register const PixelPacket
-    *p;
+    *restrict p;
 
   register long
     x;
 
   register unsigned char
-    *q;
+    *restrict q;
 
   size_t
     extent;

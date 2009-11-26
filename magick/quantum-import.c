@@ -270,7 +270,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
     quantum_state;
 
   register const unsigned char
-    *p;
+    *restrict p;
 
   register IndexPacket
     *restrict indexes;
