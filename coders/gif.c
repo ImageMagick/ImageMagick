@@ -412,13 +412,13 @@ static MagickBooleanType DecodeImage(Image *image,const long opacity)
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(image,0,offset,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -642,10 +642,10 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;

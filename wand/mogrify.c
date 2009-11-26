@@ -1052,7 +1052,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             (void) SyncImageSettings(image_info,*image);
             if (*option == '+')

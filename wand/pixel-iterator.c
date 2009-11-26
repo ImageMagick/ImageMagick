@@ -949,13 +949,13 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
     *exception;
 
   register IndexPacket
-    *__restrict indexes;
+    *restrict indexes;
 
   register long
     x;
 
   register PixelPacket
-    *__restrict pixels;
+    *restrict pixels;
 
   assert(iterator != (const PixelIterator *) NULL);
   assert(iterator->signature == WandSignature);

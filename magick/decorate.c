@@ -289,13 +289,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if (height != 0)
     {
       register IndexPacket
-        *__restrict frame_indexes;
+        *restrict frame_indexes;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Draw top of ornamental border.
@@ -405,13 +405,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict frame_indexes;
+      *restrict frame_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Initialize scanline with matte color.
@@ -519,13 +519,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if (height != 0)
     {
       register IndexPacket
-        *__restrict frame_indexes;
+        *restrict frame_indexes;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Draw bottom of ornamental border.
@@ -730,7 +730,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -797,7 +797,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -853,7 +853,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

@@ -362,18 +362,18 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     **image_nexus;
 
   register const PixelPacket
-    *__restrict r;
+    *restrict r;
 
   register IndexPacket
-    *__restrict nexus_indexes,
-    *__restrict indexes;
+    *restrict nexus_indexes,
+    *restrict indexes;
 
   register long
     i;
 
   register PixelPacket
-    *__restrict p,
-    *__restrict q;
+    *restrict p,
+    *restrict q;
 
   /*
     Apply clip mask.
@@ -725,7 +725,7 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
 
 static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
   const MagickOffsetType offset,const MagickSizeType length,
-  unsigned char *__restrict buffer)
+  unsigned char *restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -769,7 +769,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
 
 static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
   const MagickOffsetType offset,const MagickSizeType length,
-  const unsigned char *__restrict buffer)
+  const unsigned char *restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -826,7 +826,7 @@ static MagickBooleanType CloneDiskToDiskPixelCache(CacheInfo *clone_info,
     y;
 
   register PixelPacket
-    *__restrict pixels;
+    *restrict pixels;
 
   unsigned long
     columns,
@@ -991,8 +991,8 @@ static MagickBooleanType CloneDiskToMemoryPixelCache(CacheInfo *clone_info,
     y;
 
   register PixelPacket
-    *__restrict pixels,
-    *__restrict q;
+    *restrict pixels,
+    *restrict q;
 
   unsigned long
     columns,
@@ -1103,8 +1103,8 @@ static MagickBooleanType CloneMemoryToDiskPixelCache(CacheInfo *clone_info,
     y;
 
   register PixelPacket
-    *__restrict p,
-    *__restrict pixels;
+    *restrict p,
+    *restrict pixels;
 
   unsigned long
     columns,
@@ -1250,8 +1250,8 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
     y;
 
   register PixelPacket
-    *__restrict pixels,
-    *__restrict source_pixels;
+    *restrict pixels,
+    *restrict source_pixels;
 
   size_t
     length;
@@ -3158,20 +3158,20 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
     region;
 
   register const IndexPacket
-    *__restrict nexus_indexes;
+    *restrict nexus_indexes;
 
   register const PixelPacket
-    *__restrict p;
+    *restrict p;
 
   register IndexPacket
-    *__restrict indexes;
+    *restrict indexes;
 
   register long
     u,
     v;
 
   register PixelPacket
-    *__restrict q;
+    *restrict q;
 
   /*
     Acquire pixels.
@@ -3766,18 +3766,18 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     **image_nexus;
 
   register const PixelPacket
-    *__restrict r;
+    *restrict r;
 
   register IndexPacket
-    *__restrict nexus_indexes,
-    *__restrict indexes;
+    *restrict nexus_indexes,
+    *restrict indexes;
 
   register long
     i;
 
   register PixelPacket
-    *__restrict p,
-    *__restrict q;
+    *restrict p,
+    *restrict q;
 
   /*
     Apply clip mask.
@@ -4497,7 +4497,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
     number_pixels;
 
   register IndexPacket
-    *__restrict q;
+    *restrict q;
 
   register long
     y;
@@ -4530,7 +4530,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
     case MapCache:
     {
       register IndexPacket
-        *__restrict p;
+        *restrict p;
 
       /*
         Read indexes from memory.
@@ -4627,7 +4627,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     y;
 
   register PixelPacket
-    *__restrict q;
+    *restrict q;
 
   unsigned long
     rows;
@@ -4655,7 +4655,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     case MapCache:
     {
       register PixelPacket
-        *__restrict p;
+        *restrict p;
 
       /*
         Read pixels from memory.
@@ -5207,7 +5207,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
     number_pixels;
 
   register const IndexPacket
-    *__restrict p;
+    *restrict p;
 
   register long
     y;
@@ -5240,7 +5240,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
     case MapCache:
     {
       register IndexPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Write indexes to memory.
@@ -5338,7 +5338,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     y;
 
   register const PixelPacket
-    *__restrict p;
+    *restrict p;
 
   unsigned long
     rows;
@@ -5366,7 +5366,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     case MapCache:
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Write pixels to memory.

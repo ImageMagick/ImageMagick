@@ -198,13 +198,13 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
     for (y=0; y < (long) image->extract_info.height; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       if (count != (ssize_t) length)
         {

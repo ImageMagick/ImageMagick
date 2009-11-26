@@ -1159,14 +1159,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               sync;
 
             register IndexPacket
-              *__restrict indexes;
+              *restrict indexes;
 
             register long
               id,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             register unsigned short
               *p;

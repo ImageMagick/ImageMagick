@@ -1273,7 +1273,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           register unsigned char
             *p;
@@ -1684,7 +1684,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         q=GetCacheViewAuthenticPixels(annotate_view,0,y,annotate_image->columns,
           1,exception);

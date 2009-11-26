@@ -1513,13 +1513,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           sync;
 
         register const PixelPacket
-          *__restrict p;
+          *restrict p;
 
         register PixelPacket
-          *__restrict r;
+          *restrict r;
 
         register IndexPacket
-          *__restrict destination_indexes;
+          *restrict destination_indexes;
 
         register long
           x;
@@ -1574,10 +1574,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         y_lookup;
 
       register IndexPacket
-        *__restrict destination_indexes;
+        *restrict destination_indexes;
 
       register PixelPacket
-        *__restrict r;
+        *restrict r;
 
       ResampleFilter
         *resample_filter;
@@ -1682,7 +1682,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           sync;
 
         register const PixelPacket
-          *__restrict p;
+          *restrict p;
 
         register long
           x;
@@ -1863,19 +1863,19 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       source;
 
     register const IndexPacket
-      *__restrict composite_indexes;
+      *restrict composite_indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

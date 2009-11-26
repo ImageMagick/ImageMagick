@@ -163,7 +163,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (long) image->rows; y++)
   {
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)

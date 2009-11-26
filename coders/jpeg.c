@@ -1154,13 +1154,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)
       {

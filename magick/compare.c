@@ -210,21 +210,21 @@ MagickExport Image *CompareImageChannels(Image *image,
       reconstruct_pixel;
 
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register IndexPacket
-      *__restrict highlight_indexes;
+      *restrict highlight_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict r;
+      *restrict r;
 
     if (status == MagickFalse)
       continue;
@@ -382,12 +382,12 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
       reconstruct_pixel;
 
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       i,
@@ -494,12 +494,12 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
       channel_distortion[AllChannels+1];
 
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       i,
@@ -605,12 +605,12 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       x;
@@ -731,12 +731,12 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
       channel_distortion[AllChannels+1];
 
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       i,
@@ -837,12 +837,12 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
       channel_distortion[AllChannels+1];
 
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       i,
@@ -1273,12 +1273,12 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reconstruct_indexes;
+      *restrict indexes,
+      *restrict reconstruct_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       x;
@@ -1410,12 +1410,12 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   for (y=0; y < (long) reference->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes,
-      *__restrict reference_indexes;
+      *restrict indexes,
+      *restrict reference_indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       x;
@@ -1535,7 +1535,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

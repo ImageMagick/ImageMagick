@@ -1221,7 +1221,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             status;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1274,7 +1274,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             status;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1305,7 +1305,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           for (y=0; y < (long) image->rows; y++)
           {
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             int
               status;
@@ -1366,7 +1366,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -1440,7 +1440,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           unsigned long
             columns_remaining,
@@ -1542,7 +1542,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -2948,7 +2948,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             for (y=0; y < (long) image->rows; y++)
             {
               register const PixelPacket
-                *__restrict p;
+                *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -2976,7 +2976,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             for (y=0; y < (long) image->rows; y++)
             {
               register const PixelPacket
-                *__restrict p;
+                *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -2996,7 +2996,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             for (y=0; y < (long) image->rows; y++)
             {
               register const PixelPacket
-                *__restrict p;
+                *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -3016,7 +3016,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             for (y=0; y < (long) image->rows; y++)
             {
               register const PixelPacket
-                *__restrict p;
+                *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -3037,7 +3037,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               for (y=0; y < (long) image->rows; y++)
               {
                 register const PixelPacket
-                  *__restrict p;
+                  *restrict p;
 
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
@@ -3072,7 +3072,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -3142,7 +3142,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)

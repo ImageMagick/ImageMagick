@@ -651,7 +651,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -860,7 +860,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)

@@ -1102,13 +1102,13 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
   while (s > segment_stack)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Pop segment off stack.
@@ -1222,13 +1222,13 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Tile fill color onto floodplane.
@@ -4048,13 +4048,13 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   while (s > segment_stack)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Pop segment off stack.
@@ -4168,13 +4168,13 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Tile fill color onto floodplane.
@@ -4298,7 +4298,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
         if (q == (PixelPacket *) NULL)
@@ -4335,7 +4335,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
             if (q == (PixelPacket *) NULL)
@@ -4972,10 +4972,10 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
 
     register IndexPacket
       index,
-      *__restrict indexes;
+      *restrict indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -5292,13 +5292,13 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       for (y=0; y < (long) image->rows; y++)
       {
         register IndexPacket
-          *__restrict indexes;
+          *restrict indexes;
 
         register long
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         q=QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
         if (q == (PixelPacket *) NULL)
@@ -5322,7 +5322,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if (q == (PixelPacket *) NULL)
@@ -5920,13 +5920,13 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if (q == (PixelPacket *) NULL)
@@ -6036,13 +6036,13 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if (q == (PixelPacket *) NULL)
@@ -6294,7 +6294,7 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if (q == (PixelPacket *) NULL)

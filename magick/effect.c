@@ -273,20 +273,20 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   for (y=0; y < (long) blur_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict r;
+      *restrict p,
+      *restrict r;
 
     register IndexPacket
-      *__restrict blur_indexes;
+      *restrict blur_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -309,7 +309,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         gamma;
 
       register const double
-        *__restrict k;
+        *restrict k;
 
       register long
         i,
@@ -590,20 +590,20 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   for (y=0; y < (long) sharp_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict r;
+      *restrict p,
+      *restrict r;
 
     register IndexPacket
-      *__restrict sharp_indexes;
+      *restrict sharp_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -626,7 +626,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         gamma;
 
       register const double
-        *__restrict k;
+        *restrict k;
 
       register long
         i,
@@ -908,19 +908,19 @@ MagickExport Image *BlurImageChannel(const Image *image,
   for (y=0; y < (long) blur_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict blur_indexes;
+      *restrict blur_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -941,10 +941,10 @@ MagickExport Image *BlurImageChannel(const Image *image,
         pixel;
 
       register const double
-        *__restrict k;
+        *restrict k;
 
       register const PixelPacket
-        *__restrict kernel_pixels;
+        *restrict kernel_pixels;
 
       register long
         i;
@@ -984,7 +984,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *__restrict kernel_indexes;
+                *restrict kernel_indexes;
 
               k=kernel;
               kernel_indexes=indexes;
@@ -1038,7 +1038,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *__restrict kernel_indexes;
+                *restrict kernel_indexes;
 
               k=kernel;
               kernel_pixels=p;
@@ -1087,19 +1087,19 @@ MagickExport Image *BlurImageChannel(const Image *image,
   for (x=0; x < (long) blur_image->columns; x++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict blur_indexes;
+      *restrict blur_indexes;
 
     register long
       y;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1119,10 +1119,10 @@ MagickExport Image *BlurImageChannel(const Image *image,
         pixel;
 
       register const double
-        *__restrict k;
+        *restrict k;
 
       register const PixelPacket
-        *__restrict kernel_pixels;
+        *restrict kernel_pixels;
 
       register long
         i;
@@ -1162,7 +1162,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *__restrict kernel_indexes;
+                *restrict kernel_indexes;
 
               k=kernel;
               kernel_indexes=indexes;
@@ -1216,7 +1216,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *__restrict kernel_indexes;
+                *restrict kernel_indexes;
 
               k=kernel;
               kernel_pixels=p;
@@ -1521,7 +1521,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     for (y=0; y < (long) image->rows; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
@@ -1557,7 +1557,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         sync;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
         1,exception);
@@ -2244,20 +2244,20 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   for (y=0; y < (long) median_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict median_indexes;
+      *restrict median_indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2279,10 +2279,10 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
         pixel;
 
       register const PixelPacket
-        *__restrict r;
+        *restrict r;
 
       register const IndexPacket
-        *__restrict s;
+        *restrict s;
 
       register long
         u,
@@ -2516,13 +2516,13 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict blur_indexes;
+      *restrict blur_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2543,13 +2543,13 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
         pixel;
 
       register double
-        *__restrict k;
+        *restrict k;
 
       register long
         i;
 
       register const IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       k=kernel;
       qixel=bias;
@@ -3291,16 +3291,16 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
   for (y=0; y < (long) blur_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register IndexPacket
-      *__restrict blur_indexes;
+      *restrict blur_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3602,20 +3602,20 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   for (y=0; y < (long) noise_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict noise_indexes;
+      *restrict noise_indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3637,10 +3637,10 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
         pixel;
 
       register const PixelPacket
-        *__restrict r;
+        *restrict r;
 
       register const IndexPacket
-        *__restrict s;
+        *restrict s;
 
       register long
         u,
@@ -3862,19 +3862,19 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       gamma;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict blur_indexes;
+      *restrict blur_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3899,7 +3899,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
         pixel;
 
       register const double
-        *__restrict k;
+        *restrict k;
 
       register long
         u;
@@ -4200,16 +4200,16 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       normal;
 
     register const PixelPacket
-      *__restrict p,
-      *__restrict s0,
-      *__restrict s1,
-      *__restrict s2;
+      *restrict p,
+      *restrict s0,
+      *restrict s1,
+      *restrict s2;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4492,14 +4492,14 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4651,19 +4651,19 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
       pixel;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict unsharp_indexes;
+      *restrict unsharp_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

@@ -200,19 +200,19 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       sync;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict threshold_indexes;
+      *restrict threshold_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -391,13 +391,13 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -577,13 +577,13 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -726,7 +726,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
         i;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
@@ -752,13 +752,13 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1482,13 +1482,13 @@ printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
     for (y=0; y < (long) image->rows; y++)
     {
       register IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       if (status == MagickFalse)
         continue;
@@ -1704,14 +1704,14 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
           sync;
 
         register IndexPacket
-          *__restrict indexes;
+          *restrict indexes;
 
         register long
           id,
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -1778,14 +1778,14 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2005,13 +2005,13 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

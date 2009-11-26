@@ -111,7 +111,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds)
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(image,bounds->x,bounds->y+y,bounds->width,1,exception);
     if (q == (PixelPacket *) NULL)

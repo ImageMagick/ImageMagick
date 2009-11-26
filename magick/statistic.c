@@ -242,7 +242,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       pixel;
 
     register IndexPacket
-      *__restrict average_indexes;
+      *restrict average_indexes;
 
     register long
       i,
@@ -253,7 +253,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       *average_pixel;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -465,10 +465,10 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -599,10 +599,10 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -741,10 +741,10 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -900,10 +900,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;

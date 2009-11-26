@@ -206,16 +206,16 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   while (s > segment_stack)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Pop segment off stack.
@@ -315,16 +315,16 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Tile fill color onto floodplane.
@@ -606,19 +606,19 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict paint_indexes;
+      *restrict paint_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     register unsigned long
       *histogram;
@@ -798,13 +798,13 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -940,13 +940,13 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1073,13 +1073,13 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

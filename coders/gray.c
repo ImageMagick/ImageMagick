@@ -200,13 +200,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     for (y=0; y < (long) image->extract_info.height; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       if (count != (ssize_t) length)
         {
@@ -427,7 +427,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     for (y=0; y < (long) image->rows; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
