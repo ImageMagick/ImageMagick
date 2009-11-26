@@ -161,17 +161,17 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   for (y=0; y < (long) extent.y; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict chop_indexes,
-      *__restrict indexes;
+      *restrict chop_indexes,
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(chop_view,0,j++,chop_image->columns,1,
@@ -207,17 +207,17 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   for (y=0; y < (long) (image->rows-(extent.y+extent.height)); y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict chop_indexes,
-      *__restrict indexes;
+      *restrict chop_indexes,
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(chop_view,0,j++,chop_image->columns,1,
@@ -312,13 +312,13 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     for (y=0; y < (long) images->rows; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       p=GetVirtualPixels(images,0,y,images->columns,1,exception);
       q=QueueAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
@@ -339,13 +339,13 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     for (y=0; y < (long) images->rows; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       p=GetVirtualPixels(images,0,y,images->columns,1,exception);
       q=GetAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
@@ -366,13 +366,13 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     for (y=0; y < (long) images->rows; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       p=GetVirtualPixels(images,0,y,images->columns,1,exception);
       q=GetAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
@@ -393,16 +393,16 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     for (y=0; y < (long) images->rows; y++)
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       p=GetVirtualPixels(images,0,y,images->columns,1,exception);
       q=GetAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
@@ -591,16 +591,16 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   for (y=0; y < (long) crop_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict crop_indexes;
+      *restrict crop_indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -719,14 +719,14 @@ MagickExport Image *ExcerptImage(const Image *image,
   for (y=0; y < (long) excerpt_image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict excerpt_indexes,
-      *__restrict indexes;
+      *restrict excerpt_indexes,
+      *restrict indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -900,16 +900,16 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (long) flip_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict flip_indexes;
+      *restrict flip_indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1018,19 +1018,19 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (long) flop_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict flop_indexes;
+      *restrict flop_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1132,17 +1132,17 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
       sync;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict indexes,
-      *__restrict destination_indexes;
+      *restrict indexes,
+      *restrict destination_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Transfer scanline.
@@ -1444,17 +1444,17 @@ MagickExport Image *SpliceImage(const Image *image,
   for (y=0; y < (long) splice_geometry.y; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict indexes,
-      *__restrict splice_indexes;
+      *restrict indexes,
+      *restrict splice_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1520,17 +1520,17 @@ MagickExport Image *SpliceImage(const Image *image,
        y < (long) splice_image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict indexes,
-      *__restrict splice_indexes;
+      *restrict indexes,
+      *restrict splice_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1881,14 +1881,14 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict transpose_indexes,
-      *__restrict indexes;
+      *restrict transpose_indexes,
+      *restrict indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2012,17 +2012,17 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
       sync;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict transverse_indexes,
-      *__restrict indexes;
+      *restrict transverse_indexes,
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

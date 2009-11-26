@@ -560,19 +560,19 @@ MagickExport Image *AppendImages(const Image *image,
         sync;
 
       register const IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register IndexPacket
-        *__restrict append_indexes;
+        *restrict append_indexes;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       if (status == MagickFalse)
         continue;
@@ -1107,13 +1107,13 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       *pixels;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2142,13 +2142,13 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -2345,13 +2345,13 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2632,13 +2632,13 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (long) image->rows; y++)
       {
         register IndexPacket
-          *__restrict indexes;
+          *restrict indexes;
 
         register long
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -2808,13 +2808,13 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3478,7 +3478,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3814,13 +3814,13 @@ MagickExport MagickBooleanType SyncImage(Image *image)
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)

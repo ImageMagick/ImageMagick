@@ -1227,10 +1227,10 @@ static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
         *p;
 
       register IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       p=node_info->list;
       for (i=0; i < (long) node_info->number_unique; i++)

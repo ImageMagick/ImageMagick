@@ -547,7 +547,7 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(annotate_image,0,y,annotate_image->columns,1,
       exception);
@@ -2468,7 +2468,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueAuthenticPixels(draw_image,0,y,draw_image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -2587,7 +2587,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetAuthenticPixels(draw_image,0,y,draw_image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -4150,7 +4150,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       register unsigned long
         pixel;
@@ -7681,7 +7681,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               *affinity_image;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             /*
               Improve image appearance with error diffusion.
@@ -7890,7 +7890,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (PixelPacket *) NULL)

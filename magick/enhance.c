@@ -517,7 +517,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -662,14 +662,14 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -895,7 +895,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1064,10 +1064,10 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
@@ -1348,13 +1348,13 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1527,13 +1527,13 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Read another scan line.
@@ -1563,7 +1563,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         pixel;
 
       register const PixelPacket
-        *__restrict r;
+        *restrict r;
 
       /*
         Compute weighted average of target pixel color components.
@@ -1704,10 +1704,10 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -1818,13 +1818,13 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2038,13 +2038,13 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2239,14 +2239,14 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       pixel4;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2521,13 +2521,13 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2678,13 +2678,13 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2913,7 +2913,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -3167,7 +3167,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3331,13 +3331,13 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
           sync;
 
         register IndexPacket
-          *__restrict indexes;
+          *restrict indexes;
 
         register long
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -3398,13 +3398,13 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3663,13 +3663,13 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

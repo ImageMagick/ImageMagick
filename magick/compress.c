@@ -515,7 +515,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     /*
       Initialize scanline to white.

@@ -434,7 +434,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -485,7 +485,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -542,7 +542,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -605,7 +605,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sync;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           ssize_t
             count;
@@ -693,7 +693,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           ssize_t
             count;
@@ -811,7 +811,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           ssize_t
             count;
@@ -866,7 +866,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   pixel;
 
                 register PixelPacket
-                  *__restrict r;
+                  *restrict r;
 
                 r=q;
                 for (x=0; x < (long) image->columns; x++)
@@ -886,7 +886,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   pixel;
 
                 register PixelPacket
-                  *__restrict r;
+                  *restrict r;
 
                 r=q;
                 for (x=0; x < (long) image->columns; x++)
@@ -985,7 +985,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           ssize_t
             count;
@@ -1222,7 +1222,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sync;
 
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           ssize_t
             count;
@@ -1669,10 +1669,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const IndexPacket
-            *__restrict indexes;
+            *restrict indexes;
 
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           register long
             x;
@@ -1726,7 +1726,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           register long
             x;
@@ -1784,7 +1784,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           register long
             x;
@@ -1841,7 +1841,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1884,7 +1884,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           register long
             x;
@@ -1965,7 +1965,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           register long
             x;
@@ -2044,10 +2044,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (long) image->rows; y++)
         {
           register const IndexPacket
-            *__restrict indexes;
+            *restrict indexes;
 
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           register long
             x;
@@ -2209,7 +2209,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           register const PixelPacket
-            *__restrict p;
+            *restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)

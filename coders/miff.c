@@ -1222,13 +1222,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     for (y=0; y < (long) image->rows; y++)
     {
       register IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register long
         x;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
@@ -2128,10 +2128,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     for (y=0; y < (long) image->rows; y++)
     {
       register const IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         x;

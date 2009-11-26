@@ -180,10 +180,10 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       bounding_box;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -318,7 +318,7 @@ MagickExport unsigned long GetImageChannelDepth(const Image *image,
   if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
     {
       register const PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register long
         i;
@@ -371,10 +371,10 @@ MagickExport unsigned long GetImageChannelDepth(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       id,
@@ -916,13 +916,13 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -965,7 +965,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
         i;
 
       register PixelPacket
-        *__restrict p;
+        *restrict p;
 
       p=image->colormap;
       range=GetQuantumRange(depth);

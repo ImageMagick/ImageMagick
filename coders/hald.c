@@ -136,7 +136,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
       red;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

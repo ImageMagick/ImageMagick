@@ -273,13 +273,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
     *p;
 
   register IndexPacket
-    *indexes;
+    *restrict indexes;
 
   register long
     x;
 
   register PixelPacket
-    *__restrict q;
+    *restrict q;
 
   size_t
     extent;
@@ -2474,7 +2474,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         quantum;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -2490,7 +2490,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
   if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum))
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -2507,7 +2507,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         alpha;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Disassociate alpha.

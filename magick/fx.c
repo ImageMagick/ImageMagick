@@ -342,20 +342,20 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       sync;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict noise_indexes;
+      *restrict noise_indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -504,13 +504,13 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
       quantum;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -745,13 +745,13 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       sync;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -966,19 +966,19 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
       sync;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict convolve_indexes;
+      *restrict convolve_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1002,10 +1002,10 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
         pixel;
 
       register const double
-        *__restrict k;
+        *restrict k;
 
       register const PixelPacket
-        *__restrict kernel_pixels;
+        *restrict kernel_pixels;
 
       register long
         u;
@@ -1051,7 +1051,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *__restrict kernel_indexes;
+                *restrict kernel_indexes;
 
               k=normal_kernel;
               kernel_indexes=indexes;
@@ -1115,7 +1115,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *__restrict kernel_indexes;
+                *restrict kernel_indexes;
 
               k=normal_kernel;
               kernel_pixels=p;
@@ -1478,14 +1478,14 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1710,13 +1710,13 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3549,14 +3549,14 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
       alpha;
 
     register IndexPacket
-      *__restrict fx_indexes;
+      *restrict fx_indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3758,14 +3758,14 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       delta;
 
     register IndexPacket
-      *__restrict implode_indexes;
+      *restrict implode_indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3974,13 +3974,13 @@ MagickExport Image *MorphImages(const Image *image,
           sync;
 
         register const PixelPacket
-          *__restrict p;
+          *restrict p;
 
         register long
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -4155,7 +4155,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
   if ((segment->x1 != (double) x_mid) || (segment->x2 != (double) x_mid))
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Left pixel.
@@ -4200,7 +4200,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       if ((segment->x1 != (double) x_mid) || (segment->y2 != (double) y_mid))
         {
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           /*
             Bottom pixel.
@@ -4224,7 +4224,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       if (segment->y1 != segment->y2)
         {
           register PixelPacket
-            *__restrict q;
+            *restrict q;
 
           /*
             Top pixel.
@@ -4249,7 +4249,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
   if ((segment->x1 != segment->x2) || (segment->y1 != segment->y2))
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Middle pixel.
@@ -4592,22 +4592,22 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   for (y=0; y < (long) image->rows; y++)
   {
     register const double
-      *__restrict k;
+      *restrict k;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register IndexPacket
-      *__restrict recolor_indexes;
+      *restrict recolor_indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4822,13 +4822,13 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4983,7 +4983,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -5116,13 +5116,13 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueCacheViewAuthenticPixels(random_view,0,y,random_image->columns,1,
       exception);
@@ -5272,7 +5272,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -5560,14 +5560,14 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
   for (y=0; y < (long) stereo_image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p,
-      *__restrict q;
+      *restrict p,
+      *restrict q;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict r;
+      *restrict r;
 
     p=GetVirtualPixels(left_image,-x_offset,y-y_offset,image->columns,1,
       exception);
@@ -5719,14 +5719,14 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       delta;
 
     register IndexPacket
-      *__restrict swirl_indexes;
+      *restrict swirl_indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -5907,13 +5907,13 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -6176,14 +6176,14 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       pixel;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

@@ -542,10 +542,10 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
       for (y=0; y < (long) image->rows; y++)
       {
         register IndexPacket
-          *__restrict indexes;
+          *restrict indexes;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
           exception);
@@ -609,7 +609,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
         intensity;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Monochrome image.
@@ -763,7 +763,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -851,7 +851,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   for (y++; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -1040,10 +1040,10 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
         distance;
 
       register PixelPacket
-        *__restrict p;
+        *restrict p;
 
       register RealPixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Determine if this color is "closest".
@@ -1175,7 +1175,7 @@ static unsigned long DefineImageColormap(Image *image,CubeInfo *cube_info,
         alpha;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Colormap entry is defined by the mean color in this cube.
@@ -1386,14 +1386,14 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       i,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -1631,13 +1631,13 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         *exception;
 
       register IndexPacket
-        *__restrict indexes;
+        *restrict indexes;
 
       register long
         i;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Distribute error.
@@ -2048,7 +2048,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
   for (y=0; y < (long) image->rows; y++)
   {
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register long
       x;
@@ -2185,7 +2185,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
     i;
 
   register PixelPacket
-    *__restrict q;
+    *restrict q;
 
   CacheView
     *posterize_view;
@@ -3028,13 +3028,13 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       for (y=0; y < (long) image->rows; y++)
       {
         register IndexPacket
-          *__restrict indexes;
+          *restrict indexes;
 
         register long
           x;
 
         register const PixelPacket
-          *__restrict q;
+          *restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -3104,13 +3104,13 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       x;
 
     register const PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;

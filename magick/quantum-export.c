@@ -289,7 +289,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   if (quantum_info->alpha_type == AssociatedQuantumAlpha)
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       /*
         Associate alpha.
@@ -309,7 +309,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum))
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -326,7 +326,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -2329,7 +2329,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum;
 
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -2345,7 +2345,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum))
     {
       register PixelPacket
-        *__restrict q;
+        *restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)

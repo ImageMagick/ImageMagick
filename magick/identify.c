@@ -581,7 +581,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             pixel;
 
           register PixelPacket
-            *__restrict p;
+            *restrict p;
 
           GetMagickPixelPacket(image,&pixel);
           p=image->colormap;

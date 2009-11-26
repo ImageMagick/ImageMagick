@@ -1184,14 +1184,14 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       point;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       id,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     SegmentInfo
       inverse_edge;
@@ -3289,14 +3289,14 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       offset;
 
     register IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register long
       i,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3892,7 +3892,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
           x;
 
         register PixelPacket
-          *__restrict q;
+          *restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -3945,7 +3945,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4203,7 +4203,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (long) image->rows; y++)
           {
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4254,7 +4254,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4313,7 +4313,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4368,7 +4368,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               x;
 
             register PixelPacket
-              *__restrict q;
+              *restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);

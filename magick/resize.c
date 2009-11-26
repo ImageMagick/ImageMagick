@@ -841,13 +841,13 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
   for (y=0; y < (long) resize_image->rows; y++)
   {
     register IndexPacket
-      *__restrict resize_indexes;
+      *restrict resize_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
@@ -1502,10 +1502,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
   while (lqr_carver_scan(carver,&x,&y,&packet) != 0)
   {
     register IndexPacket
-      *__restrict rescale_indexes;
+      *restrict rescale_indexes;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueAuthenticPixels(rescale_image,x,y,1,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -1736,22 +1736,22 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       density;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register ContributionInfo
-      *__restrict contribution;
+      *restrict contribution;
 
     register IndexPacket
-      *__restrict resize_indexes;
+      *restrict resize_indexes;
 
     register long
       y;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1977,22 +1977,22 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       density;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register ContributionInfo
-      *__restrict contribution;
+      *restrict contribution;
 
     register IndexPacket
-      *__restrict resize_indexes;
+      *restrict resize_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2344,19 +2344,19 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       y_offset;
 
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict sample_indexes;
+      *restrict sample_indexes;
 
     register long
       x;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -2522,23 +2522,23 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   for (y=0; y < (long) scale_image->rows; y++)
   {
     register const IndexPacket
-      *__restrict indexes;
+      *restrict indexes;
 
     register const PixelPacket
-      *__restrict p;
+      *restrict p;
 
     register IndexPacket
-      *__restrict scale_indexes;
+      *restrict scale_indexes;
 
     register long
       x;
 
     register MagickPixelPacket
-      *__restrict s,
-      *__restrict t;
+      *restrict s,
+      *restrict t;
 
     register PixelPacket
-      *__restrict q;
+      *restrict q;
 
     q=QueueAuthenticPixels(scale_image,0,y,scale_image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
