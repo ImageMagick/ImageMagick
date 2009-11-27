@@ -112,6 +112,10 @@ A Web page has been set up for this extension. See:
 	 file:///usr/local/share/doc/ImageMagick-6.5.8/www/perl-magick.html
 	 http://www.imagemagick.org/script/perl-magick.php
 
+If you have problems, go to
+
+   http://www.imagemagick.org/discourse-server/viewforum.php?f=7
+
 =head1 AUTHOR
 
 Kyle Shorter	magick-users@imagemagick.org
