@@ -1,3 +1,6 @@
+2009-11-26  6.5.8-1 Chris Madison  <madisonblu@gmail...>
+  * Eliminate bogus 'skip to sync byte' exception for PCD image format.
+
 2009-11-26  6.5.8-1 Dr. Ingo Bremer <bremer@wias-...>
   * Escape single quote in when writing the UIL format.
 
