@@ -295,8 +295,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     r=pcd_table[plane];
     for (i=0; ((i < (long) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
-    if ((row > image->rows) || (r == (PCDTable *) NULL) ||
-        ((size_t) (q-luma) > (image->columns*image->rows)))
+    if ((row > image->rows) || (r == (PCDTable *) NULL))
       {
         (void) ThrowMagickException(&image->exception,GetMagickModule(),
           CorruptImageWarning,"SkipToSyncByte","`%s'",image->filename);
@@ -598,7 +597,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows<<=1;
   }
   /*
-    Allocate lumand chroma memory.
+    Allocate luma and chroma memory.
   */
   number_pixels=(MagickSizeType) image->columns*image->rows;
   if (number_pixels != (size_t) number_pixels)
