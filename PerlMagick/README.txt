@@ -3,26 +3,28 @@ Introduction
     PerlMagick, is an objected-oriented Perl interface to ImageMagick.
     Use the module to read, manipulate, or write an image or image sequence
     from within a Perl script. This makes it suitable for Web CGI scripts. You
-    must have ImageMagick 6.5.7 or above installed on your system for this
+    must have ImageMagick 6.5.8 or above installed on your system for this
     module to work properly.
 
     See
 
         http://www.imagemagick.org/script/perl-magick.php
 
-    for additional information about PerlMagick.  See
+    for additional information about PerlMagick.  If you have problems, go to
+
+        http://www.imagemagick.org/discourse-server/viewforum.php?f=7
+
+    for help.  For instructions about installing ImageMagick, see
 
         http://www.imagemagick.org/
-
-    for instructions about installing ImageMagick.
 
 
 Installation 
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip ImageMagick-6.5.7-0.tar.gz
-        tar xvf ImageMagick-6.5.7
+        gunzip ImageMagick-6.5.8-0.tar.gz
+        tar xvf ImageMagick-6.5.8
 
     Follow the ImageMagick installation instructions in INSTALL-unix.txt
 		then type
