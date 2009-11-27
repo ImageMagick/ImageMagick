@@ -107,7 +107,7 @@ This Perl extension allows the reading, manipulation and writing of
 a large number of image file formats using the ImageMagick library.
 It was originally developed to be used by CGI scripts for Web pages.
 
-A Web page has been set up for this extension. See:
+A web page has been set up for this extension. See:
 
 	 file:///usr/local/share/doc/ImageMagick-6.5.8/www/perl-magick.html
 	 http://www.imagemagick.org/script/perl-magick.php
