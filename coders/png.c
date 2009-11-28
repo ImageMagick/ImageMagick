@@ -6567,7 +6567,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               */
               ping_info->trans_alpha=(unsigned char *) AcquireQuantumMemory(
                 number_colors,sizeof(*ping_info->trans_alpha));
-              if (ping_info->trans == (unsigned char *) NULL)
+              if (ping_info->trans_alpha == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed");
               assert(number_colors <= 256);
