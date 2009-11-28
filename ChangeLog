@@ -1,3 +1,7 @@
+2009-11-28  6.5.0-1 Glenn Randers-Pehrson <glennrp@image...>
+  * Changed the one remaining ping_info->trans to ping_info->trans_values
+    in coders/png.c
+
 2009-11-26  6.5.8-1 Chris Madison  <madisonblu@gmail...>
   * Eliminate bogus 'skip to sync byte' exception for PCD image format.
   * Add -define jpeg:extent option to restrict the maximum JPEG image file size.
