@@ -4,6 +4,8 @@
 
 2009-11-26  6.5.8-1 Chris Madison  <madisonblu@gmail...>
   * Eliminate bogus 'skip to sync byte' exception for PCD image format.
+  * -threshold option: threshold to white if the computed intensity of the
+	  color channels exceeds the threshold.
   * Add -define jpeg:extent option to restrict the maximum JPEG image file size.
 
 2009-11-26  6.5.8-1 Dr. Ingo Bremer <bremer@wias-...>

@@ -594,41 +594,40 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    if (channel == DefaultChannels)
-      for (x=0; x < (long) image->columns; x++)
-      {
-        if ((MagickRealType) q->red < threshold.red)
-          q->red=(Quantum) 0;
-        if ((MagickRealType) q->green < threshold.green)
-          q->green=(Quantum) 0;
-        if ((MagickRealType) q->blue < threshold.blue)
-          q->blue=(Quantum) 0;
-        if ((image->colorspace == CMYKColorspace) &&
-            ((MagickRealType) indexes[x] < threshold.index))
-          indexes[x]=(Quantum) 0;
-        q++;
-      }
-    else
-      for (x=0; x < (long) image->columns; x++)
-      {
-        if (((channel & RedChannel) != 0) &&
-            ((MagickRealType) q->red < threshold.red))
-          q->red=(Quantum) 0;
-        if (((channel & GreenChannel) != 0) &&
-            ((MagickRealType) q->green < threshold.green))
-          q->green=(Quantum) 0;
-        if (((channel & BlueChannel) != 0) &&
-            ((MagickRealType) q->blue < threshold.blue))
-          q->blue=(Quantum) 0;
-        if (((channel & OpacityChannel) != 0) &&
-            ((MagickRealType) q->opacity < threshold.opacity))
-          q->opacity=(Quantum) 0;
-        if (((channel & IndexChannel) != 0) &&
-            (image->colorspace == CMYKColorspace) &&
-            ((MagickRealType) indexes[x] < threshold.index))
-          indexes[x]=(Quantum) 0;
-        q++;
-      }
+    for (x=0; x < (long) image->columns; x++)
+    {
+      if (channel != DefaultChannels)
+        {
+          if (PixelIntensity(q) < MagickPixelIntensity(&threshold))
+            {
+              q->red=(Quantum) 0;
+              q->green=(Quantum) 0;
+              q->blue=(Quantum) 0;
+              if (image->colorspace == CMYKColorspace)
+                indexes[x]=(Quantum) 0;
+            }
+        }
+      else
+        {
+          if (((channel & RedChannel) != 0) &&
+              ((MagickRealType) q->red < threshold.red))
+            q->red=(Quantum) 0;
+          if (((channel & GreenChannel) != 0) &&
+              ((MagickRealType) q->green < threshold.green))
+            q->green=(Quantum) 0;
+          if (((channel & BlueChannel) != 0) &&
+              ((MagickRealType) q->blue < threshold.blue))
+            q->blue=(Quantum) 0;
+          if (((channel & OpacityChannel) != 0) &&
+              ((MagickRealType) q->opacity < threshold.opacity))
+            q->opacity=(Quantum) 0;
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace) &&
+              ((MagickRealType) indexes[x] < threshold.index))
+            indexes[x]=(Quantum) 0;
+        }
+      q++;
+    }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -2024,22 +2023,36 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (long) image->columns; x++)
     {
-      if (((channel & RedChannel) != 0) &&
-          ((MagickRealType) q->red > threshold.red))
-        q->red=(Quantum) QuantumRange;
-      if (((channel & GreenChannel) != 0) &&
-          ((MagickRealType) q->green > threshold.green))
-        q->green=(Quantum) QuantumRange;
-      if (((channel & BlueChannel) != 0) &&
-          ((MagickRealType) q->blue > threshold.blue))
-        q->blue=(Quantum) QuantumRange;
-      if (((channel & OpacityChannel) != 0) &&
-          ((MagickRealType) q->opacity > threshold.opacity))
-        q->opacity=(Quantum) QuantumRange;
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace) &&
-          ((MagickRealType) indexes[x] > threshold.index))
-        indexes[x]=(Quantum) QuantumRange;
+      if (channel != DefaultChannels)
+        {
+          if (PixelIntensity(q) > MagickPixelIntensity(&threshold))
+            {
+              q->red=(Quantum) QuantumRange;
+              q->green=(Quantum) QuantumRange;
+              q->blue=(Quantum) QuantumRange;
+              if (image->colorspace == CMYKColorspace)
+                indexes[x]=(Quantum) QuantumRange;
+            }
+        }
+      else
+        {
+          if (((channel & RedChannel) != 0) &&
+              ((MagickRealType) q->red > threshold.red))
+            q->red=(Quantum) QuantumRange;
+          if (((channel & GreenChannel) != 0) &&
+              ((MagickRealType) q->green > threshold.green))
+            q->green=(Quantum) QuantumRange;
+          if (((channel & BlueChannel) != 0) &&
+              ((MagickRealType) q->blue > threshold.blue))
+            q->blue=(Quantum) QuantumRange;
+          if (((channel & OpacityChannel) != 0) &&
+              ((MagickRealType) q->opacity > threshold.opacity))
+            q->opacity=(Quantum) QuantumRange;
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace) &&
+              ((MagickRealType) indexes[x] > threshold.index))
+            indexes[x]=(Quantum) QuantumRange;
+        }
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
