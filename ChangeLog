@@ -1,4 +1,4 @@
-2009-11-28  6.5.0-1 Glenn Randers-Pehrson <glennrp@image...>
+2009-11-28  6.5.8-2 Glenn Randers-Pehrson <glennrp@image...>
   * Changed the one remaining ping_info->trans to ping_info->trans_values
     in coders/png.c
 
