@@ -998,7 +998,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       GeometryInfo
         geometry_info;
 
-      int
+      MagickStatusType
         flags;
 
       /*
@@ -1840,6 +1840,49 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Interlace: nonprogressive");
 #endif
+  option=GetImageOption(image_info,"jpeg:extent");
+  if (option != (const char *) NULL)
+    {
+      Image
+        *jpeg_image;
+
+      ImageInfo
+        *jpeg_info;
+
+      jpeg_info=CloneImageInfo(image_info);
+      jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+      if (jpeg_image != (Image *) NULL)
+        {
+          MagickSizeType
+            extent;
+
+          size_t
+            max,
+            min;
+
+          /*
+            Search for compression quality that does not exceed image extent.
+          */
+          jpeg_info->quality=0;
+          extent=(MagickSizeType) StringToDouble(option,100.0);
+          (void) DeleteImageOption(jpeg_info,"jpeg:extent");
+          (void) AcquireUniqueFilename(jpeg_image->filename);
+          min=0;
+          for (max=100; (max-min) > 1; )
+          {
+            jpeg_image->quality=min+(max-min)/2;
+            status=WriteJPEGImage(jpeg_info,jpeg_image);
+            if (GetBlobSize(jpeg_image) < extent)
+              min=jpeg_image->quality+1;
+            else
+              max=jpeg_image->quality-1;
+          }
+          (void) RelinquishUniqueFileResource(jpeg_image->filename);
+          image->quality=max;
+          jpeg_image=DestroyImage(jpeg_image);
+        }
+      jpeg_info=DestroyImageInfo(jpeg_info);
+    }
   if ((image_info->compression != LosslessJPEGCompression) &&
       (image->quality <= 100))
     {
