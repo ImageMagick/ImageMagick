@@ -224,7 +224,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
             {
-              (void) FormatMagickSize(image->total_colors,format);
+              (void) FormatMagickSize(image->total_colors,MagickFalse,format);
               (void) fprintf(file,"%s ",format);
             }
         }
@@ -241,7 +241,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           image->error.normalized_maximum_error);
       if (GetBlobSize(image) != 0)
         {
-          (void) FormatMagickSize(GetBlobSize(image),format);
+          (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
           (void) fprintf(file,"%s ",format);
         }
       (void) fprintf(file,"%0.3fu %ld:%02ld.%03ld",user_time,(long)
@@ -986,12 +986,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) fprintf(file,"  Tainted: %s\n",MagickOptionToMnemonic(
     MagickBooleanOptions,(long) image->taint));
-  (void) FormatMagickSize(GetBlobSize(image),format);
+  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
   (void) fprintf(file,"  Filesize: %s\n",format);
-  (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,format);
+  (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
+     MagickFalse,format);
   (void) fprintf(file,"  Number pixels: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) ((double) image->columns*image->rows/
-    elapsed_time+0.5),format);
+    elapsed_time+0.5),MagickFalse,format);
   (void) fprintf(file,"  Pixels per second: %s\n",format);
   (void) fprintf(file,"  User time: %0.3fu\n",user_time);
   (void) fprintf(file,"  Elapsed time: %ld:%02ld.%03ld\n",(long)

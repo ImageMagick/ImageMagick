@@ -2343,7 +2343,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           char
             format[MaxTextExtent];
 
-          (void) FormatMagickSize(GetBlobSize(image),format);
+          (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
           (void) FormatMagickString(value,MaxTextExtent,"%s",format);
           break;
         }
@@ -2612,7 +2612,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         (void) FormatMagickString(format,MaxTextExtent,"%lu",(unsigned long)
           length);
         if (length != (MagickSizeType) ((size_t) length))
-          (void) FormatMagickSize(length,format);
+          (void) FormatMagickSize(length,MagickFalse,format);
         q+=ConcatenateMagickString(q,format,extent);
         break;
       }

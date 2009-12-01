@@ -63,7 +63,7 @@ extern MagickExport double
   StringToDouble(const char *,const double);
 
 extern MagickExport long
-  FormatMagickSize(const MagickSizeType,char *),
+  FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
   FormatMagickString(char *,const size_t,const char *,...)
     magick_attribute((format (printf,3,4))),
   FormatMagickStringList(char *,const size_t,const char *,va_list)

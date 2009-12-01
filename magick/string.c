@@ -996,12 +996,19 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %
 %    o size:  convert this size to a human readable format.
 %
+%    o bi:  use power of two rather than power of ten.
+%
 %    o format:  human readable format.
 %
 */
-MagickExport long FormatMagickSize(const MagickSizeType size,char *format)
+MagickExport long FormatMagickSize(const MagickSizeType size,
+  const MagickBooleanType bi,char *format)
 {
+  const char
+    **units;
+
   double
+    bytes,
     length;
 
   long
@@ -1012,18 +1019,29 @@ MagickExport long FormatMagickSize(const MagickSizeType size,char *format)
     j;
 
   static const char
-    *units[] =
+    *bi_units[] =
+    {
+      "b", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", (char *) NULL
+    },
+    *traditional_units[] =
     {
       "b", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", (char *) NULL
     };
 
+  bytes=1000.0;
+  units=traditional_units;
+  if (bi != MagickFalse)
+    {
+      bytes=1024.0;
+      units=bi_units;
+    }
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
   length=(double) ((MagickOffsetType) size);
 #else
   length=(double) size;
 #endif
-  for (i=0; (length >= 1000.0) && (units[i+1] != (const char *) NULL); i++)
-    length/=1000.0;
+  for (i=0; (length >= bytes) && (units[i+1] != (const char *) NULL); i++)
+    length/=bytes;
   for (j=2; j < 12; j++)
   {
     count=FormatMagickString(format,MaxTextExtent,"%.*g%s",(int) (i+j),length,
