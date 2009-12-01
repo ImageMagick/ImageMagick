@@ -158,7 +158,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     limit;
 
   status=MagickFalse;
-  (void) FormatMagickSize(size,resource_request);
+  (void) FormatMagickSize(size,MagickFalse,resource_request);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&resource_semaphore);
   (void) LockSemaphoreInfo(resource_semaphore);
@@ -170,9 +170,10 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       limit=resource_info.area_limit;
       status=(resource_info.area_limit == MagickResourceInfinity) ||
         (size < limit) ? MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.area,
+      (void) FormatMagickSize((MagickSizeType) resource_info.area,MagickFalse,
         resource_current);
-      (void) FormatMagickSize(resource_info.area_limit,resource_limit);
+      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,
+        resource_limit);
       break;
     }
     case MemoryResource:
@@ -182,9 +183,9 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.memory_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.memory < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.memory,
+      (void) FormatMagickSize((MagickSizeType) resource_info.memory,MagickTrue,
         resource_current);
-      (void) FormatMagickSize(resource_info.memory_limit,
+      (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,
         resource_limit);
       break;
     }
@@ -195,9 +196,9 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.map_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.map < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.map,
+      (void) FormatMagickSize((MagickSizeType) resource_info.map,MagickTrue,
         resource_current);
-      (void) FormatMagickSize(resource_info.map_limit,
+      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
         resource_limit);
       break;
     }
@@ -208,9 +209,10 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.disk_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.disk < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.disk,
+      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickFalse,
         resource_current);
-      (void) FormatMagickSize(resource_info.disk_limit,resource_limit);
+      (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,
+        resource_limit);
       break;
     }
     case FileResource:
@@ -220,10 +222,10 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.file_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.file < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.file,
+      (void) FormatMagickSize((MagickSizeType) resource_info.file,MagickFalse,
         resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.file_limit,
-        resource_limit);
+        MagickFalse,resource_limit);
       break;
     }
     case ThreadResource:
@@ -233,10 +235,10 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.thread_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.thread < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.thread,
+      (void) FormatMagickSize((MagickSizeType) resource_info.thread,MagickFalse,
         resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.thread_limit,
-        resource_limit);
+        MagickFalse,resource_limit);
       break;
     }
     case TimeResource:
@@ -246,10 +248,10 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.time_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.time < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.time,
+      (void) FormatMagickSize((MagickSizeType) resource_info.time,MagickFalse,
         resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.time_limit,
-        resource_limit);
+        MagickFalse,resource_limit);
       break;
     }
     default:
@@ -669,19 +671,19 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&resource_semaphore);
   (void) LockSemaphoreInfo(resource_semaphore);
-  (void) FormatMagickSize(resource_info.area_limit,area_limit);
-  (void) FormatMagickSize(resource_info.memory_limit,memory_limit);
-  (void) FormatMagickSize(resource_info.map_limit,map_limit);
-  (void) FormatMagickSize(resource_info.disk_limit,disk_limit);
+  (void) FormatMagickSize(resource_info.area_limit,MagickFalse,area_limit);
+  (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,memory_limit);
+  (void) FormatMagickSize(resource_info.map_limit,MagickTrue,map_limit);
+  (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MaxTextExtent);
   if (resource_info.time_limit != MagickResourceInfinity)
     (void) FormatMagickString(time_limit,MaxTextExtent,"%lu",(unsigned long)
       resource_info.time_limit);
-  (void) fprintf(file,"File        Area      Memory         Map"
-    "        Disk  Thread        Time\n");
+  (void) fprintf(file,"File         Area       Memory          Map"
+    "         Disk   Thread        Time\n");
   (void) fprintf(file,"------------------------------------------------------"
-    "------------------\n");
-  (void) fprintf(file,"%4lu  %10s  %10s  %10s  %10s  %6lu  %10s\n",
+    "-----------------------\n");
+  (void) fprintf(file,"%4lu  %11s  %11s  %11s  %11s  %6lu  %11s\n",
     (unsigned long) resource_info.file_limit,area_limit,memory_limit,map_limit,
     disk_limit,(unsigned long) resource_info.thread_limit,time_limit);
   (void) fflush(file);
@@ -722,7 +724,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     resource_limit[MaxTextExtent],
     resource_request[MaxTextExtent];
 
-  (void) FormatMagickSize(size,resource_request);
+  (void) FormatMagickSize(size,MagickFalse,resource_request);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&resource_semaphore);
   (void) LockSemaphoreInfo(resource_semaphore);
@@ -731,60 +733,64 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case AreaResource:
     {
       resource_info.area=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.area,
+      (void) FormatMagickSize((MagickSizeType) resource_info.area,MagickFalse,
         resource_current);
-      (void) FormatMagickSize(resource_info.area_limit,resource_limit);
+      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,
+        resource_limit);
       break;
     }
     case MemoryResource:
     {
       resource_info.memory-=size;
       (void) FormatMagickSize((MagickSizeType) resource_info.memory,
-        resource_current);
-      (void) FormatMagickSize(resource_info.memory_limit,resource_limit);
+        MagickTrue,resource_current);
+      (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,
+        resource_limit);
       break;
     }
     case MapResource:
     {
       resource_info.map-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.map,
+      (void) FormatMagickSize((MagickSizeType) resource_info.map,MagickTrue,
         resource_current);
-      (void) FormatMagickSize(resource_info.map_limit,resource_limit);
+      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
+        resource_limit);
       break;
     }
     case DiskResource:
     {
       resource_info.disk-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.disk,
+      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickFalse,
         resource_current);
-      (void) FormatMagickSize(resource_info.disk_limit,resource_limit);
+      (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,
+        resource_limit);
       break;
     }
     case FileResource:
     {
       resource_info.file-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.file,
+      (void) FormatMagickSize((MagickSizeType) resource_info.file,MagickFalse,
         resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.file_limit,
-        resource_limit);
+        MagickFalse,resource_limit);
       break;
     }
     case ThreadResource:
     {
       resource_info.thread-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.thread,
+      (void) FormatMagickSize((MagickSizeType) resource_info.thread,MagickFalse,
         resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.thread_limit,
-        resource_limit);
+        MagickFalse,resource_limit);
       break;
     }
     case TimeResource:
     {
       resource_info.time-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.time,
+      (void) FormatMagickSize((MagickSizeType) resource_info.time,MagickFalse,
         resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.time_limit,
-        resource_limit);
+        MagickFalse,resource_limit);
       break;
     }
     default:

@@ -3893,7 +3893,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
         format[MaxTextExtent],
         message[MaxTextExtent];
 
-      (void) FormatMagickSize(length,format);
+      (void) FormatMagickSize(length,MagickFalse,format);
       (void) FormatMagickString(message,MaxTextExtent,
         "extend %s (%s[%d], disk, %s)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,format);
@@ -3977,7 +3977,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               */
               if (image->debug != MagickFalse)
                 {
-                  (void) FormatMagickSize(cache_info->length,format);
+                  (void) FormatMagickSize(cache_info->length,MagickFalse,
+                    format);
                   (void) FormatMagickString(message,MaxTextExtent,
                     "open %s (%s memory, %lux%lu %s)",cache_info->filename,
                     cache_info->mapped != MagickFalse ? "anonymous" : "heap",
@@ -4069,7 +4070,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 }
               if (image->debug != MagickFalse)
                 {
-                  (void) FormatMagickSize(cache_info->length,format);
+                  (void) FormatMagickSize(cache_info->length,MagickFalse,
+                    format);
                   (void) FormatMagickString(message,MaxTextExtent,
                     "open %s (%s[%d], memory-mapped, %lux%lu %s)",
                     cache_info->filename,cache_info->cache_filename,
@@ -4090,7 +4092,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     }
   if (image->debug != MagickFalse)
     {
-      (void) FormatMagickSize(cache_info->length,format);
+      (void) FormatMagickSize(cache_info->length,MagickFalse,format);
       (void) FormatMagickString(message,MaxTextExtent,
         "open %s (%s[%d], disk, %lux%lu %s)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,cache_info->columns,
