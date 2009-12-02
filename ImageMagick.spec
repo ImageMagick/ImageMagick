@@ -107,6 +107,7 @@ however.
 %prep
 %setup -q -n %{name}-%{VERSION}-%{Patchlevel}
 sed -i 's/libltdl.la/libltdl.so/g' configure
+iconv -f ISO-8859-1 -t UTF-8 README.txt > README.txt.tmp
 touch -r README.txt README.txt.tmp
 mv README.txt.tmp README.txt
 # for %doc
