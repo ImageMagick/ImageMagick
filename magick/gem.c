@@ -760,7 +760,7 @@ MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
   if (radius > 0.0)
     return((unsigned long) (2.0*ceil(radius)+1.0));
   if (fabs(sigma) <= MagickEpsilon)
-    return(1);
+    return(1UL);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -768,7 +768,7 @@ MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
       normalize+=exp(-((double) u*u)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma);
     u=width/2;
     value=exp(-((double) u*u)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma)/normalize;
-    if ((long) (QuantumRange*value) <= 0L)
+    if ((value < QuantumScale) || (value < MagickEpsilon))
       break;
     width+=2;
   }
@@ -795,7 +795,7 @@ MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
   if (radius > 0.0)
     return((unsigned long) (2.0*ceil(radius)+1.0));
   if (fabs(sigma) <= MagickEpsilon)
-    return(1);
+    return(1UL);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -809,7 +809,7 @@ MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
     }
     v=width/2;
     value=exp(-((double) v*v)/(2.0*sigma*sigma))/normalize;
-    if ((long) (QuantumRange*value) <= 0L)
+    if ((value < QuantumScale) || (value < MagickEpsilon))
       break;
     width+=2;
   }
