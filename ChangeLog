@@ -1,3 +1,7 @@
+2009-12-03  6.5.8-3 Cristy  <quetzlzacatenango@image...>
+  * Its interword-spacing, not interword_spacing (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=1515).
+
 2009-11-28  6.5.8-2 Glenn Randers-Pehrson <glennrp@image...>
   * Changed the one remaining ping_info->trans to ping_info->trans_values
     in coders/png.c

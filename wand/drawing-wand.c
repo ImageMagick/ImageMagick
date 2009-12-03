@@ -5939,7 +5939,7 @@ WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
       (CurrentContext->interline_spacing != interline_spacing))
     {
       CurrentContext->interline_spacing=interline_spacing;
-      (void) MvgPrintf(wand,"interline_spacing %lf\n",interline_spacing);
+      (void) MvgPrintf(wand,"interline-spacing %lf\n",interline_spacing);
     }
 }
 
@@ -5980,7 +5980,7 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
       (CurrentContext->interword_spacing != interword_spacing))
     {
       CurrentContext->interword_spacing=interword_spacing;
-      (void) MvgPrintf(wand,"interword_spacing %lf\n",interword_spacing);
+      (void) MvgPrintf(wand,"interword-spacing %lf\n",interword_spacing);
     }
 }
 
