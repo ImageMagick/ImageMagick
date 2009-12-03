@@ -48,8 +48,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
-#
 #  Makefile for building ImageMagick m4 macros.
 
 #  Copyright 1999-2009 ImageMagick Studio LLC, a non-profit organization
@@ -65,8 +63,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
 #
 #  Makefile for Magick ImageMagick configuration files.
 
@@ -134,8 +130,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#
-#  Copyright (C) 2003 - 2008 GraphicsMagick Group
 #
 #  Makefile for building MagickWand API.
 #
