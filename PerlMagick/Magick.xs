@@ -4866,6 +4866,18 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          if (LocaleCompare(attribute,"transparent-color") == 0)
+            {
+              if (image == (Image *) NULL)
+                break;
+              (void) FormatMagickString(color,MaxTextExtent,QuantumFormat ","
+                QuantumFormat "," QuantumFormat "," QuantumFormat,
+                image->transparent_color.red,image->transparent_color.green,
+                image->transparent_color.blue,image->transparent_color.opacity);
+              s=newSVpv(color,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"type") == 0)
             {
               if (image == (Image *) NULL)
