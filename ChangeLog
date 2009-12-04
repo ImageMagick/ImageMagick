@@ -1,5 +1,9 @@
+2009-12-04  6.5.8-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Changed the one instance of PNG_COLOR_TYPE_RGBA to PNG_COLOR_TYPE_RGB_ALPHA
+    in coders/png.c
+
 2009-12-03  6.5.8-3 Cristy  <quetzlzacatenango@image...>
-  * Its interword-spacing, not interword_spacing (reference
+  * It's interword-spacing, not interword_spacing (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=1515).
   * All JP2 depths (e.g. 4, 10, 12, 16) are now supported properly.
 

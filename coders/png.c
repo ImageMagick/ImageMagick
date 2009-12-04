@@ -6682,7 +6682,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        {
          if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA ||
              ping_info->color_type == PNG_COLOR_TYPE_RGB ||
-             ping_info->color_type == PNG_COLOR_TYPE_RGBA)
+             ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
            ping_info->bit_depth=8;
        }
 
