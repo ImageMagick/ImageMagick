@@ -357,8 +357,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 
   QuantumAny
     pixel,
-    *map[4],
-    range;
+    range[4];
 
   register long
     i,
@@ -517,25 +516,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       return(GetFirstImageInList(image));
     }
   for (i=0; i < (long) number_components; i++)
-  {
-    long
-      j;
-
-    map[i]=(QuantumAny *) AcquireQuantumMemory(MaxMap+1,sizeof(**map));
-    if (map[i] == (QuantumAny *) NULL)
-      {
-        for (--i; i >= 0; i--)
-          map[i]=(QuantumAny *) RelinquishMagickMemory(map[i]);
-        for (i=0; i < (long) number_components; i++)
-          jas_matrix_destroy(pixels[i]);
-        jas_image_destroy(jp2_image);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
-    range=GetQuantumRange((unsigned long) jas_image_cmptprec(jp2_image,
+    range[i]=GetQuantumRange((unsigned long) jas_image_cmptprec(jp2_image,
       components[i]));
-    for (j=0; j <= (long) MaxMap; j++)
-      map[i][j]=ScaleQuantumToMap(ScaleAnyToQuantum((QuantumAny) j,range));
-  }
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -555,7 +537,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (long) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          q->red=(Quantum) map[0][pixel];
+          q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
           q->green=q->red;
           q->blue=q->red;
           q++;
@@ -570,11 +552,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (long) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          q->red=(Quantum) map[0][pixel];
+          q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          q->green=(Quantum) map[1][pixel];
+          q->green=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[1]);
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          q->blue=(Quantum) map[2][pixel];
+          q->blue=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[2]);
           q++;
         }
         break;
@@ -587,13 +569,14 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (long) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          q->red=(Quantum) map[0][pixel];
+          q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          q->green=(Quantum) map[1][pixel];
+          q->green=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[1]);
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          q->blue=(Quantum) map[2][pixel];
+          q->blue=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[2]);
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          q->opacity=(Quantum) (QuantumRange-map[3][pixel]);
+          q->opacity=(Quantum) (QuantumRange-
+            ScaleAnyToQuantum((QuantumAny) pixel,range[3]));
           q++;
         }
         break;
@@ -605,8 +588,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       break;
   }
-  for (i=0; i < (long) number_components; i++)
-    map[i]=(QuantumAny *) RelinquishMagickMemory(map[i]);
   cm_profile=jas_image_cmprof(jp2_image);
   icc_profile=(jas_iccprof_t *) NULL;
   if (cm_profile != (jas_cmprof_t *) NULL)
@@ -829,9 +810,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     i,
     x;
 
-  unsigned short
-    *map;
-
   unsigned long
     number_components;
 
@@ -873,7 +851,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].height=(unsigned int) image->rows;
     component_info[i].prec=(int) MagickMax(MagickMin(image->depth,16),2);
     component_info[i].sgnd=MagickFalse;
-    
   }
   jp2_image=jas_image_create((int) number_components,component_info,
     JAS_CLRSPC_UNKNOWN);
@@ -895,11 +872,11 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_SRGB);
       jas_image_setcmpttype(jp2_image,0,
-        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
+        (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
       jas_image_setcmpttype(jp2_image,1,
-        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
+        (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
       jas_image_setcmpttype(jp2_image,2,
-        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
+        (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
       if (number_components == 4)
         jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
     }
@@ -918,17 +895,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       }
   }
   range=GetQuantumRange((unsigned long) component_info[0].prec);
-  map=(unsigned short *) AcquireQuantumMemory(MaxMap+1,sizeof(*map));
-  for (i=0; i <= (long) MaxMap; i++)
-    map[i]=(unsigned short) ScaleQuantumToMap((Quantum)
-      ScaleQuantumToAny((Quantum) i,range));
-  if (map == (unsigned short *) NULL)
-    {
-      for (i=0; i < (long) number_components; i++)
-        jas_matrix_destroy(pixels[i]);
-      jas_image_destroy(jp2_image);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    }
   for (y=0; y < (long) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
@@ -937,16 +903,19 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       if (number_components == 1)
-        jas_matrix_setv(pixels[0],x,map[ScaleQuantumToMap(
-          PixelIntensityToQuantum(p))]);
+        jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(
+          PixelIntensityToQuantum(p),range));
       else
         {
-          jas_matrix_setv(pixels[0],x,map[ScaleQuantumToMap(p->red)]);
-          jas_matrix_setv(pixels[1],x,map[ScaleQuantumToMap(p->green)]);
-          jas_matrix_setv(pixels[2],x,map[ScaleQuantumToMap(p->blue)]);
+          jas_matrix_setv(pixels[0],x,(jas_seqent_t)
+            ScaleQuantumToAny(p->red,range));
+          jas_matrix_setv(pixels[1],x,(jas_seqent_t)
+            ScaleQuantumToAny(p->green,range));
+          jas_matrix_setv(pixels[2],x,(jas_seqent_t)
+            ScaleQuantumToAny(p->blue,range));
           if (number_components > 3)
-            jas_matrix_setv(pixels[3],x,map[ScaleQuantumToMap((Quantum)
-              (QuantumRange-p->opacity))]);
+            jas_matrix_setv(pixels[3],x,(jas_seqent_t)
+              ScaleQuantumToAny((Quantum) (QuantumRange-p->opacity),range));
         }
       p++;
     }
@@ -957,30 +926,27 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     if (status == MagickFalse)
       break;
   }
-  map=(unsigned short *) RelinquishMagickMemory(map);
   (void) CopyMagickString(magick,image_info->magick,MaxTextExtent);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
   options=(char *) NULL;
   ResetImageOptionIterator(image_info);
   key=GetNextImageOption(image_info);
-  while (key != (char *) NULL)
+  for ( ; key != (char *) NULL; key=GetNextImageOption(image_info))
   {
     option=GetImageOption(image_info,key);
-    if (option != (const char *) NULL)
+    if (option == (const char *) NULL)
+      continue;
+    if (LocaleNCompare(key,"jp2:",4) == 0)
       {
-        if (LocaleNCompare(key,"jp2:",4) == 0)
+        (void) ConcatenateString(&options,key+4);
+        if (*option != '\0')
           {
-            (void) ConcatenateString(&options,key+4);
-            if (*option != '\0')
-              {
-                (void) ConcatenateString(&options,"=");
-                (void) ConcatenateString(&options,option);
-              }
-            (void) ConcatenateString(&options," ");
+            (void) ConcatenateString(&options,"=");
+            (void) ConcatenateString(&options,option);
           }
-       }
-    key=GetNextImageOption(image_info);
+        (void) ConcatenateString(&options," ");
+      }
   }
   option=GetImageOption(image_info,"jp2:rate");
   if ((option == (const char *) NULL) &&
