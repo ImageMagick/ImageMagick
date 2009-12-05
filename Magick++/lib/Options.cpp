@@ -230,11 +230,11 @@ Magick::EndianType Magick::Options::endian ( void ) const
 
 void Magick::Options::file ( FILE *file_ )
 {
-  SetImageInfoFile(_imageInfo, file_ );
+  SetImageInfoFile( _imageInfo, file_ );
 }
 FILE *Magick::Options::file ( void ) const
 {
-  return _imageInfo->file;
+  return GetImageInfoFile( _imageInfo->file );
 }
 
 void Magick::Options::fileName ( const std::string &fileName_ )
