@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -155,7 +155,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
+<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#ConvolveImage">ConvolveImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect
 _8c.html" target="source" name="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
@@ -255,6 +255,40 @@ _8c.html" target="source" name="BlurImage">BlurImage</a></h2>
 
 <h5>sigma</h5>
 <ol><p>the standard deviation of the Gaussian, in pixels.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" target="source" name="ConvolveImage">ConvolveImage</a></h2>
+<div class="doc-section">
+
+<p>ConvolveImage() applies a custom convolution kernel to the image.</p></ol>
+
+<p>The format of the ConvolveImage method is:</p>
+
+<pre class="code">
+  Image *ConvolveImage(const Image *image,const unsigned long order,
+    const double *kernel,ExceptionInfo *exception)
+  Image *ConvolveImageChannel(const Image *image,const ChannelType channel,
+    const unsigned long order,const double *kernel,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel type.</p></ol>
+
+<h5>order</h5>
+<ol><p>the number of columns and rows in the filter kernel.</p></ol>
+
+<h5>kernel</h5>
+<ol><p>An array of double representing the convolution kernel.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
