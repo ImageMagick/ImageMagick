@@ -478,6 +478,9 @@ struct _ImageInfo
 extern MagickExport ExceptionType
   CatchImageException(Image *);
 
+extern MagickExport FILE
+  *GetImageInfoFile(const ImageInfo *);
+
 extern MagickExport Image
   *AcquireImage(const ImageInfo *),
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),

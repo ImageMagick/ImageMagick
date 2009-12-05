@@ -1569,6 +1569,33 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e I n f o F i l e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageInfoFile() returns the image info file member.
+%
+%  The format of the GetImageInfoFile method is:
+%
+%      FILE *GetImageInfoFile(const ImageInfo *image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+*/
+MagickExport FILE *GetImageInfoFile(const ImageInfo *image_info)
+{
+  return(image_info->file);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e M a s k                                                   %
 %                                                                             %
 %                                                                             %
