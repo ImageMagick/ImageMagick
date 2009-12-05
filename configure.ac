@@ -143,6 +143,12 @@ MAGICK_LDFLAGS=''
 MAGICK_LIBS=''
 
 #
+# Standards compliance definitions
+#
+AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
+AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
+
+#
 # Evaluate shell variable equivalents to Makefile directory variables
 #
 if test "x$prefix" = xNONE; then
