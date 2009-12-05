@@ -515,39 +515,34 @@ Options used to compile and link:
 
 <p>Perform these steps as an administrator or with the <tt>sudo</tt> command:</p>
 
-	<div class="doc-section">
-	  <p>Install <a href="http://finkproject.org">Fink</a>. The default setup creates a <tt>/sw</tt> folder on your main hard drive. Make sure <tt>/sw/bin</tt> is in your path.</p>
-	  <p>Install the latest <a href="http://developer.apple.com/tools/download/">Xcode</a> from Apple.</p>
-	  <p>Create a symbolic  link in <tt>/Developer/SDKs/MacOSX10.5.sdk/</tt> to <tt>/sw</tt>:</p>
-	   <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd /Developer/SDKs/MacOSX10.5.sdk</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>ln -s sw /sw</span></p>	  <p>Use Fink, or FinkCommander to install any delegate libraries you require, for example:</p>
-	  <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>fink install libjpeg</span></p>	</div>
+<div class="doc-section">
+  <p>Install <a href="http://www.macports.org">MacPorts</a>.  Download and install MacPorts and type the following commands:</p>
 
-<p>As a regular user or administrator:</p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port -v install freetype +bytecode</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port -v install librsvg</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port -v install +graphviz +gs +wmf +jbig +jpeg2 +lcms</span></p>
+<p>This installs many of the delegate libraries ImageMagick will utilize such as JPEG and FreeType.</p>
+
+
+	  <p>Install the latest <a href="http://developer.apple.com/tools/download/">Xcode</a> from Apple.</p>
+	  <p>Use the <tt>port</tt> command to install any delegate libraries you require, for example:</p>
+	  <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port install jpeg</span></p>	</div>
+
+<p>Now lets build ImageMagick:</p>
 
 	<div class="doc-section">
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz ImageMagick-6.5.8-2.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.5.8</span></p>	  <p>Choose an architecture and set your CFLAGS environment variable.  Here we set CFLAGS for an Intel build:</p>
-	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export CFLAGS="-O -g -isysroot /Developer/SDKs/MacOSX10.5.sdk/ \ <br/>
-	-arch i386 -I/sw/include/"</span></p>	  <p>Set your LDFLAGS environment variable to:</p>
-	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk/,-L/sw/lib/"</span></p>	  <p>Configure ImageMagick:</p>
-	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure --prefix=/sw --with-quantum-depth=16 \ <br/>
+		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz ImageMagick-6.5.8-2.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.5.8</span></p>	  <p>Configure ImageMagick:</p>
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure --prefix=/opt --with-quantum-depth=16 \ <br/>
 		--disable-dependency-tracking --with-x=yes \ <br/>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br/>
 		--without-perl</span></p>	  <p>Build ImageMagick:</p>
 	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span></p>	  <p>Install ImageMagick:</p>
-	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo make install</span></p>	  <p>To test the ImageMagick GUI, start X11 and in a new shell and type:</p>
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo make install</span></p>  <p>To verify your install, type</p>
+
+  <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>/opt/local/bin/identify -list font</span></p>
+  <p>to list all the fonts ImageMagick knows about.</p>
+	  <p>To test the ImageMagick GUI, in a new shell, type:</p>
 	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>display -display :0</span></p></div>
-
-<p>An alterative method is to download and build ImageMagick with <a href="http://www.macports.org">MacPorts</a>.  Download and install MacPorts and type the following commands:</p>
-
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port -v install freetype +bytecode</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port -v install librsvg</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port -v install ImageMagick +graphviz +gs +wmf +jbig +jpeg2 +lcms</span></p>
-<p>This not only installs ImageMagick but includes many of the delegate libraries such as JPEG and FreeType.</p>
-
-<p>To verify your install, type</p>
-
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>/opt/local/bin/identify -list type</span></p>
-<p>to list all the fonts ImageMagick knows about.</p>
 
 </div>
 

@@ -128,7 +128,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -3859,7 +3859,7 @@ color (+ form). </p>
 
 <p>Choose from: <kbd>area</kbd>, <kbd>disk</kbd>, <kbd>file</kbd>, <kbd>map</kbd>, <kbd>memory</kbd>, <kbd>threads</kbd>, or <kbd>time</kbd>.</p>
 
-<p>The value for <kbd>file</kbd> is in number of files. The other limits are in bytes. By default the limits are 768 files, 2gb of image area, 1.5gb memory, 8gb memory map, and 16tb of disk.  These limits are adjusted relative to the available resources on your computer if this information is available.   When any limit is reached, ImageMagick fails in some fashion but attempts to take compensating actions, if possible. For example, the following limits memory:</p>
+<p>The value for <kbd>file</kbd> is in number of files. The other limits are in bytes. By default the limits are 768 files, 2GB of image area, 1.5GiB memory, 8GiB memory map, and 18.45EB of disk.  These limits are adjusted relative to the available resources on your computer if this information is available.   When any limit is reached, ImageMagick fails in some fashion but attempts to take compensating actions, if possible. For example, the following limits memory:</p>
 
 <p class="crtsnip">
   -limit memory 32MiB -limit map 64MiB
@@ -3867,9 +3867,9 @@ color (+ form). </p>
 
 <p>Use <a href="#list">-list resource</a> to list the current limits. For example, our system shows these limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'><pre>File       Area      Memory         Map        Disk   Thread       Time
------------------------------------------------------------------------
- 768   3.8187GiB    2.864GiB   7.6375GiB       16EiB       2  unlimited</pre>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'><pre>File         Area       Memory          Map         Disk   Thread         Time
+------------------------------------------------------------------------------
+ 768     12.404GB    8.6642GiB    23.104GiB  18.446744EB        8    unlimited</pre>
 </span></p>
 <p>Requests for pixel storage to keep intermediate images are satisfied by one of three resource categories: in-memory pool, memory-mapped files pool, and disk pool (in that order) depending on the <a href="../www/command-line-options.html#limit">&#x2011;limit</a> settings and whether the system honors a resource request. If the total size of allocated pixel storage in the given pool reaches the corresponding limit, the request is passed to the next pool. Additionally, requests that exceed the  <kbd>area</kbd> limit automagically are allocated on disk.</p>
 
@@ -5718,7 +5718,7 @@ percentage, which defaults to 100 percent (no color change). </p>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

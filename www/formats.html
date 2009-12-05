@@ -125,7 +125,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -185,7 +185,7 @@ the supported image formats.</p>
     <th>Tag</th>
     <th>Mode</th>
     <th>Description</th>
-    <th style="width: 50%">Notes</th>
+    <th>Notes</th>
   </tr>
 
   <tr>
@@ -217,14 +217,21 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://msdn.microsoft.com/library/sdkdoc/gdi/bitmaps_9c6r.htm">BMP</a></td>
+    <td valign="top"><a href="http://www.fileformat.info/format/bmp/egff.htm">BMP</a></td>
     <td valign="top">RW</td>
     <td valign="top">Microsoft Windows bitmap</td>
     <td valign="top">&nbsp;</td>
   </tr>
 
   <tr>
-    <td valign="top">CGM</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/cals/egff.htm">CALS</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Continuous Acquisition and Life-cycle Support Type 1 image</td>
+    <td valign="top">Specified in MIL-R-28002 and MIL-PRF-28002. Standard blueprint archive format as used by the US military to replace microfiche.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/cgm/egff.htm">CGM</a></td>
     <td valign="top">R</td>
     <td valign="top">Computer Graphics Metafile</td>
     <td valign="top">Requires <a href="http://www.agocg.ac.uk/train/cgm/ralcgm.htm">ralcgm</a> to render CGM files.</td>
@@ -329,10 +336,10 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">DPX</td>
+    <td valign="top"><a href="../www/motion-picture.html">DPX</a></td>
     <td valign="top">RW</td>
     <td valign="top">SMPTE Digital Moving Picture Exchange 2.0 (SMPTE 268M-2003)</td>
-    <td valign="top">See <a href="../www/motion-picture.html">Motion Picture Support in ImageMagick</a> for details on this image format.</td>
+    <td valign="top">&nbsp;</td>
   </tr>
 
   <tr>
@@ -434,7 +441,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">GIF</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/gif/egff.htm">GIF</a></td>
     <td valign="top">RW</td>
     <td valign="top">CompuServe Graphics Interchange Format</td>
     <td valign="top">8-bit RGB PseudoColor with up to 256 palette entires. Specify the format <kbd>GIF87</kbd> to write the older version 87a of the format.  Use <a href="../www/command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <kbd>-transparent-color wheat</kbd>).</td>
@@ -518,21 +525,21 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">JP2</td>
+    <td valign="top"><a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">JP2</a></td>
     <td valign="top">RW</td>
     <td valign="top">JPEG-2000 JP2 File Format Syntax</td>
-    <td valign="top">Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details. Requires <a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">jasper-1.900.1.zip</a></td>
+    <td valign="top">Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
-    <td valign="top">JPC</td>
+    <td valign="top"><a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">JPC</a></td>
     <td valign="top">RW</td>
     <td valign="top">JPEG-2000 Code Stream Syntax</td>
-    <td valign="top">Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details. Requires <a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">jasper-1.900.1.zip</a></td>
+    <td valign="top">Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
-    <td valign="top">JPEG</td>
+    <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>
     <td valign="top">RW</td>
     <td valign="top">Joint Photographic Experts Group JFIF format</td>
     <td valign="top">Requires <a href="ftp://ftp.uu.net/graphics/jpeg/">jpegsrc.v6b.tar.gz</a>.  You can optionally define the DCT method, for example to specify the float method, use <a href="../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. You can size the image with <kbd>jpeg:size</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:size=128x128</a>. Finally, to restrict the maximum file size, use <kbd>jpeg:extent</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:extent=400kb</a>.</td>
@@ -609,7 +616,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">MTV</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/mtv/egff.htm">MTV</a></td>
     <td valign="top">RW</td>
     <td valign="top">MTV Raytracing image format</td>
     <td valign="top">&nbsp;</td>
@@ -665,7 +672,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">PBM</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/pbm/egff.htm">PBM</a></td>
     <td valign="top">RW</td>
     <td valign="top">Portable bitmap format (black and white)</td>
     <td valign="top">&nbsp;</td>
@@ -693,7 +700,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">PCX</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/pcx/egff.htm">PCX</a></td>
     <td valign="top">RW</td>
     <td valign="top">ZSoft IBM PC Paintbrush file</td>
     <td valign="top">&nbsp;</td>
@@ -945,7 +952,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">TIFF</td>
+    <td valign="top"><a href="http://www.remotesensing.org/libtiff/">TIFF</a></td>
     <td valign="top">RW</td>
     <td valign="top">Tagged Image File Format</td>
     <td valign="top">Also known as <kbd>TIF</kbd>. Requires <a href="ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <kbd>-define tiff:rows-per-strip=8</kbd>).  To define the tile geometry, use for example, <kbd>-define tiff:tile-geometry=128x128</kbd>. To specify a <em>signed</em> format, use  <kbd>-define quantum:format=signed</kbd>. To specify a single-precision floating-point format, use <kbd>-define quantum:format=floating-point</kbd>.  Set the depth to 64 for a double-precision floating-point format.  Use <kbd>-define quantum:polarity=min-is-black</kbd> or <kbd>-define quantum:polarity=min-is-white</kbd> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <kbd>-define tiff:alpha=unassociated</kbd>.  You can choose to read the EXIF profile with this option: <kbd>-define tiff:exif=true</kbd>.</td>
@@ -994,28 +1001,28 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">VIFF</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/viff/egff.htm">VIFF</a></td>
     <td valign="top">RW</td>
     <td valign="top">Khoros Visualization Image File Format</td>
     <td valign="top">&nbsp;</td>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.wapforum.org/">WBMP</a></td>
+    <td valign="top"><a href="http://www.openmobilealliance.org/Technical/wapindex.aspx">WBMP</a></td>
     <td valign="top">RW</td>
     <td valign="top">Wireless bitmap</td>
     <td valign="top">Support for uncompressed monochrome only.</td>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.wvware.com/libwmf.html">WMF</a></td>
+    <td valign="top"><a href="http://www.fileformat.info/format/wmf/egff.htm">WMF</a></td>
     <td valign="top">R</td>
     <td valign="top">Windows Metafile</td>
     <td valign="top">Requires <a href="http://sourceforge.net/projects/wvware/">libwmf</a>. By default, renders WMF files using the dimensions specified by the metafile header. Use the -density option to adjust the output resolution, and thereby adjust the output size. The default output resolution is 72DPI so <kbd>-density 144</kbd> results in an image twice as large as the default. Use <kbd>-background color</kbd> to specify the WMF background color (default white) or <kbd>-texture filename</kbd> to specify a background texture image.</td>
   </tr>
 
   <tr>
-    <td valign="top">WPG</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/wpg/egff.htm">WPG</a></td>
     <td valign="top">R</td>
     <td valign="top">Word Perfect Graphics File</td>
     <td valign="top">&nbsp;</td>
@@ -1029,7 +1036,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top">XBM</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/xbm/egff.htm">XBM</a></td>
     <td valign="top">RW</td>
     <td valign="top">X Windows system bitmap, black and white only</td>
     <td valign="top">Used by the X Windows System to store monochrome icons.</td>
@@ -1043,14 +1050,14 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.inria.fr/koala/lehors/xpm.html">XPM</a></td>
+    <td valign="top"><a href="http://www.fileformat.info/format/xpm/egff.htm">XPM</a></td>
     <td valign="top">RW</td>
     <td valign="top">X Windows system pixmap</td>
     <td valign="top">Also known as <kbd>PM</kbd>. Used by the X Windows System to store color icons.</td>
   </tr>
 
   <tr>
-    <td valign="top">XWD</td>
+    <td valign="top"><a href="http://www.fileformat.info/format/xwd/egff.htm">XWD</a></td>
     <td valign="top">RW</td>
     <td valign="top">X Windows system window dump</td>
     <td valign="top">Used by the X Windows System to save/display screen dumps.</td>
@@ -1098,7 +1105,7 @@ the supported image formats.</p>
     <th>Tag</th>
     <th>Mode</th>
     <th>Description</th>
-    <th style="width: 50%">Notes</th>
+    <th>Notes</th>
   </tr>
 
   <tr>
@@ -1271,7 +1278,7 @@ the supported image formats.</p>
     <th>Tag</th>
     <th>Mode</th>
     <th>Description</th>
-    <th style="width: 50%">Notes</th>
+    <th>Notes</th>
   </tr>
 
   <tr>
@@ -1315,7 +1322,7 @@ the supported image formats.</p>
     <th>Tag</th>
     <th>Mode</th>
     <th>Description</th>
-    <th style="width: 50%">Notes</th>
+    <th>Notes</th>
   </tr>
 
   <tr>
@@ -1682,7 +1689,7 @@ the supported image formats.</p>
     <th>Tag</th>
     <th>Mode</th>
     <th>Description</th>
-    <th style="width: 50%">Notes</th>
+    <th>Notes</th>
   </tr>
 
   <tr>
@@ -1746,7 +1753,7 @@ the supported image formats.</p>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
