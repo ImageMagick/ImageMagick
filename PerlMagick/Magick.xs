@@ -4122,18 +4122,6 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
-          if (LocaleCompare(attribute,"dispose") == 0)
-            {
-              if (image == (Image *) NULL)
-                break;
-
-              s=newSViv(image->dispose);
-              (void) sv_setpv(s,
-                MagickOptionToMnemonic(MagickDisposeOptions,image->dispose));
-              SvIOK_on(s);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
           if (LocaleCompare(attribute,"delay") == 0)
             {
               if (image != (Image *) NULL)
@@ -4146,6 +4134,25 @@ Get(ref,...)
               s=newSViv(MAGICKCORE_QUANTUM_DEPTH);
               if (image != (Image *) NULL)
                 s=newSViv((long) GetImageDepth(image,&image->exception));
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"directory") == 0)
+            {
+              if (image && image->directory)
+                s=newSVpv(image->directory,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"dispose") == 0)
+            {
+              if (image == (Image *) NULL)
+                break;
+
+              s=newSViv(image->dispose);
+              (void) sv_setpv(s,
+                MagickOptionToMnemonic(MagickDisposeOptions,image->dispose));
+              SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4166,13 +4173,6 @@ Get(ref,...)
             {
               if (info && info->image_info->server_name)
                 s=newSVpv(info->image_info->server_name,0);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
-          if (LocaleCompare(attribute,"directory") == 0)
-            {
-              if (image && image->directory)
-                s=newSVpv(image->directory,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4537,16 +4537,6 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
-          if (LocaleCompare(attribute,"monochrome") == 0)
-            {
-              if (image == (Image *) NULL)
-                continue;
-              j=info ? info->image_info->monochrome :
-                IsMonochromeImage(image,&image->exception);
-              s=newSViv(j);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
           if (LocaleCompare(attribute,"mattecolor") == 0)
             {
               if (image == (Image *) NULL)
@@ -4563,13 +4553,6 @@ Get(ref,...)
             {
               if (image != (Image *) NULL)
                 s=newSViv((long) image->matte);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
-          if (LocaleCompare(attribute,"montage") == 0)
-            {
-              if (image && image->montage)
-                s=newSVpv(image->montage,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4592,6 +4575,23 @@ Get(ref,...)
                   s=newSVpv(mime,0);
                   mime=(char *) RelinquishMagickMemory(mime);
                 }
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"monochrome") == 0)
+            {
+              if (image == (Image *) NULL)
+                continue;
+              j=info ? info->image_info->monochrome :
+                IsMonochromeImage(image,&image->exception);
+              s=newSViv(j);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"montage") == 0)
+            {
+              if (image && image->montage)
+                s=newSVpv(image->montage,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
