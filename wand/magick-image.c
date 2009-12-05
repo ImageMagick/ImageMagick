@@ -12492,7 +12492,6 @@ WandExport MagickBooleanType MagickWriteImage(MagickWand *wand,
 %
 %    o file: the file descriptor.
 %
-%
 */
 WandExport MagickBooleanType MagickWriteImageFile(MagickWand *wand,FILE *file)
 {
