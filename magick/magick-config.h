@@ -1003,7 +1003,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH 
-#define MAGICKCORE_LT_DLSEARCH_PATH  "/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/xulrunner-1.9.2" 
+#define MAGICKCORE_LT_DLSEARCH_PATH  "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/xulrunner-1.9.2" 
 #endif
 
 /* The archive extension */
@@ -1289,6 +1289,11 @@
 /* enable run-time bounds-checking */
 /* #undef _FORTIFY_SOURCE */
 
+/* Enable all API extensions (for GNU Linux libc) */
+#ifndef MAGICKCORE__GNU_SOURCE 
+#define MAGICKCORE__GNU_SOURCE  1 
+#endif
+
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 /* #undef _LARGEFILE_SOURCE */
 
@@ -1297,6 +1302,11 @@
 
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */
+
+/* Enable all API extensions (for NetBSD) */
+#ifndef MAGICKCORE__NETBSD_SOURCE 
+#define MAGICKCORE__NETBSD_SOURCE  1 
+#endif
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */
