@@ -3977,7 +3977,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               */
               if (image->debug != MagickFalse)
                 {
-                  (void) FormatMagickSize(cache_info->length,MagickFalse,
+                  (void) FormatMagickSize(cache_info->length,MagickTrue,
                     format);
                   (void) FormatMagickString(message,MaxTextExtent,
                     "open %s (%s memory, %lux%lu %s)",cache_info->filename,
@@ -4070,7 +4070,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 }
               if (image->debug != MagickFalse)
                 {
-                  (void) FormatMagickSize(cache_info->length,MagickFalse,
+                  (void) FormatMagickSize(cache_info->length,MagickTrue,
                     format);
                   (void) FormatMagickString(message,MaxTextExtent,
                     "open %s (%s[%d], memory-mapped, %lux%lu %s)",
