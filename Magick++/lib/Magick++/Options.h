@@ -88,6 +88,10 @@ namespace Magick
     EndianType      endian ( void ) const;
 
     // Image filename to read or write
+    void            file ( FILE *file_ );
+    FILE*           file ( void ) const;
+
+    // Image filename to read or write
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;
 
