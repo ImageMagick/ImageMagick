@@ -2780,8 +2780,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
       rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-      image->columns=dimension_info.width*image->x_resolution/72.0;
-      image->rows=dimension_info.height*image->x_resolution/72.0;
+      image->columns=dimension_info.width;
+      image->rows=dimension_info.height;
       pixels=(unsigned char *) NULL;
 #else
       pixel_info=rsvg_handle_get_pixbuf(svg_handle);
@@ -2826,8 +2826,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             }
           cairo_info=cairo_create(cairo_surface);
-          cairo_scale(cairo_info,image->x_resolution/72.0,image->y_resolution/
-            72.0);
           cairo_set_operator(cairo_info,CAIRO_OPERATOR_CLEAR);
           cairo_paint(cairo_info);
           cairo_set_operator(cairo_info,CAIRO_OPERATOR_OVER);
