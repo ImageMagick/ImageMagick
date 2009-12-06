@@ -1,4 +1,4 @@
-2009-12-06  6.5.8-4 Cristy  <quetzlzacatenango@image...>
+2009-12-06  6.5.8-4 Nicolas George  <nicolas.george@norma...>
   * Produce the correct resolution when the SVG file is coded in units rather
     than pixels.
 
