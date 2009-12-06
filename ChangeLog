@@ -1,3 +1,6 @@
+2009-12-05  6.5.8-4 Cristy  <quetzlzacatenango@image...>
+  * SVG images are no longer double sized with the -density option.
+
 2009-12-04  6.5.8-3 Glenn Randers-Pehrson <glennrp@image...>
   * Changed the one instance of PNG_COLOR_TYPE_RGBA to PNG_COLOR_TYPE_RGB_ALPHA
     in coders/png.c

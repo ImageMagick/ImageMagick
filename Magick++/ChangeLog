@@ -1,3 +1,7 @@
+2009-12-06  6.5.8-4 Cristy  <quetzlzacatenango@image...>
+  * Add Magick::Options::file() method to read or write an image from an
+    existing file handle.
+
 2009-11-14  6.5.7-8 Cristy  <quetzlzacatenango@image...>
   * Add forwardFourierTransform(), inverseFourierTransform(), and
     inverseFourierTransformImage() methods to implement forward and inverse
