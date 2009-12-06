@@ -1,3 +1,6 @@
+2009-12-06  6.5.8-4 Cristy  <quetzlzacatenango@image...>
+  * Support the crop() gravity option.
+
 2009-11-23  6.5.8-0 Cristy  <quetzlzacatenango@image...>
   * Add 'dither' option to Remap().
 
