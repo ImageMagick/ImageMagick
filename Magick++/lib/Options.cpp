@@ -234,7 +234,7 @@ void Magick::Options::file ( FILE *file_ )
 }
 FILE *Magick::Options::file ( void ) const
 {
-  return GetImageInfoFile( _imageInfo->file );
+  return GetImageInfoFile( _imageInfo );
 }
 
 void Magick::Options::fileName ( const std::string &fileName_ )
