@@ -228,7 +228,8 @@ static struct
       {"y", IntegerReference} } },
     { "Crop", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"fuzz", StringReference} } },
+      {"y", IntegerReference}, {"fuzz", StringReference},
+      {"gravity", MagickGravityOptions} } },
     { "Despeckle", },
     { "Edge", { {"radius", RealReference} } },
     { "Emboss", { {"geometry", StringReference}, {"radius", RealReference},
@@ -7174,6 +7175,8 @@ Mogrify(ref,...)
         }
         case 8:  /* Crop */
         {
+          if (attribute_flag[6] != 0)
+            image->gravity=(GravityType) argument_list[6].long_reference;
           if (attribute_flag[0] != 0)
             flags=ParseGravityGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
