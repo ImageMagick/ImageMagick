@@ -2348,7 +2348,7 @@ fprintf(stderr, "\n");
 %  The format of the SparseColorImage() method is:
 %
 %      Image *SparseColorImage(const Image *image,const ChannelType channel,
-%        SparseColorMethod method,const unsigned long number_arguments,
+%        const SparseColorMethod method,const unsigned long number_arguments,
 %        const double *arguments,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2374,7 +2374,7 @@ fprintf(stderr, "\n");
 %
 */
 MagickExport Image *SparseColorImage(const Image *image,
-  const ChannelType channel,SparseColorMethod method,
+  const ChannelType channel,const SparseColorMethod method,
   const unsigned long number_arguments,const double *arguments,
   ExceptionInfo *exception)
 {

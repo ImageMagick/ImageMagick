@@ -5336,11 +5336,11 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     length,
     number_pixels;
 
-  register long
-    y;
-
   register const PixelPacket
     *restrict p;
+
+  register long
+    y;
 
   unsigned long
     rows;
