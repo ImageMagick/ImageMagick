@@ -369,6 +369,7 @@ ModuleExport void UnregisterCALSImage(void)
   (void) UnregisterMagickInfo("CALS");
 }
 
+#if defined(MAGICKCORE_TIFF_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -576,3 +577,4 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   (void) CloseBlob(image);
   return(status);
 }
+#endif
