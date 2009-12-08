@@ -1,3 +1,6 @@
+2009-12-08  6.5.8-5 <kmx@volny...>
+  * A couple of minor changes to Makefile.PL to support Strawberry Perl.
+
 2009-12-06  6.5.8-4 Cristy  <quetzlzacatenango@image...>
   * Support the crop() gravity option.
 

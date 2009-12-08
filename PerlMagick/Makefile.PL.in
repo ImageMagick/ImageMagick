@@ -76,7 +76,7 @@ sub AutodetectWin32gcc {
       unlink "$wrkdir/libMagickCore.def", "$wrkdir/libMagickCore.a";
       system("pexports \"$d\" >\"$wrkdir/libMagickCore.def\" 2>$devnull");
       open(DEF, "<$wrkdir/libMagickCore.def");
-      my @found = grep(/InitializeMagickResources/, <DEF>); #checking if we have taken the right DLL
+      my @found = grep(/MagickCoreGenesis/, <DEF>); #checking if we have taken the right DLL
       close(DEF);
       next unless(@found);
       print STDERR "Gonna create 'libMagickCore.a' from '$d'\n";
