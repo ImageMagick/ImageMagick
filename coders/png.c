@@ -520,6 +520,7 @@ static inline long MagickMin(const long x,const long y)
 %  A description of each parameter follows:
 %
 %    o image: the address of a structure of type Image.
+%      This function updates image->colors and image->colormap.
 %
 */
 static MagickBooleanType CompressColormapTransFirst(Image *image)
@@ -564,10 +565,22 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "    CompressColorMapTransFirst %s (%ld colors)",
+           image->filename,image->colors);
   if (image->storage_class != PseudoClass || image->colors > 256 ||
       image->colors < 2)
-    return(MagickFalse);
+    {
+      if (image->debug != MagickFalse)
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    Could not compress colormap");
+          if (image->colors > 256 || image->colors == 0)
+            return(MagickFalse);
+          else
+            return(MagickTrue);
+        }
+    }
   marker=(unsigned char *) AcquireQuantumMemory(image->colors,sizeof(*marker));
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -6525,7 +6538,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           save_number_colors=image_colors;
           if (CompressColormapTransFirst(image) == MagickFalse)
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-          number_colors=image_colors;
+          number_colors=image->colors;
           image_colors=save_number_colors;
 #endif
           palette=(png_color *) AcquireQuantumMemory(257,
@@ -6534,7 +6547,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Setting up PLTE chunk");
+                "  Setting up PLTE chunk with %d colors",
+                (int) number_colors);
           for (i=0; i < (long) number_colors; i++)
           {
             palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -6981,7 +6995,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     if (CompressColormapTransFirst(image) == MagickFalse)
                        ThrowWriterException(ResourceLimitError,
                                             "MemoryAllocationFailed");
-                    number_colors=image_colors;
+                    number_colors=image->colors;
                     image_colors=save_number_colors;
                   }
 #endif
@@ -6998,7 +7012,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 }
                 if (logging)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  Setting up PLTE chunk");
+                    "  Setting up PLTE chunk with %d colors",
+                    (int) number_colors);
                 png_set_PLTE(ping,ping_info,palette,(int) number_colors);
 #if (PNG_LIBPNG_VER > 10008)
                 palette=(png_colorp) RelinquishMagickMemory(palette);
