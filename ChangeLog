@@ -1,3 +1,7 @@
+2009-12-09  6.5.8-5 Glenn Randers-Pehrson <glennrp@image...>
+  * The PNG8 encoder would fail to write a 1-color image, due to
+    a bogus MagickFail return from CompressColormapTransFirst().
+
 2009-12-05  6.5.8-4 Cristy  <quetzlzacatenango@image...>
   * SVG images are no longer double sized with the -density option.
 
