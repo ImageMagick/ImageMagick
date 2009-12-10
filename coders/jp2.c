@@ -676,7 +676,19 @@ ModuleExport unsigned long RegisterJP2Image(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPC");
   entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
-  entry->module=ConstantString("JPC");
+  entry->module=ConstantString("JP2");
+  entry->magick=(IsImageFormatHandler *) IsJPC;
+  entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->thread_support=NoThreadSupport;
+#if defined(MAGICKCORE_JP2_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadJP2Image;
+  entry->encoder=(EncodeImageHandler *) WriteJP2Image;
+#endif
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("J2C");
+  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
+  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJPC;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
@@ -688,7 +700,7 @@ ModuleExport unsigned long RegisterJP2Image(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPX");
   entry->description=ConstantString("JPEG-2000 File Format Syntax");
-  entry->module=ConstantString("JPX");
+  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJPC;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
@@ -700,7 +712,7 @@ ModuleExport unsigned long RegisterJP2Image(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PGX");
   entry->description=ConstantString("JPEG-2000 VM Format");
-  entry->module=ConstantString("PGX");
+  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJPC;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
@@ -736,9 +748,10 @@ ModuleExport unsigned long RegisterJP2Image(void)
 */
 ModuleExport void UnregisterJP2Image(void)
 {
-  (void) UnregisterMagickInfo("JP2");
-  (void) UnregisterMagickInfo("JPC");
   (void) UnregisterMagickInfo("PGX");
+  (void) UnregisterMagickInfo("J2C");
+  (void) UnregisterMagickInfo("JPC");
+  (void) UnregisterMagickInfo("JP2");
 #if defined(MAGICKCORE_JP2_DELEGATE)
   jas_cleanup();
 #endif
@@ -927,6 +940,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       break;
   }
   (void) CopyMagickString(magick,image_info->magick,MaxTextExtent);
+  if (LocaleCompare(magick,"J2C") == 0)
+    (void) CopyMagickString(magick,"JPC",MaxTextExtent);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
   options=(char *) NULL;
