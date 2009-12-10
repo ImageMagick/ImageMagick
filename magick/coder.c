@@ -144,6 +144,7 @@ static const CoderMapInfo
     { "JBG", "JBIG" },
     { "JNG", "PNG" },
     { "JPC", "JP2" },
+    { "J2C", "JP2" },
     { "JPG", "JPEG" },
     { "JPX", "JP2" },
     { "K", "RAW" },
