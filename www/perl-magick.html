@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -420,6 +420,8 @@ ImageMagick 6.5.8) and unpack it as shown below:</p>
   $image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);
   close(IMAGE);
 </pre>
+
+<p>Note, reading from or writing to a Perl filehandle may fail under Windows due to different versions of the C-runtime libraries between ImageMagick and the ActiveState Perl distributions or if one of the DLL's is linked with the /MT option.  See <a href="http://msdn.microsoft.com/en-us/library/ms235460.aspx">Potential Errors Passing CRT Objects Across DLL Boundaries</a> for an explanation.</p>
 
 <p>If <kbd>%0Nd, %0No, or %0Nx</kbd> appears in the filename, it is interpreted as a printf format specification and the specification is replaced with the specified decimal, octal, or hexadecimal encoding of the scene number. For example,</p>
 
@@ -2528,7 +2530,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

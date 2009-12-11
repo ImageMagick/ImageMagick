@@ -155,7 +155,9 @@
 
 <div class="main">
 
-<ul><dt>2009-12-05  6.5.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2009-12-09  6.5.8-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> The PNG8 encoder would fail to write a 1-color image, due to    a bogus MagickFail return from CompressColormapTransFirst().</li><br />
+<dt>2009-12-05  6.5.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> SVG images are no longer double sized with the -density option.</li><br />
 <dt>2009-12-04  6.5.8-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Changed the one instance of PNG_COLOR_TYPE_RGBA to PNG_COLOR_TYPE_RGB_ALPHA    in coders/png.c</li><br />
