@@ -153,7 +153,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
     Allocate image structure.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  image=(Image *) AcquireMagickMemory(sizeof(*image));
+  image=(Image *) AcquireAlignedMemory(1,sizeof(*image));
   if (image == (Image *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(image,0,sizeof(*image));
@@ -369,7 +369,7 @@ MagickExport ImageInfo *AcquireImageInfo(void)
   ImageInfo
     *image_info;
 
-  image_info=(ImageInfo *) AcquireMagickMemory(sizeof(*image_info));
+  image_info=(ImageInfo *) AcquireAlignedMemory(1,sizeof(*image_info));
   if (image_info == (ImageInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   GetImageInfo(image_info);
@@ -820,7 +820,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  clone_image=(Image *) AcquireMagickMemory(sizeof(*clone_image));
+  clone_image=(Image *) AcquireAlignedMemory(1,sizeof(*clone_image));
   if (clone_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(clone_image,0,sizeof(*clone_image));

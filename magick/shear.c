@@ -368,7 +368,7 @@ static RadonInfo *AcquireRadonInfo(const Image *image,const unsigned long width,
   RadonInfo
     *radon_info;
 
-  radon_info=(RadonInfo *) AcquireMagickMemory(sizeof(*radon_info));
+  radon_info=(RadonInfo *) AcquireAlignedMemory(1,sizeof(*radon_info));
   if (radon_info == (RadonInfo *) NULL)
     return((RadonInfo *) NULL);
   (void) ResetMagickMemory(radon_info,0,sizeof(*radon_info));

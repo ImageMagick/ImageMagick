@@ -158,7 +158,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   register long
     i;
 
-  fx_info=(FxInfo *) AcquireMagickMemory(sizeof(*fx_info));
+  fx_info=(FxInfo *) AcquireAlignedMemory(1,sizeof(*fx_info));
   if (fx_info == (FxInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));

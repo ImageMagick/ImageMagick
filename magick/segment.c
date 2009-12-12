@@ -305,7 +305,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
           }
         else
           {
-            cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+            cluster=(Cluster *) AcquireAlignedMemory(1,sizeof(*cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -327,7 +327,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+      cluster=(Cluster *) AcquireAlignedMemory(1,sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
@@ -1035,7 +1035,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
           }
         else
           {
-            cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+            cluster=(Cluster *) AcquireAlignedMemory(1,sizeof(*cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -1061,7 +1061,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+      cluster=(Cluster *) AcquireAlignedMemory(1,sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1370,7 +1370,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   /*
     The root is the entire histogram.
   */
-  root=(IntervalTree *) AcquireMagickMemory(sizeof(*root));
+  root=(IntervalTree *) AcquireAlignedMemory(1,sizeof(*root));
   root->child=(IntervalTree *) NULL;
   root->sibling=(IntervalTree *) NULL;
   root->tau=0.0;

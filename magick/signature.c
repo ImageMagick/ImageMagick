@@ -120,7 +120,7 @@ MagickExport SignatureInfo *AcquireSignatureInfo(void)
   unsigned int
     lsb_first;
 
-  signature_info=(SignatureInfo *) AcquireMagickMemory(sizeof(*signature_info));
+  signature_info=(SignatureInfo *) AcquireAlignedMemory(1,sizeof(*signature_info));
   if (signature_info == (SignatureInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(signature_info,0,sizeof(*signature_info));

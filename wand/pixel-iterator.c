@@ -162,7 +162,7 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
   assert(iterator->signature == WandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  clone_iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*clone_iterator));
+  clone_iterator=(PixelIterator *) AcquireAlignedMemory(1,sizeof(*clone_iterator));
   if (clone_iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       iterator->name);
@@ -312,7 +312,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   view=AcquireCacheView(image);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
-  iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
+  iterator=(PixelIterator *) AcquireAlignedMemory(1,sizeof(*iterator));
   if (iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -427,7 +427,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const long x,
   view=AcquireCacheView(image);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
-  iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
+  iterator=(PixelIterator *) AcquireAlignedMemory(1,sizeof(*iterator));
   if (iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       wand->name);
