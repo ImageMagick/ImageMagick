@@ -196,7 +196,7 @@ MagickExport DrawInfo *AcquireDrawInfo(void)
   DrawInfo
     *draw_info;
 
-  draw_info=(DrawInfo *) AcquireMagickMemory(sizeof(*draw_info));
+  draw_info=(DrawInfo *) AcquireAlignedMemory(1,sizeof(*draw_info));
   if (draw_info == (DrawInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   GetDrawInfo((ImageInfo *) NULL,draw_info);
@@ -236,7 +236,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   DrawInfo
     *clone_info;
 
-  clone_info=(DrawInfo *) AcquireMagickMemory(sizeof(*clone_info));
+  clone_info=(DrawInfo *) AcquireAlignedMemory(1,sizeof(*clone_info));
   if (clone_info == (DrawInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   GetDrawInfo(image_info,clone_info);
@@ -478,7 +478,7 @@ static PolygonInfo *ConvertPathToPolygon(
   /*
     Convert a path to the more efficient sorted rendering form.
   */
-  polygon_info=(PolygonInfo *) AcquireMagickMemory(sizeof(*polygon_info));
+  polygon_info=(PolygonInfo *) AcquireAlignedMemory(1,sizeof(*polygon_info));
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
   number_edges=16;
@@ -1764,7 +1764,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Allocate primitive info memory.
   */
-  graphic_context=(DrawInfo **) AcquireMagickMemory(sizeof(*graphic_context));
+  graphic_context=(DrawInfo **) AcquireAlignedMemory(1,sizeof(*graphic_context));
   if (graphic_context == (DrawInfo **) NULL)
     {
       primitive=DestroyString(primitive);

@@ -583,7 +583,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-  resize_filter=(ResizeFilter *) AcquireMagickMemory(sizeof(*resize_filter));
+  resize_filter=(ResizeFilter *) AcquireAlignedMemory(1,sizeof(*resize_filter));
   if (resize_filter == (ResizeFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
 

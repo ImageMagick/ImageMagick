@@ -129,7 +129,7 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(*clone_wand));
+  clone_wand=(MagickWand *) AcquireAlignedMemory(1,sizeof(*clone_wand));
   if (clone_wand == (MagickWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       wand->name);
@@ -1028,7 +1028,7 @@ WandExport MagickWand *NewMagickWand(void)
   quantum=GetMagickQuantumDepth(&depth);
   if (depth != MAGICKCORE_QUANTUM_DEPTH)
     ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
-  wand=(MagickWand *) AcquireMagickMemory(sizeof(*wand));
+  wand=(MagickWand *) AcquireAlignedMemory(1,sizeof(*wand));
   if (wand == (MagickWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));

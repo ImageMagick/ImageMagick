@@ -480,7 +480,7 @@ static CubeInfo *GetCubeInfo(void)
   /*
     Initialize tree to describe color cube.
   */
-  cube_info=(CubeInfo *) AcquireMagickMemory(sizeof(*cube_info));
+  cube_info=(CubeInfo *) AcquireAlignedMemory(1,sizeof(*cube_info));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
   (void) ResetMagickMemory(cube_info,0,sizeof(*cube_info));
@@ -591,7 +591,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned long level)
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AcquireMagickMemory(sizeof(*nodes));
+      nodes=(Nodes *) AcquireAlignedMemory(1,sizeof(*nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;

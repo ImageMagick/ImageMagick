@@ -746,7 +746,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
         /*
           Policy element.
         */
-        policy_info=(PolicyInfo *) AcquireMagickMemory(sizeof(*policy_info));
+        policy_info=(PolicyInfo *) AcquireAlignedMemory(1,sizeof(*policy_info));
         if (policy_info == (PolicyInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(policy_info,0,sizeof(*policy_info));
@@ -907,7 +907,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
       *p;
 
     p=PolicyMap+i;
-    policy_info=(PolicyInfo *) AcquireMagickMemory(sizeof(*policy_info));
+    policy_info=(PolicyInfo *) AcquireAlignedMemory(1,sizeof(*policy_info));
     if (policy_info == (PolicyInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),

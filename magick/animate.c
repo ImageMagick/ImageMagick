@@ -413,7 +413,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Expand the filenames.
       */
-      filelist=(char **) AcquireMagickMemory(sizeof(char *));
+      filelist=(char **) AcquireAlignedMemory(1,sizeof(char *));
       if (filelist == (char **) NULL)
         {
           ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",

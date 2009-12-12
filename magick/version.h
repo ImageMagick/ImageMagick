@@ -31,7 +31,7 @@ extern "C" {
 #define MagickLibVersionText  "6.5.8"
 #define MagickLibVersionNumber  2,0,1
 #define MagickLibSubversion  "-6"
-#define MagickReleaseDate  "2009-12-11"
+#define MagickReleaseDate  "2009-12-12"
 #define MagickChangeDate   "20091209"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.5.8/index.html"

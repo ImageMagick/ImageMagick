@@ -2233,7 +2233,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   /*
     Initialize annotate structure.
   */
-  annotate_info=(XAnnotateInfo *) AcquireMagickMemory(sizeof(*annotate_info));
+  annotate_info=(XAnnotateInfo *) AcquireAlignedMemory(1,sizeof(*annotate_info));
   if (annotate_info == (XAnnotateInfo *) NULL)
     return(MagickFalse);
   XGetAnnotateInfo(annotate_info);
@@ -13421,7 +13421,7 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Expand the filenames.
   */
-  filelist=(char **) AcquireMagickMemory(sizeof(*filelist));
+  filelist=(char **) AcquireAlignedMemory(1,sizeof(*filelist));
   if (filelist == (char **) NULL)
     {
       ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",

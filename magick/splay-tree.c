@@ -182,7 +182,7 @@ MagickExport MagickBooleanType AddValueToSplayTree(SplayTreeInfo *splay_tree,
           return(MagickTrue);
         }
     }
-  node=(NodeInfo *) AcquireMagickMemory(sizeof(*node));
+  node=(NodeInfo *) AcquireAlignedMemory(1,sizeof(*node));
   if (node == (NodeInfo *) NULL)
     {
       (void) UnlockSemaphoreInfo(splay_tree->semaphore);
@@ -1127,7 +1127,7 @@ MagickExport SplayTreeInfo *NewSplayTree(
   SplayTreeInfo
     *splay_tree;
 
-  splay_tree=(SplayTreeInfo *) AcquireMagickMemory(sizeof(*splay_tree));
+  splay_tree=(SplayTreeInfo *) AcquireAlignedMemory(1,sizeof(*splay_tree));
   if (splay_tree == (SplayTreeInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(splay_tree,0,sizeof(*splay_tree));
