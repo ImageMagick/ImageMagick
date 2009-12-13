@@ -703,6 +703,7 @@ namespace Magick
   using MagickCore::FloodfillPaintImage;
   using MagickCore::FlopImage;
   using MagickCore::FormatMagickString;
+  using MagickCore::ForwardFourierTransformImage;
   using MagickCore::FrameImage;
   using MagickCore::FrameInfo;
   using MagickCore::FxImageChannel;
@@ -760,6 +761,7 @@ namespace Magick
   using MagickCore::ImageWarning;
   using MagickCore::ImplodeImage;
   using MagickCore::ImportQuantumPixels;
+  using MagickCore::InverseFourierTransformImage;
   using MagickCore::InvokeDynamicImageFilter;
   using MagickCore::IsEventLogging;
   using MagickCore::IsGeometry;
