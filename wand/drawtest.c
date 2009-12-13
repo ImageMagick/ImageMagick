@@ -1,10 +1,49 @@
 /*
- *
- * Test program for C drawing API
- * Written by Bob Friesenhahn
- *
- */
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                         DDDD   RRRR    AAA   W   W                          %
+%                         D   D  R   R  A   A  W   W                          %
+%                         D   D  RRRR   AAAAA  W   W                          %
+%                         D   D  R R    A   A  W W W                          %
+%                         DDDD   R  R   A   A   W W                           %
+%                                                                             %
+%                         TTTTT  EEEEE  SSSSS  TTTTT                          %
+%                           T    E      SS       T                            %
+%                           T    EEE     SSS     T                            %
+%                           T    E         SS    T                            %
+%                           T    EEEEE  SSSSS    T                            %
+%                                                                             %
+%                                                                             %
+%                         MagickWand Drawing Tests                            %
+%                                                                             %
+%                              Software Design                                %
+%                                John Cristy                                  %
+%                              Bob Friesenhahn                                %
+%                                March 2002                                   %
+%                                                                             %
+%                                                                             %
+%  Copyright 1999-2010 ImageMagick Studio LLC, a non-profit organization      %
+%  dedicated to making software imaging solutions freely available.           %
+%                                                                             %
+%  You may not use this file except in compliance with the License.  You may  %
+%  obtain a copy of the License at                                            %
+%                                                                             %
+%    http://www.imagemagick.org/script/license.php                            %
+%                                                                             %
+%  Unless required by applicable law or agreed to in writing, software        %
+%  distributed under the License is distributed on an "AS IS" BASIS,          %
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
+%  See the License for the specific language governing permissions and        %
+%  limitations under the License.                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <wand/MagickWand.h>
@@ -23,7 +62,7 @@
   exit(-1); \
 }
 
-static void ScribbleImage (MagickWand *canvas)
+static MagickBooleanType ScribbleImage (MagickWand *canvas)
 {
   DrawingWand
     *picasso;
@@ -47,11 +86,9 @@ static void ScribbleImage (MagickWand *canvas)
     (void) PixelSetColor(color,"none");
     DrawSetFillColor(picasso,color);
     DrawSetStrokeColor(picasso,color);
-
     DrawSetStrokeAntialias(picasso,MagickTrue);
     DrawSetStrokeLineCap(picasso,RoundCap);
     DrawSetStrokeLineJoin(picasso,RoundJoin);
-
     DrawPushDefs(picasso);
     {
       DrawPushClipPath(picasso,"clip_1");
@@ -65,7 +102,6 @@ static void ScribbleImage (MagickWand *canvas)
       DrawPopClipPath(picasso);
     }
     DrawPopDefs(picasso);
-
     (void) PushDrawingWand(picasso);
     {
       (void) DrawSetClipPath(picasso, "url(#clip_1)");
@@ -85,7 +121,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawRectangle(picasso,72,72,144,144);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -101,7 +136,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawRoundRectangle(picasso,72,216,360,432,9,9);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[37] =
@@ -131,7 +165,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,37,points);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -147,7 +180,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawEllipse(picasso,489.6,424.8,72,129.6,0,360);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[48] =
@@ -179,7 +211,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,48,points);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -194,7 +225,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawArc(picasso,360,554.4,187.2,237.6,0,90);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         DrawSetStrokeAntialias(picasso,MagickTrue);
@@ -210,7 +240,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawEllipse(picasso,388.8,626.4,100.8,122.4,0,90);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[6] =
@@ -232,7 +261,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,6,points);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[11] =
@@ -255,7 +283,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,11,points);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[15] =
@@ -279,7 +306,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,15,points);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[7] =
@@ -301,7 +327,6 @@ static void ScribbleImage (MagickWand *canvas)
         DrawPolygon(picasso,7,points);
       }
       (void) PopDrawingWand(picasso);
-
       (void) PushDrawingWand(picasso);
       {
         const PointInfo points[193] =
@@ -377,44 +402,50 @@ static void ScribbleImage (MagickWand *canvas)
   (void) MagickDrawImage(canvas,picasso);
   color=DestroyPixelWand(color);
   picasso=DestroyDrawingWand(picasso);
+  return(MagickTrue);
 }
 
-int main ( int argc, char **argv )
+int main(int argc,char **argv)
 {
-  MagickWand *canvas = (MagickWand *)NULL;
-  char outfile[MaxTextExtent];
-  MagickBooleanType status;
+  char
+    filename[MaxTextExtent];
 
-  if ( argc != 2 )
+  MagickBooleanType
+    status;
+
+  MagickWand
+    *canvas;
+
+  if (argc != 2)
     {
-      (void) printf ( "Usage: %s filename\n", argv[0] );
-      exit( 1 );
+      (void) printf ("Usage: %s filename\n",argv[0]);
+      exit(1);
     }
-
-  (void) CopyMagickString( outfile, argv[1], MaxTextExtent );
-
-
+  (void) CopyMagickString(filename,argv[1],MaxTextExtent);
   /*
-   * Create canvas image
-   */
+    Create canvas image.
+  */
   MagickWandGenesis();
   canvas=NewMagickWand();
-  MagickSetSize( canvas, 596, 842 );
-  status=MagickReadImage( canvas, "xc:white" );
+  status=MagickSetSize(canvas,596,842);
   if (status == MagickFalse)
     ThrowWandException(canvas);
-
+  status=MagickReadImage(canvas,"xc:white");
+  if (status == MagickFalse)
+    ThrowWandException(canvas);
   /*
-   * Scribble on image
-   */
-  ScribbleImage( canvas );
-
+    Scribble on image.
+  */
+  status=ScribbleImage(canvas);
+  if (status == MagickFalse)
+    ThrowWandException(canvas);
   /*
-   * Save image to file
-   */
-  (void) MagickWriteImage ( canvas, outfile );
-
-  canvas =DestroyMagickWand( canvas );
+    Save image to file.
+  */
+  status=MagickWriteImage(canvas,filename);
+  if (status == MagickFalse)
+    ThrowWandException(canvas);
+  canvas=DestroyMagickWand(canvas);
   MagickWandTerminus();
-  return 0;
+  return(0);
 }
