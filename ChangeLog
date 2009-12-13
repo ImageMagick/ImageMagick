@@ -1,3 +1,6 @@
+2009-12-13  6.5.8-5 Cristy  <quetzlzacatenango@image...>
+  * Declare InverseFourierTransformImage in Magick++/Include.h.
+
 2009-12-09  6.5.8-5 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG8 encoder would fail to write a 1-color image, due to
     a bogus MagickFail return from CompressColormapTransFirst().
