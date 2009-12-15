@@ -1,7 +1,7 @@
 #! /bin/sh
 # Wrapper for compilers which do not understand `-c -o'.
 
-scriptversion=2009-04-28.21; # UTC
+scriptversion=2009-10-06.20; # UTC
 
 # Copyright (C) 1999, 2000, 2003, 2004, 2005, 2009  Free Software
 # Foundation, Inc.
@@ -124,9 +124,9 @@ trap "rmdir '$lockdir'; exit 1" 1 2 15
 ret=$?
 
 if test -f "$cofile"; then
-  mv "$cofile" "$ofile"
+  test "$cofile" = "$ofile" || mv "$cofile" "$ofile"
 elif test -f "${cofile}bj"; then
-  mv "${cofile}bj" "$ofile"
+  test "${cofile}bj" = "$ofile" || mv "${cofile}bj" "$ofile"
 fi
 
 rmdir "$lockdir"
