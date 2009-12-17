@@ -142,7 +142,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
 
   double
-    **kernel;
+    **kernel,
+    normalize;
 
   Image
     *blur_image,
@@ -151,7 +152,10 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
 
   long
     j,
+    k,
     progress,
+    u,
+    v,
     y;
 
   MagickBooleanType
@@ -160,14 +164,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   MagickPixelPacket
     bias;
 
-  MagickRealType
-    alpha,
-    normalize;
-
   register long
-    i,
-    u,
-    v;
+    i;
 
   unsigned long
     width;
@@ -229,24 +227,24 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
       sizeof(**kernel));
     if (kernel[i] == (double *) NULL)
       break;
-    j=0;
-    for (v=(-((long) (width-i)/2)); v <= (long) ((width-i)/2); v++)
+    normalize=0.0;
+    j=(long) (width-i)/2;
+    k=0;
+    for (v=(-j); v <= j; v++)
     {
-      for (u=(-((long) (width-i)/2)); u <= (long) ((width-i)/2); u++)
+      for (u=(-j); u <= j; u++)
       {
-        alpha=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma));
-        kernel[i][j]=(double) (alpha/(2.0*MagickPI*MagickSigma*MagickSigma));
-        j++;
+        kernel[i][k]=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+          (2.0*MagickPI*MagickSigma*MagickSigma);
+        normalize+=kernel[i][k];
+        k++;
       }
     }
-    normalize=0.0;
-    for (j=0; j < (long) ((width-i)*(width-i)); j++)
-      normalize+=kernel[i][j];
     if (fabs(normalize) <= MagickEpsilon)
       normalize=1.0;
     normalize=1.0/normalize;
-    for (j=0; j < (long) ((width-i)*(width-i)); j++)
-      kernel[i][j]=(double) (normalize*kernel[i][j]);
+    for (k=0; k < (j*j); k++)
+      kernel[i][k]=normalize*kernel[i][k];
   }
   if (i < (long) width)
     {
@@ -459,7 +457,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
 
   double
-    **kernel;
+    **kernel,
+    normalize;
 
   Image
     *sharp_image,
@@ -468,7 +467,10 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 
   long
     j,
+    k,
     progress,
+    u,
+    v,
     y;
 
   MagickBooleanType
@@ -477,14 +479,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   MagickPixelPacket
     bias;
 
-  MagickRealType
-    alpha,
-    normalize;
-
   register long
-    i,
-    u,
-    v;
+    i;
 
   unsigned long
     width;
@@ -546,24 +542,24 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
       sizeof(**kernel));
     if (kernel[i] == (double *) NULL)
       break;
-    j=0;
-    for (v=(-((long) (width-i)/2)); v <= (long) ((width-i)/2); v++)
+    normalize=0.0;
+    j=(long) (width-i)/2;
+    k=0;
+    for (v=(-j); v <= j; v++)
     {
-      for (u=(-((long) (width-i)/2)); u <= (long) ((width-i)/2); u++)
+      for (u=(-j); u <= j; u++)
       {
-        alpha=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma));
-        kernel[i][j]=(double) (-alpha/(2.0*MagickPI*MagickSigma*MagickSigma));
-        j++;
+        kernel[i][k]=(-exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+          (2.0*MagickPI*MagickSigma*MagickSigma));
+        normalize+=kernel[i][k];
+        k++;
       }
     }
-    normalize=0.0;
-    for (j=0; j < (long) ((width-i)*(width-i)); j++)
-      normalize+=kernel[i][j];
     if (fabs(normalize) <= MagickEpsilon)
       normalize=1.0;
     normalize=1.0/normalize;
-    for (j=0; j < (long) ((width-i)*(width-i)); j++)
-      kernel[i][j]=(double) (normalize*kernel[i][j]);
+    for (k=0; k < (j*j); k++)
+      kernel[i][k]=normalize*kernel[i][k];
   }
   if (i < (long) width)
     {
@@ -769,19 +765,15 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   return(blur_image);
 }
 
-static double *GetBlurKernel(unsigned long width,const MagickRealType sigma)
+static double *GetBlurKernel(const unsigned long width,const double sigma)
 {
-#define KernelRank 3
-
   double
-    *kernel;
+    *kernel,
+    normalize;
 
   long
-    bias;
-
-  MagickRealType
-    alpha,
-    normalize;
+    j,
+    k;
 
   register long
     i;
@@ -793,17 +785,16 @@ static double *GetBlurKernel(unsigned long width,const MagickRealType sigma)
   kernel=(double *) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     return(0);
-  (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
-  bias=KernelRank*(long) width/2;
-  for (i=(-bias); i <= bias; i++)
-  {
-    alpha=exp((-((double) (i*i))/(double) (2.0*KernelRank*KernelRank*
-      MagickSigma*MagickSigma)));
-    kernel[(i+bias)/KernelRank]+=(double) (alpha/(MagickSQ2PI*sigma));
-  }
   normalize=0.0;
-  for (i=0; i < (long) width; i++)
+  j=(long) width/2;
+  i=0;
+  for (k=(-j); k <= j; k++)
+  {
+    kernel[i]=exp(-((double) k*k)/(double) (2.0*MagickSigma*MagickSigma))/
+      (MagickSQ2PI*MagickSigma);
     normalize+=kernel[i];
+    i++;
+  }
   for (i=0; i < (long) width; i++)
     kernel[i]/=normalize;
   return(kernel);
@@ -1387,7 +1378,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
         (void) ConcatenateString(&message,format);
         for (u=0; u < (long) width; u++)
         {
-          (void) FormatMagickString(format,MaxTextExtent,"%+f ",*k++);
+          (void) FormatMagickString(format,MaxTextExtent,"%g ",*k++);
           (void) ConcatenateString(&message,format);
         }
         (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
@@ -2077,15 +2068,13 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     *emboss_image;
 
   long
-    j;
-
-  MagickRealType
-    alpha;
-
-  register long
-    i,
+    j,
+    k,
     u,
     v;
+
+  register long
+    i;
 
   unsigned long
     width;
@@ -2100,20 +2089,21 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  i=0;
   j=(long) width/2;
-  for (v=(-((long) width/2)); v <= (long) (width/2); v++)
+  k=j;
+  i=0;
+  for (v=(-j); v <= j; v++)
   {
-    for (u=(-((long) width/2)); u <= (long) (width/2); u++)
+    for (u=(-j); u <= j; u++)
     {
-      alpha=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma));
-      kernel[i]=(double) (((u < 0) || (v < 0) ? -8.0 : 8.0)*alpha/
-        (2.0*MagickPI*MagickSigma*MagickSigma));
-      if (u != j)
+      kernel[i]=((u < 0) || (v < 0) ? -8.0 : 8.0)*
+        exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+        (2.0*MagickPI*MagickSigma*MagickSigma);
+      if (u != k)
         kernel[i]=0.0;
       i++;
     }
-    j--;
+    k--;
   }
   emboss_image=ConvolveImage(image,width,kernel,exception);
   if (emboss_image != (Image *) NULL)
@@ -2182,13 +2172,13 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   Image
     *blur_image;
 
-  MagickRealType
-    alpha;
-
-  register long
-    i,
+  long
+    j,
     u,
     v;
+
+  register long
+    i;
 
   unsigned long
     width;
@@ -2203,15 +2193,13 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  j=(long) width/2;
   i=0;
-  for (v=(-((long) width/2)); v <= (long) (width/2); v++)
+  for (v=(-j); v <= j; v++)
   {
-    for (u=(-((long) width/2)); u <= (long) (width/2); u++)
-    {
-      alpha=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma));
-      kernel[i]=(double) (alpha/(2.0*MagickPI*MagickSigma*MagickSigma));
-      i++;
-    }
+    for (u=(-j); u <= j; u++)
+      kernel[i++]=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+        (2.0*MagickPI*MagickSigma*MagickSigma);
   }
   blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishMagickMemory(kernel);
@@ -2734,42 +2722,29 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %
 */
 
-static double *GetMotionBlurKernel(unsigned long width,
-  const MagickRealType sigma)
+static double *GetMotionBlurKernel(const unsigned long width,const double sigma)
 {
-#define KernelRank 3
-
   double
-    *kernel;
-
-  long
-    bias;
-
-  MagickRealType
-    alpha,
+    *kernel,
     normalize;
 
   register long
     i;
 
   /*
-    Generate a 1-D convolution kernel.
+   Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   kernel=(double *) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     return(kernel);
-  (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
-  bias=(long) (KernelRank*width);
-  for (i=0; i < (long) bias; i++)
-  {
-    alpha=exp((-((double) (i*i))/(double) (2.0*KernelRank*KernelRank*
-      MagickSigma*MagickSigma)));
-    kernel[i/KernelRank]+=(double) alpha/(MagickSQ2PI*sigma);
-  }
   normalize=0.0;
   for (i=0; i < (long) width; i++)
+  {
+    kernel[i]=exp((-((double) i*i)/(double) (2.0*MagickSigma*MagickSigma)))/
+      (MagickSQ2PI*MagickSigma);
     normalize+=kernel[i];
+  }
   for (i=0; i < (long) width; i++)
     kernel[i]/=normalize;
   return(kernel);
@@ -4113,15 +4088,20 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
 {
 #define SelectiveBlurImageTag  "SelectiveBlur/Image"
 
+  CacheView
+    *blur_view,
+    *image_view;
+
   double
-    alpha,
     *kernel;
 
   Image
     *blur_image;
 
   long
+    j,
     progress,
+    u,
     v,
     y;
 
@@ -4132,15 +4112,10 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
     bias;
 
   register long
-    i,
-    u;
+    i;
 
   unsigned long
     width;
-
-  CacheView
-    *blur_view,
-    *image_view;
 
   /*
     Initialize blur image attributes.
@@ -4155,15 +4130,13 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  j=(long) width/2;
   i=0;
-  for (v=(-((long) width/2)); v <= (long) (width/2); v++)
+  for (v=(-j); v <= j; v++)
   {
-    for (u=(-((long) width/2)); u <= (long) (width/2); u++)
-    {
-      alpha=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma));
-      kernel[i]=(double) (alpha/(2.0*MagickPI*MagickSigma*MagickSigma));
-      i++;
-    }
+    for (u=(-j); u <= j; u++)
+      kernel[i++]=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+        (2.0*MagickPI*MagickSigma*MagickSigma);
   }
   if (image->debug != MagickFalse)
     {
@@ -4715,19 +4688,19 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   ExceptionInfo *exception)
 {
   double
-    *kernel;
+    *kernel,
+    normalize;
 
   Image
     *sharp_image;
 
-  MagickRealType
-    alpha,
-    normalize;
-
-  register long
-    i,
+  long
+    j,
     u,
     v;
+
+  register long
+    i;
 
   unsigned long
     width;
@@ -4742,14 +4715,15 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   kernel=(double *) AcquireQuantumMemory((size_t) width*width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  i=0;
   normalize=0.0;
-  for (v=(-((long) width/2)); v <= (long) (width/2); v++)
+  j=(long) width/2;
+  i=0;
+  for (v=(-j); v <= j; v++)
   {
-    for (u=(-((long) width/2)); u <= (long) (width/2); u++)
+    for (u=(-j); u <= j; u++)
     {
-      alpha=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma));
-      kernel[i]=(double) (-alpha/(2.0*MagickPI*MagickSigma*MagickSigma));
+      kernel[i]=(-exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+        (2.0*MagickPI*MagickSigma*MagickSigma));
       normalize+=kernel[i];
       i++;
     }
