@@ -532,35 +532,35 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++] = StringToDouble(token);
+          sparse_arguments[x++]=StringToDouble(token);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & GreenChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++] = StringToDouble(token);
+          sparse_arguments[x++]=StringToDouble(token);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & BlueChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++] = StringToDouble(token);
+          sparse_arguments[x++]=StringToDouble(token);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & IndexChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++] = StringToDouble(token);
+          sparse_arguments[x++]=StringToDouble(token);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & OpacityChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++] = StringToDouble(token);
+          sparse_arguments[x++]=StringToDouble(token);
           token[0] = ','; /* used this token - get another */
         }
 #endif
