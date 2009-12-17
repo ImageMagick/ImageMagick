@@ -61,6 +61,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
@@ -71,7 +72,7 @@
 #include "magick/splay-tree.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 #include "magick/utility.h"
 #include <setjmp.h>
 #if defined(MAGICKCORE_JPEG_DELEGATE)
@@ -1864,7 +1865,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             Search for compression quality that does not exceed image extent.
           */
           jpeg_info->quality=0;
-          extent=(MagickSizeType) StringToDouble(option,100.0);
+          extent=(MagickSizeType) SiPrefixToDouble(option,100.0);
           (void) DeleteImageOption(jpeg_info,"jpeg:extent");
           (void) AcquireUniqueFilename(jpeg_image->filename);
           min=0;

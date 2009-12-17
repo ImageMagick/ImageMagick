@@ -49,12 +49,13 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/profile.h"
 #include "magick/splay-tree.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
 
@@ -358,10 +359,10 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 if (strcmp(newstr,"8BIM")==0)
                   dataset = 255;
                 else
-                  dataset = (unsigned char) atoi(newstr);
+                  dataset = (unsigned char) StringToLong(newstr);
                 break;
               case 1:
-                recnum = (unsigned int) atoi(newstr);
+                recnum = (unsigned int) StringToLong(newstr);
                 break;
               case 2:
                 name=(char *) AcquireQuantumMemory(strlen(newstr)+MaxTextExtent,
@@ -634,10 +635,10 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                 if (strcmp(newstr,"8BIM")==0)
                   dataset = 255;
                 else
-                  dataset = (unsigned char) atoi(newstr);
+                  dataset = (unsigned char) StringToLong(newstr);
                 break;
               case 1:
-                recnum=(unsigned int) atoi(newstr);
+                recnum=(unsigned int) StringToLong(newstr);
                 break;
               case 2:
                 name=(char *) AcquireQuantumMemory(strlen(newstr)+MaxTextExtent,

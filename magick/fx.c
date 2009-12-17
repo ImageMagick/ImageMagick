@@ -80,6 +80,7 @@
 #include "magick/splay-tree.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
@@ -327,7 +328,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   attenuate=1.0;
   option=GetImageArtifact(image,"attenuate");
   if (option != (char *) NULL)
-    attenuate=atof(option);
+    attenuate=StringToDouble(option);
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
@@ -1474,7 +1475,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
     symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
-    return(QuantumScale*atof(value));
+    return(QuantumScale*StringToDouble(value));
   (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
   if (LocaleNCompare(symbol,"depth",5) == 0)
     {
@@ -1545,7 +1546,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
     }
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
     ConstantString(statistic));
-  return(QuantumScale*atof(statistic));
+  return(QuantumScale*StringToDouble(statistic));
 }
 
 static MagickRealType
@@ -2147,7 +2148,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
   }
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,symbol);
   if (value != (const char *) NULL)
-    return((MagickRealType) atof(value));
+    return((MagickRealType) StringToDouble(value));
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
     "UnableToParseExpression","`%s'",symbol);
   return(0.0);

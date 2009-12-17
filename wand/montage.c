@@ -45,6 +45,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -538,7 +539,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->border_width=(unsigned long) atol(argv[i]);
+            montage_info->border_width=(unsigned long) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("bordercolor",option+1) == 0)
@@ -562,7 +563,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->border_width=(unsigned long) atol(argv[i]);
+            montage_info->border_width=(unsigned long) StringToLong(argv[i]);
             break;
           }
         ThrowMontageException(OptionError,"UnrecognizedOption",option)
@@ -1236,7 +1237,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->pointsize=atof(argv[i]);
+            montage_info->pointsize=StringToDouble(argv[i]);
             break;
           }
         if (LocaleCompare("polaroid",option+1) == 0)
@@ -1383,7 +1384,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            first_scene=atol(argv[i]);
+            first_scene=StringToLong(argv[i]);
             last_scene=first_scene;
             (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
             break;

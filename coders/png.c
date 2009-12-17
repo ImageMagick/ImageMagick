@@ -76,6 +76,7 @@
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_PNG_DELEGATE)
@@ -1540,7 +1541,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
   /* look for length */
   while (*sp == '\0' || *sp == ' ' || *sp == '\n')
      sp++;
-  length=(png_uint_32) atol(sp);
+  length=(png_uint_32) StringToLong(sp);
   while (*sp != ' ' && *sp != '\n')
      sp++;
   /* allocate space */

@@ -58,6 +58,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
@@ -68,7 +69,7 @@
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 #include "zlib.h"
 #endif
@@ -623,7 +624,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
                   {
-                    colors=(unsigned long) atol(options);
+                    colors=(unsigned long) StringToLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
@@ -652,7 +653,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"columns") == 0)
                   {
-                    image->columns=(unsigned long) atol(options);
+                    image->columns=(unsigned long) StringToLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -663,12 +664,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"delay") == 0)
                   {
-                    image->delay=(unsigned long) atol(options);
+                    image->delay=(unsigned long) StringToLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"depth") == 0)
                   {
-                    image->depth=(unsigned long) atol(options);
+                    image->depth=(unsigned long) StringToLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
@@ -709,7 +710,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"gamma") == 0)
                   {
-                    image->gamma=atof(options);
+                    image->gamma=StringToDouble(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"gravity") == 0)
@@ -747,7 +748,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"iterations") == 0)
                   {
-                    image->iterations=(unsigned long) atol(options);
+                    image->iterations=(unsigned long) StringToLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -835,7 +836,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
                       AcquireString(keyword+8));
-                    profile=AcquireStringInfo((size_t) atol(options));
+                    profile=AcquireStringInfo((size_t) StringToLong(options));
                     (void) SetImageProfile(image,keyword+8,profile);
                     profile=DestroyStringInfo(profile);
                     break;
@@ -848,7 +849,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"quality") == 0)
                   {
-                    image->quality=(unsigned long) atol(options);
+                    image->quality=(unsigned long) StringToLong(options);
                     break;
                   }
                 if ((LocaleCompare(keyword,"quantum-format") == 0) ||
@@ -903,7 +904,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
                   {
-                    image->rows=(unsigned long) atol(options);
+                    image->rows=(unsigned long) StringToLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -914,7 +915,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"scene") == 0)
                   {
-                    image->scene=(unsigned long) atol(options);
+                    image->scene=(unsigned long) StringToLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -925,7 +926,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"ticks-per-second") == 0)
                   {
-                    image->ticks_per_second=atol(options);
+                    image->ticks_per_second=StringToLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"tile-offset") == 0)
@@ -976,7 +977,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"version") == 0)
                   {
-                    version=atof(options);
+                    version=StringToDouble(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);

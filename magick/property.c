@@ -71,6 +71,7 @@
 #include "magick/signature-private.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/xml-tree.h"
@@ -574,7 +575,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
     *name='\0';
   sub_number=1;
   if (*name == '#')
-    sub_number=atol(&name[1]);
+    sub_number=StringToLong(&name[1]);
   sub_number=MagickMax(sub_number,1L);
   resource=(char *) NULL;
   status=MagickFalse;
@@ -3265,7 +3266,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       if (LocaleCompare(property,"bias") == 0)
         {
-          image->bias=StringToDouble(value,QuantumRange);
+          image->bias=SiPrefixToDouble(value,QuantumRange);
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
@@ -3342,7 +3343,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       if (LocaleCompare(property,"depth") == 0)
         {
-          image->depth=(unsigned long) atol(value);
+          image->depth=(unsigned long) StringToLong(value);
           break;
         }
       if (LocaleCompare(property,"dispose") == 0)
@@ -3414,7 +3415,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       if (LocaleCompare(property,"loop") == 0)
         {
-          image->iterations=(unsigned long) atol(value);
+          image->iterations=(unsigned long) StringToLong(value);
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,

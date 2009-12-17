@@ -87,6 +87,7 @@
 #include "magick/signature-private.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/threshold.h"
 #include "magick/timer.h"
@@ -3095,7 +3096,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
             last;
 
           (void) CloneString(&image_info->scenes,subimage);
-          image_info->scene=(unsigned long) atol(image_info->scenes);
+          image_info->scene=(unsigned long) StringToLong(image_info->scenes);
           image_info->number_scenes=image_info->scene;
           p=image_info->scenes;
           for (q=(char *) image_info->scenes; *q != '\0'; p++)
@@ -3956,7 +3957,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       &image->exception);
   option=GetImageOption(image_info,"bias");
   if (option != (const char *) NULL)
-    image->bias=StringToDouble(option,QuantumRange);
+    image->bias=SiPrefixToDouble(option,QuantumRange);
   option=GetImageOption(image_info,"black-point-compensation");
   if (option != (const char *) NULL)
     image->black_point_compensation=(MagickBooleanType) ParseMagickOption(
@@ -3975,7 +3976,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     (void) QueryColorDatabase(option,&image->border_color,&image->exception);
   option=GetImageOption(image_info,"colors");
   if (option != (const char *) NULL)
-    image->colors=(unsigned long) atol(option);
+    image->colors=(unsigned long) StringToLong(option);
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)
     image->compose=(CompositeOperator) ParseMagickOption(MagickComposeOptions,
@@ -4028,7 +4029,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"depth");
   if (option != (const char *) NULL)
-    image->depth=(unsigned long) atol(option);
+    image->depth=(unsigned long) StringToLong(option);
   option=GetImageOption(image_info,"dispose");
   if (option != (const char *) NULL)
     image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
@@ -4045,7 +4046,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickFalse,option);
   option=GetImageOption(image_info,"fuzz");
   if (option != (const char *) NULL)
-    image->fuzz=StringToDouble(option,QuantumRange);
+    image->fuzz=SiPrefixToDouble(option,QuantumRange);
   option=GetImageOption(image_info,"gravity");
   if (option != (const char *) NULL)
     image->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
@@ -4073,7 +4074,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickInterpolateOptions,MagickFalse,option);
   option=GetImageOption(image_info,"loop");
   if (option != (const char *) NULL)
-    image->iterations=(unsigned long) atol(option);
+    image->iterations=(unsigned long) StringToLong(option);
   option=GetImageOption(image_info,"mattecolor");
   if (option != (const char *) NULL)
     (void) QueryColorDatabase(option,&image->matte_color,&image->exception);
@@ -4083,7 +4084,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickOrientationOptions,MagickFalse,option);
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
-    image->quality=(unsigned long) atol(option);
+    image->quality=(unsigned long) StringToLong(option);
   option=GetImageOption(image_info,"page");
   if (option != (const char *) NULL)
     {
@@ -4107,7 +4108,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->quality=image_info->quality;
   option=GetImageOption(image_info,"scene");
   if (option != (const char *) NULL)
-    image->scene=(unsigned long) atol(option);
+    image->scene=(unsigned long) StringToLong(option);
   option=GetImageOption(image_info,"taint");
   if (option != (const char *) NULL)
     image->taint=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,

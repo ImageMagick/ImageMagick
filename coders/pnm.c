@@ -53,6 +53,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel-private.h"
@@ -61,7 +62,7 @@
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 
 /*
   Forward declarations.
@@ -312,7 +313,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               scale[MaxTextExtent];
 
             (void) ReadBlobString(image,scale);
-            quantum_scale=atof(scale);
+            quantum_scale=StringToDouble(scale);
           }
         else
           {
@@ -365,11 +366,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Assign a value to the specified keyword.
           */
           if (LocaleCompare(keyword,"depth") == 0)
-            packet_size=(unsigned long) atol(value);
+            packet_size=(unsigned long) StringToLong(value);
           if (LocaleCompare(keyword,"height") == 0)
-            image->rows=(unsigned long) atol(value);
+            image->rows=(unsigned long) StringToLong(value);
           if (LocaleCompare(keyword,"maxval") == 0)
-            max_value=(unsigned long) atol(value);
+            max_value=(unsigned long) StringToLong(value);
           if (LocaleCompare(keyword,"TUPLTYPE") == 0)
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
@@ -404,7 +405,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
             }
           if (LocaleCompare(keyword,"width") == 0)
-            image->columns=(unsigned long) atol(value);
+            image->columns=(unsigned long) StringToLong(value);
         }
       }
     if ((image->columns == 0) || (image->rows == 0))

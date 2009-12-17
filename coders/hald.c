@@ -51,12 +51,13 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,7 +118,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   image=AcquireImage(image_info);
   level=0;
   if (*image_info->filename != '\0')
-    level=(unsigned long) atol(image_info->filename);
+    level=(unsigned long) StringToLong(image_info->filename);
   if (level < 2)
     level=8;
   status=MagickTrue;

@@ -63,6 +63,7 @@
 #include "magick/registry.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/token.h"
 
@@ -1883,7 +1884,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     artifact=GetImageArtifact(image,"distort:scale");
     output_scaling = 1.0;
     if (artifact != (const char *) NULL) {
-      output_scaling = fabs(atof(artifact));
+      output_scaling = fabs(StringToDouble(artifact));
       geometry.width  *= output_scaling;
       geometry.height *= output_scaling;
       geometry.x      *= output_scaling;

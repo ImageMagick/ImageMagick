@@ -50,6 +50,7 @@
 #include "wand/MagickWand.h"
 #include "wand/magick-wand-private.h"
 #include "wand/wand.h"
+#include "magick/string-private.h"
 
 /*
   Define declarations.
@@ -6128,7 +6129,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
         CurrentContext->fill.opacity=RoundToQuantum((MagickRealType)
-          QuantumRange*(1.0-atof(value)));
+          QuantumRange*(1.0-StringToDouble(value)));
     }
   child=GetXMLTreeChild(xml_info,"fill-rule");
   if (child != (XMLTreeInfo *) NULL)
@@ -6149,7 +6150,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->pointsize=atof(value);
+        CurrentContext->pointsize=StringToDouble(value);
     }
   child=GetXMLTreeChild(xml_info,"font-stretch");
   if (child != (XMLTreeInfo *) NULL)
@@ -6172,7 +6173,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->weight=(unsigned long) atol(value);
+        CurrentContext->weight=(unsigned long) StringToLong(value);
     }
   child=GetXMLTreeChild(xml_info,"gravity");
   if (child != (XMLTreeInfo *) NULL)
@@ -6195,7 +6196,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke_antialias=atol(value) != 0 ? MagickTrue :
+        CurrentContext->stroke_antialias=StringToLong(value) != 0 ? MagickTrue :
           MagickFalse;
     }
   child=GetXMLTreeChild(xml_info,"stroke-dasharray");
@@ -6245,7 +6246,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                CurrentContext->dash_pattern[j]=atof(token);
+                CurrentContext->dash_pattern[j]=StringToDouble(token);
               }
               if ((x & 0x01) != 0)
                 for ( ; j < (2*x); j++)
@@ -6260,7 +6261,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->dash_offset=atof(value);
+        CurrentContext->dash_offset=StringToDouble(value);
     }
   child=GetXMLTreeChild(xml_info,"stroke-linecap");
   if (child != (XMLTreeInfo *) NULL)
@@ -6283,7 +6284,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->miterlimit=(unsigned long) atol(value);
+        CurrentContext->miterlimit=(unsigned long) StringToLong(value);
     }
   child=GetXMLTreeChild(xml_info,"stroke-opacity");
   if (child != (XMLTreeInfo *) NULL)
@@ -6291,14 +6292,14 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
         CurrentContext->stroke.opacity=RoundToQuantum((MagickRealType)
-          QuantumRange*(1.0-atof(value)));
+          QuantumRange*(1.0-StringToDouble(value)));
     }
   child=GetXMLTreeChild(xml_info,"stroke-width");
   if (child != (XMLTreeInfo *) NULL)
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke_width=atof(value);
+        CurrentContext->stroke_width=StringToDouble(value);
     }
   child=GetXMLTreeChild(xml_info,"text-align");
   if (child != (XMLTreeInfo *) NULL)
@@ -6313,7 +6314,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->text_antialias=atol(value) != 0 ? MagickTrue :
+        CurrentContext->text_antialias=StringToLong(value) != 0 ? MagickTrue :
           MagickFalse;
     }
   child=GetXMLTreeChild(xml_info,"text-undercolor");

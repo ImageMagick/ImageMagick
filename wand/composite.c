@@ -43,6 +43,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/string-private.h"
 
 /*
   Typedef declarations.
@@ -1387,7 +1388,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
               ThrowCompositeException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompositeInvalidArgumentException(option,argv[i]);
-            composite_options.stegano=atol(argv[i])+1;
+            composite_options.stegano=StringToLong(argv[i])+1;
             break;
           }
         if (LocaleCompare("stereo",option+1) == 0)

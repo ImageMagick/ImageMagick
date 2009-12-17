@@ -65,6 +65,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/montage.h"
+#include "magick/option.h"
 #include "magick/pixel-private.h"
 #include "magick/quantize.h"
 #include "magick/quantum.h"
@@ -76,9 +77,9 @@
 #include "magick/shear.h"
 #include "magick/signature-private.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/transform.h"
 #include "magick/threshold.h"
-#include "magick/option.h"
 #include "magick/xml-tree.h"
 
 /*
@@ -947,7 +948,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
     map = DestroyThresholdMap(map);
     return(map);
   }
-  map->width = (unsigned long) atoi(attr);
+  map->width = (unsigned long) StringToLong(attr);
   if ( map->width == 0 ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
      "XmlInvalidAttribute", "<levels width>, map \"%s\"", map_id);
@@ -964,7 +965,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
     map = DestroyThresholdMap(map);
     return(map);
   }
-  map->height = (unsigned long) atoi(attr);
+  map->height = (unsigned long) StringToLong(attr);
   if ( map->height == 0 ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
       "XmlInvalidAttribute", "<levels height>, map \"%s\"", map_id);
@@ -981,7 +982,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
     map = DestroyThresholdMap(map);
     return(map);
   }
-  map->divisor = atoi(attr);
+  map->divisor = StringToLong(attr);
   if ( map->divisor < 2 ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
       "XmlInvalidAttribute", "<levels divisor>, map \"%s\"", map_id);

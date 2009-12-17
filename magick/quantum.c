@@ -63,6 +63,7 @@
 #include "magick/statistic.h"
 #include "magick/stream.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/utility.h"
 
@@ -361,10 +362,10 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
       MagickQuantumFormatOptions,MagickFalse,option);
   option=GetImageOption(image_info,"quantum:minimum");
   if (option != (char *) NULL)
-    quantum_info->minimum=atof(option);
+    quantum_info->minimum=StringToDouble(option);
   option=GetImageOption(image_info,"quantum:maximum");
   if (option != (char *) NULL)
-    quantum_info->maximum=atof(option);
+    quantum_info->maximum=StringToDouble(option);
   if ((quantum_info->minimum == 0.0) && (quantum_info->maximum == 0.0))
     quantum_info->scale=0.0;
   else
@@ -378,7 +379,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
         quantum_info->minimum);
   option=GetImageOption(image_info,"quantum:scale");
   if (option != (char *) NULL)
-    quantum_info->scale=atof(option);
+    quantum_info->scale=StringToDouble(option);
   option=GetImageOption(image_info,"quantum:polarity");
   if (option != (char *) NULL)
     quantum_info->min_is_white=LocaleCompare(option,"min-is-white") == 0 ?

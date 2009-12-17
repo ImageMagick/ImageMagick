@@ -47,6 +47,7 @@
 #include "magick/exception-private.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/profile.h"
@@ -54,7 +55,7 @@
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 
 /*
   Forward declarations.
@@ -183,11 +184,11 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   property=GetImageProperty(image,"exif:JPEGInterchangeFormat");
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
-  offset=(ssize_t) atoi(property);
+  offset=(ssize_t) StringToLong(property);
   property=GetImageProperty(image,"exif:JPEGInterchangeFormatLength");
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
-  length=(size_t) atoi(property);
+  length=(size_t) StringToLong(property);
   (void) ResetMagickMemory(magick,0,sizeof(magick));
   for (i=0; i < (long) length; i++)
   {

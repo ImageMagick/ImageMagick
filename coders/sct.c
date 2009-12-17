@@ -50,12 +50,13 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,14 +205,14 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   separations_mask=ReadBlobMSBShort(image);
   count=ReadBlob(image,14,buffer);
   buffer[14]='\0';
-  height=atof((char *) buffer);
+  height=StringToDouble((char *) buffer);
   count=ReadBlob(image,14,buffer);
-  width=atof((char *) buffer);
+  width=StringToDouble((char *) buffer);
   count=ReadBlob(image,12,buffer);
   buffer[12]='\0';
-  image->rows=1UL*atol((char *) buffer);
+  image->rows=1UL*StringToLong((char *) buffer);
   count=ReadBlob(image,12,buffer);
-  image->columns=1UL*atol((char *) buffer);
+  image->columns=1UL*StringToLong((char *) buffer);
   count=ReadBlob(image,200,buffer);
   count=ReadBlob(image,768,buffer);
   if (separations_mask == 0x0f)

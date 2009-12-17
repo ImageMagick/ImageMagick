@@ -59,9 +59,6 @@ extern MagickExport char
 extern MagickExport const char
   *GetStringInfoPath(const StringInfo *);
 
-extern MagickExport double
-  StringToDouble(const char *,const double);
-
 extern MagickExport long
   FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
   FormatMagickString(char *,const size_t,const char *,...)

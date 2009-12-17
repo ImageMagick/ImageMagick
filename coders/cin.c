@@ -67,6 +67,7 @@
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/module.h"
 
 /*
@@ -1023,12 +1024,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.origination.x_offset=0UL;
   value=GetCINProperty(image_info,image,"cin:origination.x_offset");
   if (value != (const char *) NULL)
-    cin.origination.x_offset=atol(value);
+    cin.origination.x_offset=StringToLong(value);
   offset+=WriteBlobLong(image,(unsigned long) cin.origination.x_offset);
   cin.origination.y_offset=0UL;
   value=GetCINProperty(image_info,image,"cin:origination.y_offset");
   if (value != (const char *) NULL)
-    cin.origination.y_offset=atol(value);
+    cin.origination.y_offset=StringToLong(value);
   offset+=WriteBlobLong(image,(unsigned long) cin.origination.y_offset);
   value=GetCINProperty(image_info,image,"cin:origination.filename");
   if (value != (const char *) NULL)
@@ -1069,12 +1070,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.origination.x_pitch=0.0f;
   value=GetCINProperty(image_info,image,"cin:origination.x_pitch");
   if (value != (const char *) NULL)
-    cin.origination.x_pitch=atof(value);
+    cin.origination.x_pitch=StringToDouble(value);
   offset+=WriteBlobFloat(image,cin.origination.x_pitch);
   cin.origination.y_pitch=0.0f;
   value=GetCINProperty(image_info,image,"cin:origination.y_pitch");
   if (value != (const char *) NULL)
-    cin.origination.y_pitch=atof(value);
+    cin.origination.y_pitch=StringToDouble(value);
   offset+=WriteBlobFloat(image,cin.origination.y_pitch);
   cin.origination.gamma=image->gamma;
   offset+=WriteBlobFloat(image,cin.origination.gamma);
@@ -1086,28 +1087,28 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.film.id=0;
   value=GetCINProperty(image_info,image,"cin:film.id");
   if (value != (const char *) NULL)
-    cin.film.id=(char) atoi(value);
+    cin.film.id=(char) StringToLong(value);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.id);
   cin.film.type=0;
   value=GetCINProperty(image_info,image,"cin:film.type");
   if (value != (const char *) NULL)
-    cin.film.type=(char) atoi(value);
+    cin.film.type=(char) StringToLong(value);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.type);
   cin.film.offset=0;
   value=GetCINProperty(image_info,image,"cin:film.offset");
   if (value != (const char *) NULL)
-    cin.film.offset=(char) atoi(value);
+    cin.film.offset=(char) StringToLong(value);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.offset);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.reserve1);
   cin.film.prefix=0UL;
   value=GetCINProperty(image_info,image,"cin:film.prefix");
   if (value != (const char *) NULL)
-    cin.film.prefix=(unsigned long) atol(value);
+    cin.film.prefix=(unsigned long) StringToLong(value);
   offset+=WriteBlobLong(image,cin.film.prefix);
   cin.film.count=0UL;
   value=GetCINProperty(image_info,image,"cin:film.count");
   if (value != (const char *) NULL)
-    cin.film.count=(unsigned long) atol(value);
+    cin.film.count=(unsigned long) StringToLong(value);
   offset+=WriteBlobLong(image,cin.film.count);
   value=GetCINProperty(image_info,image,"cin:film.format");
   if (value != (const char *) NULL)
@@ -1117,12 +1118,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.film.frame_position=0UL;
   value=GetCINProperty(image_info,image,"cin:film.frame_position");
   if (value != (const char *) NULL)
-    cin.film.frame_position=(unsigned long) atol(value);
+    cin.film.frame_position=(unsigned long) StringToLong(value);
   offset+=WriteBlobLong(image,cin.film.frame_position);
   cin.film.frame_rate=0.0f;
   value=GetCINProperty(image_info,image,"cin:film.frame_rate");
   if (value != (const char *) NULL)
-    cin.film.frame_rate=atof(value);
+    cin.film.frame_rate=StringToDouble(value);
   offset+=WriteBlobFloat(image,cin.film.frame_rate);
   value=GetCINProperty(image_info,image,"cin:film.frame_id");
   if (value != (const char *) NULL)

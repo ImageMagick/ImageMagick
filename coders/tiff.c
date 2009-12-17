@@ -73,9 +73,9 @@
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread_.h"
 #include "magick/utility.h"
-#include "magick/module.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 # if defined(MAGICKCORE_HAVE_TIFFCONF_H)
 #  include "tiffconf.h"
@@ -2323,7 +2323,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
         uint16
           shorty;
 
-        shorty=(uint16) atoi(value);
+        shorty=(uint16) StringToLong(value);
         (void) TIFFSetField(tiff,exif_info[i].tag,shorty);
         break;
       }
@@ -2332,7 +2332,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
         uint16
           longy;
 
-        longy=(uint16) atol(value);
+        longy=(uint16) StringToLong(value);
         (void) TIFFSetField(tiff,exif_info[i].tag,longy);
         break;
       }
@@ -2342,7 +2342,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
         float
           rational;
 
-        rational=atof(value);
+        rational=StringToDouble(value);
         (void) TIFFSetField(tiff,exif_info[i].tag,rational);
         break;
       }

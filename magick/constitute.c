@@ -67,6 +67,7 @@
 #include "magick/statistic.h"
 #include "magick/stream.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/timer.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
@@ -644,7 +645,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       value=GetImageProperty(next,"exif:Orientation");
     if (value != (char *) NULL)
       {
-        next->orientation=(OrientationType) atol(value);
+        next->orientation=(OrientationType) StringToLong(value);
         (void) DeleteImageProperty(next,"tiff:Orientation");
         (void) DeleteImageProperty(next,"exif:Orientation");
       }
@@ -679,7 +680,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       value=GetImageProperty(next,"exif:ResolutionUnit");
     if (value != (char *) NULL)
       {
-        next->units=(ResolutionType) (atoi(value)-1);
+        next->units=(ResolutionType) (StringToLong(value)-1);
         (void) DeleteImageProperty(next,"exif:ResolutionUnit");
         (void) DeleteImageProperty(next,"tiff:ResolutionUnit");
       }

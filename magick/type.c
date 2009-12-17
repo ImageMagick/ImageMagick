@@ -53,6 +53,7 @@
 #include "magick/semaphore.h"
 #include "magick/splay-tree.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/type.h"
 #include "magick/token.h"
 #include "magick/utility.h"
@@ -1102,7 +1103,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"face") == 0)
           {
-            type_info->face=(unsigned long) atol(token);
+            type_info->face=(unsigned long) StringToLong(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"family") == 0)
@@ -1224,7 +1225,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            type_info->weight=(unsigned long) atol(token);
+            type_info->weight=(unsigned long) StringToLong(token);
             if (LocaleCompare(token,"bold") == 0)
               type_info->weight=700;
             if (LocaleCompare(token,"normal") == 0)

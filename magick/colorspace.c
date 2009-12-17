@@ -60,6 +60,7 @@
 #include "magick/quantize.h"
 #include "magick/quantum.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/utility.h"
 
 /*
@@ -577,15 +578,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
-        gamma=1.0/atof(value) != 0.0 ? atof(value) : 1.0;
+        gamma=1.0/StringToDouble(value) != 0.0 ? StringToDouble(value) : 1.0;
       reference_black=ReferenceBlack;
       value=GetImageProperty(image,"reference-black");
       if (value != (const char *) NULL)
-        reference_black=atof(value);
+        reference_black=StringToDouble(value);
       reference_white=ReferenceWhite;
       value=GetImageProperty(image,"reference-white");
       if (value != (const char *) NULL)
-        reference_white=atof(value);
+        reference_white=StringToDouble(value);
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
         sizeof(*logmap));
       if (logmap == (Quantum *) NULL)
@@ -1783,15 +1784,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
-        gamma=1.0/atof(value) != 0.0 ? atof(value) : 1.0;
+        gamma=1.0/StringToDouble(value) != 0.0 ? StringToDouble(value) : 1.0;
       reference_black=ReferenceBlack;
       value=GetImageProperty(image,"reference-black");
       if (value != (const char *) NULL)
-        reference_black=atof(value);
+        reference_black=StringToDouble(value);
       reference_white=ReferenceWhite;
       value=GetImageProperty(image,"reference-white");
       if (value != (const char *) NULL)
-        reference_white=atof(value);
+        reference_white=StringToDouble(value);
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
         sizeof(*logmap));
       if (logmap == (Quantum *) NULL)

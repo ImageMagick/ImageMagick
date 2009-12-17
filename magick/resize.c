@@ -64,6 +64,7 @@
 #include "magick/resize.h"
 #include "magick/resize-private.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -596,7 +597,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->blur = blur;
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur = atof(artifact);
+    resize_filter->blur = StringToDouble(artifact);
   if ( resize_filter->blur < MagickEpsilon )
     resize_filter->blur = (MagickRealType) MagickEpsilon;
 
@@ -676,7 +677,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Filter support overrides */
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL) {
-    long lobes = atol(artifact);
+    long lobes = StringToLong(artifact);
     if ( lobes < 1  ) lobes = 1;
     resize_filter->support = (MagickRealType) lobes;
     if ( filter_type == BesselFilter ) {
@@ -686,7 +687,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   }
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support = fabs(atof(artifact));
+    resize_filter->support = fabs(StringToDouble(artifact));
 
   /* Scale windowing function separatally to the support 'clipping' window
      that calling operator is planning to actually use. - Expert Use Only
@@ -694,7 +695,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->window_support = resize_filter->support;
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
-    resize_filter->window_support = fabs(atof(artifact));
+    resize_filter->window_support = fabs(StringToDouble(artifact));
 
   /* Set Cubic Spline B,C values, calculate Cubic coefficents */
   B=0.0;
@@ -711,16 +712,16 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     }
     artifact=GetImageArtifact(image,"filter:b");
     if (artifact != (const char *) NULL) {
-      B=atof(artifact);
+      B=StringToDouble(artifact);
       C=(1.0-B)/2.0; /* Calculate C as if it is a Keys cubic filter */
       artifact=GetImageArtifact(image,"filter:c");
       if (artifact != (const char *) NULL)
-        C=atof(artifact);
+        C=StringToDouble(artifact);
     }
     else {
       artifact=GetImageArtifact(image,"filter:c");
       if (artifact != (const char *) NULL) {
-        C=atof(artifact);
+        C=StringToDouble(artifact);
         B=1.0-2.0*C;  /* Calculate B as if it is a Keys cubic filter */
       }
     }

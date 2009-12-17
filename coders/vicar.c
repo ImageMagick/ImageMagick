@@ -52,13 +52,14 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/quantum-private.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 
 /*
   Forward declarations.
@@ -253,17 +254,17 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
           Assign a value to the specified keyword.
         */
         if (LocaleCompare(keyword,"Label_RECORDS") == 0)
-          length=(ssize_t) atol(value);
+          length=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
-          length=(ssize_t) atol(value);
+          length=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
-          image->columns=1UL*atol(value);
+          image->columns=1UL*StringToLong(value);
         if (LocaleCompare(keyword,"NS") == 0)
-          image->columns=1UL*atol(value);
+          image->columns=1UL*StringToLong(value);
         if (LocaleCompare(keyword,"LINES") == 0)
-          image->rows=1UL*atol(value);
+          image->rows=1UL*StringToLong(value);
         if (LocaleCompare(keyword,"NL") == 0)
-          image->rows=1UL*atol(value);
+          image->rows=1UL*StringToLong(value);
       }
     while (isspace((int) ((unsigned char) c)) != 0)
     {

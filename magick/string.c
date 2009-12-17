@@ -1967,61 +1967,6 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  S t r i n g T o D o u b l e                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  StringToDouble() converts a text string to a double.  If the string contains
-%  a percent sign (e.g. 50%) that percentage of the interval is returned.
-%
-%  The format of the StringToDouble method is:
-%
-%      double StringToDouble(const char *string,const double interval)
-%
-%  A description of each parameter follows:
-%
-%    o string:  Specifies the string representing a value.
-%
-%    o interval:  Specifies the interval; used for obtaining a percentage.
-%
-*/
-MagickExport double StringToDouble(const char *string,const double interval)
-{
-  char
-    *q;
-
-  double
-    scale,
-    value;
-
-  assert(string != (char *) NULL);
-  value=strtod(string,&q);
-  scale=1000.0;
-  if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
-    scale=1024.0;
-  switch (tolower((int) ((unsigned char) *q)))
-  {
-    case '%': value*=pow(scale,0)*interval/100.0; break;
-    case 'k': value*=pow(scale,1); break;
-    case 'm': value*=pow(scale,2); break;
-    case 'g': value*=pow(scale,3); break;
-    case 't': value*=pow(scale,4); break;
-    case 'p': value*=pow(scale,5); break;
-    case 'e': value*=pow(scale,6); break;
-    case 'z': value*=pow(scale,7); break;
-    case 'y': value*=pow(scale,8); break;
-    default:  break;
-  }
-  return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S t r i n g I n f o T o H e x S t r i n g                                 %
 %                                                                             %
 %                                                                             %

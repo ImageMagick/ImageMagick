@@ -1136,7 +1136,7 @@ extern "C" {
 #define StringInfoToHexString  PrependMagickMethod(StringInfoToHexString)
 #define StringInfoToString  PrependMagickMethod(StringInfoToString)
 #define StringToArgv  PrependMagickMethod(StringToArgv)
-#define StringToDouble  PrependMagickMethod(StringToDouble)
+#define SiPrefixToDouble  PrependMagickMethod(SiPrefixToDouble)
 #define StringToken  PrependMagickMethod(StringToken)
 #define StringToList  PrependMagickMethod(StringToList)
 #define StringToStringInfo  PrependMagickMethod(StringToStringInfo)
