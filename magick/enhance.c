@@ -66,6 +66,7 @@
 #include "magick/resample-private.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/token.h"
 #include "magick/xml-tree.h"
@@ -371,9 +372,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
               GetMagickToken(p,&p,token);
             switch (i)
             {
-              case 0: color_correction.red.slope=atof(token); break;
-              case 1: color_correction.green.slope=atof(token); break;
-              case 2: color_correction.blue.slope=atof(token); break;
+              case 0: color_correction.red.slope=StringToDouble(token); break;
+              case 1: color_correction.green.slope=StringToDouble(token); break;
+              case 2: color_correction.blue.slope=StringToDouble(token); break;
             }
           }
         }
@@ -389,9 +390,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
               GetMagickToken(p,&p,token);
             switch (i)
             {
-              case 0: color_correction.red.offset=atof(token); break;
-              case 1: color_correction.green.offset=atof(token); break;
-              case 2: color_correction.blue.offset=atof(token); break;
+              case 0: color_correction.red.offset=StringToDouble(token); break;
+              case 1: color_correction.green.offset=StringToDouble(token); break;
+              case 2: color_correction.blue.offset=StringToDouble(token); break;
             }
           }
         }
@@ -407,9 +408,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
               GetMagickToken(p,&p,token);
             switch (i)
             {
-              case 0: color_correction.red.power=atof(token); break;
-              case 1: color_correction.green.power=atof(token); break;
-              case 2: color_correction.blue.power=atof(token); break;
+              case 0: color_correction.red.power=StringToDouble(token); break;
+              case 1: color_correction.green.power=StringToDouble(token); break;
+              case 2: color_correction.blue.power=StringToDouble(token); break;
             }
           }
         }
@@ -426,7 +427,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
           content=GetXMLTreeContent(saturation);
           p=(const char *) content;
           GetMagickToken(p,&p,token);
-          color_correction.saturation=atof(token);
+          color_correction.saturation=StringToDouble(token);
         }
     }
   ccc=DestroyXMLTree(ccc);

@@ -45,6 +45,7 @@
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
 #include "magick/xwindow-private.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -370,7 +371,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   ximage_info.borders=IsMagickTrue(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "delay","0");
-  resource_info.delay=(unsigned int) atoi(resource_value);
+  resource_info.delay=(unsigned int) StringToLong(resource_value);
   image_info->density=XGetResourceInstance(resource_database,GetClientName(),
     "density",(char *) NULL);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
@@ -397,10 +398,10 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
     "pageGeometry",(char *) NULL);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "pause","0");
-  resource_info.pause=(unsigned int) atol(resource_value);
+  resource_info.pause=(unsigned int) StringToLong(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "quality","85");
-  image_info->quality=(unsigned long) atol(resource_value);
+  image_info->quality=(unsigned long) StringToLong(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "screen","False");
   ximage_info.screen=IsMagickTrue(resource_value);
@@ -551,7 +552,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
-            quantize_info->number_colors=(unsigned long) atol(argv[i]);
+            quantize_info->number_colors=(unsigned long) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
@@ -1015,7 +1016,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
-            resource_info.pause=(unsigned int) atoi(argv[i]);
+            resource_info.pause=(unsigned int) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("ping",option+1) == 0)
@@ -1174,7 +1175,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
-            snapshots=atol(argv[i]);
+            snapshots=StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("strip",option+1) == 0)
@@ -1225,7 +1226,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
-            quantize_info->tree_depth=(unsigned long) atol(argv[i]);
+            quantize_info->tree_depth=(unsigned long) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("trim",option+1) == 0)

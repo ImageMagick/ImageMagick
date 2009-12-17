@@ -45,6 +45,7 @@
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
 #include "magick/display-private.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -437,7 +438,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
     "pageGeometry",(char *) NULL);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "quality","75");
-  image_info->quality=(unsigned long) atol(resource_value);
+  image_info->quality=(unsigned long) StringToLong(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "verbose","False");
   image_info->verbose=IsMagickTrue(resource_value);
@@ -742,7 +743,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            resource_info.border_width=(unsigned int) atoi(argv[i]);
+            resource_info.border_width=(unsigned int) StringToLong(argv[i]);
             break;
           }
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);
@@ -815,7 +816,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            quantize_info->number_colors=(unsigned long) atol(argv[i]);
+            quantize_info->number_colors=(unsigned long) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
@@ -1342,7 +1343,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            iterations=(unsigned long) atol(argv[i]);
+            iterations=(unsigned long) StringToLong(argv[i]);
             break;
           }
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);
@@ -1359,7 +1360,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            resource_info.magnify=(unsigned int) atoi(argv[i]);
+            resource_info.magnify=(unsigned int) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("map",option+1) == 0)
@@ -1739,7 +1740,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            quantize_info->tree_depth=(unsigned long) atol(argv[i]);
+            quantize_info->tree_depth=(unsigned long) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("trim",option+1) == 0)
@@ -1758,7 +1759,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            resource_info.update=(unsigned int) atoi(argv[i]);
+            resource_info.update=(unsigned int) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("use-pixmap",option+1) == 0)

@@ -80,6 +80,7 @@
 #include "magick/shear.h"
 #include "magick/segment.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/transform.h"
 #include "magick/threshold.h"
 #include "magick/utility.h"
@@ -2098,14 +2099,14 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
               break;
             if (entry != 8)
               {
-                degrees=atof(RotateMenu[entry]);
+                degrees=StringToDouble(RotateMenu[entry]);
                 break;
               }
             (void) XDialogWidget(display,windows,"OK","Enter rotation angle:",
               angle);
             if (*angle == '\0')
               break;
-            degrees=atof(angle);
+            degrees=StringToDouble(angle);
             break;
           }
           case AnnotateHelpCommand:
@@ -3503,7 +3504,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=StringToDouble(FuzzMenu[entry],1.0*QuantumRange+
+                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],1.0*QuantumRange+
                   1.0);
                 break;
               }
@@ -3513,7 +3514,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=StringToDouble(fuzz,1.0*QuantumRange+1.0);
+            (*image)->fuzz=SiPrefixToDouble(fuzz,1.0*QuantumRange+1.0);
             break;
           }
           case ColorEditUndoCommand:
@@ -4026,7 +4027,7 @@ static MagickBooleanType XCompositeImage(Display *display,
               GXinvert);
             if (*factor == '\0')
               break;
-            blend=atof(factor);
+            blend=StringToDouble(factor);
             compose=DissolveCompositeOp;
             break;
           }
@@ -5711,14 +5712,14 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 break;
               if (entry != 5)
                 {
-                  line_width=(unsigned int) atoi(WidthsMenu[entry]);
+                  line_width=(unsigned int) StringToLong(WidthsMenu[entry]);
                   break;
                 }
               (void) XDialogWidget(display,windows,"Ok","Enter line width:",
                 width);
               if (*width == '\0')
                 break;
-              line_width=(unsigned int) atoi(width);
+              line_width=(unsigned int) StringToLong(width);
               break;
             }
             case DrawUndoCommand:
@@ -6641,7 +6642,7 @@ static CommandType XImageWindowCommand(Display *display,
       last_symbol=key_symbol;
       delta[strlen(delta)+1]='\0';
       delta[strlen(delta)]=Digits[key_symbol-XK_0];
-      resource_info->quantum=atoi(delta);
+      resource_info->quantum=StringToLong(delta);
       return(NullCommand);
     }
   last_symbol=key_symbol;
@@ -7604,7 +7605,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XDialogWidget(display,windows,"Trim","Enter fuzz factor:",fuzz);
       if (*fuzz == '\0')
         break;
-      (*image)->fuzz=StringToDouble(fuzz,(double) QuantumRange+1.0);
+      (*image)->fuzz=SiPrefixToDouble(fuzz,(double) QuantumRange+1.0);
       /*
         Trim image.
       */
@@ -7934,7 +7935,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      quantize_info.number_colors=(unsigned long) atol(colors);
+      quantize_info.number_colors=(unsigned long) StringToLong(colors);
       quantize_info.dither=status != 0 ? MagickTrue : MagickFalse;
       (void) QuantizeImage(&quantize_info,*image);
       XSetCursorState(display,windows,MagickFalse);
@@ -8174,7 +8175,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=StringToDouble(factor,QuantumRange);
+      threshold=SiPrefixToDouble(factor,QuantumRange);
       (void) BilevelImage(*image,threshold);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -8373,7 +8374,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=StringToDouble(factor,QuantumRange);
+      threshold=SiPrefixToDouble(factor,QuantumRange);
       sepia_image=SepiaToneImage(*image,threshold,&(*image)->exception);
       if (sepia_image != (Image *) NULL)
         {
@@ -8408,7 +8409,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=StringToDouble(factor,QuantumRange);
+      threshold=SiPrefixToDouble(factor,QuantumRange);
       (void) SolarizeImage(*image,threshold);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -9076,7 +9077,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         "Pause how many 1/100ths of a second between images:",delay);
       if (*delay == '\0')
         break;
-      resource_info->delay=(unsigned long) atol(delay);
+      resource_info->delay=(unsigned long) StringToLong(delay);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -9704,7 +9705,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=StringToDouble(FuzzMenu[entry],1.0*QuantumRange+
+                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],1.0*QuantumRange+
                   1.0);
                 break;
               }
@@ -9714,7 +9715,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=StringToDouble(fuzz,1.0*QuantumRange+1.0);
+            (*image)->fuzz=SiPrefixToDouble(fuzz,1.0*QuantumRange+1.0);
             break;
           }
           case MatteEditValueCommand:
@@ -9948,7 +9949,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             q=GetAuthenticPixels(*image,x_offset,y_offset,1,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            q->opacity=(Quantum) atol(matte);
+            q->opacity=(Quantum) StringToLong(matte);
             (void) SyncAuthenticPixels(*image,exception);
             break;
           }
@@ -9971,7 +9972,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               for (x=0; x < (int) (*image)->columns; x++)
               {
                 if (IsColorSimilar(*image,q,&target))
-                  q->opacity=(Quantum) atol(matte);
+                  q->opacity=(Quantum) StringToLong(matte);
                 q++;
               }
               if (SyncAuthenticPixels(*image,exception) == MagickFalse)
@@ -10004,7 +10005,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
               (DrawInfo *) NULL);
-            draw_info->fill.opacity=RoundToQuantum(atof(matte));
+            draw_info->fill.opacity=RoundToQuantum(StringToDouble(matte));
             (void) FloodfillPaintImage(*image,OpacityChannel,draw_info,&target,
               x_offset,y_offset,method == FloodfillMethod ? MagickFalse :
               MagickTrue);
@@ -10025,13 +10026,13 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                q->opacity=(Quantum) atol(matte);
+                q->opacity=(Quantum) StringToLong(matte);
                 q++;
               }
               if (SyncAuthenticPixels(*image,exception) == MagickFalse)
                 break;
             }
-            if (atol(matte) == OpaqueOpacity)
+            if (StringToLong(matte) == OpaqueOpacity)
               (*image)->matte=MagickFalse;
             break;
           }
@@ -10162,7 +10163,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         seconds);
       if (*seconds == '\0')
         return((Image *) NULL);
-      XDelay(display,(unsigned long) (1000*atol(seconds)));
+      XDelay(display,(unsigned long) (1000*StringToLong(seconds)));
     }
   magick_info=GetMagickInfo(image_info->magick,exception);
   if ((magick_info != (const MagickInfo *) NULL) &&
@@ -12396,7 +12397,7 @@ static MagickBooleanType XSaveImage(Display *display,
         quality);
       if (*quality == '\0')
         return(MagickTrue);
-      image->quality=(unsigned long) atol(quality);
+      image->quality=(unsigned long) StringToLong(quality);
       image_info->interlace=status != 0 ? NoInterlace : PlaneInterlace;
     }
   if ((LocaleCompare(image_info->magick,"EPS") == 0) ||

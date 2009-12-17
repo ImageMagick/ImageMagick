@@ -52,6 +52,7 @@
 #include "magick/semaphore.h"
 #include "magick/timer.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/thread_.h"
 #include "magick/thread-private.h"
@@ -1447,7 +1448,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
                 log_info->generations=(~0UL);
                 break;
               }
-            log_info->generations=(unsigned long) atol(token);
+            log_info->generations=(unsigned long) StringToLong(token);
             break;
           }
         break;
@@ -1462,7 +1463,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
                 log_info->limit=(~0UL);
                 break;
               }
-            log_info->limit=(unsigned long) atol(token);
+            log_info->limit=(unsigned long) StringToLong(token);
             break;
           }
         break;

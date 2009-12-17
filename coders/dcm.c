@@ -63,6 +63,7 @@
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/module.h"
 
 /*
@@ -3173,7 +3174,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Number of frames.
             */
-            number_scenes=(unsigned long) atol((char *) data);
+            number_scenes=(unsigned long) StringToLong((char *) data);
             break;
           }
           case 0x0010:
@@ -3243,7 +3244,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Visible pixel range: center.
             */
-            window_center=atol((char *) data);
+            window_center=StringToLong((char *) data);
             break;
           }
           case 0x1051:
@@ -3251,7 +3252,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Visible pixel range: width.
             */
-            window_width=(unsigned long) atol((char *) data);
+            window_width=(unsigned long) StringToLong((char *) data);
             break;
           }
           case 0x1200:

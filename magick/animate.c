@@ -63,6 +63,7 @@
 #include "magick/property.h"
 #include "magick/resource_.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -2949,7 +2950,7 @@ static MagickBooleanType XSaveImage(Display *display,
         quality);
       if (*quality == '\0')
         return(MagickTrue);
-      image->quality=(unsigned long) atol(quality);
+      image->quality=(unsigned long) StringToLong(quality);
       image_info->interlace=status != MagickFalse ?  NoInterlace :
         PlaneInterlace;
     }

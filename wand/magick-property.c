@@ -50,6 +50,7 @@
 #include "wand/MagickWand.h"
 #include "wand/magick-wand-private.h"
 #include "wand/wand.h"
+#include "magick/string-private.h"
 
 /*
   Define declarations.
@@ -1484,7 +1485,7 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
     while (((int) *p != 0) && ((isspace((int) ((unsigned char) *p)) != 0) ||
            (*p == ',')))
       p++;
-    sampling_factors[i]=atof(p);
+    sampling_factors[i]=StringToDouble(p);
     i++;
   }
   *number_factors=(unsigned long) i;

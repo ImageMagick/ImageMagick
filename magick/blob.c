@@ -58,6 +58,7 @@
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(__WINDOWS__)
 # include <sys/mman.h>
@@ -2269,7 +2270,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
       *mode=(*type);
       mode[1]='\0';
-      image->blob->file=fdopen(atoi(filename+3),mode);
+      image->blob->file=fdopen(StringToLong(filename+3),mode);
 #if defined(__WINDOWS__) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
         setmode(_fileno(image->blob->file),_O_BINARY);

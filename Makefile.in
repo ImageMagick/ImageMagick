@@ -1365,9 +1365,9 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/splay-tree.h magick/static.c magick/static.h \
 	magick/statistic.c magick/statistic.h magick/stream.c \
 	magick/stream.h magick/stream-private.h magick/string.c \
-	magick/string_.h magick/studio.h magick/thread.c \
-	magick/thread_.h magick/thread-private.h magick/timer.c \
-	magick/timer.h magick/token.c magick/token.h \
+	magick/string_.h magick/string-private.h magick/studio.h \
+	magick/thread.c magick/thread_.h magick/thread-private.h \
+	magick/timer.c magick/timer.h magick/token.c magick/token.h \
 	magick/token-private.h magick/transform.c magick/transform.h \
 	magick/threshold.c magick/threshold.h magick/type.c \
 	magick/type.h magick/utility.c magick/utility.h \
@@ -3859,6 +3859,7 @@ MAGICK_BASE_SRCS = \
 	magick/stream-private.h \
 	magick/string.c \
 	magick/string_.h \
+	magick/string-private.h \
 	magick/studio.h \
 	magick/thread.c \
 	magick/thread_.h \
@@ -4013,6 +4014,7 @@ MAGICK_NOINST_HDRS = \
 	magick/signature-private.h \
 	magick/static.h \
 	magick/stream-private.h \
+	magick/string-private.h \
 	magick/studio.h \
 	magick/thread_.h \
 	magick/thread-private.h \

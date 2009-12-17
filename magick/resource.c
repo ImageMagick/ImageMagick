@@ -56,6 +56,7 @@
 #include "magick/semaphore.h"
 #include "magick/signature-private.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/splay-tree.h"
 #include "magick/thread-private.h"
 #include "magick/token.h"
@@ -886,7 +887,7 @@ static inline MagickSizeType StringToSizeType(const char *string,
   double
     value;
 
-  value=StringToDouble(string,interval);
+  value=SiPrefixToDouble(string,interval);
   if (value >= (double) MagickULLConstant(~0))
     return(MagickULLConstant(~0));
   return((MagickSizeType) value);
@@ -992,7 +993,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
     limit=GetPolicyValue("thread");
   if (limit != (char *) NULL)
     {
-      SetOpenMPMaximumThreads((unsigned long) atol(limit));
+      SetOpenMPMaximumThreads((unsigned long) StringToLong(limit));
       (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
         100.0));
       limit=DestroyString(limit);

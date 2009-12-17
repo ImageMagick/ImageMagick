@@ -54,6 +54,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel-private.h"
@@ -62,7 +63,7 @@
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/string-private.h"
 #include "magick/module.h"
 
 /*
@@ -349,23 +350,23 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (LocaleCompare(keyword,"simple") == 0)
         fits_info.simple=(*p == 'T') || (*p == 't') ? MagickTrue : MagickFalse;
       if (LocaleCompare(keyword,"bitpix") == 0)
-        fits_info.bits_per_pixel=atoi(p);
+        fits_info.bits_per_pixel=StringToLong(p);
       if (LocaleCompare(keyword,"naxis") == 0)
-        fits_info.number_axes=atoi(p);
+        fits_info.number_axes=StringToLong(p);
       if (LocaleCompare(keyword,"naxis1") == 0)
-        fits_info.columns=atoi(p);
+        fits_info.columns=StringToLong(p);
       if (LocaleCompare(keyword,"naxis2") == 0)
-        fits_info.rows=atoi(p);
+        fits_info.rows=StringToLong(p);
       if (LocaleCompare(keyword,"naxis3") == 0)
-        fits_info.number_planes=atoi(p);
+        fits_info.number_planes=StringToLong(p);
       if (LocaleCompare(keyword,"datamax") == 0)
-        fits_info.max_data=atof(p);
+        fits_info.max_data=StringToDouble(p);
       if (LocaleCompare(keyword,"datamin") == 0)
-        fits_info.min_data=atof(p);
+        fits_info.min_data=StringToDouble(p);
       if (LocaleCompare(keyword,"bzero") == 0)
-        fits_info.zero=atof(p);
+        fits_info.zero=StringToDouble(p);
       if (LocaleCompare(keyword,"bscale") == 0)
-        fits_info.scale=atof(p);
+        fits_info.scale=StringToDouble(p);
       if (LocaleCompare(keyword,"comment") == 0)
         {
           if (comment == (char *) NULL)

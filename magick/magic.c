@@ -49,6 +49,7 @@
 #include "magick/memory_.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/xml-tree.h"
@@ -804,7 +805,7 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"offset") == 0)
           {
-            magic_info->offset=(MagickOffsetType) atol(token);
+            magic_info->offset=(MagickOffsetType) StringToLong(token);
             break;
           }
         break;

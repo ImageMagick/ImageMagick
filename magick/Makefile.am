@@ -228,6 +228,7 @@ MAGICK_BASE_SRCS = \
 	magick/stream-private.h \
 	magick/string.c \
 	magick/string_.h \
+	magick/string-private.h \
 	magick/studio.h \
 	magick/thread.c \
 	magick/thread_.h \
@@ -387,6 +388,7 @@ MAGICK_NOINST_HDRS = \
 	magick/signature-private.h \
 	magick/static.h \
 	magick/stream-private.h \
+	magick/string-private.h \
 	magick/studio.h \
 	magick/thread_.h \
 	magick/thread-private.h \

@@ -55,6 +55,7 @@
 #include "magick/memory_.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/xml-tree.h"
 #include "magick/utility.h"
 
@@ -244,7 +245,7 @@ MagickExport XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
     node=child;
     if (node == (XMLTreeInfo *) NULL)
       break;
-    for (j=atol(subnode)-1; j > 0; j--)
+    for (j=StringToLong(subnode)-1; j > 0; j--)
     {
       node=GetXMLTreeOrdered(node);
       if (node == (XMLTreeInfo *) NULL)
@@ -875,7 +876,7 @@ MagickExport XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,const char *path)
     node=GetXMLTreeChild(node,tag);
     if (node == (XMLTreeInfo *) NULL)
       break;
-    for (j=atol(subnode)-1; j > 0; j--)
+    for (j=StringToLong(subnode)-1; j > 0; j--)
     {
       node=GetXMLTreeOrdered(node);
       if (node == (XMLTreeInfo *) NULL)

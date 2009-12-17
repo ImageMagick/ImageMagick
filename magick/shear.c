@@ -72,6 +72,8 @@
 #include "magick/resource_.h"
 #include "magick/shear.h"
 #include "magick/statistic.h"
+#include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/threshold.h"
 #include "magick/transform.h"
 
@@ -959,7 +961,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   /*
     Auto-crop image.
   */
-  GetImageBackgroundColor(clone_image,atol(artifact),exception);
+  GetImageBackgroundColor(clone_image,StringToLong(artifact),exception);
   deskew_image=AffineTransformImage(clone_image,&affine_matrix,exception);
   clone_image=DestroyImage(clone_image);
   if (deskew_image == (Image *) NULL)

@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "magick/string-private.h"
 #include "wand/MagickWand.h"
 #include "validate.h"
 
@@ -1290,7 +1291,7 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("bench",option+1) == 0)
           {
-            iterations=(unsigned long) atol(argv[++i]);
+            iterations=(unsigned long) StringToLong(argv[++i]);
             break;
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)

@@ -47,6 +47,7 @@
 #include "magick/geometry.h"
 #include "magick/memory_.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/token.h"
 
 /*
@@ -655,12 +656,12 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
       GetMagickToken(p,&p,token);
     switch (i)
     {
-      case 0: affine_matrix->sx=atof(token); break;
-      case 1: affine_matrix->rx=atof(token); break;
-      case 2: affine_matrix->ry=atof(token); break;
-      case 3: affine_matrix->sy=atof(token); break;
-      case 4: affine_matrix->tx=atof(token); flags|=XValue; break;
-      case 5: affine_matrix->ty=atof(token); flags|=YValue; break;
+      case 0: affine_matrix->sx=StringToDouble(token); break;
+      case 1: affine_matrix->rx=StringToDouble(token); break;
+      case 2: affine_matrix->ry=StringToDouble(token); break;
+      case 3: affine_matrix->sy=StringToDouble(token); break;
+      case 4: affine_matrix->tx=StringToDouble(token); flags|=XValue; break;
+      case 5: affine_matrix->ty=StringToDouble(token); flags|=YValue; break;
     }
   }
   determinant=(affine_matrix->sx*affine_matrix->sy-affine_matrix->rx*
