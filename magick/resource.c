@@ -993,7 +993,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
     limit=GetPolicyValue("thread");
   if (limit != (char *) NULL)
     {
-      SetOpenMPMaximumThreads((unsigned long) StringToLong(limit));
+      SetOpenMPMaximumThreads(StringToUnsignedLong(limit));
       (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
         100.0));
       limit=DestroyString(limit);

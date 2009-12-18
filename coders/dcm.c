@@ -3174,7 +3174,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Number of frames.
             */
-            number_scenes=(unsigned long) StringToLong((char *) data);
+            number_scenes=StringToUnsignedLong((char *) data);
             break;
           }
           case 0x0010:
@@ -3252,7 +3252,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Visible pixel range: width.
             */
-            window_width=(unsigned long) StringToLong((char *) data);
+            window_width=StringToUnsignedLong((char *) data);
             break;
           }
           case 0x1200:

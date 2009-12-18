@@ -948,7 +948,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
     map = DestroyThresholdMap(map);
     return(map);
   }
-  map->width = (unsigned long) StringToLong(attr);
+  map->width = StringToUnsignedLong(attr);
   if ( map->width == 0 ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
      "XmlInvalidAttribute", "<levels width>, map \"%s\"", map_id);
@@ -965,7 +965,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
     map = DestroyThresholdMap(map);
     return(map);
   }
-  map->height = (unsigned long) StringToLong(attr);
+  map->height = StringToUnsignedLong(attr);
   if ( map->height == 0 ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
       "XmlInvalidAttribute", "<levels height>, map \"%s\"", map_id);

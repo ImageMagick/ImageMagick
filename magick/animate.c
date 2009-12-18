@@ -2950,7 +2950,7 @@ static MagickBooleanType XSaveImage(Display *display,
         quality);
       if (*quality == '\0')
         return(MagickTrue);
-      image->quality=(unsigned long) StringToLong(quality);
+      image->quality=StringToUnsignedLong(quality);
       image_info->interlace=status != MagickFalse ?  NoInterlace :
         PlaneInterlace;
     }

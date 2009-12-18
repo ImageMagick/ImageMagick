@@ -6173,7 +6173,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->weight=(unsigned long) StringToLong(value);
+        CurrentContext->weight=StringToUnsignedLong(value);
     }
   child=GetXMLTreeChild(xml_info,"gravity");
   if (child != (XMLTreeInfo *) NULL)
@@ -6284,7 +6284,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->miterlimit=(unsigned long) StringToLong(value);
+        CurrentContext->miterlimit=StringToUnsignedLong(value);
     }
   child=GetXMLTreeChild(xml_info,"stroke-opacity");
   if (child != (XMLTreeInfo *) NULL)

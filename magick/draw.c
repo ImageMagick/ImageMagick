@@ -2091,7 +2091,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("font-weight",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->weight=(unsigned long) StringToLong(token);
+            graphic_context[n]->weight=StringToUnsignedLong(token);
             if (LocaleCompare(token,"all") == 0)
               graphic_context[n]->weight=0;
             if (LocaleCompare(token,"bold") == 0)
@@ -2633,7 +2633,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->miterlimit=(unsigned long) StringToLong(token);
+            graphic_context[n]->miterlimit=StringToUnsignedLong(token);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)

@@ -539,7 +539,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->border_width=(unsigned long) StringToLong(argv[i]);
+            montage_info->border_width=StringToUnsignedLong(argv[i]);
             break;
           }
         if (LocaleCompare("bordercolor",option+1) == 0)
@@ -563,7 +563,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->border_width=(unsigned long) StringToLong(argv[i]);
+            montage_info->border_width=StringToUnsignedLong(argv[i]);
             break;
           }
         ThrowMontageException(OptionError,"UnrecognizedOption",option)

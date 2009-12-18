@@ -3343,7 +3343,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       if (LocaleCompare(property,"depth") == 0)
         {
-          image->depth=(unsigned long) StringToLong(value);
+          image->depth=StringToUnsignedLong(value);
           break;
         }
       if (LocaleCompare(property,"dispose") == 0)
@@ -3415,7 +3415,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       if (LocaleCompare(property,"loop") == 0)
         {
-          image->iterations=(unsigned long) StringToLong(value);
+          image->iterations=StringToUnsignedLong(value);
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,

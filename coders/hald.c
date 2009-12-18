@@ -118,7 +118,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   image=AcquireImage(image_info);
   level=0;
   if (*image_info->filename != '\0')
-    level=(unsigned long) StringToLong(image_info->filename);
+    level=StringToUnsignedLong(image_info->filename);
   if (level < 2)
     level=8;
   status=MagickTrue;
