@@ -1240,7 +1240,6 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   double *X,double *Y,double *Z)
 {
   double
-    cube,
     x,
     y,
     z;
@@ -1248,22 +1247,19 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  y=(100.0*L+16.0)/116.0;
-  x=255.0*(a > 0.5 ? a-1.0 : a)/500.0+y;
-  z=y-255.0*(b > 0.5 ? b-1.0 : b)/200.0;
-  cube=y*y*y;
-  if (cube > 0.008856)
-    y=cube;
-  else
-    y=(y-16.0/116.0)/7.787;
-  cube=x*x*x;
-  if (cube > 0.008856)
-    x=cube;
+  y=((2.0*L-1.0)+0.160)/1.160;
+  x=(2.0*a-1.0)/5.000+y;
+  z=y-(2.0*b-1.0)/2.000;
+  if ((x*x*x) > (216.0/24389.0))
+    x=x*x*x;
   else
     x=(x-16.0/116.0)/7.787;
-  cube=z*z*z;
-  if (cube > 0.008856)
-    z=cube;
+  if ((y*y*y) > (216.0/24389.0))
+    y=y*y*y;
+  else
+    y=(y-16.0/116.0)/7.787;
+  if ((z*z*z) > (216.0/24389.0))
+    z=z*z*z;
   else
     z=(z-16.0/116.0)/7.787;
   *X=0.9504559271*x;
@@ -1294,21 +1290,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  r=3.2404542*x-1.5371385*y-0.4985314*z;
-  g=(-0.9692660*x+1.8760108*y+0.0415560*z);
-  b=0.0556434*x-0.2040259*y+1.0572252*z;
-  if (r > 0.0031308)
-    r=1.055*pow(r,1.0/2.4)-0.055;
-  else
-    r*=12.92;
-  if (g > 0.0031308)
-    g=1.055*pow(g,1.0/2.4)-0.055;
-  else
-    g*=12.92;
-  if (b > 0.0031308)
-    b=1.055*pow(b,1.0/2.4)-0.055;
-  else
-    b*=12.92;
+  r=3.2407100*x-1.5372600*y-0.4985710*z;
+  g=(-0.9692580*x+1.8759900*y+0.0415557*z);
+  b=0.0556352*x-0.2039960*y+1.0570700*z;
   *red=RoundToQuantum((MagickRealType) QuantumRange*r);
   *green=RoundToQuantum((MagickRealType) QuantumRange*g);
   *blue=RoundToQuantum((MagickRealType) QuantumRange*b);
