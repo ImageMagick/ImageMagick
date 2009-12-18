@@ -790,7 +790,7 @@ static double *GetBlurKernel(const unsigned long width,const double sigma)
   i=0;
   for (k=(-j); k <= j; k++)
   {
-    kernel[i]=exp(-((double) k*k)/(double) (2.0*MagickSigma*MagickSigma))/
+    kernel[i]=exp(-((double) k*k)/(2.0*MagickSigma*MagickSigma))/
       (MagickSQ2PI*MagickSigma);
     normalize+=kernel[i];
     i++;
