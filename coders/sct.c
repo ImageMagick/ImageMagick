@@ -210,9 +210,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   width=StringToDouble((char *) buffer);
   count=ReadBlob(image,12,buffer);
   buffer[12]='\0';
-  image->rows=1UL*StringToLong((char *) buffer);
+  image->rows=StringToUnsignedLong((char *) buffer);
   count=ReadBlob(image,12,buffer);
-  image->columns=1UL*StringToLong((char *) buffer);
+  image->columns=StringToUnsignedLong((char *) buffer);
   count=ReadBlob(image,200,buffer);
   count=ReadBlob(image,768,buffer);
   if (separations_mask == 0x0f)

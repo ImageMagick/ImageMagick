@@ -258,13 +258,13 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
           length=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
-          image->columns=1UL*StringToLong(value);
+          image->columns=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"NS") == 0)
-          image->columns=1UL*StringToLong(value);
+          image->columns=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"LINES") == 0)
-          image->rows=1UL*StringToLong(value);
+          image->rows=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"NL") == 0)
-          image->rows=1UL*StringToLong(value);
+          image->rows=StringToUnsignedLong(value);
       }
     while (isspace((int) ((unsigned char) c)) != 0)
     {
