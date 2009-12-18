@@ -730,6 +730,11 @@
 #define MAGICKCORE_HAVE_STRTOL  1 
 #endif
 
+/* Define to 1 if you have the `strtoul' function. */
+#ifndef MAGICKCORE_HAVE_STRTOUL 
+#define MAGICKCORE_HAVE_STRTOUL  1 
+#endif
+
 /* Define to 1 if you have the `symlink' function. */
 #ifndef MAGICKCORE_HAVE_SYMLINK 
 #define MAGICKCORE_HAVE_SYMLINK  1 
