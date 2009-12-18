@@ -8187,7 +8187,7 @@ Mogrify(ref,...)
 
               av=(AV *) argument_list[22].array_reference;
               draw_info->dash_pattern=(double *) AcquireQuantumMemory(
-                av_len(av)+2UL,sizeof(draw_info->dash_pattern));
+                av_len(av)+2UL,sizeof(*draw_info->dash_pattern));
               if (draw_info->dash_pattern != (double *) NULL)
                 {
                   for (i=0; i <= av_len(av); i++)
