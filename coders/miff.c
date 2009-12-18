@@ -624,7 +624,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
                   {
-                    colors=(unsigned long) StringToLong(options);
+                    colors=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
@@ -653,7 +653,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"columns") == 0)
                   {
-                    image->columns=(unsigned long) StringToLong(options);
+                    image->columns=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -664,12 +664,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"delay") == 0)
                   {
-                    image->delay=(unsigned long) StringToLong(options);
+                    image->delay=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"depth") == 0)
                   {
-                    image->depth=(unsigned long) StringToLong(options);
+                    image->depth=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
@@ -748,7 +748,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"iterations") == 0)
                   {
-                    image->iterations=(unsigned long) StringToLong(options);
+                    image->iterations=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -849,7 +849,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"quality") == 0)
                   {
-                    image->quality=(unsigned long) StringToLong(options);
+                    image->quality=StringToUnsignedLong(options);
                     break;
                   }
                 if ((LocaleCompare(keyword,"quantum-format") == 0) ||
@@ -904,7 +904,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
                   {
-                    image->rows=(unsigned long) StringToLong(options);
+                    image->rows=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -915,7 +915,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"scene") == 0)
                   {
-                    image->scene=(unsigned long) StringToLong(options);
+                    image->scene=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);

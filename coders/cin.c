@@ -1103,12 +1103,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.film.prefix=0UL;
   value=GetCINProperty(image_info,image,"cin:film.prefix");
   if (value != (const char *) NULL)
-    cin.film.prefix=(unsigned long) StringToLong(value);
+    cin.film.prefix=StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,cin.film.prefix);
   cin.film.count=0UL;
   value=GetCINProperty(image_info,image,"cin:film.count");
   if (value != (const char *) NULL)
-    cin.film.count=(unsigned long) StringToLong(value);
+    cin.film.count=StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,cin.film.count);
   value=GetCINProperty(image_info,image,"cin:film.format");
   if (value != (const char *) NULL)
@@ -1118,7 +1118,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.film.frame_position=0UL;
   value=GetCINProperty(image_info,image,"cin:film.frame_position");
   if (value != (const char *) NULL)
-    cin.film.frame_position=(unsigned long) StringToLong(value);
+    cin.film.frame_position=StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,cin.film.frame_position);
   cin.film.frame_rate=0.0f;
   value=GetCINProperty(image_info,image,"cin:film.frame_rate");

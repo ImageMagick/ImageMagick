@@ -367,7 +367,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
                   {
-                    image->colors=(unsigned long) StringToLong(options);
+                    image->colors=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
@@ -396,7 +396,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"columns") == 0)
                   {
-                    image->columns=(unsigned long) StringToLong(options);
+                    image->columns=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -407,12 +407,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"delay") == 0)
                   {
-                    image->delay=(unsigned long) StringToLong(options);
+                    image->delay=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"depth") == 0)
                   {
-                    image->depth=(unsigned long) StringToLong(options);
+                    image->depth=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
@@ -484,7 +484,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"iterations") == 0)
                   {
-                    image->iterations=(unsigned long) StringToLong(options);
+                    image->iterations=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -592,12 +592,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"quality") == 0)
                   {
-                    image->quality=(unsigned long) StringToLong(options);
+                    image->quality=StringToUnsignedLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"quantum-depth") == 0)
                   {
-                    quantum_depth=(unsigned long) StringToLong(options);
+                    quantum_depth=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -637,7 +637,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
                   {
-                    image->rows=(unsigned long) StringToLong(options);
+                    image->rows=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -648,7 +648,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"scene") == 0)
                   {
-                    image->scene=(unsigned long) StringToLong(options);
+                    image->scene=StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);

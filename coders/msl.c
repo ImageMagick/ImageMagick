@@ -5343,7 +5343,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=(unsigned long) StringToLong(value);
+                      geometry.height=StringToUnsignedLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5714,7 +5714,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=(unsigned long) StringToLong(value);
+                      geometry.height=StringToUnsignedLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5790,7 +5790,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=(unsigned long) StringToLong(value);
+                      geometry.height=StringToUnsignedLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",

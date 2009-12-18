@@ -3096,7 +3096,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
             last;
 
           (void) CloneString(&image_info->scenes,subimage);
-          image_info->scene=(unsigned long) StringToLong(image_info->scenes);
+          image_info->scene=StringToUnsignedLong(image_info->scenes);
           image_info->number_scenes=image_info->scene;
           p=image_info->scenes;
           for (q=(char *) image_info->scenes; *q != '\0'; p++)
@@ -3976,7 +3976,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     (void) QueryColorDatabase(option,&image->border_color,&image->exception);
   option=GetImageOption(image_info,"colors");
   if (option != (const char *) NULL)
-    image->colors=(unsigned long) StringToLong(option);
+    image->colors=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)
     image->compose=(CompositeOperator) ParseMagickOption(MagickComposeOptions,
@@ -4029,7 +4029,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"depth");
   if (option != (const char *) NULL)
-    image->depth=(unsigned long) StringToLong(option);
+    image->depth=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"dispose");
   if (option != (const char *) NULL)
     image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
@@ -4074,7 +4074,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickInterpolateOptions,MagickFalse,option);
   option=GetImageOption(image_info,"loop");
   if (option != (const char *) NULL)
-    image->iterations=(unsigned long) StringToLong(option);
+    image->iterations=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"mattecolor");
   if (option != (const char *) NULL)
     (void) QueryColorDatabase(option,&image->matte_color,&image->exception);
@@ -4084,7 +4084,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickOrientationOptions,MagickFalse,option);
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
-    image->quality=(unsigned long) StringToLong(option);
+    image->quality=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"page");
   if (option != (const char *) NULL)
     {
@@ -4108,7 +4108,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->quality=image_info->quality;
   option=GetImageOption(image_info,"scene");
   if (option != (const char *) NULL)
-    image->scene=(unsigned long) StringToLong(option);
+    image->scene=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"taint");
   if (option != (const char *) NULL)
     image->taint=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,

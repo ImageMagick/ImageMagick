@@ -5712,14 +5712,14 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 break;
               if (entry != 5)
                 {
-                  line_width=(unsigned int) StringToLong(WidthsMenu[entry]);
+                  line_width=(unsigned int) StringToUnsignedLong(WidthsMenu[entry]);
                   break;
                 }
               (void) XDialogWidget(display,windows,"Ok","Enter line width:",
                 width);
               if (*width == '\0')
                 break;
-              line_width=(unsigned int) StringToLong(width);
+              line_width=(unsigned int) StringToUnsignedLong(width);
               break;
             }
             case DrawUndoCommand:
@@ -7935,7 +7935,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      quantize_info.number_colors=(unsigned long) StringToLong(colors);
+      quantize_info.number_colors=StringToUnsignedLong(colors);
       quantize_info.dither=status != 0 ? MagickTrue : MagickFalse;
       (void) QuantizeImage(&quantize_info,*image);
       XSetCursorState(display,windows,MagickFalse);
@@ -9077,7 +9077,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         "Pause how many 1/100ths of a second between images:",delay);
       if (*delay == '\0')
         break;
-      resource_info->delay=(unsigned long) StringToLong(delay);
+      resource_info->delay=StringToUnsignedLong(delay);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -12397,7 +12397,7 @@ static MagickBooleanType XSaveImage(Display *display,
         quality);
       if (*quality == '\0')
         return(MagickTrue);
-      image->quality=(unsigned long) StringToLong(quality);
+      image->quality=StringToUnsignedLong(quality);
       image_info->interlace=status != 0 ? NoInterlace : PlaneInterlace;
     }
   if ((LocaleCompare(image_info->magick,"EPS") == 0) ||

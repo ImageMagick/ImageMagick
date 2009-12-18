@@ -362,7 +362,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   dataset = (unsigned char) StringToLong(newstr);
                 break;
               case 1:
-                recnum = (unsigned int) StringToLong(newstr);
+                recnum = (unsigned int) StringToUnsignedLong(newstr);
                 break;
               case 2:
                 name=(char *) AcquireQuantumMemory(strlen(newstr)+MaxTextExtent,
@@ -638,7 +638,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   dataset = (unsigned char) StringToLong(newstr);
                 break;
               case 1:
-                recnum=(unsigned int) StringToLong(newstr);
+                recnum=(unsigned int) StringToUnsignedLong(newstr);
                 break;
               case 2:
                 name=(char *) AcquireQuantumMemory(strlen(newstr)+MaxTextExtent,

@@ -1293,7 +1293,7 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("bench",option+1) == 0)
           {
-            iterations=(unsigned long) StringToLong(argv[++i]);
+            iterations=StringToUnsignedLong(argv[++i]);
             break;
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)

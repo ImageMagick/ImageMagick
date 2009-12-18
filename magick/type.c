@@ -1103,7 +1103,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"face") == 0)
           {
-            type_info->face=(unsigned long) StringToLong(token);
+            type_info->face=StringToUnsignedLong(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"family") == 0)
@@ -1225,7 +1225,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            type_info->weight=(unsigned long) StringToLong(token);
+            type_info->weight=StringToUnsignedLong(token);
             if (LocaleCompare(token,"bold") == 0)
               type_info->weight=700;
             if (LocaleCompare(token,"normal") == 0)

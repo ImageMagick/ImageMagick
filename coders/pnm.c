@@ -366,11 +366,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Assign a value to the specified keyword.
           */
           if (LocaleCompare(keyword,"depth") == 0)
-            packet_size=(unsigned long) StringToLong(value);
+            packet_size=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"height") == 0)
-            image->rows=(unsigned long) StringToLong(value);
+            image->rows=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"maxval") == 0)
-            max_value=(unsigned long) StringToLong(value);
+            max_value=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"TUPLTYPE") == 0)
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
@@ -405,7 +405,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
             }
           if (LocaleCompare(keyword,"width") == 0)
-            image->columns=(unsigned long) StringToLong(value);
+            image->columns=StringToUnsignedLong(value);
         }
       }
     if ((image->columns == 0) || (image->rows == 0))

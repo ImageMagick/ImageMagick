@@ -3465,7 +3465,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     "borderColor",BorderColor);
   resource_value=XGetResourceClass(database,client_name,"borderWidth",
     (char *) "2");
-  resource_info->border_width=(unsigned int) StringToLong(resource_value);
+  resource_info->border_width=(unsigned int) StringToUnsignedLong(resource_value);
   resource_value=XGetResourceClass(database,client_name,"colormap",
     (char *) "shared");
   resource_info->colormap=UndefinedColormap;
@@ -3486,7 +3486,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     (char *) "False");
   resource_info->confirm_edit=IsMagickTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"delay",(char *) "1");
-  resource_info->delay=(unsigned int) StringToLong(resource_value);
+  resource_info->delay=(unsigned int) StringToUnsignedLong(resource_value);
   resource_info->display_gamma=XGetResourceClass(database,client_name,
     "displayGamma",(char *) "2.2");
   resource_value=XGetResourceClass(database,client_name,"displayWarnings",
@@ -3541,7 +3541,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_info->immutable=IsMagickTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"magnify",
     (char *) "3");
-  resource_info->magnify=(unsigned int) StringToLong(resource_value);
+  resource_info->magnify=(unsigned int) StringToUnsignedLong(resource_value);
   resource_info->map_type=XGetResourceClass(database,client_name,"map",
     (char *) NULL);
   resource_info->matte_color=XGetResourceInstance(database,client_name,
@@ -3571,7 +3571,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_info->pen_colors[10]=XGetResourceClass(database,client_name,"pen0",
     (char *) "gray");
   resource_value=XGetResourceClass(database,client_name,"pause",(char *) "0");
-  resource_info->pause=(unsigned int) StringToLong(resource_value);
+  resource_info->pause=(unsigned int) StringToUnsignedLong(resource_value);
   resource_value=XGetResourceClass(database,client_name,"quantum",(char *) "1");
   resource_info->quantum=StringToLong(resource_value);
   resource_info->text_font=XGetResourceClass(database,client_name,(char *)
@@ -3582,7 +3582,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     (char *) NULL);
   resource_value=XGetResourceClass(database,client_name,"undoCache",
     (char *) "16");
-  resource_info->undo_cache=(unsigned int) StringToLong(resource_value);
+  resource_info->undo_cache=(unsigned int) StringToUnsignedLong(resource_value);
   resource_value=XGetResourceClass(database,client_name,"update",
     (char *) "False");
   resource_info->update=IsMagickTrue(resource_value);
