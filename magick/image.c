@@ -2167,6 +2167,9 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   status=MagickTrue;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
   for (y=0; y < (long) image->rows; y++)
   {
     register IndexPacket
@@ -2178,6 +2181,8 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
     register PixelPacket
       *restrict q;
 
+    if (status == MagickFalse)
+      continue;
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       {
@@ -2192,8 +2197,6 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (status == MagickFalse)
-      break;
   }
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
@@ -3833,6 +3836,9 @@ MagickExport MagickBooleanType SyncImage(Image *image)
   status=MagickTrue;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
   for (y=0; y < (long) image->rows; y++)
   {
     IndexPacket
@@ -3850,6 +3856,8 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     register PixelPacket
       *restrict q;
 
+    if (status == MagickFalse)
+      continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       {
@@ -3869,8 +3877,6 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (status == MagickFalse)
-      break;
   }
   image_view=DestroyCacheView(image_view);
   if (range_exception != MagickFalse)

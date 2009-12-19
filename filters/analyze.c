@@ -85,6 +85,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
 
   double
     area,
+    brightness,
     brightness_mean,
     brightness_standard_deviation,
     brightness_kurtosis,
@@ -93,6 +94,8 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     brightness_sum_x2,
     brightness_sum_x3,
     brightness_sum_x4,
+    hue,
+    saturation,
     saturation_mean,
     saturation_standard_deviation,
     saturation_kurtosis,
@@ -102,22 +105,8 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     saturation_sum_x3,
     saturation_sum_x4;
 
-  double
-    brightness,
-    hue,
-    saturation;
-
   Image
     *image;
-
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
 
   assert(images != (Image **) NULL);
   assert(*images != (Image *) NULL);
@@ -127,6 +116,15 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
   image=(*images);
   for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
   {
+    CacheView
+      *image_view;
+
+    long
+      y;
+
+    MagickBooleanType
+      status;
+
     brightness_sum_x=0.0;
     brightness_sum_x2=0.0;
     brightness_sum_x3=0.0;
@@ -144,11 +142,27 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     saturation_kurtosis=0.0;
     saturation_skewness=0.0;
     area=0.0;
+    status=MagickTrue;
+    image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+      register const PixelPacket
+        *p;
+
+      register long
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFalse;
+          continue;
+        }
       for (x=0; x < (long) image->columns; x++)
       {
         ConvertRGBToHSB(p->red,p->green,p->blue,&hue,&saturation,&brightness);
@@ -166,6 +180,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
         p++;
       }
     }
+    image_view=DestroyCacheView(image_view);
     if (area <= 0.0)
       break;
     brightness_mean=brightness_sum_x/area;
