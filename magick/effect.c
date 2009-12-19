@@ -1536,7 +1536,6 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
               pixel.red+=(*k)*alpha*kernel_pixels[u].red;
               pixel.green+=(*k)*alpha*kernel_pixels[u].green;
               pixel.blue+=(*k)*alpha*kernel_pixels[u].blue;
-              pixel.opacity+=(*k)*kernel_pixels[u].opacity;
               gamma+=(*k)*alpha;
               k++;
             }
