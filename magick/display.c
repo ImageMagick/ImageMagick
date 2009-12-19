@@ -3722,7 +3722,8 @@ static MagickBooleanType XColorEditImage(Display *display,
               {
                 for (y=0; y < (long) (*image)->rows; y++)
                 {
-                  q=GetAuthenticPixels(*image,0,y,(*image)->columns,1,exception);
+                  q=GetAuthenticPixels(*image,0,y,(*image)->columns,1,
+                    exception);
                   if (q == (PixelPacket *) NULL)
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
