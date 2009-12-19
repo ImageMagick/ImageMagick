@@ -4731,7 +4731,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     zero;
 
   RandomInfo
-    *random_info;
+    **random_info;
 
   CacheView
     *random_view;
@@ -4745,8 +4745,11 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     return((Image *) NULL);
   status=MagickTrue;
   GetMagickPixelPacket(random_image,&zero);
-  random_info=AcquireRandomInfo();
+  random_info=AcquireRandomInfoThreadSet();
   random_view=AcquireCacheView(random_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
   for (y=0; y < (long) random_image->rows; y++)
   {
     MagickPixelPacket
@@ -4756,11 +4759,14 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       *restrict indexes;
 
     register long
+      id,
       x;
 
     register PixelPacket
       *restrict q;
 
+    if (status == MagickFalse)
+      continue;
     q=QueueCacheViewAuthenticPixels(random_view,0,y,random_image->columns,1,
       exception);
     if (q == (PixelPacket *) NULL)
@@ -4770,10 +4776,11 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       }
     indexes=GetCacheViewAuthenticIndexQueue(random_view);
     pixel=zero;
+    id=GetOpenMPThreadId();
     for (x=0; x < (long) random_image->columns; x++)
     {
       pixel.red=(MagickRealType) (QuantumRange*
-        GetPseudoRandomValue(random_info));
+        GetPseudoRandomValue(random_info[id]));
       pixel.green=pixel.red;
       pixel.blue=pixel.red;
       if (image->colorspace == CMYKColorspace)
@@ -4783,11 +4790,9 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     }
     if (SyncCacheViewAuthenticPixels(random_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (status == MagickFalse)
-      break;
   }
   random_view=DestroyCacheView(random_view);
-  random_info=DestroyRandomInfo(random_info);
+  random_info=DestroyRandomInfoThreadSet(random_info);
   if (status == MagickFalse)
     {
       random_image=DestroyImage(random_image);
