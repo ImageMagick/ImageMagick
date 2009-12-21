@@ -1736,7 +1736,11 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       break;
     }
     default:
+    {
+      if (image->colorspace != RGBColorspace)
+        (void) TransformImageColorspace(image,RGBColorspace);
       break;
+    }
   }
   if ((image_info->type != TrueColorType) &&
       (IsGrayImage(image,&image->exception) != MagickFalse))
