@@ -241,7 +241,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have using the <a href="../www/command-line-options.html#version">&#x2011;version</a> option, as with this command: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.8-7 2009-12-05 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.8-8 2009-12-05 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).</p>
 </div>
 
@@ -1006,14 +1006,14 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 
 <div class="viewport">
 <pre class="code">
-#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;string.h>
-#include &lt;time.h>
-#include &lt;assert.h>
-#include &lt;math.h>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;math.h&gt;
 #include "magick/MagickCore.h"
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1025,14 +1025,14 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  analyzeImage() computes the brightness and saturation mean, standard
-%  deviation, kurtosis and skewness and stores these values as properties of
-%  the image.
+%  analyzeImage() computes the brightness and saturation mean,  standard
+%  deviation, kurtosis and skewness and stores these values as attributes 
+%  of the image.
 %
 %  The format of the analyzeImage method is:
 %
 %      unsigned long analyzeImage(Image *images,const int argc,
-%        const char **argv,ExceptionInfo *exception)
+%        char **argv,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1050,14 +1050,12 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 ModuleExport unsigned long analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
-  CacheView
-    *image_view;
-
   char
     text[MaxTextExtent];
 
   double
     area,
+    brightness,
     brightness_mean,
     brightness_standard_deviation,
     brightness_kurtosis,
@@ -1066,6 +1064,8 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     brightness_sum_x2,
     brightness_sum_x3,
     brightness_sum_x4,
+    hue,
+    saturation,
     saturation_mean,
     saturation_standard_deviation,
     saturation_kurtosis,
@@ -1075,31 +1075,26 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     saturation_sum_x3,
     saturation_sum_x4;
 
-  double
-    brightness,
-    hue,
-    saturation;
-
   Image
     *image;
 
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
   assert(images != (Image **) NULL);
   assert(*images != (Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)-&gt;signature == MagickSignature);
   (void) argc;
   (void) argv;
   image=(*images);
   for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
   {
+    CacheView
+      *image_view;
+
+    long
+      y;
+
+    MagickBooleanType
+      status;
+
     brightness_sum_x=0.0;
     brightness_sum_x2=0.0;
     brightness_sum_x3=0.0;
@@ -1117,12 +1112,27 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     saturation_kurtosis=0.0;
     saturation_skewness=0.0;
     area=0.0;
+    status=MagickTrue;
     image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
     for (y=0; y &lt; (long) image-&gt;rows; y++)
     {
+      register const PixelPacket
+        *p;
+
+      register long
+        x;
+
+      if (status == MagickFalse)
+        continue;
       p=GetCacheViewVirtualPixels(image_view,0,y,image-&gt;columns,1,exception);
       if (p == (const PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFalse;
+          continue;
+        }
       for (x=0; x &lt; (long) image-&gt;columns; x++)
       {
         ConvertRGBToHSB(p-&gt;red,p-&gt;green,p-&gt;blue,&amp;hue,&amp;saturation,&amp;brightness);
