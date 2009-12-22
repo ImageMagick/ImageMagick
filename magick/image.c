@@ -3757,7 +3757,7 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StripImage() strips an image of all profiles, comments, and properties.
+%  StripImage() strips an image of all profiles and comments.
 %
 %  The format of the StripImage method is:
 %
@@ -3774,7 +3774,7 @@ MagickExport MagickBooleanType StripImage(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   DestroyImageProfiles(image);
-  DestroyImageProperties(image);
+  DeleteImageProperty(image,"comment");
   return(MagickTrue);
 }
 
