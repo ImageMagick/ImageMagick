@@ -1,5 +1,5 @@
 %define VERSION  6.5.8
-%define Patchlevel  9
+%define Patchlevel  8
 
 Name:           ImageMagick
 Version:        %{VERSION}
