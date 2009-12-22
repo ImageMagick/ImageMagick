@@ -38,7 +38,8 @@ extern "C" {
  \
   GetExceptionInfo(&exception); \
   (void) ThrowMagickException(&exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",strerror(errno)); \
+    tag == (const char *) NULL ? "unknown" : tag,"`%s'", \
+    GetExceptionMessage(errno)); \
   CatchException(&exception); \
   (void) DestroyExceptionInfo(&exception); \
   _exit(1); \
@@ -47,7 +48,7 @@ extern "C" {
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
     tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context, \
-    strerror(errno)); \
+    GetExceptionMessage(errno)); \
 }
 #define ThrowImageException(severity,tag) \
 { \
