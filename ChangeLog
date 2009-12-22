@@ -1,3 +1,6 @@
+2009-12-22  6.5.8-9 Cristy  <quetzlzacatenango@image...>
+  * The -strip option strips an image of all profiles, comments, and properties.
+
 2009-12-20  6.5.8-8 Cristy  <quetzlzacatenango@image...>
   * JPEG does not grok the HSL colorspace.
 
