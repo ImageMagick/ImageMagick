@@ -58,12 +58,12 @@ static inline double StringToDouble(const char *value)
 
 static inline long StringToLong(const char *value)
 {
-  return(strtol(value,(char **) NULL,10));
+  return(strtol(value,(char **) NULL,0));
 }
 
 static inline unsigned long StringToUnsignedLong(const char *value)
 {
-  return(strtoul(value,(char **) NULL,10));
+  return(strtoul(value,(char **) NULL,0));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
