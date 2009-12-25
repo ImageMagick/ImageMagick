@@ -1444,10 +1444,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         pixel;
 
       MagickRealType
+        w, h,
         blur_xu,
         blur_xv,
         blur_yu,
-        blur_yv;
+        blur_yv,
+        angle_start,
+        angle_range;
 
       ResampleFilter
         *resample_filter;
@@ -1478,25 +1481,28 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
-      blur_xu=geometry_info.rho;
-      blur_yv=geometry_info.sigma;
+      w=blur_xu=geometry_info.rho;
+      h=blur_yv=geometry_info.sigma;
       blur_xv=blur_yu = 0.0;
+      angle_start=0.0;
+      angle_range=0.0;
       if ((flags & HeightValue) == 0)
         blur_yv=blur_xu;
-      if ((flags & XValue) != 0)
+      if ((flags & XValue) != 0 )
         {
           MagickRealType
-            angle,
-            x,
-            y;
+            angle;
 
-          x=blur_xu;
-          y=blur_yv;
-          angle=DegreesToRadians(geometry_info.xi);
-          blur_xu=x*cos(angle);
-          blur_xv=x*sin(angle);
-          blur_yu=(-y*sin(angle));
-          blur_yu=y*cos(angle);
+          angle = DegreesToRadians(geometry_info.xi);
+          blur_xu = w*cos(angle);
+          blur_xv = w*sin(angle);
+          blur_yu = (-h*sin(angle));
+          blur_yv = h*cos(angle);
+        }
+      if ((flags & YValue) != 0 )
+        {
+          angle_start = DegreesToRadians(geometry_info.xi);
+          angle_range = DegreesToRadians(geometry_info.psi) - angle_start;
         }
       /*
         Blur Image by resampling;
@@ -1539,6 +1545,17 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             {
               p++;
               continue;
+            }
+          if ( fabs(angle_range) > MagickEpsilon )
+            {
+              MagickRealType
+                angle;
+
+              angle = angle_start + angle_range*QuantumScale*p->blue;
+              blur_xu = w*cos(angle);
+              blur_xv = w*sin(angle);
+              blur_yu = (-h*sin(angle));
+              blur_yv = h*cos(angle);
             }
           ScaleResampleFilter(resample_filter,blur_xu*QuantumScale*p->red,
             blur_yu*QuantumScale*p->green,blur_xv*QuantumScale*p->red,

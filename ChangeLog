@@ -1,3 +1,9 @@
+
+2009-12-23  6.5.8-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * angle bug fix in variable blur composition with vertical ellipses
+  * Added ability to have variable angles for ellipses in variable blur
+    composition.  See IM Examples, Composition, Variable Blur for details
+
 2009-12-20  6.5.8-8 Cristy  <quetzlzacatenango@image...>
   * JPEG does not grok the HSL colorspace.
 
