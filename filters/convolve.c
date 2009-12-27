@@ -2,13 +2,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                      BBBB    OOO    OOO   SSSSS  TTTTT                      %
-%                      B   B  O   O  O   O  SS       T                        %
-%                      BBBB   O   O  O   O   SSS     T                        %
-%                      B   B  O   O  O   O     SS    T                        %
-%                      BBBB    OOO    OOO   SSSSS    T                        %
+%             CCCC   OOO   N   N  V   V   OOO   L      V   V  EEEEE           %
+%            C      O   O  NN  N  V   V  O   O  L      V   V  E               %
+%            C      O   O  N N N  V   V  O   O  L      V   V  EEE             %
+%            C      O   O  N  NN   V V   O   O  L       V V   E               %
+%             CCCC   OOO   N   N    V     OOO   LLLLL    V    EEEEE           %
 %                                                                             %
-%                                Boost An Image                               %
+%                              Convolve An Image                              %
 %                                                                             %
 %                               Software Design                               %
 %                                 John Cristy                                 %
@@ -31,8 +31,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Boost certain algorithms by executing in concert across heterogeneous
-% platforms consisting of CPUs, GPUs, and other processors (in development).
+% Convolve an image by executing in concert across heterogeneous platforms
+% consisting of CPUs, GPUs, and other processors (in development).
 %
 */
 
@@ -53,13 +53,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  boostImage() boosts the performance of certain image processing algorithms
-%  by utilizing the OpenCL framework to execute the algorithm across
-%  heterogeneous platforms consisting of CPUs, GPUs, and other processors.  This
-%  filter is experimental and is not recommended for general use.
-%  The format of the boostImage method is:
+%  convolveImage() convolves an image by utilizing the OpenCL framework to
+%  execute the algorithm across heterogeneous platforms consisting of CPUs,
+%  GPUs, and other processors.  This filter is experimental and is not
+%  recommended for general use.  The format of the convolveImage method is:
 %
-%      unsigned long boostImage(Image *images,const int argc,
+%      unsigned long convolveImage(Image *images,const int argc,
 %        char **argv,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -75,7 +74,7 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-ModuleExport unsigned long boostImage(Image **images,const int argc,
+ModuleExport unsigned long convolveImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
   assert(images != (Image **) NULL);
