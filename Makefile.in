@@ -1233,15 +1233,16 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(filters_analyze_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
-filters_boost_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+filters_convolve_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
 	$(am__DEPENDENCIES_1)
-am_filters_boost_la_OBJECTS = filters/filters_boost_la-boost.lo
-filters_boost_la_OBJECTS = $(am_filters_boost_la_OBJECTS)
-filters_boost_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+am_filters_convolve_la_OBJECTS =  \
+	filters/filters_convolve_la-convolve.lo
+filters_convolve_la_OBJECTS = $(am_filters_convolve_la_OBJECTS)
+filters_convolve_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(filters_boost_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
-@WITH_MODULES_TRUE@am_filters_boost_la_rpath = -rpath $(filtersdir)
+	$(AM_CFLAGS) $(CFLAGS) $(filters_convolve_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@WITH_MODULES_TRUE@am_filters_convolve_la_rpath = -rpath $(filtersdir)
 ltdl_dld_link_la_DEPENDENCIES =
 am_ltdl_dld_link_la_OBJECTS = ltdl/loaders/dld_link.lo
 ltdl_dld_link_la_OBJECTS = $(am_ltdl_dld_link_la_OBJECTS)
@@ -1402,7 +1403,7 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	coders/clipboard.c coders/emf.c coders/jbig.c coders/jpeg.c \
 	coders/jp2.c coders/png.c coders/ept.c coders/tiff.c \
 	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c \
-	filters/boost.c
+	filters/convolve.c
 am__objects_2 = magick/magick_libMagickCore_la-animate.lo \
 	magick/magick_libMagickCore_la-annotate.lo \
 	magick/magick_libMagickCore_la-artifact.lo \
@@ -1617,7 +1618,7 @@ am__objects_16 = coders/magick_libMagickCore_la-art.lo \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	$(am__objects_14) $(am__objects_15)
 am__objects_17 = filters/magick_libMagickCore_la-analyze.lo \
-	filters/magick_libMagickCore_la-boost.lo
+	filters/magick_libMagickCore_la-convolve.lo
 @WITH_MODULES_FALSE@am_magick_libMagickCore_la_OBJECTS =  \
 @WITH_MODULES_FALSE@	$(am__objects_2) $(am__objects_3) \
 @WITH_MODULES_FALSE@	$(am__objects_16) $(am__objects_17)
@@ -1965,7 +1966,7 @@ SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
 	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
 	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(filters_boost_la_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(filters_convolve_la_SOURCES) \
 	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
 	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
 	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
@@ -2053,7 +2054,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
 	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
 	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(filters_boost_la_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(filters_convolve_la_SOURCES) \
 	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
 	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
 	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
@@ -4047,12 +4048,12 @@ MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
 filtersdir = $(FILTER_PATH)
 MAGICK_FILTER_SRCS = \
 	filters/analyze.c \
-	filters/boost.c
+	filters/convolve.c
 
 @WITH_MODULES_FALSE@filters_LTLIBRARIES = 
 @WITH_MODULES_TRUE@filters_LTLIBRARIES = \
 @WITH_MODULES_TRUE@	filters/analyze.la \
-@WITH_MODULES_TRUE@	filters/boost.la
+@WITH_MODULES_TRUE@	filters/convolve.la
 
 
 # analyze filter module
@@ -4061,11 +4062,11 @@ filters_analyze_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
-# boost filter module
-filters_boost_la_SOURCES = filters/boost.c
-filters_boost_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
-filters_boost_la_LDFLAGS = $(MODULECOMMONFLAGS)
-filters_boost_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+# convolve filter module
+filters_convolve_la_SOURCES = filters/convolve.c
+filters_convolve_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+filters_convolve_la_LDFLAGS = $(MODULECOMMONFLAGS)
+filters_convolve_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 wandincdir = $(topincludedir)/wand
 WAND_SOURCES = \
 	wand/MagickWand.h \
@@ -5326,10 +5327,10 @@ filters/filters_analyze_la-analyze.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
 filters/analyze.la: $(filters_analyze_la_OBJECTS) $(filters_analyze_la_DEPENDENCIES) filters/$(am__dirstamp)
 	$(AM_V_CCLD)$(filters_analyze_la_LINK) $(am_filters_analyze_la_rpath) $(filters_analyze_la_OBJECTS) $(filters_analyze_la_LIBADD) $(LIBS)
-filters/filters_boost_la-boost.lo: filters/$(am__dirstamp) \
+filters/filters_convolve_la-convolve.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
-filters/boost.la: $(filters_boost_la_OBJECTS) $(filters_boost_la_DEPENDENCIES) filters/$(am__dirstamp)
-	$(AM_V_CCLD)$(filters_boost_la_LINK) $(am_filters_boost_la_rpath) $(filters_boost_la_OBJECTS) $(filters_boost_la_LIBADD) $(LIBS)
+filters/convolve.la: $(filters_convolve_la_OBJECTS) $(filters_convolve_la_DEPENDENCIES) filters/$(am__dirstamp)
+	$(AM_V_CCLD)$(filters_convolve_la_LINK) $(am_filters_convolve_la_rpath) $(filters_convolve_la_OBJECTS) $(filters_convolve_la_LIBADD) $(LIBS)
 ltdl/loaders/$(am__dirstamp):
 	@$(MKDIR_P) ltdl/loaders
 	@: > ltdl/loaders/$(am__dirstamp)
@@ -5797,7 +5798,7 @@ coders/magick_libMagickCore_la-xwd.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 filters/magick_libMagickCore_la-analyze.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
-filters/magick_libMagickCore_la-boost.lo: filters/$(am__dirstamp) \
+filters/magick_libMagickCore_la-convolve.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
 magick/libMagickCore.la: $(magick_libMagickCore_la_OBJECTS) $(magick_libMagickCore_la_DEPENDENCIES) magick/$(am__dirstamp)
 	$(AM_V_CCLD)$(magick_libMagickCore_la_LINK) -rpath $(libdir) $(magick_libMagickCore_la_OBJECTS) $(magick_libMagickCore_la_LIBADD) $(LIBS)
@@ -6638,12 +6639,12 @@ mostlyclean-compile:
 	-rm -f coders/magick_libMagickCore_la-yuv.lo
 	-rm -f filters/filters_analyze_la-analyze.$(OBJEXT)
 	-rm -f filters/filters_analyze_la-analyze.lo
-	-rm -f filters/filters_boost_la-boost.$(OBJEXT)
-	-rm -f filters/filters_boost_la-boost.lo
+	-rm -f filters/filters_convolve_la-convolve.$(OBJEXT)
+	-rm -f filters/filters_convolve_la-convolve.lo
 	-rm -f filters/magick_libMagickCore_la-analyze.$(OBJEXT)
 	-rm -f filters/magick_libMagickCore_la-analyze.lo
-	-rm -f filters/magick_libMagickCore_la-boost.$(OBJEXT)
-	-rm -f filters/magick_libMagickCore_la-boost.lo
+	-rm -f filters/magick_libMagickCore_la-convolve.$(OBJEXT)
+	-rm -f filters/magick_libMagickCore_la-convolve.lo
 	-rm -f ltdl/loaders/dld_link.$(OBJEXT)
 	-rm -f ltdl/loaders/dld_link.lo
 	-rm -f ltdl/loaders/dlopen.$(OBJEXT)
@@ -7170,9 +7171,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-ycbcr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-yuv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_analyze_la-analyze.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_boost_la-boost.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_convolve_la-convolve.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libMagickCore_la-analyze.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libMagickCore_la-boost.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libMagickCore_la-convolve.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Plo@am__quote@
@@ -8228,13 +8229,13 @@ filters/filters_analyze_la-analyze.lo: filters/analyze.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_analyze_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/filters_analyze_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
 
-filters/filters_boost_la-boost.lo: filters/boost.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_boost_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/filters_boost_la-boost.lo -MD -MP -MF filters/$(DEPDIR)/filters_boost_la-boost.Tpo -c -o filters/filters_boost_la-boost.lo `test -f 'filters/boost.c' || echo '$(srcdir)/'`filters/boost.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) filters/$(DEPDIR)/filters_boost_la-boost.Tpo filters/$(DEPDIR)/filters_boost_la-boost.Plo
+filters/filters_convolve_la-convolve.lo: filters/convolve.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_convolve_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/filters_convolve_la-convolve.lo -MD -MP -MF filters/$(DEPDIR)/filters_convolve_la-convolve.Tpo -c -o filters/filters_convolve_la-convolve.lo `test -f 'filters/convolve.c' || echo '$(srcdir)/'`filters/convolve.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) filters/$(DEPDIR)/filters_convolve_la-convolve.Tpo filters/$(DEPDIR)/filters_convolve_la-convolve.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/boost.c' object='filters/filters_boost_la-boost.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/convolve.c' object='filters/filters_convolve_la-convolve.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_boost_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/filters_boost_la-boost.lo `test -f 'filters/boost.c' || echo '$(srcdir)/'`filters/boost.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_convolve_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/filters_convolve_la-convolve.lo `test -f 'filters/convolve.c' || echo '$(srcdir)/'`filters/convolve.c
 
 ltdl/loaders/ltdl_libltdl_la-preopen.lo: ltdl/loaders/preopen.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/loaders/ltdl_libltdl_la-preopen.lo -MD -MP -MF ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Tpo -c -o ltdl/loaders/ltdl_libltdl_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
@@ -9916,13 +9917,13 @@ filters/magick_libMagickCore_la-analyze.lo: filters/analyze.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/magick_libMagickCore_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
 
-filters/magick_libMagickCore_la-boost.lo: filters/boost.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/magick_libMagickCore_la-boost.lo -MD -MP -MF filters/$(DEPDIR)/magick_libMagickCore_la-boost.Tpo -c -o filters/magick_libMagickCore_la-boost.lo `test -f 'filters/boost.c' || echo '$(srcdir)/'`filters/boost.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) filters/$(DEPDIR)/magick_libMagickCore_la-boost.Tpo filters/$(DEPDIR)/magick_libMagickCore_la-boost.Plo
+filters/magick_libMagickCore_la-convolve.lo: filters/convolve.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/magick_libMagickCore_la-convolve.lo -MD -MP -MF filters/$(DEPDIR)/magick_libMagickCore_la-convolve.Tpo -c -o filters/magick_libMagickCore_la-convolve.lo `test -f 'filters/convolve.c' || echo '$(srcdir)/'`filters/convolve.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) filters/$(DEPDIR)/magick_libMagickCore_la-convolve.Tpo filters/$(DEPDIR)/magick_libMagickCore_la-convolve.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/boost.c' object='filters/magick_libMagickCore_la-boost.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/convolve.c' object='filters/magick_libMagickCore_la-convolve.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/magick_libMagickCore_la-boost.lo `test -f 'filters/boost.c' || echo '$(srcdir)/'`filters/boost.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/magick_libMagickCore_la-convolve.lo `test -f 'filters/convolve.c' || echo '$(srcdir)/'`filters/convolve.c
 
 wand/wand_libMagickWand_la-animate.lo: wand/animate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-animate.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-animate.Tpo -c -o wand/wand_libMagickWand_la-animate.lo `test -f 'wand/animate.c' || echo '$(srcdir)/'`wand/animate.c
