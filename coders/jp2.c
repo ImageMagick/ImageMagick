@@ -109,6 +109,9 @@
 #if defined(MAGICKCORE_JP2_DELEGATE)
 static MagickBooleanType
   WriteJP2Image(const ImageInfo *,Image *);
+
+static volatile MagickBooleanType
+  instantiate_jp2 = MagickFalse;
 #endif
 
 /*
@@ -722,7 +725,11 @@ ModuleExport unsigned long RegisterJP2Image(void)
 #endif
   (void) RegisterMagickInfo(entry);
 #if defined(MAGICKCORE_JP2_DELEGATE)
-  jas_init();
+  if (instantiate_jp2 == MagickFalse)
+    {
+      jas_init();
+      instantiate_jp2=MagickTrue;
+    }
 #endif
   return(MagickImageCoderSignature);
 }
@@ -753,7 +760,11 @@ ModuleExport void UnregisterJP2Image(void)
   (void) UnregisterMagickInfo("JPC");
   (void) UnregisterMagickInfo("JP2");
 #if defined(MAGICKCORE_JP2_DELEGATE)
-  jas_cleanup();
+  if (instantiate_jp2 != MagickFalse)
+    {
+      /* jas_cleanup(); // Jasper has an errant atexit() handler */
+      instantiate_jp2=MagickFalse;
+    }
 #endif
 }
 
