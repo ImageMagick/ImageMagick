@@ -1,4 +1,8 @@
 
+2009-12-27  6.5.8-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added MxN tile cropping with overlapping and space handling.
+    See IM Examples, Cutting and Bordering, Cropping roughly Equal
+
 2009-12-23  6.5.8-8 Anthony Thyssen <A.Thyssen@griffith...>
   * angle bug fix in variable blur composition with vertical ellipses
   * Added ability to have variable angles for ellipses in variable blur
