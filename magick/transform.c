@@ -1628,6 +1628,14 @@ MagickExport Image *SpliceImage(const Image *image,
 %      final size of the image.
 %
 */
+static inline double MagickRound(double x)
+{
+  /* round the fraction to nearest integer */
+  if (x >= 0.0)
+    return((double) ((long) (x+0.5)));
+  return((double) ((long) (x-0.5)));
+}
+
 MagickExport MagickBooleanType TransformImage(Image **image,
   const char *crop_geometry,const char *image_geometry)
 {
@@ -1660,8 +1668,80 @@ MagickExport MagickBooleanType TransformImage(Image **image,
       crop_image=NewImageList();
       flags=ParseGravityGeometry(transform_image,crop_geometry,&geometry,
         &(*image)->exception);
-      if (((geometry.width == 0) && (geometry.height == 0)) ||
-          ((flags & XValue) != 0) || ((flags & YValue) != 0))
+      /* crop into NxM tiles (@ flag) - AT */
+      if ((flags & AreaValue) != 0 )
+        {
+          Image
+            *next;
+
+          MagickRealType
+            width, height, w_step, h_step, x, y;
+
+          RectangleInfo
+            crop;
+
+          if ( geometry.width == 0 ) geometry.width = 1;
+          if ( geometry.height == 0 ) geometry.height = 1;
+
+          width=(MagickRealType)transform_image->columns;
+          height=(MagickRealType)transform_image->rows;
+          if ((flags & AspectValue) == 0)
+            {
+              width -= (MagickRealType)labs(geometry.x);
+              height -= (MagickRealType)labs(geometry.y);
+            }
+          else
+            {
+              width += (MagickRealType)labs(geometry.x);
+              height += (MagickRealType)labs(geometry.y);
+            }
+          w_step=width/geometry.width;
+          h_step=height/geometry.height;
+
+          next=NewImageList();
+          for (y=0.0; y < height; )
+          {
+            if ((flags & AspectValue) == 0)
+              {
+                crop.y=MagickRound(y-(geometry.y>0?0:geometry.y));
+                y+=h_step;
+                crop.height=MagickRound(y+(geometry.y<0?0:geometry.y));
+              }
+            else
+              {
+                crop.y=MagickRound(y-(geometry.y>0?geometry.y:0) );
+                y+=h_step;
+                crop.height=MagickRound(y+(geometry.y<0?geometry.y:0) );
+              }
+            crop.height -= crop.y;
+            for (x=0.0; x < width; )
+            {
+              if ((flags & AspectValue) == 0)
+                {
+                  crop.x=MagickRound(x-(geometry.x>0?0:geometry.x));
+                  x+=w_step;
+                  crop.width=MagickRound(x+(geometry.x<0?0:geometry.x));
+                }
+              else
+                {
+                  crop.x=MagickRound(x-(geometry.x>0?geometry.x:0) );
+                  x+=w_step;
+                  crop.width=MagickRound(x+(geometry.x<0?geometry.x:0) );
+                }
+              crop.width -= crop.x;
+printf("crop %ldx%ld+%ld+%ld\n", crop.width, crop.height, crop.x, crop.y);
+              next=CropImage(transform_image,&crop,&(*image)->exception);
+              if (next == (Image *) NULL)
+                break;
+              AppendImageToList(&crop_image,next);
+            }
+            if (next == (Image *) NULL)
+              break;
+          }
+        }
+      /* crop a single region at +X+Y  */
+      else if (((geometry.width == 0) && (geometry.height == 0)) ||
+            ((flags & XValue) != 0) || ((flags & YValue) != 0))
         {
           crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
           if ((crop_image != (Image *) NULL) && ((flags & AspectValue) != 0))
@@ -1672,54 +1752,54 @@ MagickExport MagickBooleanType TransformImage(Image **image,
               crop_image->page.y-=geometry.y;
             }
         }
-      else
-        if ((transform_image->columns > geometry.width) ||
+      /* crop into tiles of fixed size WxH  */
+      else if ((transform_image->columns > geometry.width) ||
             (transform_image->rows > geometry.height))
+        {
+          Image
+            *next;
+
+          long
+            y;
+
+          register long
+            x;
+
+          unsigned long
+            height,
+            width;
+
+          /*
+            Crop repeatedly to create uniform scenes.
+          */
+          if (transform_image->page.width == 0)
+            transform_image->page.width=transform_image->columns;
+          if (transform_image->page.height == 0)
+            transform_image->page.height=transform_image->rows;
+          width=geometry.width;
+          if (width == 0)
+            width=transform_image->page.width;
+          height=geometry.height;
+          if (height == 0)
+            height=transform_image->page.height;
+          next=NewImageList();
+          for (y=0; y < (long) transform_image->page.height; y+=height)
           {
-            Image
-              *next;
-
-            long
-              y;
-
-            register long
-              x;
-
-            unsigned long
-              height,
-              width;
-
-            /*
-              Crop repeatedly to create uniform scenes.
-            */
-            if (transform_image->page.width == 0)
-              transform_image->page.width=transform_image->columns;
-            if (transform_image->page.height == 0)
-              transform_image->page.height=transform_image->rows;
-            width=geometry.width;
-            if (width == 0)
-              width=transform_image->page.width;
-            height=geometry.height;
-            if (height == 0)
-              height=transform_image->page.height;
-            next=NewImageList();
-            for (y=0; y < (long) transform_image->page.height; y+=height)
+            for (x=0; x < (long) transform_image->page.width; x+=width)
             {
-              for (x=0; x < (long) transform_image->page.width; x+=width)
-              {
-                geometry.width=width;
-                geometry.height=height;
-                geometry.x=x;
-                geometry.y=y;
-                next=CropImage(transform_image,&geometry,&(*image)->exception);
-                if (next == (Image *) NULL)
-                  break;
-                AppendImageToList(&crop_image,next);
-              }
+              geometry.width=width;
+              geometry.height=height;
+              geometry.x=x;
+              geometry.y=y;
+              next=CropImage(transform_image,&geometry,&(*image)->exception);
               if (next == (Image *) NULL)
                 break;
+              AppendImageToList(&crop_image,next);
             }
+            if (next == (Image *) NULL)
+              break;
           }
+        }
       if (crop_image == (Image *) NULL)
         transform_image=CloneImage(*image,0,0,MagickTrue,&(*image)->exception);
       else
