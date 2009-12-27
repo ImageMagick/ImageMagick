@@ -1729,7 +1729,6 @@ MagickExport MagickBooleanType TransformImage(Image **image,
                   crop.width=MagickRound(x+(geometry.x<0?geometry.x:0) );
                 }
               crop.width -= crop.x;
-printf("crop %ldx%ld+%ld+%ld\n", crop.width, crop.height, crop.x, crop.y);
               next=CropImage(transform_image,&crop,&(*image)->exception);
               if (next == (Image *) NULL)
                 break;
