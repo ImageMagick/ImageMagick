@@ -180,9 +180,13 @@ MagickExport void DestroyModuleList(void)
   if (module_list != (SplayTreeInfo *) NULL)
     module_list=DestroySplayTree(module_list);
   if (instantiate_module != MagickFalse)
-    (void) lt_dlexit();
+    {
+#if !defined(MAGICKCORE_JP2_DELEGATE)
+      (void) lt_dlexit();  /* Jasper has an errant atexit() handler */
 #endif
-  instantiate_module=MagickFalse;
+      instantiate_module=MagickFalse;
+    }
+#endif
   (void) UnlockSemaphoreInfo(module_semaphore);
 }
 
