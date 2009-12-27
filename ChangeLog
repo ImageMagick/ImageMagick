@@ -1,5 +1,5 @@
 
-2009-12-27  6.5.8-8 Anthony Thyssen <A.Thyssen@griffith...>
+2009-12-27  6.5.8-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Added MxN tile cropping with overlapping and space handling.
     See IM Examples, Cutting and Bordering, Cropping roughly Equal
 
