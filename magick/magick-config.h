@@ -1294,11 +1294,6 @@
 /* enable run-time bounds-checking */
 /* #undef _FORTIFY_SOURCE */
 
-/* Enable all API extensions (for GNU Linux libc) */
-#ifndef MAGICKCORE__GNU_SOURCE 
-#define MAGICKCORE__GNU_SOURCE  1 
-#endif
-
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 /* #undef _LARGEFILE_SOURCE */
 
@@ -1307,9 +1302,6 @@
 
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */
-
-/* Enable all API extensions (for NetBSD) */
-/* #undef _NETBSD_SOURCE */
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */
