@@ -1309,9 +1309,7 @@
 /* #undef _MINIX */
 
 /* Enable all API extensions (for NetBSD) */
-#ifndef MAGICKCORE__NETBSD_SOURCE 
-#define MAGICKCORE__NETBSD_SOURCE  1 
-#endif
+/* #undef _NETBSD_SOURCE */
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */
