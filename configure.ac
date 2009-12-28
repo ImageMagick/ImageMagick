@@ -240,7 +240,7 @@ PKG_PROG_PKG_CONFIG
 #
 # Enable OS features.
 #
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
 #
 # Enable run-time checking.
