@@ -77,8 +77,8 @@ extern "C" {
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 # endif
-#if defined(_magickcore_restrict) && !defined(__restrict)
-# define __restrict _magickcore_restrict
+#if defined(_magickcore_restrict) && !defined(restrict)
+# define restrict  _magickcore_restrict
 #endif
 #endif
 
