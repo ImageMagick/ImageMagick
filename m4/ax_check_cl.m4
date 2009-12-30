@@ -75,7 +75,7 @@ ax_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
 ax_save_LIBS=$LIBS
 LIBS=""
-ax_check_libs="-lOpenCL -lCL"
+ax_check_libs="-lOpenCL -lCL -lclparser"
 for ax_lib in $ax_check_libs; do
   AS_IF([test X$ax_compiler_ms = Xyes],
         [ax_try_lib=`echo $ax_lib | $SED -e 's/^-l//' -e 's/$/.lib/'`],
@@ -86,7 +86,7 @@ AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
                [ax_check_cl_nvidia_flags="-L/usr/$ax_check_cl_libdir/nvidia" LIBS="$ax_try_lib $ax_check_cl_nvidia_flags $CL_LIBS $ax_save_LIBS"
                AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
                               [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_nvidia_flags"; break],
-                              [ax_check_cl_dylib_flag='-dylib_file /System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries/libCL.dylib:/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries/libCL.dylib' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
+                              [ax_check_cl_dylib_flag='-framework OpenCL -L/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
                               AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
                                              [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_dylib_flag"; break])])])
 done
