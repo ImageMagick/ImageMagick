@@ -221,6 +221,9 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *header,
     *data;
 
+  size_t
+    extent;
+
   ssize_t
     count;
 
@@ -311,9 +314,9 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) fwrite(header,(size_t) (offset-header+1),1,file);
-  (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
-  (void) fwrite(offset+1,(size_t) (data-offset),1,file);
+  extent=fwrite(header,(size_t) (offset-header+1),1,file);
+  extent=fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
+  extent=fwrite(offset+1,(size_t) (data-offset),1,file);
   status=ferror(file) == -1 ? MagickFalse : MagickTrue;
   (void) fclose(file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);

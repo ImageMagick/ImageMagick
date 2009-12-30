@@ -449,6 +449,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 
 #if defined(MAGICKCORE_DJVU_DELEGATE)
 
+#if 0
 static int
 get_page_line(LoadContext *lc, int row, QuantumInfo* quantum_info)
 {
@@ -514,6 +515,7 @@ get_page_line(LoadContext *lc, int row, QuantumInfo* quantum_info)
         ddjvu_format_release(format);
         return ret;
 }
+#endif
 #endif
 
 /*
