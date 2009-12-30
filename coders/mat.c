@@ -461,6 +461,7 @@ void *CacheBlock, *DecompressBlock;
 z_stream zip_info;
 FILE *mat_file;
 size_t magick_size;
+size_t extent;
 
 int status;
 
@@ -509,7 +510,7 @@ int status;
       zip_info.avail_out = 4096;    
       zip_info.next_out = (Bytef *) DecompressBlock;
       status = inflate(&zip_info,Z_NO_FLUSH);      
-      (void) fwrite(DecompressBlock, 4096-zip_info.avail_out, 1, mat_file);
+      extent=fwrite(DecompressBlock, 4096-zip_info.avail_out, 1, mat_file);
 
       if(status == Z_STREAM_END) goto DblBreak;
     }
