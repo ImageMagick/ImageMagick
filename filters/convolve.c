@@ -39,6 +39,11 @@
 /*
   Include declarations.
 */
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <assert.h>
+#include <math.h>
 #include "magick/studio.h"
 #include "magick/MagickCore.h"
 
@@ -47,7 +52,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   b o o s t I m a g e                                                       %
+%   c o n v o l v e I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -74,6 +79,60 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+
+static cl_context OpenCLGenesis(cl_int *status)
+{
+  cl_context
+    context;
+
+  context=clCreateContextFromType(NULL,CL_DEVICE_TYPE_CPU,NULL,NULL,status);
+  return(context);
+}
+
+static double *ParseKernel(const char *value,unsigned long *order)
+{
+  char
+    token[MaxTextExtent];
+
+  const char
+    *p;
+
+  double
+    *kernel;
+
+  register long
+    i;
+
+  /*
+    Parse convolution kernel.
+  */
+  p=(const char *) value;
+  for (i=0; *p != '\0'; i++)
+  {
+    GetMagickToken(p,&p,token);
+    if (*token == ',')
+      GetMagickToken(p,&p,token);
+  }
+  *order=(unsigned long) sqrt((double) i+1.0);
+  kernel=(double *) AcquireQuantumMemory(*order,*order*sizeof(*kernel));
+  if (kernel == (double *) NULL)
+    return(kernel);
+  p=(const char *) value;
+  for (i=0; (i < (long) (*order**order)) && (*p != '\0'); i++)
+  {
+    GetMagickToken(p,&p,token);
+    if (*token == ',')
+      GetMagickToken(p,&p,token);
+    kernel[i]=strtod(token,(char **) NULL);
+  }
+  for ( ; i < (long) (*order**order); i++)
+    kernel[i]=0.0;
+  return(kernel);
+}
+#endif
+
 ModuleExport unsigned long convolveImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
@@ -87,12 +146,36 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     "DelegateLibrarySupportNotBuiltIn","`%s' (OpenCL)",(*images)->filename);
 #else
   {
+    cl_context
+      context;
+
+    cl_int
+      status;
+
+    double
+      *kernel;
+
     Image
       *image;
 
-    (void) argc;
-    (void) argv;
-    (void) exception;
+    unsigned long
+      order;
+
+    if (argc < 1)
+      return(MagickImageFilterSignature);
+    /*
+      Convolve image.
+    */
+    kernel=ParseKernel(argv[0],&order);
+    if (kernel == (double *) NULL)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
+    context=OpenCLGenesis(&status);
+    image=(*images);
+    for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
+    {
+    }
+    kernel=(double *) RelinquishMagickMemory(kernel);
   }
 #endif
   return(MagickImageFilterSignature);
