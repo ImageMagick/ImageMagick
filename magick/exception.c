@@ -503,6 +503,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case StreamWarning: return("Stream/Warning/");
     case CacheWarning: return("Cache/Warning/");
     case CoderWarning: return("Coder/Warning/");
+    case FilterWarning: return("Filter/Warning/");
     case ModuleWarning: return("Module/Warning/");
     case DrawWarning: return("Draw/Warning/");
     case ImageWarning: return("Image/Warning/");
@@ -523,6 +524,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case StreamError: return("Stream/Error/");
     case CacheError: return("Cache/Error/");
     case CoderError: return("Coder/Error/");
+    case FilterError: return("Filter/Error/");
     case ModuleError: return("Module/Error/");
     case DrawError: return("Draw/Error/");
     case ImageError: return("Image/Error/");
@@ -543,6 +545,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case StreamFatalError: return("Stream/FatalError/");
     case CacheFatalError: return("Cache/FatalError/");
     case CoderFatalError: return("Coder/FatalError/");
+    case FilterFatalError: return("Filter/FatalError/");
     case ModuleFatalError: return("Module/FatalError/");
     case DrawFatalError: return("Draw/FatalError/");
     case ImageFatalError: return("Image/FatalError/");

@@ -762,7 +762,7 @@ ModuleExport void UnregisterJP2Image(void)
 #if defined(MAGICKCORE_JP2_DELEGATE)
   if (instantiate_jp2 != MagickFalse)
     {
-      /* jas_cleanup(); // Jasper has an errant atexit() handler */
+      jas_cleanup();
       instantiate_jp2=MagickFalse;
     }
 #endif
