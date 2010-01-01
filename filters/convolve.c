@@ -82,12 +82,57 @@
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
-static cl_context OpenCLGenesis(cl_int *status)
+static void OpenCLNotify(const char *message,const void *data,size_t length,
+  void *user_context)
+{
+  ExceptionInfo
+    *exception;
+
+  (void) message;
+  (void) data;
+  (void) length;
+  exception=(ExceptionInfo *) user_context;
+}
+
+static cl_context OpenCLGenesis(cl_int *status,ExceptionInfo *exception)
 {
   cl_context
     context;
 
-  context=clCreateContextFromType(NULL,CL_DEVICE_TYPE_CPU,NULL,NULL,status);
+  cl_device_id
+    *devices;
+
+  cl_command_queue
+    queue;
+
+  size_t
+    length;
+
+  /*
+    Create OpenCL context.
+  */
+  context=clCreateContextFromType((cl_context_properties *) NULL,
+    CL_DEVICE_TYPE_DEFAULT,OpenCLNotify,exception,status);
+  if ((context == (cl_context) NULL) || (*status != CL_SUCCESS))
+    return(context);
+  /*
+    Detect OpenCL devices.
+  */
+  *status=clGetContextInfo(context,CL_CONTEXT_DEVICES,0,NULL,&length);
+  if ((*status != CL_SUCCESS) || (length == 0))
+    return(context);
+  devices=(cl_device_id *) AcquireMagickMemory(length);
+  if (devices == (cl_device_id *) NULL)
+    return(context);
+  *status=clGetContextInfo(context,CL_CONTEXT_DEVICES,length,devices,NULL);
+  if (*status != CL_SUCCESS)
+    return(context);
+  /*
+    Create OpenCL queue.
+  */
+  queue=clCreateCommandQueue(context,devices[0],0,status);
+  if ((queue == (cl_command_queue) NULL) || (*status != CL_SUCCESS))
+    return(context);
   return(context);
 }
 
@@ -170,7 +215,14 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     if (kernel == (double *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
-    context=OpenCLGenesis(&status);
+    context=OpenCLGenesis(&status,exception);
+    if ((context == (cl_context) NULL) || (status != CL_SUCCESS))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
+          "failed to get context","`%s' (%d)",(*images)->filename,status);
+        kernel=(double *) RelinquishMagickMemory(kernel);
+        return(MagickImageFilterSignature);
+      }
     image=(*images);
     for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
     {
