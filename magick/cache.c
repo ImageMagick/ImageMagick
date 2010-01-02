@@ -2726,6 +2726,50 @@ MagickExport PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l C a c h e P i x e l s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCachePixels() returns the pixels associated with the specified image.
+%
+%  The format of the GetPixelCachePixels() method is:
+%
+%      void *GetPixelCacheVirtualPixels(Image *image,MagickSizeType *length)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length: the pixel cache length.
+%
+*/
+MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  *length=0;
+  if ((cache_info->storage_class != MemoryCache) &&
+      (cache_info->storage_class != MapCache))
+    return((void *) NULL);
+  *length=cache_info->length;
+  return((void *) cache_info->pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l C a c h e S t o r a g e C l a s s                         %
 %                                                                             %
 %                                                                             %

@@ -45,6 +45,9 @@
 #include <assert.h>
 #include <math.h>
 #include "magick/studio.h"
+#include "magick/image-private.h"
+#include "magick/color-private.h"
+#include "magick/cache-private.h"
 #include "magick/MagickCore.h"
 
 /*
@@ -82,19 +85,7 @@
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
-static void OpenCLNotify(const char *message,const void *data,size_t length,
-  void *user_context)
-{
-  ExceptionInfo
-    *exception;
-
-  (void) message;
-  (void) data;
-  (void) length;
-  exception=(ExceptionInfo *) user_context;
-}
-
-static cl_context OpenCLGenesis(cl_int *status,ExceptionInfo *exception)
+typedef struct _CLInfo
 {
   cl_context
     context;
@@ -103,40 +94,277 @@ static cl_context OpenCLGenesis(cl_int *status,ExceptionInfo *exception)
     *devices;
 
   cl_command_queue
-    queue;
+    command_queue;
+
+  cl_kernel
+    kernel;
+
+  cl_program
+    program;
+
+  cl_uint
+    width,
+    height;
+
+  cl_mem
+    pixels,
+    convolve_pixels;
+
+  cl_uint
+    order;
+
+  cl_mem
+    mask;
+} CLInfo;
+
+static char
+  *convolve_program =
+    "__kernel void Convolve(const __global ushort *input,\n"
+    "  __global ushort *output,__constant float *mask,const uint width)\n"
+    "{\n"
+    "  const uint nWidth=get_global_size(0);\n"
+    "  const uint nHeight=get_global_size(1);\n"
+    "\n"
+    "  const int xOut=get_global_id(0);\n"
+    "  const int yOut=get_global_id(1);\n"
+    "\n"
+    "const int i=yOut*nWidth+xOut;\n"
+    "output[i]=input[i];\n"
+    "}\n";
+
+static void OpenCLNotify(const char *message,const void *data,size_t length,
+  void *user_context)
+{
+  ExceptionInfo
+    *exception;
+
+  (void) data;
+  (void) length;
+  exception=(ExceptionInfo *) user_context;
+  (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
+    "","`%s'",message);
+}
+
+static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image)
+{
+  cl_event
+    events[1];
+
+  cl_int
+    status;
 
   size_t
-    length;
+    global_work_size[2],
+    local_work_size[2],
+    work_size;
 
+  global_work_size[0]=4*image->columns;  /* 4 = RGBA */
+  global_work_size[1]=image->rows;
+  status=clGetKernelWorkGroupInfo(cl_info->kernel,cl_info->devices[0],
+    CL_KERNEL_WORK_GROUP_SIZE,sizeof(size_t),&work_size,0);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  local_work_size[0]=work_size;
+  local_work_size[1]=work_size;
+  status=clEnqueueNDRangeKernel(cl_info->command_queue,cl_info->kernel,2,NULL,
+    global_work_size,local_work_size,0,NULL,&events[0]);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  status=clWaitForEvents(1,&events[0]);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  clFinish(cl_info->command_queue);
+  return(MagickTrue);
+}
+
+static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
+  void *pixels,void *convolve_pixels,const unsigned long order,float *mask)
+{
+  cl_int
+    status;
+
+  /*
+    Bind OpenCL buffers.
+  */
+  cl_info->pixels=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
+    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort),pixels,
+    &status);
+  if ((cl_info->pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
+  status=clSetKernelArg(cl_info->kernel,0,sizeof(cl_mem),(void *)
+    &cl_info->pixels);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  cl_info->convolve_pixels=clCreateBuffer(cl_info->context,CL_MEM_WRITE_ONLY |
+    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort),
+    convolve_pixels,&status);
+  if ((cl_info->convolve_pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
+  status=clSetKernelArg(cl_info->kernel,1,sizeof(cl_mem),(void *)
+    &cl_info->convolve_pixels);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  cl_info->mask=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
+    CL_MEM_USE_HOST_PTR,order*order*sizeof(cl_float),mask,&status);
+  if ((cl_info->mask == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
+  status=clSetKernelArg(cl_info->kernel,2,sizeof(cl_mem),(void *)
+    &cl_info->mask);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  cl_info->order=(cl_uint) order;
+  status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_uint),(void *)
+    &cl_info->order);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  clFinish(cl_info->command_queue);
+  return(MagickTrue);
+}
+
+static void DestroyCLBuffers(CLInfo *cl_info)
+{
+  cl_int
+    status;
+
+  if (cl_info->convolve_pixels != (cl_mem) NULL)
+    status=clReleaseMemObject(cl_info->convolve_pixels);
+  if (cl_info->pixels != (cl_mem) NULL)
+    status=clReleaseMemObject(cl_info->pixels);
+  if (cl_info->mask != (cl_mem) NULL)
+    status=clReleaseMemObject(cl_info->mask);
+}
+
+static CLInfo *DestroyCLInfo(CLInfo *cl_info)
+{
+  cl_int
+    status;
+
+  if (cl_info->kernel != (cl_kernel) NULL)
+    status=clReleaseKernel(cl_info->kernel);
+  if (cl_info->program != (cl_program) NULL)
+    status=clReleaseProgram(cl_info->program);
+  if (cl_info->command_queue != (cl_command_queue) NULL)
+    status=clReleaseCommandQueue(cl_info->command_queue);
+  if (cl_info->context != (cl_context) NULL)
+    status=clReleaseContext(cl_info->context);
+  cl_info=(CLInfo *) RelinquishMagickMemory(cl_info);
+  return(cl_info);
+}
+
+static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
+  ExceptionInfo *exception)
+{
+  cl_int
+    status;
+
+  CLInfo
+    *cl_info;
+
+  size_t
+    length,
+    lengths[] = { strlen(source) };
+
+  /*
+    Create OpenCL info.
+  */
+  cl_info=(CLInfo *) AcquireAlignedMemory(1,sizeof(*cl_info));
+  if (cl_info == (CLInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((CLInfo *) NULL);
+    }
+  (void) ResetMagickMemory(cl_info,0,sizeof(*cl_info));
   /*
     Create OpenCL context.
   */
-  context=clCreateContextFromType((cl_context_properties *) NULL,
-    CL_DEVICE_TYPE_DEFAULT,OpenCLNotify,exception,status);
-  if ((context == (cl_context) NULL) || (*status != CL_SUCCESS))
-    return(context);
+  cl_info->context=clCreateContextFromType((cl_context_properties *) NULL,
+    CL_DEVICE_TYPE_DEFAULT,OpenCLNotify,exception,&status);
+  if ((cl_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
+    {
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
   /*
     Detect OpenCL devices.
   */
-  *status=clGetContextInfo(context,CL_CONTEXT_DEVICES,0,NULL,&length);
-  if ((*status != CL_SUCCESS) || (length == 0))
-    return(context);
-  devices=(cl_device_id *) AcquireMagickMemory(length);
-  if (devices == (cl_device_id *) NULL)
-    return(context);
-  *status=clGetContextInfo(context,CL_CONTEXT_DEVICES,length,devices,NULL);
-  if (*status != CL_SUCCESS)
-    return(context);
+  status=clGetContextInfo(cl_info->context,CL_CONTEXT_DEVICES,0,NULL,&length);
+  if ((status != CL_SUCCESS) || (length == 0))
+    {
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
+  cl_info->devices=(cl_device_id *) AcquireMagickMemory(length);
+  if (cl_info->devices == (cl_device_id *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
+  status=clGetContextInfo(cl_info->context,CL_CONTEXT_DEVICES,length,
+    cl_info->devices,NULL);
+  if (status != CL_SUCCESS)
+    {
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
   /*
     Create OpenCL queue.
   */
-  queue=clCreateCommandQueue(context,devices[0],0,status);
-  if ((queue == (cl_command_queue) NULL) || (*status != CL_SUCCESS))
-    return(context);
-  return(context);
+  cl_info->command_queue=clCreateCommandQueue(cl_info->context,
+    cl_info->devices[0],0,&status);
+  if ((cl_info->command_queue == (cl_command_queue) NULL) ||
+      (status != CL_SUCCESS))
+    {
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
+  /*
+    Build OpenCL program.
+  */
+  cl_info->program=clCreateProgramWithSource(cl_info->context,1,&source,
+    lengths,&status);
+  if ((cl_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
+    {
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
+  status=clBuildProgram(cl_info->program,1,cl_info->devices,NULL,NULL,NULL);
+  if ((cl_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
+    {
+      char
+        *log;
+
+      status=clGetProgramBuildInfo(cl_info->program,cl_info->devices[0],
+        CL_PROGRAM_BUILD_LOG,0,NULL,&length);
+      log=(char *) AcquireMagickMemory(length);
+      if (log == (char *) NULL)
+        {
+          DestroyCLInfo(cl_info);
+          return((CLInfo *) NULL);
+        }
+      status=clGetProgramBuildInfo(cl_info->program,cl_info->devices[0],
+        CL_PROGRAM_BUILD_LOG,length,log,&length);
+      (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
+        "failed to build OpenCL program","`%s' (%s)",image->filename,log);
+      log=DestroyString(log);
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
+  /*
+    Get a kernel object.
+  */
+  cl_info->kernel=clCreateKernel(cl_info->program,name,&status);
+  if ((cl_info->kernel == (cl_kernel) NULL) || (status != CL_SUCCESS))
+    {
+      DestroyCLInfo(cl_info);
+      return((CLInfo *) NULL);
+    }
+  return(cl_info);
 }
 
-static double *ParseKernel(const char *value,unsigned long *order)
+static float *ParseMask(const char *value,unsigned long *order)
 {
   char
     token[MaxTextExtent];
@@ -144,16 +372,19 @@ static double *ParseKernel(const char *value,unsigned long *order)
   const char
     *p;
 
-  double
-    *kernel;
+  float
+    *mask,
+    normalize;
 
   register long
     i;
 
   /*
-    Parse convolution kernel.
+    Parse convolution mask.
   */
   p=(const char *) value;
+  if (*p == '\'')
+    p++;
   for (i=0; *p != '\0'; i++)
   {
     GetMagickToken(p,&p,token);
@@ -161,20 +392,28 @@ static double *ParseKernel(const char *value,unsigned long *order)
       GetMagickToken(p,&p,token);
   }
   *order=(unsigned long) sqrt((double) i+1.0);
-  kernel=(double *) AcquireQuantumMemory(*order,*order*sizeof(*kernel));
-  if (kernel == (double *) NULL)
-    return(kernel);
+  mask=(float *) AcquireQuantumMemory(*order,*order*sizeof(*mask));
+  if (mask == (float *) NULL)
+    return(mask);
   p=(const char *) value;
+  if (*p == '\'')
+    p++;
   for (i=0; (i < (long) (*order**order)) && (*p != '\0'); i++)
   {
     GetMagickToken(p,&p,token);
     if (*token == ',')
       GetMagickToken(p,&p,token);
-    kernel[i]=strtod(token,(char **) NULL);
+    mask[i]=strtod(token,(char **) NULL);
   }
   for ( ; i < (long) (*order**order); i++)
-    kernel[i]=0.0;
-  return(kernel);
+    mask[i]=0.0;
+  normalize=0.0;
+  for (i=0; i < (long) (*order**order); i++)
+    normalize+=mask[i];
+  if (normalize != 0.0)
+    for (i=0; i < (long) (*order**order); i++)
+      mask[i]/=normalize;
+  return(mask);
 }
 #endif
 
@@ -191,17 +430,17 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     "DelegateLibrarySupportNotBuiltIn","`%s' (OpenCL)",(*images)->filename);
 #else
   {
-    cl_context
-      context;
-
-    cl_int
-      status;
-
-    double
-      *kernel;
+    float
+      *mask;
 
     Image
       *image;
+
+    MagickBooleanType
+      status;
+
+    CLInfo
+      *cl_info;
 
     unsigned long
       order;
@@ -211,23 +450,62 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     /*
       Convolve image.
     */
-    kernel=ParseKernel(argv[0],&order);
-    if (kernel == (double *) NULL)
+    mask=ParseMask(argv[0],&order);
+    if (mask == (float *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
-    context=OpenCLGenesis(&status,exception);
-    if ((context == (cl_context) NULL) || (status != CL_SUCCESS))
+    cl_info=GetCLInfo(*images,"Convolve",convolve_program,exception);
+    if (cl_info == (CLInfo *) NULL)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
-          "failed to get context","`%s' (%d)",(*images)->filename,status);
-        kernel=(double *) RelinquishMagickMemory(kernel);
+        mask=(float *) RelinquishMagickMemory(mask);
         return(MagickImageFilterSignature);
       }
     image=(*images);
     for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
     {
+      Image
+        *convolve_image;
+
+      MagickSizeType
+        length;
+
+      void
+        *convolve_pixels,
+        *pixels;
+
+      pixels=GetPixelCachePixels(image,&length);
+      if (pixels == (void *) NULL)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+            "UnableToReadPixelCache","`%s'",image->filename);
+          continue;
+        }
+      convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+        exception);
+      if (convolve_image == (Image *) NULL)
+        continue;
+      if (SetImageStorageClass(convolve_image,DirectClass) == MagickFalse)
+        continue;
+      convolve_pixels=GetPixelCachePixels(convolve_image,&length);
+      if (convolve_pixels == (void *) NULL)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+            "UnableToReadPixelCache","`%s'",image->filename);
+          convolve_image=DestroyImage(convolve_image);
+          continue;
+        }
+      status=BindCLParameters(cl_info,image,pixels,convolve_pixels,order,mask);
+      if (status == MagickFalse)
+        continue;
+      status=EnqueueKernel(cl_info,image);
+      if (status == MagickFalse)
+        continue;
+      DestroyCLBuffers(cl_info);
+memcpy(pixels,convolve_pixels,length);
+      convolve_image=DestroyImage(convolve_image);
     }
-    kernel=(double *) RelinquishMagickMemory(kernel);
+    mask=(float *) RelinquishMagickMemory(mask);
+    cl_info=DestroyCLInfo(cl_info);
   }
 #endif
   return(MagickImageFilterSignature);
