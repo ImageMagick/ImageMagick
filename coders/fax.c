@@ -216,10 +216,10 @@ ModuleExport unsigned long RegisterFAXImage(void)
   static const char
     *Note=
     {
-      "FAX machines use non-square pixels which are 1.5 times wider than they\n"
-      "are tall but computer displays use square pixels, therefore FAX images\n"
-      "may appear to be narrow unless they are explicitly resized using a\n"
-      "geometry of \"150x100%\".\n"
+      "FAX machines use non-square pixels which are 1.5 times wider than\n"
+      "they are tall but computer displays use square pixels, therefore\n"
+      "FAX images may appear to be narrow unless they are explicitly\n"
+      "resized using a geometry of \"150x100%\".\n"
     };
 
   entry=SetMagickInfo("FAX");

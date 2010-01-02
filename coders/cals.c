@@ -312,7 +312,7 @@ ModuleExport unsigned long RegisterCALSImage(void)
   static const char
     *CALSDescription=
     {
-      "Continuous Acquisition and Life-cycle Support Type 1 Image"
+      "Continuous Acquisition and Life-cycle Support Type 1"
     },
     *CALSNote=
     {
