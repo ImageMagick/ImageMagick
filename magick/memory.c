@@ -393,7 +393,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
     AcquireSemaphoreInfo(&memory_semaphore);
   if (free_segments == (DataSegmentInfo *) NULL)
     {
-      (void) LockSemaphoreInfo(memory_semaphore);
+      LockSemaphoreInfo(memory_semaphore);
       if (free_segments == (DataSegmentInfo *) NULL)
         {
           register long
@@ -413,16 +413,16 @@ MagickExport void *AcquireMagickMemory(const size_t size)
           }
           free_segments=(&memory_info.segment_pool[0]);
         }
-      (void) UnlockSemaphoreInfo(memory_semaphore);
+      UnlockSemaphoreInfo(memory_semaphore);
     }
-  (void) LockSemaphoreInfo(memory_semaphore);
+  LockSemaphoreInfo(memory_semaphore);
   memory=AcquireBlock(size == 0 ? 1UL : size);
   if (memory == (void *) NULL)
     {
       if (ExpandHeap(size == 0 ? 1UL : size) != MagickFalse)
         memory=AcquireBlock(size == 0 ? 1UL : size);
     }
-  (void) UnlockSemaphoreInfo(memory_semaphore);
+  UnlockSemaphoreInfo(memory_semaphore);
 #endif
   return(memory);
 }
@@ -550,8 +550,8 @@ MagickExport void DestroyMagickMemory(void)
 
   if (memory_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&memory_semaphore);
-  (void) LockSemaphoreInfo(memory_semaphore);
-  (void) UnlockSemaphoreInfo(memory_semaphore);
+  LockSemaphoreInfo(memory_semaphore);
+  UnlockSemaphoreInfo(memory_semaphore);
   for (i=0; i < (long) memory_info.number_segments; i++)
     if (memory_info.segments[i]->mapped == MagickFalse)
       memory_methods.destroy_memory_handler(
@@ -746,7 +746,7 @@ MagickExport void *RelinquishMagickMemory(void *memory)
 #else
   assert((SizeOfBlock(memory) % (4*sizeof(size_t))) == 0);
   assert((*BlockHeader(NextBlock(memory)) & PreviousBlockBit) != 0);
-  (void) LockSemaphoreInfo(memory_semaphore);
+  LockSemaphoreInfo(memory_semaphore);
   if ((*BlockHeader(memory) & PreviousBlockBit) == 0)
     {
       void
@@ -777,7 +777,7 @@ MagickExport void *RelinquishMagickMemory(void *memory)
   *BlockFooter(memory,SizeOfBlock(memory))=SizeOfBlock(memory);
   *BlockHeader(NextBlock(memory))&=(~PreviousBlockBit);
   InsertFreeBlock(memory,AllocationPolicy(SizeOfBlock(memory)));
-  (void) UnlockSemaphoreInfo(memory_semaphore);
+  UnlockSemaphoreInfo(memory_semaphore);
 #endif
   return((void *) NULL);
 }
@@ -874,20 +874,20 @@ MagickExport void *ResizeMagickMemory(void *memory,const size_t size)
   if (block == (void *) NULL)
     memory=RelinquishMagickMemory(memory);
 #else
-  (void) LockSemaphoreInfo(memory_semaphore);
+  LockSemaphoreInfo(memory_semaphore);
   block=ResizeBlock(memory,size == 0 ? 1UL : size);
   if (block == (void *) NULL)
     {
       if (ExpandHeap(size == 0 ? 1UL : size) == MagickFalse)
         {
-          (void) UnlockSemaphoreInfo(memory_semaphore);
+          UnlockSemaphoreInfo(memory_semaphore);
           memory=RelinquishMagickMemory(memory);
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         }
       block=ResizeBlock(memory,size == 0 ? 1UL : size);
       assert(block != (void *) NULL);
     }
-  (void) UnlockSemaphoreInfo(memory_semaphore);
+  UnlockSemaphoreInfo(memory_semaphore);
   memory=RelinquishMagickMemory(memory);
 #endif
   return(block);

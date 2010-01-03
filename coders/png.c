@@ -1739,7 +1739,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     "  enter ReadOnePNGImage()");
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  (void) LockSemaphoreInfo(png_semaphore);
+  LockSemaphoreInfo(png_semaphore);
 #endif
 
 #if (PNG_LIBPNG_VER < 10007)
@@ -1796,7 +1796,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      (void) UnlockSemaphoreInfo(png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2295,7 +2295,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      (void) UnlockSemaphoreInfo(png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2326,7 +2326,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      (void) UnlockSemaphoreInfo(png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (quantum_info != (QuantumInfo *) NULL)
         quantum_info = DestroyQuantumInfo(quantum_info);
@@ -2681,7 +2681,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->colors=2;
       (void) SetImageBackgroundColor(image);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      (void) UnlockSemaphoreInfo(png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2886,7 +2886,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   png_pixels=(unsigned char *) RelinquishMagickMemory(png_pixels);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  (void) UnlockSemaphoreInfo(png_semaphore);
+  UnlockSemaphoreInfo(png_semaphore);
 #endif
 
   if (logging != MagickFalse)
@@ -6321,7 +6321,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     "  enter WriteOnePNGImage()");
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  (void) LockSemaphoreInfo(png_semaphore);
+  LockSemaphoreInfo(png_semaphore);
 #endif
 
   quantum_info = (QuantumInfo *) NULL;
@@ -6368,7 +6368,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
       png_destroy_write_struct(&ping,&ping_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      (void) UnlockSemaphoreInfo(png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       return(MagickFalse);
     }
@@ -7473,7 +7473,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (png_pixels != (unsigned char *) NULL)
         png_pixels=(unsigned char *) RelinquishMagickMemory(png_pixels);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      (void) UnlockSemaphoreInfo(png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       return(MagickFalse);
     }
@@ -7829,7 +7829,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   png_pixels=(unsigned char *) RelinquishMagickMemory(png_pixels);
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  (void) UnlockSemaphoreInfo(png_semaphore);
+  UnlockSemaphoreInfo(png_semaphore);
 #endif
 
   if (logging != MagickFalse)

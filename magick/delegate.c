@@ -210,11 +210,11 @@ MagickExport void DelegateComponentTerminus(void)
 {
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&delegate_semaphore);
-  (void) LockSemaphoreInfo(delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
     delegate_list=DestroyLinkedList(delegate_list,DestroyDelegate);
   instantiate_delegate=MagickFalse;
-  (void) UnlockSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
 
@@ -380,7 +380,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   /*
     Search for named delegate.
   */
-  (void) LockSemaphoreInfo(delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   while (p != (const DelegateInfo *) NULL)
@@ -413,7 +413,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   if (p != (const DelegateInfo *) NULL)
     (void) InsertValueInLinkedList(delegate_list,0,
       RemoveElementByValueFromLinkedList(delegate_list,p));
-  (void) UnlockSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return(p);
 }
 
@@ -504,7 +504,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   /*
     Generate delegate list.
   */
-  (void) LockSemaphoreInfo(delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   for (i=0; p != (const DelegateInfo *) NULL; )
@@ -515,7 +515,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
       delegates[i++]=p;
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   }
-  (void) UnlockSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateInfoCompare);
   delegates[i]=(DelegateInfo *) NULL;
   *number_delegates=(unsigned long) i;
@@ -597,7 +597,7 @@ MagickExport char **GetDelegateList(const char *pattern,
     GetNumberOfElementsInLinkedList(delegate_list)+1UL,sizeof(*delegates));
   if (delegates == (char **) NULL)
     return((char **) NULL);
-  (void) LockSemaphoreInfo(delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   for (i=0; p != (const DelegateInfo *) NULL; )
@@ -610,7 +610,7 @@ MagickExport char **GetDelegateList(const char *pattern,
       delegates[i++]=ConstantString(p->encode);
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   }
-  (void) UnlockSemaphoreInfo(delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateCompare);
   delegates[i]=(char *) NULL;
   *number_delegates=(unsigned long) i;
@@ -709,14 +709,14 @@ static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
     {
       if (delegate_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&delegate_semaphore);
-      (void) LockSemaphoreInfo(delegate_semaphore);
+      LockSemaphoreInfo(delegate_semaphore);
       if ((delegate_list == (LinkedListInfo *) NULL) &&
           (instantiate_delegate == MagickFalse))
         {
           (void) LoadDelegateLists(DelegateFilename,exception);
           instantiate_delegate=MagickTrue;
         }
-      (void) UnlockSemaphoreInfo(delegate_semaphore);
+      UnlockSemaphoreInfo(delegate_semaphore);
     }
   return(delegate_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }

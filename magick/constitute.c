@@ -517,10 +517,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     {
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & DecoderThreadSupport) == 0)
-        (void) LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       image=GetImageDecoder(magick_info)(read_info,exception);
       if ((thread_support & DecoderThreadSupport) == 0)
-        (void) UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
     }
   else
     {
@@ -549,11 +549,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         MaxTextExtent);
       *read_info->filename='\0';
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-        (void) LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       (void) InvokeDelegate(read_info,image,read_info->magick,(char *) NULL,
         exception);
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-        (void) UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
       image=DestroyImageList(image);
       read_info->temporary=MagickTrue;
       (void) SetImageInfo(read_info,MagickFalse,exception);
@@ -573,10 +573,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & DecoderThreadSupport) == 0)
-        (void) LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       image=(Image *) (GetImageDecoder(magick_info))(read_info,exception);
       if ((thread_support & DecoderThreadSupport) == 0)
-        (void) UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
     }
   if (read_info->temporary != MagickFalse)
     {
@@ -1110,10 +1110,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       */
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & EncoderThreadSupport) == 0)
-        (void) LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       status=GetImageEncoder(magick_info)(write_info,image);
       if ((thread_support & EncoderThreadSupport) == 0)
-        (void) UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
     }
   else
     {
@@ -1126,11 +1126,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           */
           *write_info->filename='\0';
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-            (void) LockSemaphoreInfo(constitute_semaphore);
+            LockSemaphoreInfo(constitute_semaphore);
           status=InvokeDelegate(write_info,image,(char *) NULL,
             write_info->magick,&image->exception);
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-            (void) UnlockSemaphoreInfo(constitute_semaphore);
+            UnlockSemaphoreInfo(constitute_semaphore);
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);
         }
       else
@@ -1157,10 +1157,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               */
               thread_support=GetMagickThreadSupport(magick_info);
               if ((thread_support & EncoderThreadSupport) == 0)
-                (void) LockSemaphoreInfo(constitute_semaphore);
+                LockSemaphoreInfo(constitute_semaphore);
               status=GetImageEncoder(magick_info)(write_info,image);
               if ((thread_support & EncoderThreadSupport) == 0)
-                (void) UnlockSemaphoreInfo(constitute_semaphore);
+                UnlockSemaphoreInfo(constitute_semaphore);
             }
         }
     }

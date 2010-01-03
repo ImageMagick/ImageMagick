@@ -937,6 +937,9 @@
           <message name="UnableToAllocateImagePixels">
             unable to allocate image pixels
           </message>
+          <message name="UnableToDestroySemaphore">
+            unable to destroy semaphore
+          </message>
           <message name="UnableToInstantiateSemaphore">
             unable to instantiate semaphore
           </message>
@@ -966,6 +969,12 @@
           </message>
           <message name="UnableToInterpretMSLImage">
             unable to interpret MSL image
+          </message>
+          <message name="UnableToLockSemaphore">
+            unable to lock semaphore
+          </message>
+          <message name="UnableToUnlockSemaphore">
+            unable to unlock semaphore
           </message>
         </fatalerror>
         <warning>

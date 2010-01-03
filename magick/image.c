@@ -1267,11 +1267,11 @@ MagickExport Image *DestroyImage(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   destroy=MagickFalse;
-  (void) LockSemaphoreInfo(image->semaphore);
+  LockSemaphoreInfo(image->semaphore);
   image->reference_count--;
   if (image->reference_count == 0)
     destroy=MagickTrue;
-  (void) UnlockSemaphoreInfo(image->semaphore);
+  UnlockSemaphoreInfo(image->semaphore);
   if (destroy == MagickFalse)
     return((Image *) NULL);
   /*
@@ -1656,9 +1656,9 @@ MagickExport long GetImageReferenceCount(Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) LockSemaphoreInfo(image->semaphore);
+  LockSemaphoreInfo(image->semaphore);
   reference_count=image->reference_count;
-  (void) UnlockSemaphoreInfo(image->semaphore);
+  UnlockSemaphoreInfo(image->semaphore);
   return(reference_count);
 }
 
@@ -2095,9 +2095,9 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
   if (GetImageReferenceCount(*image) <= 1)
     return(MagickTrue);
   clone_image=CloneImage(*image,0,0,MagickTrue,exception);
-  (void) LockSemaphoreInfo((*image)->semaphore);
+  LockSemaphoreInfo((*image)->semaphore);
   (*image)->reference_count--;
-  (void) UnlockSemaphoreInfo((*image)->semaphore);
+  UnlockSemaphoreInfo((*image)->semaphore);
   *image=clone_image;
   return(MagickTrue);
 }
@@ -2233,9 +2233,9 @@ MagickExport Image *ReferenceImage(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  (void) LockSemaphoreInfo(image->semaphore);
+  LockSemaphoreInfo(image->semaphore);
   image->reference_count++;
-  (void) UnlockSemaphoreInfo(image->semaphore);
+  UnlockSemaphoreInfo(image->semaphore);
   return(image);
 }
 
