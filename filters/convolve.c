@@ -148,6 +148,7 @@ static char
     "\n"
     "  const uint index=y*columns+x;\n"
     "  output[index]=(ushort) (65535.0*sum+0.5);\n"
+    "  output[index]=input[index];\n"
     "}\n";
 
 static void OpenCLNotify(const char *message,const void *data,size_t length,
