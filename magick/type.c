@@ -271,7 +271,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   (void) GetTypeInfo("*",exception);
   if (type_list == (SplayTreeInfo *) NULL)
     return((TypeInfo *) NULL);
-  (void) LockSemaphoreInfo(type_semaphore);
+  LockSemaphoreInfo(type_semaphore);
   ResetSplayTreeIterator(type_list);
   type_info=(const TypeInfo *) NULL;
   p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
@@ -316,14 +316,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     type_info=p;
     break;
   }
-  (void) UnlockSemaphoreInfo(type_semaphore);
+  UnlockSemaphoreInfo(type_semaphore);
   if (type_info != (const TypeInfo *) NULL)
     return(type_info);
   /*
     Check for types in the same family.
   */
   max_score=0;
-  (void) LockSemaphoreInfo(type_semaphore);
+  LockSemaphoreInfo(type_semaphore);
   ResetSplayTreeIterator(type_list);
   p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
   while (p != (const TypeInfo *) NULL)
@@ -375,7 +375,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       }
     p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
   }
-  (void) UnlockSemaphoreInfo(type_semaphore);
+  UnlockSemaphoreInfo(type_semaphore);
   if (type_info != (const TypeInfo *) NULL)
     return(type_info);
   /*
@@ -486,7 +486,7 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
   /*
     Generate type list.
   */
-  (void) LockSemaphoreInfo(type_semaphore);
+  LockSemaphoreInfo(type_semaphore);
   ResetSplayTreeIterator(type_list);
   p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
   for (i=0; p != (const TypeInfo *) NULL; )
@@ -496,7 +496,7 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
       fonts[i++]=p;
     p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
   }
-  (void) UnlockSemaphoreInfo(type_semaphore);
+  UnlockSemaphoreInfo(type_semaphore);
   qsort((void *) fonts,(size_t) i,sizeof(*fonts),TypeInfoCompare);
   fonts[i]=(TypeInfo *) NULL;
   *number_fonts=(unsigned long) i;
@@ -579,7 +579,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_fonts,
   /*
     Generate type list.
   */
-  (void) LockSemaphoreInfo(type_semaphore);
+  LockSemaphoreInfo(type_semaphore);
   ResetSplayTreeIterator(type_list);
   p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
   for (i=0; p != (const TypeInfo *) NULL; )
@@ -589,7 +589,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_fonts,
       fonts[i++]=ConstantString(p->name);
     p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
   }
-  (void) UnlockSemaphoreInfo(type_semaphore);
+  UnlockSemaphoreInfo(type_semaphore);
   qsort((void *) fonts,(size_t) i,sizeof(*fonts),TypeCompare);
   fonts[i]=(char *) NULL;
   *number_fonts=(unsigned long) i;
@@ -774,7 +774,7 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
     {
       if (type_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&type_semaphore);
-      (void) LockSemaphoreInfo(type_semaphore);
+      LockSemaphoreInfo(type_semaphore);
       if ((type_list == (SplayTreeInfo *) NULL) &&
           (instantiate_type == MagickFalse))
         {
@@ -787,7 +787,7 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
 #endif
           instantiate_type=MagickTrue;
         }
-      (void) UnlockSemaphoreInfo(type_semaphore);
+      UnlockSemaphoreInfo(type_semaphore);
     }
   return(type_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
@@ -1371,10 +1371,10 @@ MagickExport void TypeComponentTerminus(void)
 {
   if (type_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&type_semaphore);
-  (void) LockSemaphoreInfo(type_semaphore);
+  LockSemaphoreInfo(type_semaphore);
   if (type_list != (SplayTreeInfo *) NULL)
     type_list=DestroySplayTree(type_list);
   instantiate_type=MagickFalse;
-  (void) UnlockSemaphoreInfo(type_semaphore);
+  UnlockSemaphoreInfo(type_semaphore);
   DestroySemaphoreInfo(&type_semaphore);
 }

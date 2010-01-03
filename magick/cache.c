@@ -205,7 +205,7 @@ MagickExport Cache AcquirePixelCache(const unsigned long number_threads)
     {
       if (cache_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&cache_semaphore);
-      (void) LockSemaphoreInfo(cache_semaphore);
+      LockSemaphoreInfo(cache_semaphore);
       if ((cache_resources == (SplayTreeInfo *) NULL) &&
           (instantiate_cache == MagickFalse))
         {
@@ -213,7 +213,7 @@ MagickExport Cache AcquirePixelCache(const unsigned long number_threads)
             NULL,(void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
           instantiate_cache=MagickTrue;
         }
-      (void) UnlockSemaphoreInfo(cache_semaphore);
+      UnlockSemaphoreInfo(cache_semaphore);
     }
   (void) AddValueToSplayTree(cache_resources,cache_info,cache_info);
   return((Cache ) cache_info);
@@ -311,11 +311,11 @@ MagickExport void CacheComponentTerminus(void)
 {
   if (cache_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&cache_semaphore);
-  (void) LockSemaphoreInfo(cache_semaphore);
+  LockSemaphoreInfo(cache_semaphore);
   if (cache_resources != (SplayTreeInfo *) NULL)
     cache_resources=DestroySplayTree(cache_resources);
   instantiate_cache=MagickFalse;
-  (void) UnlockSemaphoreInfo(cache_semaphore);
+  UnlockSemaphoreInfo(cache_semaphore);
   DestroySemaphoreInfo(&cache_semaphore);
 }
 
@@ -600,11 +600,11 @@ static MagickBooleanType ClosePixelCacheOnDisk(CacheInfo *cache_info)
   int
     status;
 
-  (void) LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->disk_semaphore);
   status=close(cache_info->file);
   cache_info->file=(-1);
   RelinquishMagickResource(FileResource,1);
-  (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->disk_semaphore);
   return(status == -1 ? MagickFalse : MagickTrue);
 }
 
@@ -619,10 +619,10 @@ static void LimitPixelCacheDescriptors(void)
   */
   if (GetMagickResource(FileResource) < GetMagickResourceLimit(FileResource))
     return;
-  (void) LockSemaphoreInfo(cache_semaphore);
+  LockSemaphoreInfo(cache_semaphore);
   if (cache_resources == (SplayTreeInfo *) NULL)
     {
-      (void) UnlockSemaphoreInfo(cache_semaphore);
+      UnlockSemaphoreInfo(cache_semaphore);
       return;
     }
   ResetSplayTreeIterator(cache_resources);
@@ -648,7 +648,7 @@ static void LimitPixelCacheDescriptors(void)
   }
   if (q != (CacheInfo *) NULL)
     (void) ClosePixelCacheOnDisk(q);  /* relinquish least recently used cache */
-  (void) UnlockSemaphoreInfo(cache_semaphore);
+  UnlockSemaphoreInfo(cache_semaphore);
 }
 
 static inline MagickSizeType MagickMax(const MagickSizeType x,
@@ -676,10 +676,10 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
-  (void) LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->disk_semaphore);
   if (cache_info->file != -1)
     {
-      (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return(MagickTrue);  /* cache already open */
     }
   LimitPixelCacheDescriptors();
@@ -713,13 +713,13 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
     }
   if (file == -1)
     {
-      (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return(MagickFalse);
     }
   (void) AcquireMagickResource(FileResource,1);
   cache_info->file=file;
   cache_info->timestamp=time(0);
-  (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->disk_semaphore);
   return(MagickTrue);
 }
 
@@ -734,11 +734,11 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
-  (void) LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->disk_semaphore);
   cache_info->timestamp=time(0);
   if (MagickSeek(cache_info->file,offset,SEEK_SET) < 0)
     {
-      (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return((MagickOffsetType) -1);
     }
 #endif
@@ -762,7 +762,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
       }
   }
 #if !defined(MAGICKCORE_HAVE_PREAD)
-  (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->disk_semaphore);
 #endif
   return(i);
 }
@@ -778,11 +778,11 @@ static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-  (void) LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->disk_semaphore);
   cache_info->timestamp=time(0);
   if (MagickSeek(cache_info->file,offset,SEEK_SET) < 0)
     {
-      (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return((MagickOffsetType) -1);
     }
 #endif
@@ -806,7 +806,7 @@ static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
       }
   }
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-  (void) UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->disk_semaphore);
 #endif
   return(i);
 }
@@ -1530,14 +1530,14 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   if (cache_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_info->filename);
-  (void) LockSemaphoreInfo(cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->semaphore);
   cache_info->reference_count--;
   if (cache_info->reference_count != 0)
     {
-      (void) UnlockSemaphoreInfo(cache_info->semaphore);
+      UnlockSemaphoreInfo(cache_info->semaphore);
       return((Cache) NULL);
     }
-  (void) UnlockSemaphoreInfo(cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->semaphore);
   if (cache_resources != (SplayTreeInfo *) NULL)
     (void) DeleteNodeByValueFromSplayTree(cache_resources,cache_info);
   if (cache_info->debug != MagickFalse)
@@ -2117,7 +2117,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  (void) LockSemaphoreInfo(image->semaphore);
+  LockSemaphoreInfo(image->semaphore);
   time_limit=GetMagickResourceLimit(TimeResource);
   if (cache_timer == 0)
     cache_timer=time((time_t *) NULL);
@@ -2127,7 +2127,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   destroy=MagickFalse;
-  (void) LockSemaphoreInfo(cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->semaphore);
   if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
     {
       Image
@@ -2158,7 +2158,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
             }
         }
     }
-  (void) UnlockSemaphoreInfo(cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->semaphore);
   if (destroy != MagickFalse)
     cache_info=(CacheInfo *) DestroyPixelCache(cache_info);
   if (status != MagickFalse)
@@ -2173,7 +2173,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         status=OpenPixelCache(image,IOMode,exception);
     }
-  (void) UnlockSemaphoreInfo(image->semaphore);
+  UnlockSemaphoreInfo(image->semaphore);
   if (status == MagickFalse)
     return((Cache) NULL);
   return(image->cache);
@@ -2736,7 +2736,8 @@ MagickExport PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
 %
 %  The format of the GetPixelCachePixels() method is:
 %
-%      void *GetPixelCacheVirtualPixels(Image *image,MagickSizeType *length)
+%      void *GetPixelCachePixels(Image *image,MagickSizeType *length,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2744,8 +2745,11 @@ MagickExport PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
 %
 %    o length: the pixel cache length.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length)
+MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2755,7 +2759,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
+  cache_info=GetImagePixelCache(image,MagickTrue,exception);
   assert(cache_info->signature == MagickSignature);
   *length=0;
   if ((cache_info->storage_class != MemoryCache) &&
@@ -4231,7 +4235,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
       (cache_info->reference_count == 1))
     {
-      (void) LockSemaphoreInfo(cache_info->semaphore);
+      LockSemaphoreInfo(cache_info->semaphore);
       if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
           (cache_info->reference_count == 1))
         {
@@ -4248,7 +4252,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
                 MaxTextExtent);
               *offset+=cache_info->length+page_size-(cache_info->length %
                 page_size);
-              (void) UnlockSemaphoreInfo(cache_info->semaphore);
+              UnlockSemaphoreInfo(cache_info->semaphore);
               cache_info=(CacheInfo *) ReferencePixelCache(cache_info);
               if (image->debug != MagickFalse)
                 (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -4256,7 +4260,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
               return(MagickTrue);
             }
         }
-      (void) UnlockSemaphoreInfo(cache_info->semaphore);
+      UnlockSemaphoreInfo(cache_info->semaphore);
     }
   /*
     Clone persistent pixel cache.
@@ -4788,9 +4792,9 @@ MagickExport Cache ReferencePixelCache(Cache cache)
   if (cache_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_info->filename);
-  (void) LockSemaphoreInfo(cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->semaphore);
   cache_info->reference_count++;
-  (void) UnlockSemaphoreInfo(cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->semaphore);
   return(cache_info);
 }
 

@@ -217,11 +217,11 @@ static void DestroyPixelStream(Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   destroy=MagickFalse;
-  (void) LockSemaphoreInfo(cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->semaphore);
   cache_info->reference_count--;
   if (cache_info->reference_count == 0)
     destroy=MagickTrue;
-  (void) UnlockSemaphoreInfo(cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->semaphore);
   if (destroy == MagickFalse)
     return;
   RelinquishStreamPixels(cache_info);

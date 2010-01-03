@@ -860,11 +860,11 @@ MagickExport void ColorComponentTerminus(void)
 {
   if (color_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&color_semaphore);
-  (void) LockSemaphoreInfo(color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   if (color_list != (LinkedListInfo *) NULL)
     color_list=DestroyLinkedList(color_list,DestroyColorElement);
   instantiate_color=MagickFalse;
-  (void) UnlockSemaphoreInfo(color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   DestroySemaphoreInfo(&color_semaphore);
 }
 
@@ -933,7 +933,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   /*
     Search for color tag.
   */
-  (void) LockSemaphoreInfo(color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   ResetLinkedListIterator(color_list);
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   while (p != (const ColorInfo *) NULL)
@@ -948,7 +948,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   else
     (void) InsertValueInLinkedList(color_list,0,
       RemoveElementByValueFromLinkedList(color_list,p));
-  (void) UnlockSemaphoreInfo(color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   return(p);
 }
 
@@ -1147,7 +1147,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   /*
     Generate color list.
   */
-  (void) LockSemaphoreInfo(color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   ResetLinkedListIterator(color_list);
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   for (i=0; p != (const ColorInfo *) NULL; )
@@ -1157,7 +1157,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
       colors[i++]=p;
     p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   }
-  (void) UnlockSemaphoreInfo(color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   qsort((void *) colors,(size_t) i,sizeof(*colors),ColorInfoCompare);
   colors[i]=(ColorInfo *) NULL;
   *number_colors=(unsigned long) i;
@@ -1240,7 +1240,7 @@ MagickExport char **GetColorList(const char *pattern,
   /*
     Generate color list.
   */
-  (void) LockSemaphoreInfo(color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   ResetLinkedListIterator(color_list);
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   for (i=0; p != (const ColorInfo *) NULL; )
@@ -1250,7 +1250,7 @@ MagickExport char **GetColorList(const char *pattern,
       colors[i++]=ConstantString(p->name);
     p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   }
-  (void) UnlockSemaphoreInfo(color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   qsort((void *) colors,(size_t) i,sizeof(*colors),ColorCompare);
   colors[i]=(char *) NULL;
   *number_colors=(unsigned long) i;
@@ -1457,14 +1457,14 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
     {
       if (color_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&color_semaphore);
-      (void) LockSemaphoreInfo(color_semaphore);
+      LockSemaphoreInfo(color_semaphore);
       if ((color_list == (LinkedListInfo *) NULL) &&
           (instantiate_color == MagickFalse))
         {
           (void) LoadColorLists(ColorFilename,exception);
           instantiate_color=MagickTrue;
         }
-      (void) UnlockSemaphoreInfo(color_semaphore);
+      UnlockSemaphoreInfo(color_semaphore);
     }
   return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }

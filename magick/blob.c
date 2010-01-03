@@ -596,12 +596,12 @@ MagickExport void DestroyBlob(Image *image)
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->signature == MagickSignature);
   destroy=MagickFalse;
-  (void) LockSemaphoreInfo(image->blob->semaphore);
+  LockSemaphoreInfo(image->blob->semaphore);
   image->blob->reference_count--;
   assert(image->blob->reference_count >= 0);
   if (image->blob->reference_count == 0)
     destroy=MagickTrue;
-  (void) UnlockSemaphoreInfo(image->blob->semaphore);
+  UnlockSemaphoreInfo(image->blob->semaphore);
   if (destroy == MagickFalse)
     return;
   (void) CloseBlob(image);
@@ -3300,9 +3300,9 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
   assert(blob->signature == MagickSignature);
   if (blob->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  (void) LockSemaphoreInfo(blob->semaphore);
+  LockSemaphoreInfo(blob->semaphore);
   blob->reference_count++;
-  (void) UnlockSemaphoreInfo(blob->semaphore);
+  UnlockSemaphoreInfo(blob->semaphore);
   return(blob);
 }
 

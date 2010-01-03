@@ -275,7 +275,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(random_info != (RandomInfo *) NULL);
   assert(random_info->signature == MagickSignature);
-  (void) LockSemaphoreInfo(random_info->semaphore);
+  LockSemaphoreInfo(random_info->semaphore);
   if (random_info->reservoir != (StringInfo *) NULL)
     random_info->reservoir=DestroyStringInfo(random_info->reservoir);
   if (random_info->nonce != (StringInfo *) NULL)
@@ -285,7 +285,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
       random_info->signature_info);
   (void) ResetMagickMemory(random_info->seed,0,sizeof(*random_info->seed));
   random_info->signature=(~MagickSignature);
-  (void) UnlockSemaphoreInfo(random_info->semaphore);
+  UnlockSemaphoreInfo(random_info->semaphore);
   DestroySemaphoreInfo(&random_info->semaphore);
   random_info=(RandomInfo *) RelinquishAlignedMemory(random_info);
   return(random_info);
@@ -365,7 +365,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     Initialize random reservoir.
   */
   entropy=AcquireStringInfo(0);
-  (void) LockSemaphoreInfo(random_info->semaphore);
+  LockSemaphoreInfo(random_info->semaphore);
   chaos=AcquireStringInfo(sizeof(unsigned char *));
   SetStringInfoDatum(chaos,(unsigned char *) &entropy);
   ConcatenateStringInfo(entropy,chaos);
@@ -566,7 +566,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   }
 #endif
   chaos=DestroyStringInfo(chaos);
-  (void) UnlockSemaphoreInfo(random_info->semaphore);
+  UnlockSemaphoreInfo(random_info->semaphore);
   return(entropy);
 }
 
@@ -825,7 +825,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
   assert(random_info != (RandomInfo *) NULL);
   if (length == 0)
     return;
-  (void) LockSemaphoreInfo(random_info->semaphore);
+  LockSemaphoreInfo(random_info->semaphore);
   signature_info=random_info->signature_info;
   datum=GetStringInfoDatum(random_info->reservoir);
   i=length;
@@ -859,7 +859,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
       while (i-- != 0)
         p[i]=datum[i];
     }
-  (void) UnlockSemaphoreInfo(random_info->semaphore);
+  UnlockSemaphoreInfo(random_info->semaphore);
 }
 
 /*

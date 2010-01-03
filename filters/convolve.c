@@ -102,16 +102,13 @@ typedef struct _CLInfo
   cl_program
     program;
 
-  cl_uint
-    width,
-    height;
-
   cl_mem
     pixels,
     convolve_pixels;
 
   cl_uint
-    order;
+    width,
+    height;
 
   cl_mem
     mask;
@@ -120,16 +117,37 @@ typedef struct _CLInfo
 static char
   *convolve_program =
     "__kernel void Convolve(const __global ushort *input,\n"
-    "  __global ushort *output,__constant float *mask,const uint width)\n"
+    "  __global ushort *output,__constant float *mask,const uint width,\n"
+    "  const uint height)\n"
     "{\n"
-    "  const uint nWidth=get_global_size(0);\n"
-    "  const uint nHeight=get_global_size(1);\n"
+    "  const uint columns=get_global_size(0);\n"
+    "  const uint rows=get_global_size(1);\n"
     "\n"
-    "  const int xOut=get_global_id(0);\n"
-    "  const int yOut=get_global_id(1);\n"
+    "  const int x=get_global_id(0);\n"
+    "  const int y=get_global_id(1);\n"
     "\n"
-    "const int i=yOut*nWidth+xOut;\n"
-    "output[i]=input[i];\n"
+    "  uint vstep=(width-1)/2;\n"
+    "  uint hstep=(height-1)/2;\n"
+    "\n"
+    "  uint left=(x < vstep) ? 0 : (x-vstep);\n"
+    "  uint right=((x+vstep) >= width) ? width-1 : (x+vstep);\n"
+    "  uint top=(y < hstep) ? 0 : (y-hstep);\n"
+    "  uint bottom=((y+hstep) >= height) ? height-1: (y+hstep);\n"
+    "\n"
+    "  float sum=0.0;\n"
+    "  float scale=1.0/65535.0;\n"
+    "\n"
+    "  uint maskIndex=0;"
+    "  for (uint i=left; i <= right; ++i)\n"
+    "    for (uint j=top ; j <= bottom; ++j)\n"
+    "    {\n"
+    "      uint index=(y+j)*columns+(x+i);\n"
+    "      sum+=scale*input[index]*mask[maskIndex];\n"
+    "      maskIndex++;\n"
+    "    }\n"
+    "\n"
+    "  const uint index=y*columns+x;\n"
+    "  output[index]=(ushort) (65535.0*sum+0.5);\n"
     "}\n";
 
 static void OpenCLNotify(const char *message,const void *data,size_t length,
@@ -154,20 +172,12 @@ static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image)
     status;
 
   size_t
-    global_work_size[2],
-    local_work_size[2],
-    work_size;
+    global_work_size[2];
 
   global_work_size[0]=4*image->columns;  /* 4 = RGBA */
   global_work_size[1]=image->rows;
-  status=clGetKernelWorkGroupInfo(cl_info->kernel,cl_info->devices[0],
-    CL_KERNEL_WORK_GROUP_SIZE,sizeof(size_t),&work_size,0);
-  if (status != CL_SUCCESS)
-    return(MagickFalse);
-  local_work_size[0]=work_size;
-  local_work_size[1]=work_size;
   status=clEnqueueNDRangeKernel(cl_info->command_queue,cl_info->kernel,2,NULL,
-    global_work_size,local_work_size,0,NULL,&events[0]);
+    global_work_size,NULL,0,NULL,&events[0]);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   status=clWaitForEvents(1,&events[0]);
@@ -212,9 +222,14 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     &cl_info->mask);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->order=(cl_uint) order;
+  cl_info->width=(cl_uint) order;
   status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_uint),(void *)
-    &cl_info->order);
+    &cl_info->width);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  cl_info->height=(cl_uint) order;
+  status=clSetKernelArg(cl_info->kernel,4,sizeof(cl_uint),(void *)
+    &cl_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   clFinish(cl_info->command_queue);
@@ -473,7 +488,9 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
         *convolve_pixels,
         *pixels;
 
-      pixels=GetPixelCachePixels(image,&length);
+      if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+        continue;
+      pixels=GetPixelCachePixels(image,&length,exception);
       if (pixels == (void *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -482,11 +499,7 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
         }
       convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
-      if (convolve_image == (Image *) NULL)
-        continue;
-      if (SetImageStorageClass(convolve_image,DirectClass) == MagickFalse)
-        continue;
-      convolve_pixels=GetPixelCachePixels(convolve_image,&length);
+      convolve_pixels=GetPixelCachePixels(convolve_image,&length,exception);
       if (convolve_pixels == (void *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),CacheError,

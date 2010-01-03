@@ -175,7 +175,7 @@ MagickExport void DestroyModuleList(void)
   /*
     Destroy magick modules.
   */
-  (void) LockSemaphoreInfo(module_semaphore);
+  LockSemaphoreInfo(module_semaphore);
 #if defined(MAGICKCORE_MODULES_SUPPORT)
   if (module_list != (SplayTreeInfo *) NULL)
     module_list=DestroySplayTree(module_list);
@@ -187,7 +187,7 @@ MagickExport void DestroyModuleList(void)
       instantiate_module=MagickFalse;
     }
 #endif
-  (void) UnlockSemaphoreInfo(module_semaphore);
+  UnlockSemaphoreInfo(module_semaphore);
 }
 
 /*
@@ -236,10 +236,10 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
       if (LocaleCompare(tag,"*") == 0)
         (void) OpenModules(exception);
 #endif
-      (void) LockSemaphoreInfo(module_semaphore);
+      LockSemaphoreInfo(module_semaphore);
       ResetSplayTreeIterator(module_list);
       p=(ModuleInfo *) GetNextValueInSplayTree(module_list);
-      (void) UnlockSemaphoreInfo(module_semaphore);
+      UnlockSemaphoreInfo(module_semaphore);
       return(p);
     }
   return((ModuleInfo *) GetValueFromSplayTree(module_list,tag));
@@ -323,7 +323,7 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
   /*
     Generate module list.
   */
-  (void) LockSemaphoreInfo(module_semaphore);
+  LockSemaphoreInfo(module_semaphore);
   ResetSplayTreeIterator(module_list);
   p=(const ModuleInfo *) GetNextValueInSplayTree(module_list);
   for (i=0; p != (const ModuleInfo *) NULL; )
@@ -333,7 +333,7 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
       modules[i++]=p;
     p=(const ModuleInfo *) GetNextValueInSplayTree(module_list);
   }
-  (void) UnlockSemaphoreInfo(module_semaphore);
+  UnlockSemaphoreInfo(module_semaphore);
   qsort((void *) modules,(size_t) i,sizeof(*modules),ModuleInfoCompare);
   modules[i]=(ModuleInfo *) NULL;
   *number_modules=(unsigned long) i;
@@ -853,7 +853,7 @@ MagickExport MagickBooleanType InitializeModuleList(
     {
       if (module_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&module_semaphore);
-      (void) LockSemaphoreInfo(module_semaphore);
+      LockSemaphoreInfo(module_semaphore);
       if ((module_list == (SplayTreeInfo *) NULL) &&
           (instantiate_module == MagickFalse))
         {
@@ -879,7 +879,7 @@ MagickExport MagickBooleanType InitializeModuleList(
               "UnableToInitializeModuleLoader");
           instantiate_module=MagickTrue;
         }
-      (void) UnlockSemaphoreInfo(module_semaphore);
+      UnlockSemaphoreInfo(module_semaphore);
     }
   return(module_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
