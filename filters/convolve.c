@@ -44,11 +44,12 @@
 #include <time.h>
 #include <assert.h>
 #include <math.h>
-#include "magick/studio.h"
+#include "magick/MagickCore.h"
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
 #include "magick/image-private.h"
 #include "magick/color-private.h"
 #include "magick/cache-private.h"
-#include "magick/MagickCore.h"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
