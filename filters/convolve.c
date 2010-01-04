@@ -117,8 +117,8 @@ typedef struct _CLInfo
 static char
   *convolve_program =
     "__kernel void Convolve(const __global ushort4 *input,\n"
-    "  __global ushort4 *output,__constant float *mask,const uint width,\n"
-    "  const uint height)\n"
+    "  __constant float *mask,const uint width,const uint height,\n"
+    "  __global ushort4 *output)\n"
     "{\n"
     "  const uint columns=get_global_size(0);\n"
     "  const uint rows=get_global_size(1);\n"
@@ -171,7 +171,8 @@ static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image)
 }
 
 static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
-  void *pixels,void *convolve_pixels,const unsigned long order,float *mask)
+  void *pixels,float *mask,const unsigned long width,const unsigned long height,
+  void *convolve_pixels)
 {
   cl_int
     status;
@@ -188,31 +189,31 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     &cl_info->pixels);
   if (status != CL_SUCCESS)
     return(MagickFalse);
+  cl_info->mask=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
+    CL_MEM_USE_HOST_PTR,width*height*sizeof(cl_float),mask,&status);
+  if ((cl_info->mask == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
+  status=clSetKernelArg(cl_info->kernel,1,sizeof(cl_mem),(void *)
+    &cl_info->mask);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  cl_info->width=(cl_uint) width;
+  status=clSetKernelArg(cl_info->kernel,2,sizeof(cl_uint),(void *)
+    &cl_info->width);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  cl_info->height=(cl_uint) height;
+  status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_uint),(void *)
+    &cl_info->height);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
   cl_info->convolve_pixels=clCreateBuffer(cl_info->context,CL_MEM_WRITE_ONLY |
     CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort4),
     convolve_pixels,&status);
   if ((cl_info->convolve_pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
-  status=clSetKernelArg(cl_info->kernel,1,sizeof(cl_mem),(void *)
+  status=clSetKernelArg(cl_info->kernel,4,sizeof(cl_mem),(void *)
     &cl_info->convolve_pixels);
-  if (status != CL_SUCCESS)
-    return(MagickFalse);
-  cl_info->mask=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,order*order*sizeof(cl_float),mask,&status);
-  if ((cl_info->mask == (cl_mem) NULL) || (status != CL_SUCCESS))
-    return(MagickFalse);
-  status=clSetKernelArg(cl_info->kernel,2,sizeof(cl_mem),(void *)
-    &cl_info->mask);
-  if (status != CL_SUCCESS)
-    return(MagickFalse);
-  cl_info->width=(cl_uint) order;
-  status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_uint),(void *)
-    &cl_info->width);
-  if (status != CL_SUCCESS)
-    return(MagickFalse);
-  cl_info->height=(cl_uint) order;
-  status=clSetKernelArg(cl_info->kernel,4,sizeof(cl_uint),(void *)
-    &cl_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   clFinish(cl_info->command_queue);
@@ -415,6 +416,11 @@ static float *ParseMask(const char *value,unsigned long *order)
 }
 #endif
 
+static void Convolve(const cl_ushort4 *input,const float *mask,
+  const uint width,const uint height,cl_ushort4 *output)
+{
+}
+
 ModuleExport unsigned long convolveImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
@@ -490,12 +496,18 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
           convolve_image=DestroyImage(convolve_image);
           continue;
         }
-      status=BindCLParameters(cl_info,image,pixels,convolve_pixels,order,mask);
-      if (status == MagickFalse)
-        continue;
-      status=EnqueueKernel(cl_info,image);
-      if (status == MagickFalse)
-        continue;
+      if (0)
+        Convolve(pixels,mask,order,order,convolve_pixels);
+      else
+        {
+          status=BindCLParameters(cl_info,image,pixels,mask,order,order,
+            convolve_pixels);
+          if (status == MagickFalse)
+            continue;
+          status=EnqueueKernel(cl_info,image);
+          if (status == MagickFalse)
+            continue;
+        }
       (void) CopyMagickMemory(pixels,convolve_pixels,length);
       DestroyCLBuffers(cl_info);
       convolve_image=DestroyImage(convolve_image);
