@@ -414,12 +414,12 @@ static float *ParseMask(const char *value,unsigned long *order)
       mask[i]/=normalize;
   return(mask);
 }
-#endif
 
 static void Convolve(const cl_ushort4 *input,const float *mask,
   const cl_uint width,const cl_uint height,cl_ushort4 *output)
 {
 }
+#endif
 
 ModuleExport unsigned long convolveImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
