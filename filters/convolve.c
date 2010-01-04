@@ -417,7 +417,7 @@ static float *ParseMask(const char *value,unsigned long *order)
 #endif
 
 static void Convolve(const cl_ushort4 *input,const float *mask,
-  const uint width,const uint height,cl_ushort4 *output)
+  const cl_uint width,const cl_uint height,cl_ushort4 *output)
 {
 }
 
