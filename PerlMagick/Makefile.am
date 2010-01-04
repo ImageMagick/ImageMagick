@@ -57,7 +57,7 @@ uninstall-exec-perl: $(PERLMAKEFILE)
 	echo "Uninstall not supported for PerlMagick"
 
 check-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+	cd $(PERLMAGICK) && $(abs_top_builddir)/magick.sh $(MAKE) CC='@CC@' test
 
 perl-build: $(PERLMAKEFILE)
 	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' )
@@ -95,7 +95,7 @@ uninstall-exec-perl:
 	rm -f '$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)'
 
 check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
-	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+	cd $(PERLMAGICK) && $(abs_top_builddir)/magick.sh $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 perl-build: $(PERLMAGICK)/$(PERLSTATICNAME)
 

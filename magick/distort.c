@@ -1933,7 +1933,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       zero;
 
     ResampleFilter
-      **resample_filter;
+      **restrict resample_filter;
 
     CacheView
       *distort_view;

@@ -256,17 +256,14 @@ AC_EXEEXT
 AC_OBJEXT
 
 GDI32_LIBS=''
-StaticCplusPlusLibraries='no'
 native_win32_build='no'
 cygwin_build='no'
 case "${host_os}" in
     cygwin* )
-        StaticCplusPlusLibraries='yes'
         cygwin_build='yes'
         GDI32_LIBS='-lgdi32'
     ;;
     mingw* )
-        StaticCplusPlusLibraries='yes'
         native_win32_build='yes'
         GDI32_LIBS='-lgdi32'
     ;;
@@ -449,12 +446,7 @@ if test "$enable_static" = 'yes'; then
     libtool_build_static_libs='yes'
 fi
 
-# MinGW and Cygwin can't build C++ DLLs which support exceptions.
-if test "${StaticCplusPlusLibraries}" = 'yes'; then
-    LTCXXLIBOPTS='--static'
-    AC_SUBST(LTCXXLIBOPTS)
-fi
-
+AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 #
 # Enable support for building loadable modules
 #
@@ -560,7 +552,7 @@ AC_ARG_ENABLE([hdri],
 MAGICK_HDRI=""
 if test "$enable_hdri" = 'yes'; then
     MAGICK_HDRI="HDRI"
-    AC_DEFINE(HDRI_SUPPORT,1,[accurately represent the wide range of intensity levels  in real scenes])
+    AC_DEFINE(HDRI_SUPPORT,1,[accurately represent the wide range of intensity levels in real scenes])
 fi
 AC_SUBST(MAGICK_HDRI)dnl
 

@@ -88,6 +88,7 @@ TEST_EXTENSIONS = .sh
 
 # Tests to run
 TESTS = \
+	$(PERLMAGICK_TESTS) \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
 	$(WAND_TESTS) \

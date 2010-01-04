@@ -912,7 +912,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             target_profile;
 
           cmsHTRANSFORM
-            *transform;
+            *restrict transform;
 
           DWORD
             flags,
@@ -938,8 +938,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             target_channels;
 
           unsigned short
-            **source_pixels,
-            **target_pixels;
+            **restrict source_pixels,
+            **restrict target_pixels;
 
           /*
             Transform pixel colors as defined by the color profiles.

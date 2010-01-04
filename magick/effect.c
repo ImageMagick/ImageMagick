@@ -1797,8 +1797,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     status;
 
   Quantum
-    **buffers,
-    **pixels;
+    **restrict buffers,
+    **restrict pixels;
 
   size_t
     length;
@@ -2545,7 +2545,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     status;
 
   MedianPixelList
-    **pixel_list;
+    **restrict pixel_list;
 
   unsigned long
     width;
@@ -3879,6 +3879,10 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 {
 #define ReduceNoiseImageTag  "ReduceNoise/Image"
 
+  CacheView
+    *image_view,
+    *noise_view;
+
   Image
     *noise_image;
 
@@ -3890,14 +3894,10 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     status;
 
   MedianPixelList
-    **pixel_list;
+    **restrict pixel_list;
 
   unsigned long
     width;
-
-  CacheView
-    *image_view,
-    *noise_view;
 
   /*
     Initialize noise image attributes.
@@ -4766,6 +4766,9 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 {
 #define SpreadImageTag  "Spread/Image"
 
+  CacheView
+    *image_view;
+
   Image
     *spread_image;
 
@@ -4780,16 +4783,13 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     bias;
 
   RandomInfo
-    **random_info;
+    **restrict random_info;
 
   ResampleFilter
-    **resample_filter;
+    **restrict resample_filter;
 
   unsigned long
     width;
-
-  CacheView
-    *image_view;
 
   /*
     Initialize spread image attributes.
