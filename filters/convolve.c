@@ -116,8 +116,8 @@ typedef struct _CLInfo
 
 static char
   *convolve_program =
-    "__kernel void Convolve(const __global ushort *input,\n"
-    "  __global ushort *output,__constant float *mask,const uint width,\n"
+    "__kernel void Convolve(const __global ushort4 *input,\n"
+    "  __global ushort4 *output,__constant float *mask,const uint width,\n"
     "  const uint height)\n"
     "{\n"
     "  const uint columns=get_global_size(0);\n"
@@ -126,29 +126,11 @@ static char
     "  const int x=get_global_id(0);\n"
     "  const int y=get_global_id(1);\n"
     "\n"
-    "  uint vstep=(width-1)/2;\n"
-    "  uint hstep=(height-1)/2;\n"
-    "\n"
-    "  uint left=(x < vstep) ? 0 : (x-vstep);\n"
-    "  uint right=((x+vstep) >= width) ? width-1 : (x+vstep);\n"
-    "  uint top=(y < hstep) ? 0 : (y-hstep);\n"
-    "  uint bottom=((y+hstep) >= height) ? height-1: (y+hstep);\n"
-    "\n"
-    "  float sum=0.0;\n"
-    "  float scale=1.0/65535.0;\n"
-    "\n"
-    "  uint maskIndex=0;"
-    "  for (uint i=left; i <= right; ++i)\n"
-    "    for (uint j=top ; j <= bottom; ++j)\n"
-    "    {\n"
-    "      uint index=(y+j)*columns+(x+i);\n"
-    "      sum+=scale*input[index]*mask[maskIndex];\n"
-    "      maskIndex++;\n"
-    "    }\n"
-    "\n"
     "  const uint index=y*columns+x;\n"
-    "  output[index]=(ushort) (65535.0*sum+0.5);\n"
-    "  output[index]=input[index];\n"
+    "  output[index].x=input[index].x;\n"
+    "  output[index].y=input[index].y;\n"
+    "  output[index].z=input[index].z;\n"
+    "  output[index].w=input[index].w;\n"
     "}\n";
 
 static void OpenCLNotify(const char *message,const void *data,size_t length,
@@ -175,7 +157,7 @@ static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image)
   size_t
     global_work_size[2];
 
-  global_work_size[0]=4*image->columns;  /* 4 = RGBA */
+  global_work_size[0]=image->columns;
   global_work_size[1]=image->rows;
   status=clEnqueueNDRangeKernel(cl_info->command_queue,cl_info->kernel,2,NULL,
     global_work_size,NULL,0,NULL,&events[0]);
@@ -198,7 +180,7 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     Bind OpenCL buffers.
   */
   cl_info->pixels=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort),pixels,
+    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort4),pixels,
     &status);
   if ((cl_info->pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
@@ -207,7 +189,7 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
   if (status != CL_SUCCESS)
     return(MagickFalse);
   cl_info->convolve_pixels=clCreateBuffer(cl_info->context,CL_MEM_WRITE_ONLY |
-    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort),
+    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(cl_ushort4),
     convolve_pixels,&status);
   if ((cl_info->convolve_pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
