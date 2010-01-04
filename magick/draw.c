@@ -1085,6 +1085,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   AffineMatrix
     inverse_affine;
 
+  CacheView
+    *image_view,
+    *source_view;
+
   ExceptionInfo
     *exception;
 
@@ -1107,14 +1111,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     i;
 
   ResampleFilter
-    **resample_filter;
+    **restrict resample_filter;
 
   SegmentInfo
     edge;
-
-  CacheView
-    *image_view,
-    *source_view;
 
   /*
     Determine bounding box.
@@ -3589,7 +3589,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   PathInfo
-    *path_info;
+    *restrict path_info;
 
   register long
     i;
@@ -3794,6 +3794,9 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
 static MagickBooleanType DrawPolygonPrimitive(Image *image,
   const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
 {
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -3810,7 +3813,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     mid;
 
   PolygonInfo
-    **polygon_info;
+    **restrict polygon_info;
 
   register EdgeInfo
     *p;
@@ -3820,9 +3823,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 
   SegmentInfo
     bounds;
-
-  CacheView
-    *image_view;
 
   /*
     Compute bounding box.

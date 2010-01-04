@@ -615,6 +615,9 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
 {
 #define ClutImageTag  "Clut/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -630,10 +633,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
     zero;
 
   ResampleFilter
-    **resample_filter;
-
-  CacheView
-    *image_view;
+    **restrict resample_filter;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2169,6 +2169,9 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       z;
   } HaldInfo;
 
+  CacheView
+    *image_view;
+
   double
     width;
 
@@ -2186,15 +2189,12 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
     zero;
 
   ResampleFilter
-    **resample_filter;
+    **restrict resample_filter;
 
   size_t
     cube_size,
     length,
     level;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

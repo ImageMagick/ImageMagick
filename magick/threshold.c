@@ -1626,6 +1626,9 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 {
 #define ThresholdImageTag  "Threshold/Image"
 
+  CacheView
+    *image_view;
+
   GeometryInfo
     geometry_info;
 
@@ -1647,10 +1650,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
     max_threshold;
 
   RandomInfo
-    **random_info;
-
-  CacheView
-    *image_view;
+    **restrict random_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

@@ -548,6 +548,10 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 #define NumberPaintBins  256
 #define OilPaintImageTag  "OilPaint/Image"
 
+  CacheView
+    *image_view,
+    *paint_view;
+
   Image
     *paint_image;
 
@@ -559,12 +563,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     status;
 
   unsigned long
-    **histograms,
+    **restrict histograms,
     width;
-
-  CacheView
-    *image_view,
-    *paint_view;
 
   /*
     Initialize painted image attributes.

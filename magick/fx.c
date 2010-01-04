@@ -281,6 +281,10 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
 {
 #define AddNoiseImageTag  "AddNoise/Image"
 
+  CacheView
+    *image_view,
+    *noise_view;
+
   const char
     *option;
 
@@ -298,11 +302,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     attenuate;
 
   RandomInfo
-    **random_info;
-
-  CacheView
-    *image_view,
-    *noise_view;
+    **restrict random_info;
 
   /*
     Initialize noise image attributes.
@@ -1081,6 +1081,9 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 {
 #define EvaluateImageTag  "Evaluate/Image "
 
+  CacheView
+    *image_view;
+
   long
     progress,
     y;
@@ -1089,10 +1092,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
     status;
 
   RandomInfo
-    **random_info;
-
-  CacheView
-    *image_view;
+    **restrict random_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3126,8 +3126,11 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
 {
 #define FxImageTag  "Fx/Image"
 
+  CacheView
+    *fx_view;
+
   FxInfo
-    **fx_info;
+    **restrict fx_info;
 
   Image
     *fx_image;
@@ -3141,9 +3144,6 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
 
   MagickRealType
     alpha;
-
-  CacheView
-    *fx_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3308,6 +3308,10 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 {
 #define ImplodeImageTag  "Implode/Image"
 
+  CacheView
+    *image_view,
+    *implode_view;
+
   Image
     *implode_image;
 
@@ -3329,11 +3333,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     scale;
 
   ResampleFilter
-    **resample_filter;
-
-  CacheView
-    *image_view,
-    *implode_view;
+    **restrict resample_filter;
 
   /*
     Initialize implode image attributes.
@@ -4714,6 +4714,9 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 MagickExport Image *SketchImage(const Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
 {
+  CacheView
+    *random_view;
+
   Image
     *blend_image,
     *blur_image,
@@ -4731,10 +4734,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     zero;
 
   RandomInfo
-    **random_info;
-
-  CacheView
-    *random_view;
+    **restrict random_info;
 
   /*
     Sketch image.
@@ -5276,6 +5276,10 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 {
 #define SwirlImageTag  "Swirl/Image"
 
+  CacheView
+    *image_view,
+    *swirl_view;
+
   Image
     *swirl_image;
 
@@ -5297,11 +5301,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     scale;
 
   ResampleFilter
-    **resample_filter;
-
-  CacheView
-    *image_view,
-    *swirl_view;
+    **restrict resample_filter;
 
   /*
     Initialize swirl image attributes.
@@ -5743,6 +5743,9 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 {
 #define WaveImageTag  "Wave/Image"
 
+  CacheView
+    *wave_view;
+
   Image
     *wave_image;
 
@@ -5763,10 +5766,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     i;
 
   ResampleFilter
-    **resample_filter;
-
-  CacheView
-    *wave_view;
+    **restrict resample_filter;
 
   /*
     Initialize wave image attributes.

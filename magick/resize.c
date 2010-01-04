@@ -1668,11 +1668,15 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 {
 #define ResizeImageTag  "Resize/Image"
 
+  CacheView
+    *image_view,
+    *resize_view;
+
   ClassType
     storage_class;
 
   ContributionInfo
-    **contributions;
+    **restrict contributions;
 
   long
     x;
@@ -1686,10 +1690,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   MagickRealType
     scale,
     support;
-
-  CacheView
-    *image_view,
-    *resize_view;
 
   /*
     Apply filter to resize horizontally from image to resize image.
@@ -1909,11 +1909,15 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   const Image *image,Image *resize_image,const MagickRealType y_factor,
   const MagickSizeType span,MagickOffsetType *quantum,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *resize_view;
+
   ClassType
     storage_class;
 
   ContributionInfo
-    **contributions;
+    **restrict contributions;
 
   long
     y;
@@ -1927,10 +1931,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   MagickRealType
     scale,
     support;
-
-  CacheView
-    *image_view,
-    *resize_view;
 
   /*
     Apply filter to resize vertically from image to resize_image.

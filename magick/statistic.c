@@ -182,7 +182,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     status;
 
   MagickPixelPacket
-    **average_pixels,
+    **restrict average_pixels,
     zero;
 
   unsigned long
