@@ -82,38 +82,42 @@
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#define CLQuantumRange  "255.0"
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+#define CLQuantumString  "uchar"
 #define CLPixelPacketString  "uchar4"
 #define CLPixelPacket  cl_uchar4
 #else
+#define CLQuantumString  "float"
 #define CLPixelPacketString  "float4"
 #define CLPixelPacket  cl_float4
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#define CLQuantumRange  "65535.0"
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+#define CLQuantumString  "ushort"
 #define CLPixelPacketString  "ushort4"
 #define CLPixelPacket  cl_ushort4
 #else
+#define CLQuantumString  "float"
 #define CLPixelPacketString  "float4"
 #define CLPixelPacket  cl_float4
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define CLQuantumRange  "4294967295.0"
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+#define CLQuantumString  "uint"
 #define CLPixelPacketString  "uint4"
 #define CLPixelPacket  cl_uint4
 #else
+#define CLQuantumString  "float"
 #define CLPixelPacketString  "float4"
 #define CLPixelPacket  cl_float4
 #endif
 #else
-#define CLQuantumRange  "18446744073709551615.0"
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+#define CLQuantumString  "ulong"
 #define CLPixelPacketString  "ulong4"
 #define CLPixelPacket  cl_ulong4
 #else
+#define CLQuantumString  "float"
 #define CLPixelPacketString  "float4"
 #define CLPixelPacket  cl_float4
 #endif
@@ -151,7 +155,6 @@ typedef struct _CLInfo
 
 static char
   *convolve_program =
-    "#define QuantumRange  " CLQuantumRange "\n"
     "#define QuantumScale  (1.0/QuantumRange)\n"
     "\n"
     "static uint AuthenticPixel(const int value,const uint range)\n"
@@ -163,12 +166,12 @@ static char
     "  return(value);\n"
     "}\n"
     "\n"
-    "static ushort AuthenticQuantum(const float value)\n"
+    "static " CLQuantumString " AuthenticQuantum(const float value)\n"
     "{\n"
     "  if (value < 0)\n"
     "    return(0);\n"
-    "  if (value >= " CLQuantumRange ")\n"
-    "    return(" CLQuantumRange ");\n"
+    "  if (value >= QuantumRange)\n"
+    "    return(QuantumRange);\n"
     "  return(value+0.5);\n"
     "}\n"
     "\n"
@@ -338,6 +341,9 @@ static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image)
 static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
   ExceptionInfo *exception)
 {
+  char
+    options[MaxTextExtent];
+
   cl_int
     status;
 
@@ -414,7 +420,9 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
       DestroyCLInfo(cl_info);
       return((CLInfo *) NULL);
     }
-  status=clBuildProgram(cl_info->program,1,cl_info->devices,NULL,NULL,NULL);
+  (void) FormatMagickString(options,MaxTextExtent,"-DQuantumRange=%g -Dpenis=ushort",
+    (double) QuantumRange);
+  status=clBuildProgram(cl_info->program,1,cl_info->devices,options,NULL,NULL);
   if ((cl_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
     {
       char
