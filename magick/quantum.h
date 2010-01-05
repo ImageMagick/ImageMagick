@@ -43,7 +43,8 @@ typedef enum
   UndefinedQuantumFormat,
   FloatingPointQuantumFormat,
   SignedQuantumFormat,
-  UnsignedQuantumFormat
+  UnsignedQuantumFormat,
+  CompactFloatingPointQuantumFormat
 } QuantumFormatType;
 
 typedef enum
