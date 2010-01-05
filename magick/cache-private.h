@@ -237,7 +237,6 @@ extern MagickExport void
   ClonePixelCacheMethods(Cache,const Cache),
   GetPixelCacheTileSize(const Image *,unsigned long *,unsigned long *),
   GetPixelCacheMethods(CacheMethods *),
-  *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *),
   SetPixelCacheMethods(Cache,CacheMethods *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

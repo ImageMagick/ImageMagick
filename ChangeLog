@@ -1,3 +1,6 @@
+2010-01-01  6.5.9-0 Cristy  <quetzlzacatenango@image...>
+  * Add OpenCL-enabled filter (e.g.  convert image.png -process
+    "convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'" image.jpg).
 
 2009-12-27  6.5.8-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Added MxN tile cropping with overlapping and space handling.
