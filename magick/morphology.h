@@ -22,6 +22,72 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  UndefinedKernel,    /* also the 'no-op' kernel */
+  GaussianKernel,     /* Convolution Kernels */
+  BlurKernel,
+  CometKernel,
+  LaplacianKernel,
+  LOGKernel,
+  DOGKernel,
+  RectangleKernel,    /* Boolean Kernels */
+  SquareKernel,
+  DiamondKernel,
+  DiskKernel,
+  PlusKernel,
+  ChebyshevKernel,    /* Distance Measuring Kernels */
+  ManhattenKernel,
+  KnightKernel,
+  EuclideanKernel,
+  UserDefinedKernel   /* user specified kernel values */
+} MagickKernelType;
+
+typedef enum
+{
+  UndefinedMorphology,
+  ConvolveMorphology,          /* Weighted Sum of pixels - Convolve */
+  DialateMorphology,           /* Weighted Value Maximum */
+  ErodeMorphology,             /* Weighted Value Minimum */
+  CloseMorphology,             /* Erode then Dialate */
+  OpenMorphology,              /* Dialate then Erode */
+  DialateIntensityMorphology,  /* Pixel Pick using GreyScale Dialate */
+  ErodeIntensityMorphology,    /* Pixel Pick using GreyScale Erode */
+  CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
+  OpenIntensityMorphology,     /* Pixel Pick using GreyScale Open */
+  DistanceMorphology           /* Add to Value, take Minimum */
+} MorphologyMethod;
+
+typedef struct
+{
+  MagickKernelType
+    type;
+
+  unsigned long
+    width,
+    height,
+    offset_x,
+    offset_y;
+
+  double *
+    values;
+
+  double
+    range_neg,
+    range_pos;
+
+} MagickKernel;
+
+extern MagickKernel
+  *AcquireKernelFromString(const char *),
+  *AcquireKernelBuiltIn(const MagickKernelType, const GeometryInfo *),
+  *DestroyKernel(MagickKernel *);
+
+extern Image
+  *MorphologyImage(const Image *, MorphologyMethod, const long,
+             const ChannelType, const MagickKernel *, ExceptionInfo *);
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

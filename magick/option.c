@@ -61,6 +61,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/montage.h"
+#include "magick/morphology.h"
 #include "magick/option.h"
 #include "magick/policy.h"
 #include "magick/property.h"
@@ -436,6 +437,8 @@ static const OptionInfo
     { "-monochrome", 0L, MagickFalse },
     { "+morph", 0L, MagickFalse },
     { "-morph", 1L, MagickFalse },
+    { "+morphology", 0L, MagickFalse },
+    { "-morphology", 2L, MagickFalse },
     { "+mosaic", 0L, MagickFalse },
     { "-mosaic", 0L, MagickFalse },
     { "+motion-blur", 0L, MagickFalse },
@@ -1019,6 +1022,27 @@ static const OptionInfo
     { "Spline", (long) SplineInterpolatePixel, MagickFalse },
     { (char *) NULL, (long) UndefinedInterpolatePixel, MagickFalse }
   },
+  KernelOptions[] =
+  {
+    { "Undefined", (long) UndefinedKernel, MagickTrue },
+    { "Gaussian", (long) GaussianKernel, MagickFalse },
+    { "Blur", (long) BlurKernel, MagickFalse },
+    { "Comet", (long) CometKernel, MagickFalse },
+    { "Laplacian", (long) LaplacianKernel, MagickTrue }, /* not implemented */
+    { "DOG", (long) DOGKernel, MagickTrue },             /* not implemented */
+    { "LOG", (long) LOGKernel, MagickTrue },             /* not implemented */
+    { "Rectangle", (long) RectangleKernel, MagickFalse },
+    { "Square", (long) SquareKernel, MagickFalse },
+    { "Diamond", (long) DiamondKernel, MagickFalse },
+    { "Disk", (long) DiskKernel, MagickFalse },
+    { "Plus", (long) PlusKernel, MagickFalse },
+    { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
+    { "Manhatten", (long) ManhattenKernel, MagickFalse },
+    { "Knight", (long) KnightKernel, MagickFalse },
+    { "Euclidean", (long) EuclideanKernel, MagickFalse },
+    { "User Defined", (long) UserDefinedKernel, MagickTrue }, /* internel */
+    { (char *) NULL, (long) UndefinedKernel, MagickFalse }
+  },
   LayerOptions[] =
   {
     { "Undefined", (long) UndefinedLayer, MagickTrue },
@@ -1090,6 +1114,7 @@ static const OptionInfo
     { "Intent", (long) MagickIntentOptions, MagickFalse },
     { "Interlace", (long) MagickInterlaceOptions, MagickFalse },
     { "Interpolate", (long) MagickInterpolateOptions, MagickFalse },
+    { "Kernel", (long) MagickKernelOptions, MagickFalse },
     { "Layers", (long) MagickLayerOptions, MagickFalse },
     { "LineCap", (long) MagickLineCapOptions, MagickFalse },
     { "LineJoin", (long) MagickLineJoinOptions, MagickFalse },
@@ -1102,6 +1127,7 @@ static const OptionInfo
     { "Metric", (long) MagickMetricOptions, MagickFalse },
     { "Mime", (long) MagickMimeOptions, MagickFalse },
     { "Mode", (long) MagickModeOptions, MagickFalse },
+    { "Morphology", (long) MagickMorphologyOptions, MagickFalse },
     { "Module", (long) MagickModuleOptions, MagickFalse },
     { "Noise", (long) MagickNoiseOptions, MagickFalse },
     { "Orientation", (long) MagickOrientationOptions, MagickFalse },
@@ -1177,6 +1203,25 @@ static const OptionInfo
     { "Frame", (long) FrameMode, MagickFalse },
     { "Unframe", (long) UnframeMode, MagickFalse },
     { (char *) NULL, (long) UndefinedMode, MagickFalse }
+  },
+  MorphologyOptions[] =
+  {
+    { "Undefined", (long) UndefinedMorphology, MagickTrue },
+    { "Convolve", (long) ConvolveMorphology, MagickFalse },
+    { "Dialate", (long) DialateMorphology, MagickFalse },
+    { "Erode", (long) ErodeMorphology, MagickFalse },
+    { "Close", (long) CloseMorphology, MagickFalse },
+    { "Open", (long) OpenMorphology, MagickFalse },
+    { "DialateIntensity", (long) DialateIntensityMorphology, MagickFalse },
+    { "ErodeIntensity", (long) ErodeIntensityMorphology, MagickFalse },
+    { "CloseIntensity", (long) CloseIntensityMorphology, MagickFalse },
+    { "OpenIntensity", (long) OpenIntensityMorphology, MagickFalse },
+    { "DialateI", (long) DialateIntensityMorphology, MagickFalse },
+    { "ErodeI", (long) ErodeIntensityMorphology, MagickFalse },
+    { "CloseI", (long) CloseIntensityMorphology, MagickFalse },
+    { "OpenI", (long) OpenIntensityMorphology, MagickFalse },
+    { "Distance", (long) DistanceMorphology, MagickFalse },
+    { (char *) NULL, (long) UndefinedMorphology, MagickFalse }
   },
   NoiseOptions[] =
   {
@@ -1655,6 +1700,7 @@ static const OptionInfo *GetOptionInfo(const MagickOption option)
     case MagickIntentOptions: return(IntentOptions);
     case MagickInterlaceOptions: return(InterlaceOptions);
     case MagickInterpolateOptions: return(InterpolateOptions);
+    case MagickKernelOptions: return(KernelOptions);
     case MagickLayerOptions: return(LayerOptions);
     case MagickLineCapOptions: return(LineCapOptions);
     case MagickLineJoinOptions: return(LineJoinOptions);
@@ -1663,6 +1709,7 @@ static const OptionInfo *GetOptionInfo(const MagickOption option)
     case MagickMetricOptions: return(MetricOptions);
     case MagickMethodOptions: return(MethodOptions);
     case MagickModeOptions: return(ModeOptions);
+    case MagickMorphologyOptions: return(MorphologyOptions);
     case MagickNoiseOptions: return(NoiseOptions);
     case MagickOrientationOptions: return(OrientationOptions);
     case MagickPolicyDomainOptions: return(PolicyDomainOptions);
