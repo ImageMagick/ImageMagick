@@ -1,4 +1,4 @@
-2010-01-04  6.5.8-9 Anthony Thyssen <A.Thyssen@griffith...>
+2010-01-04  6.5.9-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Added Kernel Generator to generate kernels from user strings, which
     allows the generation in many built in kernels for both Convolution
     and other Morphological methods.  New Kernels currently include..
