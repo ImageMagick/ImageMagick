@@ -565,7 +565,7 @@ int main(int argc,char **argv)
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
-  while (MagickNextImage(magick_wand) != False)
+  while (MagickNextImage(magick_wand) != MagickFalse)
   {
     MagickSetImageDepth(magick_wand,8);
     MagickSetImageCompression(magick_wand,RLECompression);
