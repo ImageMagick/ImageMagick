@@ -420,7 +420,7 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
       DestroyCLInfo(cl_info);
       return((CLInfo *) NULL);
     }
-  (void) FormatMagickString(options,MaxTextExtent,"-DQuantumRange=%g -Dpenis=ushort",
+  (void) FormatMagickString(options,MaxTextExtent,"-DQuantumRange=%g",
     (double) QuantumRange);
   status=clBuildProgram(cl_info->program,1,cl_info->devices,options,NULL,NULL);
   if ((cl_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
