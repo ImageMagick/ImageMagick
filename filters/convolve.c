@@ -205,7 +205,7 @@ static char
     "      i++;\n"
     "    }\n"
     "  }\n"
-    "  const uint index=y*columns+x;\n"
+    "  const uint index = y*columns+x;\n"
     "  gamma=1.0/((gamma <= 0.000001) && (gamma >= -0.000001) ? 1.0 : gamma);\n"
     "  output[index].x=AuthenticQuantum(gamma*sum.x);\n"
     "  output[index].y=AuthenticQuantum(gamma*sum.y);\n"
