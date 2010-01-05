@@ -39,6 +39,7 @@ int main( int /*argc*/, char ** argv)
     list<Image> animation;
 
     Image base( Geometry(600,600), Color("white") );
+    base.depth(8);
     base.strokeColor("#600");
     base.fillColor(Color());
     base.draw( DrawableLine( 300,100, 300,500 ) );

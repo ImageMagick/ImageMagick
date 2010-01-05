@@ -564,6 +564,13 @@ int main(int argc,char **argv)
   status=MagickResizeImage(magick_wand,50,50,UndefinedFilter,1.0);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
+  MagickResetIterator(magick_wand);
+  while (MagickNextImage(magick_wand) != False)
+  {
+    MagickSetImageDepth(magick_wand,8);
+    MagickSetImageCompression(magick_wand,RLECompression);
+  }
+  MagickResetIterator(magick_wand);
   (void) MagickSetIteratorIndex(magick_wand,4);
   (void) fprintf(stdout,"Utilitize pixel iterator to draw diagonal...\n");
   iterator=NewPixelIterator(magick_wand);

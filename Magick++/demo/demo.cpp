@@ -498,9 +498,11 @@ int main( int /*argc*/, char ** argv)
       montage_image.composite( logo, placement, OverCompositeOp );
     }
 
+    for_each( montage.begin(), montage.end(), depthImage(8) );
+    for_each( montage.begin(), montage.end(), matteImage( false ) );
+    for_each( montage.begin(), montage.end(), compressTypeImage( RLECompression) );
+
     cout << "Writing image \"demo_out.miff\" ..." << endl;
-    montage_image.matte( false );
-    montage_image.compressType( RLECompression );
     writeImages(montage.begin(),montage.end(),"demo_out.miff");
 
     // Uncomment following lines to display image to screen
