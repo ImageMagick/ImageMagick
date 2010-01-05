@@ -88,7 +88,9 @@ typedef enum
   MagickThresholdOptions,
   MagickTypeOptions,
   MagickValidateOptions,
-  MagickVirtualPixelOptions
+  MagickVirtualPixelOptions,
+  MagickKernelOptions,
+  MagickMorphologyOptions
 } MagickOption;
 
 typedef enum
