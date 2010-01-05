@@ -192,7 +192,7 @@ static char
     "  {\n"
     "    for (int u=(-hstep); u <= vstep; u++)\n"
     "    {\n"
-    "      const uint index=AuthenticPixel(y+v,rows)*columns+\n"
+    "      const uint index = AuthenticPixel(y+v,rows)*columns+\n"
     "        AuthenticPixel(x+u,columns);\n"
     "      float alpha = 1.0;\n"
     "      if (matte != 0)\n"
