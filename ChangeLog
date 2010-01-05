@@ -1,6 +1,23 @@
+2010-01-04  6.5.8-9 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added Kernel Generator to generate kernels from user strings, which
+    allows the generation in many built in kernels for both Convolution
+    and other Morphological methods.  New Kernels currently include..
+      Convolution: Gaussian, Blur, Comet
+      Morphological: Rectangle, Square, Diamond, Disk, Plus
+      Distance: Chebyshev, Manhatten, Knight, Euclidean
+    And both old and new (rectangular) user defined kernel specifications
+    including the use of 'nan' to represent elements which are not part
+    of the kernel definition.  List built-in kernel types use "-list kernel"
+  * Added -morphology {method}[:{iteration}] {kernel_string}
+    Initial methods includes no only the basic morphology methods: Dialate,
+    Erode, Open, Close; and a pixel color preserving 'Intensity' version, but
+    also the special methods: Convolve, and Distance.  Of course the
+    appropriate kernel should be provided for each specific method.
+
 2010-01-01  6.5.9-0 Cristy  <quetzlzacatenango@image...>
   * Add OpenCL-enabled filter (e.g.  convert image.png -process
     "convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'" image.jpg).
+  * Added StringTo...() processing functions
 
 2009-12-27  6.5.8-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Added MxN tile cropping with overlapping and space handling.
