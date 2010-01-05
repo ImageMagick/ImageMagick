@@ -59,6 +59,7 @@
 #include "magick/gem.h"
 #include "magick/hashmap.h"
 #include "magick/image.h"
+#include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/memory_.h"
 #include "magick/monitor-private.h"
@@ -1126,6 +1127,7 @@ static unsigned long MorphologyApply(const Image *image, Image
       if (image->colorspace == CMYKColorspace)
         q_indexes[x] = p_indexes[r];
 
+      result.index=0;
       switch (method) {
         case ConvolveMorphology:
           result=bias;
@@ -1513,6 +1515,7 @@ MagickExport Image *MorphologyImage(const Image *image, MorphologyMethod
     limit = image->columns > image->rows ? image->columns : image->rows;
 
   /* Special morphology cases */
+  changed=MagickFalse;
   switch( method ) {
     case CloseMorphology:
       new_image = MorphologyImage(image, DialateMorphology, iterations, channel,

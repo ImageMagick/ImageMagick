@@ -81,45 +81,27 @@
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+#define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantumType=float " \
+  "-DCLPixelType=float4 -DQuantumRange=%g"
+#define CLPixelPacket  cl_ufloat4
+#else
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-#define CLQuantumString  "uchar"
-#define CLPixelPacketString  "uchar4"
+#define CLOptions \
+  "-DCLQuantumType=uchar -DCLPixelType=uchar4 -DQuantumRange=%g"
 #define CLPixelPacket  cl_uchar4
-#else
-#define CLQuantumString  "float"
-#define CLPixelPacketString  "float4"
-#define CLPixelPacket  cl_float4
-#endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-#define CLQuantumString  "ushort"
-#define CLPixelPacketString  "ushort4"
+#define CLOptions \
+  "-DCLQuantumType=ushort -DCLPixelType=ushort4 -DQuantumRange=%g"
 #define CLPixelPacket  cl_ushort4
-#else
-#define CLQuantumString  "float"
-#define CLPixelPacketString  "float4"
-#define CLPixelPacket  cl_float4
-#endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-#define CLQuantumString  "uint"
-#define CLPixelPacketString  "uint4"
+#define CLOptions \
+  "-DCLQuantumType=uint -DCLPixelType=uint4 -DQuantumRange=%g"
 #define CLPixelPacket  cl_uint4
-#else
-#define CLQuantumString  "float"
-#define CLPixelPacketString  "float4"
-#define CLPixelPacket  cl_float4
-#endif
-#else
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-#define CLQuantumString  "ulong"
-#define CLPixelPacketString  "ulong4"
+#elif (MAGICKCORE_QUANTUM_DEPTH == 32)
+#define CLOptions \
+  "-DCLQuantumType=ulong -DCLPixelType=ulong4 -DQuantumRange=%g"
 #define CLPixelPacket  cl_ulong4
-#else
-#define CLQuantumString  "float"
-#define CLPixelPacketString  "float4"
-#define CLPixelPacket  cl_float4
 #endif
 #endif
 
@@ -146,7 +128,9 @@ typedef struct _CLInfo
 
   cl_uint
     width,
-    height,
+    height;
+
+  cl_bool
     matte;
 
   cl_mem
@@ -155,65 +139,139 @@ typedef struct _CLInfo
 
 static char
   *convolve_program =
-    "#define QuantumScale  (1.0/QuantumRange)\n"
-    "\n"
-    "static uint AuthenticPixel(const int value,const uint range)\n"
+    "static long AuthenticPixel(const long offset,const ulong range)\n"
     "{\n"
-    "  if (value < 0)\n"
+    "  if (offset < 0)\n"
     "    return(0);\n"
-    "  if (value >= range)\n"
+    "  if (offset >= range)\n"
     "    return(range-1);\n"
-    "  return(value);\n"
+    "  return(offset);\n"
     "}\n"
     "\n"
-    "static " CLQuantumString " AuthenticQuantum(const float value)\n"
+    "static CLQuantumType AuthenticQuantum(const double value)\n"
     "{\n"
+    "#if !defined(MAGICKCORE_HDRI_SUPPORT)\n"
     "  if (value < 0)\n"
     "    return(0);\n"
     "  if (value >= QuantumRange)\n"
     "    return(QuantumRange);\n"
-    "  return(value+0.5);\n"
+    "  return((CLQuantumType) (value+0.5));\n"
+    "#else\n"
+    "  return((CLQuantumType) value)\n"
+    "#endif\n"
     "}\n"
     "\n"
-    "__kernel void Convolve(const __global " CLPixelPacketString " *input,\n"
-    "  __constant float *mask,const uint width,const uint height,\n"
-    "  const uint matte,__global " CLPixelPacketString " *output)\n"
+    "__kernel void Convolve(const __global CLPixelType *input,\n"
+    "  __constant double *mask,const uint width,const uint height,\n"
+    "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
-    "  const uint columns = get_global_size(0);\n"
-    "  const uint rows = get_global_size(1);\n"
+    "  const ulong columns = get_global_size(0);\n"
+    "  const ulong rows = get_global_size(1);\n"
     "\n"
-    "  const int x = get_global_id(0);\n"
-    "  const int y = get_global_id(1);\n"
+    "  const long x = get_global_id(0);\n"
+    "  const long y = get_global_id(1);\n"
     "\n"
-    "  float4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
-    "  float gamma = 0.0;\n"
-    "  const int hstep = (width-1)/2;\n"
-    "  const int vstep = (height-1)/2;\n"
-    "  uint i = 0;\n"
+    "  double4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
+    "  double alpha = 0.0;\n"
+    "  double gamma = 0.0;\n"
+    "  double scale = (1.0/QuantumRange);\n"
+    "  const long mid_width = (width-1)/2;\n"
+    "  const long mid_height = (height-1)/2;\n"
+    "  ulong i = 0;\n"
+    "  ulong index = 0;\n"
     "\n"
-    "  for (int v=(-vstep); v <= vstep; v++)\n"
-    "  {\n"
-    "    for (int u=(-hstep); u <= vstep; u++)\n"
+    "  int state = 0;\n"
+    "  if (matte != false)\n"
+    "    state=1;\n"
+    "  if ((x >= width) && (x < (columns-width-1)) &&\n"
+    "      (y >= height) && (y < (rows-height-1)))\n"
     "    {\n"
-    "      const uint index = AuthenticPixel(y+v,rows)*columns+\n"
-    "        AuthenticPixel(x+u,columns);\n"
-    "      float alpha = 1.0;\n"
-    "      if (matte != 0)\n"
-    "        alpha = (float) (QuantumScale*(QuantumRange-input[index].w));\n"
-    "      sum.x+=alpha*mask[i]*input[index].x;\n"
-    "      sum.y+=alpha*mask[i]*input[index].y;\n"
-    "      sum.z+=alpha*mask[i]*input[index].z;\n"
-    "      sum.w+=mask[i]*input[index].w;\n"
-    "      gamma+=alpha*mask[i];\n"
-    "      i++;\n"
+    "      state=2;\n"
+    "      if (matte != false)\n"
+    "        state=3;\n"
     "    }\n"
-    "  }\n"
+    "  switch (state)\n"
+    "  {"
+    "    case 0:"
+    "    {"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      {\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        {\n"
+    "          index=AuthenticPixel(y+v,rows)*columns+\n"
+    "            AuthenticPixel(x+u,columns);\n"
+    "          sum.x+=mask[i]*input[index].x;\n"
+    "          sum.y+=mask[i]*input[index].y;\n"
+    "          sum.z+=mask[i]*input[index].z;\n"
+    "          gamma+=mask[i];\n"
+    "          i++;\n"
+    "        }\n"
+    "      }\n"
+    "      break;"
+    "    }"
+    "    case 1:"
+    "    {"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      {\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        {\n"
+    "          index=AuthenticPixel(y+v,rows)*columns+\n"
+    "            AuthenticPixel(x+u,columns);\n"
+    "          alpha=scale*(QuantumRange-input[index].w);\n"
+    "          sum.x+=alpha*mask[i]*input[index].x;\n"
+    "          sum.y+=alpha*mask[i]*input[index].y;\n"
+    "          sum.z+=alpha*mask[i]*input[index].z;\n"
+    "          sum.w+=mask[i]*input[index].w;\n"
+    "          gamma+=alpha*mask[i];\n"
+    "          i++;\n"
+    "        }\n"
+    "      }\n"
+    "      break;"
+    "    }"
+    "    case 2:"
+    "    {"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      {\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        {\n"
+    "          index=(y+v)*columns+(x+u);\n"
+    "          sum.x+=mask[i]*input[index].x;\n"
+    "          sum.y+=mask[i]*input[index].y;\n"
+    "          sum.z+=mask[i]*input[index].z;\n"
+    "          gamma+=mask[i];\n"
+    "          i++;\n"
+    "        }\n"
+    "      }\n"
+    "      break;"
+    "    }"
+    "    case 3:"
+    "    {"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      {\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        {\n"
+    "          index=(y+v)*columns+(x+u);\n"
+    "          alpha=scale*(QuantumRange-input[index].w);\n"
+    "          sum.x+=alpha*mask[i]*input[index].x;\n"
+    "          sum.y+=alpha*mask[i]*input[index].y;\n"
+    "          sum.z+=alpha*mask[i]*input[index].z;\n"
+    "          sum.w+=mask[i]*input[index].w;\n"
+    "          gamma+=alpha*mask[i];\n"
+    "          i++;\n"
+    "        }\n"
+    "      }\n"
+    "      break;"
+    "    }"
+    "  }"
     "  gamma=1.0/((gamma <= 0.000001) && (gamma >= -0.000001) ? 1.0 : gamma);\n"
-    "  const uint index = y*columns+x;\n"
+    "  index=y*columns+x;\n"
     "  output[index].x=AuthenticQuantum(gamma*sum.x);\n"
     "  output[index].y=AuthenticQuantum(gamma*sum.y);\n"
     "  output[index].z=AuthenticQuantum(gamma*sum.z);\n"
-    "  output[index].w=AuthenticQuantum(sum.w);\n"
+    "  if (matte == false)\n"
+    "    output[index].w=input[index].w;\n"
+    "  else\n"
+    "    output[index].w=AuthenticQuantum(sum.w);\n"
     "}\n";
 
 static void OpenCLNotify(const char *message,const void *data,size_t length,
@@ -230,8 +288,8 @@ static void OpenCLNotify(const char *message,const void *data,size_t length,
 }
 
 static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
-  void *pixels,float *mask,const unsigned long width,const unsigned long height,
-  void *convolve_pixels)
+  void *pixels,double *mask,const unsigned long width,
+  const unsigned long height,void *convolve_pixels)
 {
   cl_int
     status;
@@ -249,7 +307,7 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
   if (status != CL_SUCCESS)
     return(MagickFalse);
   cl_info->mask=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,width*height*sizeof(cl_float),mask,&status);
+    CL_MEM_USE_HOST_PTR,width*height*sizeof(cl_double),mask,&status);
   if ((cl_info->mask == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
   status=clSetKernelArg(cl_info->kernel,1,sizeof(cl_mem),(void *)
@@ -266,8 +324,8 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     &cl_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->matte=(cl_uint) image->matte;
-  status=clSetKernelArg(cl_info->kernel,4,sizeof(cl_uint),(void *)
+  cl_info->matte=(cl_bool) image->matte;
+  status=clSetKernelArg(cl_info->kernel,4,sizeof(cl_bool),(void *)
     &cl_info->matte);
   if (status != CL_SUCCESS)
     return(MagickFalse);
@@ -420,8 +478,8 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
       DestroyCLInfo(cl_info);
       return((CLInfo *) NULL);
     }
-  (void) FormatMagickString(options,MaxTextExtent,"-DQuantumRange=%g",
-    (double) QuantumRange);
+  (void) FormatMagickString(options,MaxTextExtent,CLOptions,(double)
+    QuantumRange);
   status=clBuildProgram(cl_info->program,1,cl_info->devices,options,NULL,NULL);
   if ((cl_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
     {
@@ -456,7 +514,7 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
   return(cl_info);
 }
 
-static float *ParseMask(const char *value,unsigned long *order)
+static double *ParseMask(const char *value,unsigned long *order)
 {
   char
     token[MaxTextExtent];
@@ -464,7 +522,7 @@ static float *ParseMask(const char *value,unsigned long *order)
   const char
     *p;
 
-  float
+  double
     *mask,
     normalize;
 
@@ -484,8 +542,8 @@ static float *ParseMask(const char *value,unsigned long *order)
       GetMagickToken(p,&p,token);
   }
   *order=(unsigned long) sqrt((double) i+1.0);
-  mask=(float *) AcquireQuantumMemory(*order,*order*sizeof(*mask));
-  if (mask == (float *) NULL)
+  mask=(double *) AcquireQuantumMemory(*order,*order*sizeof(*mask));
+  if (mask == (double *) NULL)
     return(mask);
   p=(const char *) value;
   if (*p == '\'')
@@ -523,7 +581,7 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     "DelegateLibrarySupportNotBuiltIn","`%s' (OpenCL)",(*images)->filename);
 #else
   {
-    float
+    double
       *mask;
 
     Image
@@ -544,13 +602,13 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
       Convolve image.
     */
     mask=ParseMask(argv[0],&order);
-    if (mask == (float *) NULL)
+    if (mask == (double *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
     cl_info=GetCLInfo(*images,"Convolve",convolve_program,exception);
     if (cl_info == (CLInfo *) NULL)
       {
-        mask=(float *) RelinquishMagickMemory(mask);
+        mask=(double *) RelinquishMagickMemory(mask);
         return(MagickImageFilterSignature);
       }
     image=(*images);
@@ -596,7 +654,7 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
       DestroyCLBuffers(cl_info);
       convolve_image=DestroyImage(convolve_image);
     }
-    mask=(float *) RelinquishMagickMemory(mask);
+    mask=(double *) RelinquishMagickMemory(mask);
     cl_info=DestroyCLInfo(cl_info);
   }
 #endif
