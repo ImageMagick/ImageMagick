@@ -560,6 +560,8 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
       else
         quantum_info->depth=32;
     }
+  if (quantum_info->format == CompactFloatingPointQuantumFormat)
+    quantum_info->depth=16;
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
   status=AcquireQuantumPixels(quantum_info,(quantum_info->pad+5)*image->columns*
