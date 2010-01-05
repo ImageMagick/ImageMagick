@@ -186,7 +186,13 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=MagickTrue;
       channels=4;
     }
-  if (LocaleCompare(image_info->magick,"RGBO") == 0)
+  else if (LocaleCompare(image_info->magick,"BGRA") == 0)
+    {
+      quantum_type=BGRAQuantum;
+      image->matte=MagickTrue;
+      channels=4;
+    }
+  else if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
       image->matte=MagickTrue;
@@ -684,6 +690,15 @@ ModuleExport unsigned long RegisterRGBImage(void)
   entry->description=ConstantString("Raw blue, green, and red samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("BGRA");
+  entry->decoder=(DecodeImageHandler *) ReadRGBImage;
+  entry->encoder=(EncodeImageHandler *) WriteRGBImage;
+  entry->raw=MagickTrue;
+  entry->endian_support=MagickTrue;
+  entry->format_type=ExplicitFormatType;
+  entry->description=ConstantString("Raw blue, green, red and alpha samples");
+  entry->module=ConstantString("RGB");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RGBA");
   entry->decoder=(DecodeImageHandler *) ReadRGBImage;
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
@@ -730,6 +745,7 @@ ModuleExport void UnregisterRGBImage(void)
   (void) UnregisterMagickInfo("RGBO");
   (void) UnregisterMagickInfo("RGBA");
   (void) UnregisterMagickInfo("BGR");
+  (void) UnregisterMagickInfo("BGRA");
   (void) UnregisterMagickInfo("BRG");
   (void) UnregisterMagickInfo("GBR");
   (void) UnregisterMagickInfo("GRB");

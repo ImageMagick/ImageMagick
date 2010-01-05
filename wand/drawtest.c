@@ -440,6 +440,18 @@ int main(int argc,char **argv)
   if (status == MagickFalse)
     ThrowWandException(canvas);
   /*
+    Set pixel depth to 8.
+  */
+  status=MagickSetImageDepth(canvas,8);
+  if (status == MagickFalse)
+    ThrowWandException(canvas);
+  /*
+    Set RLE compression.
+  */
+  status=MagickSetImageCompression(canvas,RLECompression);
+  if (status == MagickFalse)
+    ThrowWandException(canvas);
+  /*
     Save image to file.
   */
   status=MagickWriteImage(canvas,filename);

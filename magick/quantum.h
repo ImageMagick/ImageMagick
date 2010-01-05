@@ -64,6 +64,7 @@ typedef enum
   OpacityQuantum,
   RedQuantum,
   RGBAQuantum,
+  BGRAQuantum,
   RGBOQuantum,
   RGBQuantum,
   YellowQuantum,
