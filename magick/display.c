@@ -15389,6 +15389,17 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 windows->image.x=vid_info.x;
                 windows->image.y=vid_info.y;
               }
+            if ((windows->image.mapped != MagickFalse) &&
+                (windows->image.stasis != MagickFalse))
+              {
+                /*
+                  Update image window configuration.
+                */
+                windows->image.window_changes.width=event.xconfigure.width;
+                windows->image.window_changes.height=event.xconfigure.height;
+                (void) XConfigureImage(display,resource_info,windows,
+                  display_image);
+              }
             /*
               Update pan window configuration.
             */
@@ -15503,7 +15514,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           Refresh windows that are now exposed.
         */
         if (event.xexpose.window == windows->image.id)
-          if (windows->image.mapped != MagickFalse)
+          if ((event.xexpose.count == 0) &&
+              (windows->image.mapped != MagickFalse))
             {
               XRefreshWindow(display,&windows->image,&event);
               delay=display_image->delay/MagickMax(
