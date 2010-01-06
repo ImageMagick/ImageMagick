@@ -6,9 +6,8 @@ Magick\.bs$
 Magick\.c$
 Magick\.o$
 \.bak$
-\.cvsignore$
+\.svn$
 \.old$
-\bCVS\b
 ^MANIFEST\.
 ^MakeMaker-\d
 ^Makefile$
