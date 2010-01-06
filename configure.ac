@@ -2357,7 +2357,7 @@ AC_ARG_WITH([wmf],
     [AC_HELP_STRING([--without-wmf],
                     [disable WMF support])],
     [with_wmf=$withval],
-    [with_wmf=$with_modules])
+    [with_wmf='yes'])
 
 if test "$with_wmf" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-wmf=$with_wmf "
