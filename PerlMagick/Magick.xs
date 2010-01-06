@@ -522,6 +522,8 @@ static struct
       {"black-point", RealReference}, {"white-point", RealReference},
       {"channel", MagickChannelOptions}, {"invert", MagickBooleanOptions} } },
     { "Clamp", { {"channel", MagickChannelOptions} } },
+    { "Filter", { {"kernel", StringReference},
+      {"channel", MagickChannelOptions}, {"bias", StringReference} } },
   };
 
 static SplayTreeInfo
@@ -6834,6 +6836,8 @@ Mogrify(ref,...)
     LevelColorsImage   = 258
     Clamp              = 259
     ClampImage         = 260
+    Filter             = 261
+    FilterImage        = 262
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10049,6 +10053,22 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].long_reference;
           (void) ClampImageChannel(image,channel);
+          break;
+        }
+        case 131:  /* Filter */
+        {
+          MagickKernel
+            *kernel;
+
+          if (attribute_flag[0] == 0)
+            break;
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].long_reference;
+          if (attribute_flag[2] != 0)
+            image->bias=SiPrefixToDouble(argument_list[2].string_reference,
+              QuantumRange);
+          image=FilterImageChannel(image,channel,kernel,exception);
+          kernel=DestroyKernel(kernel);
           break;
         }
       }
