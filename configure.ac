@@ -454,7 +454,7 @@ AC_ARG_WITH([modules],
     [AC_HELP_STRING([--with-modules],
                     [enable building dynamically loadable modules])],
     [with_modules=$withval],
-    [with_modules=$libtool_build_shared_libs])
+    [with_modules='no'])
 
 # Only allow building loadable modules if we are building shared libraries
 if test "$with_modules" != 'no' ; then
