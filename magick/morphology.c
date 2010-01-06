@@ -262,6 +262,8 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
     { /* ELSE - Old old kernel specification, forming odd-square kernel */
       /* count up number of values given */
       p=(const char *) kernel_string;
+      while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '\''))
+        p++;
       for (i=0; *p != '\0'; i++)
       {
         GetMagickToken(p,&p,token);
@@ -281,6 +283,8 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
     return(DestroyKernel(kernel));
 
   kernel->range_neg = kernel->range_pos = 0.0;
+  while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '\''))
+    p++;
   for (i=0; (i < kernel->width*kernel->height) && (*p != '\0'); i++)
   {
     GetMagickToken(p,&p,token);
