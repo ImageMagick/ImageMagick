@@ -1038,7 +1038,6 @@ static const OptionInfo
     { "Plus", (long) PlusKernel, MagickFalse },
     { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
     { "Manhatten", (long) ManhattenKernel, MagickFalse },
-    { "Knight", (long) KnightKernel, MagickFalse },
     { "Euclidean", (long) EuclideanKernel, MagickFalse },
     { "User Defined", (long) UserDefinedKernel, MagickTrue }, /* internel */
     { (char *) NULL, (long) UndefinedKernel, MagickFalse }

@@ -14,7 +14,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Anthony Thyssen                                %
-%                              September 2009                                 %
+%                               January 2010                                  %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2010 ImageMagick Studio LLC, a non-profit organization      %
@@ -76,19 +76,18 @@
 #include "magick/string-private.h"
 #include "magick/token.h"
 
+
 /*
- * The following are assignments and tests for special floating point numbers
- * of value NaN (not a number), that may be used within a Kernel Definition.
- * NaN's are defined as part of the IEEE standard for floating point number
- * representation.
+ * The following test is for special floating point numbers of value NaN (not
+ * a number), that may be used within a Kernel Definition.  NaN's are defined
+ * as part of the IEEE standard for floating point number representation.
  *
- * These are used a Kernel value of NaN means that that kernal position
- * is not part of the normal convolution or morphology process, and thus
- * allowing the use of 'shaped' kernels.
+ * These are used a Kernel value of NaN means that that kernal position is not
+ * part of the normal convolution or morphology process, and thus allowing the
+ * use of 'shaped' kernels.
  *
- * Special Properities
- *   Two NaN's are never equal, even if they are from the same variable
- * That is the IsNaN() macro is only true if the value is NaN.
+ * Special Properities Two NaN's are never equal, even if they are from the
+ * same variable That is the IsNaN() macro is only true if the value is NaN.
  */
 #define IsNan(a)   ((a)!=(a))
 
@@ -414,7 +413,7 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
 %       This kernel is not a good general morphological kernel, but is used
 %       more for highlighting and marking any single pixels in an image using,
 %       a "Dilate" or "Erode" method as appropriate.
-#
+%
 %       NOTE: "plus:1" is equivelent to a "Diamond" kernel.
 %
 %       Note that unlike other kernels iterating a plus does not produce the
@@ -424,119 +423,50 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
 %
 %    Chebyshev "[{radius}][x{scale}]"   largest x or y distance (default r=1)
 %    Manhatten "[{radius}][x{scale}]"   square grid distance    (default r=1)
-%    Knight    "[{radius}][x{scale}]"   octagonal distance      (default r=1)
-%    Euclidean "[{radius}][x{scale}]"   direct distance         (default r=4)
+%    Euclidean "[{radius}][x{scale}]"   direct distance         (default r=1)
 %
 %       Different types of distance measuring methods, which are used with the
 %       a 'Distance' morphology method for generating a gradient based on
 %       distance from an edge of a binary shape, though there is a technique
 %       for handling a anti-aliased shape.
 %
-%       The first 3 are simplifications that alow the use of a small kernel
-%       which is iterated. The lest is more accurate but requires a larger
-%       kernel to produce a accurate distance measure. The larger the better.
+%       Chebyshev Distance (also known as Tchebychev Distance) is a value of
+%       one to any neighbour, orthogonal or diagonal. One why of thinking of
+%       it is the number of squares a 'King' or 'Queen' in chess needs to
+%       traverse reach any other position on a chess board.  It results in a
+%       'square' like distance function, but one where diagonals are closer
+%       than expected.
 %
-%       The actual distance is scaled the size give, which while unnecessary
-%       for a "Chebyshev" or "Manhatten" distance, is needed to allow for
-%       correct handling of fractional distances in "Knight" and "Euclidean"
-%       distance formulas.  If no scale is provided it is set to a value of
-%       100, allowing for a maximum distance measurement of 655 pixels from
-%       any edge, using a Q16 version of IM.
+%       Manhatten Distance (also known as Rectilinear Distance, or the Taxi
+%       Cab metric), is the distance needed when you can only travel in
+%       orthogonal (horizontal or vertical) only.  It is the distance a 'Rook'
+%       in chess would travel. It results in a diamond like distances, where
+%       diagonals are further than expected.
 %
-%       See the 'Distance' Morphological Method, for information of how it
-%       is applied.
+%       Euclidean Distance is the 'direct' or 'as the crow flys distance.
+%       However by default the kernel size only has a radius of 1, which
+%       limits the distance to 'Knight' like moves, with only orthogonal and
+%       diagonal measurements being correct.  As such for the default kernel
+%       you will get octagonal like distance function, which is reasonally
+%       accurate.
+%
+%       However if you use a larger radius such as "Euclidean:4" you will
+%       get a much smoother distance gradient from the edge of the shape.
+%       Of course a larger kernel is slower to use, and generally not needed.
+%
+%       To allow the use of fractional distances that you get with diagonals
+%       the actual distance is scaled by a fixed value which the user can
+%       provide.  This is not actually nessary for either ""Chebyshev" or
+%       "Manhatten" distance kernels, but is done for all three distance
+%       kernels.  If no scale is provided it is set to a value of 100,
+%       allowing for a maximum distance measurement of 655 pixels using a Q16
+%       version of IM, from any edge.  However for small images this can
+%       result in quite a dark gradient.
+%
+%       See the 'Distance' Morphological Method, for information of how it is
+%       applied.
 %
 */
-
-static void KernelRotate(MagickKernel *kernel, double angle)
-{
-  /* Rotate a kernel appropriately for the angle given
-  **
-  ** Currently assumes the kernel (rightly) horizontally is symetrical
-  **
-  ** TODO: expand beyond simple 90 degree rotates, flips and flops
-  */
-
-  /* Modulus the angle */
-  angle = fmod(angle, 360.0);
-  if ( angle < 0 )
-    angle += 360.0;
-
-  if ( 315.0 < angle || angle <= 45.0 )
-    return;   /* no change! - At least at this time */
-
-  switch (kernel->type) {
-    /* These kernels are cylindrical kernel, rotating is useless */
-    case GaussianKernel:
-    case LaplacianKernel:
-    case LOGKernel:
-    case DOGKernel:
-    case DiskKernel:
-    case ChebyshevKernel:
-    case ManhattenKernel:
-    case KnightKernel:
-    case EuclideanKernel:
-      return;
-
-    /* These may be rotatable at non-90 angles in the future */
-    /* but simply rotating them 90 degrees is useless */
-    case SquareKernel:
-    case DiamondKernel:
-    case PlusKernel:
-      return;
-
-    /* These only allows a +/-90 degree rotation (transpose) */
-    case BlurKernel:
-    case RectangleKernel:
-      if ( 135.0 < angle && angle <= 225.0 )
-        return;
-      if ( 225.0 < angle && angle <= 315.0 )
-        angle -= 180;
-      break;
-
-    /* these are freely rotatable in 90 degree units */
-    case CometKernel:
-    case UndefinedKernel:
-    case UserDefinedKernel:
-      break;
-  }
-
-fprintf(stderr, "angle2 = %lf\n", angle);
-
-  if ( 135.0 < angle && angle <= 315.0 )
-    {
-      /* Do a flop, this assumes kernel is horizontally symetrical. */
-      /* Each kernel data row need to be reversed! */
-      unsigned long
-        y;
-      register unsigned long
-        x,r;
-      register double
-        *k,t;
-      for ( y=0, k=kernel->values; y < kernel->height; y++, k+=kernel->width) {
-        for ( x=0, r=kernel->width-1; x<kernel->width/2; x++, r--)
-          t=k[x],  k[x]=k[r],  k[r]=t;
-      }
-      kernel->offset_x = kernel->width - kernel->offset_x - 1;
-      angle = fmod(angle+180.0, 360.0);
-    }
-  if ( 45.0 < angle && angle <= 135.0 )
-    {
-      /* Do a transpose, this assumes the kernel is orthoginally symetrical */
-      /* The data is the same, just the size and offsets needs to be swapped. */
-      unsigned long
-        t;
-      t = kernel->width;
-      kernel->width = kernel->height;
-      kernel->height = t;
-      t = kernel->offset_x;
-      kernel->offset_x = kernel->offset_y;
-      kernel->offset_y = t;
-      angle = fmod(450.0 - angle, 360.0);
-    }
-  /* at this point angle should be between +45 and -45 (315) degrees */
-  return;
-}
 
 MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
    const GeometryInfo *args)
@@ -558,6 +488,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
   if (kernel == (MagickKernel *) NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
+  kernel->value_min = kernel->value_max = 0.0;
   kernel->range_neg = kernel->range_pos = 0.0;
   kernel->type = type;
 
@@ -585,12 +516,11 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
               kernel->values[i] =
                  exp(-((double)(u*u+v*v))/sigma)
                        /*  / (MagickPI*sigma)  */ );
+        kernel->value_min = 0;
+        kernel->value_max = kernel->values[
+                         kernel->offset_y*kernel->width+kernel->offset_x ];
 
-        /* Normalize the Kernel - see notes in BlurKernel, below */
-        u=kernel->width*kernel->height;
-        for (i=0; i < (unsigned long)u; i++)
-          kernel->values[i] /= kernel->range_pos;
-        kernel->range_pos=1.0;
+        KernelNormalize(kernel);
 
         break;
       }
@@ -638,21 +568,21 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
                 exp(-((double)(u*u))/(2.0*sigma*sigma))
                        /*  / (MagickSQ2PI*sigma)  */ );
 #endif
+        kernel->value_min = 0;
+        kernel->value_max = kernel->values[ kernel->offset_x ];
         /* Note that both the above methods do not generate a normalized
         ** kernel, though it gets close. The kernel may be 'clipped' by a user
         ** defined radius, producing a smaller (darker) kernel.  Also for very
         ** small sigma's (> 0.1) the central value becomes larger than one,
-        ** and thus producing a bright kernel.
+        ** and thus producing a very bright kernel.
         */
 #if 1
         /* Normalize the 1D Gaussian Kernel
         **
         ** Because of this the divisor in the above kernel generator is
-        ** not needed, and is taken care of here.
+        ** not needed, so is not done above.
         */
-        for (i=0; i < kernel->width; i++)
-          kernel->values[i] /= kernel->range_pos;
-        kernel->range_pos=1.0;
+        KernelNormalize(kernel);
 #endif
         /* rotate the kernel by given angle */
         KernelRotate(kernel, args->xi);
@@ -700,12 +630,10 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
                exp(-((double)(i*i))/(2.0*sigma*sigma))
                        /*  / (MagickSQ2PI*sigma)  */ );
 #endif
-        /* Normalize the Kernel - see notes in BlurKernel */
-        for (i=0; i < kernel->width; i++)
-          kernel->values[i] /= kernel->range_pos;
-        kernel->range_pos=1.0;
+        kernel->value_min = 0;
+        kernel->value_max = kernel->values[0];
 
-        /* rotate the kernel by given angle */
+        KernelNormalize(kernel);
         KernelRotate(kernel, args->xi);
         break;
       }
@@ -716,19 +644,20 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
         if ( type == SquareKernel )
           {
             if (args->rho < 1.0)
-              kernel->width = kernel->height = 3; /* radius 1 */
+              kernel->width = kernel->height = 3;  /* default radius = 1 */
             else
               kernel->width = kernel->height = 2*(long)args->rho+1;
             kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
           }
         else {
+            /* NOTE: user defaults set in "AcquireKernelFromString()" */
             if ( args->rho < 1.0 || args->sigma < 1.0 )
-              return(DestroyKernel(kernel));
+              return(DestroyKernel(kernel));       /* invalid args given */
             kernel->width = (unsigned long)args->rho;
             kernel->height = (unsigned long)args->sigma;
             if ( args->xi  < 0.0 || args->xi  > (double)kernel->width ||
                  args->psi < 0.0 || args->psi > (double)kernel->height )
-              return(DestroyKernel(kernel));
+              return(DestroyKernel(kernel));       /* invalid args given */
             kernel->offset_x = (unsigned long)args->xi;
             kernel->offset_y = (unsigned long)args->psi;
           }
@@ -741,11 +670,13 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
         for ( i=0; i < (unsigned long)u; i++)
             kernel->values[i] = 1.0;
         break;
+        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
+        kernel->range_pos = (double) u;
       }
     case DiamondKernel:
       {
         if (args->rho < 1.0)
-          kernel->width = kernel->height = 3; /* radius 1 */
+          kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
           kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
         kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
@@ -761,6 +692,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
               kernel->range_pos += kernel->values[i] = 1.0;
             else
               kernel->values[i] = nan;
+        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
         break;
       }
     case DiskKernel:
@@ -769,7 +701,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           limit;
 
         limit = (long)(args->rho*args->rho);
-        if (args->rho < 1.0)        /* default: ~2.5 radius disk */
+        if (args->rho < 1.0)             /* default radius approx 2.5 */
           kernel->width = kernel->height = 5L, limit = 5L;
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
@@ -786,12 +718,13 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
               kernel->range_pos += kernel->values[i] = 1.0;
             else
               kernel->values[i] = nan;
+        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
         break;
       }
     case PlusKernel:
       {
         if (args->rho < 1.0)
-          kernel->width = kernel->height = 5;  /* radius 2 */
+          kernel->width = kernel->height = 5;  /* default radius 2 */
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
         kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
@@ -804,6 +737,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
         for ( i=0, v=-kernel->offset_y; v <= (long)kernel->offset_y; v++)
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             kernel->values[i] = (u == 0 || v == 0) ? 1.0 : nan;
+        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
         kernel->range_pos = kernel->width*2.0 - 1.0;
         break;
       }
@@ -814,7 +748,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           scale;
 
         if (args->rho < 1.0)
-          kernel->width = kernel->height = 3;
+          kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
           kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
         kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
@@ -829,6 +763,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             kernel->range_pos += ( kernel->values[i] =
                  scale*((labs(u)>labs(v)) ? labs(u) : labs(v)) );
+        kernel->value_max = kernel->values[0];
         break;
       }
     case ManhattenKernel:
@@ -837,7 +772,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           scale;
 
         if (args->rho < 1.0)
-          kernel->width = kernel->height = 3;
+          kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
         kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
@@ -852,30 +787,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             kernel->range_pos += ( kernel->values[i] =
                  scale*(labs(u)+labs(v)) );
-        break;
-      }
-    case KnightKernel:
-      {
-        double
-          scale;
-
-        if (args->rho < 1.0)
-          kernel->width = kernel->height = 3;
-        else
-           kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
-
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernel(kernel));
-
-        scale = (args->sigma < 1.0) ? 100.0 : args->sigma;
-        for ( i=0, v=-kernel->offset_y; v <= (long)kernel->offset_y; v++)
-          for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
-            kernel->range_pos += ( kernel->values[i] =
-               scale*((labs(u)<labs(v)) ? (MagickSQ2-1.0)*labs(u)+labs(v)
-                                        : (MagickSQ2-1.0)*labs(v)+labs(u) ) );
+        kernel->value_max = kernel->values[0];
         break;
       }
     case EuclideanKernel:
@@ -884,7 +796,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           scale;
 
         if (args->rho < 1.0)
-          kernel->width = kernel->height = 9;
+          kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
         kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
@@ -899,6 +811,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             kernel->range_pos += ( kernel->values[i] =
                  scale*sqrt((double)(u*u+v*v)) );
+        kernel->value_max = kernel->values[0];
         break;
       }
     /* Undefined Kernels */
@@ -912,16 +825,18 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
       kernel->values=(double *)AcquireQuantumMemory((size_t)1,sizeof(double));
       if (kernel->values == (double *) NULL)
         return(DestroyKernel(kernel));
-      kernel->range_pos = kernel->values[0] = 1.0;
       kernel->width = kernel->height = 1;
       kernel->offset_x = kernel->offset_x = 0;
       kernel->type = UndefinedKernel;
+      kernel->value_max =
+        kernel->range_pos =
+          kernel->values[0] = 1.0;  /* a flat single-point no-op kernel! */
       break;
   }
 
   return(kernel);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -952,7 +867,199 @@ MagickExport MagickKernel *DestroyKernel(MagickKernel *kernel)
   kernel=(MagickKernel *) RelinquishMagickMemory(kernel);
   return(kernel);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     K e r n e l N o r m a l i z e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  KernelNormalize() normalize the kernel so its convolution output will
+%  be over a unit range.
+%
+%  The format of the KernelNormalize method is:
+%
+%      void KernelRotate (MagickKernel *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+*/
+MagickExport void KernelNormalize(MagickKernel *kernel)
+{
+  register unsigned long
+    i;
 
+  for (i=0; i < kernel->width; i++)
+    kernel->values[i] /= (kernel->range_pos - kernel->range_neg);
+
+  kernel->range_pos /= (kernel->range_pos - kernel->range_neg);
+  kernel->range_neg /= (kernel->range_pos - kernel->range_neg);
+  kernel->value_max /= (kernel->range_pos - kernel->range_neg);
+  kernel->value_min /= (kernel->range_pos - kernel->range_neg);
+
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     K e r n e l P r i n t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  KernelPrint() Print out the kernel details to standard error
+%
+%  The format of the KernelNormalize method is:
+%
+%      void KernelPrint (MagickKernel *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+*/
+MagickExport void KernelPrint(MagickKernel *kernel)
+{
+  unsigned long
+    i, u, v;
+
+  fprintf(stderr,
+        "Kernel \"%s\" of size %lux%lu%+ld%+ld  with value from %lg to %lg\n",
+        MagickOptionToMnemonic(MagickKernelOptions, kernel->type),
+        kernel->width, kernel->height,
+        kernel->offset_x, kernel->offset_y,
+        kernel->value_min, kernel->value_max);
+  fprintf(stderr, "  Forming an output range from %lg to %lg%s\n",
+        kernel->range_neg, kernel->range_pos,
+        kernel->normalized == MagickTrue ? " (normalized)" : "" );
+  for (i=v=0; v < kernel->height; v++) {
+    fprintf(stderr,"%2ld: ",v);
+    for (u=0; u < kernel->width; u++, i++)
+      fprintf(stderr,"%5.3lf ",kernel->values[i]);
+    fprintf(stderr,"\n");
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     K e r n e l R o t a t e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  KernelRotate() rotates the kernel by the angle given.  Currently it is
+%  restricted to 90 degree angles, but this may be improved in the future.
+%
+%  The format of the KernelRotate method is:
+%
+%      void KernelRotate (MagickKernel *kernel, double angle)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+%    o angle: angle to rotate in degrees
+%
+*/
+MagickExport void KernelRotate(MagickKernel *kernel, double angle)
+{
+  /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
+  **
+  ** TODO: expand beyond simple 90 degree rotates, flips and flops
+  */
+
+  /* Modulus the angle */
+  angle = fmod(angle, 360.0);
+  if ( angle < 0 )
+    angle += 360.0;
+
+  if ( 315.0 < angle || angle <= 45.0 )
+    return;   /* no change! - At least at this time */
+
+  switch (kernel->type) {
+    /* These built-in kernels are cylindrical kernel, rotating is useless */
+    case GaussianKernel:
+    case LaplacianKernel:
+    case LOGKernel:
+    case DOGKernel:
+    case DiskKernel:
+    case ChebyshevKernel:
+    case ManhattenKernel:
+    case EuclideanKernel:
+      return;
+
+    /* These may be rotatable at non-90 angles in the future */
+    /* but simply rotating them 90 degrees is useless */
+    case SquareKernel:
+    case DiamondKernel:
+    case PlusKernel:
+      return;
+
+    /* These only allows a +/-90 degree rotation (transpose) */
+    case BlurKernel:
+    case RectangleKernel:
+      if ( 135.0 < angle && angle <= 225.0 )
+        return;
+      if ( 225.0 < angle && angle <= 315.0 )
+        angle -= 180;
+      break;
+
+    /* these are freely rotatable in 90 degree units */
+    case CometKernel:
+    case UndefinedKernel:
+    case UserDefinedKernel:
+      break;
+  }
+
+  if ( 135.0 < angle && angle <= 315.0 )
+    {
+      /* Do a flop, this assumes kernel is horizontally symetrical. */
+      /* Each kernel data row need to be reversed! */
+      unsigned long
+        y;
+      register unsigned long
+        x,r;
+      register double
+        *k,t;
+      for ( y=0, k=kernel->values; y < kernel->height; y++, k+=kernel->width) {
+        for ( x=0, r=kernel->width-1; x<kernel->width/2; x++, r--)
+          t=k[x],  k[x]=k[r],  k[r]=t;
+      }
+      kernel->offset_x = kernel->width - kernel->offset_x - 1;
+      angle = fmod(angle+180.0, 360.0);
+    }
+  if ( 45.0 < angle && angle <= 135.0 )
+    {
+      /* Do a transpose, this assumes the kernel is orthoginally symetrical */
+      /* The data is the same, just the size and offsets needs to be swapped. */
+      unsigned long
+        t;
+      t = kernel->width;
+      kernel->width = kernel->height;
+      kernel->height = t;
+      t = kernel->offset_x;
+      kernel->offset_x = kernel->offset_y;
+      kernel->offset_y = t;
+      angle = fmod(450.0 - angle, 360.0);
+    }
+  /* at this point angle should be between +45 and -45 (315) degrees */
+  return;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -991,7 +1098,7 @@ MagickExport MagickKernel *DestroyKernel(MagickKernel *kernel)
 %    o channel: the channel type.
 %
 %    o kernel: An array of double representing the morphology kernel.
-%              This is assumed to have been pre-scaled (normalized).
+%              Warning: kernel may be normalized for a Convolve.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1466,7 +1573,7 @@ static unsigned long MorphologyApply(const Image *image, Image
 
 MagickExport Image *MorphologyImage(const Image *image, MorphologyMethod
   method, const long iterations, const ChannelType channel,
-  const MagickKernel *kernel, ExceptionInfo *exception)
+  MagickKernel *kernel, ExceptionInfo *exception)
 {
   unsigned long
     count,
@@ -1483,23 +1590,7 @@ MagickExport Image *MorphologyImage(const Image *image, MorphologyMethod
   assert(exception->signature == MagickSignature);
 
   if ( GetImageArtifact(image,"showkernel") != (const char *) NULL)
-    {
-      /* Show the Kernel that was input by the user */
-      unsigned long
-        i, u, v;
-
-      fprintf(stderr, "Kernel \"%s\" size %lux%lu%+ld%+ld scaling %+lg to %+lg\n",
-            MagickOptionToMnemonic(MagickKernelOptions, kernel->type),
-            kernel->width, kernel->height,
-            kernel->offset_x, kernel->offset_y,
-            kernel->range_neg, kernel->range_pos);
-      for (i=v=0; v < kernel->height; v++) {
-        fprintf(stderr,"%2ld: ",v);
-        for (u=0; u < kernel->width; u++, i++)
-          fprintf(stderr,"%5.3lf ",kernel->values[i]);
-        fprintf(stderr,"\n");
-      }
-    }
+    KernelPrint(kernel);
 
   if ( iterations == 0 )
     return((Image *)NULL); /* null operation - nothing to do! */
@@ -1546,10 +1637,13 @@ MagickExport Image *MorphologyImage(const Image *image, MorphologyMethod
       method = DialateIntensityMorphology;
       break;
 
+    case ConvolveMorphology:
+      KernelNormalize(kernel);
+      /* FALL-THRU */
     default:
-      /* Do a morphology once!
+      /* Do a morphology just once at this point!
         This ensures a new_image has been generated, but allows us
-        to skip the creation of 'old_image' if it wasn't needed.
+        to skip the creation of 'old_image' if it isn't needed.
       */
       new_image=CloneImage(image,0,0,MagickTrue,exception);
       if (new_image == (Image *) NULL)
