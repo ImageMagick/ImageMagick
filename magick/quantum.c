@@ -313,8 +313,8 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     default: break;
   }
   if (quantum_info->pack == MagickFalse)
-    return((size_t) (packet_size*image->columns*((image->depth+7)/8)));
-  return((size_t) ((packet_size*image->columns*image->depth+7)/8));
+    return((size_t) (packet_size*image->columns*((quantum_info->depth+7)/8)));
+  return((size_t) ((packet_size*image->columns*quantum_info->depth+7)/8));
 }
 
 /*
@@ -558,10 +558,11 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
       if (quantum_info->depth > 32)
         quantum_info->depth=64;
       else
-        quantum_info->depth=32;
+        if (quantum_info->depth > 16)
+          quantum_info->depth=32;
+        else
+          quantum_info->depth=16;
     }
-  if (quantum_info->format == CompactFloatingPointQuantumFormat)
-    quantum_info->depth=16;
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
   status=AcquireQuantumPixels(quantum_info,(quantum_info->pad+5)*image->columns*

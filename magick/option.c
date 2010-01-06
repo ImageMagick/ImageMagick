@@ -1324,7 +1324,6 @@ static const OptionInfo
     { "FloatingPoint", (long) FloatingPointQuantumFormat, MagickFalse },
     { "Signed", (long) SignedQuantumFormat, MagickFalse },
     { "Unsigned", (long) UnsignedQuantumFormat, MagickFalse },
-    { "CompactFloatingPoint", (long) CompactFloatingPointQuantumFormat, MagickFalse },
     { (char *) NULL, (long) FloatingPointQuantumFormat, MagickFalse }
   },
   ResolutionOptions[] =
