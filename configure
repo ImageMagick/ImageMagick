@@ -27455,7 +27455,7 @@ fi
 if test "${with_wmf+set}" = set; then :
   withval=$with_wmf; with_wmf=$withval
 else
-  with_wmf=$with_modules
+  with_wmf='yes'
 fi
 
 
