@@ -514,58 +514,6 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
   return(cl_info);
 }
 
-static double *ParseMask(const char *value,unsigned long *order)
-{
-  char
-    token[MaxTextExtent];
-
-  const char
-    *p;
-
-  double
-    *mask,
-    normalize;
-
-  register long
-    i;
-
-  /*
-    Parse convolution mask.
-  */
-  p=(const char *) value;
-  if (*p == '\'')
-    p++;
-  for (i=0; *p != '\0'; i++)
-  {
-    GetMagickToken(p,&p,token);
-    if (*token == ',')
-      GetMagickToken(p,&p,token);
-  }
-  *order=(unsigned long) sqrt((double) i+1.0);
-  mask=(double *) AcquireQuantumMemory(*order,*order*sizeof(*mask));
-  if (mask == (double *) NULL)
-    return(mask);
-  p=(const char *) value;
-  if (*p == '\'')
-    p++;
-  for (i=0; (i < (long) (*order**order)) && (*p != '\0'); i++)
-  {
-    GetMagickToken(p,&p,token);
-    if (*token == ',')
-      GetMagickToken(p,&p,token);
-    mask[i]=strtod(token,(char **) NULL);
-  }
-  for ( ; i < (long) (*order**order); i++)
-    mask[i]=0.0;
-  normalize=0.0;
-  for (i=0; i < (long) (*order**order); i++)
-    normalize+=mask[i];
-  if (normalize != 0.0)
-    for (i=0; i < (long) (*order**order); i++)
-      mask[i]/=normalize;
-  return(mask);
-}
-
 #endif
 
 ModuleExport unsigned long convolveImage(Image **images,const int argc,
@@ -581,8 +529,8 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     "DelegateLibrarySupportNotBuiltIn","`%s' (OpenCL)",(*images)->filename);
 #else
   {
-    double
-      *mask;
+    MagickKernel
+      *kernel;
 
     Image
       *image;
@@ -593,22 +541,19 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
     CLInfo
       *cl_info;
 
-    unsigned long
-      order;
-
     if (argc < 1)
       return(MagickImageFilterSignature);
     /*
       Convolve image.
     */
-    mask=ParseMask(argv[0],&order);
-    if (mask == (double *) NULL)
+    kernel=AcquireKernelFromString(argv[0]);
+    if (kernel == (double *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
     cl_info=GetCLInfo(*images,"Convolve",convolve_program,exception);
     if (cl_info == (CLInfo *) NULL)
       {
-        mask=(double *) RelinquishMagickMemory(mask);
+        kernel=DestroyKernel(kernel);
         return(MagickImageFilterSignature);
       }
     image=(*images);
@@ -643,8 +588,8 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
           convolve_image=DestroyImage(convolve_image);
           continue;
         }
-      status=BindCLParameters(cl_info,image,pixels,mask,order,order,
-        convolve_pixels);
+      status=BindCLParameters(cl_info,image,pixels,kernel->values,
+        kernel->width,kernel->height,convolve_pixels);
       if (status == MagickFalse)
         continue;
       status=EnqueueKernel(cl_info,image);
@@ -654,7 +599,7 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
       DestroyCLBuffers(cl_info);
       convolve_image=DestroyImage(convolve_image);
     }
-    mask=(double *) RelinquishMagickMemory(mask);
+    kernel=DestroyKernel(kernel);
     cl_info=DestroyCLInfo(cl_info);
   }
 #endif
