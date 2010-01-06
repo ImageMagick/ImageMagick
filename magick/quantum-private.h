@@ -252,8 +252,7 @@ static inline unsigned short ScaleFloatToHalf(const float value)
 
   pixel.cf_float=value;
   sign=(pixel.cf_uint >> 16) & 0x00008000;
-  exponent=(int) ((pixel.cf_uint >> ExponentShift) & 0x000000ff)-
-    ExponentBias;
+  exponent=(int) ((pixel.cf_uint >> ExponentShift) & 0x000000ff)-ExponentBias;
   mantissa=pixel.cf_uint & 0x007fffff;
   if (exponent <= 0)
     {
@@ -303,8 +302,7 @@ static inline unsigned short ScaleFloatToHalf(const float value)
         alpha*=alpha;
       return((unsigned short) (sign | ExponentMask));
     }
-  half=(unsigned short) (sign | (exponent << 10) |
-    (mantissa >> MantissaShift));
+  half=(unsigned short) (sign | (exponent << 10) | (mantissa >> MantissaShift));
   return(half);
 }
 
@@ -330,7 +328,7 @@ static inline float ScaleHalfToFloat(const unsigned short quantum)
   if (exponent == 0)
     {
     	if (mantissa == 0)
-       value=sign << SignShift;
+        value=sign << SignShift;
 	    else
 	      {
           while ((mantissa & MantissaMask) == 0)
