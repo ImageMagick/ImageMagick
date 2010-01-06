@@ -18577,7 +18577,7 @@ fi
 if test "${with_modules+set}" = set; then :
   withval=$with_modules; with_modules=$withval
 else
-  with_modules=$libtool_build_shared_libs
+  with_modules='no'
 fi
 
 
