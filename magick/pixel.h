@@ -65,12 +65,14 @@ typedef Quantum IndexPacket;
 typedef struct _PixelPacket
 {
 #if defined(MAGICKCORE_WORDS_BIGENDIAN)
+#define MAGICK_PIXEL_RGBA  1
   Quantum
     red,
     green,
     blue,
     opacity;
 #else
+#define MAGICK_PIXEL_BGRA  1
   Quantum
     blue,
     green,
