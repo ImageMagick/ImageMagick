@@ -685,11 +685,9 @@ AC_ARG_WITH([perl],
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH([perl-options],
     [AC_HELP_STRING([--with-perl-options=OPTIONS],
-                    [options to pass on command-line when generating PerlMagick's build file])])
-
-PERL_MAKE_OPTIONS=$with_perl_options
+                    [options to pass on command-line when generating PerlMagick's build file])],
+PERL_MAKE_OPTIONS=$withval)
 AC_SUBST(PERL_MAKE_OPTIONS)
-
 
 # Enable umem, object-caching memory allocation library.
 AC_ARG_WITH(umem,
@@ -3135,6 +3133,12 @@ if test "$with_perl" != 'no'; then
         fi
     fi
 fi
+
+if test "$with_perl" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-perl=$with_perl "
+fi
+
+PERL_SUPPORTS_DESTDIR='no'
 
 with_perl_static='no'
 with_perl_dynamic='no'

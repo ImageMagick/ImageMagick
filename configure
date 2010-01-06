@@ -18917,11 +18917,8 @@ fi
 
 # Check whether --with-perl-options was given.
 if test "${with_perl_options+set}" = set; then :
-  withval=$with_perl_options;
+  withval=$with_perl_options; PERL_MAKE_OPTIONS=$withval
 fi
-
-
-PERL_MAKE_OPTIONS=$with_perl_options
 
 
 
@@ -30550,6 +30547,12 @@ done
         fi
     fi
 fi
+
+if test "$with_perl" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-perl=$with_perl "
+fi
+
+PERL_SUPPORTS_DESTDIR='no'
 
 with_perl_static='no'
 with_perl_dynamic='no'
