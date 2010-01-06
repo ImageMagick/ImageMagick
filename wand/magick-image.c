@@ -3115,6 +3115,67 @@ WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k F i l t e r I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickFilterImage() applies a custom convolution kernel to the image.
+%
+%  The format of the MagickFilterImage method is:
+%
+%      MagickBooleanType MagickFilterImage(MagickWand *wand,
+%        const MagickKernel *kernel)
+%      MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
+%        const ChannelType channel,const MagickKernel *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o kernel: An array of doubles representing the convolution kernel.
+%
+*/
+
+WandExport MagickBooleanType MagickFilterImage(MagickWand *wand,
+  const MagickKernel *kernel)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickFilterImageChannel(wand,DefaultChannels,kernel);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
+  const ChannelType channel,const MagickKernel *kernel)
+{
+  Image
+    *filter_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (kernel == (const MagickKernel *) NULL)
+    return(MagickFalse);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  filter_image=FilterImageChannel(wand->images,channel,kernel,wand->exception);
+  if (filter_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,filter_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k F l i p I m a g e                                             %
 %                                                                             %
 %                                                                             %

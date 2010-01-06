@@ -145,6 +145,8 @@ extern WandExport MagickBooleanType
     void *),
   MagickExtentImage(MagickWand *,const unsigned long,const unsigned long,
     const long,const long),
+  MagickFilterImage(MagickWand *,const MagickKernel *),
+  MagickFilterImageChannel(MagickWand *,const ChannelType,const MagickKernel *),
   MagickFlipImage(MagickWand *),
   MagickFloodfillPaintImage(MagickWand *,const ChannelType,const PixelWand *,
     const double,const PixelWand *,const long,const long,
