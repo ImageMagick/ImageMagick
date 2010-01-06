@@ -2382,7 +2382,7 @@ MagickExport Image *SparseColorImage(const Image *image,
 #define SparseColorTag  "Distort/SparseColor"
 
   DistortImageMethod
-    *distort_method;
+    distort_method;
 
   double
     *coeff;
@@ -2415,8 +2415,8 @@ MagickExport Image *SparseColorImage(const Image *image,
     Convert input arguments into mapping coefficients to apply the distortion.
     Note some Methods may fall back to other simpler methods.
   */
-  distort_method=(DistortImageMethod *) &method;
-  coeff = GenerateCoefficients(image, distort_method, number_arguments,
+  distort_method=(DistortImageMethod) method;
+  coeff = GenerateCoefficients(image, &distort_method, number_arguments,
     arguments, number_colors, exception);
   if ( coeff == (double *) NULL )
     return((Image *) NULL);
