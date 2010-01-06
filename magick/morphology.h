@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include <magick/geometry.h>
+
 typedef enum
 {
   UndefinedKernel,    /* also the 'no-op' kernel */

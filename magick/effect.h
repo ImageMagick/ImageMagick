@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include <magick/morphology.h>
+
 typedef enum
 {
   UndefinedPreview,
@@ -74,6 +76,9 @@ extern MagickExport Image
   *DespeckleImage(const Image *,ExceptionInfo *),
   *EdgeImage(const Image *,const double,ExceptionInfo *),
   *EmbossImage(const Image *,const double,const double,ExceptionInfo *),
+  *FilterImage(const Image *,const MagickKernel *,ExceptionInfo *),
+  *FilterImageChannel(const Image *,const ChannelType,const MagickKernel *,
+     ExceptionInfo *),
   *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *GaussianBlurImageChannel(const Image *,const ChannelType,const double,
     const double,ExceptionInfo *),
