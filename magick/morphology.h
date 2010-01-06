@@ -38,7 +38,6 @@ typedef enum
   PlusKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */
   ManhattenKernel,
-  KnightKernel,
   EuclideanKernel,
   UserDefinedKernel   /* user specified kernel values */
 } MagickKernelType;
@@ -73,8 +72,13 @@ typedef struct
     values;
 
   double
+    value_min,
+    value_max,
     range_neg,
     range_pos;
+
+  MagickBooleanType
+    normalized;
 
 } MagickKernel;
 
@@ -83,9 +87,14 @@ extern MagickKernel
   *AcquireKernelBuiltIn(const MagickKernelType, const GeometryInfo *),
   *DestroyKernel(MagickKernel *);
 
+extern void
+  KernelNormalize(MagickKernel *),
+  KernelPrint(MagickKernel *),
+  KernelRotate(MagickKernel *, double);
+
 extern Image
   *MorphologyImage(const Image *, MorphologyMethod, const long,
-             const ChannelType, const MagickKernel *, ExceptionInfo *);
+             const ChannelType, MagickKernel *, ExceptionInfo *);
 
 
 #if defined(__cplusplus) || defined(c_plusplus)
