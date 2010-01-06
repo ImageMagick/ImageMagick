@@ -1,6 +1,9 @@
 2010-01-01  6.5.9-0 Cristy  <quetzlzacatenango@image...>
   * Add support for compact floating point (i.e. -depth 16 -define
     quantum:format=floating-point).
+  * Transparent images no longer flicker on certain system when using the
+    display program.
+  * Permit interactive resizing with the display program.
 
 2010-01-05  6.5.9-0 Stephan Menzel  <stephan.menzel@gmail...>
   * Add support for the BGRA raw image format.
