@@ -6332,7 +6332,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   mng_info->IsPalette=image->storage_class == PseudoClass && 
-            image_colors <= 256;
+            image_colors <= 256 && !IsOpaqueImage(image,&image->exception);
   mng_info->optimize=image_info->type == OptimizeType;
 
   /*
