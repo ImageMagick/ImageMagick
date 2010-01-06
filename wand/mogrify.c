@@ -1198,53 +1198,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
-            char
-              token[MaxTextExtent];
-
-            const char
-              *p;
-
-            double
-              *kernel;
-
             Image
               *convolve_image;
 
-            register long
-              x;
+            MagickKernel
+              *kernel;
 
-            unsigned long
-              order;
-
-            /*
-              Convolve image.
-            */
-            (void) SyncImageSettings(image_info,*image);
-            p=(const char *) argv[i+1];
-            for (x=0; *p != '\0'; x++)
-            {
-              GetMagickToken(p,&p,token);
-              if (*token == ',')
-                GetMagickToken(p,&p,token);
-            }
-            order=(unsigned long) sqrt((double) x+1.0);
-            kernel=(double *) AcquireQuantumMemory(order,order*sizeof(*kernel));
-            if (kernel == (double *) NULL)
-              ThrowWandFatalException(ResourceLimitFatalError,
-                "MemoryAllocationFailed",(*image)->filename);
-            p=(const char *) argv[i+1];
-            for (x=0; (x < (long) (order*order)) && (*p != '\0'); x++)
-            {
-              GetMagickToken(p,&p,token);
-              if (*token == ',')
-                GetMagickToken(p,&p,token);
-              kernel[x]=StringToDouble(token);
-            }
-            for ( ; x < (long) (order*order); x++)
-              kernel[x]=0.0;
-            convolve_image=ConvolveImageChannel(*image,channel,order,kernel,
-              exception);
-            kernel=(double *) RelinquishMagickMemory(kernel);
+            kernel=AcquireKernelFromString(argv[i+1]);
+            if (kernel == (MagickKernel *) NULL)
+              break;
+            convolve_image=FilterImageChannel(*image,channel,kernel,exception);
+            kernel=DestroyKernel(kernel);
             if (convolve_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);

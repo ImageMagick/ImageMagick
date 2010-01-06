@@ -134,7 +134,7 @@ typedef struct _CLInfo
     matte;
 
   cl_mem
-    mask;
+    filter;
 } CLInfo;
 
 static char
@@ -162,7 +162,7 @@ static char
     "}\n"
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
-    "  __constant double *mask,const uint width,const uint height,\n"
+    "  __constant double *filter,const uint width,const uint height,\n"
     "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
     "  const ulong columns = get_global_size(0);\n"
@@ -200,10 +200,10 @@ static char
     "        {\n"
     "          index=AuthenticPixel(y+v,rows)*columns+\n"
     "            AuthenticPixel(x+u,columns);\n"
-    "          sum.x+=mask[i]*input[index].x;\n"
-    "          sum.y+=mask[i]*input[index].y;\n"
-    "          sum.z+=mask[i]*input[index].z;\n"
-    "          gamma+=mask[i];\n"
+    "          sum.x+=filter[i]*input[index].x;\n"
+    "          sum.y+=filter[i]*input[index].y;\n"
+    "          sum.z+=filter[i]*input[index].z;\n"
+    "          gamma+=filter[i];\n"
     "          i++;\n"
     "        }\n"
     "      }\n"
@@ -218,11 +218,11 @@ static char
     "          index=AuthenticPixel(y+v,rows)*columns+\n"
     "            AuthenticPixel(x+u,columns);\n"
     "          alpha=scale*(QuantumRange-input[index].w);\n"
-    "          sum.x+=alpha*mask[i]*input[index].x;\n"
-    "          sum.y+=alpha*mask[i]*input[index].y;\n"
-    "          sum.z+=alpha*mask[i]*input[index].z;\n"
-    "          sum.w+=mask[i]*input[index].w;\n"
-    "          gamma+=alpha*mask[i];\n"
+    "          sum.x+=alpha*filter[i]*input[index].x;\n"
+    "          sum.y+=alpha*filter[i]*input[index].y;\n"
+    "          sum.z+=alpha*filter[i]*input[index].z;\n"
+    "          sum.w+=filter[i]*input[index].w;\n"
+    "          gamma+=alpha*filter[i];\n"
     "          i++;\n"
     "        }\n"
     "      }\n"
@@ -235,10 +235,10 @@ static char
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
     "          index=(y+v)*columns+(x+u);\n"
-    "          sum.x+=mask[i]*input[index].x;\n"
-    "          sum.y+=mask[i]*input[index].y;\n"
-    "          sum.z+=mask[i]*input[index].z;\n"
-    "          gamma+=mask[i];\n"
+    "          sum.x+=filter[i]*input[index].x;\n"
+    "          sum.y+=filter[i]*input[index].y;\n"
+    "          sum.z+=filter[i]*input[index].z;\n"
+    "          gamma+=filter[i];\n"
     "          i++;\n"
     "        }\n"
     "      }\n"
@@ -252,11 +252,11 @@ static char
     "        {\n"
     "          index=(y+v)*columns+(x+u);\n"
     "          alpha=scale*(QuantumRange-input[index].w);\n"
-    "          sum.x+=alpha*mask[i]*input[index].x;\n"
-    "          sum.y+=alpha*mask[i]*input[index].y;\n"
-    "          sum.z+=alpha*mask[i]*input[index].z;\n"
-    "          sum.w+=mask[i]*input[index].w;\n"
-    "          gamma+=alpha*mask[i];\n"
+    "          sum.x+=alpha*filter[i]*input[index].x;\n"
+    "          sum.y+=alpha*filter[i]*input[index].y;\n"
+    "          sum.z+=alpha*filter[i]*input[index].z;\n"
+    "          sum.w+=filter[i]*input[index].w;\n"
+    "          gamma+=alpha*filter[i];\n"
     "          i++;\n"
     "        }\n"
     "      }\n"
@@ -288,7 +288,7 @@ static void OpenCLNotify(const char *message,const void *data,size_t length,
 }
 
 static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
-  void *pixels,double *mask,const unsigned long width,
+  void *pixels,double *filter,const unsigned long width,
   const unsigned long height,void *convolve_pixels)
 {
   cl_int
@@ -306,12 +306,12 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     &cl_info->pixels);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->mask=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,width*height*sizeof(cl_double),mask,&status);
-  if ((cl_info->mask == (cl_mem) NULL) || (status != CL_SUCCESS))
+  cl_info->filter=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
+    CL_MEM_USE_HOST_PTR,width*height*sizeof(cl_double),filter,&status);
+  if ((cl_info->filter == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
   status=clSetKernelArg(cl_info->kernel,1,sizeof(cl_mem),(void *)
-    &cl_info->mask);
+    &cl_info->filter);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   cl_info->width=(cl_uint) width;
@@ -351,8 +351,8 @@ static void DestroyCLBuffers(CLInfo *cl_info)
     status=clReleaseMemObject(cl_info->convolve_pixels);
   if (cl_info->pixels != (cl_mem) NULL)
     status=clReleaseMemObject(cl_info->pixels);
-  if (cl_info->mask != (cl_mem) NULL)
-    status=clReleaseMemObject(cl_info->mask);
+  if (cl_info->filter != (cl_mem) NULL)
+    status=clReleaseMemObject(cl_info->filter);
 }
 
 static CLInfo *DestroyCLInfo(CLInfo *cl_info)

@@ -2116,6 +2116,361 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     F i l t e r I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FilterImage() applies a custom convolution kernel to the image.
+%
+%  The format of the FilterImage method is:
+%
+%      Image *FilterImage(const Image *image,const MagickKernel *kernel,
+%        ExceptionInfo *exception)
+%      Image *FilterImageChannel(const Image *image,const ChannelType channel,
+%        const MagickKernel *kernel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+%    o kernel: the filtering kernel.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport Image *FilterImage(const Image *image,const MagickKernel *kernel,
+  ExceptionInfo *exception)
+{
+  Image
+    *filter_image;
+
+  filter_image=FilterImageChannel(image,DefaultChannels,kernel,exception);
+  return(filter_image);
+}
+
+MagickExport Image *FilterImageChannel(const Image *image,
+  const ChannelType channel,const MagickKernel *kernel,ExceptionInfo *exception)
+{
+#define FilterImageTag  "Filter/Image"
+
+  CacheView
+    *filter_view,
+    *image_view;
+
+  double
+    *normal_kernel;
+
+  Image
+    *filter_image;
+
+  long
+    progress,
+    y;
+
+  MagickBooleanType
+    status;
+
+  MagickPixelPacket
+    bias;
+
+  MagickRealType
+    gamma;
+
+  register long
+    i;
+
+  /*
+    Initialize filter image attributes.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if ((kernel->width % 2) == 0)
+    ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
+  filter_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (filter_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(filter_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&filter_image->exception);
+      filter_image=DestroyImage(filter_image);
+      return((Image *) NULL);
+    }
+  if (image->debug != MagickFalse)
+    {
+      char
+        format[MaxTextExtent],
+        *message;
+
+      long
+        u,
+        v;
+
+      register const double
+        *k;
+
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+        "  FilterImage with %ldx%ld kernel:",kernel->width,kernel->height);
+      message=AcquireString("");
+      k=kernel->values;
+      for (v=0; v < (long) kernel->height; v++)
+      {
+        *message='\0';
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
+        (void) ConcatenateString(&message,format);
+        for (u=0; u < (long) kernel->width; u++)
+        {
+          (void) FormatMagickString(format,MaxTextExtent,"%g ",*k++);
+          (void) ConcatenateString(&message,format);
+        }
+        (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
+      }
+      message=DestroyString(message);
+    }
+  /*
+    Normalize kernel.
+  */
+  normal_kernel=(double *) AcquireQuantumMemory(kernel->width*kernel->height,
+    sizeof(*normal_kernel));
+  if (normal_kernel == (double *) NULL)
+    {
+      filter_image=DestroyImage(filter_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  gamma=0.0;
+  for (i=0; i < (long) (kernel->width*kernel->height); i++)
+    gamma+=kernel->values[i];
+  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+  for (i=0; i < (long) (kernel->width*kernel->height); i++)
+    normal_kernel[i]=gamma*kernel->values[i];
+  /*
+    Filter image.
+  */
+  status=MagickTrue;
+  progress=0;
+  GetMagickPixelPacket(image,&bias);
+  SetMagickPixelPacketBias(image,&bias);
+  image_view=AcquireCacheView(image);
+  filter_view=AcquireCacheView(filter_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    MagickBooleanType
+      sync;
+
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict p;
+
+    register IndexPacket
+      *restrict filter_indexes;
+
+    register long
+      x;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,-((long) kernel->width/2L),
+      y-(long) (kernel->height/2L),image->columns+kernel->width,kernel->height,
+      exception);
+    q=GetCacheViewAuthenticPixels(filter_view,0,y,filter_image->columns,1,
+      exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
+    filter_indexes=GetCacheViewAuthenticIndexQueue(filter_view);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      long
+        v;
+
+      MagickPixelPacket
+        pixel;
+
+      register const double
+        *restrict k;
+
+      register const PixelPacket
+        *restrict kernel_pixels;
+
+      register long
+        u;
+
+      pixel=bias;
+      k=normal_kernel;
+      kernel_pixels=p;
+      if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
+        {
+          for (v=0; v < (long) kernel->width; v++)
+          {
+            for (u=0; u < (long) kernel->height; u++)
+            {
+              pixel.red+=(*k)*kernel_pixels[u].red;
+              pixel.green+=(*k)*kernel_pixels[u].green;
+              pixel.blue+=(*k)*kernel_pixels[u].blue;
+              k++;
+            }
+            kernel_pixels+=image->columns+kernel->width;
+          }
+          if ((channel & RedChannel) != 0)
+            q->red=RoundToQuantum(pixel.red);
+          if ((channel & GreenChannel) != 0)
+            q->green=RoundToQuantum(pixel.green);
+          if ((channel & BlueChannel) != 0)
+            q->blue=RoundToQuantum(pixel.blue);
+          if ((channel & OpacityChannel) != 0)
+            {
+              k=normal_kernel;
+              kernel_pixels=p;
+              for (v=0; v < (long) kernel->width; v++)
+              {
+                for (u=0; u < (long) kernel->height; u++)
+                {
+                  pixel.opacity+=(*k)*kernel_pixels[u].opacity;
+                  k++;
+                }
+                kernel_pixels+=image->columns+kernel->width;
+              }
+              q->opacity=RoundToQuantum(pixel.opacity);
+            }
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
+            {
+              register const IndexPacket
+                *restrict kernel_indexes;
+
+              k=normal_kernel;
+              kernel_indexes=indexes;
+              for (v=0; v < (long) kernel->width; v++)
+              {
+                for (u=0; u < (long) kernel->height; u++)
+                {
+                  pixel.index+=(*k)*kernel_indexes[u];
+                  k++;
+                }
+                kernel_indexes+=image->columns+kernel->width;
+              }
+              filter_indexes[x]=RoundToQuantum(pixel.index);
+            }
+        }
+      else
+        {
+          MagickRealType
+            alpha,
+            gamma;
+
+          gamma=0.0;
+          for (v=0; v < (long) kernel->width; v++)
+          {
+            for (u=0; u < (long) kernel->height; u++)
+            {
+              alpha=(MagickRealType) (QuantumScale*(QuantumRange-
+                kernel_pixels[u].opacity));
+              pixel.red+=(*k)*alpha*kernel_pixels[u].red;
+              pixel.green+=(*k)*alpha*kernel_pixels[u].green;
+              pixel.blue+=(*k)*alpha*kernel_pixels[u].blue;
+              gamma+=(*k)*alpha;
+              k++;
+            }
+            kernel_pixels+=image->columns+kernel->width;
+          }
+          gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+          if ((channel & RedChannel) != 0)
+            q->red=RoundToQuantum(gamma*pixel.red);
+          if ((channel & GreenChannel) != 0)
+            q->green=RoundToQuantum(gamma*pixel.green);
+          if ((channel & BlueChannel) != 0)
+            q->blue=RoundToQuantum(gamma*pixel.blue);
+          if ((channel & OpacityChannel) != 0)
+            {
+              k=normal_kernel;
+              kernel_pixels=p;
+              for (v=0; v < (long) kernel->width; v++)
+              {
+                for (u=0; u < (long) kernel->height; u++)
+                {
+                  pixel.opacity+=(*k)*kernel_pixels[u].opacity;
+                  k++;
+                }
+                kernel_pixels+=image->columns+kernel->width;
+              }
+              q->opacity=RoundToQuantum(pixel.opacity);
+            }
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
+            {
+              register const IndexPacket
+                *restrict kernel_indexes;
+
+              k=normal_kernel;
+              kernel_pixels=p;
+              kernel_indexes=indexes;
+              for (v=0; v < (long) kernel->width; v++)
+              {
+                for (u=0; u < (long) kernel->height; u++)
+                {
+                  alpha=(MagickRealType) (QuantumScale*(QuantumRange-
+                    kernel_pixels[u].opacity));
+                  pixel.index+=(*k)*alpha*kernel_indexes[u];
+                  k++;
+                }
+                kernel_pixels+=image->columns+kernel->width;
+                kernel_indexes+=image->columns+kernel->width;
+              }
+              filter_indexes[x]=RoundToQuantum(gamma*pixel.index);
+            }
+        }
+      p++;
+      q++;
+    }
+    sync=SyncCacheViewAuthenticPixels(filter_view,exception);
+    if (sync == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_FilterImageChannel)
+#endif
+        proceed=SetImageProgress(image,FilterImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  filter_image->type=image->type;
+  filter_view=DestroyCacheView(filter_view);
+  image_view=DestroyCacheView(image_view);
+  normal_kernel=(double *) RelinquishMagickMemory(normal_kernel);
+  if (status == MagickFalse)
+    filter_image=DestroyImage(filter_image);
+  return(filter_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     G a u s s i a n B l u r I m a g e                                       %
 %                                                                             %
 %                                                                             %
