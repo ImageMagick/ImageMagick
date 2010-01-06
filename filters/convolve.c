@@ -83,24 +83,24 @@
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantumType=float " \
-  "-DCLPixelType=float4 -DQuantumRange=%g"
+  "-DCLPixelType=float4 -DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_ufloat4
 #else
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#define CLOptions \
-  "-DCLQuantumType=uchar -DCLPixelType=uchar4 -DQuantumRange=%g"
+#define CLOptions "-DCLQuantumType=uchar -DCLPixelType=uchar4 " \
+  "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_uchar4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#define CLOptions \
-  "-DCLQuantumType=ushort -DCLPixelType=ushort4 -DQuantumRange=%g"
+#define CLOptions "-DCLQuantumType=ushort -DCLPixelType=ushort4 " \
+  "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_ushort4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define CLOptions \
-  "-DCLQuantumType=uint -DCLPixelType=uint4 -DQuantumRange=%g"
+#define CLOptions "-DCLQuantumType=uint -DCLPixelType=uint4 " \
+  "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_uint4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define CLOptions \
-  "-DCLQuantumType=ulong -DCLPixelType=ulong4 -DQuantumRange=%g"
+#define CLOptions "-DCLQuantumType=ulong -DCLPixelType=ulong4 " \
+  "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_ulong4
 #endif
 #endif
@@ -177,8 +177,8 @@ static char
     "  double scale = (1.0/QuantumRange);\n"
     "  const long mid_width = (width-1)/2;\n"
     "  const long mid_height = (height-1)/2;\n"
-    "  ulong i = 0;\n"
-    "  ulong index = 0;\n"
+    "  register ulong i = 0;\n"
+    "  register ulong index = 0;\n"
     "\n"
     "  int state = 0;\n"
     "  if (matte != false)\n"
@@ -263,7 +263,7 @@ static char
     "      break;\n"
     "    }\n"
     "  }\n"
-    "  gamma=1.0/((gamma <= 0.000001) && (gamma >= -0.000001) ? 1.0 : gamma);\n"
+    "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
     "  index=y*columns+x;\n"
     "  output[index].x=AuthenticQuantum(gamma*sum.x);\n"
     "  output[index].y=AuthenticQuantum(gamma*sum.y);\n"
@@ -479,7 +479,7 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
       return((CLInfo *) NULL);
     }
   (void) FormatMagickString(options,MaxTextExtent,CLOptions,(double)
-    QuantumRange);
+    QuantumRange,MagickEpsilon);
   status=clBuildProgram(cl_info->program,1,cl_info->devices,options,NULL,NULL);
   if ((cl_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
     {
