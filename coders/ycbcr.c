@@ -250,11 +250,11 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetRedSample(q,GetRedSample(p));
-                SetGreenSample(q,GetGreenSample(p));
-                SetBlueSample(q,GetBlueSample(p));
+                SetRedPixelComponent(q,GetRedPixelComponent(p));
+                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                SetBluePixelComponent(q,GetBluePixelComponent(p));
                 if (image->matte != MagickFalse)
-                  SetOpacitySample(q,GetOpacitySample(p));
+                  SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
                 p++;
                 q++;
               }
@@ -323,10 +323,10 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 {
                   switch (quantum_type)
                   {
-                    case RedQuantum: SetRedSample(q,GetRedSample(p)); break;
-                    case GreenQuantum: SetGreenSample(q,GetGreenSample(p)); break;
-                    case BlueQuantum: SetBlueSample(q,GetBlueSample(p)); break;
-                    case OpacityQuantum: SetOpacitySample(q,GetOpacitySample(p)); break;
+                    case RedQuantum: SetRedPixelComponent(q,GetRedPixelComponent(p)); break;
+                    case GreenQuantum: SetGreenPixelComponent(q,GetGreenPixelComponent(p)); break;
+                    case BlueQuantum: SetBluePixelComponent(q,GetBluePixelComponent(p)); break;
+                    case OpacityQuantum: SetOpacityPixelComponent(q,GetOpacityPixelComponent(p)); break;
                     default: break;
                   }
                   p++;
@@ -384,7 +384,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetRedSample(q,GetRedSample(p));
+                SetRedPixelComponent(q,GetRedPixelComponent(p));
                 p++;
                 q++;
               }
@@ -427,7 +427,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetGreenSample(q,GetGreenSample(p));
+                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
                 p++;
                 q++;
               }
@@ -470,7 +470,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetBlueSample(q,GetBlueSample(p));
+                SetBluePixelComponent(q,GetBluePixelComponent(p));
                 p++;
                 q++;
               }
@@ -516,7 +516,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    SetOpacitySample(q,GetOpacitySample(p));
+                    SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
                     p++;
                     q++;
                   }
@@ -598,7 +598,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetRedSample(q,GetRedSample(p));
+                SetRedPixelComponent(q,GetRedPixelComponent(p));
                 p++;
                 q++;
               }
@@ -660,7 +660,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetGreenSample(q,GetGreenSample(p));
+                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
                 p++;
                 q++;
               }
@@ -722,7 +722,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                SetBlueSample(q,GetBlueSample(p));
+                SetBluePixelComponent(q,GetBluePixelComponent(p));
                 p++;
                 q++;
               }
@@ -787,7 +787,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    SetOpacitySample(q,GetOpacitySample(p));
+                    SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
                     p++;
                     q++;
                   }

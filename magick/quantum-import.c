@@ -411,7 +411,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                indexes[x]=PushColormapIndex(image,RoundToQuantum(
+                indexes[x]=PushColormapIndex(image,ClampToQuantum(
                   (MagickRealType) QuantumRange*ScaleHalfToFloat(pixel)),
                   &range_exception);
                 *q=image->colormap[(long) indexes[x]];
@@ -443,7 +443,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                indexes[x]=PushColormapIndex(image,RoundToQuantum(pixel),
+                indexes[x]=PushColormapIndex(image,ClampToQuantum(pixel),
                   &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p+=quantum_info->pad;
@@ -471,7 +471,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                indexes[x]=PushColormapIndex(image,RoundToQuantum(pixel),
+                indexes[x]=PushColormapIndex(image,ClampToQuantum(pixel),
                   &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p+=quantum_info->pad;
@@ -599,12 +599,12 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                indexes[x]=PushColormapIndex(image,RoundToQuantum(
+                indexes[x]=PushColormapIndex(image,ClampToQuantum(
                   (MagickRealType) QuantumRange*ScaleHalfToFloat(pixel)),
                   &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p=PushShortPixel(endian,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
                   (MagickRealType) QuantumRange*ScaleHalfToFloat(pixel)));
                 p+=quantum_info->pad;
                 q++;
@@ -636,11 +636,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                indexes[x]=PushColormapIndex(image,RoundToQuantum(pixel),
+                indexes[x]=PushColormapIndex(image,ClampToQuantum(pixel),
                   &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -668,11 +668,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                indexes[x]=PushColormapIndex(image,RoundToQuantum(pixel),
+                indexes[x]=PushColormapIndex(image,ClampToQuantum(pixel),
                   &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -748,12 +748,12 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < ((long) number_pixels-1); x+=2)
           {
             pixel=(unsigned char) ((*p >> 4) & 0xf);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             q++;
             pixel=(unsigned char) ((*p) & 0xf);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p++;
@@ -762,7 +762,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (bit=0; bit < (long) (number_pixels % 2); bit++)
           {
             pixel=(unsigned char) (*p++ >> 4);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             q++;
@@ -782,7 +782,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 q->red=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
                 q->green=q->red;
                 q->blue=q->red;
-                SetOpacitySample(q,OpaqueOpacity);
+                SetOpacityPixelComponent(q,OpaqueOpacity);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -791,10 +791,10 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             q->green=q->red;
             q->blue=q->red;
-            SetOpacitySample(q,OpaqueOpacity);
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             p+=quantum_info->pad;
             q++;
           }
@@ -848,7 +848,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p+=quantum_info->pad;
@@ -894,7 +894,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p+=quantum_info->pad;
@@ -925,7 +925,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 q->green=q->red;
                 q->blue=q->red;
@@ -937,7 +937,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             q->green=q->red;
             q->blue=q->red;
             p+=quantum_info->pad;
@@ -958,7 +958,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 q->green=q->red;
                 q->blue=q->red;
                 p+=quantum_info->pad;
@@ -969,7 +969,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             q->green=q->red;
             q->blue=q->red;
             p+=quantum_info->pad;
@@ -987,7 +987,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 q->green=q->red;
                 q->blue=q->red;
                 p+=quantum_info->pad;
@@ -1002,7 +1002,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p+=quantum_info->pad;
@@ -1060,7 +1060,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             pixel=(unsigned char) ((*p >> 4) & 0xf);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             pixel=(unsigned char) ((*p) & 0xf);
@@ -1078,7 +1078,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             q->green=q->red;
             q->blue=q->red;
             p=PushCharPixel(p,&pixel);
@@ -1094,11 +1094,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->opacity=ScaleAnyToQuantum(pixel,range);
+            SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p+=quantum_info->pad;
             q++;
           }
@@ -1110,11 +1110,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->opacity=ScaleAnyToQuantum(pixel,range);
+            SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p+=quantum_info->pad;
             q++;
           }
@@ -1130,12 +1130,12 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 q->green=q->red;
                 q->blue=q->red;
                 p=PushShortPixel(endian,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
                   (MagickRealType) QuantumRange*ScaleHalfToFloat(pixel)));
                 p+=quantum_info->pad;
                 q++;
@@ -1145,7 +1145,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             q->green=q->red;
             q->blue=q->red;
             p=PushShortPixel(endian,p,&pixel);
@@ -1168,11 +1168,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 q->green=q->red;
                 q->blue=q->red;
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1181,7 +1181,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             q->green=q->red;
             q->blue=q->red;
             p=PushLongPixel(endian,p,&pixel);
@@ -1201,11 +1201,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 q->green=q->red;
                 q->blue=q->red;
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1218,7 +1218,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q->green=q->red;
             q->blue=q->red;
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
@@ -1244,7 +1244,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1260,7 +1260,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p+=quantum_info->pad;
                 q++;
@@ -1270,7 +1270,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1289,7 +1289,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1298,7 +1298,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1314,7 +1314,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1327,7 +1327,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p+=quantum_info->pad;
             q++;
           }
@@ -1349,7 +1349,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->green=ScaleCharToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleCharToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1365,7 +1365,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->green=RoundToQuantum((MagickRealType) QuantumRange*
+                q->green=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p+=quantum_info->pad;
                 q++;
@@ -1375,7 +1375,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->green=ScaleShortToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleShortToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1394,7 +1394,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1403,7 +1403,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->green=ScaleLongToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleLongToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1419,7 +1419,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1432,7 +1432,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p+=quantum_info->pad;
             q++;
           }
@@ -1454,7 +1454,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->blue=ScaleCharToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleCharToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1470,7 +1470,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->blue=RoundToQuantum((MagickRealType) QuantumRange*
+                q->blue=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p+=quantum_info->pad;
                 q++;
@@ -1480,7 +1480,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->blue=ScaleShortToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleShortToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1499,7 +1499,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1508,7 +1508,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->blue=ScaleLongToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleLongToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1524,7 +1524,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1537,7 +1537,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p+=quantum_info->pad;
             q++;
           }
@@ -1574,7 +1574,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
                   (MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel)));
                 p+=quantum_info->pad;
@@ -1604,7 +1604,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1629,7 +1629,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1684,7 +1684,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                indexes[x]=RoundToQuantum((MagickRealType) QuantumRange*
+                indexes[x]=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p+=quantum_info->pad;
               }
@@ -1711,7 +1711,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                indexes[x]=RoundToQuantum(pixel);
+                indexes[x]=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1736,7 +1736,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                indexes[x]=RoundToQuantum(pixel);
+                indexes[x]=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1771,12 +1771,12 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->green=ScaleCharToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->blue=ScaleCharToQuantum(pixel);
-            SetOpacitySample(q,OpaqueOpacity);
+            SetBluePixelComponent(q,ScaleCharToQuantum(pixel));
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             p+=quantum_info->pad;
             q++;
           }
@@ -1803,11 +1803,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushQuantumLongPixel(&quantum_state,image->depth,p,&pixel);
-                q->red=ScaleAnyToQuantum(pixel,range);
+                SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                 p=PushQuantumLongPixel(&quantum_state,image->depth,p,&pixel);
-                q->green=ScaleAnyToQuantum(pixel,range);
+                SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                 p=PushQuantumLongPixel(&quantum_state,image->depth,p,&pixel);
-                q->blue=ScaleAnyToQuantum(pixel,range);
+                SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
                 q++;
               }
               break;
@@ -1815,11 +1815,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q++;
           }
           break;
@@ -1912,11 +1912,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushQuantumLongPixel(&quantum_state,image->depth,p,&pixel);
-                q->red=ScaleAnyToQuantum(pixel,range);
+                SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                 p=PushQuantumLongPixel(&quantum_state,image->depth,p,&pixel);
-                q->green=ScaleAnyToQuantum(pixel,range);
+                SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                 p=PushQuantumLongPixel(&quantum_state,image->depth,p,&pixel);
-                q->blue=ScaleAnyToQuantum(pixel,range);
+                SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
                 q++;
               }
               break;
@@ -1924,11 +1924,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q++;
           }
           break;
@@ -1943,13 +1943,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->green=RoundToQuantum((MagickRealType) QuantumRange*
+                q->green=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->blue=RoundToQuantum((MagickRealType) QuantumRange*
+                q->blue=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p+=quantum_info->pad;
                 q++;
@@ -1959,11 +1959,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->green=ScaleShortToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->blue=ScaleShortToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleShortToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -1982,11 +1982,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1995,11 +1995,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->green=ScaleLongToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->blue=ScaleLongToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleLongToQuantum(pixel));
             p+=quantum_info->pad;
             q++;
           }
@@ -2015,11 +2015,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2032,11 +2032,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q++;
           }
           break;
@@ -2058,11 +2058,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->green=ScaleCharToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->blue=ScaleCharToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
             q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
             p+=quantum_info->pad;
@@ -2151,16 +2151,16 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->green=RoundToQuantum((MagickRealType) QuantumRange*
+                q->green=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->blue=RoundToQuantum((MagickRealType) QuantumRange*
+                q->blue=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
                   (MagickRealType) QuantumRange*ScaleHalfToFloat(pixel)));
                 p+=quantum_info->pad;
                 q++;
@@ -2170,11 +2170,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->green=ScaleShortToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->blue=ScaleShortToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
             q->opacity=(Quantum) (QuantumRange-ScaleShortToQuantum(pixel));
             p+=quantum_info->pad;
@@ -2195,13 +2195,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2210,11 +2210,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->green=ScaleLongToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->blue=ScaleLongToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
             q->opacity=(Quantum) (QuantumRange-ScaleLongToQuantum(pixel));
             p+=quantum_info->pad;
@@ -2232,13 +2232,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2251,11 +2251,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
             q->opacity=(Quantum) (QuantumRange-ScaleAnyToQuantum(pixel,range));
             q++;
@@ -2283,11 +2283,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->green=ScaleCharToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->blue=ScaleCharToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
             indexes[x]=ScaleCharToQuantum(pixel);
             p+=quantum_info->pad;
@@ -2305,16 +2305,16 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->green=RoundToQuantum((MagickRealType) QuantumRange*
+                q->green=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->blue=RoundToQuantum((MagickRealType) QuantumRange*
+                q->blue=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                indexes[x]=RoundToQuantum((MagickRealType) QuantumRange*
+                indexes[x]=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p+=quantum_info->pad;
                 q++;
@@ -2324,11 +2324,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->green=ScaleShortToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->blue=ScaleShortToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
             indexes[x]=ScaleShortToQuantum(pixel);
             p+=quantum_info->pad;
@@ -2349,13 +2349,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                indexes[x]=(IndexPacket) RoundToQuantum(pixel);
+                indexes[x]=(IndexPacket) ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2364,11 +2364,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->green=ScaleLongToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->blue=ScaleLongToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
             indexes[x]=ScaleLongToQuantum(pixel);
             p+=quantum_info->pad;
@@ -2386,13 +2386,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                indexes[x]=(IndexPacket) RoundToQuantum(pixel);
+                indexes[x]=(IndexPacket) ClampToQuantum(pixel);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2405,11 +2405,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
             indexes[x]=ScaleAnyToQuantum(pixel,range);
             q++;
@@ -2438,11 +2438,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushCharPixel(p,&pixel);
-            q->red=ScaleCharToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->green=ScaleCharToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
-            q->blue=ScaleCharToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleCharToQuantum(pixel));
             p=PushCharPixel(p,&pixel);
             indexes[x]=ScaleCharToQuantum(pixel);
             p=PushCharPixel(p,&pixel);
@@ -2462,19 +2462,19 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushShortPixel(endian,p,&pixel);
-                q->red=RoundToQuantum((MagickRealType) QuantumRange*
+                q->red=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->green=RoundToQuantum((MagickRealType) QuantumRange*
+                q->green=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->blue=RoundToQuantum((MagickRealType) QuantumRange*
+                q->blue=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                indexes[x]=RoundToQuantum((MagickRealType) QuantumRange*
+                indexes[x]=ClampToQuantum((MagickRealType) QuantumRange*
                   ScaleHalfToFloat(pixel));
                 p=PushShortPixel(endian,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
                   (MagickRealType) QuantumRange*ScaleHalfToFloat(pixel)));
                 p+=quantum_info->pad;
                 q++;
@@ -2484,11 +2484,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushShortPixel(endian,p,&pixel);
-            q->red=ScaleShortToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->green=ScaleShortToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
-            q->blue=ScaleShortToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleShortToQuantum(pixel));
             p=PushShortPixel(endian,p,&pixel);
             indexes[x]=ScaleShortToQuantum(pixel);
             p=PushShortPixel(endian,p,&pixel);
@@ -2511,15 +2511,15 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                indexes[x]=(IndexPacket) RoundToQuantum(pixel);
+                indexes[x]=(IndexPacket) ClampToQuantum(pixel);
                 p=PushFloatPixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2528,11 +2528,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushLongPixel(endian,p,&pixel);
-            q->red=ScaleLongToQuantum(pixel);
+            SetRedPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->green=ScaleLongToQuantum(pixel);
+            SetGreenPixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
-            q->blue=ScaleLongToQuantum(pixel);
+            SetBluePixelComponent(q,ScaleLongToQuantum(pixel));
             p=PushLongPixel(endian,p,&pixel);
             indexes[x]=ScaleLongToQuantum(pixel);
             p=PushLongPixel(endian,p,&pixel);
@@ -2552,15 +2552,15 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               for (x=0; x < (long) number_pixels; x++)
               {
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->red=RoundToQuantum(pixel);
+                q->red=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->green=RoundToQuantum(pixel);
+                q->green=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->blue=RoundToQuantum(pixel);
+                q->blue=ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                indexes[x]=(IndexPacket) RoundToQuantum(pixel);
+                indexes[x]=(IndexPacket) ClampToQuantum(pixel);
                 p=PushDoublePixel(&quantum_state,p,&pixel);
-                q->opacity=(Quantum) (QuantumRange-RoundToQuantum(pixel));
+                q->opacity=(Quantum) (QuantumRange-ClampToQuantum(pixel));
                 p=PushDoublePixel(&quantum_state,p,&pixel);
                 p+=quantum_info->pad;
                 q++;
@@ -2574,11 +2574,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->blue=ScaleAnyToQuantum(pixel,range);
+            SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
             indexes[x]=ScaleAnyToQuantum(pixel,range);
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
@@ -2661,9 +2661,9 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           for (x=0; x < (long) number_pixels; x++)
           {
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->red=ScaleAnyToQuantum(pixel,range);
+            SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
-            q->green=ScaleAnyToQuantum(pixel,range);
+            SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
             q++;
           }
           break;
@@ -2725,9 +2725,9 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
       {
         alpha=QuantumScale*((MagickRealType) QuantumRange-q->opacity);
         alpha=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
-        q->red=RoundToQuantum(alpha*q->red);
-        q->green=RoundToQuantum(alpha*q->green);
-        q->blue=RoundToQuantum(alpha*q->blue);
+        q->red=ClampToQuantum(alpha*q->red);
+        q->green=ClampToQuantum(alpha*q->green);
+        q->blue=ClampToQuantum(alpha*q->blue);
         q++;
       }
     }

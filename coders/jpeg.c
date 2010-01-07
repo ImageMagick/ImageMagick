@@ -1201,7 +1201,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                 (GETJSAMPLE(*p++) << 4));
               q->blue=ScaleShortToQuantum((unsigned char)
                 (GETJSAMPLE(*p++) << 4));
-              SetOpacitySample(q,OpaqueOpacity);
+              SetOpacityPixelComponent(q,OpaqueOpacity);
               q++;
             }
           else
@@ -1213,7 +1213,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                 (unsigned char) (GETJSAMPLE(*p++) << 4));
               q->blue=(Quantum) QuantumRange-ScaleShortToQuantum((unsigned char)
                 (GETJSAMPLE(*p++) << 4));
-              SetOpacitySample(q,OpaqueOpacity);
+              SetOpacityPixelComponent(q,OpaqueOpacity);
               indexes[x]=(IndexPacket) QuantumRange-ScaleShortToQuantum(
                 (unsigned char) (GETJSAMPLE(*p++) << 4));
               q++;
@@ -1235,7 +1235,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             q->red=ScaleCharToQuantum((unsigned char) GETJSAMPLE(*p++));
             q->green=ScaleCharToQuantum((unsigned char) GETJSAMPLE(*p++));
             q->blue=ScaleCharToQuantum((unsigned char) GETJSAMPLE(*p++));
-            SetOpacitySample(q,OpaqueOpacity);
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             q++;
           }
         else
@@ -1247,7 +1247,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               GETJSAMPLE(*p++));
             q->blue=(Quantum) QuantumRange-ScaleCharToQuantum((unsigned char)
               GETJSAMPLE(*p++));
-            SetOpacitySample(q,OpaqueOpacity);
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             indexes[x]=(IndexPacket) QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++));
             q++;
@@ -2178,9 +2178,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             q=jpeg_pixels;
             for (x=0; x < (long) image->columns; x++)
             {
-              *q++=(JSAMPLE) (ScaleQuantumToShort(GetRedSample(p)) >> 4);
-              *q++=(JSAMPLE) (ScaleQuantumToShort(GetGreenSample(p)) >> 4);
-              *q++=(JSAMPLE) (ScaleQuantumToShort(GetBlueSample(p)) >> 4);
+              *q++=(JSAMPLE) (ScaleQuantumToShort(GetRedPixelComponent(p)) >> 4);
+              *q++=(JSAMPLE) (ScaleQuantumToShort(GetGreenPixelComponent(p)) >> 4);
+              *q++=(JSAMPLE) (ScaleQuantumToShort(GetBluePixelComponent(p)) >> 4);
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2210,9 +2210,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetRedSample(p)) >> 4));
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetGreenSample(p)) >> 4));
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetBlueSample(p)) >> 4));
+              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetRedPixelComponent(p)) >> 4));
+              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetGreenPixelComponent(p)) >> 4));
+              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetBluePixelComponent(p)) >> 4));
               *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(indexes[x]) >> 4));
               p++;
             }
@@ -2262,9 +2262,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(JSAMPLE) ScaleQuantumToChar(GetRedSample(p));
-            *q++=(JSAMPLE) ScaleQuantumToChar(GetGreenSample(p));
-            *q++=(JSAMPLE) ScaleQuantumToChar(GetBlueSample(p));
+            *q++=(JSAMPLE) ScaleQuantumToChar(GetRedPixelComponent(p));
+            *q++=(JSAMPLE) ScaleQuantumToChar(GetGreenPixelComponent(p));
+            *q++=(JSAMPLE) ScaleQuantumToChar(GetBluePixelComponent(p));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2294,11 +2294,11 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
             *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetRedSample(p))));
+              GetRedPixelComponent(p))));
             *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetGreenSample(p))));
+              GetGreenPixelComponent(p))));
             *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetBlueSample(p))));
+              GetBluePixelComponent(p))));
             *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
               indexes[x])));
             p++;

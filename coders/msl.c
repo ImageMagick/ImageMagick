@@ -1934,7 +1934,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         for (x=0; x < (long) composite_image->columns; x++)
                         {
                           if (q->opacity == OpaqueOpacity)
-                            q->opacity=RoundToQuantum(opacity);
+                            q->opacity=ClampToQuantum(opacity);
                           q++;
                         }
                         if (SyncCacheViewAuthenticPixels(composite_view,&exception) == MagickFalse)
@@ -3746,7 +3746,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
-          draw_info->fill.opacity=RoundToQuantum(opacity);
+          draw_info->fill.opacity=ClampToQuantum(opacity);
           (void) FloodfillPaintImage(msl_info->image[n],OpacityChannel,
             draw_info,&target,geometry.x,geometry.y,
             paint_method == FloodfillMethod ? MagickFalse : MagickTrue);

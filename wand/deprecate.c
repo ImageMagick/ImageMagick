@@ -857,7 +857,7 @@ WandExport MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
   if (bordercolor != (PixelWand *) NULL)
     PixelGetQuantumColor(bordercolor,&target);
   wand->images->fuzz=fuzz;
-  status=MatteFloodfillImage(wand->images,target,RoundToQuantum(
+  status=MatteFloodfillImage(wand->images,target,ClampToQuantum(
     (MagickRealType) QuantumRange-QuantumRange*alpha),x,y,bordercolor !=
     (PixelWand *) NULL ? FillToBorderMethod : FloodfillMethod);
   if (status == MagickFalse)

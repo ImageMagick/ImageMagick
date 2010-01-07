@@ -246,9 +246,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           }
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum((MagickRealType) (QuantumRange-q->red));
-          q->green=RoundToQuantum((MagickRealType) (QuantumRange-q->green));
-          q->blue=RoundToQuantum((MagickRealType) (QuantumRange-q->blue));
+          q->red=ClampToQuantum((MagickRealType) (QuantumRange-q->red));
+          q->green=ClampToQuantum((MagickRealType) (QuantumRange-q->green));
+          q->blue=ClampToQuantum((MagickRealType) (QuantumRange-q->blue));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -365,9 +365,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         for (x=0; x < (long) image->columns; x++)
         {
           ConvertRGBToHSB(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-          q->red=RoundToQuantum((MagickRealType) QuantumRange*hue);
-          q->green=RoundToQuantum((MagickRealType) QuantumRange*saturation);
-          q->blue=RoundToQuantum((MagickRealType) QuantumRange*brightness);
+          q->red=ClampToQuantum((MagickRealType) QuantumRange*hue);
+          q->green=ClampToQuantum((MagickRealType) QuantumRange*saturation);
+          q->blue=ClampToQuantum((MagickRealType) QuantumRange*brightness);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -421,9 +421,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         for (x=0; x < (long) image->columns; x++)
         {
           ConvertRGBToHSL(q->red,q->green,q->blue,&hue,&saturation,&lightness);
-          q->red=RoundToQuantum((MagickRealType) QuantumRange*hue);
-          q->green=RoundToQuantum((MagickRealType) QuantumRange*saturation);
-          q->blue=RoundToQuantum((MagickRealType) QuantumRange*lightness);
+          q->red=ClampToQuantum((MagickRealType) QuantumRange*hue);
+          q->green=ClampToQuantum((MagickRealType) QuantumRange*saturation);
+          q->blue=ClampToQuantum((MagickRealType) QuantumRange*lightness);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -477,9 +477,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         for (x=0; x < (long) image->columns; x++)
         {
           ConvertRGBToHWB(q->red,q->green,q->blue,&hue,&whiteness,&blackness);
-          q->red=RoundToQuantum((MagickRealType) QuantumRange*hue);
-          q->green=RoundToQuantum((MagickRealType) QuantumRange*whiteness);
-          q->blue=RoundToQuantum((MagickRealType) QuantumRange*blackness);
+          q->red=ClampToQuantum((MagickRealType) QuantumRange*hue);
+          q->green=ClampToQuantum((MagickRealType) QuantumRange*whiteness);
+          q->blue=ClampToQuantum((MagickRealType) QuantumRange*blackness);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -540,9 +540,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           ConvertRGBToXYZ(q->red,q->green,q->blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-          q->red=RoundToQuantum((MagickRealType) QuantumRange*L);
-          q->green=RoundToQuantum((MagickRealType) QuantumRange*a);
-          q->blue=RoundToQuantum((MagickRealType) QuantumRange*b);
+          q->red=ClampToQuantum((MagickRealType) QuantumRange*L);
+          q->green=ClampToQuantum((MagickRealType) QuantumRange*a);
+          q->blue=ClampToQuantum((MagickRealType) QuantumRange*b);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1293,9 +1293,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   r=3.2407100*x-1.5372600*y-0.4985710*z;
   g=(-0.9692580*x+1.8759900*y+0.0415557*z);
   b=0.0556352*x-0.2039960*y+1.0570700*z;
-  *red=RoundToQuantum((MagickRealType) QuantumRange*r);
-  *green=RoundToQuantum((MagickRealType) QuantumRange*g);
-  *blue=RoundToQuantum((MagickRealType) QuantumRange*b);
+  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
+  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
+  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
 }
 
 static inline void ConvertCMYKToRGB(MagickPixelPacket *pixel)
@@ -1429,9 +1429,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           }
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum((MagickRealType) (QuantumRange-q->red));
-          q->green=RoundToQuantum((MagickRealType) (QuantumRange-q->green));
-          q->blue=RoundToQuantum((MagickRealType) (QuantumRange-q->blue));
+          q->red=ClampToQuantum((MagickRealType) (QuantumRange-q->red));
+          q->green=ClampToQuantum((MagickRealType) (QuantumRange-q->green));
+          q->blue=ClampToQuantum((MagickRealType) (QuantumRange-q->blue));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1787,7 +1787,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       for (i=0; i <= (long) (reference_black*MaxMap/1024.0); i++)
         logmap[i]=(Quantum) 0;
       for ( ; i < (long) (reference_white*MaxMap/1024.0); i++)
-        logmap[i]=RoundToQuantum((MagickRealType) QuantumRange/(1.0-black)*
+        logmap[i]=ClampToQuantum((MagickRealType) QuantumRange/(1.0-black)*
           (pow(10.0,(1024.0*i/MaxMap-reference_white)*
           (gamma/density)*0.002/0.6)-black));
       for ( ; i <= (long) MaxMap; i++)

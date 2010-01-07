@@ -377,9 +377,9 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
       {
         *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
           (image->matte != MagickFalse ? p->opacity : OpaqueOpacity)));
-        *q++=ScaleQuantumToChar(GetRedSample(p));
-        *q++=ScaleQuantumToChar(GetGreenSample(p));
-        *q++=ScaleQuantumToChar(GetBlueSample(p));
+        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
         p++;
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);

@@ -1026,19 +1026,19 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       if (pixel->depth > 16)
         {
           (void) FormatMagickString(component,MaxTextExtent,"%10lu",
-            (unsigned long) ScaleQuantumToLong(RoundToQuantum(color)));
+            (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
           return;
         }
       if (pixel->depth > 8)
         {
           (void) FormatMagickString(component,MaxTextExtent,"%5d",
-            ScaleQuantumToShort(RoundToQuantum(color)));
+            ScaleQuantumToShort(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
           return;
         }
       (void) FormatMagickString(component,MaxTextExtent,"%3d",
-        ScaleQuantumToChar(RoundToQuantum(color)));
+        ScaleQuantumToChar(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
@@ -1065,7 +1065,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       return;
     }
   (void) FormatMagickString(component,MaxTextExtent,"%d",
-    ScaleQuantumToChar(RoundToQuantum(color)));
+    ScaleQuantumToChar(ClampToQuantum(color)));
   (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
 }
 
@@ -1329,26 +1329,26 @@ static void ConcatentateHexColorComponent(const MagickPixelPacket *pixel,
   if (pixel->depth > 32)
     {
       (void) FormatMagickString(component,MaxTextExtent,"%08lX",
-        ScaleQuantumToLong(RoundToQuantum(color)));
+        ScaleQuantumToLong(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   if (pixel->depth > 16)
     {
       (void) FormatMagickString(component,MaxTextExtent,"%08X",
-        (unsigned int) ScaleQuantumToLong(RoundToQuantum(color)));
+        (unsigned int) ScaleQuantumToLong(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   if (pixel->depth > 8)
     {
       (void) FormatMagickString(component,MaxTextExtent,"%04X",
-        ScaleQuantumToShort(RoundToQuantum(color)));
+        ScaleQuantumToShort(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   (void) FormatMagickString(component,MaxTextExtent,"%02X",
-    ScaleQuantumToChar(RoundToQuantum(color)));
+    ScaleQuantumToChar(ClampToQuantum(color)));
   (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
   return;
 }
@@ -1385,7 +1385,7 @@ MagickExport void GetColorTuple(const MagickPixelPacket *pixel,
   if (color.depth > 8)
     {
 #define SVGCompliant(component) ((MagickRealType) \
-   ScaleCharToQuantum(ScaleQuantumToChar(RoundToQuantum(component))));
+   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))));
 
       MagickStatusType
         status;
@@ -1527,7 +1527,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   beta=1.0;
   if (image->matte != MagickFalse)
     {
-      alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
+      alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
       beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
     }
   pixel=alpha*p->red-beta*q->red;
@@ -1719,7 +1719,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       fuzz=3.0*MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
   alpha=1.0;
   if (p->matte != MagickFalse)
-    alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
+    alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
   beta=1.0;
   if (q->matte != MagickFalse)
     beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
@@ -2194,9 +2194,9 @@ static MagickBooleanType LoadColorLists(const char *filename,
     color_info->path=(char *) "[built-in]";
     color_info->name=(char *) p->name;
     GetMagickPixelPacket((Image *) NULL,&color_info->color);
-    color_info->color.red=scale*GetRedSample(p);
-    color_info->color.green=scale*GetGreenSample(p);
-    color_info->color.blue=scale*GetBlueSample(p);
+    color_info->color.red=scale*GetRedPixelComponent(p);
+    color_info->color.green=scale*GetGreenPixelComponent(p);
+    color_info->color.blue=scale*GetBluePixelComponent(p);
     color_info->color.opacity=(MagickRealType) (QuantumRange-QuantumRange*
       p->alpha);
     color_info->compliance=(ComplianceType) p->compliance;
@@ -2269,23 +2269,23 @@ MagickExport MagickBooleanType QueryColorDatabase(const char *name,
     pixel;
 
   status=QueryMagickColor(name,&pixel,exception);
-  color->opacity=RoundToQuantum(pixel.opacity);
+  color->opacity=ClampToQuantum(pixel.opacity);
   if (pixel.colorspace == CMYKColorspace)
     {
-      color->red=RoundToQuantum((MagickRealType) (QuantumRange-MagickMin(
+      color->red=ClampToQuantum((MagickRealType) (QuantumRange-MagickMin(
         QuantumRange,(MagickRealType) (QuantumScale*pixel.red*(QuantumRange-
         pixel.index)+pixel.index))));
-      color->green=RoundToQuantum((MagickRealType) (QuantumRange-MagickMin(
+      color->green=ClampToQuantum((MagickRealType) (QuantumRange-MagickMin(
         QuantumRange,(MagickRealType) (QuantumScale*pixel.green*(QuantumRange-
         pixel.index)+pixel.index))));
-      color->blue=RoundToQuantum((MagickRealType) (QuantumRange-MagickMin(
+      color->blue=ClampToQuantum((MagickRealType) (QuantumRange-MagickMin(
         QuantumRange,(MagickRealType) (QuantumScale*pixel.blue*(QuantumRange-
         pixel.index)+pixel.index))));
       return(status);
     }
-  color->red=RoundToQuantum(pixel.red);
-  color->green=RoundToQuantum(pixel.green);
-  color->blue=RoundToQuantum(pixel.blue);
+  color->red=ClampToQuantum(pixel.red);
+  color->green=ClampToQuantum(pixel.green);
+  color->blue=ClampToQuantum(pixel.blue);
   return(status);
 }
 
@@ -2523,31 +2523,31 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
       if ((flags & PercentValue) != 0)
         scale=(MagickRealType) (QuantumRange/100.0);
       if ((flags & RhoValue) != 0)
-        color->red=(MagickRealType) RoundToQuantum(scale*geometry_info.rho);
+        color->red=(MagickRealType) ClampToQuantum(scale*geometry_info.rho);
       if ((flags & SigmaValue) != 0)
-        color->green=(MagickRealType) RoundToQuantum(scale*geometry_info.sigma);
+        color->green=(MagickRealType) ClampToQuantum(scale*geometry_info.sigma);
       if ((flags & XiValue) != 0)
-        color->blue=(MagickRealType) RoundToQuantum(scale*geometry_info.xi);
+        color->blue=(MagickRealType) ClampToQuantum(scale*geometry_info.xi);
       color->opacity=(MagickRealType) OpaqueOpacity;
       if ((flags & PsiValue) != 0)
         {
           if (color->colorspace == CMYKColorspace)
-            color->index=(MagickRealType) RoundToQuantum(scale*
+            color->index=(MagickRealType) ClampToQuantum(scale*
               geometry_info.psi);
           else
             if (color->matte != MagickFalse)
-              color->opacity=(MagickRealType) RoundToQuantum((MagickRealType)
+              color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
                 (QuantumRange-QuantumRange*geometry_info.psi));
         }
       if (((flags & ChiValue) != 0) && (color->matte != MagickFalse))
-        color->opacity=(MagickRealType) RoundToQuantum((MagickRealType)
+        color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
           (QuantumRange-QuantumRange*geometry_info.chi));
       if (LocaleCompare(colorspace,"gray") == 0)
         {
           color->green=color->red;
           color->blue=color->red;
           if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))
-            color->opacity=(MagickRealType) RoundToQuantum((MagickRealType)
+            color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
               (QuantumRange-QuantumRange*geometry_info.sigma));
         }
       if ((LocaleCompare(colorspace,"HSB") == 0) ||

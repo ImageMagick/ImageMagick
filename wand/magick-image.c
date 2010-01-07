@@ -10308,7 +10308,7 @@ WandExport MagickBooleanType MagickSetImageOpacity(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageOpacity(wand->images,RoundToQuantum((MagickRealType)
+  status=SetImageOpacity(wand->images,ClampToQuantum((MagickRealType)
     QuantumRange-QuantumRange*alpha));
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
@@ -12069,7 +12069,7 @@ WandExport MagickBooleanType MagickTransparentPaintImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetMagickColor(target,&target_pixel);
   wand->images->fuzz=fuzz;
-  status=TransparentPaintImage(wand->images,&target_pixel,RoundToQuantum(
+  status=TransparentPaintImage(wand->images,&target_pixel,ClampToQuantum(
     (MagickRealType) QuantumRange-QuantumRange*alpha),invert);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);

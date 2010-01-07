@@ -589,12 +589,12 @@ MagickExport Image *AppendImages(const Image *image,
       append_indexes=GetCacheViewAuthenticIndexQueue(append_view);
       for (x=0; x < (long) image->columns; x++)
       {
-        SetRedSample(q,GetRedSample(p));
-        SetGreenSample(q,GetGreenSample(p));
-        SetBlueSample(q,GetBlueSample(p));
-        SetOpacitySample(q,OpaqueOpacity);
+        SetRedPixelComponent(q,GetRedPixelComponent(p));
+        SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+        SetBluePixelComponent(q,GetBluePixelComponent(p));
+        SetOpacityPixelComponent(q,OpaqueOpacity);
         if (image->matte != MagickFalse)
-          SetOpacitySample(q,GetOpacitySample(p));
+          SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
         if (image->colorspace == CMYKColorspace)
           append_indexes[x]=indexes[x];
         p++;
@@ -1135,7 +1135,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (long) combine_image->columns; x++)
         {
-          q->red=PixelIntensityToQuantum(p);
+          SetRedPixelComponent(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1151,7 +1151,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (long) combine_image->columns; x++)
         {
-          q->green=PixelIntensityToQuantum(p);
+          SetGreenPixelComponent(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1167,7 +1167,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (long) combine_image->columns; x++)
         {
-          q->blue=PixelIntensityToQuantum(p);
+          SetBluePixelComponent(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1183,7 +1183,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (long) combine_image->columns; x++)
         {
-          q->opacity=PixelIntensityToQuantum(p);
+          SetOpacityPixelComponent(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }

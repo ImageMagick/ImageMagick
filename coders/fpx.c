@@ -471,7 +471,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q->green=index;
           q->blue=index;
         }
-      SetOpacitySample(q,OpaqueOpacity);
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
         q->opacity=ScaleCharToQuantum(255-*a);
       q++;

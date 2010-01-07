@@ -179,7 +179,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->red=ScaleCharToQuantum(*p++);
         q->green=ScaleCharToQuantum(*p++);
         q->blue=ScaleCharToQuantum(*p++);
-        SetOpacitySample(q,OpaqueOpacity);
+        SetOpacityPixelComponent(q,OpaqueOpacity);
         q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -379,9 +379,9 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetRedSample(p));
-        *q++=ScaleQuantumToChar(GetGreenSample(p));
-        *q++=ScaleQuantumToChar(GetBlueSample(p));
+        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
         p++;
       }
       (void) WriteBlob(image,(size_t) (q-pixels),pixels);

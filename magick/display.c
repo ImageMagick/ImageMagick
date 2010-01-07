@@ -10006,7 +10006,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
               (DrawInfo *) NULL);
-            draw_info->fill.opacity=RoundToQuantum(StringToDouble(matte));
+            draw_info->fill.opacity=ClampToQuantum(StringToDouble(matte));
             (void) FloodfillPaintImage(*image,OpacityChannel,draw_info,&target,
               x_offset,y_offset,method == FloodfillMethod ? MagickFalse :
               MagickTrue);

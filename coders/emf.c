@@ -617,7 +617,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       q->red=ScaleCharToQuantum(pBits->rgbRed);
       q->green=ScaleCharToQuantum(pBits->rgbGreen);
       q->blue=ScaleCharToQuantum(pBits->rgbBlue);
-      SetOpacitySample(q,OpaqueOpacity);
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       pBits++;
       q++;
     }

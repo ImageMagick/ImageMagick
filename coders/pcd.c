@@ -1030,7 +1030,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       break;
     for (x=0; x < (long) (tile_image->columns << 1); x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedSample(p)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
       p++;
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,

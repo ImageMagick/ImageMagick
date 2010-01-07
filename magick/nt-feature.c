@@ -200,9 +200,9 @@ MagickExport void *CropImageToHBITMAP(Image *image,
         /* Transfer pixels, scaling to Quantum */
         for( x=page.width ; x> 0 ; x-- )
           {
-            q->rgbRed = ScaleQuantumToChar(GetRedSample(p));
-            q->rgbGreen = ScaleQuantumToChar(GetGreenSample(p));
-            q->rgbBlue = ScaleQuantumToChar(GetBlueSample(p));
+            q->rgbRed = ScaleQuantumToChar(GetRedPixelComponent(p));
+            q->rgbGreen = ScaleQuantumToChar(GetGreenPixelComponent(p));
+            q->rgbBlue = ScaleQuantumToChar(GetBluePixelComponent(p));
             q->rgbReserved = 0;
             ++q;
             ++p;
@@ -644,9 +644,9 @@ MagickExport void *ImageToHBITMAP(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->rgbRed=ScaleQuantumToChar(GetRedSample(p));
-      q->rgbGreen=ScaleQuantumToChar(GetGreenSample(p));
-      q->rgbBlue=ScaleQuantumToChar(GetBlueSample(p));
+      q->rgbRed=ScaleQuantumToChar(GetRedPixelComponent(p));
+      q->rgbGreen=ScaleQuantumToChar(GetGreenPixelComponent(p));
+      q->rgbBlue=ScaleQuantumToChar(GetBluePixelComponent(p));
       q->rgbReserved=0;
       p++;
       q++;

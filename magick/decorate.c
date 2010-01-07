@@ -742,37 +742,37 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < y; x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
       q++;
     }
     for ( ; x < (long) (image->columns-y); x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
         AccentuateFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
         AccentuateFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
         AccentuateFactor)));
       q++;
     }
     for ( ; x < (long) image->columns; x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
         (MagickRealType) background*(QuantumRange-ShadowFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         ShadowFactor+(MagickRealType) background*(QuantumRange-ShadowFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         ShadowFactor+(MagickRealType) background*(QuantumRange-ShadowFactor)));
       q++;
     }
@@ -809,13 +809,13 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (long) raise_info->width; x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
       q++;
@@ -824,11 +824,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       q++;
     for ( ; x < (long) image->columns; x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
         (MagickRealType) background*(QuantumRange-ShadowFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         ShadowFactor+(MagickRealType) background*(QuantumRange-ShadowFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         ShadowFactor+(MagickRealType) background*(QuantumRange-ShadowFactor)));
       q++;
     }
@@ -865,34 +865,34 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (long) (image->rows-y); x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
         HighlightFactor)));
       q++;
     }
     for ( ; x < (long) (image->columns-(image->rows-y)); x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*TroughFactor+
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*TroughFactor+
         (MagickRealType) background*(QuantumRange-TroughFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         TroughFactor+(MagickRealType) background*(QuantumRange-TroughFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         TroughFactor+(MagickRealType) background*(QuantumRange-TroughFactor)));
       q++;
     }
     for ( ; x < (long) image->columns; x++)
     {
-      q->red=RoundToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
+      q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
         (MagickRealType) background*(QuantumRange-ShadowFactor)));
-      q->green=RoundToQuantum(QuantumScale*((MagickRealType) q->green*
+      q->green=ClampToQuantum(QuantumScale*((MagickRealType) q->green*
         ShadowFactor+(MagickRealType) background*(QuantumRange-ShadowFactor)));
-      q->blue=RoundToQuantum(QuantumScale*((MagickRealType) q->blue*
+      q->blue=ClampToQuantum(QuantumScale*((MagickRealType) q->blue*
         ShadowFactor+(MagickRealType) background*(QuantumRange-ShadowFactor)));
       q++;
     }

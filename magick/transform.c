@@ -1470,12 +1470,12 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_indexes=GetCacheViewAuthenticIndexQueue(splice_view);
     for (x=0; x < splice_geometry.x; x++)
     {
-      SetRedSample(q,GetRedSample(p));
-      SetGreenSample(q,GetGreenSample(p));
-      SetBlueSample(q,GetBlueSample(p));
-      SetOpacitySample(q,OpaqueOpacity);
+      SetRedPixelComponent(q,GetRedPixelComponent(p));
+      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+      SetBluePixelComponent(q,GetBluePixelComponent(p));
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacitySample(q,GetOpacitySample(p));
+        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1485,12 +1485,12 @@ MagickExport Image *SpliceImage(const Image *image,
       q++;
     for ( ; x < (long) splice_image->columns; x++)
     {
-      SetRedSample(q,GetRedSample(p));
-      SetGreenSample(q,GetGreenSample(p));
-      SetBlueSample(q,GetBlueSample(p));
-      SetOpacitySample(q,OpaqueOpacity);
+      SetRedPixelComponent(q,GetRedPixelComponent(p));
+      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+      SetBluePixelComponent(q,GetBluePixelComponent(p));
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacitySample(q,GetOpacitySample(p));
+        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1547,12 +1547,12 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_indexes=GetCacheViewAuthenticIndexQueue(splice_view);
     for (x=0; x < splice_geometry.x; x++)
     {
-      SetRedSample(q,GetRedSample(p));
-      SetGreenSample(q,GetGreenSample(p));
-      SetBlueSample(q,GetBlueSample(p));
-      SetOpacitySample(q,OpaqueOpacity);
+      SetRedPixelComponent(q,GetRedPixelComponent(p));
+      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+      SetBluePixelComponent(q,GetBluePixelComponent(p));
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacitySample(q,GetOpacitySample(p));
+        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1562,12 +1562,12 @@ MagickExport Image *SpliceImage(const Image *image,
       q++;
     for ( ; x < (long) splice_image->columns; x++)
     {
-      SetRedSample(q,GetRedSample(p));
-      SetGreenSample(q,GetGreenSample(p));
-      SetBlueSample(q,GetBlueSample(p));
-      SetOpacitySample(q,OpaqueOpacity);
+      SetRedPixelComponent(q,GetRedPixelComponent(p));
+      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+      SetBluePixelComponent(q,GetBluePixelComponent(p));
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacitySample(q,GetOpacitySample(p));
+        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;

@@ -71,6 +71,7 @@
 #include "magick/pixel-private.h"
 #include "magick/property.h"
 #include "magick/quantum.h"
+#include "magick/quantum-private.h"
 #include "magick/random_.h"
 #include "magick/random-private.h"
 #include "magick/resample.h"
@@ -374,20 +375,20 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=RoundToQuantum(GenerateDifferentialNoise(random_info[id],
+        q->red=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
           p->red,noise_type,attenuate));
       if ((channel & GreenChannel) != 0)
-        q->green=RoundToQuantum(GenerateDifferentialNoise(random_info[id],
+        q->green=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
           p->green,noise_type,attenuate));
       if ((channel & BlueChannel) != 0)
-        q->blue=RoundToQuantum(GenerateDifferentialNoise(random_info[id],
+        q->blue=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
           p->blue,noise_type,attenuate));
       if ((channel & OpacityChannel) != 0)
-        q->opacity=RoundToQuantum(GenerateDifferentialNoise(random_info[id],
+        q->opacity=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
           p->opacity,noise_type,attenuate));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        noise_indexes[x]=(IndexPacket) RoundToQuantum(GenerateDifferentialNoise(
+        noise_indexes[x]=(IndexPacket) ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],indexes[x],noise_type,attenuate));
       p++;
       q++;
@@ -525,25 +526,25 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
       }
     for (x=0; x < (long) image->columns; x++)
     {
-      quantum=GetRedSample(p);
+      quantum=GetRedPixelComponent(p);
       if (p->green < quantum)
-        quantum=GetGreenSample(p);
+        quantum=GetGreenPixelComponent(p);
       if (p->blue < quantum)
-        quantum=GetBlueSample(p);
+        quantum=GetBluePixelComponent(p);
       pixel.red=0.5*(p->red+factor*quantum);
       pixel.green=0.5*(p->green+factor*quantum);
       pixel.blue=0.5*(p->blue+factor*quantum);
-      quantum=GetRedSample(p);
+      quantum=GetRedPixelComponent(p);
       if (p->green > quantum)
-        quantum=GetGreenSample(p);
+        quantum=GetGreenPixelComponent(p);
       if (p->blue > quantum)
-        quantum=GetBlueSample(p);
+        quantum=GetBluePixelComponent(p);
       pixel.red=0.5*(pixel.red+factor*quantum);
       pixel.green=0.5*(pixel.green+factor*quantum);
       pixel.blue=0.5*(pixel.blue+factor*quantum);
-      q->red=RoundToQuantum(pixel.red);
-      q->green=RoundToQuantum(pixel.green);
-      q->blue=RoundToQuantum(pixel.blue);
+      SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
+      SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
+      SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
       p++;
       q++;
     }
@@ -1062,7 +1063,7 @@ static Quantum ApplyEvaluateOperator(RandomInfo *random_info,Quantum pixel,
       break;
     }
   }
-  return(RoundToQuantum(result));
+  return(ClampToQuantum(result));
 }
 
 MagickExport MagickBooleanType EvaluateImage(Image *image,
@@ -1295,7 +1296,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
     case UndefinedFunction:
       break;
   }
-  return(RoundToQuantum(result));
+  return(ClampToQuantum(result));
 }
 
 MagickExport MagickBooleanType FunctionImage(Image *image,
@@ -1979,8 +1980,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             lightness,
             saturation;
 
-          ConvertRGBToHSL(RoundToQuantum(pixel.red),RoundToQuantum(pixel.green),
-            RoundToQuantum(pixel.blue),&hue,&saturation,&lightness);
+          ConvertRGBToHSL(ClampToQuantum(pixel.red),ClampToQuantum(pixel.green),
+            ClampToQuantum(pixel.blue),&hue,&saturation,&lightness);
           return(hue);
         }
       break;
@@ -2023,8 +2024,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             lightness,
             saturation;
 
-          ConvertRGBToHSL(RoundToQuantum(pixel.red),RoundToQuantum(pixel.green),
-            RoundToQuantum(pixel.blue),&hue,&saturation,&lightness);
+          ConvertRGBToHSL(ClampToQuantum(pixel.red),ClampToQuantum(pixel.green),
+            ClampToQuantum(pixel.blue),&hue,&saturation,&lightness);
           return(lightness);
         }
       if (LocaleCompare(symbol,"luminance") == 0)
@@ -2098,8 +2099,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             lightness,
             saturation;
 
-          ConvertRGBToHSL(RoundToQuantum(pixel.red),RoundToQuantum(pixel.green),
-            RoundToQuantum(pixel.blue),&hue,&saturation,&lightness);
+          ConvertRGBToHSL(ClampToQuantum(pixel.red),ClampToQuantum(pixel.green),
+            ClampToQuantum(pixel.blue),&hue,&saturation,&lightness);
           return(saturation);
         }
       if (LocaleNCompare(symbol,"skewness",8) == 0)
@@ -3213,28 +3214,28 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
         {
           (void) FxEvaluateChannelExpression(fx_info[id],RedChannel,x,y,
             &alpha,exception);
-          q->red=RoundToQuantum((MagickRealType) QuantumRange*alpha);
+          q->red=ClampToQuantum((MagickRealType) QuantumRange*alpha);
         }
       if ((channel & GreenChannel) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],GreenChannel,x,y,
             &alpha,exception);
-          q->green=RoundToQuantum((MagickRealType) QuantumRange*alpha);
+          q->green=ClampToQuantum((MagickRealType) QuantumRange*alpha);
         }
       if ((channel & BlueChannel) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],BlueChannel,x,y,
             &alpha,exception);
-          q->blue=RoundToQuantum((MagickRealType) QuantumRange*alpha);
+          q->blue=ClampToQuantum((MagickRealType) QuantumRange*alpha);
         }
       if ((channel & OpacityChannel) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],OpacityChannel,x,y,
             &alpha,exception);
           if (image->matte == MagickFalse)
-            q->opacity=RoundToQuantum((MagickRealType) QuantumRange*alpha);
+            q->opacity=ClampToQuantum((MagickRealType) QuantumRange*alpha);
           else
-            q->opacity=RoundToQuantum((MagickRealType) (QuantumRange-
+            q->opacity=ClampToQuantum((MagickRealType) (QuantumRange-
               QuantumRange*alpha));
         }
       if (((channel & IndexChannel) != 0) &&
@@ -3242,7 +3243,7 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
         {
           (void) FxEvaluateChannelExpression(fx_info[id],IndexChannel,x,y,
             &alpha,exception);
-          fx_indexes[x]=(IndexPacket) RoundToQuantum((MagickRealType)
+          fx_indexes[x]=(IndexPacket) ClampToQuantum((MagickRealType)
             QuantumRange*alpha);
         }
       q++;
@@ -3633,10 +3634,10 @@ MagickExport Image *MorphImages(const Image *image,
           }
         for (x=0; x < (long) morph_images->columns; x++)
         {
-          q->red=RoundToQuantum(alpha*q->red+beta*GetRedSample(p));
-          q->green=RoundToQuantum(alpha*q->green+beta*GetGreenSample(p));
-          q->blue=RoundToQuantum(alpha*q->blue+beta*GetBlueSample(p));
-          q->opacity=RoundToQuantum(alpha*q->opacity+beta*GetOpacitySample(p));
+          q->red=ClampToQuantum(alpha*q->red+beta*GetRedPixelComponent(p));
+          q->green=ClampToQuantum(alpha*q->green+beta*GetGreenPixelComponent(p));
+          q->blue=ClampToQuantum(alpha*q->blue+beta*GetBluePixelComponent(p));
+          q->opacity=ClampToQuantum(alpha*q->opacity+beta*GetOpacityPixelComponent(p));
           p++;
           q++;
         }
@@ -3722,7 +3723,7 @@ static inline Quantum PlasmaPixel(RandomInfo *random_info,
   Quantum
     plasma;
 
-  plasma=RoundToQuantum(pixel+noise*GetPseudoRandomValue(random_info)-
+  plasma=ClampToQuantum(pixel+noise*GetPseudoRandomValue(random_info)-
     noise/2.0);
   return(plasma);
 }
@@ -4268,7 +4269,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*GetRedSample(p));
+          q->red=ClampToQuantum(k[0]*GetRedPixelComponent(p));
           p++;
           q++;
         }
@@ -4278,8 +4279,8 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*GetGreenSample(p));
-          q->green=RoundToQuantum(k[2]*p->red+k[3]*GetGreenSample(p));
+          q->red=ClampToQuantum(k[0]*p->red+k[1]*GetGreenPixelComponent(p));
+          q->green=ClampToQuantum(k[2]*p->red+k[3]*GetGreenPixelComponent(p));
           p++;
           q++;
         }
@@ -4289,9 +4290,9 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*GetBlueSample(p));
-          q->green=RoundToQuantum(k[3]*p->red+k[4]*p->green+k[5]*GetBlueSample(p));
-          q->blue=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*GetBlueSample(p));
+          q->red=ClampToQuantum(k[0]*p->red+k[1]*p->green+k[2]*GetBluePixelComponent(p));
+          q->green=ClampToQuantum(k[3]*p->red+k[4]*p->green+k[5]*GetBluePixelComponent(p));
+          q->blue=ClampToQuantum(k[6]*p->red+k[7]*p->green+k[8]*GetBluePixelComponent(p));
           p++;
           q++;
         }
@@ -4301,11 +4302,11 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
+          q->red=ClampToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
             k[12]*QuantumRange);
-          q->green=RoundToQuantum(k[4]*p->red+k[5]*p->green+k[6]*p->blue+
+          q->green=ClampToQuantum(k[4]*p->red+k[5]*p->green+k[6]*p->blue+
             k[13]*QuantumRange);
-          q->blue=RoundToQuantum(k[8]*p->red+k[9]*p->green+k[10]*p->blue+
+          q->blue=ClampToQuantum(k[8]*p->red+k[9]*p->green+k[10]*p->blue+
             k[14]*QuantumRange);
           p++;
           q++;
@@ -4316,16 +4317,16 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
-            k[3]*(QuantumRange-GetOpacitySample(p))+k[20]*QuantumRange);
-          q->green=RoundToQuantum(k[5]*p->red+k[6]*p->green+k[7]*p->blue+
-            k[8]*(QuantumRange-GetOpacitySample(p))+k[21]*QuantumRange);
-          q->blue=RoundToQuantum(k[10]*p->red+k[11]*p->green+k[12]*p->blue+
-            k[13]*(QuantumRange-GetOpacitySample(p))+k[22]*QuantumRange);
+          q->red=ClampToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
+            k[3]*(QuantumRange-GetOpacityPixelComponent(p))+k[20]*QuantumRange);
+          q->green=ClampToQuantum(k[5]*p->red+k[6]*p->green+k[7]*p->blue+
+            k[8]*(QuantumRange-GetOpacityPixelComponent(p))+k[21]*QuantumRange);
+          q->blue=ClampToQuantum(k[10]*p->red+k[11]*p->green+k[12]*p->blue+
+            k[13]*(QuantumRange-GetOpacityPixelComponent(p))+k[22]*QuantumRange);
           if (image->matte != MagickFalse)
-            q->opacity=RoundToQuantum((MagickRealType) QuantumRange-(k[15]*
+            q->opacity=ClampToQuantum((MagickRealType) QuantumRange-(k[15]*
               p->red+k[16]*p->green+k[17]*p->blue+k[18]*(QuantumRange-
-              GetOpacitySample(p))+k[23]*QuantumRange));
+              GetOpacityPixelComponent(p))+k[23]*QuantumRange));
           p++;
           q++;
         }
@@ -4335,23 +4336,23 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
-            k[3]*indexes[x]+k[4]*((Quantum) QuantumRange-GetOpacitySample(p))+
+          q->red=ClampToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
+            k[3]*indexes[x]+k[4]*((Quantum) QuantumRange-GetOpacityPixelComponent(p))+
             k[30]*QuantumRange);
-          q->green=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*p->blue+
-            k[9]*indexes[x]+k[10]*((Quantum) QuantumRange-GetOpacitySample(p))+
+          q->green=ClampToQuantum(k[6]*p->red+k[7]*p->green+k[8]*p->blue+
+            k[9]*indexes[x]+k[10]*((Quantum) QuantumRange-GetOpacityPixelComponent(p))+
             k[31]*QuantumRange);
-          q->blue=RoundToQuantum(k[12]*p->red+k[13]*p->green+k[14]*p->blue+
-            k[15]*indexes[x]+k[16]*((Quantum) QuantumRange-GetOpacitySample(p))+
+          q->blue=ClampToQuantum(k[12]*p->red+k[13]*p->green+k[14]*p->blue+
+            k[15]*indexes[x]+k[16]*((Quantum) QuantumRange-GetOpacityPixelComponent(p))+
             k[32]*QuantumRange);
           if (image->matte != MagickFalse)
-            q->opacity=RoundToQuantum((MagickRealType) QuantumRange-(k[24]*
+            q->opacity=ClampToQuantum((MagickRealType) QuantumRange-(k[24]*
               p->red+k[25]*p->green+k[26]*p->blue+k[27]*indexes[x]+
-              k[28]*(QuantumRange-GetOpacitySample(p))+k[34]*QuantumRange));
+              k[28]*(QuantumRange-GetOpacityPixelComponent(p))+k[34]*QuantumRange));
           if (image->colorspace == CMYKColorspace)
-            recolor_indexes[x]=RoundToQuantum(k[18]*p->red+k[19]*p->green+k[20]*
+            recolor_indexes[x]=ClampToQuantum(k[18]*p->red+k[19]*p->green+k[20]*
               p->blue+k[21]*indexes[x]+k[22]*((Quantum) QuantumRange-
-              GetOpacitySample(p))+k[33]*QuantumRange);
+              GetOpacityPixelComponent(p))+k[33]*QuantumRange);
           p++;
           q++;
         }
@@ -4487,17 +4488,17 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
       intensity=(MagickRealType) PixelIntensityToQuantum(p);
       tone=intensity > threshold ? (MagickRealType) QuantumRange : intensity+
         (MagickRealType) QuantumRange-threshold;
-      q->red=RoundToQuantum(tone);
+      q->red=ClampToQuantum(tone);
       tone=intensity > (7.0*threshold/6.0) ? (MagickRealType) QuantumRange :
         intensity+(MagickRealType) QuantumRange-7.0*threshold/6.0;
-      q->green=RoundToQuantum(tone);
+      q->green=ClampToQuantum(tone);
       tone=intensity < (threshold/6.0) ? 0 : intensity-threshold/6.0;
-      q->blue=RoundToQuantum(tone);
+      q->blue=ClampToQuantum(tone);
       tone=threshold/7.0;
       if ((MagickRealType) q->green < tone)
-        q->green=RoundToQuantum(tone);
+        q->green=ClampToQuantum(tone);
       if ((MagickRealType) q->blue < tone)
-        q->blue=RoundToQuantum(tone);
+        q->blue=ClampToQuantum(tone);
       p++;
       q++;
     }
@@ -4640,7 +4641,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
       if (border_image->matte == MagickFalse)
         q->opacity=border_image->background_color.opacity;
       else
-        q->opacity=RoundToQuantum((MagickRealType) (QuantumRange-(QuantumRange-
+        q->opacity=ClampToQuantum((MagickRealType) (QuantumRange-(QuantumRange-
           q->opacity)*opacity/100.0));
       q++;
     }
@@ -5221,7 +5222,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       break;
     for (x=0; x < (long) stereo_image->columns; x++)
     {
-      r->red=GetRedSample(p);
+      r->red=GetRedPixelComponent(p);
       r->green=q->green;
       r->blue=q->blue;
       r->opacity=(Quantum) ((p->opacity+q->opacity)/2);
@@ -5579,16 +5580,16 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       weight=QuantumScale*p->red-0.5;
       pixel.red=(MagickRealType) p->red+color_vector.red*(1.0-(4.0*
         (weight*weight)));
-      q->red=RoundToQuantum(pixel.red);
+      SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
       weight=QuantumScale*p->green-0.5;
       pixel.green=(MagickRealType) p->green+color_vector.green*(1.0-(4.0*
         (weight*weight)));
-      q->green=RoundToQuantum(pixel.green);
+      SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
       weight=QuantumScale*p->blue-0.5;
       pixel.blue=(MagickRealType) p->blue+color_vector.blue*(1.0-(4.0*
         (weight*weight)));
-      q->blue=RoundToQuantum(pixel.blue);
-      SetOpacitySample(q,GetOpacitySample(p));
+      SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+      SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       p++;
       q++;
     }

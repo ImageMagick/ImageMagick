@@ -497,7 +497,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  SetOpacitySample(q,OpaqueOpacity);
+                  SetOpacityPixelComponent(q,OpaqueOpacity);
                   if (XGetPixel(matte_image,x,y) == 0)
                     q->opacity=TransparentOpacity;
                   q++;

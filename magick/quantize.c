@@ -442,7 +442,7 @@ static inline void AssociateAlphaPixel(const CubeInfo *cube_info,
   alpha_pixel->opacity=(MagickRealType) pixel->opacity;
 }
 
-static inline Quantum ClipToQuantum(const MagickRealType value)
+static inline Quantum ClampPixel(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -458,11 +458,11 @@ static inline unsigned long ColorToNodeId(const CubeInfo *cube_info,
     id;
 
   id=(unsigned long) (
-    ((ScaleQuantumToChar(ClipToQuantum(pixel->red)) >> index) & 0x1) |
-    ((ScaleQuantumToChar(ClipToQuantum(pixel->green)) >> index) & 0x1) << 1 |
-    ((ScaleQuantumToChar(ClipToQuantum(pixel->blue)) >> index) & 0x1) << 2);
+    ((ScaleQuantumToChar(ClampPixel(pixel->red)) >> index) & 0x1) |
+    ((ScaleQuantumToChar(ClampPixel(pixel->green)) >> index) & 0x1) << 1 |
+    ((ScaleQuantumToChar(ClampPixel(pixel->blue)) >> index) & 0x1) << 2);
   if (cube_info->associate_alpha != MagickFalse)
-    id|=((ScaleQuantumToChar(ClipToQuantum(pixel->opacity)) >> index) & 0x1)
+    id|=((ScaleQuantumToChar(ClampPixel(pixel->opacity)) >> index) & 0x1)
       << 3;
   return(id);
 }
@@ -1054,7 +1054,7 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
       beta=1.0;
       if (cube_info->associate_alpha == MagickFalse)
         {
-          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
+          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
           beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
         }
       pixel=alpha*p->red-beta*q->red;
@@ -1185,13 +1185,13 @@ static unsigned long DefineImageColormap(Image *image,CubeInfo *cube_info,
       alpha=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
-          q->red=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
+          q->red=ClampToQuantum((MagickRealType) (alpha*QuantumRange*
             node_info->total_color.red));
-          q->green=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
+          q->green=ClampToQuantum((MagickRealType) (alpha*QuantumRange*
             node_info->total_color.green));
-          q->blue=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
+          q->blue=ClampToQuantum((MagickRealType) (alpha*QuantumRange*
             node_info->total_color.blue));
-          SetOpacitySample(q,OpaqueOpacity);
+          SetOpacityPixelComponent(q,OpaqueOpacity);
         }
       else
         {
@@ -1200,14 +1200,14 @@ static unsigned long DefineImageColormap(Image *image,CubeInfo *cube_info,
 
           opacity=(MagickRealType) (alpha*QuantumRange*
             node_info->total_color.opacity);
-          q->opacity=RoundToQuantum(opacity);
+          q->opacity=ClampToQuantum(opacity);
           if (q->opacity == OpaqueOpacity)
             {
-              q->red=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
+              q->red=ClampToQuantum((MagickRealType) (alpha*QuantumRange*
                 node_info->total_color.red));
-              q->green=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
+              q->green=ClampToQuantum((MagickRealType) (alpha*QuantumRange*
                 node_info->total_color.green));
-              q->blue=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
+              q->blue=ClampToQuantum((MagickRealType) (alpha*QuantumRange*
                 node_info->total_color.blue));
             }
           else
@@ -1218,11 +1218,11 @@ static unsigned long DefineImageColormap(Image *image,CubeInfo *cube_info,
               gamma=(MagickRealType) (QuantumScale*(QuantumRange-
                 (MagickRealType) q->opacity));
               gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-              q->red=RoundToQuantum((MagickRealType) (alpha*gamma*QuantumRange*
+              q->red=ClampToQuantum((MagickRealType) (alpha*gamma*QuantumRange*
                 node_info->total_color.red));
-              q->green=RoundToQuantum((MagickRealType) (alpha*gamma*
+              q->green=ClampToQuantum((MagickRealType) (alpha*gamma*
                 QuantumRange*node_info->total_color.green));
-              q->blue=RoundToQuantum((MagickRealType) (alpha*gamma*QuantumRange*
+              q->blue=ClampToQuantum((MagickRealType) (alpha*gamma*QuantumRange*
                 node_info->total_color.blue));
               if (node_info->number_unique > cube_info->transparent_pixels)
                 {
@@ -1438,16 +1438,16 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
                 pixel.opacity+=3*previous[u-v].opacity/16;
             }
         }
-      pixel.red=(MagickRealType) ClipToQuantum(pixel.red);
-      pixel.green=(MagickRealType) ClipToQuantum(pixel.green);
-      pixel.blue=(MagickRealType) ClipToQuantum(pixel.blue);
+      pixel.red=(MagickRealType) ClampPixel(pixel.red);
+      pixel.green=(MagickRealType) ClampPixel(pixel.green);
+      pixel.blue=(MagickRealType) ClampPixel(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
-        pixel.opacity=(MagickRealType) ClipToQuantum(pixel.opacity);
-      i=(long) ((ScaleQuantumToChar(ClipToQuantum(pixel.red)) >> CacheShift) |
-        (ScaleQuantumToChar(ClipToQuantum(pixel.green)) >> CacheShift) << 6 |
-        (ScaleQuantumToChar(ClipToQuantum(pixel.blue)) >> CacheShift) << 12);
+        pixel.opacity=(MagickRealType) ClampPixel(pixel.opacity);
+      i=(long) ((ScaleQuantumToChar(ClampPixel(pixel.red)) >> CacheShift) |
+        (ScaleQuantumToChar(ClampPixel(pixel.green)) >> CacheShift) << 6 |
+        (ScaleQuantumToChar(ClampPixel(pixel.blue)) >> CacheShift) << 12);
       if (cube_info->associate_alpha != MagickFalse)
-        i|=((ScaleQuantumToChar(ClipToQuantum(pixel.opacity)) >> CacheShift)
+        i|=((ScaleQuantumToChar(ClampPixel(pixel.opacity)) >> CacheShift)
           << 18);
       if (p->cache[i] < 0)
         {
@@ -1656,16 +1656,16 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         if (cube_info->associate_alpha != MagickFalse)
           pixel.opacity+=p->weights[i]*p->error[i].opacity;
       }
-      pixel.red=(MagickRealType) ClipToQuantum(pixel.red);
-      pixel.green=(MagickRealType) ClipToQuantum(pixel.green);
-      pixel.blue=(MagickRealType) ClipToQuantum(pixel.blue);
+      pixel.red=(MagickRealType) ClampPixel(pixel.red);
+      pixel.green=(MagickRealType) ClampPixel(pixel.green);
+      pixel.blue=(MagickRealType) ClampPixel(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
-        pixel.opacity=(MagickRealType) ClipToQuantum(pixel.opacity);
-      i=(long) ((ScaleQuantumToChar(ClipToQuantum(pixel.red)) >> CacheShift) |
-        (ScaleQuantumToChar(ClipToQuantum(pixel.green)) >> CacheShift) << 6 |
-        (ScaleQuantumToChar(ClipToQuantum(pixel.blue)) >> CacheShift) << 12);
+        pixel.opacity=(MagickRealType) ClampPixel(pixel.opacity);
+      i=(long) ((ScaleQuantumToChar(ClampPixel(pixel.red)) >> CacheShift) |
+        (ScaleQuantumToChar(ClampPixel(pixel.green)) >> CacheShift) << 6 |
+        (ScaleQuantumToChar(ClampPixel(pixel.blue)) >> CacheShift) << 12);
       if (cube_info->associate_alpha != MagickFalse)
-        i|=((ScaleQuantumToChar(ClipToQuantum(pixel.opacity)) >> CacheShift)
+        i|=((ScaleQuantumToChar(ClampPixel(pixel.opacity)) >> CacheShift)
           << 18);
       if (p->cache[i] < 0)
         {
@@ -2062,7 +2062,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
       index=1UL*indexes[x];
       if (image->matte != MagickFalse)
         {
-          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
+          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
           beta=(MagickRealType) (QuantumScale*(QuantumRange-
             image->colormap[index].opacity));
         }

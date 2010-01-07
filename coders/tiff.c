@@ -1181,11 +1181,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 }
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=RoundToQuantum(((double) QuantumRange*
+              image->colormap[i].red=ClampToQuantum(((double) QuantumRange*
                 red_colormap[i])/range);
-              image->colormap[i].green=RoundToQuantum(((double) QuantumRange*
+              image->colormap[i].green=ClampToQuantum(((double) QuantumRange*
                 green_colormap[i])/range);
-              image->colormap[i].blue=RoundToQuantum(((double) QuantumRange*
+              image->colormap[i].blue=ClampToQuantum(((double) QuantumRange*
                 blue_colormap[i])/range);
             }
           }

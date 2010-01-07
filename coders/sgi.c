@@ -560,7 +560,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   ((*(p+2) << 8) | (*(p+3))));
                 q->blue=ScaleShortToQuantum((unsigned short)
                   ((*(p+4) << 8) | (*(p+5))));
-                SetOpacitySample(q,OpaqueOpacity);
+                SetOpacityPixelComponent(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
                   q->opacity=(Quantum) (QuantumRange-ScaleShortToQuantum(
                     (unsigned short) ((*(p+6) << 8) | (*(p+7)))));
@@ -589,7 +589,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->red=ScaleCharToQuantum(*p);
               q->green=ScaleCharToQuantum(*(p+1));
               q->blue=ScaleCharToQuantum(*(p+2));
-              SetOpacitySample(q,OpaqueOpacity);
+              SetOpacityPixelComponent(q,OpaqueOpacity);
               if (image->matte != MagickFalse)
                 q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*(p+3)));
               p+=4;
@@ -983,10 +983,10 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
 
           q=(unsigned char *) iris_pixels;
           q+=((iris_info.rows-1)-y)*(4*iris_info.columns)+4*x;
-          *q++=ScaleQuantumToChar(GetRedSample(p));
-          *q++=ScaleQuantumToChar(GetGreenSample(p));
-          *q++=ScaleQuantumToChar(GetBlueSample(p));
-          *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
+          *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+          *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+          *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+          *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
           p++;
         }
       else
@@ -997,10 +997,10 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
 
           q=(unsigned short *) iris_pixels;
           q+=((iris_info.rows-1)-y)*(4*iris_info.columns)+4*x;
-          *q++=ScaleQuantumToShort(GetRedSample(p));
-          *q++=ScaleQuantumToShort(GetGreenSample(p));
-          *q++=ScaleQuantumToShort(GetBlueSample(p));
-          *q++=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacitySample(p)));
+          *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
+          *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
+          *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
+          *q++=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
           p++;
         }
       if (image->previous == (Image *) NULL)
