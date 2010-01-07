@@ -676,7 +676,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 %
 */
 
-static inline Quantum ClampPixel(const Quantum quantum)
+static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 {
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   if (quantum <= 0)
@@ -731,10 +731,10 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
       q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        q->red=ClampPixel(q->red);
-        q->green=ClampPixel(q->green);
-        q->blue=ClampPixel(q->blue);
-        q->opacity=ClampPixel(q->opacity);
+        q->red=ClampToUnsignedQuantum(q->red);
+        q->green=ClampToUnsignedQuantum(q->green);
+        q->blue=ClampToUnsignedQuantum(q->blue);
+        q->opacity=ClampToUnsignedQuantum(q->opacity);
         q++;
       }
       return(SyncImage(image));
@@ -772,16 +772,16 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=ClampPixel(q->red);
+        q->red=ClampToUnsignedQuantum(q->red);
       if ((channel & GreenChannel) != 0)
-        q->green=ClampPixel(q->green);
+        q->green=ClampToUnsignedQuantum(q->green);
       if ((channel & BlueChannel) != 0)
-        q->blue=ClampPixel(q->blue);
+        q->blue=ClampToUnsignedQuantum(q->blue);
       if ((channel & OpacityChannel) != 0)
-        q->opacity=ClampPixel(q->opacity);
+        q->opacity=ClampToUnsignedQuantum(q->opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        indexes[x]=(IndexPacket) ClampPixel(indexes[x]);
+        indexes[x]=(IndexPacket) ClampToUnsignedQuantum(indexes[x]);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
