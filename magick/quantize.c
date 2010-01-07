@@ -442,7 +442,7 @@ static inline void AssociateAlphaPixel(const CubeInfo *cube_info,
   alpha_pixel->opacity=(MagickRealType) pixel->opacity;
 }
 
-static inline Quantum ClampPixel(const MagickRealType value)
+static inline Quantum ClampToUnsignedQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -458,11 +458,11 @@ static inline unsigned long ColorToNodeId(const CubeInfo *cube_info,
     id;
 
   id=(unsigned long) (
-    ((ScaleQuantumToChar(ClampPixel(pixel->red)) >> index) & 0x1) |
-    ((ScaleQuantumToChar(ClampPixel(pixel->green)) >> index) & 0x1) << 1 |
-    ((ScaleQuantumToChar(ClampPixel(pixel->blue)) >> index) & 0x1) << 2);
+    ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->red)) >> index) & 0x1) |
+    ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->green)) >> index) & 0x1) << 1 |
+    ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->blue)) >> index) & 0x1) << 2);
   if (cube_info->associate_alpha != MagickFalse)
-    id|=((ScaleQuantumToChar(ClampPixel(pixel->opacity)) >> index) & 0x1)
+    id|=((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->opacity)) >> index) & 0x1)
       << 3;
   return(id);
 }
@@ -1438,16 +1438,16 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
                 pixel.opacity+=3*previous[u-v].opacity/16;
             }
         }
-      pixel.red=(MagickRealType) ClampPixel(pixel.red);
-      pixel.green=(MagickRealType) ClampPixel(pixel.green);
-      pixel.blue=(MagickRealType) ClampPixel(pixel.blue);
+      pixel.red=(MagickRealType) ClampToUnsignedQuantum(pixel.red);
+      pixel.green=(MagickRealType) ClampToUnsignedQuantum(pixel.green);
+      pixel.blue=(MagickRealType) ClampToUnsignedQuantum(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
-        pixel.opacity=(MagickRealType) ClampPixel(pixel.opacity);
-      i=(long) ((ScaleQuantumToChar(ClampPixel(pixel.red)) >> CacheShift) |
-        (ScaleQuantumToChar(ClampPixel(pixel.green)) >> CacheShift) << 6 |
-        (ScaleQuantumToChar(ClampPixel(pixel.blue)) >> CacheShift) << 12);
+        pixel.opacity=(MagickRealType) ClampToUnsignedQuantum(pixel.opacity);
+      i=(long) ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.red)) >> CacheShift) |
+        (ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.green)) >> CacheShift) << 6 |
+        (ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.blue)) >> CacheShift) << 12);
       if (cube_info->associate_alpha != MagickFalse)
-        i|=((ScaleQuantumToChar(ClampPixel(pixel.opacity)) >> CacheShift)
+        i|=((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.opacity)) >> CacheShift)
           << 18);
       if (p->cache[i] < 0)
         {
@@ -1656,16 +1656,16 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         if (cube_info->associate_alpha != MagickFalse)
           pixel.opacity+=p->weights[i]*p->error[i].opacity;
       }
-      pixel.red=(MagickRealType) ClampPixel(pixel.red);
-      pixel.green=(MagickRealType) ClampPixel(pixel.green);
-      pixel.blue=(MagickRealType) ClampPixel(pixel.blue);
+      pixel.red=(MagickRealType) ClampToUnsignedQuantum(pixel.red);
+      pixel.green=(MagickRealType) ClampToUnsignedQuantum(pixel.green);
+      pixel.blue=(MagickRealType) ClampToUnsignedQuantum(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
-        pixel.opacity=(MagickRealType) ClampPixel(pixel.opacity);
-      i=(long) ((ScaleQuantumToChar(ClampPixel(pixel.red)) >> CacheShift) |
-        (ScaleQuantumToChar(ClampPixel(pixel.green)) >> CacheShift) << 6 |
-        (ScaleQuantumToChar(ClampPixel(pixel.blue)) >> CacheShift) << 12);
+        pixel.opacity=(MagickRealType) ClampToUnsignedQuantum(pixel.opacity);
+      i=(long) ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.red)) >> CacheShift) |
+        (ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.green)) >> CacheShift) << 6 |
+        (ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.blue)) >> CacheShift) << 12);
       if (cube_info->associate_alpha != MagickFalse)
-        i|=((ScaleQuantumToChar(ClampPixel(pixel.opacity)) >> CacheShift)
+        i|=((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel.opacity)) >> CacheShift)
           << 18);
       if (p->cache[i] < 0)
         {
