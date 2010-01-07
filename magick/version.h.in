@@ -31,6 +31,7 @@ extern "C" {
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber  @MAGICK_LIB_VERSION_NUMBER@
 #define MagickLibSubversion  "@PACKAGE_LIB_SUBVERSION@"
+#define MagickLibInterface  @MAGICK_LIBRARY_CURRENT@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
