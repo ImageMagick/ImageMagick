@@ -126,7 +126,7 @@ typedef struct _CLInfo
     pixels,
     convolve_pixels;
 
-  cl_uint
+  cl_ulong
     width,
     height;
 
@@ -162,7 +162,7 @@ static char
     "}\n"
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
-    "  __constant double *filter,const uint width,const uint height,\n"
+    "  __constant double *filter,const uulong width,const ulong height,\n"
     "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
     "  const ulong columns = get_global_size(0);\n"
@@ -314,13 +314,13 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     &cl_info->filter);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->width=(cl_uint) width;
-  status=clSetKernelArg(cl_info->kernel,2,sizeof(cl_uint),(void *)
+  cl_info->width=(cl_ulong) width;
+  status=clSetKernelArg(cl_info->kernel,2,sizeof(cl_ulong),(void *)
     &cl_info->width);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->height=(cl_uint) height;
-  status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_uint),(void *)
+  cl_info->height=(cl_ulong) height;
+  status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_ulong),(void *)
     &cl_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
