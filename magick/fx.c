@@ -450,6 +450,10 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
 {
 #define BlueShiftImageTag  "BlueShift/Image"
 
+  CacheView
+    *image_view,
+    *shift_view;
+
   Image
     *shift_image;
 
@@ -459,10 +463,6 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view,
-    *shift_view;
 
   /*
     Allocate blue shift image.
@@ -525,19 +525,19 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
       }
     for (x=0; x < (long) image->columns; x++)
     {
-      quantum=p->red;
+      quantum=GetRedSample(p);
       if (p->green < quantum)
-        quantum=p->green;
+        quantum=GetGreenSample(p);
       if (p->blue < quantum)
-        quantum=p->blue;
+        quantum=GetBlueSample(p);
       pixel.red=0.5*(p->red+factor*quantum);
       pixel.green=0.5*(p->green+factor*quantum);
       pixel.blue=0.5*(p->blue+factor*quantum);
-      quantum=p->red;
+      quantum=GetRedSample(p);
       if (p->green > quantum)
-        quantum=p->green;
+        quantum=GetGreenSample(p);
       if (p->blue > quantum)
-        quantum=p->blue;
+        quantum=GetBlueSample(p);
       pixel.red=0.5*(pixel.red+factor*quantum);
       pixel.green=0.5*(pixel.green+factor*quantum);
       pixel.blue=0.5*(pixel.blue+factor*quantum);
@@ -672,6 +672,10 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 {
 #define ColorizeImageTag  "Colorize/Image"
 
+  CacheView
+    *colorize_view,
+    *image_view;
+
   GeometryInfo
     geometry_info;
 
@@ -690,10 +694,6 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 
   MagickStatusType
     flags;
-
-  CacheView
-    *colorize_view,
-    *image_view;
 
   /*
     Allocate colorized image.
@@ -1317,15 +1317,15 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 {
 #define FunctionImageTag  "Function/Image "
 
+  CacheView
+    *image_view;
+
   long
     progress,
     y;
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3633,10 +3633,10 @@ MagickExport Image *MorphImages(const Image *image,
           }
         for (x=0; x < (long) morph_images->columns; x++)
         {
-          q->red=RoundToQuantum(alpha*q->red+beta*p->red);
-          q->green=RoundToQuantum(alpha*q->green+beta*p->green);
-          q->blue=RoundToQuantum(alpha*q->blue+beta*p->blue);
-          q->opacity=RoundToQuantum(alpha*q->opacity+beta*p->opacity);
+          q->red=RoundToQuantum(alpha*q->red+beta*GetRedSample(p));
+          q->green=RoundToQuantum(alpha*q->green+beta*GetGreenSample(p));
+          q->blue=RoundToQuantum(alpha*q->blue+beta*GetBlueSample(p));
+          q->opacity=RoundToQuantum(alpha*q->opacity+beta*GetOpacitySample(p));
           p++;
           q++;
         }
@@ -4268,7 +4268,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red);
+          q->red=RoundToQuantum(k[0]*GetRedSample(p));
           p++;
           q++;
         }
@@ -4278,8 +4278,8 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green);
-          q->green=RoundToQuantum(k[2]*p->red+k[3]*p->green);
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*GetGreenSample(p));
+          q->green=RoundToQuantum(k[2]*p->red+k[3]*GetGreenSample(p));
           p++;
           q++;
         }
@@ -4289,9 +4289,9 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue);
-          q->green=RoundToQuantum(k[3]*p->red+k[4]*p->green+k[5]*p->blue);
-          q->blue=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*p->blue);
+          q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*GetBlueSample(p));
+          q->green=RoundToQuantum(k[3]*p->red+k[4]*p->green+k[5]*GetBlueSample(p));
+          q->blue=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*GetBlueSample(p));
           p++;
           q++;
         }
@@ -4317,15 +4317,15 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
         for (x=0; x < (long) image->columns; x++)
         {
           q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
-            k[3]*(QuantumRange-p->opacity)+k[20]*QuantumRange);
+            k[3]*(QuantumRange-GetOpacitySample(p))+k[20]*QuantumRange);
           q->green=RoundToQuantum(k[5]*p->red+k[6]*p->green+k[7]*p->blue+
-            k[8]*(QuantumRange-p->opacity)+k[21]*QuantumRange);
+            k[8]*(QuantumRange-GetOpacitySample(p))+k[21]*QuantumRange);
           q->blue=RoundToQuantum(k[10]*p->red+k[11]*p->green+k[12]*p->blue+
-            k[13]*(QuantumRange-p->opacity)+k[22]*QuantumRange);
+            k[13]*(QuantumRange-GetOpacitySample(p))+k[22]*QuantumRange);
           if (image->matte != MagickFalse)
             q->opacity=RoundToQuantum((MagickRealType) QuantumRange-(k[15]*
               p->red+k[16]*p->green+k[17]*p->blue+k[18]*(QuantumRange-
-              p->opacity)+k[23]*QuantumRange));
+              GetOpacitySample(p))+k[23]*QuantumRange));
           p++;
           q++;
         }
@@ -4336,22 +4336,22 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
         for (x=0; x < (long) image->columns; x++)
         {
           q->red=RoundToQuantum(k[0]*p->red+k[1]*p->green+k[2]*p->blue+
-            k[3]*indexes[x]+k[4]*((Quantum) QuantumRange-p->opacity)+
+            k[3]*indexes[x]+k[4]*((Quantum) QuantumRange-GetOpacitySample(p))+
             k[30]*QuantumRange);
           q->green=RoundToQuantum(k[6]*p->red+k[7]*p->green+k[8]*p->blue+
-            k[9]*indexes[x]+k[10]*((Quantum) QuantumRange-p->opacity)+
+            k[9]*indexes[x]+k[10]*((Quantum) QuantumRange-GetOpacitySample(p))+
             k[31]*QuantumRange);
           q->blue=RoundToQuantum(k[12]*p->red+k[13]*p->green+k[14]*p->blue+
-            k[15]*indexes[x]+k[16]*((Quantum) QuantumRange-p->opacity)+
+            k[15]*indexes[x]+k[16]*((Quantum) QuantumRange-GetOpacitySample(p))+
             k[32]*QuantumRange);
           if (image->matte != MagickFalse)
             q->opacity=RoundToQuantum((MagickRealType) QuantumRange-(k[24]*
               p->red+k[25]*p->green+k[26]*p->blue+k[27]*indexes[x]+
-              k[28]*(QuantumRange-p->opacity)+k[34]*QuantumRange));
+              k[28]*(QuantumRange-GetOpacitySample(p))+k[34]*QuantumRange));
           if (image->colorspace == CMYKColorspace)
             recolor_indexes[x]=RoundToQuantum(k[18]*p->red+k[19]*p->green+k[20]*
               p->blue+k[21]*indexes[x]+k[22]*((Quantum) QuantumRange-
-              p->opacity)+k[33]*QuantumRange);
+              GetOpacitySample(p))+k[33]*QuantumRange);
           p++;
           q++;
         }
@@ -4415,6 +4415,10 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 {
 #define SepiaToneImageTag  "SepiaTone/Image"
 
+  CacheView
+    *image_view,
+    *sepia_view;
+
   Image
     *sepia_image;
 
@@ -4424,10 +4428,6 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view,
-    *sepia_view;
 
   /*
     Initialize sepia-toned image attributes.
@@ -4566,6 +4566,9 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 {
 #define ShadowImageTag  "Shadow/Image"
 
+  CacheView
+    *image_view;
+
   Image
     *border_image,
     *clone_image,
@@ -4580,9 +4583,6 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 
   RectangleInfo
     border_info;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4862,6 +4862,9 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
 {
 #define SolarizeImageTag  "Solarize/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -4871,9 +4874,6 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5221,7 +5221,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       break;
     for (x=0; x < (long) stereo_image->columns; x++)
     {
-      r->red=p->red;
+      r->red=GetRedSample(p);
       r->green=q->green;
       r->blue=q->blue;
       r->opacity=(Quantum) ((p->opacity+q->opacity)/2);
@@ -5470,6 +5470,10 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
 {
 #define TintImageTag  "Tint/Image"
 
+  CacheView
+    *image_view,
+    *tint_view;
+
   GeometryInfo
     geometry_info;
 
@@ -5489,10 +5493,6 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   MagickPixelPacket
     color_vector,
     pixel;
-
-  CacheView
-    *image_view,
-    *tint_view;
 
   /*
     Allocate tint image.
@@ -5588,7 +5588,7 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       pixel.blue=(MagickRealType) p->blue+color_vector.blue*(1.0-(4.0*
         (weight*weight)));
       q->blue=RoundToQuantum(pixel.blue);
-      q->opacity=p->opacity;
+      SetOpacitySample(q,GetOpacitySample(p));
       p++;
       q++;
     }

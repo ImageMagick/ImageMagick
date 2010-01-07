@@ -79,6 +79,9 @@
 */
 MagickExport double GetImageTotalInkDensity(Image *image)
 {
+  CacheView
+    *image_view;
+
   double
     total_ink_density;
 
@@ -90,9 +93,6 @@ MagickExport double GetImageTotalInkDensity(Image *image)
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)

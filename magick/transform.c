@@ -97,6 +97,10 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 {
 #define ChopImageTag  "Chop/Image"
 
+  CacheView
+    *chop_view,
+    *image_view;
+
   Image
     *chop_image;
 
@@ -112,10 +116,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
   register long
     i;
-
-  CacheView
-    *chop_view,
-    *image_view;
 
   /*
     Check chop geometry.
@@ -459,6 +459,10 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 {
 #define CropImageTag  "Crop/Image"
 
+  CacheView
+    *crop_view,
+    *image_view;
+
   Image
     *crop_image;
 
@@ -472,10 +476,6 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   RectangleInfo
     bounding_box,
     page;
-
-  CacheView
-    *crop_view,
-    *image_view;
 
   /*
     Check crop geometry.
@@ -678,6 +678,10 @@ MagickExport Image *ExcerptImage(const Image *image,
 {
 #define ExcerptImageTag  "Excerpt/Image"
 
+  CacheView
+    *excerpt_view,
+    *image_view;
+
   Image
     *excerpt_image;
 
@@ -687,10 +691,6 @@ MagickExport Image *ExcerptImage(const Image *image,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *excerpt_view,
-    *image_view;
 
   /*
     Allocate excerpt image.
@@ -864,6 +864,10 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 {
 #define FlipImageTag  "Flip/Image"
 
+  CacheView
+    *flip_view,
+    *image_view;
+
   Image
     *flip_image;
 
@@ -873,10 +877,6 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 
   MagickBooleanType
     status;
-
-  CacheView
-    *flip_view,
-    *image_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -982,6 +982,10 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 {
 #define FlopImageTag  "Flop/Image"
 
+  CacheView
+    *flop_view,
+    *image_view;
+
   Image
     *flop_image;
 
@@ -991,10 +995,6 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 
   MagickBooleanType
     status;
-
-  CacheView
-    *flop_view,
-    *image_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1110,15 +1110,15 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
   const long sx,const long sy,const long dx,const long dy,
   ExceptionInfo *exception)
 {
+  CacheView
+    *source_view,
+    *destination_view;
+
   long
     y;
 
   MagickBooleanType
     status;
-
-  CacheView
-    *source_view,
-    *destination_view;
 
   status=MagickTrue;
   source_view=AcquireCacheView(source);
@@ -1332,6 +1332,10 @@ MagickExport Image *SpliceImage(const Image *image,
 {
 #define SpliceImageTag  "Splice/Image"
 
+  CacheView
+    *image_view,
+    *splice_view;
+
   Image
     *splice_image;
 
@@ -1348,10 +1352,6 @@ MagickExport Image *SpliceImage(const Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view,
-    *splice_view;
 
   /*
     Allocate splice image.
@@ -1470,12 +1470,12 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_indexes=GetCacheViewAuthenticIndexQueue(splice_view);
     for (x=0; x < splice_geometry.x; x++)
     {
-      q->red=p->red;
-      q->green=p->green;
-      q->blue=p->blue;
-      q->opacity=OpaqueOpacity;
+      SetRedSample(q,GetRedSample(p));
+      SetGreenSample(q,GetGreenSample(p));
+      SetBlueSample(q,GetBlueSample(p));
+      SetOpacitySample(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        q->opacity=p->opacity;
+        SetOpacitySample(q,GetOpacitySample(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1485,12 +1485,12 @@ MagickExport Image *SpliceImage(const Image *image,
       q++;
     for ( ; x < (long) splice_image->columns; x++)
     {
-      q->red=p->red;
-      q->green=p->green;
-      q->blue=p->blue;
-      q->opacity=OpaqueOpacity;
+      SetRedSample(q,GetRedSample(p));
+      SetGreenSample(q,GetGreenSample(p));
+      SetBlueSample(q,GetBlueSample(p));
+      SetOpacitySample(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        q->opacity=p->opacity;
+        SetOpacitySample(q,GetOpacitySample(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1547,12 +1547,12 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_indexes=GetCacheViewAuthenticIndexQueue(splice_view);
     for (x=0; x < splice_geometry.x; x++)
     {
-      q->red=p->red;
-      q->green=p->green;
-      q->blue=p->blue;
-      q->opacity=OpaqueOpacity;
+      SetRedSample(q,GetRedSample(p));
+      SetGreenSample(q,GetGreenSample(p));
+      SetBlueSample(q,GetBlueSample(p));
+      SetOpacitySample(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        q->opacity=p->opacity;
+        SetOpacitySample(q,GetOpacitySample(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1562,12 +1562,12 @@ MagickExport Image *SpliceImage(const Image *image,
       q++;
     for ( ; x < (long) splice_image->columns; x++)
     {
-      q->red=p->red;
-      q->green=p->green;
-      q->blue=p->blue;
-      q->opacity=OpaqueOpacity;
+      SetRedSample(q,GetRedSample(p));
+      SetGreenSample(q,GetGreenSample(p));
+      SetBlueSample(q,GetBlueSample(p));
+      SetOpacitySample(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        q->opacity=p->opacity;
+        SetOpacitySample(q,GetOpacitySample(p));
       if (image->colorspace == CMYKColorspace)
         splice_indexes[x]=(*indexes++);
       p++;
@@ -1920,6 +1920,10 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
 {
 #define TransposeImageTag  "Transpose/Image"
 
+  CacheView
+    *image_view,
+    *transpose_view;
+
   Image
     *transpose_image;
 
@@ -1932,10 +1936,6 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
 
   RectangleInfo
     page;
-
-  CacheView
-    *image_view,
-    *transpose_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2048,6 +2048,10 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
 {
 #define TransverseImageTag  "Transverse/Image"
 
+  CacheView
+    *image_view,
+    *transverse_view;
+
   Image
     *transverse_image;
 
@@ -2060,10 +2064,6 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
 
   RectangleInfo
     page;
-
-  CacheView
-    *image_view,
-    *transverse_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);

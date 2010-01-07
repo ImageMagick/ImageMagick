@@ -556,7 +556,7 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
       break;
     for (x=0; x < (long) annotate_image->columns; x++)
     {
-      q->opacity=OpaqueOpacity;
+      SetOpacitySample(q,OpaqueOpacity);
       if (XGetPixel(annotate_ximage,x,y) == 0)
         {
           /*
@@ -2223,11 +2223,11 @@ static void XDitherImage(Image *image,XImage *ximage)
     for (x=0; x < (int) image->columns; x++)
     {
       color.red=RoundToQuantum((MagickRealType) (red_map[i][j][(int)
-        ScaleQuantumToChar(p->red)] << 8));
+        ScaleQuantumToChar(GetRedSample(p))] << 8));
       color.green=RoundToQuantum((MagickRealType) (green_map[i][j][(int)
-        ScaleQuantumToChar(p->green)] << 8));
+        ScaleQuantumToChar(GetGreenSample(p))] << 8));
       color.blue=RoundToQuantum((MagickRealType) (blue_map[i][j][(int)
-        ScaleQuantumToChar(p->blue)] << 8));
+        ScaleQuantumToChar(GetBlueSample(p))] << 8));
       pixel=(unsigned long) (((unsigned long) color.red & 0xe0) |
         (((unsigned long) color.green & 0xe0) >> 3) |
         (((unsigned long) color.blue & 0xc0) >> 6));
@@ -2596,7 +2596,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
     for (x=0; x < (long) draw_image->columns; x++)
     {
       if (q->opacity != (Quantum) TransparentOpacity)
-        q->opacity=OpaqueOpacity;
+        SetOpacitySample(q,OpaqueOpacity);
       q++;
     }
     if (SyncAuthenticPixels(draw_image,exception) == MagickFalse)
@@ -6240,9 +6240,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     */
                     for (x=(int) canvas->columns-1; x >= 0; x--)
                     {
-                      *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
-                      *q++=ScaleQuantumToChar(XGreenGamma(p->green));
-                      *q++=ScaleQuantumToChar(XRedGamma(p->red));
+                      *q++=ScaleQuantumToChar(XBlueGamma(GetBlueSample(p)));
+                      *q++=ScaleQuantumToChar(XGreenGamma(GetGreenSample(p)));
+                      *q++=ScaleQuantumToChar(XRedGamma(GetRedSample(p)));
                       *q++=0;
                       p++;
                     }
@@ -6250,9 +6250,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   }
                 for (x=(int) canvas->columns-1; x >= 0; x--)
                 {
-                  *q++=ScaleQuantumToChar((Quantum) p->blue);
-                  *q++=ScaleQuantumToChar((Quantum) p->green);
-                  *q++=ScaleQuantumToChar((Quantum) p->red);
+                  *q++=ScaleQuantumToChar((Quantum) GetBlueSample(p));
+                  *q++=ScaleQuantumToChar((Quantum) GetGreenSample(p));
+                  *q++=ScaleQuantumToChar((Quantum) GetRedSample(p));
                   *q++=0;
                   p++;
                 }
@@ -6281,9 +6281,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                       */
                       for (x=(int) canvas->columns-1; x >= 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(XRedGamma(p->red));
-                        *q++=ScaleQuantumToChar(XGreenGamma(p->green));
-                        *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
+                        *q++=ScaleQuantumToChar(XRedGamma(GetRedSample(p)));
+                        *q++=ScaleQuantumToChar(XGreenGamma(GetGreenSample(p)));
+                        *q++=ScaleQuantumToChar(XBlueGamma(GetBlueSample(p)));
                         *q++=0;
                         p++;
                       }
@@ -6291,9 +6291,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     }
                   for (x=(int) canvas->columns-1; x >= 0; x--)
                   {
-                    *q++=ScaleQuantumToChar((Quantum) p->red);
-                    *q++=ScaleQuantumToChar((Quantum) p->green);
-                    *q++=ScaleQuantumToChar((Quantum) p->blue);
+                    *q++=ScaleQuantumToChar((Quantum) GetRedSample(p));
+                    *q++=ScaleQuantumToChar((Quantum) GetGreenSample(p));
+                    *q++=ScaleQuantumToChar((Quantum) GetBlueSample(p));
                     *q++=0;
                     p++;
                   }
@@ -6845,9 +6845,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                     for (x=(int) canvas->columns-1; x >= 0; x--)
                     {
                       *q++=0;
-                      *q++=ScaleQuantumToChar(XRedGamma(p->red));
-                      *q++=ScaleQuantumToChar(XGreenGamma(p->green));
-                      *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
+                      *q++=ScaleQuantumToChar(XRedGamma(GetRedSample(p)));
+                      *q++=ScaleQuantumToChar(XGreenGamma(GetGreenSample(p)));
+                      *q++=ScaleQuantumToChar(XBlueGamma(GetBlueSample(p)));
                       p++;
                     }
                     continue;
@@ -6855,9 +6855,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 for (x=(int) canvas->columns-1; x >= 0; x--)
                 {
                   *q++=0;
-                  *q++=ScaleQuantumToChar((Quantum) p->red);
-                  *q++=ScaleQuantumToChar((Quantum) p->green);
-                  *q++=ScaleQuantumToChar((Quantum) p->blue);
+                  *q++=ScaleQuantumToChar((Quantum) GetRedSample(p));
+                  *q++=ScaleQuantumToChar((Quantum) GetGreenSample(p));
+                  *q++=ScaleQuantumToChar((Quantum) GetBlueSample(p));
                   p++;
                 }
               }
@@ -6886,9 +6886,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                       for (x=(int) canvas->columns-1; x >= 0; x--)
                       {
                         *q++=0;
-                        *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
-                        *q++=ScaleQuantumToChar(XGreenGamma(p->green));
-                        *q++=ScaleQuantumToChar(XRedGamma(p->red));
+                        *q++=ScaleQuantumToChar(XBlueGamma(GetBlueSample(p)));
+                        *q++=ScaleQuantumToChar(XGreenGamma(GetGreenSample(p)));
+                        *q++=ScaleQuantumToChar(XRedGamma(GetRedSample(p)));
                         p++;
                       }
                       continue;
@@ -6896,9 +6896,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   for (x=(int) canvas->columns-1; x >= 0; x--)
                   {
                     *q++=0;
-                    *q++=ScaleQuantumToChar((Quantum) p->blue);
-                    *q++=ScaleQuantumToChar((Quantum) p->green);
-                    *q++=ScaleQuantumToChar((Quantum) p->red);
+                    *q++=ScaleQuantumToChar((Quantum) GetBlueSample(p));
+                    *q++=ScaleQuantumToChar((Quantum) GetGreenSample(p));
+                    *q++=ScaleQuantumToChar((Quantum) GetRedSample(p));
                     p++;
                   }
                 }

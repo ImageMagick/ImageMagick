@@ -1909,9 +1909,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                     }
                   else
                     {
-                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(p->red),q);
-                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(p->green),q);
-                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(p->blue),q);
+                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(GetRedSample(p)),q);
+                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(GetGreenSample(p)),q);
+                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(GetBlueSample(p)),q);
                     }
                   if ((q-pixels+6) >= 80)
                     {

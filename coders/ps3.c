@@ -270,17 +270,17 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
     if (image->colorspace != CMYKColorspace)
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(p->red);
-        *q++=ScaleQuantumToChar(p->green);
-        *q++=ScaleQuantumToChar(p->blue);
+        *q++=ScaleQuantumToChar(GetRedSample(p));
+        *q++=ScaleQuantumToChar(GetGreenSample(p));
+        *q++=ScaleQuantumToChar(GetBlueSample(p));
         p++;
       }
     else
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(p->red);
-        *q++=ScaleQuantumToChar(p->green);
-        *q++=ScaleQuantumToChar(p->blue);
+        *q++=ScaleQuantumToChar(GetRedSample(p));
+        *q++=ScaleQuantumToChar(GetGreenSample(p));
+        *q++=ScaleQuantumToChar(GetBlueSample(p));
         *q++=ScaleQuantumToChar(indexes[x]);
         p++;
       }

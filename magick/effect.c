@@ -141,6 +141,11 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
 #define AdaptiveBlurImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
 
+  CacheView
+    *blur_view,
+    *edge_view,
+    *image_view;
+
   double
     **kernel,
     normalize;
@@ -169,11 +174,6 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
 
   unsigned long
     width;
-
-  CacheView
-    *blur_view,
-    *edge_view,
-    *image_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -337,15 +337,16 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
           alpha=1.0;
           if (((channel & OpacityChannel) != 0) &&
               (image->matte != MagickFalse))
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+            alpha=(MagickRealType) (QuantumScale*(QuantumRange-
+              GetOpacitySample(p)));
           if ((channel & RedChannel) != 0)
-            pixel.red+=(*k)*alpha*p->red;
+            pixel.red+=(*k)*alpha*GetRedSample(p);
           if ((channel & GreenChannel) != 0)
-            pixel.green+=(*k)*alpha*p->green;
+            pixel.green+=(*k)*alpha*GetGreenSample(p);
           if ((channel & BlueChannel) != 0)
-            pixel.blue+=(*k)*alpha*p->blue;
+            pixel.blue+=(*k)*alpha*GetBlueSample(p);
           if ((channel & OpacityChannel) != 0)
-            pixel.opacity+=(*k)*p->opacity;
+            pixel.opacity+=(*k)*GetOpacitySample(p);
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
             pixel.index+=(*k)*alpha*indexes[x+(width-i)*v+u];
@@ -356,16 +357,16 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
       }
       gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
       if ((channel & RedChannel) != 0)
-        q->red=RoundToQuantum(gamma*pixel.red);
+        q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
       if ((channel & GreenChannel) != 0)
-        q->green=RoundToQuantum(gamma*pixel.green);
+        q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
       if ((channel & BlueChannel) != 0)
-        q->blue=RoundToQuantum(gamma*pixel.blue);
+        q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
       if ((channel & OpacityChannel) != 0)
         q->opacity=RoundToQuantum(pixel.opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        blur_indexes[x]=RoundToQuantum(gamma*pixel.index);
+        blur_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
       q++;
       r++;
     }
@@ -456,6 +457,11 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 #define AdaptiveSharpenImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
 
+  CacheView
+    *sharp_view,
+    *edge_view,
+    *image_view;
+
   double
     **kernel,
     normalize;
@@ -484,11 +490,6 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 
   unsigned long
     width;
-
-  CacheView
-    *sharp_view,
-    *edge_view,
-    *image_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -652,15 +653,15 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
           alpha=1.0;
           if (((channel & OpacityChannel) != 0) &&
               (image->matte != MagickFalse))
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+            alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
           if ((channel & RedChannel) != 0)
-            pixel.red+=(*k)*alpha*p->red;
+            pixel.red+=(*k)*alpha*GetRedSample(p);
           if ((channel & GreenChannel) != 0)
-            pixel.green+=(*k)*alpha*p->green;
+            pixel.green+=(*k)*alpha*GetGreenSample(p);
           if ((channel & BlueChannel) != 0)
-            pixel.blue+=(*k)*alpha*p->blue;
+            pixel.blue+=(*k)*alpha*GetBlueSample(p);
           if ((channel & OpacityChannel) != 0)
-            pixel.opacity+=(*k)*p->opacity;
+            pixel.opacity+=(*k)*GetOpacitySample(p);
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
             pixel.index+=(*k)*alpha*indexes[x+(width-i)*v+u];
@@ -671,16 +672,16 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
       }
       gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
       if ((channel & RedChannel) != 0)
-        q->red=RoundToQuantum(gamma*pixel.red);
+        q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
       if ((channel & GreenChannel) != 0)
-        q->green=RoundToQuantum(gamma*pixel.green);
+        q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
       if ((channel & BlueChannel) != 0)
-        q->blue=RoundToQuantum(gamma*pixel.blue);
+        q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
       if ((channel & OpacityChannel) != 0)
         q->opacity=RoundToQuantum(pixel.opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        sharp_indexes[x]=RoundToQuantum(gamma*pixel.index);
+        sharp_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
       q++;
       r++;
     }
@@ -806,6 +807,10 @@ MagickExport Image *BlurImageChannel(const Image *image,
 {
 #define BlurImageTag  "Blur/Image"
 
+  CacheView
+    *blur_view,
+    *image_view;
+
   double
     *kernel;
 
@@ -828,10 +833,6 @@ MagickExport Image *BlurImageChannel(const Image *image,
 
   unsigned long
     width;
-
-  CacheView
-    *blur_view,
-    *image_view;
 
   /*
     Initialize blur image attributes.
@@ -1008,11 +1009,11 @@ MagickExport Image *BlurImageChannel(const Image *image,
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(gamma*pixel.red);
+            q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(gamma*pixel.green);
+            q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(gamma*pixel.blue);
+            q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
               k=kernel;
@@ -1043,7 +1044,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 kernel_pixels++;
                 kernel_indexes++;
               }
-              blur_indexes[x]=RoundToQuantum(gamma*pixel.index);
+              blur_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
             }
         }
       p++;
@@ -1186,11 +1187,11 @@ MagickExport Image *BlurImageChannel(const Image *image,
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(gamma*pixel.red);
+            q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(gamma*pixel.green);
+            q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(gamma*pixel.blue);
+            q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
               k=kernel;
@@ -1221,7 +1222,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 kernel_pixels++;
                 kernel_indexes++;
               }
-              blur_indexes[y]=RoundToQuantum(gamma*pixel.index);
+              blur_indexes[y]=RoundToQuantum(gamma*GetIndexSample(&pixel));
             }
         }
       p++;
@@ -1304,6 +1305,10 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 {
 #define ConvolveImageTag  "Convolve/Image"
 
+  CacheView
+    *convolve_view,
+    *image_view;
+
   double
     *normal_kernel;
 
@@ -1328,10 +1333,6 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 
   unsigned long
     width;
-
-  CacheView
-    *convolve_view,
-    *image_view;
 
   /*
     Initialize convolve image attributes.
@@ -1543,11 +1544,11 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(gamma*pixel.red);
+            q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(gamma*pixel.green);
+            q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(gamma*pixel.blue);
+            q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
               k=normal_kernel;
@@ -1584,7 +1585,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 kernel_pixels+=image->columns+width;
                 kernel_indexes+=image->columns+width;
               }
-              convolve_indexes[x]=RoundToQuantum(gamma*pixel.index);
+              convolve_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
             }
         }
       p++;
@@ -1885,10 +1886,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       {
         switch (channel)
         {
-          case 0: pixel[j]=p->red; break;
-          case 1: pixel[j]=p->green; break;
-          case 2: pixel[j]=p->blue; break;
-          case 3: pixel[j]=p->opacity; break;
+          case 0: pixel[j]=GetRedSample(p); break;
+          case 1: pixel[j]=GetGreenSample(p); break;
+          case 2: pixel[j]=GetBlueSample(p); break;
+          case 3: pixel[j]=GetOpacitySample(p); break;
           default: break;
         }
         p++;
@@ -2394,11 +2395,11 @@ MagickExport Image *FilterImageChannel(const Image *image,
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(gamma*pixel.red);
+            q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(gamma*pixel.green);
+            q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(gamma*pixel.blue);
+            q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
               k=normal_kernel;
@@ -2435,7 +2436,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
                 kernel_pixels+=image->columns+kernel->width;
                 kernel_indexes+=image->columns+kernel->width;
               }
-              filter_indexes[x]=RoundToQuantum(gamma*pixel.index);
+              filter_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
             }
         }
       p++;
@@ -2889,6 +2890,10 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 {
 #define MedianFilterImageTag  "MedianFilter/Image"
 
+  CacheView
+    *image_view,
+    *median_view;
+
   Image
     *median_image;
 
@@ -2904,10 +2909,6 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 
   unsigned long
     width;
-
-  CacheView
-    *image_view,
-    *median_view;
 
   /*
     Initialize median image attributes.
@@ -3126,6 +3127,10 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
       y;
   } OffsetInfo;
 
+  CacheView
+    *blur_view,
+    *image_view;
+
   double
     *kernel;
 
@@ -3153,10 +3158,6 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 
   unsigned long
     width;
-
-  CacheView
-    *blur_view,
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3899,6 +3900,10 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
 MagickExport Image *RadialBlurImageChannel(const Image *image,
   const ChannelType channel,const double angle,ExceptionInfo *exception)
 {
+  CacheView
+    *blur_view,
+    *image_view;
+
   Image
     *blur_image;
 
@@ -3927,10 +3932,6 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 
   unsigned long
     n;
-
-  CacheView
-    *blur_view,
-    *image_view;
 
   /*
     Allocate blur image.
@@ -4622,11 +4623,11 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             {
               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
               if ((channel & RedChannel) != 0)
-                q->red=RoundToQuantum(gamma*pixel.red);
+                q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
               if ((channel & GreenChannel) != 0)
-                q->green=RoundToQuantum(gamma*pixel.green);
+                q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
               if ((channel & BlueChannel) != 0)
-                q->blue=RoundToQuantum(gamma*pixel.blue);
+                q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
             }
           if ((channel & OpacityChannel) != 0)
             {
@@ -4649,7 +4650,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 :
                     gamma);
-                  q->opacity=RoundToQuantum(gamma*pixel.opacity);
+                  q->opacity=RoundToQuantum(gamma*GetOpacitySample(&pixel));
                 }
             }
           if (((channel & IndexChannel) != 0) &&
@@ -4674,7 +4675,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 :
                     gamma);
-                  blur_indexes[x]=RoundToQuantum(gamma*pixel.index);
+                  blur_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
                 }
             }
         }
@@ -4705,11 +4706,11 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             {
               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
               if ((channel & RedChannel) != 0)
-                q->red=RoundToQuantum(gamma*pixel.red);
+                q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
               if ((channel & GreenChannel) != 0)
-                q->green=RoundToQuantum(gamma*pixel.green);
+                q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
               if ((channel & BlueChannel) != 0)
-                q->blue=RoundToQuantum(gamma*pixel.blue);
+                q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
             }
           if ((channel & OpacityChannel) != 0)
             {
@@ -4759,7 +4760,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 :
                     gamma);
-                  blur_indexes[x]=RoundToQuantum(gamma*pixel.index);
+                  blur_indexes[x]=RoundToQuantum(gamma*GetIndexSample(&pixel));
                 }
             }
         }
@@ -4829,6 +4830,10 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 {
 #define ShadeImageTag  "Shade/Image"
 
+  CacheView
+    *image_view,
+    *shade_view;
+
   Image
     *shade_image;
 
@@ -4841,10 +4846,6 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 
   PrimaryInfo
     light;
-
-  CacheView
-    *image_view,
-    *shade_view;
 
   /*
     Initialize shaded image attributes.
@@ -5299,6 +5300,10 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
 {
 #define SharpenImageTag  "Sharpen/Image"
 
+  CacheView
+    *image_view,
+    *unsharp_view;
+
   Image
     *unsharp_image;
 
@@ -5314,10 +5319,6 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
 
   MagickRealType
     quantum_threshold;
-
-  CacheView
-    *image_view,
-    *unsharp_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5378,7 +5379,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
         {
           pixel.red=p->red-(MagickRealType) q->red;
           if (fabs(2.0*pixel.red) < quantum_threshold)
-            pixel.red=(MagickRealType) p->red;
+            pixel.red=(MagickRealType) GetRedSample(p);
           else
             pixel.red=(MagickRealType) p->red+(pixel.red*amount);
           q->red=RoundToQuantum(pixel.red);
@@ -5387,7 +5388,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
         {
           pixel.green=p->green-(MagickRealType) q->green;
           if (fabs(2.0*pixel.green) < quantum_threshold)
-            pixel.green=(MagickRealType) p->green;
+            pixel.green=(MagickRealType) GetGreenSample(p);
           else
             pixel.green=(MagickRealType) p->green+(pixel.green*amount);
           q->green=RoundToQuantum(pixel.green);
@@ -5396,7 +5397,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
         {
           pixel.blue=p->blue-(MagickRealType) q->blue;
           if (fabs(2.0*pixel.blue) < quantum_threshold)
-            pixel.blue=(MagickRealType) p->blue;
+            pixel.blue=(MagickRealType) GetBlueSample(p);
           else
             pixel.blue=(MagickRealType) p->blue+(pixel.blue*amount);
           q->blue=RoundToQuantum(pixel.blue);
@@ -5405,7 +5406,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
         {
           pixel.opacity=p->opacity-(MagickRealType) q->opacity;
           if (fabs(2.0*pixel.opacity) < quantum_threshold)
-            pixel.opacity=(MagickRealType) p->opacity;
+            pixel.opacity=(MagickRealType) GetOpacitySample(p);
           else
             pixel.opacity=p->opacity+(pixel.opacity*amount);
           q->opacity=RoundToQuantum(pixel.opacity);

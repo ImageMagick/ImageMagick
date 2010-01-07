@@ -782,7 +782,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 q->red=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
                 q->green=q->red;
                 q->blue=q->red;
-                q->opacity=OpaqueOpacity;
+                SetOpacitySample(q,OpaqueOpacity);
                 p+=quantum_info->pad;
                 q++;
               }
@@ -794,7 +794,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             q->red=ScaleCharToQuantum(pixel);
             q->green=q->red;
             q->blue=q->red;
-            q->opacity=OpaqueOpacity;
+            SetOpacitySample(q,OpaqueOpacity);
             p+=quantum_info->pad;
             q++;
           }
@@ -1776,7 +1776,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             q->green=ScaleCharToQuantum(pixel);
             p=PushCharPixel(p,&pixel);
             q->blue=ScaleCharToQuantum(pixel);
-            q->opacity=OpaqueOpacity;
+            SetOpacitySample(q,OpaqueOpacity);
             p+=quantum_info->pad;
             q++;
           }

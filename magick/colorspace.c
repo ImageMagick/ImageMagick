@@ -158,6 +158,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 {
 #define RGBTransformImageTag  "RGBTransform/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -179,9 +182,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     *x_map,
     *y_map,
     *z_map;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1349,6 +1349,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
     };
 #endif
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -1366,9 +1369,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
     *y_map,
     *x_map,
     *z_map;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

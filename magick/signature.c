@@ -467,6 +467,9 @@ MagickExport void SetSignatureDigest(SignatureInfo *signature_info,
 */
 MagickExport MagickBooleanType SignatureImage(Image *image)
 {
+  CacheView
+    *image_view;
+
   char
     *hex_signature;
 
@@ -496,9 +499,6 @@ MagickExport MagickBooleanType SignatureImage(Image *image)
 
   unsigned char
     *pixels;
-
-  CacheView
-    *image_view;
 
   /*
     Compute image digital signature.

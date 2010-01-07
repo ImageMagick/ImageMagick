@@ -211,7 +211,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
           q->red=ScaleCharToQuantum(pBits->rgbRed);
           q->green=ScaleCharToQuantum(pBits->rgbGreen);
           q->blue=ScaleCharToQuantum(pBits->rgbBlue);
-          q->opacity=OpaqueOpacity;
+          SetOpacitySample(q,OpaqueOpacity);
           pBits++;
           q++;
         }

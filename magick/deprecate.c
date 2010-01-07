@@ -1608,6 +1608,10 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   const long x_offset,const long y_offset,const double similarity_threshold,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reference_view;
+
   long
     y;
 
@@ -1615,10 +1619,6 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
     channels,
     normalized_similarity,
     similarity;
-
-  CacheView
-    *image_view,
-    *reference_view;
 
   /*
     Compute the similarity in pixels between two images.
@@ -3201,7 +3201,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[i]=1.0;
         if (image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -3244,7 +3244,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[i]=1.0;
         if (image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -3285,7 +3285,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[i]=1.0;
         if (image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -3392,7 +3392,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[i]=1.0;
         if (image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -3549,7 +3549,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
           alpha[n]=1.0;
           if (image->matte != MagickFalse)
             {
-              alpha[n]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+              alpha[n]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
               pixels[n].red*=alpha[n];
               pixels[n].green*=alpha[n];
               pixels[n].blue*=alpha[n];

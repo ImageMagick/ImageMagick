@@ -117,6 +117,11 @@ MagickExport Image *CompareImageChannels(Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 {
+  CacheView
+    *highlight_view,
+    *image_view,
+    *reconstruct_view;
+
   const char
     *artifact;
 
@@ -134,11 +139,6 @@ MagickExport Image *CompareImageChannels(Image *image,
     highlight,
     lowlight,
     zero;
-
-  CacheView
-    *highlight_view,
-    *image_view,
-    *reconstruct_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -349,6 +349,10 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,double *distortion,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
   long
     y;
 
@@ -357,10 +361,6 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
 
   MagickPixelPacket
     zero;
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
 
   /*
     Compute the absolute difference in pixels between two images.
@@ -469,6 +469,10 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
   long
     y;
 
@@ -477,10 +481,6 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -577,6 +577,10 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   const Image *reconstruct_image,const ChannelType channel,double *distortion,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
   long
     y;
 
@@ -589,10 +593,6 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     beta,
     maximum_error,
     mean_error;
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
 
   status=MagickTrue;
   alpha=1.0;
@@ -633,7 +633,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte != MagickFalse)
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+            alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
           if (reconstruct_image->matte != MagickFalse)
             beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
         }
@@ -706,6 +706,10 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
   long
     y;
 
@@ -714,10 +718,6 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -815,15 +815,15 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
   long
     y;
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -1237,6 +1237,10 @@ MagickExport double *GetImageChannelDistortions(Image *image,
 MagickExport MagickBooleanType IsImagesEqual(Image *image,
   const Image *reconstruct_image)
 {
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
   ExceptionInfo
     *exception;
 
@@ -1251,10 +1255,6 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
     maximum_error,
     mean_error,
     mean_error_per_pixel;
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1384,15 +1384,15 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 static double GetSimilarityMetric(const Image *image,const Image *reference,
   const long x_offset,const long y_offset,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view,
+    *reference_view;
+
   double
     similarity;
 
   long
     y;
-
-  CacheView
-    *image_view,
-    *reference_view;
 
   MagickBooleanType
     status;
@@ -1482,6 +1482,9 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
 {
 #define SimilarityImageTag  "Similarity/Image"
 
+  CacheView
+    *similarity_view;
+
   long
     progress,
     y;
@@ -1491,9 +1494,6 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *similarity_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);

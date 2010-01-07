@@ -230,9 +230,9 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=p->red;
-            q->green=p->green;
-            q->blue=p->blue;
+            SetRedSample(q,GetRedSample(p));
+            SetGreenSample(q,GetGreenSample(p));
+            SetBlueSample(q,GetBlueSample(p));
             p++;
             q++;
           }

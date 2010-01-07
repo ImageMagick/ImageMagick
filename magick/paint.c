@@ -757,6 +757,9 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
 {
 #define OpaquePaintImageTag  "Opaque/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -769,9 +772,6 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
 
   MagickPixelPacket
     zero;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -898,6 +898,9 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
 {
 #define TransparentPaintImageTag  "Transparent/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -910,9 +913,6 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
 
   MagickPixelPacket
     zero;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1031,6 +1031,9 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
 {
 #define TransparentPaintImageTag  "Transparent/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -1040,9 +1043,6 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

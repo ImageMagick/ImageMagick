@@ -613,7 +613,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
       for (x=0; x < (long) image->columns; x++)
       {
         marker[(int) indices[x]]=MagickTrue;
-        opacity[(int) indices[x]]=p->opacity;
+        opacity[(int) indices[x]]=GetOpacitySample(p);
         if (indices[x] > top_used)
            top_used=indices[x];
         p++;
@@ -2719,7 +2719,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   q->opacity=ScaleCharToQuantum((unsigned char)
                     (255-ping_info->trans_alpha[(long) indexpacket]));
                 else
-                  q->opacity=OpaqueOpacity;
+                  SetOpacitySample(q,OpaqueOpacity);
                 q++;
               }
             else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
@@ -2732,7 +2732,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 if (q->red == transparent_color.opacity)
                   q->opacity=(Quantum) TransparentOpacity;
                 else
-                  q->opacity=OpaqueOpacity;
+                  SetOpacitySample(q,OpaqueOpacity);
                 q++;
               }
           }
@@ -2744,7 +2744,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 ScaleQuantumToChar(q->blue) == transparent_color.blue)
                q->opacity=(Quantum) TransparentOpacity;
             else
-              q->opacity=OpaqueOpacity;
+              SetOpacitySample(q,OpaqueOpacity);
             q++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -6610,7 +6610,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     {
                       indices[x]=(IndexPacket) (number_colors-1);
                       ping_info->trans_alpha[(long) indices[x]]=(png_byte) (255-
-                        ScaleQuantumToChar(p->opacity));
+                        ScaleQuantumToChar(GetOpacitySample(p)));
                     }
                   p++;
                 }
@@ -6827,15 +6827,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              mask=0x0001;
           ping_info->valid|=PNG_INFO_tRNS;
           ping_info->trans_color.red=(png_uint_16)
-            (ScaleQuantumToShort(p->red) & mask);
+            (ScaleQuantumToShort(GetRedSample(p)) & mask);
           ping_info->trans_color.green=(png_uint_16)
-            (ScaleQuantumToShort(p->green) & mask);
+            (ScaleQuantumToShort(GetGreenSample(p)) & mask);
           ping_info->trans_color.blue=(png_uint_16)
-            (ScaleQuantumToShort(p->blue) & mask);
+            (ScaleQuantumToShort(GetBlueSample(p)) & mask);
           ping_info->trans_color.gray=(png_uint_16)
             (ScaleQuantumToShort(PixelIntensityToQuantum(p)) & mask);
           ping_info->trans_color.index=(png_byte)
-            (ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity)));
+            (ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p))));
         }
       if (ping_info->valid & PNG_INFO_tRNS)
         {
@@ -7067,7 +7067,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       if (trans[(long) packet_index] != 256)
                         {
                           if (trans[(long) packet_index] != (png_byte) (255-
-                             ScaleQuantumToChar(p->opacity)))
+                             ScaleQuantumToChar(GetOpacitySample(p))))
                             {
                               ping_info->color_type=(png_byte)
                                 PNG_COLOR_TYPE_RGB_ALPHA;
@@ -7075,7 +7075,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                             }
                         }
                       trans[(long) packet_index]=(png_byte) (255-
-                        ScaleQuantumToChar(p->opacity));
+                        ScaleQuantumToChar(GetOpacitySample(p)));
                     }
                   p++;
                 }

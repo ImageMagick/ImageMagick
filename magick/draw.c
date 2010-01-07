@@ -3226,6 +3226,9 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
 MagickExport MagickBooleanType DrawGradientImage(Image *image,
   const DrawInfo *draw_info)
 {
+  CacheView
+    *image_view;
+
   const GradientInfo
     *gradient;
 
@@ -3252,9 +3255,6 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 
   RectangleInfo
     bounding_box;
-
-  CacheView
-    *image_view;
 
   /*
     Draw linear or radial gradient on image.
@@ -4123,6 +4123,9 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
 MagickExport MagickBooleanType DrawPrimitive(Image *image,
   const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
 {
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -4135,9 +4138,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   register long
     i,
     x;
-
-  CacheView
-    *image_view;
 
   if (image->debug != MagickFalse)
     {

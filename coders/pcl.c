@@ -898,9 +898,9 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
           */
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(p->red);
-            *q++=ScaleQuantumToChar(p->green);
-            *q++=ScaleQuantumToChar(p->blue);
+            *q++=ScaleQuantumToChar(GetRedSample(p));
+            *q++=ScaleQuantumToChar(GetGreenSample(p));
+            *q++=ScaleQuantumToChar(GetBlueSample(p));
             p++;
           }
           break;

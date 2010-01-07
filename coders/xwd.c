@@ -769,9 +769,9 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
     else
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(p->red);
-        *q++=ScaleQuantumToChar(p->green);
-        *q++=ScaleQuantumToChar(p->blue);
+        *q++=ScaleQuantumToChar(GetRedSample(p));
+        *q++=ScaleQuantumToChar(GetGreenSample(p));
+        *q++=ScaleQuantumToChar(GetBlueSample(p));
         p++;
       }
     for (x=0; x < (long) scanline_pad; x++)

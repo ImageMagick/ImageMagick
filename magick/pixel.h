@@ -29,11 +29,13 @@ extern "C" {
 #define GetGreenSample(p) ((p)->green)
 #define GetBlueSample(p) ((p)->blue)
 #define GetOpacitySample(p) ((p)->opacity)
+#define GetIndexSample(p) ((p)->index)
 
 #define SetRedSample(q,sample) ((q)->red=(sample))
 #define SetGreenSample(q,sample) ((q)->green=(sample))
 #define SetBlueSample(q,sample) ((q)->blue=(sample))
 #define SetOpacitySample(q,sample) ((q)->opacity=(sample))
+#define SetIndexSample(q,sample) ((q)->index=(sample))
 
 #define GetGraySample(p) ((p)->red)
 #define SetGraySample(q,sample) ((q)->red=(q)->green=(q)->blue=(sample))

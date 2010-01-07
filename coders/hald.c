@@ -156,7 +156,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
         q->red=RoundToQuantum(QuantumRange*red/(cube_size-1.0));
         q->green=RoundToQuantum(QuantumRange*green/(cube_size-1.0));
         q->blue=RoundToQuantum(QuantumRange*blue/(cube_size-1.0));
-        q->opacity=OpaqueOpacity;
+        SetOpacitySample(q,OpaqueOpacity);
         q++;
       }
     }

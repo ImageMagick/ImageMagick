@@ -855,10 +855,10 @@ static void GetImageBackgroundColor(Image *image,const long offset,
     {
       if ((x >= offset) && (x < ((long) image->columns-offset)))
         continue;
-      background.red+=QuantumScale*p->red;
-      background.green+=QuantumScale*p->green;
-      background.blue+=QuantumScale*p->blue;
-      background.opacity+=QuantumScale*p->opacity;
+      background.red+=QuantumScale*GetRedSample(p);
+      background.green+=QuantumScale*GetGreenSample(p);
+      background.blue+=QuantumScale*GetBlueSample(p);
+      background.opacity+=QuantumScale*GetOpacitySample(p);
       count++;
       p++;
     }

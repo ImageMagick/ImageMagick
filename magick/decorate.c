@@ -163,6 +163,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 {
 #define FrameImageTag  "Frame/Image"
 
+  CacheView
+    *image_view,
+    *frame_view;
+
   Image
     *frame_image;
 
@@ -189,10 +193,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     bevel_width,
     height,
     width;
-
-  CacheView
-    *image_view,
-    *frame_view;
 
   /*
     Check frame geometry.
@@ -679,6 +679,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #define RaiseImageTag  "Raise/Image"
 #define TroughFactor  ScaleCharToQuantum(135)
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -692,9 +695,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   Quantum
     foreground,
     background;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

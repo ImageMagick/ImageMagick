@@ -65,11 +65,11 @@
 #define WLUT_WIDTH 1024
 struct _ResampleFilter
 {
-  Image
-    *image;
-
   CacheView
     *view;
+
+  Image
+    *image;
 
   ExceptionInfo
     *exception;
@@ -404,7 +404,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[i]=1.0;
         if (resample_filter->image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -450,7 +450,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[i]=1.0;
         if (resample_filter->image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -624,7 +624,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[i]=1.0;
         if (resample_filter->image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -787,7 +787,7 @@ static MagickBooleanType InterpolateResampleFilter(
           alpha[n]=1.0;
           if (resample_filter->image->matte != MagickFalse)
             {
-              alpha[n]=QuantumScale*((MagickRealType) QuantumRange-p->opacity);
+              alpha[n]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
               pixels[n].red*=alpha[n];
               pixels[n].green*=alpha[n];
               pixels[n].blue*=alpha[n];
