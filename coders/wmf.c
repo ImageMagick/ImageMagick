@@ -563,8 +563,8 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
 #if 0
   printf("bmp_draw->bmp.data   = 0x%lx\n", (long)bmp_draw->bmp.data);
   printf("registry id          = %li\n", id);
-  /* printf("pixel_width          = %g\n", bmp_draw->pixel_width); */
-  /* printf("pixel_height         = %g\n", bmp_draw->pixel_height); */
+  /* printf("pixel_width          = %.15g\n", bmp_draw->pixel_width); */
+  /* printf("pixel_height         = %.15g\n", bmp_draw->pixel_height); */
   printf("bmp_draw->bmp WxH    = %ix%i\n", bmp_draw->bmp.width, bmp_draw->bmp.height);
   printf("bmp_draw->crop WxH   = %ix%i\n", bmp_draw->crop.w, bmp_draw->crop.h);
   printf("bmp_draw->crop x,y   = %i,%i\n", bmp_draw->crop.x, bmp_draw->crop.y);
@@ -1348,11 +1348,11 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   printf("Text                    = \"%s\"\n", draw_text->str);
   /* printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font)); */
   printf("WMF_FONT_PSNAME:        = \"%s\"\n", WMF_FONT_PSNAME(font));
-  printf("Bounding box            TL=%g,%g BR=%g,%g\n",
+  printf("Bounding box            TL=%.15g,%.15g BR=%.15g,%.15g\n",
          TL.x, TL.y, BR.x, BR.y );
-  /* printf("Text box                = %gx%g\n", bbox_width, bbox_height); */
+  /* printf("Text box                = %.15gx%.15g\n", bbox_width, bbox_height); */
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
-  printf("Pointsize               = %g\n", pointsize);
+  printf("Pointsize               = %.15g\n", pointsize);
   fflush(stdout);
 #endif
 
@@ -2053,13 +2053,13 @@ static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font
 #if 0
   printf("String    = %s\n", str);
   printf("Font      = %s\n", WMF_FONT_PSNAME(font));
-  printf("lfHeight  = %g\n", font_height);
-  printf("bounds    = %g,%g %g,%g\n", metrics.bounds.x1, metrics.bounds.y1,
+  printf("lfHeight  = %.15g\n", font_height);
+  printf("bounds    = %.15g,%.15g %.15g,%.15g\n", metrics.bounds.x1, metrics.bounds.y1,
          metrics.bounds.x2,metrics.bounds.y2);
-  printf("ascent    = %g\n", metrics.ascent);
-  printf("descent   = %g\n", metrics.descent);
-  printf("height    = %g\n", metrics.height);
-  printf("Pointsize = %g\n", pointsize);
+  printf("ascent    = %.15g\n", metrics.ascent);
+  printf("descent   = %.15g\n", metrics.descent);
+  printf("height    = %.15g\n", metrics.height);
+  printf("Pointsize = %.15g\n", pointsize);
 #endif
 
   return floor(pointsize);
@@ -2157,7 +2157,7 @@ static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
   printf("string                  = \"%s\"\n", str);
   printf("WMF_FONT_NAME           = \"%s\"\n", WMF_FONT_NAME(font));
   printf("WMF_FONT_PSNAME         = \"%s\"\n", WMF_FONT_PSNAME(font));
-  printf("stringwidth             = %g\n", stringwidth);
+  printf("stringwidth             = %.15g\n", stringwidth);
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
   /* printf("WMF_FONT_WIDTH          = %i\n", (int)WMF_FONT_WIDTH(font)); */
   fflush(stdout);
@@ -2608,25 +2608,27 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
          (API)->File->placeable ? "Yes" : "No");
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Size in metafile units:      %gx%g",wmf_width,wmf_height);
+        "  Size in metafile units:      %.15gx%.15g",wmf_width,wmf_height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Metafile units/inch:         %g",units_per_inch);
+        "  Metafile units/inch:         %.15g",units_per_inch);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Size in inches:              %gx%g",
+        "  Size in inches:              %.15gx%.15g",
         image_width_inch,image_height_inch);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Bounding Box:                %g,%g %g,%g",
+        "  Bounding Box:                %.15g,%.15g %.15g,%.15g",
         bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Bounding width x height:     %gx%g",bounding_width,bounding_height);
+        "  Bounding width x height:     %.15gx%.15g",bounding_width,
+        bounding_height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Output resolution:           %gx%g",resolution_x,resolution_y);
+        "  Output resolution:           %.15gx%.15g",resolution_x,resolution_y);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Image size:                  %gx%g",image_width,image_height);
+        "  Image size:                  %.15gx%.15g",image_width,image_height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Bounding box scale factor:   %g,%g",ddata->scale_x,ddata->scale_y);
+        "  Bounding box scale factor:   %.15g,%.15g",ddata->scale_x,
+        ddata->scale_y);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Translation:                 %g,%g",
+        "  Translation:                 %.15g,%.15g",
         ddata->translate_x, ddata->translate_y);
     }
 
@@ -2654,8 +2656,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     printf("dc->Window.Oy     = %d\n", dc->Window.Oy);
     printf("dc->Window.width  = %d\n", dc->Window.width);
     printf("dc->Window.height = %d\n", dc->Window.height);
-    printf("dc->pixel_width   = %g\n", dc->pixel_width);
-    printf("dc->pixel_height  = %g\n", dc->pixel_height);
+    printf("dc->pixel_width   = %.15g\n", dc->pixel_width);
+    printf("dc->pixel_height  = %.15g\n", dc->pixel_height);
 #if defined(MAGICKCORE_WMFLITE_DELEGATE)  /* Only in libwmf 0.3 */
     printf("dc->Ox            = %.d\n", dc->Ox);
     printf("dc->Oy            = %.d\n", dc->Oy);

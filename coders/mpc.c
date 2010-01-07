@@ -1118,8 +1118,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       }
     if ((image->x_resolution != 0) || (image->y_resolution != 0))
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"resolution=%gx%g\n",
-          image->x_resolution,image->y_resolution);
+        (void) FormatMagickString(buffer,MaxTextExtent,
+          "resolution=%.15gx%.15g\n",image->x_resolution,image->y_resolution);
         (void) WriteBlobString(image,buffer);
       }
     if ((image->page.width != 0) || (image->page.height != 0))
@@ -1203,7 +1203,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       }
     if (image->gamma != 0.0)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"gamma=%g\n",
+        (void) FormatMagickString(buffer,MaxTextExtent,"gamma=%.15g\n",
           image->gamma);
         (void) WriteBlobString(image,buffer);
       }
@@ -1212,16 +1212,17 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
         /*
           Note chomaticity points.
         */
-        (void) FormatMagickString(buffer,MaxTextExtent,
-          "red-primary=%g,%g  green-primary=%g,%g  blue-primary=%g,%g\n",
+        (void) FormatMagickString(buffer,MaxTextExtent,"red-primary="
+          "%.15g,%.15g  green-primary=%.15g,%.15g  blue-primary=%.15g,%.15g\n",
           image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
           image->chromaticity.green_primary.x,
           image->chromaticity.green_primary.y,
           image->chromaticity.blue_primary.x,
           image->chromaticity.blue_primary.y);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"white-point=%g,%g\n",
-          image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+        (void) FormatMagickString(buffer,MaxTextExtent,
+          "white-point=%.15g,%.15g\n",image->chromaticity.white_point.x,
+          image->chromaticity.white_point.y);
         (void) WriteBlobString(image,buffer);
       }
     if (image->orientation != UndefinedOrientation)

@@ -983,8 +983,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             case RootMeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
             {
-              (void) fprintf(stderr,"%g (%g)",QuantumRange*distortion,(double)
-                distortion);
+              (void) fprintf(stderr,"%.15g (%.15g)",QuantumRange*distortion,
+                (double) distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
                 (void) fprintf(stderr," @ %ld,%ld",difference_image->page.x,
@@ -995,7 +995,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             case AbsoluteErrorMetric:
             case PeakSignalToNoiseRatioMetric:
             {
-              (void) fprintf(stderr,"%g",distortion);
+              (void) fprintf(stderr,"%.15g",distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
                 (void) fprintf(stderr," @ %ld,%ld",difference_image->page.x,
@@ -1005,7 +1005,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             }
             case MeanErrorPerPixelMetric:
             {
-              (void) fprintf(stderr,"%g (%g, %g)",distortion,
+              (void) fprintf(stderr,"%.15g (%.15g, %.15g)",distortion,
                 image->error.normalized_mean_error,
                 image->error.normalized_maximum_error);
               if ((reconstruct_image->columns != image->columns) ||
@@ -1045,54 +1045,54 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 case RGBColorspace:
                 default:
                 {
-                  (void) fprintf(stderr,"    red: %g (%g)\n",
+                  (void) fprintf(stderr,"    red: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[RedChannel],
                     channel_distortion[RedChannel]);
-                  (void) fprintf(stderr,"    green: %g (%g)\n",
+                  (void) fprintf(stderr,"    green: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[GreenChannel],
                     channel_distortion[GreenChannel]);
-                  (void) fprintf(stderr,"    blue: %g (%g)\n",
+                  (void) fprintf(stderr,"    blue: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[BlueChannel],
                     channel_distortion[BlueChannel]);
                   if (image->matte != MagickFalse)
-                    (void) fprintf(stderr,"    alpha: %g (%g)\n",
+                    (void) fprintf(stderr,"    alpha: %.15g (%.15g)\n",
                       QuantumRange*channel_distortion[OpacityChannel],
                       channel_distortion[OpacityChannel]);
                   break;
                 }
                 case CMYKColorspace:
                 {
-                  (void) fprintf(stderr,"    cyan: %g (%g)\n",
+                  (void) fprintf(stderr,"    cyan: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[CyanChannel],
                     channel_distortion[CyanChannel]);
-                  (void) fprintf(stderr,"    magenta: %g (%g)\n",
+                  (void) fprintf(stderr,"    magenta: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[MagentaChannel],
                     channel_distortion[MagentaChannel]);
-                  (void) fprintf(stderr,"    yellow: %g (%g)\n",
+                  (void) fprintf(stderr,"    yellow: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[YellowChannel],
                     channel_distortion[YellowChannel]);
-                  (void) fprintf(stderr,"    black: %g (%g)\n",
+                  (void) fprintf(stderr,"    black: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[BlackChannel],
                     channel_distortion[BlackChannel]);
                   if (image->matte != MagickFalse)
-                    (void) fprintf(stderr,"    alpha: %g (%g)\n",
+                    (void) fprintf(stderr,"    alpha: %.15g (%.15g)\n",
                       QuantumRange*channel_distortion[OpacityChannel],
                       channel_distortion[OpacityChannel]);
                   break;
                 }
                 case GRAYColorspace:
                 {
-                  (void) fprintf(stderr,"    gray: %g (%g)\n",
+                  (void) fprintf(stderr,"    gray: %.15g (%.15g)\n",
                     QuantumRange*channel_distortion[GrayChannel],
                     channel_distortion[GrayChannel]);
                   if (image->matte != MagickFalse)
-                    (void) fprintf(stderr,"    alpha: %g (%g)\n",
+                    (void) fprintf(stderr,"    alpha: %.15g (%.15g)\n",
                       QuantumRange*channel_distortion[OpacityChannel],
                       channel_distortion[OpacityChannel]);
                   break;
                 }
               }
-              (void) fprintf(stderr,"    all: %g (%g)\n",
+              (void) fprintf(stderr,"    all: %.15g (%.15g)\n",
                 QuantumRange*channel_distortion[AllChannels],
                 channel_distortion[AllChannels]);
               break;
@@ -1105,49 +1105,49 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 case RGBColorspace:
                 default:
                 {
-                  (void) fprintf(stderr,"    red: %g\n",
+                  (void) fprintf(stderr,"    red: %.15g\n",
                     channel_distortion[RedChannel]);
-                  (void) fprintf(stderr,"    green: %g\n",
+                  (void) fprintf(stderr,"    green: %.15g\n",
                     channel_distortion[GreenChannel]);
-                  (void) fprintf(stderr,"    blue: %g\n",
+                  (void) fprintf(stderr,"    blue: %.15g\n",
                     channel_distortion[BlueChannel]);
                   if (image->matte != MagickFalse)
-                    (void) fprintf(stderr,"    alpha: %g\n",
+                    (void) fprintf(stderr,"    alpha: %.15g\n",
                       channel_distortion[OpacityChannel]);
                   break;
                 }
                 case CMYKColorspace:
                 {
-                  (void) fprintf(stderr,"    cyan: %g\n",
+                  (void) fprintf(stderr,"    cyan: %.15g\n",
                     channel_distortion[CyanChannel]);
-                  (void) fprintf(stderr,"    magenta: %g\n",
+                  (void) fprintf(stderr,"    magenta: %.15g\n",
                     channel_distortion[MagentaChannel]);
-                  (void) fprintf(stderr,"    yellow: %g\n",
+                  (void) fprintf(stderr,"    yellow: %.15g\n",
                     channel_distortion[YellowChannel]);
-                  (void) fprintf(stderr,"    black: %g\n",
+                  (void) fprintf(stderr,"    black: %.15g\n",
                     channel_distortion[BlackChannel]);
                   if (image->matte != MagickFalse)
-                    (void) fprintf(stderr,"    alpha: %g\n",
+                    (void) fprintf(stderr,"    alpha: %.15g\n",
                       channel_distortion[OpacityChannel]);
                   break;
                 }
                 case GRAYColorspace:
                 {
-                  (void) fprintf(stderr,"    gray: %g\n",
+                  (void) fprintf(stderr,"    gray: %.15g\n",
                     channel_distortion[GrayChannel]);
                   if (image->matte != MagickFalse)
-                    (void) fprintf(stderr,"    alpha: %g\n",
+                    (void) fprintf(stderr,"    alpha: %.15g\n",
                       channel_distortion[OpacityChannel]);
                   break;
                 }
               }
-              (void) fprintf(stderr,"    all: %g\n",
+              (void) fprintf(stderr,"    all: %.15g\n",
                 channel_distortion[AllChannels]);
               break;
             }
             case MeanErrorPerPixelMetric:
             {
-              (void) fprintf(stderr,"    %g (%g, %g)\n",
+              (void) fprintf(stderr,"    %.15g (%.15g, %.15g)\n",
                 channel_distortion[AllChannels],
                 image->error.normalized_mean_error,
                 image->error.normalized_maximum_error);

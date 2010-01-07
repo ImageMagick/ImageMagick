@@ -1006,12 +1006,12 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         else
           {
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "%%%%BoundingBox: %g %g %g %g\n",floor(bounds.x1+0.5),
+              "%%%%BoundingBox: %.15g %.15g %.15g %.15g\n",floor(bounds.x1+0.5),
               floor(bounds.y1+0.5),ceil(bounds.x2-0.5),ceil(bounds.y2-0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
-              bounds.x2,bounds.y2);
+              "%%%%HiResBoundingBox: %.15g %.15g %.15g %.15g\n",bounds.x1,
+              bounds.y1,bounds.x2,bounds.y2);
             (void) WriteBlobString(image,buffer);
             if (image->colorspace == CMYKColorspace)
               (void) WriteBlobString(image,
@@ -1068,7 +1068,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               (void) WriteBlobString(image,
                 "  currentfile buffer readline pop token pop\n");
               (void) FormatMagickString(buffer,MaxTextExtent,
-                "  0 y %g add moveto show pop\n",i*pointsize+12);
+                "  0 y %.15g add moveto show pop\n",i*pointsize+12);
               (void) WriteBlobString(image,buffer);
             }
           }
@@ -1161,8 +1161,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     /*
       Translate, scale, and font point size.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,"%ld %ld\n%g %g\n%f\n",
-      geometry.x,geometry.y,scale.x,scale.y,pointsize);
+    (void) FormatMagickString(buffer,MaxTextExtent,
+      "%ld %ld\n%.15g %.15g\n%.15g\n",geometry.x,geometry.y,scale.x,scale.y,
+      pointsize);
     (void) WriteBlobString(image,buffer);
     /*
       Output labels.
@@ -1577,11 +1578,11 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
   if (page > 1)
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "%%%%BoundingBox: %g %g %g %g\n",floor(bounds.x1+0.5),
+        "%%%%BoundingBox: %.15g %.15g %.15g %.15g\n",floor(bounds.x1+0.5),
         floor(bounds.y1+0.5),ceil(bounds.x2-0.5),ceil(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
+        "%%%%HiResBoundingBox: %.15g %.15g %.15g %.15g\n",bounds.x1,bounds.y1,
         bounds.x2,bounds.y2);
       (void) WriteBlobString(image,buffer);
     }

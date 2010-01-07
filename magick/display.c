@@ -5883,7 +5883,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               */
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
-              (void) FormatMagickString(text,MaxTextExtent," %g",
+              (void) FormatMagickString(text,MaxTextExtent," %.15g",
                 (double) degrees);
               XInfoWidget(display,windows,text);
               XHighlightLine(display,windows->image.id,
@@ -5953,7 +5953,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               */
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
-              (void) FormatMagickString(text,MaxTextExtent," %g",
+              (void) FormatMagickString(text,MaxTextExtent," %.15g",
                 (double) degrees);
               XInfoWidget(display,windows,text);
               XHighlightLine(display,windows->image.id,
@@ -7601,8 +7601,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for the fuzz factor.
       */
-      (void) FormatMagickString(fuzz,MaxTextExtent,"%g%%",100.0*(*image)->fuzz/
-        (QuantumRange+1.0));
+      (void) FormatMagickString(fuzz,MaxTextExtent,"%.15g%%",100.0*
+        (*image)->fuzz/(QuantumRange+1.0));
       (void) XDialogWidget(display,windows,"Trim","Enter fuzz factor:",fuzz);
       if (*fuzz == '\0')
         break;
@@ -12121,7 +12121,7 @@ static MagickBooleanType XRotateImage(Display *display,
             */
             if (windows->info.mapped == MagickFalse)
               (void) XMapWindow(display,windows->info.id);
-            (void) FormatMagickString(text,MaxTextExtent," %g",
+            (void) FormatMagickString(text,MaxTextExtent," %.15g",
               direction == VerticalRotateCommand ? degrees-90.0 : degrees);
             XInfoWidget(display,windows,text);
             XHighlightLine(display,windows->image.id,

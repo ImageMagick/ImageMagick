@@ -25,6 +25,37 @@ extern "C" {
 #include <magick/colorspace.h>
 #include <magick/constitute.h>
 
+#define GetRedSample(p) ((p)->red)
+#define GetGreenSample(p) ((p)->green)
+#define GetBlueSample(p) ((p)->blue)
+#define GetOpacitySample(p) ((p)->opacity)
+
+#define SetRedSample(q,sample) ((q)->red=(sample))
+#define SetGreenSample(q,sample) ((q)->green=(sample))
+#define SetBlueSample(q,sample) ((q)->blue=(sample))
+#define SetOpacitySample(q,sample) ((q)->opacity=(sample))
+
+#define GetGraySample(p) ((p)->red)
+#define SetGraySample(q,sample) ((q)->red=(q)->green=(q)->blue=(sample))
+
+#define GetYSample(p) ((p)->red)
+#define GetCbSample(p) ((p)->green)
+#define GetCrSample(p) ((p)->blue)
+
+#define SetYSample(q,sample) ((q)->red=(sample))
+#define SetCbSample(q,sample) ((q)->green=(sample))
+#define SetCrSample(q,sample) ((q)->blue=(sample))
+
+#define GetCyanSample(p) ((p)->red)
+#define GetMagentaSample(p) ((p)->green)
+#define GetYellowSample(p) ((p)->blue)
+#define GetBlackSample(p) ((p)->opacity)
+
+#define SetCyanSample(q,sample) ((q)->red=(sample))
+#define SetMagentaSample(q,sample) ((q)->green=(sample))
+#define SetYellowSample(q,sample) ((q)->blue=(sample))
+#define SetBlackSample(q,sample) ((q)->opacity=(sample))
+
 typedef struct _LongPixelPacket
 {
   unsigned long

@@ -1493,7 +1493,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelKurtosis(image,channel,&kurtosis,&skewness,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",kurtosis);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.15g",kurtosis);
     }
   if (LocaleNCompare(symbol,"maxima",6) == 0)
     {
@@ -1502,7 +1502,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",maxima);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.15g",maxima);
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
     {
@@ -1512,7 +1512,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",mean);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.15g",mean);
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
     {
@@ -1521,7 +1521,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",minima);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.15g",minima);
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
     {
@@ -1531,7 +1531,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelKurtosis(image,channel,&kurtosis,&skewness,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",skewness);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.15g",skewness);
     }
   if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
     {
@@ -1541,7 +1541,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.15g",
         standard_deviation);
     }
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
@@ -2542,7 +2542,8 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             }
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          (void) FormatMagickString(numeric,MaxTextExtent,"%g",(double) *beta);
+          (void) FormatMagickString(numeric,MaxTextExtent,"%.15g",(double)
+            *beta);
           (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(numeric));
@@ -2702,7 +2703,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
-            (void) fprintf(fx_info->file,"%s[%ld,%ld].%s: %s=%g\n",
+            (void) fprintf(fx_info->file,"%s[%ld,%ld].%s: %s=%.15g\n",
               fx_info->images->filename,x,y,type,subexpression,(double) alpha);
           return(0.0);
         }
@@ -4036,7 +4037,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
           caption_image->background_color=image->border_color;
           (void) SetImageBackgroundColor(caption_image);
           (void) CloneString(&annotate_info->text,caption);
-          (void) FormatMagickString(geometry,MaxTextExtent,"+0+%g",
+          (void) FormatMagickString(geometry,MaxTextExtent,"+0+%.15g",
             metrics.ascent);
           if (annotate_info->gravity == UndefinedGravity)
             (void) CloneString(&annotate_info->geometry,AcquireString(
@@ -5688,8 +5689,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   (void) QueryColorDatabase("#ffffff",&draw_info->fill,exception);
   (void) QueryColorDatabase("#ffffff",&draw_info->stroke,exception);
   (void) FormatMagickString(ellipse,MaxTextExtent,
-    "ellipse %g,%g,%g,%g,0.0,360.0",image->columns/2.0,image->rows/2.0,
-    image->columns/2.0-x,image->rows/2.0-y);
+    "ellipse %.15g,%.15g,%.15g,%.15g,0.0,360.0",image->columns/2.0,
+    image->rows/2.0,image->columns/2.0-x,image->rows/2.0-y);
   draw_info->primitive=AcquireString(ellipse);
   (void) DrawImage(oval_image,draw_info);
   draw_info=DestroyDrawInfo(draw_info);

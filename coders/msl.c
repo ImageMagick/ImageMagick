@@ -3211,7 +3211,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           if (*gamma == '\0')
-            (void) FormatMagickString(gamma,MaxTextExtent,"%g,%g,%g",
+            (void) FormatMagickString(gamma,MaxTextExtent,"%.15g,%.15g,%.15g",
               (double) pixel.red,(double) pixel.green,(double) pixel.blue);
           switch (channel)
           {
@@ -3962,7 +3962,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatMagickString(modulate,MaxTextExtent,"%g,%g,%g",
+          (void) FormatMagickString(modulate,MaxTextExtent,"%.15g,%.15g,%.15g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
           (void) ModulateImage(msl_info->image[n],modulate);
           break;
@@ -4809,31 +4809,31 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 *image;
 
               image=msl_info->attributes[n];
-              FormatImageProperty(image,"msl:font-metrics.pixels_per_em.x","%g",
-                metrics.pixels_per_em.x);
-              FormatImageProperty(image,"msl:font-metrics.pixels_per_em.y","%g",
-                metrics.pixels_per_em.y);
-              FormatImageProperty(image,"msl:font-metrics.ascent","%g",
+              FormatImageProperty(image,"msl:font-metrics.pixels_per_em.x",
+                "%.15g",metrics.pixels_per_em.x);
+              FormatImageProperty(image,"msl:font-metrics.pixels_per_em.y",
+                "%.15g",metrics.pixels_per_em.y);
+              FormatImageProperty(image,"msl:font-metrics.ascent","%.15g",
                 metrics.ascent);
-              FormatImageProperty(image,"msl:font-metrics.descent","%g",
+              FormatImageProperty(image,"msl:font-metrics.descent","%.15g",
                 metrics.descent);
-              FormatImageProperty(image,"msl:font-metrics.width","%g",
+              FormatImageProperty(image,"msl:font-metrics.width","%.15g",
                 metrics.width);
-              FormatImageProperty(image,"msl:font-metrics.height","%g",
+              FormatImageProperty(image,"msl:font-metrics.height","%.15g",
                 metrics.height);
-              FormatImageProperty(image,"msl:font-metrics.max_advance","%g",
+              FormatImageProperty(image,"msl:font-metrics.max_advance","%.15g",
                 metrics.max_advance);
-              FormatImageProperty(image,"msl:font-metrics.bounds.x1","%g",
+              FormatImageProperty(image,"msl:font-metrics.bounds.x1","%.15g",
                 metrics.bounds.x1);
-              FormatImageProperty(image,"msl:font-metrics.bounds.y1","%g",
+              FormatImageProperty(image,"msl:font-metrics.bounds.y1","%.15g",
                 metrics.bounds.y1);
-              FormatImageProperty(image,"msl:font-metrics.bounds.x2","%g",
+              FormatImageProperty(image,"msl:font-metrics.bounds.x2","%.15g",
                 metrics.bounds.x2);
-              FormatImageProperty(image,"msl:font-metrics.bounds.y2","%g",
+              FormatImageProperty(image,"msl:font-metrics.bounds.y2","%.15g",
                 metrics.bounds.y2);
-              FormatImageProperty(image,"msl:font-metrics.origin.x","%g",
+              FormatImageProperty(image,"msl:font-metrics.origin.x","%.15g",
                 metrics.origin.x);
-              FormatImageProperty(image,"msl:font-metrics.origin.y","%g",
+              FormatImageProperty(image,"msl:font-metrics.origin.y","%.15g",
                 metrics.origin.y);
             }
           draw_info=DestroyDrawInfo(draw_info);
