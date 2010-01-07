@@ -590,12 +590,10 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
         }
       status=BindCLParameters(cl_info,image,pixels,kernel->values,
         kernel->width,kernel->height,convolve_pixels);
-      if (status == MagickFalse)
-        continue;
-      status=EnqueueKernel(cl_info,image);
-      if (status == MagickFalse)
-        continue;
-      (void) CopyMagickMemory(pixels,convolve_pixels,length);
+      if (status != MagickFalse)
+        status=EnqueueKernel(cl_info,image);
+      if (status != MagickFalse)
+        (void) CopyMagickMemory(pixels,convolve_pixels,length);
       DestroyCLBuffers(cl_info);
       convolve_image=DestroyImage(convolve_image);
     }
