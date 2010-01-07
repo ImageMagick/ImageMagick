@@ -1143,7 +1143,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->red=ScaleShortToQuantum((unsigned short) red);
             q->green=ScaleShortToQuantum((unsigned short) green);
             q->blue=ScaleShortToQuantum((unsigned short) blue);
-            SetOpacitySample(q,OpaqueOpacity);
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
               q->opacity=ScaleShortToQuantum((unsigned short) opacity);
             q++;
@@ -1231,7 +1231,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->red=ScaleShortToQuantum((unsigned short) red);
             q->green=ScaleShortToQuantum((unsigned short) green);
             q->blue=ScaleShortToQuantum((unsigned short) blue);
-            SetOpacitySample(q,OpaqueOpacity);
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
               q->opacity=ScaleShortToQuantum((unsigned short) opacity);
             q++;
@@ -1732,9 +1732,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(GetBlueSample(p));
-            *q++=ScaleQuantumToChar(GetGreenSample(p));
-            *q++=ScaleQuantumToChar(GetRedSample(p));
+            *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+            *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+            *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
             p++;
           }
           for (x=3L*(long) image->columns; x < (long) bytes_per_line; x++)
@@ -1761,10 +1761,10 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(GetBlueSample(p));
-            *q++=ScaleQuantumToChar(GetGreenSample(p));
-            *q++=ScaleQuantumToChar(GetRedSample(p));
-            *q++=ScaleQuantumToChar(GetOpacitySample(p));
+            *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+            *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+            *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+            *q++=ScaleQuantumToChar(GetOpacityPixelComponent(p));
             p++;
           }
           if (image->previous == (Image *) NULL)

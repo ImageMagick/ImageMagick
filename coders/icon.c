@@ -1079,13 +1079,13 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               q=pixels+(next->rows-y-1)*bytes_per_line;
               for (x=0; x < (long) next->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetBlueSample(p));
-                *q++=ScaleQuantumToChar(GetGreenSample(p));
-                *q++=ScaleQuantumToChar(GetRedSample(p));
+                *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+                *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+                *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
                 if (next->matte == MagickFalse)
                   *q++=ScaleQuantumToChar(QuantumRange);
                 else
-                  *q++=ScaleQuantumToChar(QuantumRange-GetOpacitySample(p));
+                  *q++=ScaleQuantumToChar(QuantumRange-GetOpacityPixelComponent(p));
                 p++;
               }
               if (icon_info.bits_per_pixel == 24)

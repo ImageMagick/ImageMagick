@@ -1126,11 +1126,11 @@ static inline double MagickMax(const MagickRealType x,const MagickRealType y)
 
 /* incr change if the value being assigned changed */
 #define Assign(channel,value) \
-  { q->channel = RoundToQuantum(value); \
+  { q->channel = ClampToQuantum(value); \
     if ( p[r].channel != q->channel ) changed++; \
   }
 #define AssignIndex(value) \
-  { q_indexes[x] = RoundToQuantum(value); \
+  { q_indexes[x] = ClampToQuantum(value); \
     if ( p_indexes[r] != q_indexes[x] ) changed++; \
   }
 
@@ -1522,24 +1522,24 @@ static unsigned long MorphologyApply(const Image *image, Image
             ** which may have a distance that reachs a maximum gradient.
             */
             if ((channel & RedChannel) != 0)
-              { q->red = RoundToQuantum(result.red);
+              { q->red = ClampToQuantum(result.red);
                 if ( q->red == QuantumRange ) changed++; /* more to do */
               }
             if ((channel & GreenChannel) != 0)
-              { q->green = RoundToQuantum(result.green);
+              { q->green = ClampToQuantum(result.green);
                 if ( q->green == QuantumRange ) changed++; /* more to do */
               }
             if ((channel & BlueChannel) != 0)
-              { q->blue = RoundToQuantum(result.blue);
+              { q->blue = ClampToQuantum(result.blue);
                 if ( q->blue == QuantumRange ) changed++; /* more to do */
               }
             if ((channel & OpacityChannel) != 0)
-              { q->opacity = RoundToQuantum(QuantumRange-result.opacity);
+              { q->opacity = ClampToQuantum(QuantumRange-result.opacity);
                 if ( q->opacity == 0 ) changed++; /* more to do */
               }
             if (((channel & IndexChannel) != 0) &&
                 (image->colorspace == CMYKColorspace))
-              { q_indexes[x] = RoundToQuantum(result.index);
+              { q_indexes[x] = ClampToQuantum(result.index);
                 if ( q_indexes[x] == QuantumRange ) changed++;
               }
 #endif

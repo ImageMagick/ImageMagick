@@ -343,16 +343,16 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
           if (image->colorspace == CMYKColorspace)
             ConvertRGBToCMYK(&fill);
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(fill.red);
+            q->red=ClampToQuantum(fill.red);
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(fill.green);
+            q->green=ClampToQuantum(fill.green);
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(fill.blue);
+            q->blue=ClampToQuantum(fill.blue);
           if ((channel & OpacityChannel) != 0)
-            q->opacity=RoundToQuantum(fill.opacity);
+            q->opacity=ClampToQuantum(fill.opacity);
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            indexes[x]=RoundToQuantum(fill.index);
+            indexes[x]=ClampToQuantum(fill.index);
         }
       p++;
       q++;
@@ -822,16 +822,16 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
       if (IsMagickColorSimilar(&pixel,target) != invert)
         {
           if ((channel & RedChannel) != 0)
-            q->red=RoundToQuantum(fill->red);
+            q->red=ClampToQuantum(fill->red);
           if ((channel & GreenChannel) != 0)
-            q->green=RoundToQuantum(fill->green);
+            q->green=ClampToQuantum(fill->green);
           if ((channel & BlueChannel) != 0)
-            q->blue=RoundToQuantum(fill->blue);
+            q->blue=ClampToQuantum(fill->blue);
           if ((channel & OpacityChannel) != 0)
-            q->opacity=RoundToQuantum(fill->opacity);
+            q->opacity=ClampToQuantum(fill->opacity);
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            indexes[x]=RoundToQuantum(fill->index);
+            indexes[x]=ClampToQuantum(fill->index);
         }
       q++;
     }

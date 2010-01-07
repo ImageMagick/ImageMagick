@@ -404,7 +404,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[i]=1.0;
         if (resample_filter->image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacityPixelComponent(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -450,7 +450,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[i]=1.0;
         if (resample_filter->image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacityPixelComponent(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -624,7 +624,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[i]=1.0;
         if (resample_filter->image->matte != MagickFalse)
           {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
+            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-GetOpacityPixelComponent(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
@@ -787,7 +787,7 @@ static MagickBooleanType InterpolateResampleFilter(
           alpha[n]=1.0;
           if (resample_filter->image->matte != MagickFalse)
             {
-              alpha[n]=QuantumScale*((MagickRealType) QuantumRange-GetOpacitySample(p));
+              alpha[n]=QuantumScale*((MagickRealType) QuantumRange-GetOpacityPixelComponent(p));
               pixels[n].red*=alpha[n];
               pixels[n].green*=alpha[n];
               pixels[n].blue*=alpha[n];
@@ -1132,13 +1132,13 @@ MagickExport MagickBooleanType ResamplePixelColor(
     Finialize results of resampling
   */
   divisor_m = 1.0/divisor_m;
-  pixel->opacity = (MagickRealType) RoundToQuantum(divisor_m*pixel->opacity);
+  pixel->opacity = (MagickRealType) ClampToQuantum(divisor_m*pixel->opacity);
   divisor_c = 1.0/divisor_c;
-  pixel->red   = (MagickRealType) RoundToQuantum(divisor_c*pixel->red);
-  pixel->green = (MagickRealType) RoundToQuantum(divisor_c*pixel->green);
-  pixel->blue  = (MagickRealType) RoundToQuantum(divisor_c*pixel->blue);
+  pixel->red   = (MagickRealType) ClampToQuantum(divisor_c*pixel->red);
+  pixel->green = (MagickRealType) ClampToQuantum(divisor_c*pixel->green);
+  pixel->blue  = (MagickRealType) ClampToQuantum(divisor_c*pixel->blue);
   if (resample_filter->image->colorspace == CMYKColorspace)
-    pixel->index = (MagickRealType) RoundToQuantum(divisor_c*pixel->index);
+    pixel->index = (MagickRealType) ClampToQuantum(divisor_c*pixel->index);
   return(MagickTrue);
 }
 

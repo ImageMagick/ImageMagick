@@ -24,6 +24,8 @@ extern "C" {
 
 #include "magick/semaphore.h"
 
+#define RoundToQuantum(quantum)  ClampToQuantum(quantum)
+
 typedef enum
 {
   UndefinedEndian,
@@ -79,7 +81,7 @@ typedef enum
 typedef struct _QuantumInfo
   QuantumInfo;
 
-static inline Quantum RoundToQuantum(const MagickRealType value)
+static inline Quantum ClampToQuantum(const MagickRealType value)
 {
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) value);

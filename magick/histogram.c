@@ -161,11 +161,11 @@ static inline unsigned long ColorToNodeId(const Image *image,
     id;
 
   id=(unsigned long) (
-    ((ScaleQuantumToChar(RoundToQuantum(pixel->red)) >> index) & 0x01) |
-    ((ScaleQuantumToChar(RoundToQuantum(pixel->green)) >> index) & 0x01) << 1 |
-    ((ScaleQuantumToChar(RoundToQuantum(pixel->blue)) >> index) & 0x01) << 2);
+    ((ScaleQuantumToChar(ClampToQuantum(pixel->red)) >> index) & 0x01) |
+    ((ScaleQuantumToChar(ClampToQuantum(pixel->green)) >> index) & 0x01) << 1 |
+    ((ScaleQuantumToChar(ClampToQuantum(pixel->blue)) >> index) & 0x01) << 2);
   if (image->matte != MagickFalse)
-    id|=((ScaleQuantumToChar(RoundToQuantum(pixel->opacity)) >> index) &
+    id|=((ScaleQuantumToChar(ClampToQuantum(pixel->opacity)) >> index) &
       0x01) << 3;
   return(id);
 }

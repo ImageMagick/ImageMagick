@@ -407,10 +407,10 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
       break;
     if (PixelIntensityToQuantum(r) > ((Quantum) QuantumRange/2))
       {
-        SetRedSample(q,GetRedSample(p));
-        SetGreenSample(q,GetGreenSample(p));
-        SetBlueSample(q,GetBlueSample(p));
-        SetOpacitySample(q,GetOpacitySample(p));
+        SetRedPixelComponent(q,GetRedPixelComponent(p));
+        SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+        SetBluePixelComponent(q,GetBluePixelComponent(p));
+        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
         if (cache_info->active_index_channel != MagickFalse)
           nexus_indexes[i]=indexes[i];
       }
@@ -3862,10 +3862,10 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     SetMagickPixelPacket(image,q,nexus_indexes+i,&beta);
     MagickPixelCompositeMask(&beta,(MagickRealType) PixelIntensityToQuantum(r),
       &alpha,alpha.opacity,&beta);
-    q->red=RoundToQuantum(beta.red);
-    q->green=RoundToQuantum(beta.green);
-    q->blue=RoundToQuantum(beta.blue);
-    q->opacity=RoundToQuantum(beta.opacity);
+    q->red=ClampToQuantum(beta.red);
+    q->green=ClampToQuantum(beta.green);
+    q->blue=ClampToQuantum(beta.blue);
+    q->opacity=ClampToQuantum(beta.opacity);
     if (cache_info->active_index_channel != MagickFalse)
       nexus_indexes[i]=indexes[i];
     p++;

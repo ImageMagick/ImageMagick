@@ -25,38 +25,44 @@ extern "C" {
 #include <magick/colorspace.h>
 #include <magick/constitute.h>
 
-#define GetRedSample(p) ((p)->red)
-#define GetGreenSample(p) ((p)->green)
-#define GetBlueSample(p) ((p)->blue)
-#define GetOpacitySample(p) ((p)->opacity)
-#define GetIndexSample(p) ((p)->index)
+#define ClampRedPixelComponent(p) ClampToQuantum((p)->red)
+#define ClampGreenPixelComponent(p) ClampToQuantum((p)->green)
+#define ClampBluePixelComponent(p) ClampToQuantum((p)->blue)
+#define ClampOpacityPixelComponent(p) ClampToQuantum((p)->opacity)
+#define ClampIndexPixelComponent(p) ClampToQuantum((p)->index)
 
-#define SetRedSample(q,sample) ((q)->red=(sample))
-#define SetGreenSample(q,sample) ((q)->green=(sample))
-#define SetBlueSample(q,sample) ((q)->blue=(sample))
-#define SetOpacitySample(q,sample) ((q)->opacity=(sample))
-#define SetIndexSample(q,sample) ((q)->index=(sample))
+#define GetRedPixelComponent(p) ((p)->red)
+#define GetGreenPixelComponent(p) ((p)->green)
+#define GetBluePixelComponent(p) ((p)->blue)
+#define GetOpacityPixelComponent(p) ((p)->opacity)
+#define GetIndexPixelComponent(p) ((p)->index)
 
-#define GetGraySample(p) ((p)->red)
-#define SetGraySample(q,sample) ((q)->red=(q)->green=(q)->blue=(sample))
+#define SetRedPixelComponent(q,component) ((q)->red=(component))
+#define SetGreenPixelComponent(q,component) ((q)->green=(component))
+#define SetBluePixelComponent(q,component) ((q)->blue=(component))
+#define SetOpacityPixelComponent(q,component) ((q)->opacity=(component))
+#define SetIndexPixelComponent(q,component) ((q)->index=(component))
 
-#define GetYSample(p) ((p)->red)
-#define GetCbSample(p) ((p)->green)
-#define GetCrSample(p) ((p)->blue)
+#define GetGrayPixelComponent(p) ((p)->red)
+#define SetGrayPixelComponent(q,component) ((q)->red=(q)->green=(q)->blue=(component))
 
-#define SetYSample(q,sample) ((q)->red=(sample))
-#define SetCbSample(q,sample) ((q)->green=(sample))
-#define SetCrSample(q,sample) ((q)->blue=(sample))
+#define GetYPixelComponent(p) ((p)->red)
+#define GetCbPixelComponent(p) ((p)->green)
+#define GetCrPixelComponent(p) ((p)->blue)
 
-#define GetCyanSample(p) ((p)->red)
-#define GetMagentaSample(p) ((p)->green)
-#define GetYellowSample(p) ((p)->blue)
-#define GetBlackSample(p) ((p)->opacity)
+#define SetYPixelComponent(q,component) ((q)->red=(component))
+#define SetCbPixelComponent(q,component) ((q)->green=(component))
+#define SetCrPixelComponent(q,component) ((q)->blue=(component))
 
-#define SetCyanSample(q,sample) ((q)->red=(sample))
-#define SetMagentaSample(q,sample) ((q)->green=(sample))
-#define SetYellowSample(q,sample) ((q)->blue=(sample))
-#define SetBlackSample(q,sample) ((q)->opacity=(sample))
+#define GetCyanPixelComponent(p) ((p)->red)
+#define GetMagentaPixelComponent(p) ((p)->green)
+#define GetYellowPixelComponent(p) ((p)->blue)
+#define GetBlackPixelComponent(p) ((p)->opacity)
+
+#define SetCyanPixelComponent(q,component) ((q)->red=(component))
+#define SetMagentaPixelComponent(q,component) ((q)->green=(component))
+#define SetYellowPixelComponent(q,component) ((q)->blue=(component))
+#define SetBlackPixelComponent(q,component) ((q)->opacity=(component))
 
 typedef struct _LongPixelPacket
 {

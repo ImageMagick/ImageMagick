@@ -855,22 +855,22 @@ static void GetImageBackgroundColor(Image *image,const long offset,
     {
       if ((x >= offset) && (x < ((long) image->columns-offset)))
         continue;
-      background.red+=QuantumScale*GetRedSample(p);
-      background.green+=QuantumScale*GetGreenSample(p);
-      background.blue+=QuantumScale*GetBlueSample(p);
-      background.opacity+=QuantumScale*GetOpacitySample(p);
+      background.red+=QuantumScale*GetRedPixelComponent(p);
+      background.green+=QuantumScale*GetGreenPixelComponent(p);
+      background.blue+=QuantumScale*GetBluePixelComponent(p);
+      background.opacity+=QuantumScale*GetOpacityPixelComponent(p);
       count++;
       p++;
     }
   }
   image_view=DestroyCacheView(image_view);
-  image->background_color.red=RoundToQuantum((MagickRealType) QuantumRange*
+  image->background_color.red=ClampToQuantum((MagickRealType) QuantumRange*
     background.red/count);
-  image->background_color.green=RoundToQuantum((MagickRealType) QuantumRange*
+  image->background_color.green=ClampToQuantum((MagickRealType) QuantumRange*
     background.green/count);
-  image->background_color.blue=RoundToQuantum((MagickRealType) QuantumRange*
+  image->background_color.blue=ClampToQuantum((MagickRealType) QuantumRange*
     background.blue/count);
-  image->background_color.opacity=RoundToQuantum((MagickRealType) QuantumRange*
+  image->background_color.opacity=ClampToQuantum((MagickRealType) QuantumRange*
     background.opacity/count);
 }
 

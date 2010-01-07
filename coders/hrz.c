@@ -161,7 +161,7 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q->red=4*ScaleCharToQuantum(*p++);
       q->green=4*ScaleCharToQuantum(*p++);
       q->blue=4*ScaleCharToQuantum(*p++);
-      SetOpacitySample(q,OpaqueOpacity);
+      SetOpacityPixelComponent(q,OpaqueOpacity);
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -325,9 +325,9 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (x=0; x < (long) hrz_image->columns; x++)
     {
-      *q++=ScaleQuantumToChar(GetRedSample(p))/4;
-      *q++=ScaleQuantumToChar(GetGreenSample(p))/4;
-      *q++=ScaleQuantumToChar(GetBlueSample(p))/4;
+      *q++=ScaleQuantumToChar(GetRedPixelComponent(p))/4;
+      *q++=ScaleQuantumToChar(GetGreenPixelComponent(p))/4;
+      *q++=ScaleQuantumToChar(GetBluePixelComponent(p))/4;
       p++;
     }
     count=WriteBlob(image,(size_t) (q-pixels),pixels);

@@ -291,32 +291,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=RoundToQuantum(QuantumRange*magnitude_source[i]);
+          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=RoundToQuantum(QuantumRange*magnitude_source[i]);
+          q->green=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=RoundToQuantum(QuantumRange*magnitude_source[i]);
+          q->blue=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=RoundToQuantum(QuantumRange*magnitude_source[i]);
+          q->opacity=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=RoundToQuantum(QuantumRange*magnitude_source[i]);
+          indexes[x]=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=RoundToQuantum(QuantumRange*magnitude_source[i]);
+          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
@@ -344,32 +344,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=RoundToQuantum(QuantumRange*phase_source[i]);
+          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=RoundToQuantum(QuantumRange*phase_source[i]);
+          q->green=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=RoundToQuantum(QuantumRange*phase_source[i]);
+          q->blue=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=RoundToQuantum(QuantumRange*phase_source[i]);
+          q->opacity=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=RoundToQuantum(QuantumRange*phase_source[i]);
+          indexes[x]=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=RoundToQuantum(QuantumRange*phase_source[i]);
+          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
@@ -447,22 +447,22 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          source[i]=QuantumScale*GetRedSample(p);
+          source[i]=QuantumScale*GetRedPixelComponent(p);
           break;
         }
         case GreenChannel:
         {
-          source[i]=QuantumScale*GetGreenSample(p);
+          source[i]=QuantumScale*GetGreenPixelComponent(p);
           break;
         }
         case BlueChannel:
         {
-          source[i]=QuantumScale*GetBlueSample(p);
+          source[i]=QuantumScale*GetBluePixelComponent(p);
           break;
         }
         case OpacityChannel:
         {
-          source[i]=QuantumScale*GetOpacitySample(p);
+          source[i]=QuantumScale*GetOpacityPixelComponent(p);
           break;
         }
         case IndexChannel:
@@ -472,7 +472,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          source[i]=QuantumScale*GetRedSample(p);
+          source[i]=QuantumScale*GetRedPixelComponent(p);
           break;
         }
       }
@@ -845,22 +845,22 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          magnitude_source[i]=QuantumScale*GetRedSample(p);
+          magnitude_source[i]=QuantumScale*GetRedPixelComponent(p);
           break;
         }
         case GreenChannel:
         {
-          magnitude_source[i]=QuantumScale*GetGreenSample(p);
+          magnitude_source[i]=QuantumScale*GetGreenPixelComponent(p);
           break;
         }
         case BlueChannel:
         {
-          magnitude_source[i]=QuantumScale*GetBlueSample(p);
+          magnitude_source[i]=QuantumScale*GetBluePixelComponent(p);
           break;
         }
         case OpacityChannel:
         {
-          magnitude_source[i]=QuantumScale*GetOpacitySample(p);
+          magnitude_source[i]=QuantumScale*GetOpacityPixelComponent(p);
           break;
         }
         case IndexChannel:
@@ -870,7 +870,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          magnitude_source[i]=QuantumScale*GetRedSample(p);
+          magnitude_source[i]=QuantumScale*GetRedPixelComponent(p);
           break;
         }
       }
@@ -894,22 +894,22 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          phase_source[i]=QuantumScale*GetRedSample(p);
+          phase_source[i]=QuantumScale*GetRedPixelComponent(p);
           break;
         }
         case GreenChannel:
         {
-          phase_source[i]=QuantumScale*GetGreenSample(p);
+          phase_source[i]=QuantumScale*GetGreenPixelComponent(p);
           break;
         }
         case BlueChannel:
         {
-          phase_source[i]=QuantumScale*GetBlueSample(p);
+          phase_source[i]=QuantumScale*GetBluePixelComponent(p);
           break;
         }
         case OpacityChannel:
         {
-          phase_source[i]=QuantumScale*GetOpacitySample(p);
+          phase_source[i]=QuantumScale*GetOpacityPixelComponent(p);
           break;
         }
         case IndexChannel:
@@ -919,7 +919,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          phase_source[i]=QuantumScale*GetRedSample(p);
+          phase_source[i]=QuantumScale*GetRedPixelComponent(p);
           break;
         }
       }
@@ -1048,32 +1048,32 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=RoundToQuantum(QuantumRange*source[i]);
+          q->red=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=RoundToQuantum(QuantumRange*source[i]);
+          q->green=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=RoundToQuantum(QuantumRange*source[i]);
+          q->blue=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=RoundToQuantum(QuantumRange*source[i]);
+          q->opacity=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=RoundToQuantum(QuantumRange*source[i]);
+          indexes[x]=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=RoundToQuantum(QuantumRange*source[i]);
+          q->red=ClampToQuantum(QuantumRange*source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;

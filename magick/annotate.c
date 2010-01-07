@@ -1695,7 +1695,7 @@ static MagickBooleanType RenderPostscript(Image *image,
         for (x=0; x < (long) annotate_image->columns; x++)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color);
-          q->opacity=RoundToQuantum(QuantumRange-(((QuantumRange-
+          q->opacity=ClampToQuantum(QuantumRange-(((QuantumRange-
             (MagickRealType) PixelIntensityToQuantum(q))*(QuantumRange-
             fill_color.opacity))/QuantumRange));
           q->red=fill_color.red;

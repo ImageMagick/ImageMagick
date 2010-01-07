@@ -146,7 +146,7 @@ static MagickRealType Bessel(const MagickRealType x,
 }
 
 static MagickRealType Blackman(const MagickRealType x,
-     const ResizeFilter *magick_unused(resize_filter))
+  const ResizeFilter *magick_unused(resize_filter))
 {
   /*
     Blackman: 2rd Order cosine windowing function.
@@ -155,7 +155,7 @@ static MagickRealType Blackman(const MagickRealType x,
 }
 
 static MagickRealType Bohman(const MagickRealType x,
-     const ResizeFilter *magick_unused(resize_filter))
+  const ResizeFilter *magick_unused(resize_filter))
 {
   /*
     Bohman: 2rd Order cosine windowing function.
@@ -1819,10 +1819,10 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             pixel.blue+=alpha*(p+j)->blue;
             pixel.opacity+=alpha*(p+j)->opacity;
           }
-          q->red=RoundToQuantum(pixel.red);
-          q->green=RoundToQuantum(pixel.green);
-          q->blue=RoundToQuantum(pixel.blue);
-          q->opacity=RoundToQuantum(pixel.opacity);
+          SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
+          SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
+          SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -1833,7 +1833,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
                 alpha=contribution[i].weight;
                 pixel.index+=alpha*indexes[j];
               }
-              resize_indexes[y]=(IndexPacket) RoundToQuantum(pixel.index);
+              resize_indexes[y]=(IndexPacket) ClampToQuantum(pixel.index);
             }
         }
       else
@@ -1855,10 +1855,10 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             gamma+=alpha;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
-          q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
-          q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
-          q->opacity=RoundToQuantum(pixel.opacity);
+          q->red=ClampToQuantum(gamma*GetRedPixelComponent(&pixel));
+          q->green=ClampToQuantum(gamma*GetGreenPixelComponent(&pixel));
+          q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
+          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -1870,7 +1870,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
                   QuantumRange-(p+j)->opacity);
                 pixel.index+=alpha*indexes[j];
               }
-              resize_indexes[y]=(IndexPacket) RoundToQuantum(gamma*GetIndexSample(&pixel));
+              resize_indexes[y]=(IndexPacket) ClampToQuantum(gamma*
+               GetIndexPixelComponent(&pixel));
             }
         }
       if ((resize_image->storage_class == PseudoClass) &&
@@ -2060,10 +2061,10 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             pixel.blue+=alpha*(p+j)->blue;
             pixel.opacity+=alpha*(p+j)->opacity;
           }
-          q->red=RoundToQuantum(pixel.red);
-          q->green=RoundToQuantum(pixel.green);
-          q->blue=RoundToQuantum(pixel.blue);
-          q->opacity=RoundToQuantum(pixel.opacity);
+          SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
+          SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
+          SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -2074,7 +2075,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
                 alpha=contribution[i].weight;
                 pixel.index+=alpha*indexes[j];
               }
-              resize_indexes[x]=(IndexPacket) RoundToQuantum(pixel.index);
+              resize_indexes[x]=(IndexPacket) ClampToQuantum(pixel.index);
             }
         }
       else
@@ -2096,10 +2097,10 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             gamma+=alpha;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          q->red=RoundToQuantum(gamma*GetRedSample(&pixel));
-          q->green=RoundToQuantum(gamma*GetGreenSample(&pixel));
-          q->blue=RoundToQuantum(gamma*GetBlueSample(&pixel));
-          q->opacity=RoundToQuantum(pixel.opacity);
+          q->red=ClampToQuantum(gamma*GetRedPixelComponent(&pixel));
+          q->green=ClampToQuantum(gamma*GetGreenPixelComponent(&pixel));
+          q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
+          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -2111,7 +2112,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
                   QuantumRange-(p+j)->opacity);
                 pixel.index+=alpha*indexes[j];
               }
-              resize_indexes[x]=(IndexPacket) RoundToQuantum(gamma*GetIndexSample(&pixel));
+              resize_indexes[x]=(IndexPacket) ClampToQuantum(gamma*
+                GetIndexPixelComponent(&pixel));
             }
         }
       if ((resize_image->storage_class == PseudoClass) &&
@@ -2556,11 +2558,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         indexes=GetVirtualIndexQueue(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          x_vector[x].red=(MagickRealType) GetRedSample(p);
-          x_vector[x].green=(MagickRealType) GetGreenSample(p);
-          x_vector[x].blue=(MagickRealType) GetBlueSample(p);
+          x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
+          x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
+          x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
           if (image->matte != MagickFalse)
-            x_vector[x].opacity=(MagickRealType) GetOpacitySample(p);
+            x_vector[x].opacity=(MagickRealType) GetOpacityPixelComponent(p);
           if (indexes != (IndexPacket *) NULL)
             x_vector[x].index=(MagickRealType) indexes[x];
           p++;
@@ -2584,11 +2586,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
               indexes=GetVirtualIndexQueue(image);
               for (x=0; x < (long) image->columns; x++)
               {
-                x_vector[x].red=(MagickRealType) GetRedSample(p);
-                x_vector[x].green=(MagickRealType) GetGreenSample(p);
-                x_vector[x].blue=(MagickRealType) GetBlueSample(p);
+                x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
+                x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
+                x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
                 if (image->matte != MagickFalse)
-                  x_vector[x].opacity=(MagickRealType) GetOpacitySample(p);
+                  x_vector[x].opacity=(MagickRealType) GetOpacityPixelComponent(p);
                 if (indexes != (IndexPacket *) NULL)
                   x_vector[x].index=(MagickRealType) indexes[x];
                 p++;
@@ -2620,11 +2622,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
             indexes=GetVirtualIndexQueue(image);
             for (x=0; x < (long) image->columns; x++)
             {
-              x_vector[x].red=(MagickRealType) GetRedSample(p);
-              x_vector[x].green=(MagickRealType) GetGreenSample(p);
-              x_vector[x].blue=(MagickRealType) GetBlueSample(p);
+              x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
+              x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
+              x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
               if (image->matte != MagickFalse)
-                x_vector[x].opacity=(MagickRealType) GetOpacitySample(p);
+                x_vector[x].opacity=(MagickRealType) GetOpacityPixelComponent(p);
               if (indexes != (IndexPacket *) NULL)
                 x_vector[x].index=(MagickRealType) indexes[x];
               p++;
@@ -2668,13 +2670,13 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         s=scanline;
         for (x=0; x < (long) scale_image->columns; x++)
         {
-          q->red=RoundToQuantum(s->red);
-          q->green=RoundToQuantum(s->green);
-          q->blue=RoundToQuantum(s->blue);
+          q->red=ClampToQuantum(s->red);
+          q->green=ClampToQuantum(s->green);
+          q->blue=ClampToQuantum(s->blue);
           if (scale_image->matte != MagickFalse)
-            q->opacity=RoundToQuantum(s->opacity);
+            q->opacity=ClampToQuantum(s->opacity);
           if (scale_indexes != (IndexPacket *) NULL)
-            scale_indexes[x]=(IndexPacket) RoundToQuantum(s->index);
+            scale_indexes[x]=(IndexPacket) ClampToQuantum(s->index);
           q++;
           s++;
         }
@@ -2764,13 +2766,13 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       t=scale_scanline;
       for (x=0; x < (long) scale_image->columns; x++)
       {
-        q->red=RoundToQuantum(t->red);
-        q->green=RoundToQuantum(t->green);
-        q->blue=RoundToQuantum(t->blue);
+        q->red=ClampToQuantum(t->red);
+        q->green=ClampToQuantum(t->green);
+        q->blue=ClampToQuantum(t->blue);
         if (scale_image->matte != MagickFalse)
-          q->opacity=RoundToQuantum(t->opacity);
+          q->opacity=ClampToQuantum(t->opacity);
         if (scale_indexes != (IndexPacket *) NULL)
-          scale_indexes[x]=(IndexPacket) RoundToQuantum(t->index);
+          scale_indexes[x]=(IndexPacket) ClampToQuantum(t->index);
         t++;
         q++;
       }

@@ -4723,7 +4723,7 @@ WandExport void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  opacity=RoundToQuantum((double) QuantumRange*(1.0-fill_opacity));
+  opacity=ClampToQuantum((double) QuantumRange*(1.0-fill_opacity));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->fill.opacity != opacity))
     {
@@ -4766,7 +4766,7 @@ WandExport void DrawSetOpacity(DrawingWand *wand,const double opacity)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  quantum_opacity=RoundToQuantum((double) QuantumRange*(1.0-opacity));
+  quantum_opacity=ClampToQuantum((double) QuantumRange*(1.0-opacity));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->opacity != quantum_opacity))
     {
@@ -5647,7 +5647,7 @@ WandExport void DrawSetStrokeOpacity(DrawingWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  opacity=RoundToQuantum((double) QuantumRange*(1.0-stroke_opacity));
+  opacity=ClampToQuantum((double) QuantumRange*(1.0-stroke_opacity));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->stroke.opacity != opacity))
     {
@@ -6132,7 +6132,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->fill.opacity=RoundToQuantum((MagickRealType)
+        CurrentContext->fill.opacity=ClampToQuantum((MagickRealType)
           QuantumRange*(1.0-StringToDouble(value)));
     }
   child=GetXMLTreeChild(xml_info,"fill-rule");
@@ -6295,7 +6295,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke.opacity=RoundToQuantum((MagickRealType)
+        CurrentContext->stroke.opacity=ClampToQuantum((MagickRealType)
           QuantumRange*(1.0-StringToDouble(value)));
     }
   child=GetXMLTreeChild(xml_info,"stroke-width");

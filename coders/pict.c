@@ -1930,12 +1930,12 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             }
           for (x=0; x < (long) image->columns; x++)
           {
-            *red++=ScaleQuantumToChar(GetRedSample(p));
-            *green++=ScaleQuantumToChar(GetGreenSample(p));
-            *blue++=ScaleQuantumToChar(GetBlueSample(p));
+            *red++=ScaleQuantumToChar(GetRedPixelComponent(p));
+            *green++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+            *blue++=ScaleQuantumToChar(GetBluePixelComponent(p));
             if (image->matte != MagickFalse)
               *opacity++=ScaleQuantumToChar((Quantum)
-                (QuantumRange-GetOpacitySample(p)));
+                (QuantumRange-GetOpacityPixelComponent(p)));
             p++;
           }
           count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,

@@ -633,7 +633,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte != MagickFalse)
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
+            alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
           if (reconstruct_image->matte != MagickFalse)
             beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
         }
@@ -1558,7 +1558,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
           offset->x=x;
           offset->y=y;
         }
-      q->red=RoundToQuantum(QuantumRange-QuantumRange*similarity);
+      q->red=ClampToQuantum(QuantumRange-QuantumRange*similarity);
       q->green=q->red;
       q->blue=q->red;
       q++;

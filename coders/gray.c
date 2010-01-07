@@ -232,9 +232,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            SetRedSample(q,GetRedSample(p));
-            SetGreenSample(q,GetGreenSample(p));
-            SetBlueSample(q,GetBlueSample(p));
+            SetRedPixelComponent(q,GetRedPixelComponent(p));
+            SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+            SetBluePixelComponent(q,GetBluePixelComponent(p));
             p++;
             q++;
           }

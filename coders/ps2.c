@@ -893,15 +893,15 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   else
                     if (image->colorspace != CMYKColorspace)
                       {
-                        *q++=ScaleQuantumToChar(GetRedSample(p));
-                        *q++=ScaleQuantumToChar(GetGreenSample(p));
-                        *q++=ScaleQuantumToChar(GetBlueSample(p));
+                        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+                        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+                        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
                       }
                     else
                       {
-                        *q++=ScaleQuantumToChar(GetRedSample(p));
-                        *q++=ScaleQuantumToChar(GetGreenSample(p));
-                        *q++=ScaleQuantumToChar(GetBlueSample(p));
+                        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+                        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+                        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
                         *q++=ScaleQuantumToChar(indexes[x]);
                       }
                   p++;
@@ -951,15 +951,15 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   else
                     if (image->colorspace != CMYKColorspace)
                       {
-                        Ascii85Encode(image,ScaleQuantumToChar(GetRedSample(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetGreenSample(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetBlueSample(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(GetGreenPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(GetBluePixelComponent(p)));
                       }
                     else
                       {
-                        Ascii85Encode(image,ScaleQuantumToChar(GetRedSample(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetGreenSample(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetBlueSample(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(GetGreenPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(GetBluePixelComponent(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(indexes[x]));
                       }
                   p++;

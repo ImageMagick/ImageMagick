@@ -97,14 +97,14 @@ static inline void SetMagickPixelPacketBias(const Image *image,
 static inline void SetPixelPacket(const Image *image,
   const MagickPixelPacket *pixel,PixelPacket *color,IndexPacket *index)
 {
-  color->red=RoundToQuantum(pixel->red);
-  color->green=RoundToQuantum(pixel->green);
-  color->blue=RoundToQuantum(pixel->blue);
-  color->opacity=RoundToQuantum(pixel->opacity);
+  color->red=ClampToQuantum(pixel->red);
+  color->green=ClampToQuantum(pixel->green);
+  color->blue=ClampToQuantum(pixel->blue);
+  color->opacity=ClampToQuantum(pixel->opacity);
   if (((image->colorspace == CMYKColorspace) ||
        (image->storage_class == PseudoClass)) &&
       (index != (const IndexPacket *) NULL))
-    *index=RoundToQuantum(pixel->index);
+    *index=ClampToQuantum(pixel->index);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

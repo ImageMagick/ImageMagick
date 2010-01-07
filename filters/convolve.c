@@ -139,7 +139,7 @@ typedef struct _CLInfo
 
 static char
   *convolve_program =
-    "static long AuthenticPixel(const long offset,const ulong range)\n"
+    "static long ClampToCanvas(const long offset,const ulong range)\n"
     "{\n"
     "  if (offset < 0)\n"
     "    return(0);\n"
@@ -148,7 +148,7 @@ static char
     "  return(offset);\n"
     "}\n"
     "\n"
-    "static CLQuantumType AuthenticQuantum(const double value)\n"
+    "static CLQuantumType ClampToQuantum(const double value)\n"
     "{\n"
     "#if !defined(MAGICKCORE_HDRI_SUPPORT)\n"
     "  if (value < 0)\n"
@@ -198,8 +198,8 @@ static char
     "      {\n"
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          index=AuthenticPixel(y+v,rows)*columns+\n"
-    "            AuthenticPixel(x+u,columns);\n"
+    "          index=ClampToCanvas(y+v,rows)*columns+\n"
+    "            ClampToCanvas(x+u,columns);\n"
     "          sum.x+=filter[i]*input[index].x;\n"
     "          sum.y+=filter[i]*input[index].y;\n"
     "          sum.z+=filter[i]*input[index].z;\n"
@@ -215,8 +215,8 @@ static char
     "      {\n"
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          index=AuthenticPixel(y+v,rows)*columns+\n"
-    "            AuthenticPixel(x+u,columns);\n"
+    "          index=ClampToCanvas(y+v,rows)*columns+\n"
+    "            ClampToCanvas(x+u,columns);\n"
     "          alpha=scale*(QuantumRange-input[index].w);\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
     "          sum.y+=alpha*filter[i]*input[index].y;\n"
@@ -265,13 +265,13 @@ static char
     "  }\n"
     "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
     "  index=y*columns+x;\n"
-    "  output[index].x=AuthenticQuantum(gamma*sum.x);\n"
-    "  output[index].y=AuthenticQuantum(gamma*sum.y);\n"
-    "  output[index].z=AuthenticQuantum(gamma*sum.z);\n"
+    "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
+    "  output[index].y=ClampToQuantum(gamma*sum.y);\n"
+    "  output[index].z=ClampToQuantum(gamma*sum.z);\n"
     "  if (matte == false)\n"
     "    output[index].w=input[index].w;\n"
     "  else\n"
-    "    output[index].w=AuthenticQuantum(sum.w);\n"
+    "    output[index].w=ClampToQuantum(sum.w);\n"
     "}\n";
 
 static void OpenCLNotify(const char *message,const void *data,size_t length,
