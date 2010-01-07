@@ -395,15 +395,15 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         undercolor_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         undercolor_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         (void) FormatMagickString(primitive,MaxTextExtent,
-          "rectangle 0,0 %g,%lu",metrics.origin.x,height);
+          "rectangle 0,0 %.15g,%lu",metrics.origin.x,height);
         (void) CloneString(&undercolor_info->primitive,primitive);
         (void) DrawImage(image,undercolor_info);
         (void) DestroyDrawInfo(undercolor_info);
       }
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
-    (void) FormatMagickString(primitive,MaxTextExtent,"stroke-width %g "
-      "line 0,0 %g,0",metrics.underline_thickness,metrics.width);
+    (void) FormatMagickString(primitive,MaxTextExtent,"stroke-width %.15g "
+      "line 0,0 %.15g,0",metrics.underline_thickness,metrics.width);
     if (annotate->decorate == OverlineDecoration)
       {
         annotate_info->affine.ty-=(draw_info->affine.sy*(metrics.ascent+
@@ -731,9 +731,9 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
   status=RenderType(image,annotate_info,&offset,metrics);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),"Metrics: text: %s; "
-      "width: %g; height: %g; ascent: %g; descent: %g; max advance: %g; "
-      "bounds: %g,%g  %g,%g; origin: %g,%g; pixels per em: %g,%g; "
-      "underline position: %g; underline thickness: %g",annotate_info->text,
+      "width: %.15g; height: %.15g; ascent: %.15g; descent: %.15g; max advance: %.15g; "
+      "bounds: %.15g,%.15g  %.15g,%.15g; origin: %.15g,%.15g; pixels per em: %.15g,%.15g; "
+      "underline position: %.15g; underline thickness: %.15g",annotate_info->text,
       metrics->width,metrics->height,metrics->ascent,metrics->descent,
       metrics->max_advance,metrics->bounds.x1,metrics->bounds.y1,
       metrics->bounds.x2,metrics->bounds.y2,metrics->origin.x,metrics->origin.y,
@@ -885,9 +885,10 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"C%g,%g %g,%g %g,%g",
-    affine.tx+p->x/64.0,affine.ty-p->y/64.0,affine.tx+q->x/64.0,
-    affine.ty-q->y/64.0,affine.tx+to->x/64.0,affine.ty-to->y/64.0);
+  (void) FormatMagickString(path,MaxTextExtent,
+    "C%.15g,%.15g %.15g,%.15g %.15g,%.15g",affine.tx+p->x/64.0,affine.ty-
+    p->y/64.0,affine.tx+q->x/64.0,affine.ty-q->y/64.0,affine.tx+to->x/64.0,
+    affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -901,8 +902,8 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"L%g,%g",affine.tx+to->x/64.0,
-    affine.ty-to->y/64.0);
+  (void) FormatMagickString(path,MaxTextExtent,"L%.15g,%.15g",affine.tx+
+    to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -916,8 +917,8 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"M%g,%g",affine.tx+to->x/64.0,
-    affine.ty-to->y/64.0);
+  (void) FormatMagickString(path,MaxTextExtent,"M%.15g,%.15g",affine.tx+
+    to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -932,7 +933,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"Q%g,%g %g,%g",
+  (void) FormatMagickString(path,MaxTextExtent,"Q%.15g,%.15g %.15g,%.15g",
     affine.tx+control->x/64.0,affine.ty-control->y/64.0,affine.tx+to->x/64.0,
     affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
@@ -1137,7 +1138,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),"Font %s; "
-      "font-encoding %s; text-encoding %s; pointsize %g",
+      "font-encoding %s; text-encoding %s; pointsize %.15g",
       draw_info->font != (char *) NULL ? draw_info->font : "none",
       encoding != (char *) NULL ? encoding : "none",
       draw_info->encoding != (char *) NULL ? draw_info->encoding : "none",
@@ -1528,7 +1529,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   */
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
-      "Font %s; pointsize %g",draw_info->font != (char *) NULL ?
+      "Font %s; pointsize %.15g",draw_info->font != (char *) NULL ?
       draw_info->font : "none",draw_info->pointsize);
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
@@ -1568,9 +1569,9 @@ static MagickBooleanType RenderPostscript(Image *image,
     if (point.y > extent.y)
       extent.y=point.y;
   }
-  (void) fprintf(file,"%g %g moveto\n",identity  != MagickFalse ? 0.0 :
+  (void) fprintf(file,"%.15g %.15g moveto\n",identity  != MagickFalse ? 0.0 :
     extent.x/2.0,extent.y/2.0);
-  (void) fprintf(file,"%g %g scale\n",draw_info->pointsize,
+  (void) fprintf(file,"%.15g %.15g scale\n",draw_info->pointsize,
     draw_info->pointsize);
   if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0') ||
       (strchr(draw_info->font,'/') != (char *) NULL))
@@ -1579,8 +1580,9 @@ static MagickBooleanType RenderPostscript(Image *image,
   else
     (void) fprintf(file,"/%s-ISO dup /%s ReencodeType findfont setfont\n",
       draw_info->font,draw_info->font);
-  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
-    -draw_info->affine.rx,-draw_info->affine.ry,draw_info->affine.sy);
+  (void) fprintf(file,"[%.15g %.15g %.15g %.15g 0 0] concat\n",
+    draw_info->affine.sx,-draw_info->affine.rx,-draw_info->affine.ry,
+    draw_info->affine.sy);
   text=EscapeParenthesis(draw_info->text);
   if (identity == MagickFalse)
     (void) fprintf(file,"(%s) stringwidth pop -0.5 mul -0.5 rmoveto\n",text);
@@ -1884,7 +1886,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
-      "Font %s; pointsize %g",draw_info->font != (char *) NULL ?
+      "Font %s; pointsize %.15g",draw_info->font != (char *) NULL ?
       draw_info->font : "none",draw_info->pointsize);
   cache_info=(*draw_info);
   annotate_info.font_info=font_info;

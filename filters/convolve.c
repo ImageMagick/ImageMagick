@@ -83,24 +83,24 @@
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantumType=float " \
-  "-DCLPixelType=float4 -DQuantumRange=%g -DMagickEpsilon=%g"
+  "-DCLPixelType=float4 -DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_ufloat4
 #else
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define CLOptions "-DCLQuantumType=uchar -DCLPixelType=uchar4 " \
-  "-DQuantumRange=%g -DMagickEpsilon=%g"
+  "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_uchar4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define CLOptions "-DCLQuantumType=ushort -DCLPixelType=ushort4 " \
-  "-DQuantumRange=%g -DMagickEpsilon=%g"
+  "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_ushort4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define CLOptions "-DCLQuantumType=uint -DCLPixelType=uint4 " \
-  "-DQuantumRange=%g -DMagickEpsilon=%g"
+  "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_uint4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define CLOptions "-DCLQuantumType=ulong -DCLPixelType=ulong4 " \
-  "-DQuantumRange=%g -DMagickEpsilon=%g"
+  "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_ulong4
 #endif
 #endif

@@ -421,10 +421,10 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      ghostline: %s",
       p->ghostline != MagickFalse ? "transparent" : "opaque");
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-      "      bounds: %g,%g - %g,%g",p->bounds.x1,p->bounds.y1,p->bounds.x2,
-      p->bounds.y2);
+      "      bounds: %.15g,%.15g - %.15g,%.15g",p->bounds.x1,p->bounds.y1,
+      p->bounds.x2,p->bounds.y2);
     for (j=0; j < (long) p->number_points; j++)
-      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"        %g,%g",
+      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"        %.15g,%.15g",
         p->points[j].x,p->points[j].y);
     p++;
   }
@@ -686,7 +686,7 @@ static void LogPathInfo(const PathInfo *path_info)
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin vector-path");
   for (p=path_info; p->code != EndCode; p++)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-      "      %g,%g %s",p->point.x,p->point.y,p->code == GhostlineCode ?
+      "      %.15g,%.15g %s",p->point.x,p->point.y,p->code == GhostlineCode ?
       "moveto ghostline" : p->code == OpenCode ? "moveto open" :
       p->code == MoveToCode ? "moveto" : p->code == LineToCode ? "lineto" :
       "?");
@@ -2373,7 +2373,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 (void) FormatMagickString(key,MaxTextExtent,"%s",name);
                 (void) SetImageArtifact(image,key,token);
                 (void) FormatMagickString(key,MaxTextExtent,"%s-geometry",name);
-                (void) FormatMagickString(geometry,MaxTextExtent,"%gx%g%+f%+f",
+                (void) FormatMagickString(geometry,MaxTextExtent,
+                  "%.15gx%.15g%+.15g%+.15g",
                   MagickMax(fabs(bounds.x2-bounds.x1+1.0),1.0),
                   MagickMax(fabs(bounds.y2-bounds.y1+1.0),1.0),
                   bounds.x1,bounds.y1);
@@ -4100,11 +4101,11 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     point=primitive_info[i].point;
     if ((fabs(q.x-point.x) > MagickEpsilon) ||
         (fabs(q.y-point.y) > MagickEpsilon))
-      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      %ld: %g,%g",
-        coordinates,point.x,point.y);
+      (void) LogMagickEvent(DrawEvent,GetMagickModule(),
+        "      %ld: %.18g,%.18g",coordinates,point.x,point.y);
     else
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "      %ld: %g,%g (duplicate)",coordinates,point.x,point.y);
+        "      %ld: %.15g,%.15g (duplicate)",coordinates,point.x,point.y);
     q=point;
     coordinates--;
     if (coordinates > 0)
@@ -4143,7 +4144,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
         "  begin draw-primitive");
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "    affine: %g,%g,%g,%g,%g,%g",draw_info->affine.sx,
+        "    affine: %.15g,%.15g,%.15g,%.15g,%.15g,%.15g",draw_info->affine.sx,
         draw_info->affine.rx,draw_info->affine.ry,draw_info->affine.sy,
         draw_info->affine.tx,draw_info->affine.ty);
     }
@@ -4458,7 +4459,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           /*
             Resize image.
           */
-          (void) FormatMagickString(geometry,MaxTextExtent,"%gx%g!",
+          (void) FormatMagickString(geometry,MaxTextExtent,"%.15gx%.15g!",
             primitive_info[1].point.x,primitive_info[1].point.y);
           composite_image->filter=image->filter;
           (void) TransformImage(&composite_image,(char *) NULL,geometry);

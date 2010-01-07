@@ -444,9 +444,9 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       */
       (void) fprintf(stdout,"Fuzzy C-means Statistics\n");
       (void) fprintf(stdout,"===================\n\n");
-      (void) fprintf(stdout,"\tCluster Threshold = %g\n",(double)
+      (void) fprintf(stdout,"\tCluster Threshold = %.15g\n",(double)
         cluster_threshold);
-      (void) fprintf(stdout,"\tWeighting Exponent = %g\n",(double)
+      (void) fprintf(stdout,"\tWeighting Exponent = %.15g\n",(double)
         weighting_exponent);
       (void) fprintf(stdout,"\tTotal Number of Clusters = %lu\n\n",
         number_clusters);
@@ -480,8 +480,9 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
         (void) fprintf(stdout,"\n\nCluster #%ld\n\n",cluster->id);
-        (void) fprintf(stdout,"%g  %g  %g\n",(double) cluster->red.center,
-          (double) cluster->green.center,(double) cluster->blue.center);
+        (void) fprintf(stdout,"%.15g  %.15g  %.15g\n",(double)
+          cluster->red.center,(double) cluster->green.center,(double)
+          cluster->blue.center);
       }
       (void) fprintf(stdout,"\n");
     }

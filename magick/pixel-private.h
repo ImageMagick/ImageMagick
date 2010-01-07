@@ -34,7 +34,8 @@ static inline MagickPixelPacket *CloneMagickPixelPacket(
   MagickPixelPacket
     *clone_pixel;
 
-  clone_pixel=(MagickPixelPacket *) AcquireAlignedMemory(1,sizeof(*clone_pixel));
+  clone_pixel=(MagickPixelPacket *) AcquireAlignedMemory(1,
+    sizeof(*clone_pixel));
   if (clone_pixel == (MagickPixelPacket *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *clone_pixel=(*pixel);

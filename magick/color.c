@@ -1044,7 +1044,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
     }
   if (channel == OpacityChannel)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%g",
+      (void) FormatMagickString(component,MaxTextExtent,"%.15g",
         (double) (QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
@@ -1052,14 +1052,14 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
   if ((pixel->colorspace == HSLColorspace) ||
       (pixel->colorspace == HSBColorspace))
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%g%%",
+      (void) FormatMagickString(component,MaxTextExtent,"%.15g%%",
         (double) (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   if (pixel->depth > 8)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%g%%",
+      (void) FormatMagickString(component,MaxTextExtent,"%.15g%%",
         (double) (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;

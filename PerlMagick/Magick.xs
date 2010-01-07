@@ -3981,7 +3981,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatMagickString(color,MaxTextExtent,"%g,%g",
+              (void) FormatMagickString(color,MaxTextExtent,"%.15g,%.15g",
                 image->chromaticity.blue_primary.x,
                 image->chromaticity.blue_primary.y);
               s=newSVpv(color,0);
@@ -4159,7 +4159,7 @@ Get(ref,...)
 
               if (image == (Image *) NULL)
                 break;
-              (void) FormatMagickString(geometry,MaxTextExtent,"%gx%g",
+              (void) FormatMagickString(geometry,MaxTextExtent,"%.15gx%.15g",
                 image->x_resolution,image->y_resolution);
               s=newSVpv(geometry,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4350,7 +4350,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatMagickString(color,MaxTextExtent,"%g,%g",
+              (void) FormatMagickString(color,MaxTextExtent,"%.15g,%.15g",
                 image->chromaticity.green_primary.x,
                 image->chromaticity.green_primary.y);
               s=newSVpv(color,0);
@@ -4789,7 +4789,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatMagickString(color,MaxTextExtent,"%g,%g",
+              (void) FormatMagickString(color,MaxTextExtent,"%.15g,%.15g",
                 image->chromaticity.red_primary.x,
                 image->chromaticity.red_primary.y);
               s=newSVpv(color,0);
@@ -5012,7 +5012,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatMagickString(color,MaxTextExtent,"%g,%g",
+              (void) FormatMagickString(color,MaxTextExtent,"%.15g,%.15g",
                 image->chromaticity.white_point.x,
                 image->chromaticity.white_point.y);
               s=newSVpv(color,0);
@@ -8253,8 +8253,8 @@ Mogrify(ref,...)
             argument_list[4].real_reference=1.0;
           if (attribute_flag[0] == 0)
             {
-              (void) FormatMagickString(message,MaxTextExtent,"%g,%g,%g",
-                (double) argument_list[2].real_reference,
+              (void) FormatMagickString(message,MaxTextExtent,
+                "%.15g,%.15g,%.15g",(double) argument_list[2].real_reference,
                 (double) argument_list[3].real_reference,
                 (double) argument_list[4].real_reference);
               argument_list[0].string_reference=message;
@@ -8367,7 +8367,7 @@ Mogrify(ref,...)
               (void) SetImageColorspace(image,HWBColorspace);
               geometry_info.rho=argument_list[6].real_reference;
             }
-          (void) FormatMagickString(modulate,MaxTextExtent,"%g,%g,%g",
+          (void) FormatMagickString(modulate,MaxTextExtent,"%.15g,%.15g,%.15g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
           (void) ModulateImage(image,modulate);
           (void) SetImageColorspace(image,colorspace);
@@ -11678,8 +11678,8 @@ QueryFontMetrics(ref,...)
     if (draw_info->geometry == (char *) NULL)
       {
         draw_info->geometry=AcquireString((char *) NULL);
-        (void) FormatMagickString(draw_info->geometry,MaxTextExtent,"%g,%g",
-          x,y);
+        (void) FormatMagickString(draw_info->geometry,MaxTextExtent,
+          "%.15g,%.15g",x,y);
       }
     status=GetTypeMetrics(image,draw_info,&metrics);
     (void) CatchImageException(image);
@@ -12049,8 +12049,8 @@ QueryMultilineFontMetrics(ref,...)
     if (draw_info->geometry == (char *) NULL)
       {
         draw_info->geometry=AcquireString((char *) NULL);
-        (void) FormatMagickString(draw_info->geometry,MaxTextExtent,"%g,%g",
-          x,y);
+        (void) FormatMagickString(draw_info->geometry,MaxTextExtent,
+          "%.15g,%.15g",x,y);
       }
     status=GetMultilineTypeMetrics(image,draw_info,&metrics);
     (void) CatchImageException(image);
@@ -12891,64 +12891,64 @@ Statistics(ref,...)
       (void) FormatMagickString(message,MaxTextExtent,"%lu",
         channel_statistics[RedChannel].depth);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[RedChannel].minima/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[RedChannel].maxima/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[RedChannel].mean/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[RedChannel].standard_deviation/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[RedChannel].kurtosis);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[RedChannel].skewness);
       PUSHs(sv_2mortal(newSVpv(message,0)));
       (void) FormatMagickString(message,MaxTextExtent,"%lu",
         channel_statistics[GreenChannel].depth);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[GreenChannel].minima/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[GreenChannel].maxima/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[GreenChannel].mean/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[GreenChannel].standard_deviation/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[GreenChannel].kurtosis);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[GreenChannel].skewness);
       PUSHs(sv_2mortal(newSVpv(message,0)));
       (void) FormatMagickString(message,MaxTextExtent,"%lu",
         channel_statistics[BlueChannel].depth);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[BlueChannel].minima/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[BlueChannel].maxima/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[BlueChannel].mean/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[BlueChannel].standard_deviation/scale);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[BlueChannel].kurtosis);
       PUSHs(sv_2mortal(newSVpv(message,0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%g",
+      (void) FormatMagickString(message,MaxTextExtent,"%.15g",
         channel_statistics[BlueChannel].skewness);
       PUSHs(sv_2mortal(newSVpv(message,0)));
       if (image->colorspace == CMYKColorspace)
@@ -12956,22 +12956,22 @@ Statistics(ref,...)
           (void) FormatMagickString(message,MaxTextExtent,"%lu",
             channel_statistics[BlackChannel].depth);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[BlackChannel].minima/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[BlackChannel].maxima/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[BlackChannel].mean/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[BlackChannel].standard_deviation/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[BlackChannel].kurtosis);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[BlackChannel].skewness);
           PUSHs(sv_2mortal(newSVpv(message,0)));
         }
@@ -12980,22 +12980,22 @@ Statistics(ref,...)
           (void) FormatMagickString(message,MaxTextExtent,"%lu",
             channel_statistics[OpacityChannel].depth);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[OpacityChannel].minima/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[OpacityChannel].maxima/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[OpacityChannel].mean/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[OpacityChannel].standard_deviation/scale);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[OpacityChannel].kurtosis);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          (void) FormatMagickString(message,MaxTextExtent,"%g",
+          (void) FormatMagickString(message,MaxTextExtent,"%.15g",
             channel_statistics[OpacityChannel].skewness);
           PUSHs(sv_2mortal(newSVpv(message,0)));
         }

@@ -321,7 +321,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
+  (void) FormatMagickString(density,MaxTextExtent,"%.15gx%.15g",
     image->x_resolution,image->y_resolution);
   page.width=(unsigned long) (page.width*image->x_resolution/delta.x+0.5);
   page.height=(unsigned long) (page.height*image->y_resolution/delta.y+0.5);

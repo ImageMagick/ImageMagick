@@ -1679,7 +1679,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
         }
         if (in_subpath == MagickFalse)
           {
-            (void) FormatMagickString(message,MaxTextExtent,"  %g %g m\n",
+            (void) FormatMagickString(message,MaxTextExtent,"  %.15g %.15g m\n",
               point[1].x,point[1].y);
             for (i=0; i < 3; i++)
             {
@@ -1695,22 +1695,22 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
             */
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (point[0].x == point[1].x) && (point[0].y == point[1].y))
-              (void) FormatMagickString(message,MaxTextExtent,"  %g %g l\n",
-                point[1].x,point[1].y);
+              (void) FormatMagickString(message,MaxTextExtent,
+                "  %.15g %.15g l\n",point[1].x,point[1].y);
             else
               if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatMagickString(message,MaxTextExtent,
-                  "  %g %g %g %g v\n",point[0].x,point[0].y,point[1].x,
-                  point[1].y);
+                  "  %.15g %.15g %.15g %.15g v\n",point[0].x,point[0].y,
+                  point[1].x,point[1].y);
               else
                 if ((point[0].x == point[1].x) && (point[0].y == point[1].y))
                   (void) FormatMagickString(message,MaxTextExtent,
-                    "  %g %g %g %g y\n",last[2].x,last[2].y,point[1].x,
-                    point[1].y);
+                    "  %.15g %.15g %.15g %.15g y\n",last[2].x,last[2].y,
+                    point[1].x,point[1].y);
                 else
                   (void) FormatMagickString(message,MaxTextExtent,
-                    "  %g %g %g %g %g %g c\n",last[2].x,last[2].y,point[0].x,
-                    point[0].y,point[1].x,point[1].y);
+                    "  %.15g %.15g %.15g %.15g %.15g %.15g c\n",last[2].x,
+                    last[2].y,point[0].x,point[0].y,point[1].x,point[1].y);
             for (i=0; i < 3; i++)
               last[i]=point[i];
           }
@@ -1728,22 +1728,22 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
             */
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (first[0].x == first[1].x) && (first[0].y == first[1].y))
-              (void) FormatMagickString(message,MaxTextExtent,"  %g %g l z\n",
-                first[1].x,first[1].y);
+              (void) FormatMagickString(message,MaxTextExtent,
+                "  %.15g %.15g l z\n",first[1].x,first[1].y);
             else
               if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatMagickString(message,MaxTextExtent,
-                  "  %g %g %g %g v z\n",first[0].x,first[0].y,first[1].x,
-                  first[1].y);
+                  "  %.15g %.15g %.15g %.15g v z\n",first[0].x,first[0].y,
+                  first[1].x,first[1].y);
               else
                 if ((first[0].x == first[1].x) && (first[0].y == first[1].y))
                   (void) FormatMagickString(message,MaxTextExtent,
-                    "  %g %g %g %g y z\n",last[2].x,last[2].y,first[1].x,
-                    first[1].y);
+                    "  %.15g %.15g %.15g %.15g y z\n",last[2].x,last[2].y,
+                    first[1].x,first[1].y);
                 else
                   (void) FormatMagickString(message,MaxTextExtent,
-                    "  %g %g %g %g %g %g c z\n",last[2].x,last[2].y,first[0].x,
-                    first[0].y,first[1].x,first[1].y);
+                    "  %.15g %.15g %.15g %.15g %.15g %.15g c z\n",last[2].x,
+                    last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
             (void) ConcatenateString(&path,message);
             in_subpath=MagickFalse;
           }
@@ -1876,7 +1876,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         }
         if (in_subpath == MagickFalse)
           {
-            (void) FormatMagickString(message,MaxTextExtent,"M %g,%g\n",
+            (void) FormatMagickString(message,MaxTextExtent,"M %.15g,%.15g\n",
               point[1].x,point[1].y);
             for (i=0; i < 3; i++)
             {
@@ -1888,11 +1888,11 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
           {
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (point[0].x == point[1].x) && (point[0].y == point[1].y))
-              (void) FormatMagickString(message,MaxTextExtent,"L %g,%g\n",
+              (void) FormatMagickString(message,MaxTextExtent,"L %.15g,%.15g\n",
                 point[1].x,point[1].y);
             else
               (void) FormatMagickString(message,MaxTextExtent,
-                "C %g,%g %g,%g %g,%g\n",last[2].x,last[2].y,
+                "C %.15g,%.15g %.15g,%.15g %.15g,%.15g\n",last[2].x,last[2].y,
                 point[0].x,point[0].y,point[1].x,point[1].y);
             for (i=0; i < 3; i++)
               last[i]=point[i];
@@ -1907,13 +1907,13 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
           {
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (first[0].x == first[1].x) && (first[0].y == first[1].y))
-              (void) FormatMagickString(message,MaxTextExtent,"L %g,%g Z\n",
-                first[1].x,first[1].y);
+              (void) FormatMagickString(message,MaxTextExtent,
+                "L %.15g,%.15g Z\n",first[1].x,first[1].y);
             else
               {
                 (void) FormatMagickString(message,MaxTextExtent,
-                  "C %g,%g %g,%g %g,%g Z\n",last[2].x,last[2].y,
-                  first[0].x,first[0].y,first[1].x,first[1].y);
+                  "C %.15g,%.15g %.15g,%.15g %.15g,%.15g Z\n",last[2].x,
+                  last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
                 (void) ConcatenateString(&path,message);
               }
             in_subpath=MagickFalse;
@@ -2027,7 +2027,7 @@ MagickExport const char *GetImageProperty(const Image *image,
               char
                 value[MaxTextExtent];
 
-              (void) FormatMagickString(value,MaxTextExtent,"%g",(double)
+              (void) FormatMagickString(value,MaxTextExtent,"%.15g",(double)
                 alpha);
               (void) SetImageProperty((Image *) image,property,value);
             }
@@ -2254,7 +2254,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelKurtosis(image,image_info->channel,&kurtosis,
             &skewness,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",kurtosis);
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",kurtosis);
           break;
         }
       break;
@@ -2274,7 +2274,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelRange(image,image_info->channel,&minimum,
             &maximum,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",maximum);
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",maximum);
           break;
         }
       if (LocaleNCompare("mean",property,4) == 0)
@@ -2285,7 +2285,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelMean(image,image_info->channel,&mean,
             &standard_deviation,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",mean);
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",mean);
           break;
         }
       if (LocaleNCompare("min",property,3) == 0)
@@ -2296,7 +2296,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelRange(image,image_info->channel,&minimum,
             &maximum,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",minimum);
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",minimum);
           break;
         }
       break;
@@ -2370,7 +2370,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelKurtosis(image,image_info->channel,&kurtosis,
             &skewness,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",skewness);
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",skewness);
           break;
         }
       if ((LocaleNCompare("standard-deviation",property,18) == 0) ||
@@ -2382,7 +2382,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelMean(image,image_info->channel,&mean,
             &standard_deviation,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",
             standard_deviation);
           break;
         }
@@ -2412,7 +2412,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("xresolution",property,11) == 0)
         {
-          (void) FormatMagickString(value,MaxTextExtent,"%g",
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",
             image->x_resolution);
           break;
         }
@@ -2422,7 +2422,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("yresolution",property,11) == 0)
         {
-          (void) FormatMagickString(value,MaxTextExtent,"%g",
+          (void) FormatMagickString(value,MaxTextExtent,"%.15g",
             image->y_resolution);
           break;
         }
@@ -2855,7 +2855,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image horizontal resolution.
         */
-        q+=FormatMagickString(q,extent,"%g %s",image->x_resolution,
+        q+=FormatMagickString(q,extent,"%.15g %s",image->x_resolution,
           MagickOptionToMnemonic(MagickResolutionOptions,(long) image->units));
         break;
       }
@@ -2864,7 +2864,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image vertical resolution.
         */
-        q+=FormatMagickString(q,extent,"%g %s",image->y_resolution,
+        q+=FormatMagickString(q,extent,"%.15g %s",image->y_resolution,
           MagickOptionToMnemonic(MagickResolutionOptions,(long) image->units));
         break;
       }
