@@ -272,11 +272,11 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        histogram[ScaleQuantumToChar(p->red)].red++;
+        histogram[ScaleQuantumToChar(GetRedSample(p))].red++;
       if ((channel & GreenChannel) != 0)
-        histogram[ScaleQuantumToChar(p->green)].green++;
+        histogram[ScaleQuantumToChar(GetGreenSample(p))].green++;
       if ((channel & BlueChannel) != 0)
-        histogram[ScaleQuantumToChar(p->blue)].blue++;
+        histogram[ScaleQuantumToChar(GetBlueSample(p))].blue++;
       p++;
     }
   }

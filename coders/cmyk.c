@@ -260,13 +260,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=p->red;
-                q->green=p->green;
-                q->blue=p->blue;
+                SetRedSample(q,GetRedSample(p));
+                SetGreenSample(q,GetGreenSample(p));
+                SetBlueSample(q,GetBlueSample(p));
                 indexes[x]=canvas_indexes[image->extract_info.x+x];
-                q->opacity=OpaqueOpacity;
+                SetOpacitySample(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  q->opacity=p->opacity;
+                  SetOpacitySample(q,GetOpacitySample(p));
                 p++;
                 q++;
               }
@@ -353,12 +353,12 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 {
                   switch (quantum_type)
                   {
-                    case CyanQuantum: q->red=p->red; break;
-                    case MagentaQuantum: q->green=p->green; break;
-                    case YellowQuantum: q->blue=p->blue; break;
+                    case CyanQuantum: SetRedSample(q,GetRedSample(p)); break;
+                    case MagentaQuantum: SetGreenSample(q,GetGreenSample(p)); break;
+                    case YellowQuantum: SetBlueSample(q,GetBlueSample(p)); break;
                     case BlackQuantum: indexes[x]=
                       canvas_indexes[image->extract_info.x+x];; break;
-                    case OpacityQuantum: q->opacity=p->opacity; break;
+                    case OpacityQuantum: SetOpacitySample(q,GetOpacitySample(p)); break;
                     default: break;
                   }
                   p++;
@@ -425,7 +425,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=p->red;
+                SetRedSample(q,GetRedSample(p));
                 p++;
                 q++;
               }
@@ -477,7 +477,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->green=p->green;
+                SetGreenSample(q,GetGreenSample(p));
                 p++;
                 q++;
               }
@@ -529,7 +529,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->blue=p->blue;
+                SetBlueSample(q,GetBlueSample(p));
                 p++;
                 q++;
               }
@@ -644,7 +644,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    q->opacity=p->opacity;
+                    SetOpacitySample(q,GetOpacitySample(p));
                     p++;
                     q++;
                   }
@@ -735,7 +735,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=p->red;
+                SetRedSample(q,GetRedSample(p));
                 p++;
                 q++;
               }
@@ -806,7 +806,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->green=p->green;
+                SetGreenSample(q,GetGreenSample(p));
                 p++;
                 q++;
               }
@@ -877,7 +877,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->blue=p->blue;
+                SetBlueSample(q,GetBlueSample(p));
                 p++;
                 q++;
               }
@@ -1029,7 +1029,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    q->opacity=p->opacity;
+                    SetOpacitySample(q,GetOpacitySample(p));
                     p++;
                     q++;
                   }

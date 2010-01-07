@@ -236,7 +236,7 @@ static inline void CompositeBumpmap(const MagickPixelPacket *p,
   composite->red=QuantumScale*intensity*q->red;
   composite->green=QuantumScale*intensity*q->green;
   composite->blue=QuantumScale*intensity*q->blue;
-  composite->opacity=(MagickRealType) QuantumScale*intensity*p->opacity;
+  composite->opacity=(MagickRealType) QuantumScale*intensity*GetOpacitySample(p);
   if (q->colorspace == CMYKColorspace)
     composite->index=QuantumScale*intensity*q->index;
 }
@@ -764,7 +764,7 @@ static inline void CompositeMathematics(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;
+  Sa=1.0-QuantumScale*GetOpacitySample(p);
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
@@ -1551,7 +1551,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               MagickRealType
                 angle;
 
-              angle = angle_start + angle_range*QuantumScale*p->blue;
+              angle = angle_start + angle_range*QuantumScale*GetBlueSample(p);
               blur_xu = w*cos(angle);
               blur_xv = w*sin(angle);
               blur_yu = (-h*sin(angle));
@@ -1559,7 +1559,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             }
           ScaleResampleFilter(resample_filter,blur_xu*QuantumScale*p->red,
             blur_yu*QuantumScale*p->green,blur_xv*QuantumScale*p->red,
-            blur_yv*QuantumScale*p->green);
+            blur_yv*QuantumScale*GetGreenSample(p));
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
           SetPixelPacket(destination_image,&pixel,r,destination_indexes+x);
@@ -1735,7 +1735,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             Mask with 'invalid pixel mask' in alpha channel.
           */
           pixel.opacity = (MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
-            pixel.opacity)*(1.0-QuantumScale*p->opacity));
+            pixel.opacity)*(1.0-QuantumScale*GetOpacitySample(p)));
           SetPixelPacket(destination_image,&pixel,r,destination_indexes+x);
           p++;
           r++;
@@ -2020,11 +2020,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       /*
         Handle normal overlay of source onto destination.
       */
-      source.red=(MagickRealType) p->red;
-      source.green=(MagickRealType) p->green;
-      source.blue=(MagickRealType) p->blue;
+      source.red=(MagickRealType) GetRedSample(p);
+      source.green=(MagickRealType) GetGreenSample(p);
+      source.blue=(MagickRealType) GetBlueSample(p);
       if (composite_image->matte != MagickFalse)
-        source.opacity=(MagickRealType) p->opacity;
+        source.opacity=(MagickRealType) GetOpacitySample(p);
       if (composite_image->colorspace == CMYKColorspace)
         {
           source.red=(MagickRealType) QuantumRange-source.red;

@@ -146,6 +146,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 {
 #define ThresholdImageTag  "Threshold/Image"
 
+  CacheView
+    *image_view,
+    *threshold_view;
+
   Image
     *threshold_image;
 
@@ -161,10 +165,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 
   MagickRealType
     number_pixels;
-
-  CacheView
-    *image_view,
-    *threshold_view;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -360,6 +360,9 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
 {
 #define ThresholdImageTag  "Threshold/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -369,9 +372,6 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -516,6 +516,9 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 {
 #define ThresholdImageTag  "Threshold/Image"
 
+  CacheView
+    *image_view;
+
   GeometryInfo
     geometry_info;
 
@@ -531,9 +534,6 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 
   MagickStatusType
     flags;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -703,6 +703,9 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
 {
 #define ClampImageTag  "Clamp/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -712,9 +715,6 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1349,6 +1349,9 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
 {
 #define DitherImageTag  "Dither/Image"
 
+  CacheView
+    *image_view;
+
   long
     progress,
     y;
@@ -1361,9 +1364,6 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
 
   ThresholdMap
     *map;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

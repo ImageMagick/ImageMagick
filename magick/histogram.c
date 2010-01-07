@@ -175,6 +175,9 @@ static CubeInfo *ClassifyImageColors(const Image *image,
 {
 #define EvaluateImageTag  "  Compute image colors...  "
 
+  CacheView
+    *image_view;
+
   CubeInfo
     *cube_info;
 
@@ -205,9 +208,6 @@ static CubeInfo *ClassifyImageColors(const Image *image,
     id,
     index,
     level;
-
-  CacheView
-    *image_view;
 
   /*
     Initialize color description tree.
@@ -637,6 +637,9 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
 {
 #define MaximumUniqueColors  1024
 
+  CacheView
+    *image_view;
+
   CubeInfo
     *cube_info;
 
@@ -666,9 +669,6 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
     id,
     index,
     level;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -800,6 +800,9 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
 MagickExport MagickBooleanType IsPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   CubeInfo
     *cube_info;
 
@@ -829,9 +832,6 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
     id,
     index,
     level;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

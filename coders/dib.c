@@ -1150,9 +1150,9 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           word=(unsigned short) ((ScaleColor8to5((unsigned char)
-            ScaleQuantumToChar(p->red)) << 11) | (ScaleColor8to6((unsigned char)
-            ScaleQuantumToChar(p->green)) << 5) | (ScaleColor8to5(
-            (unsigned char) ScaleQuantumToChar((unsigned char) p->blue) << 0)));
+            ScaleQuantumToChar(GetRedSample(p))) << 11) | (ScaleColor8to6((unsigned char)
+            ScaleQuantumToChar(GetGreenSample(p))) << 5) | (ScaleColor8to5(
+            (unsigned char) ScaleQuantumToChar((unsigned char) GetBlueSample(p)) << 0)));
           *q++=(unsigned char)(word & 0xff);
           *q++=(unsigned char)(word >> 8);
           p++;
@@ -1179,11 +1179,11 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         q=pixels+(image->rows-y-1)*bytes_per_line;
         for (x=0; x < (long) image->columns; x++)
         {
-          *q++=ScaleQuantumToChar(p->blue);
-          *q++=ScaleQuantumToChar(p->green);
-          *q++=ScaleQuantumToChar(p->red);
+          *q++=ScaleQuantumToChar(GetBlueSample(p));
+          *q++=ScaleQuantumToChar(GetGreenSample(p));
+          *q++=ScaleQuantumToChar(GetRedSample(p));
           if (image->matte != MagickFalse)
-            *q++=ScaleQuantumToChar(p->opacity);
+            *q++=ScaleQuantumToChar(GetOpacitySample(p));
           p++;
         }
         if (dib_info.bits_per_pixel == 24)

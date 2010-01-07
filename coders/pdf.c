@@ -1661,9 +1661,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(image);
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(p->red);
-                *q++=ScaleQuantumToChar(p->green);
-                *q++=ScaleQuantumToChar(p->blue);
+                *q++=ScaleQuantumToChar(GetRedSample(p));
+                *q++=ScaleQuantumToChar(GetGreenSample(p));
+                *q++=ScaleQuantumToChar(GetBlueSample(p));
                 if (image->colorspace == CMYKColorspace)
                   *q++=ScaleQuantumToChar(indexes[x]);
                 p++;
@@ -1707,9 +1707,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(image);
               for (x=0; x < (long) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(p->red));
-                Ascii85Encode(image,ScaleQuantumToChar(p->green));
-                Ascii85Encode(image,ScaleQuantumToChar(p->blue));
+                Ascii85Encode(image,ScaleQuantumToChar(GetRedSample(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(GetGreenSample(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(GetBlueSample(p)));
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(indexes[x]));
                 p++;
@@ -2093,9 +2093,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(tile_image);
               for (x=0; x < (long) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(p->red);
-                *q++=ScaleQuantumToChar(p->green);
-                *q++=ScaleQuantumToChar(p->blue);
+                *q++=ScaleQuantumToChar(GetRedSample(p));
+                *q++=ScaleQuantumToChar(GetGreenSample(p));
+                *q++=ScaleQuantumToChar(GetBlueSample(p));
                 if (image->colorspace == CMYKColorspace)
                   *q++=ScaleQuantumToChar(indexes[x]);
                 p++;
@@ -2133,9 +2133,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(tile_image);
               for (x=0; x < (long) tile_image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(p->red));
-                Ascii85Encode(image,ScaleQuantumToChar(p->green));
-                Ascii85Encode(image,ScaleQuantumToChar(p->blue));
+                Ascii85Encode(image,ScaleQuantumToChar(GetRedSample(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(GetGreenSample(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(GetBlueSample(p)));
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(indexes[x]));
                 p++;
@@ -2375,7 +2375,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+                *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
                 p++;
               }
             }
@@ -2411,7 +2411,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (long) image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar((Quantum) (QuantumRange-
-                  p->opacity)));
+                  GetOpacitySample(p))));
                 p++;
               }
             }

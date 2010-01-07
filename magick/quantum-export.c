@@ -556,7 +556,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             pixel=(unsigned char) *indexes++;
             *q=((pixel & 0xf) << 4);
             pixel=(unsigned char) (16*QuantumScale*((Quantum) (QuantumRange-
-              p->opacity))+0.5);
+              GetOpacitySample(p)))+0.5);
             *q|=((pixel & 0xf) << 0);
             p++;
             q++;
@@ -571,7 +571,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           for (x=0; x < (long) number_pixels; x++)
           {
             q=PopCharPixel((unsigned char) indexes[x],q);
-            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -588,7 +588,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
               for (x=0; x < (long) number_pixels; x++)
               {
                 q=PopShortPixel(endian,(unsigned short) indexes[x],q);
-                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-p->opacity));
+                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-GetOpacitySample(p)));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -598,7 +598,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           for (x=0; x < (long) number_pixels; x++)
           {
             q=PopShortPixel(endian,(unsigned short) indexes[x],q);
-            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -618,7 +618,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   pixel;
 
                 q=PopFloatPixel(&quantum_state,(float) indexes[x],q);
-                pixel=(float)  (QuantumRange-p->opacity);
+                pixel=(float)  (QuantumRange-GetOpacitySample(p));
                 q=PopFloatPixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -628,7 +628,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           for (x=0; x < (long) number_pixels; x++)
           {
             q=PopLongPixel(endian,(unsigned long) indexes[x],q);
-            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -645,7 +645,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   pixel;
 
                 q=PopDoublePixel(&quantum_state,(double) indexes[x],q);
-                pixel=(double) (QuantumRange-p->opacity);
+                pixel=(double) (QuantumRange-GetOpacitySample(p));
                 q=PopDoublePixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -660,7 +660,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           {
             q=PopQuantumPixel(&quantum_state,image->depth,indexes[x],q);
             q=PopQuantumPixel(&quantum_state,image->depth,ScaleQuantumToAny(
-              (Quantum) (QuantumRange-p->opacity),range),q);
+              (Quantum) (QuantumRange-GetOpacitySample(p)),range),q);
             p++;
             q+=quantum_info->pad;
           }
@@ -970,7 +970,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             *q=(((pixel >> 4) & 0xf) << 4);
             pixel=(unsigned char) (16*QuantumScale*((Quantum) (QuantumRange-
-              p->opacity))+0.5);
+              GetOpacitySample(p)))+0.5);
             *q|=pixel & 0xf;
             p++;
             q++;
@@ -986,7 +986,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           {
             pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1004,7 +1004,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
               {
                 pixel=ScaleFloatToHalf(QuantumScale*PixelIntensityToQuantum(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-p->opacity));
+                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-GetOpacitySample(p)));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1015,7 +1015,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           {
             pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1036,7 +1036,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
                 pixel=(float) PixelIntensityToQuantum(p);
                 q=PopFloatPixel(&quantum_state,pixel,q);
-                pixel=(float) (QuantumRange-p->opacity);
+                pixel=(float) (QuantumRange-GetOpacitySample(p));
                 q=PopFloatPixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1047,7 +1047,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           {
             pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1065,7 +1065,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
                 pixel=(double) PixelIntensityToQuantum(p);
                 q=PopDoublePixel(&quantum_state,pixel,q);
-                pixel=(double) (QuantumRange-p->opacity);
+                pixel=(double) (QuantumRange-GetOpacitySample(p));
                 q=PopDoublePixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1081,7 +1081,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             q=PopQuantumPixel(&quantum_state,image->depth,ScaleQuantumToAny(
               PixelIntensityToQuantum(p),range),q);
             q=PopQuantumPixel(&quantum_state,image->depth,ScaleQuantumToAny(
-              (Quantum) (QuantumRange-p->opacity),range),q);
+              (Quantum) (QuantumRange-GetOpacitySample(p)),range),q);
             p++;
             q+=quantum_info->pad;
           }
@@ -1102,7 +1102,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->red);
+            pixel=ScaleQuantumToChar(GetRedSample(p));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1118,7 +1118,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->red);
+                pixel=ScaleFloatToHalf(QuantumScale*GetRedSample(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1127,7 +1127,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->red);
+            pixel=ScaleQuantumToShort(GetRedSample(p));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1151,7 +1151,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->red);
+            pixel=ScaleQuantumToLong(GetRedSample(p));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1198,7 +1198,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->green);
+            pixel=ScaleQuantumToChar(GetGreenSample(p));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1214,7 +1214,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->green);
+                pixel=ScaleFloatToHalf(QuantumScale*GetGreenSample(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1223,7 +1223,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->green);
+            pixel=ScaleQuantumToShort(GetGreenSample(p));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1247,7 +1247,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->green);
+            pixel=ScaleQuantumToLong(GetGreenSample(p));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1294,7 +1294,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->blue);
+            pixel=ScaleQuantumToChar(GetBlueSample(p));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1310,7 +1310,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->blue);
+                pixel=ScaleFloatToHalf(QuantumScale*GetBlueSample(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1319,7 +1319,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->blue);
+            pixel=ScaleQuantumToShort(GetBlueSample(p));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1343,7 +1343,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->blue);
+            pixel=ScaleQuantumToLong(GetBlueSample(p));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1389,7 +1389,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1405,7 +1405,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-p->opacity));
+                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-GetOpacitySample(p)));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1414,7 +1414,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1433,7 +1433,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                 float
                   pixel;
 
-                pixel=(float) (QuantumRange-p->opacity);
+                pixel=(float) (QuantumRange-GetOpacitySample(p));
                 q=PopFloatPixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1442,7 +1442,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1458,7 +1458,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                 double
                   pixel;
 
-                pixel=(double) (QuantumRange-p->opacity);
+                pixel=(double) (QuantumRange-GetOpacitySample(p));
                 q=PopDoublePixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1472,7 +1472,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           for (x=0; x < (long) number_pixels; x++)
           {
             q=PopQuantumPixel(&quantum_state,image->depth,ScaleQuantumToAny(
-              (Quantum) (QuantumRange-p->opacity),range),q);
+              (Quantum) (QuantumRange-GetOpacitySample(p)),range),q);
             p++;
             q+=quantum_info->pad;
           }
@@ -1492,7 +1492,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->opacity);
+            pixel=ScaleQuantumToChar(GetOpacitySample(p));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1508,7 +1508,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->opacity);
+                pixel=ScaleFloatToHalf(QuantumScale*GetOpacitySample(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1517,7 +1517,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->opacity);
+            pixel=ScaleQuantumToShort(GetOpacitySample(p));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1541,7 +1541,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->opacity);
+            pixel=ScaleQuantumToLong(GetOpacitySample(p));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1686,9 +1686,9 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            q=PopCharPixel(ScaleQuantumToChar(p->red),q);
-            q=PopCharPixel(ScaleQuantumToChar(p->green),q);
-            q=PopCharPixel(ScaleQuantumToChar(p->blue),q);
+            q=PopCharPixel(ScaleQuantumToChar(GetRedSample(p)),q);
+            q=PopCharPixel(ScaleQuantumToChar(GetGreenSample(p)),q);
+            q=PopCharPixel(ScaleQuantumToChar(GetBlueSample(p)),q);
             p++;
             q+=quantum_info->pad;
           }
@@ -1861,11 +1861,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->red);
+                pixel=ScaleFloatToHalf(QuantumScale*GetRedSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->green);
+                pixel=ScaleFloatToHalf(QuantumScale*GetGreenSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->blue);
+                pixel=ScaleFloatToHalf(QuantumScale*GetBlueSample(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1874,11 +1874,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->red);
+            pixel=ScaleQuantumToShort(GetRedSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->green);
+            pixel=ScaleQuantumToShort(GetGreenSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->blue);
+            pixel=ScaleQuantumToShort(GetBlueSample(p));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1904,11 +1904,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->red);
+            pixel=ScaleQuantumToLong(GetRedSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->green);
+            pixel=ScaleQuantumToLong(GetGreenSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->blue);
+            pixel=ScaleQuantumToLong(GetBlueSample(p));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1962,13 +1962,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->red);
+            pixel=ScaleQuantumToChar(GetRedSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(p->green);
+            pixel=ScaleQuantumToChar(GetGreenSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(p->blue);
+            pixel=ScaleQuantumToChar(GetBlueSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1984,13 +1984,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->red);
+                pixel=ScaleFloatToHalf(QuantumScale*GetRedSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->green);
+                pixel=ScaleFloatToHalf(QuantumScale*GetGreenSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->blue);
+                pixel=ScaleFloatToHalf(QuantumScale*GetBlueSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-p->opacity));
+                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-GetOpacitySample(p)));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1999,13 +1999,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->red);
+            pixel=ScaleQuantumToShort(GetRedSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->green);
+            pixel=ScaleQuantumToShort(GetGreenSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->blue);
+            pixel=ScaleQuantumToShort(GetBlueSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -2027,7 +2027,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                 q=PopFloatPixel(&quantum_state,(float) p->red,q);
                 q=PopFloatPixel(&quantum_state,(float) p->green,q);
                 q=PopFloatPixel(&quantum_state,(float) p->blue,q);
-                pixel=(float) (QuantumRange-p->opacity);
+                pixel=(float) (QuantumRange-GetOpacitySample(p));
                 q=PopFloatPixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -2036,13 +2036,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->red);
+            pixel=ScaleQuantumToLong(GetRedSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->green);
+            pixel=ScaleQuantumToLong(GetGreenSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->blue);
+            pixel=ScaleQuantumToLong(GetBlueSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -2061,7 +2061,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                 q=PopDoublePixel(&quantum_state,(double) p->red,q);
                 q=PopDoublePixel(&quantum_state,(double) p->green,q);
                 q=PopDoublePixel(&quantum_state,(double) p->blue,q);
-                pixel=(double) (QuantumRange-p->opacity);
+                pixel=(double) (QuantumRange-GetOpacitySample(p));
                 q=PopDoublePixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -2081,7 +2081,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             q=PopQuantumPixel(&quantum_state,image->depth,ScaleQuantumToAny(
               p->blue,range),q);
             q=PopQuantumPixel(&quantum_state,image->depth,ScaleQuantumToAny(
-              (Quantum) (QuantumRange-p->opacity),range),q);
+              (Quantum) (QuantumRange-GetOpacitySample(p)),range),q);
             p++;
             q+=quantum_info->pad;
           }
@@ -2107,11 +2107,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->red);
+            pixel=ScaleQuantumToChar(GetRedSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(p->green);
+            pixel=ScaleQuantumToChar(GetGreenSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(p->blue);
+            pixel=ScaleQuantumToChar(GetBlueSample(p));
             q=PopCharPixel(pixel,q);
             pixel=ScaleQuantumToChar(indexes[x]);
             q=PopCharPixel(pixel,q);
@@ -2129,11 +2129,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->red);
+                pixel=ScaleFloatToHalf(QuantumScale*GetRedSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->green);
+                pixel=ScaleFloatToHalf(QuantumScale*GetGreenSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->blue);
+                pixel=ScaleFloatToHalf(QuantumScale*GetBlueSample(p));
                 q=PopShortPixel(endian,pixel,q);
                 pixel=ScaleFloatToHalf(QuantumScale*indexes[x]);
                 q=PopShortPixel(endian,pixel,q);
@@ -2144,11 +2144,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->red);
+            pixel=ScaleQuantumToShort(GetRedSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->green);
+            pixel=ScaleQuantumToShort(GetGreenSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->blue);
+            pixel=ScaleQuantumToShort(GetBlueSample(p));
             q=PopShortPixel(endian,pixel,q);
             pixel=ScaleQuantumToShort(indexes[x]);
             q=PopShortPixel(endian,pixel,q);
@@ -2177,11 +2177,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->red);
+            pixel=ScaleQuantumToLong(GetRedSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->green);
+            pixel=ScaleQuantumToLong(GetGreenSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->blue);
+            pixel=ScaleQuantumToLong(GetBlueSample(p));
             q=PopLongPixel(endian,pixel,q);
             pixel=ScaleQuantumToLong(indexes[x]);
             q=PopLongPixel(endian,pixel,q);
@@ -2245,15 +2245,15 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(p->red);
+            pixel=ScaleQuantumToChar(GetRedSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(p->green);
+            pixel=ScaleQuantumToChar(GetGreenSample(p));
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(p->blue);
+            pixel=ScaleQuantumToChar(GetBlueSample(p));
             q=PopCharPixel(pixel,q);
             pixel=ScaleQuantumToChar(indexes[x]);
             q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopCharPixel(pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -2269,15 +2269,15 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=ScaleFloatToHalf(QuantumScale*p->red);
+                pixel=ScaleFloatToHalf(QuantumScale*GetRedSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->green);
+                pixel=ScaleFloatToHalf(QuantumScale*GetGreenSample(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*p->blue);
+                pixel=ScaleFloatToHalf(QuantumScale*GetBlueSample(p));
                 q=PopShortPixel(endian,pixel,q);
                 pixel=ScaleFloatToHalf(QuantumScale*indexes[x]);
                 q=PopShortPixel(endian,pixel,q);
-                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-p->opacity));
+                pixel=ScaleFloatToHalf(QuantumScale*(QuantumRange-GetOpacitySample(p)));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -2286,15 +2286,15 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(p->red);
+            pixel=ScaleQuantumToShort(GetRedSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->green);
+            pixel=ScaleQuantumToShort(GetGreenSample(p));
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(p->blue);
+            pixel=ScaleQuantumToShort(GetBlueSample(p));
             q=PopShortPixel(endian,pixel,q);
             pixel=ScaleQuantumToShort(indexes[x]);
             q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopShortPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -2317,7 +2317,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                 q=PopFloatPixel(&quantum_state,(float) p->green,q);
                 q=PopFloatPixel(&quantum_state,(float) p->blue,q);
                 q=PopFloatPixel(&quantum_state,(float) indexes[x],q);
-                pixel=(float) (QuantumRange-p->opacity);
+                pixel=(float) (QuantumRange-GetOpacitySample(p));
                 q=PopFloatPixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -2326,15 +2326,15 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToLong(p->red);
+            pixel=ScaleQuantumToLong(GetRedSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->green);
+            pixel=ScaleQuantumToLong(GetGreenSample(p));
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(p->blue);
+            pixel=ScaleQuantumToLong(GetBlueSample(p));
             q=PopLongPixel(endian,pixel,q);
             pixel=ScaleQuantumToLong(indexes[x]);
             q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-p->opacity));
+            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacitySample(p)));
             q=PopLongPixel(endian,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -2354,7 +2354,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                 q=PopDoublePixel(&quantum_state,(double) p->green,q);
                 q=PopDoublePixel(&quantum_state,(double) p->blue,q);
                 q=PopDoublePixel(&quantum_state,(double) indexes[x],q);
-                pixel=(double) (QuantumRange-p->opacity);
+                pixel=(double) (QuantumRange-GetOpacitySample(p));
                 q=PopDoublePixel(&quantum_state,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -2419,17 +2419,17 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   {
                     case 0:
                     {
-                      quantum=p->red;
+                      quantum=GetRedSample(p);
                       break;
                     }
                     case 1:
                     {
-                      quantum=p->green;
+                      quantum=GetGreenSample(p);
                       break;
                     }
                     case 2:
                     {
-                      quantum=p->blue;
+                      quantum=GetBlueSample(p);
                       break;
                     }
                   }
@@ -2462,17 +2462,17 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
               {
                 case 0:
                 {
-                  quantum=p->red;
+                  quantum=GetRedSample(p);
                   break;
                 }
                 case 1:
                 {
-                  quantum=p->green;
+                  quantum=GetGreenSample(p);
                   break;
                 }
                 case 2:
                 {
-                  quantum=p->blue;
+                  quantum=GetBlueSample(p);
                   break;
                 }
               }

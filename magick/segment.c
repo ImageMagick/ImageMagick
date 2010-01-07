@@ -241,6 +241,9 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 {
 #define SegmentImageTag  "Segment/Image"
 
+  CacheView
+    *image_view;
+
   Cluster
     *cluster,
     *head,
@@ -274,9 +277,6 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 
   unsigned long
     number_clusters;
-
-  CacheView
-    *image_view;
 
   /*
     Form clusters.
@@ -363,27 +363,27 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((long) ScaleQuantumToChar(p->red) >=
+        if (((long) ScaleQuantumToChar(GetRedSample(p)) >=
              (cluster->red.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->red) <=
+            ((long) ScaleQuantumToChar(GetRedSample(p)) <=
              (cluster->red.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->green) >=
+            ((long) ScaleQuantumToChar(GetGreenSample(p)) >=
              (cluster->green.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->green) <=
+            ((long) ScaleQuantumToChar(GetGreenSample(p)) <=
              (cluster->green.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->blue) >=
+            ((long) ScaleQuantumToChar(GetBlueSample(p)) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->blue) <=
+            ((long) ScaleQuantumToChar(GetBlueSample(p)) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
               Count this pixel.
             */
             count++;
-            cluster->red.center+=(MagickRealType) ScaleQuantumToChar(p->red);
+            cluster->red.center+=(MagickRealType) ScaleQuantumToChar(GetRedSample(p));
             cluster->green.center+=(MagickRealType)
-              ScaleQuantumToChar(p->green);
-            cluster->blue.center+=(MagickRealType) ScaleQuantumToChar(p->blue);
+              ScaleQuantumToChar(GetGreenSample(p));
+            cluster->blue.center+=(MagickRealType) ScaleQuantumToChar(GetBlueSample(p));
             cluster->count++;
             break;
           }
@@ -596,21 +596,21 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             sum=0.0;
             p=image->colormap+j;
             distance_squared=squares[(long) ScaleQuantumToChar(q->red)-
-              (long) ScaleQuantumToChar(p->red)]+
+              (long) ScaleQuantumToChar(GetRedSample(p))]+
               squares[(long) ScaleQuantumToChar(q->green)-
-              (long) ScaleQuantumToChar(p->green)]+
+              (long) ScaleQuantumToChar(GetGreenSample(p))]+
               squares[(long) ScaleQuantumToChar(q->blue)-
-              (long) ScaleQuantumToChar(p->blue)];
+              (long) ScaleQuantumToChar(GetBlueSample(p))];
             numerator=distance_squared;
             for (k=0; k < (long) image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=squares[(long) ScaleQuantumToChar(q->red)-
-                (long) ScaleQuantumToChar(p->red)]+
+                (long) ScaleQuantumToChar(GetRedSample(p))]+
                 squares[(long) ScaleQuantumToChar(q->green)-
-                (long) ScaleQuantumToChar(p->green)]+
+                (long) ScaleQuantumToChar(GetGreenSample(p))]+
                 squares[(long) ScaleQuantumToChar(q->blue)-
-                (long) ScaleQuantumToChar(p->blue)];
+                (long) ScaleQuantumToChar(GetBlueSample(p))];
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }
@@ -1091,17 +1091,17 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((long) ScaleQuantumToChar(p->red) >=
+        if (((long) ScaleQuantumToChar(GetRedSample(p)) >=
              (cluster->red.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->red) <=
+            ((long) ScaleQuantumToChar(GetRedSample(p)) <=
              (cluster->red.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->green) >=
+            ((long) ScaleQuantumToChar(GetGreenSample(p)) >=
              (cluster->green.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->green) <=
+            ((long) ScaleQuantumToChar(GetGreenSample(p)) <=
              (cluster->green.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->blue) >=
+            ((long) ScaleQuantumToChar(GetBlueSample(p)) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(p->blue) <=
+            ((long) ScaleQuantumToChar(GetBlueSample(p)) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
@@ -1109,11 +1109,11 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
             */
             count++;
             cluster->red.center+=(MagickRealType)
-              ScaleQuantumToChar(p->red);
+              ScaleQuantumToChar(GetRedSample(p));
             cluster->green.center+=(MagickRealType)
-              ScaleQuantumToChar(p->green);
+              ScaleQuantumToChar(GetGreenSample(p));
             cluster->blue.center+=(MagickRealType)
-              ScaleQuantumToChar(p->blue);
+              ScaleQuantumToChar(GetBlueSample(p));
             cluster->count++;
             break;
           }
@@ -1254,9 +1254,9 @@ static void InitializeHistogram(const Image *image,long **histogram,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      histogram[Red][(long) ScaleQuantumToChar(p->red)]++;
-      histogram[Green][(long) ScaleQuantumToChar(p->green)]++;
-      histogram[Blue][(long) ScaleQuantumToChar(p->blue)]++;
+      histogram[Red][(long) ScaleQuantumToChar(GetRedSample(p))]++;
+      histogram[Green][(long) ScaleQuantumToChar(GetGreenSample(p))]++;
+      histogram[Blue][(long) ScaleQuantumToChar(GetBlueSample(p))]++;
       p++;
     }
   }

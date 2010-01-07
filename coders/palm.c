@@ -471,7 +471,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             q->red=(Quantum) ((QuantumRange*((color16 >> 11) & 0x1f))/0x1f);
             q->green=(Quantum) ((QuantumRange*((color16 >> 5) & 0x3f))/0x3f);
             q->blue=(Quantum) ((QuantumRange*((color16 >> 0) & 0x1f))/0x1f);
-            q->opacity=OpaqueOpacity;
+            SetOpacitySample(q,OpaqueOpacity);
             q++;
           }
         }
@@ -844,16 +844,16 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            color16=(unsigned short) ((((31*(unsigned long) p->red)/
+            color16=(unsigned short) ((((31*(unsigned long) GetRedSample(p))/
               (unsigned long) QuantumRange) << 11) |
-              (((63*(unsigned long) p->green)/(unsigned long) QuantumRange) << 5) |
-              ((31*(unsigned long) p->blue)/(unsigned long) QuantumRange));
+              (((63*(unsigned long) GetGreenSample(p))/(unsigned long) QuantumRange) << 5) |
+              ((31*(unsigned long) GetBlueSample(p))/(unsigned long) QuantumRange));
             if (p->opacity == (Quantum) TransparentOpacity)
               {
-                transpix.red=p->red;
-                transpix.green=p->green;
-                transpix.blue=p->blue;
-                transpix.opacity=p->opacity;
+                transpix.red=GetRedSample(p);
+                transpix.green=GetGreenSample(p);
+                transpix.blue=GetBlueSample(p);
+                transpix.opacity=GetOpacitySample(p);
                 flags|=PALM_HAS_TRANSPARENCY_FLAG;
               }
             *ptr++=(unsigned char) ((color16 >> 8) & 0xff);

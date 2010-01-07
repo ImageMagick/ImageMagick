@@ -553,6 +553,9 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   AESInfo
     *aes_info;
 
+  CacheView
+    *image_view;
+
   const unsigned char
     *digest;
 
@@ -588,9 +591,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     input_block[AESBlocksize],
     output_block[AESBlocksize],
     *pixels;
-
-  CacheView
-    *image_view;
 
   /*
     Generate decipher key and nonce.
@@ -752,6 +752,9 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   AESInfo
     *aes_info;
 
+  CacheView
+    *image_view;
+
   char
     *signature;
 
@@ -790,9 +793,6 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     input_block[AESBlocksize],
     output_block[AESBlocksize],
     *pixels;
-
-  CacheView
-    *image_view;
 
   /*
     Generate encipher key and nonce.

@@ -287,9 +287,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                qx[0]=p->red;
-                qx[1]=p->green;
-                qx[2]=p->blue;
+                qx[0]=GetRedSample(p);
+                qx[1]=GetGreenSample(p);
+                qx[2]=GetBlueSample(p);
                 for (i=0; i < 3; i++)
                   switch(quantum_types[i])
                   {
@@ -298,9 +298,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     case BlueQuantum:  q->blue=qx[i];  break;
                     default:                           break;
                   }
-                q->opacity=OpaqueOpacity;
+                SetOpacitySample(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  q->opacity=p->opacity;
+                  SetOpacitySample(q,GetOpacitySample(p));
                 p++;
                 q++;
               }
@@ -367,10 +367,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (i == (channels - 1))
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    q->red=p->red;
-                    q->green=p->green;
-                    q->blue=p->blue;
-                    q->opacity=p->opacity;
+                    SetRedSample(q,GetRedSample(p));
+                    SetGreenSample(q,GetGreenSample(p));
+                    SetBlueSample(q,GetBlueSample(p));
+                    SetOpacitySample(q,GetOpacitySample(p));
                     p++;
                     q++;
                   }
@@ -439,11 +439,11 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   switch(quantum_types[i])
                   {
-                    case RedQuantum:    q->red=p->red;         break;
-                    case GreenQuantum:  q->green=p->green;     break;
-                    case BlueQuantum:   q->blue=p->blue;       break;
+                    case RedQuantum:    SetRedSample(q,GetRedSample(p));         break;
+                    case GreenQuantum:  SetGreenSample(q,GetGreenSample(p));     break;
+                    case BlueQuantum:   SetBlueSample(q,GetBlueSample(p));       break;
                     case OpacityQuantum:
-                    case AlphaQuantum:  q->opacity=p->opacity; break;
+                    case AlphaQuantum:  SetOpacitySample(q,GetOpacitySample(p)); break;
                     default:                                   break;
                   }
                   p++;
@@ -542,11 +542,11 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   switch(quantum_types[i])
                   {
-                    case RedQuantum:    q->red=p->red;         break;
-                    case GreenQuantum:  q->green=p->green;     break;
-                    case BlueQuantum:   q->blue=p->blue;       break;
+                    case RedQuantum:    SetRedSample(q,GetRedSample(p));         break;
+                    case GreenQuantum:  SetGreenSample(q,GetGreenSample(p));     break;
+                    case BlueQuantum:   SetBlueSample(q,GetBlueSample(p));       break;
                     case OpacityQuantum:
-                    case AlphaQuantum:  q->opacity=p->opacity; break;
+                    case AlphaQuantum:  SetOpacitySample(q,GetOpacitySample(p)); break;
                     default:                                   break;
                   }
                   p++;

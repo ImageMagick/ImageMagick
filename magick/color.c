@@ -1527,7 +1527,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   beta=1.0;
   if (image->matte != MagickFalse)
     {
-      alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+      alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
       beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
     }
   pixel=alpha*p->red-beta*q->red;
@@ -1586,6 +1586,10 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 {
 #define SearchImageText  "  Searching image...  "
 
+  CacheView
+    *image_view,
+    *target_view;
+
   long
     j,
     y;
@@ -1608,10 +1612,6 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
   register long
     i,
     x;
-
-  CacheView
-    *image_view,
-    *target_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1719,7 +1719,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       fuzz=3.0*MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
   alpha=1.0;
   if (p->matte != MagickFalse)
-    alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+    alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
   beta=1.0;
   if (q->matte != MagickFalse)
     beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
@@ -2194,9 +2194,9 @@ static MagickBooleanType LoadColorLists(const char *filename,
     color_info->path=(char *) "[built-in]";
     color_info->name=(char *) p->name;
     GetMagickPixelPacket((Image *) NULL,&color_info->color);
-    color_info->color.red=scale*p->red;
-    color_info->color.green=scale*p->green;
-    color_info->color.blue=scale*p->blue;
+    color_info->color.red=scale*GetRedSample(p);
+    color_info->color.green=scale*GetGreenSample(p);
+    color_info->color.blue=scale*GetBlueSample(p);
     color_info->color.opacity=(MagickRealType) (QuantumRange-QuantumRange*
       p->alpha);
     color_info->compliance=(ComplianceType) p->compliance;

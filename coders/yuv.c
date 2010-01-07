@@ -626,10 +626,10 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) yuv_image->columns; x++)
           {
             (void) WriteBlobByte(image,ScaleQuantumToChar(s->green));
-            (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedSample(p)));
             p++;
             (void) WriteBlobByte(image,ScaleQuantumToChar(s->blue));
-            (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedSample(p)));
             p++;
             s++;
             x++;
@@ -656,7 +656,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) yuv_image->columns; x++)
           {
-            (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedSample(p)));
             p++;
           }
           if (image->previous == (Image *) NULL)
@@ -693,7 +693,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) chroma_image->columns; x++)
           {
-            (void) WriteBlobByte(image,ScaleQuantumToChar(p->green));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetGreenSample(p)));
             p++;
           }
         }
@@ -723,7 +723,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) chroma_image->columns; x++)
           {
-            (void) WriteBlobByte(image,ScaleQuantumToChar(p->blue));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetBlueSample(p)));
             p++;
           }
         }

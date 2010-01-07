@@ -407,10 +407,10 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
       break;
     if (PixelIntensityToQuantum(r) > ((Quantum) QuantumRange/2))
       {
-        q->red=p->red;
-        q->green=p->green;
-        q->blue=p->blue;
-        q->opacity=p->opacity;
+        SetRedSample(q,GetRedSample(p));
+        SetGreenSample(q,GetGreenSample(p));
+        SetBlueSample(q,GetBlueSample(p));
+        SetOpacitySample(q,GetOpacitySample(p));
         if (cache_info->active_index_channel != MagickFalse)
           nexus_indexes[i]=indexes[i];
       }
@@ -2759,11 +2759,10 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->cache != (Cache) NULL);
-  cache_info=GetImagePixelCache(image,MagickTrue,exception);
+  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
   assert(cache_info->signature == MagickSignature);
   *length=0;
-  if ((cache_info->storage_class != MemoryCache) &&
-      (cache_info->storage_class != MapCache))
+  if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((void *) NULL);
   *length=cache_info->length;
   return((void *) cache_info->pixels);

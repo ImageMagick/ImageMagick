@@ -589,12 +589,12 @@ MagickExport Image *AppendImages(const Image *image,
       append_indexes=GetCacheViewAuthenticIndexQueue(append_view);
       for (x=0; x < (long) image->columns; x++)
       {
-        q->red=p->red;
-        q->green=p->green;
-        q->blue=p->blue;
-        q->opacity=OpaqueOpacity;
+        SetRedSample(q,GetRedSample(p));
+        SetGreenSample(q,GetGreenSample(p));
+        SetBlueSample(q,GetBlueSample(p));
+        SetOpacitySample(q,OpaqueOpacity);
         if (image->matte != MagickFalse)
-          q->opacity=p->opacity;
+          SetOpacitySample(q,GetOpacitySample(p));
         if (image->colorspace == CMYKColorspace)
           append_indexes[x]=indexes[x];
         p++;

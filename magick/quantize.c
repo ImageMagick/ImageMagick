@@ -712,6 +712,9 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
 {
 #define ClassifyImageTag  "Classify/Image"
 
+  CacheView
+    *image_view;
+
   long
     y;
 
@@ -737,9 +740,6 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
     id,
     index,
     level;
-
-  CacheView
-    *image_view;
 
   /*
     Classify the first cube_info->maximum_colors colors to a tree depth of 8.
@@ -1054,7 +1054,7 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
       beta=1.0;
       if (cube_info->associate_alpha == MagickFalse)
         {
-          alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
           beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
         }
       pixel=alpha*p->red-beta*q->red;
@@ -1191,7 +1191,7 @@ static unsigned long DefineImageColormap(Image *image,CubeInfo *cube_info,
             node_info->total_color.green));
           q->blue=RoundToQuantum((MagickRealType) (alpha*QuantumRange*
             node_info->total_color.blue));
-          q->opacity=OpaqueOpacity;
+          SetOpacitySample(q,OpaqueOpacity);
         }
       else
         {
@@ -1346,6 +1346,9 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
 {
 #define DitherImageTag  "Dither/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -1369,9 +1372,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
 
   unsigned long
     index;
-
-  CacheView
-    *image_view;
 
   /*
     Distribute quantization error using Floyd-Steinberg.
@@ -1753,6 +1753,9 @@ static inline long MagickMin(const long x,const long y)
 
 static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
 {
+  CacheView
+    *image_view;
+
   MagickBooleanType
     status;
 
@@ -1761,9 +1764,6 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
 
   unsigned long
     depth;
-
-  CacheView
-    *image_view;
 
   if (cube_info->quantize_info->dither_method == FloydSteinbergDitherMethod)
     return(FloydSteinbergDither(image,cube_info));
@@ -2005,6 +2005,9 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned long id,
 */
 MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
 {
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -2025,9 +2028,6 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
 
   unsigned long
     index;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2062,7 +2062,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
       index=1UL*indexes[x];
       if (image->matte != MagickFalse)
         {
-          alpha=(MagickRealType) (QuantumScale*(QuantumRange-p->opacity));
+          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacitySample(p)));
           beta=(MagickRealType) (QuantumScale*(QuantumRange-
             image->colormap[index].opacity));
         }
@@ -2160,6 +2160,9 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 MagickExport MagickBooleanType PosterizeImage(Image *image,
   const unsigned long levels,const MagickBooleanType dither)
 {
+  CacheView
+    *posterize_view;
+
   ExceptionInfo
     *exception;
 
@@ -2186,9 +2189,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
 
   register PixelPacket
     *restrict q;
-
-  CacheView
-    *posterize_view;
 
   /*
     Posterize image.
@@ -2977,6 +2977,9 @@ static int IntensityCompare(const void *x,const void *y)
 
 static MagickBooleanType SetGrayscaleImage(Image *image)
 {
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -2995,9 +2998,6 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
 
   MagickBooleanType
     status;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

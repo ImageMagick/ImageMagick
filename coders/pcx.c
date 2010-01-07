@@ -1001,7 +1001,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (long) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(p->red);
+                  *q++=ScaleQuantumToChar(GetRedSample(p));
                   p++;
                 }
                 break;
@@ -1010,7 +1010,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (long) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(p->green);
+                  *q++=ScaleQuantumToChar(GetGreenSample(p));
                   p++;
                 }
                 break;
@@ -1019,7 +1019,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (long) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(p->blue);
+                  *q++=ScaleQuantumToChar(GetBlueSample(p));
                   p++;
                 }
                 break;
@@ -1029,7 +1029,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=(long) pcx_info.bytes_per_line; x != 0; x--)
                 {
-                  *q++=ScaleQuantumToChar((Quantum) (QuantumRange-p->opacity));
+                  *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacitySample(p)));
                   p++;
                 }
                 break;

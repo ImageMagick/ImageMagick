@@ -685,7 +685,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
               if (q->opacity == (Quantum) TransparentOpacity)
                 transparent=MagickTrue;
               else
-                q->opacity=OpaqueOpacity;
+                SetOpacitySample(q,OpaqueOpacity);
               q++;
             }
             if (SyncAuthenticPixels(picon,exception) == MagickFalse)

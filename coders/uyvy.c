@@ -345,16 +345,16 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     {
       if (full != MagickFalse)
         {
-          pixel.green=(pixel.green+p->green)/2;
-          pixel.blue=(pixel.blue+p->blue)/2;
+          pixel.green=(pixel.green+GetGreenSample(p))/2;
+          pixel.blue=(pixel.blue+GetBlueSample(p))/2;
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.green));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.red));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.blue));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedSample(p)));
         }
-      pixel.red=(double) p->red;
-      pixel.green=(double) p->green;
-      pixel.blue=(double) p->blue;
+      pixel.red=(double) GetRedSample(p);
+      pixel.green=(double) GetGreenSample(p);
+      pixel.blue=(double) GetBlueSample(p);
       full=full == MagickFalse ? MagickTrue : MagickFalse;
       p++;
     }

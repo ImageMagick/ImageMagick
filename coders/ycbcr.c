@@ -250,11 +250,11 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=p->red;
-                q->green=p->green;
-                q->blue=p->blue;
+                SetRedSample(q,GetRedSample(p));
+                SetGreenSample(q,GetGreenSample(p));
+                SetBlueSample(q,GetBlueSample(p));
                 if (image->matte != MagickFalse)
-                  q->opacity=p->opacity;
+                  SetOpacitySample(q,GetOpacitySample(p));
                 p++;
                 q++;
               }
@@ -323,10 +323,10 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 {
                   switch (quantum_type)
                   {
-                    case RedQuantum: q->red=p->red; break;
-                    case GreenQuantum: q->green=p->green; break;
-                    case BlueQuantum: q->blue=p->blue; break;
-                    case OpacityQuantum: q->opacity=p->opacity; break;
+                    case RedQuantum: SetRedSample(q,GetRedSample(p)); break;
+                    case GreenQuantum: SetGreenSample(q,GetGreenSample(p)); break;
+                    case BlueQuantum: SetBlueSample(q,GetBlueSample(p)); break;
+                    case OpacityQuantum: SetOpacitySample(q,GetOpacitySample(p)); break;
                     default: break;
                   }
                   p++;
@@ -384,7 +384,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=p->red;
+                SetRedSample(q,GetRedSample(p));
                 p++;
                 q++;
               }
@@ -427,7 +427,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->green=p->green;
+                SetGreenSample(q,GetGreenSample(p));
                 p++;
                 q++;
               }
@@ -470,7 +470,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->blue=p->blue;
+                SetBlueSample(q,GetBlueSample(p));
                 p++;
                 q++;
               }
@@ -516,7 +516,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    q->opacity=p->opacity;
+                    SetOpacitySample(q,GetOpacitySample(p));
                     p++;
                     q++;
                   }
@@ -598,7 +598,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=p->red;
+                SetRedSample(q,GetRedSample(p));
                 p++;
                 q++;
               }
@@ -660,7 +660,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->green=p->green;
+                SetGreenSample(q,GetGreenSample(p));
                 p++;
                 q++;
               }
@@ -722,7 +722,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->blue=p->blue;
+                SetBlueSample(q,GetBlueSample(p));
                 p++;
                 q++;
               }
@@ -787,7 +787,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    q->opacity=p->opacity;
+                    SetOpacitySample(q,GetOpacitySample(p));
                     p++;
                     q++;
                   }

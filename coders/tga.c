@@ -834,12 +834,12 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
             *q++=(unsigned char) ScaleQuantumToChar(PixelIntensityToQuantum(p));
           else
             {
-              *q++=ScaleQuantumToChar(p->blue);
-              *q++=ScaleQuantumToChar(p->green);
-              *q++=ScaleQuantumToChar(p->red);
+              *q++=ScaleQuantumToChar(GetBlueSample(p));
+              *q++=ScaleQuantumToChar(GetGreenSample(p));
+              *q++=ScaleQuantumToChar(GetRedSample(p));
               if (image->matte != MagickFalse)
                 *q++=(unsigned char) ScaleQuantumToChar((Quantum)
-                  (QuantumRange-p->opacity));
+                  (QuantumRange-GetOpacitySample(p)));
               if (image->colorspace == CMYKColorspace)
                 *q++=ScaleQuantumToChar(indexes[x]);
             }

@@ -289,6 +289,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       saturation;
   } ColorCorrection;
 
+  CacheView
+    *image_view;
+
   char
     token[MaxTextExtent];
 
@@ -320,9 +323,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     *ccc,
     *sat,
     *sop;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate and initialize cdl maps.
@@ -847,6 +847,9 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 {
 #define ContrastImageTag  "Contrast/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -862,9 +865,6 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1015,6 +1015,9 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
 #define MaxRange(color)  ((MagickRealType) ScaleQuantumToMap((Quantum) (color)))
 #define ContrastStretchImageTag  "ContrastStretch/Image"
 
+  CacheView
+    *image_view;
+
   double
     intensity;
 
@@ -1036,9 +1039,6 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate histogram and stretch map.
@@ -1099,13 +1099,13 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         if ((channel & RedChannel) != 0)
-          histogram[ScaleQuantumToMap(p->red)].red++;
+          histogram[ScaleQuantumToMap(GetRedSample(p))].red++;
         if ((channel & GreenChannel) != 0)
-          histogram[ScaleQuantumToMap(p->green)].green++;
+          histogram[ScaleQuantumToMap(GetGreenSample(p))].green++;
         if ((channel & BlueChannel) != 0)
-          histogram[ScaleQuantumToMap(p->blue)].blue++;
+          histogram[ScaleQuantumToMap(GetBlueSample(p))].blue++;
         if ((channel & OpacityChannel) != 0)
-          histogram[ScaleQuantumToMap(p->opacity)].opacity++;
+          histogram[ScaleQuantumToMap(GetOpacitySample(p))].opacity++;
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
           histogram[ScaleQuantumToMap(indexes[x])].index++;
@@ -1476,6 +1476,10 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   r++;
 #define EnhanceImageTag  "Enhance/Image"
 
+  CacheView
+    *enhance_view,
+    *image_view;
+
   Image
     *enhance_image;
 
@@ -1488,10 +1492,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 
   MagickPixelPacket
     zero;
-
-  CacheView
-    *enhance_view,
-    *image_view;
 
   /*
     Initialize enhanced image attributes.
@@ -1648,6 +1648,9 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 {
 #define EqualizeImageTag  "Equalize/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -1668,9 +1671,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate and initialize histogram arrays.
@@ -1720,13 +1720,13 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        histogram[ScaleQuantumToMap(p->red)].red++;
+        histogram[ScaleQuantumToMap(GetRedSample(p))].red++;
       if ((channel & GreenChannel) != 0)
-        histogram[ScaleQuantumToMap(p->green)].green++;
+        histogram[ScaleQuantumToMap(GetGreenSample(p))].green++;
       if ((channel & BlueChannel) != 0)
-        histogram[ScaleQuantumToMap(p->blue)].blue++;
+        histogram[ScaleQuantumToMap(GetBlueSample(p))].blue++;
       if ((channel & OpacityChannel) != 0)
-        histogram[ScaleQuantumToMap(p->opacity)].opacity++;
+        histogram[ScaleQuantumToMap(GetOpacitySample(p))].opacity++;
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         histogram[ScaleQuantumToMap(indexes[x])].index++;
@@ -1955,6 +1955,9 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
 {
 #define GammaCorrectImageTag  "GammaCorrect/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -1970,9 +1973,6 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate and initialize gamma maps.
@@ -2468,6 +2468,9 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
 #define LevelValue(x) (RoundToQuantum((MagickRealType) QuantumRange* \
   pow(((double) (x)-black_point)/(white_point-black_point),1.0/gamma)))
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -2480,9 +2483,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate and initialize levels map.
@@ -2625,6 +2625,9 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   pow((double)(QuantumScale*(x)),1.0/gamma))*(white_point-black_point)+ \
   black_point))
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -2637,9 +2640,6 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate and initialize levels map.
@@ -3062,6 +3062,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 {
 #define ModulateImageTag  "Modulate/Image"
 
+  CacheView
+    *image_view;
+
   ColorspaceType
     colorspace;
 
@@ -3091,9 +3094,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Initialize gamma table.
@@ -3269,6 +3269,9 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
 {
 #define NegateImageTag  "Negate/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -3281,9 +3284,6 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3570,6 +3570,9 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
 {
 #define SigmoidalContrastImageTag  "SigmoidalContrast/Image"
 
+  CacheView
+    *image_view;
+
   ExceptionInfo
     *exception;
 
@@ -3585,9 +3588,6 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
 
   register long
     i;
-
-  CacheView
-    *image_view;
 
   /*
     Allocate and initialize sigmoidal maps.
