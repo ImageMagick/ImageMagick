@@ -676,7 +676,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 %
 */
 
-static inline Quantum ClampToQuantum(const Quantum quantum)
+static inline Quantum ClampPixel(const Quantum quantum)
 {
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   if (quantum <= 0)
@@ -731,10 +731,10 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
       q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        q->red=ClampToQuantum(q->red);
-        q->green=ClampToQuantum(q->green);
-        q->blue=ClampToQuantum(q->blue);
-        q->opacity=ClampToQuantum(q->opacity);
+        q->red=ClampPixel(q->red);
+        q->green=ClampPixel(q->green);
+        q->blue=ClampPixel(q->blue);
+        q->opacity=ClampPixel(q->opacity);
         q++;
       }
       return(SyncImage(image));
@@ -772,16 +772,16 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=ClampToQuantum(q->red);
+        q->red=ClampPixel(q->red);
       if ((channel & GreenChannel) != 0)
-        q->green=ClampToQuantum(q->green);
+        q->green=ClampPixel(q->green);
       if ((channel & BlueChannel) != 0)
-        q->blue=ClampToQuantum(q->blue);
+        q->blue=ClampPixel(q->blue);
       if ((channel & OpacityChannel) != 0)
-        q->opacity=ClampToQuantum(q->opacity);
+        q->opacity=ClampPixel(q->opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        indexes[x]=(IndexPacket) ClampToQuantum(indexes[x]);
+        indexes[x]=(IndexPacket) ClampPixel(indexes[x]);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
