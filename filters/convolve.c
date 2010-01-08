@@ -162,7 +162,7 @@ static char
     "}\n"
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
-    "  __constant double *filter,const uulong width,const ulong height,\n"
+    "  __constant double *filter,const ulong width,const ulong height,\n"
     "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
     "  const ulong columns = get_global_size(0);\n"
@@ -547,7 +547,7 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
       Convolve image.
     */
     kernel=AcquireKernelFromString(argv[0]);
-    if (kernel == (double *) NULL)
+    if (kernel == (MagickKernel *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
     cl_info=GetCLInfo(*images,"Convolve",convolve_program,exception);
