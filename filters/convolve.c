@@ -294,47 +294,58 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
   cl_int
     status;
 
+  register int
+    i;
+
+  size_t
+    length;
+
+  /*
+    Allocate OpenCL buffers.
+  */
+  length=image->columns*image->rows;
+  cl_info->pixels=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
+    CL_MEM_USE_HOST_PTR,length*sizeof(CLPixelPacket),pixels,&status);
+  if ((cl_info->pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
+  length=width*height;
+  cl_info->filter=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
+    CL_MEM_USE_HOST_PTR,length*sizeof(cl_double),filter,&status);
+  if ((cl_info->filter == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
+  length=image->columns*image->rows;
+  cl_info->convolve_pixels=clCreateBuffer(cl_info->context,CL_MEM_WRITE_ONLY |
+    CL_MEM_USE_HOST_PTR,length*sizeof(CLPixelPacket),convolve_pixels,&status);
+  if ((cl_info->convolve_pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
+    return(MagickFalse);
   /*
     Bind OpenCL buffers.
   */
-  cl_info->pixels=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(CLPixelPacket),
-    pixels,&status);
-  if ((cl_info->pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
-    return(MagickFalse);
-  status=clSetKernelArg(cl_info->kernel,0,sizeof(cl_mem),(void *)
+  i=0;
+  status=clSetKernelArg(cl_info->kernel,i++,sizeof(cl_mem),(void *)
     &cl_info->pixels);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->filter=clCreateBuffer(cl_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,width*height*sizeof(cl_double),filter,&status);
-  if ((cl_info->filter == (cl_mem) NULL) || (status != CL_SUCCESS))
-    return(MagickFalse);
-  status=clSetKernelArg(cl_info->kernel,1,sizeof(cl_mem),(void *)
+  status=clSetKernelArg(cl_info->kernel,i++,sizeof(cl_mem),(void *)
     &cl_info->filter);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   cl_info->width=(cl_ulong) width;
-  status=clSetKernelArg(cl_info->kernel,2,sizeof(cl_ulong),(void *)
+  status=clSetKernelArg(cl_info->kernel,i++,sizeof(cl_ulong),(void *)
     &cl_info->width);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   cl_info->height=(cl_ulong) height;
-  status=clSetKernelArg(cl_info->kernel,3,sizeof(cl_ulong),(void *)
+  status=clSetKernelArg(cl_info->kernel,i++,sizeof(cl_ulong),(void *)
     &cl_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   cl_info->matte=(cl_bool) image->matte;
-  status=clSetKernelArg(cl_info->kernel,4,sizeof(cl_bool),(void *)
+  status=clSetKernelArg(cl_info->kernel,i++,sizeof(cl_bool),(void *)
     &cl_info->matte);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  cl_info->convolve_pixels=clCreateBuffer(cl_info->context,CL_MEM_WRITE_ONLY |
-    CL_MEM_USE_HOST_PTR,image->columns*image->rows*sizeof(CLPixelPacket),
-    convolve_pixels,&status);
-  if ((cl_info->convolve_pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
-    return(MagickFalse);
-  status=clSetKernelArg(cl_info->kernel,5,sizeof(cl_mem),(void *)
+  status=clSetKernelArg(cl_info->kernel,i++,sizeof(cl_mem),(void *)
     &cl_info->convolve_pixels);
   if (status != CL_SUCCESS)
     return(MagickFalse);
@@ -372,27 +383,36 @@ static CLInfo *DestroyCLInfo(CLInfo *cl_info)
   return(cl_info);
 }
 
-static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image)
+static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image,
+  void *pixels,double *filter,const unsigned long width,
+  const unsigned long height,void *convolve_pixels)
 {
-  cl_event
-    events[1];
-
   cl_int
     status;
 
   size_t
-    global_work_size[2];
+    global_work_size[2],
+    length;
 
+  length=image->columns*image->rows;
+  status=clEnqueueWriteBuffer(cl_info->command_queue,cl_info->pixels,CL_TRUE,0,
+    length*sizeof(CLPixelPacket),pixels,0,NULL,NULL);
+  length=width*height;
+  status=clEnqueueWriteBuffer(cl_info->command_queue,cl_info->pixels,CL_TRUE,0,
+    length*sizeof(cl_double),filter,0,NULL,NULL);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
   global_work_size[0]=image->columns;
   global_work_size[1]=image->rows;
   status=clEnqueueNDRangeKernel(cl_info->command_queue,cl_info->kernel,2,NULL,
-    global_work_size,NULL,0,NULL,&events[0]);
+    global_work_size,NULL,0,NULL,NULL);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  status=clWaitForEvents(1,&events[0]);
+  length=image->columns*image->rows;
+  status=clEnqueueReadBuffer(cl_info->command_queue,cl_info->convolve_pixels,
+    CL_TRUE,0,length*sizeof(CLPixelPacket),convolve_pixels,0,NULL,NULL);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  clFinish(cl_info->command_queue);
   return(MagickTrue);
 }
 
@@ -427,7 +447,13 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
     Create OpenCL context.
   */
   cl_info->context=clCreateContextFromType((cl_context_properties *) NULL,
-    CL_DEVICE_TYPE_DEFAULT,OpenCLNotify,exception,&status);
+    CL_DEVICE_TYPE_GPU,OpenCLNotify,exception,&status);
+  if ((cl_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
+    cl_info->context=clCreateContextFromType((cl_context_properties *) NULL,
+      CL_DEVICE_TYPE_CPU,OpenCLNotify,exception,&status);
+  if ((cl_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
+    cl_info->context=clCreateContextFromType((cl_context_properties *) NULL,
+      CL_DEVICE_TYPE_DEFAULT,OpenCLNotify,exception,&status);
   if ((cl_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     {
       DestroyCLInfo(cl_info);
@@ -458,7 +484,7 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
       return((CLInfo *) NULL);
     }
   /*
-    Create OpenCL queue.
+    Create OpenCL command queue.
   */
   cl_info->command_queue=clCreateCommandQueue(cl_info->context,
     cl_info->devices[0],0,&status);
@@ -588,10 +614,11 @@ ModuleExport unsigned long convolveImage(Image **images,const int argc,
           convolve_image=DestroyImage(convolve_image);
           continue;
         }
-      status=BindCLParameters(cl_info,image,pixels,kernel->values,
-        kernel->width,kernel->height,convolve_pixels);
+      status=BindCLParameters(cl_info,image,pixels,kernel->values,kernel->width,
+        kernel->height,convolve_pixels);
       if (status != MagickFalse)
-        status=EnqueueKernel(cl_info,image);
+        status=EnqueueKernel(cl_info,image,pixels,kernel->values,kernel->width,
+          kernel->height,convolve_pixels);
       if (status != MagickFalse)
         (void) CopyMagickMemory(pixels,convolve_pixels,length);
       DestroyCLBuffers(cl_info);
