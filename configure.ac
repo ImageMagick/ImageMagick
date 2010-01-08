@@ -487,7 +487,7 @@ if test "$with_ltdl" != 'no'; then
 fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fftw fpx jp2 jbig jpeg lcms png tiff ttf wmf xml zlib)
+# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms png tiff ttf wmf xml zlib)
 AC_ARG_ENABLE([delegate-build],
     [AC_HELP_STRING([--enable-delegate-build],
                     [look for delegate libraries in build directory])],
@@ -1065,7 +1065,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include magick png tiff/libtiff ttf/include wand wmf/include xml/include zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include magick png tiff/libtiff ttf/include wand wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -1076,7 +1076,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src magick png tiff/libtiff ttf/objs wand wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src magick png tiff/libtiff ttf/objs wand wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
