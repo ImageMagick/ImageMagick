@@ -84,17 +84,17 @@ typedef struct
 
 } MagickKernel;
 
-extern MagickKernel
+extern MagickExport MagickKernel
   *AcquireKernelFromString(const char *),
   *AcquireKernelBuiltIn(const MagickKernelType, const GeometryInfo *),
   *DestroyKernel(MagickKernel *);
 
-extern void
+extern MagickExport void
   KernelNormalize(MagickKernel *),
   KernelPrint(MagickKernel *),
   KernelRotate(MagickKernel *, double);
 
-extern Image
+extern MagickExport Image
   *MorphologyImage(const Image *, MorphologyMethod, const long,
              const ChannelType, MagickKernel *, ExceptionInfo *);
 
