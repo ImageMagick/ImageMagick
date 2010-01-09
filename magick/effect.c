@@ -2438,7 +2438,8 @@ MagickExport Image *FilterImageChannel(const Image *image,
                 kernel_pixels+=image->columns+kernel->width;
                 kernel_indexes+=image->columns+kernel->width;
               }
-              filter_indexes[x]=ClampToQuantum(gamma*GetIndexPixelComponent(&pixel));
+              filter_indexes[x]=ClampToQuantum(gamma*
+                GetIndexPixelComponent(&pixel));
             }
         }
       p++;
