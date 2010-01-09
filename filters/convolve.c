@@ -347,7 +347,9 @@ static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,
     &cl_info->convolve_pixels);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  clFinish(cl_info->command_queue);
+  status=clFinish(cl_info->command_queue);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
   return(MagickTrue);
 }
 

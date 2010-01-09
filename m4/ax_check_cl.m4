@@ -46,7 +46,7 @@ AS_IF([test X$ax_compiler_ms = Xno],
 
 ax_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
-AC_CHECK_HEADERS([CL/opencl.h OpenCL/OpenCL.h])
+AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h])
 CPPFLAGS=$ax_save_CPPFLAGS
 
 AC_CHECK_HEADERS([windows.h])
@@ -56,12 +56,12 @@ m4_define([AX_CHECK_CL_PROGRAM],
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_OPENCL_H
-#   include <CL/opencl.h>
-# elif defined(HAVE_OPENCL_OPENCL_H)
-#   include <OpenCL/OpenCL.h>
+# ifdef HAVE_CL_CL_H
+#   include <CL/cl.h>
+# elif defined(HAVE_OPENCL_CL_H)
+#   include <OpenCL/cl.h>
 # else
-#   error no OpenCL.h
+#   error no CL.h
 # endif]],
                            [[clCreateContextFromType(0,0,0,0,0)]])])
 
