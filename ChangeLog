@@ -4,6 +4,8 @@
   * Transparent images no longer flicker on certain system when using the
     display program.
   * Permit interactive resizing with the display program.
+  * Support heterogeneous distributed processing, see
+    http://www.imagemagick.org/script/architecture.php#distributed.
 
 2010-01-05  6.5.9-0 Stephan Menzel  <stephan.menzel@gmail...>
   * Add support for the BGRA raw image format.
