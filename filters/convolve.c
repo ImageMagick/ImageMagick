@@ -142,9 +142,9 @@ static char
     "static long ClampToCanvas(const long offset,const ulong range)\n"
     "{\n"
     "  if (offset < 0)\n"
-    "    return(0);\n"
+    "    return(0L);\n"
     "  if (offset >= range)\n"
-    "    return(range-1);\n"
+    "    return((long) (range-1L));\n"
     "  return(offset);\n"
     "}\n"
     "\n"
@@ -152,9 +152,9 @@ static char
     "{\n"
     "#if !defined(MAGICKCORE_HDRI_SUPPORT)\n"
     "  if (value < 0)\n"
-    "    return(0);\n"
+    "    return((CLQuantumType) 0);\n"
     "  if (value >= QuantumRange)\n"
-    "    return(QuantumRange);\n"
+    "    return((CLQuantumType) QuantumRange);\n"
     "  return((CLQuantumType) (value+0.5));\n"
     "#else\n"
     "  return((CLQuantumType) value)\n"
@@ -411,6 +411,9 @@ static MagickBooleanType EnqueueKernel(CLInfo *cl_info,Image *image,
   length=image->columns*image->rows;
   status=clEnqueueReadBuffer(cl_info->command_queue,cl_info->convolve_pixels,
     CL_TRUE,0,length*sizeof(CLPixelPacket),convolve_pixels,0,NULL,NULL);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
+  status=clFinish(cl_info->command_queue);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   return(MagickTrue);
