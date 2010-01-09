@@ -1586,7 +1586,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 kernel_pixels+=image->columns+width;
                 kernel_indexes+=image->columns+width;
               }
-              convolve_indexes[x]=ClampToQuantum(gamma*GetIndexPixelComponent(&pixel));
+              convolve_indexes[x]=ClampToQuantum(gamma*
+                GetIndexPixelComponent(&pixel));
             }
         }
       p++;
