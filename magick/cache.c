@@ -3136,7 +3136,7 @@ static inline long EdgeX(const long x,const unsigned long columns)
   if (x < 0L)
     return(0L);
   if (x >= (long) columns)
-    return((long) columns-1L);
+    return((long) (columns-1));
   return(x);
 }
 
@@ -3145,7 +3145,7 @@ static inline long EdgeY(const long y,const unsigned long rows)
   if (y < 0L)
     return(0L);
   if (y >= (long) rows)
-    return((long) rows-1L);
+    return((long) (rows-1));
   return(y);
 }
 
