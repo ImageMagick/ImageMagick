@@ -3105,7 +3105,7 @@ static long
     42,  26,  38,  22,  41,  25,  37,  21
   };
 
-static inline long DitherX(const unsigned long columns,const long x)
+static inline long DitherX(const long x,const unsigned long columns)
 {
   long
     index;
@@ -3118,7 +3118,7 @@ static inline long DitherX(const unsigned long columns,const long x)
   return(index);
 }
 
-static inline long DitherY(const unsigned long rows,const long y)
+static inline long DitherY(const long y,const unsigned long rows)
 {
   long
     index;
@@ -3131,7 +3131,7 @@ static inline long DitherY(const unsigned long rows,const long y)
   return(index);
 }
 
-static inline long EdgeX(const unsigned long columns,const long x)
+static inline long EdgeX(const long x,const unsigned long columns)
 {
   if (x < 0L)
     return(0L);
@@ -3140,7 +3140,7 @@ static inline long EdgeX(const unsigned long columns,const long x)
   return(x);
 }
 
-static inline long EdgeY(const unsigned long rows,const long y)
+static inline long EdgeY(const long y,const unsigned long rows)
 {
   if (y < 0L)
     return(0L);
@@ -3149,12 +3149,12 @@ static inline long EdgeY(const unsigned long rows,const long y)
   return(y);
 }
 
-static inline long RandomX(const unsigned long columns,RandomInfo *random_info)
+static inline long RandomX(RandomInfo *random_info,const unsigned long columns)
 {
   return((long) (columns*GetPseudoRandomValue(random_info)));
 }
 
-static inline long RandomY(const unsigned long rows,RandomInfo *random_info)
+static inline long RandomY(RandomInfo *random_info,const unsigned long rows)
 {
   return((long) (rows*GetPseudoRandomValue(random_info)));
 }
@@ -3348,7 +3348,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
             default:
             {
               p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
-                EdgeX(cache_info->columns,x+u),EdgeY(cache_info->rows,y+v),
+                EdgeX(x+u,cache_info->columns),EdgeY(y+v,cache_info->rows),
                 1UL,1UL,virtual_nexus[0],exception);
               break;
             }
@@ -3357,15 +3357,15 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
               if (cache_info->random_info == (RandomInfo *) NULL)
                 cache_info->random_info=AcquireRandomInfo();
               p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
-                RandomX(cache_info->columns,cache_info->random_info),
-                RandomY(cache_info->rows,cache_info->random_info),1UL,1UL,
+                RandomX(cache_info->random_info,cache_info->columns),
+                RandomY(cache_info->random_info,cache_info->rows),1UL,1UL,
                 virtual_nexus[0],exception);
               break;
             }
             case DitherVirtualPixelMethod:
             {
               p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
-                DitherX(cache_info->columns,x+u),DitherY(cache_info->rows,y+v),
+                DitherX(x+u,cache_info->columns),DitherY(y+v,cache_info->rows),
                 1UL,1UL,virtual_nexus[0],exception);
               break;
             }
@@ -3439,7 +3439,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
             {
               x_modulo=VirtualPixelModulo(x+u,cache_info->columns);
               p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
-                x_modulo.remainder,EdgeY(cache_info->rows,y+v),1UL,1UL,
+                x_modulo.remainder,EdgeY(y+v,cache_info->rows),1UL,1UL,
                 virtual_nexus[0],exception);
               break;
             }
@@ -3447,7 +3447,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
             {
               y_modulo=VirtualPixelModulo(y+v,cache_info->rows);
               p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
-                EdgeX(cache_info->columns,x+u),y_modulo.remainder,1UL,1UL,
+                EdgeX(x+u,cache_info->columns),y_modulo.remainder,1UL,1UL,
                 virtual_nexus[0],exception);
               break;
             }
