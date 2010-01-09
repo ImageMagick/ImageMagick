@@ -199,12 +199,12 @@ extern "C" {
 # include <arm/limits.h>
 #endif
 
-#if defined(MAGICKCORE_HAVE_CL_OPENCL_H)
+#if defined(MAGICKCORE_HAVE_CL_CL_H)
 #  include <CL/cl.h>
 #  define MAGICKCORE_OPENCL_SUPPORT  1
 #endif
 
-#if defined(MAGICKCORE_HAVE_OPENCL_OPENCL_H)
+#if defined(MAGICKCORE_HAVE_OPENCL_CL_H)
 #  include <OpenCL/cl.h>
 #  define MAGICKCORE_OPENCL_SUPPORT  1
 #endif

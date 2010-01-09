@@ -7466,7 +7466,7 @@ fi
 
 ax_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
-for ac_header in CL/opencl.h OpenCL/OpenCL.h
+for ac_header in CL/cl.h OpenCL/cl.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -7525,12 +7525,12 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_OPENCL_H
-#   include <CL/opencl.h>
-# elif defined(HAVE_OPENCL_OPENCL_H)
-#   include <OpenCL/OpenCL.h>
+# ifdef HAVE_CL_CL_H
+#   include <CL/cl.h>
+# elif defined(HAVE_OPENCL_CL_H)
+#   include <OpenCL/cl.h>
 # else
-#   error no OpenCL.h
+#   error no CL.h
 # endif
 int
 main ()
@@ -7550,12 +7550,12 @@ else
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_OPENCL_H
-#   include <CL/opencl.h>
-# elif defined(HAVE_OPENCL_OPENCL_H)
-#   include <OpenCL/OpenCL.h>
+# ifdef HAVE_CL_CL_H
+#   include <CL/cl.h>
+# elif defined(HAVE_OPENCL_CL_H)
+#   include <OpenCL/cl.h>
 # else
-#   error no OpenCL.h
+#   error no CL.h
 # endif
 int
 main ()
@@ -7575,12 +7575,12 @@ else
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_OPENCL_H
-#   include <CL/opencl.h>
-# elif defined(HAVE_OPENCL_OPENCL_H)
-#   include <OpenCL/OpenCL.h>
+# ifdef HAVE_CL_CL_H
+#   include <CL/cl.h>
+# elif defined(HAVE_OPENCL_CL_H)
+#   include <OpenCL/cl.h>
 # else
-#   error no OpenCL.h
+#   error no CL.h
 # endif
 int
 main ()
@@ -7611,12 +7611,12 @@ if test "X$ax_cv_check_cl_libcl" = Xno -a X$no_x = Xyes; then :
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #   include <windows.h>
 # endif
-# ifdef HAVE_CL_OPENCL_H
-#   include <CL/opencl.h>
-# elif defined(HAVE_OPENCL_OPENCL_H)
-#   include <OpenCL/OpenCL.h>
+# ifdef HAVE_CL_CL_H
+#   include <CL/cl.h>
+# elif defined(HAVE_OPENCL_CL_H)
+#   include <OpenCL/cl.h>
 # else
-#   error no OpenCL.h
+#   error no CL.h
 # endif
 int
 main ()
