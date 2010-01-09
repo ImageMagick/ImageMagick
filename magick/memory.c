@@ -70,7 +70,7 @@
 #define BlockHeader(block)  ((size_t *) (block)-1)
 #define BlockSize  4096
 #define BlockThreshold  1024
-#define AlignedSize  (16*sizeof(void *))
+#define AlignedSize  (32*sizeof(void *))
 #define MaxBlockExponent  16
 #define MaxBlocks ((BlockThreshold/(4*sizeof(size_t)))+MaxBlockExponent+1)
 #define MaxSegments  1024
