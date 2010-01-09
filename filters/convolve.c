@@ -82,24 +82,24 @@
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-#define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantumType=float " \
+#define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantum=float " \
   "-DCLPixelType=float4 -DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_ufloat4
 #else
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#define CLOptions "-DCLQuantumType=uchar -DCLPixelType=uchar4 " \
+#define CLOptions "-DCLQuantum=uchar -DCLPixelType=uchar4 " \
   "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_uchar4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#define CLOptions "-DCLQuantumType=ushort -DCLPixelType=ushort4 " \
+#define CLOptions "-DCLQuantum=ushort -DCLPixelType=ushort4 " \
   "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_ushort4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define CLOptions "-DCLQuantumType=uint -DCLPixelType=uint4 " \
+#define CLOptions "-DCLQuantum=uint -DCLPixelType=uint4 " \
   "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_uint4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define CLOptions "-DCLQuantumType=ulong -DCLPixelType=ulong4 " \
+#define CLOptions "-DCLQuantum=ulong -DCLPixelType=ulong4 " \
   "-DQuantumRange=%.15g -DMagickEpsilon=%.15g"
 #define CLPixelPacket  cl_ulong4
 #endif
@@ -139,31 +139,31 @@ typedef struct _CLInfo
 
 static char
   *convolve_program =
-    "static long ClampToCanvas(const long offset,const ulong range)\n"
+    "static inline long ClampToCanvas(const long offset,const ulong range)\n"
     "{\n"
-    "  if (offset < 0)\n"
+    "  if (offset < 0L)\n"
     "    return(0L);\n"
     "  if (offset >= range)\n"
     "    return((long) (range-1L));\n"
     "  return(offset);\n"
     "}\n"
     "\n"
-    "static CLQuantumType ClampToQuantum(const double value)\n"
+    "static inline CLQuantum ClampToQuantum(const double value)\n"
     "{\n"
     "#if !defined(MAGICKCORE_HDRI_SUPPORT)\n"
-    "  if (value < 0)\n"
-    "    return((CLQuantumType) 0);\n"
-    "  if (value >= QuantumRange)\n"
-    "    return((CLQuantumType) QuantumRange);\n"
-    "  return((CLQuantumType) (value+0.5));\n"
+    "  if (value < 0.0)\n"
+    "    return((CLQuantum) 0);\n"
+    "  if (value >= (double) QuantumRange)\n"
+    "    return((CLQuantum) QuantumRange);\n"
+    "  return((CLQuantum) (value+0.5));\n"
     "#else\n"
-    "  return((CLQuantumType) value)\n"
+    "  return((CLQuantum) value)\n"
     "#endif\n"
     "}\n"
     "\n"
-    "__kernel void Convolve(const __global CLPixelType *source,\n"
+    "__kernel void Convolve(const __global CLPixelType *input,\n"
     "  __constant double *filter,const ulong width,const ulong height,\n"
-    "  const bool matte,__global CLPixelType *desintation)\n"
+    "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
     "  const ulong columns = get_global_size(0);\n"
     "  const ulong rows = get_global_size(1);\n"
@@ -171,14 +171,12 @@ static char
     "  const long x = get_global_id(0);\n"
     "  const long y = get_global_id(1);\n"
     "\n"
-    "  double4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
-    "  double alpha = 0.0;\n"
-    "  double gamma = 0.0;\n"
-    "  double scale = (1.0/QuantumRange);\n"
+    "  const double scale = (1.0/QuantumRange);\n"
     "  const long mid_width = (width-1)/2;\n"
     "  const long mid_height = (height-1)/2;\n"
+    "  double4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
+    "  double gamma = 0.0;\n"
     "  register ulong i = 0;\n"
-    "  register ulong index = 0;\n"
     "\n"
     "  int method = 0;\n"
     "  if (matte != false)\n"
@@ -198,11 +196,11 @@ static char
     "      {\n"
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          index=ClampToCanvas(y+v,rows)*columns+\n"
+    "          const long index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
-    "          sum.x+=filter[i]*source[index].x;\n"
-    "          sum.y+=filter[i]*source[index].y;\n"
-    "          sum.z+=filter[i]*source[index].z;\n"
+    "          sum.x+=filter[i]*input[index].x;\n"
+    "          sum.y+=filter[i]*input[index].y;\n"
+    "          sum.z+=filter[i]*input[index].z;\n"
     "          gamma+=filter[i];\n"
     "          i++;\n"
     "        }\n"
@@ -215,13 +213,13 @@ static char
     "      {\n"
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          index=ClampToCanvas(y+v,rows)*columns+\n"
+    "          const ulong index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
-    "          alpha=scale*(QuantumRange-source[index].w);\n"
-    "          sum.x+=alpha*filter[i]*source[index].x;\n"
-    "          sum.y+=alpha*filter[i]*source[index].y;\n"
-    "          sum.z+=alpha*filter[i]*source[index].z;\n"
-    "          sum.w+=filter[i]*source[index].w;\n"
+    "          const double alpha=scale*(QuantumRange-input[index].w);\n"
+    "          sum.x+=alpha*filter[i]*input[index].x;\n"
+    "          sum.y+=alpha*filter[i]*input[index].y;\n"
+    "          sum.z+=alpha*filter[i]*input[index].z;\n"
+    "          sum.w+=filter[i]*input[index].w;\n"
     "          gamma+=alpha*filter[i];\n"
     "          i++;\n"
     "        }\n"
@@ -234,10 +232,10 @@ static char
     "      {\n"
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          index=(y+v)*columns+(x+u);\n"
-    "          sum.x+=filter[i]*source[index].x;\n"
-    "          sum.y+=filter[i]*source[index].y;\n"
-    "          sum.z+=filter[i]*source[index].z;\n"
+    "          const ulong index=(y+v)*columns+(x+u);\n"
+    "          sum.x+=filter[i]*input[index].x;\n"
+    "          sum.y+=filter[i]*input[index].y;\n"
+    "          sum.z+=filter[i]*input[index].z;\n"
     "          gamma+=filter[i];\n"
     "          i++;\n"
     "        }\n"
@@ -250,12 +248,12 @@ static char
     "      {\n"
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          index=(y+v)*columns+(x+u);\n"
-    "          alpha=scale*(QuantumRange-source[index].w);\n"
-    "          sum.x+=alpha*filter[i]*source[index].x;\n"
-    "          sum.y+=alpha*filter[i]*source[index].y;\n"
-    "          sum.z+=alpha*filter[i]*source[index].z;\n"
-    "          sum.w+=filter[i]*source[index].w;\n"
+    "          const ulong index=(y+v)*columns+(x+u);\n"
+    "          const double alpha=scale*(QuantumRange-input[index].w);\n"
+    "          sum.x+=alpha*filter[i]*input[index].x;\n"
+    "          sum.y+=alpha*filter[i]*input[index].y;\n"
+    "          sum.z+=alpha*filter[i]*input[index].z;\n"
+    "          sum.w+=filter[i]*input[index].w;\n"
     "          gamma+=alpha*filter[i];\n"
     "          i++;\n"
     "        }\n"
@@ -264,14 +262,14 @@ static char
     "    }\n"
     "  }\n"
     "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
-    "  index=y*columns+x;\n"
-    "  desintation[index].x=ClampToQuantum(gamma*sum.x);\n"
-    "  desintation[index].y=ClampToQuantum(gamma*sum.y);\n"
-    "  desintation[index].z=ClampToQuantum(gamma*sum.z);\n"
+    "  const ulong index=y*columns+x;\n"
+    "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
+    "  output[index].y=ClampToQuantum(gamma*sum.y);\n"
+    "  output[index].z=ClampToQuantum(gamma*sum.z);\n"
     "  if (matte == false)\n"
-    "    desintation[index].w=source[index].w;\n"
+    "    output[index].w=input[index].w;\n"
     "  else\n"
-    "    desintation[index].w=ClampToQuantum(sum.w);\n"
+    "    output[index].w=ClampToQuantum(sum.w);\n"
     "}\n";
 
 static void OpenCLNotify(const char *message,const void *data,size_t length,
