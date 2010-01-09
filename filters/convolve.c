@@ -459,6 +459,8 @@ static CLInfo *GetCLInfo(Image *image,const char *name,const char *source,
       CL_DEVICE_TYPE_DEFAULT,OpenCLNotify,exception,&status);
   if ((cl_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     {
+      (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
+        "failed to create OpenCL context","`%s' (%d)",image->filename,status);
       DestroyCLInfo(cl_info);
       return((CLInfo *) NULL);
     }
