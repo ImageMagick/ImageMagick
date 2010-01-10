@@ -95,8 +95,8 @@ extern MagickExport void
   KernelRotate(MagickKernel *, double);
 
 extern MagickExport Image
-  *MorphologyImage(const Image *, MorphologyMethod, const long,
-             const ChannelType, MagickKernel *, ExceptionInfo *);
+  *MorphologyImage(const Image *, const ChannelType, MorphologyMethod,
+      const long, MagickKernel *, ExceptionInfo *);
 
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -1574,9 +1574,8 @@ static unsigned long MorphologyApply(const Image *image, Image
   return(status ? changed : 0);
 }
 
-
-MagickExport Image *MorphologyImage(const Image *image, MorphologyMethod
-  method, const long iterations, const ChannelType channel,
+MagickExport Image *MorphologyImage(const Image *image,
+  const ChannelType channel, MorphologyMethod method, const long iterations,
   MagickKernel *kernel, ExceptionInfo *exception)
 {
   unsigned long
