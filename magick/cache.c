@@ -1900,8 +1900,8 @@ MagickExport PixelPacket *GetAuthenticPixelQueue(const Image *image)
 %  or it may point to the original pixels in memory. Performance is maximized
 %  if the selected region is part of one row, or one or more full rows, since
 %  then there is opportunity to access the pixels in-place (without a copy)
-%  if the image is in RAM, or in a memory-mapped file. The returned pointer
-%  should *never* be deallocated by the user.
+%  if the image is in memory, or in a memory-mapped file. The returned pointer
+%  must *never* be deallocated by the user.
 %
 %  Pixels accessed via the returned pointer represent a simple array of type
 %  PixelPacket. If the image type is CMYK or if the storage class is
@@ -3602,12 +3602,12 @@ MagickExport const PixelPacket *GetVirtualPixelQueue(const Image *image)
 %
 %  GetVirtualPixels() returns an immutable pixel region. If the
 %  region is successfully accessed, a pointer to it is returned, otherwise
-%  NULL is returned. The returned pointer may point to a temporary working
+%  NULL is returned.  The returned pointer may point to a temporary working
 %  copy of the pixels or it may point to the original pixels in memory.
 %  Performance is maximized if the selected region is part of one row, or one
 %  or more full rows, since there is opportunity to access the pixels in-place
-%  (without a copy) if the image is in RAM, or in a memory-mapped file.  The
-%  returned pointer should *never* be deallocated by the user.
+%  (without a copy) if the image is in memory, or in a memory-mapped file.  The
+%  returned pointer must *never* be deallocated by the user.
 %
 %  Pixels accessed via the returned pointer represent a simple array of type
 %  PixelPacket.  If the image type is CMYK or the storage class is PseudoClass,
@@ -4455,8 +4455,8 @@ static PixelPacket *QueueAuthenticPixelsCache(Image *image,const long x,
 %
 %  Performance is maximized if the selected region is part of one row, or
 %  one or more full rows, since then there is opportunity to access the
-%  pixels in-place (without a copy) if the image is in RAM, or in a
-%  memory-mapped file. The returned pointer should *never* be deallocated
+%  pixels in-place (without a copy) if the image is in memory, or in a
+%  memory-mapped file. The returned pointer must *never* be deallocated
 %  by the user.
 %
 %  Pixels accessed via the returned pointer represent a simple array of type
