@@ -86,6 +86,7 @@ static inline void AffineArgsToCoefficients(double *affine)
   tmp[0]=affine[1]; tmp[1]=affine[2]; tmp[2]=affine[3]; tmp[3]=affine[4];
   affine[3]=tmp[0]; affine[1]=tmp[1]; affine[4]=tmp[2]; affine[2]=tmp[3];
 }
+
 static inline void CoefficientsToAffineArgs(double *coeff)
 {
   /* map  internal c0,c1,c2,c3,c4,c5  to  external sx,ry,rx,sy,tx,ty */

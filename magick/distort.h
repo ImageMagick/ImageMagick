@@ -22,12 +22,10 @@
 extern "C" {
 #endif
 
-#include <magick/draw.h>
-
 /*
   These two enum are linked, with common enumerated values.  Both
-  DistortImages() and SparseColor() often share code to determine
-  functional coefficients for common methods.
+  DistortImages() and SparseColor() often share code to determine functional
+  coefficients for common methods.
 
   Caution should be taken to ensure that only the common methods contain the
   same enumerated value, while all others remain unique across both
@@ -54,7 +52,6 @@ typedef enum
   SentinelDistortion
 } DistortImageMethod;
 
-
 typedef enum
 {
   UndefinedColorInterpolate = UndefinedDistortion,
@@ -62,7 +59,9 @@ typedef enum
   BilinearColorInterpolate = BilinearReverseDistortion,
   PolynomialColorInterpolate = PolynomialDistortion,
   ShepardsColorInterpolate = ShepardsDistortion,
-  /* Methods unique to SparseColor(): */
+  /*
+    Methods unique to SparseColor().
+  */
   VoronoiColorInterpolate = SentinelDistortion
 } SparseColorMethod;
 
