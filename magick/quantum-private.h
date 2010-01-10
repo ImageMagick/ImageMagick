@@ -85,10 +85,10 @@ struct _QuantumInfo
 typedef union _HalfFloat
 {
   unsigned int
-    cf_uint;
+    fixed_point;
 
   float
-    cf_float;
+    single_precision;
 } HalfFloat;
 
 static inline MagickSizeType GetQuantumRange(const unsigned long depth)
@@ -235,7 +235,7 @@ static inline unsigned short ScaleFloatToHalf(const float value)
 #define ExponentBias  (127-15) 
 #define ExponentMask  0x7c00
 #define ExponentShift  23
-#define MantissaShift  13
+#define SignificandShift  13
 
   HalfFloat
     pixel;
@@ -244,46 +244,47 @@ static inline unsigned short ScaleFloatToHalf(const float value)
     exponent;
 
   register unsigned int
-    mantissa,
-    sign;
+    significand,
+    sign_bit;
 
   unsigned short
     half;
 
-  pixel.cf_float=value;
-  sign=(pixel.cf_uint >> 16) & 0x00008000;
-  exponent=(int) ((pixel.cf_uint >> ExponentShift) & 0x000000ff)-ExponentBias;
-  mantissa=pixel.cf_uint & 0x007fffff;
+  pixel.single_precision=value;
+  sign_bit=(pixel.fixed_point >> 16) & 0x00008000;
+  exponent=(int) ((pixel.fixed_point >> ExponentShift) & 0x000000ff)-
+    ExponentBias;
+  significand=pixel.fixed_point & 0x007fffff;
   if (exponent <= 0)
     {
       long
         shift;
 
       if (exponent < -10)
-        return((unsigned short) sign);
-      mantissa=mantissa | 0x00800000;
+        return((unsigned short) sign_bit);
+      significand=significand | 0x00800000;
       shift=14-exponent;
-      mantissa=(unsigned int) ((mantissa+((1 << (shift-1))-1)+
-        ((mantissa >> shift) & 0x01)) >> shift);
-      return((unsigned short) (sign | mantissa));
+      significand=(unsigned int) ((significand+((1 << (shift-1))-1)+
+        ((significand >> shift) & 0x01)) >> shift);
+      return((unsigned short) (sign_bit | significand));
     }
   else
     if (exponent == (0xff-ExponentBias))
       {
-        if (mantissa == 0)
-          return((unsigned short) (sign | ExponentMask));
+        if (significand == 0)
+          return((unsigned short) (sign_bit | ExponentMask));
         else
           {
-            mantissa>>=MantissaShift;
-            half=(unsigned short) (sign | mantissa | (mantissa == 0) |
+            significand>>=SignificandShift;
+            half=(unsigned short) (sign_bit | significand | (significand == 0) |
               ExponentMask);
             return(half);
           }
       }
-  mantissa=mantissa+((mantissa >> MantissaShift) & 0x01)+0x00000fff;
-  if ((mantissa & 0x00800000) != 0)
+  significand=significand+((significand >> SignificandShift) & 0x01)+0x00000fff;
+  if ((significand & 0x00800000) != 0)
     {
-      mantissa=0;
+      significand=0;
       exponent++;
     }
   if (exponent > 30)
@@ -297,67 +298,69 @@ static inline unsigned short ScaleFloatToHalf(const float value)
       /*
         Float overflow.
       */
-      alpha=1e10;
+      alpha=1.0e10;
       for (i=0; i < 10; i++)
         alpha*=alpha;
-      return((unsigned short) (sign | ExponentMask));
+      return((unsigned short) (sign_bit | ExponentMask));
     }
-  half=(unsigned short) (sign | (exponent << 10) | (mantissa >> MantissaShift));
+  half=(unsigned short) (sign_bit | (exponent << 10) |
+    (significand >> SignificandShift));
   return(half);
 }
 
 static inline float ScaleHalfToFloat(const unsigned short quantum)
 {
-#define MantissaMask  0x00000400
-#define SignShift  31
+#define SignificandMask  0x00000400
+#define SignBitShift  31
 
   HalfFloat
     pixel;
 
   register unsigned int
     exponent,
-    mantissa,
-    sign;
+    significand,
+    sign_bit;
 
   unsigned int
     value;
 
-  sign=(unsigned int) ((quantum >> 15) & 0x00000001);
+  sign_bit=(unsigned int) ((quantum >> 15) & 0x00000001);
   exponent=(unsigned int) ((quantum >> 10) & 0x0000001f);
-  mantissa=(unsigned int) (quantum & 0x000003ff);
+  significand=(unsigned int) (quantum & 0x000003ff);
   if (exponent == 0)
     {
-    	if (mantissa == 0)
-        value=sign << SignShift;
+    	if (significand == 0)
+        value=sign_bit << SignBitShift;
 	    else
 	      {
-          while ((mantissa & MantissaMask) == 0)
+          while ((significand & SignificandMask) == 0)
           {
-            mantissa<<=1;
+            significand<<=1;
             exponent--;
           }
 	        exponent++;
-          mantissa&=(~MantissaMask);
+          significand&=(~SignificandMask);
           exponent+=ExponentBias;
-          value=(sign << SignShift) | (exponent << ExponentShift) |
-            (mantissa << MantissaShift);
+          value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
+            (significand << SignificandShift);
        	}
     }
   else
-    if (exponent == SignShift)
+    if (exponent == SignBitShift)
       {
-        value=(sign << SignShift) | 0x7f800000;
-        if (mantissa != 0)
-          value|=(mantissa << MantissaShift);
+        value=(sign_bit << SignBitShift) | 0x7f800000;
+        if (significand != 0)
+          value|=(significand << SignificandShift);
       }
     else
       {
         exponent+=ExponentBias;
-        mantissa=mantissa << MantissaShift;
-        value=(sign << SignShift) | (exponent << ExponentShift) | mantissa;
+        significand<<=SignificandShift;
+        value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
+          significand;
       }
-  pixel.cf_uint=value;
-  return(pixel.cf_float);
+  pixel.fixed_point=value;
+  return(pixel.single_precision);
 }
 
 static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
