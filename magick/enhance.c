@@ -704,8 +704,8 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
                 A gray-scale LUT replacement for an image alpha channel.
               */
               (void) ResamplePixelColor(resample_filter[id],QuantumScale*
-                (QuantumRange-q->opacity)*(clut_image->columns+adjust),
-                QuantumScale*(QuantumRange-q->opacity)*(clut_image->rows+
+                GetAlphaPixelComponent(q)*(clut_image->columns+adjust),
+                QuantumScale*GetAlphaPixelComponent(q)*(clut_image->rows+
                 adjust),&pixel);
               q->opacity=(Quantum) (QuantumRange-MagickPixelIntensityToQuantum(
                 &pixel));
@@ -2078,7 +2078,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
                 q->opacity=gamma_map[ScaleQuantumToMap(q->opacity)];
               else
                 q->opacity=(Quantum) QuantumRange-gamma_map[
-                  ScaleQuantumToMap((Quantum) (QuantumRange-q->opacity))];
+                  ScaleQuantumToMap((Quantum) GetAlphaPixelComponent(q))];
             }
         }
       q++;

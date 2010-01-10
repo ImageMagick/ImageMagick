@@ -843,7 +843,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte != MagickFalse)
-              *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
             *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
             *q++=ScaleQuantumToChar(GetBluePixelComponent(p));

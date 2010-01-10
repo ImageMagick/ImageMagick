@@ -2629,7 +2629,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   q->opacity=(*p << 8) | *(p+1);
                   q->opacity*=65537L;
-                  q->opacity=(Quantum) (QuantumRange-q->opacity);
+                  q->opacity=(Quantum) GetAlphaPixelComponent(q);
                   p+=2;
                   q++;
                 }
@@ -6835,7 +6835,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           ping_info->trans_color.gray=(png_uint_16)
             (ScaleQuantumToShort(PixelIntensityToQuantum(p)) & mask);
           ping_info->trans_color.index=(png_byte)
-            (ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p))));
+            (ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p))));
         }
       if (ping_info->valid & PNG_INFO_tRNS)
         {

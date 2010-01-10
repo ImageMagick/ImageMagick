@@ -2375,7 +2375,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+                *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
                 p++;
               }
             }

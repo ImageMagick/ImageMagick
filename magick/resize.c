@@ -1846,8 +1846,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           {
             j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
               (contribution[i].pixel-contribution[0].pixel);
-            alpha=contribution[i].weight*QuantumScale*((MagickRealType)
-              QuantumRange-(p+j)->opacity);
+            alpha=contribution[i].weight*QuantumScale*
+              GetAlphaPixelComponent(p+j);
             pixel.red+=alpha*(p+j)->red;
             pixel.green+=alpha*(p+j)->green;
             pixel.blue+=alpha*(p+j)->blue;
@@ -1866,8 +1866,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
               {
                 j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
                   (contribution[i].pixel-contribution[0].pixel);
-                alpha=contribution[i].weight*QuantumScale*((MagickRealType)
-                  QuantumRange-(p+j)->opacity);
+                alpha=contribution[i].weight*QuantumScale*
+                  GetAlphaPixelComponent(p+j);
                 pixel.index+=alpha*indexes[j];
               }
               resize_indexes[y]=(IndexPacket) ClampToQuantum(gamma*
@@ -2088,8 +2088,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           {
             j=(long) ((contribution[i].pixel-contribution[0].pixel)*
               image->columns+x);
-            alpha=contribution[i].weight*QuantumScale*((MagickRealType)
-              QuantumRange-(p+j)->opacity);
+            alpha=contribution[i].weight*QuantumScale*
+              GetAlphaPixelComponent(p+j);
             pixel.red+=alpha*(p+j)->red;
             pixel.green+=alpha*(p+j)->green;
             pixel.blue+=alpha*(p+j)->blue;
@@ -2108,8 +2108,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
               {
                 j=(long) ((contribution[i].pixel-contribution[0].pixel)*
                   image->columns+x);
-                alpha=contribution[i].weight*QuantumScale*((MagickRealType)
-                  QuantumRange-(p+j)->opacity);
+                alpha=contribution[i].weight*QuantumScale*
+                  GetAlphaPixelComponent(p+j);
                 pixel.index+=alpha*indexes[j];
               }
               resize_indexes[x]=(IndexPacket) ClampToQuantum(gamma*

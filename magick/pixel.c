@@ -289,7 +289,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
               *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-              *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -357,7 +357,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
               *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-              *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -414,7 +414,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               }
               case AlphaQuantum:
               {
-                *q=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+                *q=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
                 break;
               }
               case OpacityQuantum:
@@ -670,7 +670,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetBluePixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
               *q++=(float) (QuantumScale*GetRedPixelComponent(p));
-              *q++=(float) (QuantumScale*(Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=(float) (QuantumScale*(Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -738,7 +738,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetRedPixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
               *q++=(float) (QuantumScale*GetBluePixelComponent(p));
-              *q++=(float) (QuantumScale*((Quantum) (QuantumRange-GetOpacityPixelComponent(p))));
+              *q++=(float) (QuantumScale*((Quantum) (GetAlphaPixelComponent(p))));
               p++;
             }
           }
@@ -795,7 +795,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               }
               case AlphaQuantum:
               {
-                *q=(float) (QuantumScale*((Quantum) (QuantumRange-GetOpacityPixelComponent(p))));
+                *q=(float) (QuantumScale*((Quantum) (GetAlphaPixelComponent(p))));
                 break;
               }
               case OpacityQuantum:
@@ -930,7 +930,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong((Quantum)
-                (QuantumRange-GetOpacityPixelComponent(p)));
+                (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -1053,7 +1053,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
               *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
-              *q++=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToLong((Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -1121,7 +1121,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
               *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
-              *q++=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToLong((Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -1178,7 +1178,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               }
               case AlphaQuantum:
               {
-                *q=ScaleQuantumToLong((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+                *q=ScaleQuantumToLong((Quantum) (GetAlphaPixelComponent(p)));
                 break;
               }
               case OpacityQuantum:
@@ -1242,7 +1242,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetBluePixelComponent(p);
               *q++=GetGreenPixelComponent(p);
               *q++=GetRedPixelComponent(p);
-              *q++=(Quantum) (QuantumRange-GetOpacityPixelComponent(p));
+              *q++=(Quantum) (GetAlphaPixelComponent(p));
               p++;
             }
           }
@@ -1310,7 +1310,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetRedPixelComponent(p);
               *q++=GetGreenPixelComponent(p);
               *q++=GetBluePixelComponent(p);
-              *q++=(Quantum) (QuantumRange-GetOpacityPixelComponent(p));
+              *q++=(Quantum) (GetAlphaPixelComponent(p));
               p++;
             }
           }
@@ -1367,7 +1367,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               }
               case AlphaQuantum:
               {
-                *q=(Quantum) (QuantumRange-GetOpacityPixelComponent(p));
+                *q=(Quantum) (GetAlphaPixelComponent(p));
                 break;
               }
               case OpacityQuantum:
@@ -1431,7 +1431,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
               *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
-              *q++=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToShort((Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -1499,7 +1499,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
               *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
-              *q++=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+              *q++=ScaleQuantumToShort((Quantum) (GetAlphaPixelComponent(p)));
               p++;
             }
           }
@@ -1556,7 +1556,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               }
               case AlphaQuantum:
               {
-                *q=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+                *q=ScaleQuantumToShort((Quantum) (GetAlphaPixelComponent(p)));
                 break;
               }
               case OpacityQuantum:

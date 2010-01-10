@@ -986,7 +986,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
           *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
           *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-          *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+          *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
           p++;
         }
       else
@@ -1000,7 +1000,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
           *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
           *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
-          *q++=ScaleQuantumToShort((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+          *q++=ScaleQuantumToShort((Quantum) (GetAlphaPixelComponent(p)));
           p++;
         }
       if (image->previous == (Image *) NULL)

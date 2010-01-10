@@ -138,7 +138,7 @@ static inline void MagickPixelCompositeBlend(const MagickPixelPacket *p,
 {
   MagickPixelCompositePlus(p,(MagickRealType) (QuantumRange-alpha*
     (QuantumRange-p->opacity)),q,(MagickRealType) (QuantumRange-beta*
-    (QuantumRange-q->opacity)),composite);
+    GetAlphaPixelComponent(q)),composite);
 }
 
 /*

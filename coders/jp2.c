@@ -939,7 +939,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
             ScaleQuantumToAny(p->blue,range));
           if (number_components > 3)
             jas_matrix_setv(pixels[3],x,(jas_seqent_t)
-              ScaleQuantumToAny((Quantum) (QuantumRange-GetOpacityPixelComponent(p)),range));
+              ScaleQuantumToAny((Quantum) (GetAlphaPixelComponent(p)),range));
         }
       p++;
     }

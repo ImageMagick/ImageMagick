@@ -1935,7 +1935,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             *blue++=ScaleQuantumToChar(GetBluePixelComponent(p));
             if (image->matte != MagickFalse)
               *opacity++=ScaleQuantumToChar((Quantum)
-                (QuantumRange-GetOpacityPixelComponent(p)));
+                (GetAlphaPixelComponent(p)));
             p++;
           }
           count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,
