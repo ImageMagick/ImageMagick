@@ -35,16 +35,20 @@ extern "C" {
 #define GetGreenPixelComponent(p) ((p)->green)
 #define GetBluePixelComponent(p) ((p)->blue)
 #define GetOpacityPixelComponent(p) ((p)->opacity)
+#define GetAlphaPixelComponent(p) (QuantumRange-(p)->opacity)
 #define GetIndexPixelComponent(p) ((p)->index)
 
 #define SetRedPixelComponent(q,component) ((q)->red=(component))
 #define SetGreenPixelComponent(q,component) ((q)->green=(component))
 #define SetBluePixelComponent(q,component) ((q)->blue=(component))
 #define SetOpacityPixelComponent(q,component) ((q)->opacity=(component))
+#define SetAlphaPixelComponent(q,component) \
+  ((q)->opacity=(QuantumRange-(component)))
 #define SetIndexPixelComponent(q,component) ((q)->index=(component))
 
 #define GetGrayPixelComponent(p) ((p)->red)
-#define SetGrayPixelComponent(q,component) ((q)->red=(q)->green=(q)->blue=(component))
+#define SetGrayPixelComponent(q,component) \
+  ((q)->red=(q)->green=(q)->blue=(component))
 
 #define GetYPixelComponent(p) ((p)->red)
 #define GetCbPixelComponent(p) ((p)->green)
