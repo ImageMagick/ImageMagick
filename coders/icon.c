@@ -1085,7 +1085,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                 if (next->matte == MagickFalse)
                   *q++=ScaleQuantumToChar(QuantumRange);
                 else
-                  *q++=ScaleQuantumToChar(QuantumRange-GetOpacityPixelComponent(p));
+                  *q++=ScaleQuantumToChar(GetAlphaPixelComponent(p));
                 p++;
               }
               if (icon_info.bits_per_pixel == 24)

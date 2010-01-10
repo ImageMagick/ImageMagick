@@ -1097,7 +1097,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             *(q+number_pixels*2)=ScaleQuantumToChar(GetBluePixelComponent(p));
             if (image->matte != MagickFalse)
               *(q+number_pixels*3)=ScaleQuantumToChar((Quantum)
-                (QuantumRange-GetOpacityPixelComponent(p)));
+                (GetAlphaPixelComponent(p)));
             p++;
             q++;
           }

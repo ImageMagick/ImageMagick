@@ -1029,7 +1029,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=(long) pcx_info.bytes_per_line; x != 0; x--)
                 {
-                  *q++=ScaleQuantumToChar((Quantum) (QuantumRange-GetOpacityPixelComponent(p)));
+                  *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
                   p++;
                 }
                 break;

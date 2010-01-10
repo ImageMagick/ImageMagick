@@ -633,9 +633,9 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte != MagickFalse)
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
+            alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
           if (reconstruct_image->matte != MagickFalse)
-            beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
+            beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
         }
       if ((channel & RedChannel) != 0)
         {

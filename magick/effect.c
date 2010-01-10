@@ -337,8 +337,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
           alpha=1.0;
           if (((channel & OpacityChannel) != 0) &&
               (image->matte != MagickFalse))
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-              GetOpacityPixelComponent(p)));
+            alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
           if ((channel & RedChannel) != 0)
             pixel.red+=(*k)*alpha*GetRedPixelComponent(p);
           if ((channel & GreenChannel) != 0)
@@ -653,8 +652,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
           alpha=1.0;
           if (((channel & OpacityChannel) != 0) &&
               (image->matte != MagickFalse))
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-              GetOpacityPixelComponent(p)));
+            alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
           if ((channel & RedChannel) != 0)
             pixel.red+=(*k)*alpha*GetRedPixelComponent(p);
           if ((channel & GreenChannel) != 0)
@@ -999,8 +997,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
           gamma=0.0;
           for (i=0; i < (long) width; i++)
           {
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-              kernel_pixels->opacity));
+            alpha=(MagickRealType) (QuantumScale*
+              GetAlphaPixelComponent(kernel_pixels));
             pixel.red+=(*k)*alpha*kernel_pixels->red;
             pixel.green+=(*k)*alpha*kernel_pixels->green;
             pixel.blue+=(*k)*alpha*kernel_pixels->blue;
@@ -1038,14 +1036,15 @@ MagickExport Image *BlurImageChannel(const Image *image,
               kernel_indexes=indexes;
               for (i=0; i < (long) width; i++)
               {
-                alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-                  kernel_pixels->opacity));
+                alpha=(MagickRealType) (QuantumScale*
+                  GetAlphaPixelComponent(kernel_pixels));
                 pixel.index+=(*k)*alpha*(*kernel_indexes);
                 k++;
                 kernel_pixels++;
                 kernel_indexes++;
               }
-              blur_indexes[x]=ClampToQuantum(gamma*GetIndexPixelComponent(&pixel));
+              blur_indexes[x]=ClampToQuantum(gamma*
+                GetIndexPixelComponent(&pixel));
             }
         }
       p++;
@@ -1177,8 +1176,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
           gamma=0.0;
           for (i=0; i < (long) width; i++)
           {
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-              kernel_pixels->opacity));
+            alpha=(MagickRealType) (QuantumScale*
+              GetAlphaPixelComponent(kernel_pixels));
             pixel.red+=(*k)*alpha*kernel_pixels->red;
             pixel.green+=(*k)*alpha*kernel_pixels->green;
             pixel.blue+=(*k)*alpha*kernel_pixels->blue;
@@ -1216,14 +1215,15 @@ MagickExport Image *BlurImageChannel(const Image *image,
               kernel_indexes=indexes;
               for (i=0; i < (long) width; i++)
               {
-                alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-                  kernel_pixels->opacity));
+                alpha=(MagickRealType) (QuantumScale*
+                  GetAlphaPixelComponent(kernel_pixels));
                 pixel.index+=(*k)*alpha*(*kernel_indexes);
                 k++;
                 kernel_pixels++;
                 kernel_indexes++;
               }
-              blur_indexes[y]=ClampToQuantum(gamma*GetIndexPixelComponent(&pixel));
+              blur_indexes[y]=ClampToQuantum(gamma*
+                GetIndexPixelComponent(&pixel));
             }
         }
       p++;
@@ -3291,7 +3291,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
           {
             (void) GetOneCacheViewVirtualPixel(image_view,x+offset[i].x,y+
               offset[i].y,&pixel,exception);
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-pixel.opacity));
+            alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(&pixel));
             qixel.red+=(*k)*alpha*pixel.red;
             qixel.green+=(*k)*alpha*pixel.green;
             qixel.blue+=(*k)*alpha*pixel.blue;
@@ -4095,7 +4095,8 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
               center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),(long) (
               blur_center.y+center.x*sin_theta[i]+center.y*cos_theta[i]+0.5),
               &pixel,exception);
-            alpha=(MagickRealType) (QuantumScale*(QuantumRange-pixel.opacity));
+            alpha=(MagickRealType) (QuantumScale*
+              GetAlphaPixelComponent(&pixel));
             qixel.red+=alpha*pixel.red;
             qixel.green+=alpha*pixel.green;
             qixel.blue+=alpha*pixel.blue;
@@ -4694,8 +4695,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             {
               if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
                 {
-                  alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-                    (p+u+j)->opacity));
+                  alpha=(MagickRealType) (QuantumScale*
+                    GetAlphaPixelComponent(p+u+j));
                   pixel.red+=(*k)*alpha*(p+u+j)->red;
                   pixel.green+=(*k)*alpha*(p+u+j)->green;
                   pixel.blue+=(*k)*alpha*(p+u+j)->blue;
@@ -4751,8 +4752,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
                     {
-                      alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-                        (p+u+j)->opacity));
+                      alpha=(MagickRealType) (QuantumScale*
+                        GetAlphaPixelComponent(p+u+j));
                       pixel.index+=(*k)*alpha*indexes[x+u+j];
                       gamma+=(*k);
                       k++;

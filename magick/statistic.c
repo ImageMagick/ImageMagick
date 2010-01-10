@@ -618,7 +618,8 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
           mean+=GetRedPixelComponent(p);
           sum_squares+=(double) p->red*GetRedPixelComponent(p);
           sum_cubes+=(double) p->red*p->red*GetRedPixelComponent(p);
-          sum_fourth_power+=(double) p->red*p->red*p->red*GetRedPixelComponent(p);
+          sum_fourth_power+=(double) p->red*p->red*p->red*
+            GetRedPixelComponent(p);
           area++;
         }
       if ((channel & GreenChannel) != 0)
@@ -626,7 +627,8 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
           mean+=GetGreenPixelComponent(p);
           sum_squares+=(double) p->green*GetGreenPixelComponent(p);
           sum_cubes+=(double) p->green*p->green*GetGreenPixelComponent(p);
-          sum_fourth_power+=(double) p->green*p->green*p->green*GetGreenPixelComponent(p);
+          sum_fourth_power+=(double) p->green*p->green*p->green*
+            GetGreenPixelComponent(p);
           area++;
         }
       if ((channel & BlueChannel) != 0)
@@ -634,7 +636,8 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
           mean+=GetBluePixelComponent(p);
           sum_squares+=(double) p->blue*GetBluePixelComponent(p);
           sum_cubes+=(double) p->blue*p->blue*GetBluePixelComponent(p);
-          sum_fourth_power+=(double) p->blue*p->blue*p->blue*GetBluePixelComponent(p);
+          sum_fourth_power+=(double) p->blue*p->blue*p->blue*
+            GetBluePixelComponent(p);
           area++;
         }
       if ((channel & OpacityChannel) != 0)
@@ -681,7 +684,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
     }
   return(y == (long) image->rows ? MagickTrue : MagickFalse);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -985,14 +988,18 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       if ((double) p->red > channel_statistics[RedChannel].maxima)
         channel_statistics[RedChannel].maxima=(double) GetRedPixelComponent(p);
       channel_statistics[RedChannel].mean+=GetRedPixelComponent(p);
-      channel_statistics[RedChannel].standard_deviation+=(double) p->red*GetRedPixelComponent(p);
+      channel_statistics[RedChannel].standard_deviation+=(double) p->red*
+        GetRedPixelComponent(p);
       channel_statistics[RedChannel].kurtosis+=(double) p->red*p->red*
         p->red*GetRedPixelComponent(p);
-      channel_statistics[RedChannel].skewness+=(double) p->red*p->red*GetRedPixelComponent(p);
+      channel_statistics[RedChannel].skewness+=(double) p->red*p->red*
+        GetRedPixelComponent(p);
       if ((double) p->green < channel_statistics[GreenChannel].minima)
-        channel_statistics[GreenChannel].minima=(double) GetGreenPixelComponent(p);
+        channel_statistics[GreenChannel].minima=(double)
+          GetGreenPixelComponent(p);
       if ((double) p->green > channel_statistics[GreenChannel].maxima)
-        channel_statistics[GreenChannel].maxima=(double) GetGreenPixelComponent(p);
+        channel_statistics[GreenChannel].maxima=(double)
+          GetGreenPixelComponent(p);
       channel_statistics[GreenChannel].mean+=GetGreenPixelComponent(p);
       channel_statistics[GreenChannel].standard_deviation+=(double) p->green*
         GetGreenPixelComponent(p);
@@ -1001,9 +1008,11 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[GreenChannel].skewness+=(double) p->green*p->green*
         GetGreenPixelComponent(p);
       if ((double) p->blue < channel_statistics[BlueChannel].minima)
-        channel_statistics[BlueChannel].minima=(double) GetBluePixelComponent(p);
+        channel_statistics[BlueChannel].minima=(double)
+          GetBluePixelComponent(p);
       if ((double) p->blue > channel_statistics[BlueChannel].maxima)
-        channel_statistics[BlueChannel].maxima=(double) GetBluePixelComponent(p);
+        channel_statistics[BlueChannel].maxima=(double)
+          GetBluePixelComponent(p);
       channel_statistics[BlueChannel].mean+=GetBluePixelComponent(p);
       channel_statistics[BlueChannel].standard_deviation+=(double) p->blue*
         GetBluePixelComponent(p);
@@ -1014,9 +1023,11 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       if (image->matte != MagickFalse)
         {
           if ((double) p->opacity < channel_statistics[OpacityChannel].minima)
-            channel_statistics[OpacityChannel].minima=(double) GetOpacityPixelComponent(p);
+            channel_statistics[OpacityChannel].minima=(double)
+              GetOpacityPixelComponent(p);
           if ((double) p->opacity > channel_statistics[OpacityChannel].maxima)
-            channel_statistics[OpacityChannel].maxima=(double) GetOpacityPixelComponent(p);
+            channel_statistics[OpacityChannel].maxima=(double)
+              GetOpacityPixelComponent(p);
           channel_statistics[OpacityChannel].mean+=GetOpacityPixelComponent(p);
           channel_statistics[OpacityChannel].standard_deviation+=(double)
             p->opacity*GetOpacityPixelComponent(p);

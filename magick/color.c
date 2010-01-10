@@ -1527,8 +1527,8 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   beta=1.0;
   if (image->matte != MagickFalse)
     {
-      alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
-      beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
+      alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
+      beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
     }
   pixel=alpha*p->red-beta*q->red;
   distance=pixel*pixel;
@@ -1719,10 +1719,10 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       fuzz=3.0*MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
   alpha=1.0;
   if (p->matte != MagickFalse)
-    alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
+    alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
   beta=1.0;
   if (q->matte != MagickFalse)
-    beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
+    beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
   if (p->colorspace == CMYKColorspace)
     {
       alpha*=(MagickRealType) (QuantumScale*(QuantumRange-p->index));

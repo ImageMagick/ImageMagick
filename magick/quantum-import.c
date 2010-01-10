@@ -2703,7 +2703,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         q=GetCacheViewAuthenticPixelQueue(image_view);
       for (x=0; x < (long) number_pixels; x++)
       {
-        q->opacity=(Quantum) (QuantumRange-q->opacity);
+        q->opacity=(Quantum) GetAlphaPixelComponent(q);
         q++;
       }
     }

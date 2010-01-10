@@ -1054,8 +1054,8 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
       beta=1.0;
       if (cube_info->associate_alpha == MagickFalse)
         {
-          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
-          beta=(MagickRealType) (QuantumScale*(QuantumRange-q->opacity));
+          alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
+          beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
         }
       pixel=alpha*p->red-beta*q->red;
       distance=pixel*pixel;
@@ -2062,7 +2062,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
       index=1UL*indexes[x];
       if (image->matte != MagickFalse)
         {
-          alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetOpacityPixelComponent(p)));
+          alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
           beta=(MagickRealType) (QuantumScale*(QuantumRange-
             image->colormap[index].opacity));
         }
