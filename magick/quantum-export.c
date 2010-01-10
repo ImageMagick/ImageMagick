@@ -429,7 +429,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                q=PopShortPixel(endian,SinglePrecisionToBinary16(QuantumScale*
+                q=PopShortPixel(endian,SinglePrecisionToHalf(QuantumScale*
                   indexes[x]),q);
                 q+=quantum_info->pad;
               }
@@ -589,7 +589,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
               for (x=0; x < (long) number_pixels; x++)
               {
                 q=PopShortPixel(endian,(unsigned short) indexes[x],q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetAlphaPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -828,7 +828,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   PixelIntensityToQuantum(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1008,10 +1008,10 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   PixelIntensityToQuantum(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetAlphaPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1128,7 +1128,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetRedPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1225,7 +1225,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetGreenPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1322,7 +1322,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetBluePixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1419,7 +1419,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetAlphaPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1525,7 +1525,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetOpacityPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -1627,7 +1627,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*indexes[x]);
+                pixel=SinglePrecisionToHalf(QuantumScale*indexes[x]);
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1879,13 +1879,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetRedPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetGreenPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetBluePixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -2006,16 +2006,16 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetRedPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetGreenPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetBluePixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetAlphaPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;
@@ -2157,16 +2157,16 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetRedPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetGreenPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetBluePixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*indexes[x]);
+                pixel=SinglePrecisionToHalf(QuantumScale*indexes[x]);
                 q=PopShortPixel(endian,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -2301,18 +2301,18 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (long) number_pixels; x++)
               {
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetRedPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetGreenPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetBluePixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*indexes[x]);
+                pixel=SinglePrecisionToHalf(QuantumScale*indexes[x]);
                 q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToBinary16(QuantumScale*
+                pixel=SinglePrecisionToHalf(QuantumScale*
                   GetAlphaPixelComponent(p));
                 q=PopShortPixel(endian,pixel,q);
                 p++;

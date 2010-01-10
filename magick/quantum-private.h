@@ -82,7 +82,13 @@ struct _QuantumInfo
     signature;
 };
 
-static inline float Binary16ToSinglePrecision(const unsigned short binary16)
+static inline MagickSizeType GetQuantumRange(const unsigned long depth)
+{
+  return((MagickSizeType) ((MagickULLConstant(1) << (depth-1))+
+    ((MagickULLConstant(1) << (depth-1))-1)));
+}
+
+static inline float HalfToSinglePrecision(const unsigned short half)
 {
 #define ExponentBias  (127-15) 
 #define ExponentMask  0x7c00
@@ -112,15 +118,15 @@ static inline float Binary16ToSinglePrecision(const unsigned short binary16)
     value;
 
   /*
-    The IEEE 754 standard specifies a binary16 as having:
+    The IEEE 754 standard specifies a half as having:
 
       Sign bit: 1 bit
       Exponent width: 5 bits
       Significand precision: 11 (10 explicitly stored)
   */
-  sign_bit=(unsigned int) ((binary16 >> 15) & 0x00000001);
-  exponent=(unsigned int) ((binary16 >> 10) & 0x0000001f);
-  significand=(unsigned int) (binary16 & 0x000003ff);
+  sign_bit=(unsigned int) ((half >> 15) & 0x00000001);
+  exponent=(unsigned int) ((half >> 10) & 0x0000001f);
+  significand=(unsigned int) (half & 0x000003ff);
   if (exponent == 0)
     {
     	if (significand == 0)
@@ -155,12 +161,6 @@ static inline float Binary16ToSinglePrecision(const unsigned short binary16)
       }
   map.fixed_point=value;
   return(map.single_precision);
-}
-
-static inline MagickSizeType GetQuantumRange(const unsigned long depth)
-{
-  return((MagickSizeType) ((MagickULLConstant(1) << (depth-1))+
-    ((MagickULLConstant(1) << (depth-1))-1)));
 }
 
 static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
@@ -599,7 +599,7 @@ static inline Quantum ScaleShortToQuantum(const unsigned short value)
 }
 #endif
 
-static inline unsigned short SinglePrecisionToBinary16(const float value)
+static inline unsigned short SinglePrecisionToHalf(const float value)
 {
   typedef union _SinglePrecision
   {
@@ -621,10 +621,10 @@ static inline unsigned short SinglePrecisionToBinary16(const float value)
     map;
 
   unsigned short
-    binary16;
+    half;
 
   /*
-    The IEEE 754 standard specifies a binary16 as having:
+    The IEEE 754 standard specifies a half as having:
 
       Sign bit: 1 bit
       Exponent width: 5 bits
@@ -655,9 +655,9 @@ static inline unsigned short SinglePrecisionToBinary16(const float value)
         else
           {
             significand>>=SignificandShift;
-            binary16=(unsigned short) (sign_bit | significand |
+            half=(unsigned short) (sign_bit | significand |
               (significand == 0) | ExponentMask);
-            return(binary16);
+            return(half);
           }
       }
   significand=significand+((significand >> SignificandShift) & 0x01)+0x00000fff;
@@ -682,9 +682,9 @@ static inline unsigned short SinglePrecisionToBinary16(const float value)
         alpha*=alpha;
       return((unsigned short) (sign_bit | ExponentMask));
     }
-  binary16=(unsigned short) (sign_bit | (exponent << 10) |
+  half=(unsigned short) (sign_bit | (exponent << 10) |
     (significand >> SignificandShift));
-  return(binary16);
+  return(half);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

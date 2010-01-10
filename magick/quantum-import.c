@@ -412,8 +412,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 indexes[x]=PushColormapIndex(image,ClampToQuantum(
-                  (MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel)),&range_exception);
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)),
+                  &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p+=quantum_info->pad;
                 q++;
@@ -600,13 +600,12 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 indexes[x]=PushColormapIndex(image,ClampToQuantum(
-                  (MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel)),&range_exception);
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)),
+                  &range_exception);
                 *q=image->colormap[(long) indexes[x]];
                 p=PushShortPixel(endian,p,&pixel);
                 q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel)));
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -927,7 +926,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 q->green=q->red;
                 q->blue=q->red;
                 p+=quantum_info->pad;
@@ -1132,13 +1131,12 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 q->green=q->red;
                 q->blue=q->red;
                 p=PushShortPixel(endian,p,&pixel);
                 q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel)));
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1263,7 +1261,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1368,7 +1366,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->green=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1473,7 +1471,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->blue=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1577,8 +1575,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel)));
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -1687,7 +1684,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 indexes[x]=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p+=quantum_info->pad;
               }
               break;
@@ -1946,13 +1943,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->green=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->blue=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2154,17 +2151,16 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->green=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->blue=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel)));
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2309,16 +2305,16 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->green=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->blue=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 indexes[x]=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -2466,19 +2462,19 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               {
                 p=PushShortPixel(endian,p,&pixel);
                 q->red=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->green=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->blue=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 indexes[x]=ClampToQuantum((MagickRealType) QuantumRange*
-                  Binary16ToSinglePrecision(pixel));
+                  HalfToSinglePrecision(pixel));
                 p=PushShortPixel(endian,p,&pixel);
                 q->opacity=(Quantum) (QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*Binary16ToSinglePrecision(pixel)));
+                  (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)));
                 p+=quantum_info->pad;
                 q++;
               }
