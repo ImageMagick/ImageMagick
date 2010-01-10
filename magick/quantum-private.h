@@ -82,14 +82,80 @@ struct _QuantumInfo
     signature;
 };
 
-typedef union _HalfFloat
+static inline float Binary16ToSinglePrecision(const unsigned short binary16)
 {
-  unsigned int
-    fixed_point;
+#define ExponentBias  (127-15) 
+#define ExponentMask  0x7c00
+#define ExponentShift  23
+#define SignificandShift  13
+#define SignificandMask  0x00000400
+#define SignBitShift  31
 
-  float
-    single_precision;
-} HalfFloat;
+  typedef union _SinglePrecision
+  {
+    unsigned int
+      fixed_point;
+
+    float
+      single_precision;
+  } SinglePrecision;
+
+  register unsigned int
+    exponent,
+    significand,
+    sign_bit;
+
+  SinglePrecision
+    map;
+
+  unsigned int
+    value;
+
+  /*
+    The IEEE 754 standard specifies a binary16 as having:
+
+      Sign bit: 1 bit
+      Exponent width: 5 bits
+      Significand precision: 11 (10 explicitly stored)
+  */
+  sign_bit=(unsigned int) ((binary16 >> 15) & 0x00000001);
+  exponent=(unsigned int) ((binary16 >> 10) & 0x0000001f);
+  significand=(unsigned int) (binary16 & 0x000003ff);
+  if (exponent == 0)
+    {
+    	if (significand == 0)
+        value=sign_bit << SignBitShift;
+	    else
+	      {
+          while ((significand & SignificandMask) == 0)
+          {
+            significand<<=1;
+            exponent--;
+          }
+	        exponent++;
+          significand&=(~SignificandMask);
+          exponent+=ExponentBias;
+          value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
+            (significand << SignificandShift);
+       	}
+    }
+  else
+    if (exponent == SignBitShift)
+      {
+        value=(sign_bit << SignBitShift) | 0x7f800000;
+        if (significand != 0)
+          value|=(significand << SignificandShift);
+      }
+    else
+      {
+        exponent+=ExponentBias;
+        significand<<=SignificandShift;
+        value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
+          significand;
+      }
+  map.fixed_point=value;
+  return(map.single_precision);
+}
 
 static inline MagickSizeType GetQuantumRange(const unsigned long depth)
 {
@@ -228,139 +294,6 @@ static inline Quantum ScaleAnyToQuantum(const QuantumAny quantum,
 #else
   return((Quantum) (((MagickRealType) QuantumRange*quantum)/range));
 #endif
-}
-
-static inline unsigned short ScaleFloatToHalf(const float value)
-{
-#define ExponentBias  (127-15) 
-#define ExponentMask  0x7c00
-#define ExponentShift  23
-#define SignificandShift  13
-
-  HalfFloat
-    pixel;
-
-  register int
-    exponent;
-
-  register unsigned int
-    significand,
-    sign_bit;
-
-  unsigned short
-    half;
-
-  pixel.single_precision=value;
-  sign_bit=(pixel.fixed_point >> 16) & 0x00008000;
-  exponent=(int) ((pixel.fixed_point >> ExponentShift) & 0x000000ff)-
-    ExponentBias;
-  significand=pixel.fixed_point & 0x007fffff;
-  if (exponent <= 0)
-    {
-      long
-        shift;
-
-      if (exponent < -10)
-        return((unsigned short) sign_bit);
-      significand=significand | 0x00800000;
-      shift=14-exponent;
-      significand=(unsigned int) ((significand+((1 << (shift-1))-1)+
-        ((significand >> shift) & 0x01)) >> shift);
-      return((unsigned short) (sign_bit | significand));
-    }
-  else
-    if (exponent == (0xff-ExponentBias))
-      {
-        if (significand == 0)
-          return((unsigned short) (sign_bit | ExponentMask));
-        else
-          {
-            significand>>=SignificandShift;
-            half=(unsigned short) (sign_bit | significand | (significand == 0) |
-              ExponentMask);
-            return(half);
-          }
-      }
-  significand=significand+((significand >> SignificandShift) & 0x01)+0x00000fff;
-  if ((significand & 0x00800000) != 0)
-    {
-      significand=0;
-      exponent++;
-    }
-  if (exponent > 30)
-    {
-      float
-        alpha;
-
-      register long
-        i;
-
-      /*
-        Float overflow.
-      */
-      alpha=1.0e10;
-      for (i=0; i < 10; i++)
-        alpha*=alpha;
-      return((unsigned short) (sign_bit | ExponentMask));
-    }
-  half=(unsigned short) (sign_bit | (exponent << 10) |
-    (significand >> SignificandShift));
-  return(half);
-}
-
-static inline float ScaleHalfToFloat(const unsigned short quantum)
-{
-#define SignificandMask  0x00000400
-#define SignBitShift  31
-
-  HalfFloat
-    pixel;
-
-  register unsigned int
-    exponent,
-    significand,
-    sign_bit;
-
-  unsigned int
-    value;
-
-  sign_bit=(unsigned int) ((quantum >> 15) & 0x00000001);
-  exponent=(unsigned int) ((quantum >> 10) & 0x0000001f);
-  significand=(unsigned int) (quantum & 0x000003ff);
-  if (exponent == 0)
-    {
-    	if (significand == 0)
-        value=sign_bit << SignBitShift;
-	    else
-	      {
-          while ((significand & SignificandMask) == 0)
-          {
-            significand<<=1;
-            exponent--;
-          }
-	        exponent++;
-          significand&=(~SignificandMask);
-          exponent+=ExponentBias;
-          value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
-            (significand << SignificandShift);
-       	}
-    }
-  else
-    if (exponent == SignBitShift)
-      {
-        value=(sign_bit << SignBitShift) | 0x7f800000;
-        if (significand != 0)
-          value|=(significand << SignificandShift);
-      }
-    else
-      {
-        exponent+=ExponentBias;
-        significand<<=SignificandShift;
-        value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
-          significand;
-      }
-  pixel.fixed_point=value;
-  return(pixel.single_precision);
 }
 
 static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
@@ -665,6 +598,94 @@ static inline Quantum ScaleShortToQuantum(const unsigned short value)
 #endif
 }
 #endif
+
+static inline unsigned short SinglePrecisionToBinary16(const float value)
+{
+  typedef union _SinglePrecision
+  {
+    unsigned int
+      fixed_point;
+
+    float
+      single_precision;
+  } SinglePrecision;
+
+  register int
+    exponent;
+
+  register unsigned int
+    significand,
+    sign_bit;
+
+  SinglePrecision
+    map;
+
+  unsigned short
+    binary16;
+
+  /*
+    The IEEE 754 standard specifies a binary16 as having:
+
+      Sign bit: 1 bit
+      Exponent width: 5 bits
+      Significand precision: 11 (10 explicitly stored)
+  */
+  map.single_precision=value;
+  sign_bit=(map.fixed_point >> 16) & 0x00008000;
+  exponent=(int) ((map.fixed_point >> ExponentShift) & 0x000000ff)-ExponentBias;
+  significand=map.fixed_point & 0x007fffff;
+  if (exponent <= 0)
+    {
+      long
+        shift;
+
+      if (exponent < -10)
+        return((unsigned short) sign_bit);
+      significand=significand | 0x00800000;
+      shift=14-exponent;
+      significand=(unsigned int) ((significand+((1 << (shift-1))-1)+
+        ((significand >> shift) & 0x01)) >> shift);
+      return((unsigned short) (sign_bit | significand));
+    }
+  else
+    if (exponent == (0xff-ExponentBias))
+      {
+        if (significand == 0)
+          return((unsigned short) (sign_bit | ExponentMask));
+        else
+          {
+            significand>>=SignificandShift;
+            binary16=(unsigned short) (sign_bit | significand |
+              (significand == 0) | ExponentMask);
+            return(binary16);
+          }
+      }
+  significand=significand+((significand >> SignificandShift) & 0x01)+0x00000fff;
+  if ((significand & 0x00800000) != 0)
+    {
+      significand=0;
+      exponent++;
+    }
+  if (exponent > 30)
+    {
+      float
+        alpha;
+
+      register long
+        i;
+
+      /*
+        Float overflow.
+      */
+      alpha=1.0e10;
+      for (i=0; i < 10; i++)
+        alpha*=alpha;
+      return((unsigned short) (sign_bit | ExponentMask));
+    }
+  binary16=(unsigned short) (sign_bit | (exponent << 10) |
+    (significand >> SignificandShift));
+  return(binary16);
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
