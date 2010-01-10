@@ -84,7 +84,7 @@
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantum=float " \
   "-DCLPixelType=float4 -DQuantumRange=%.15g -DMagickEpsilon=%.15g"
-#define CLPixelPacket  cl_ufloat4
+#define CLPixelPacket  cl_float4
 #else
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define CLOptions "-DCLQuantum=uchar -DCLPixelType=uchar4 " \
