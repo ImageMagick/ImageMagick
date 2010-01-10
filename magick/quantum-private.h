@@ -93,9 +93,9 @@ static inline float HalfToSinglePrecision(const unsigned short half)
 #define ExponentBias  (127-15) 
 #define ExponentMask  0x7c00
 #define ExponentShift  23
+#define SignBitShift  31
 #define SignificandShift  13
 #define SignificandMask  0x00000400
-#define SignBitShift  31
 
   typedef union _SinglePrecision
   {
@@ -118,7 +118,7 @@ static inline float HalfToSinglePrecision(const unsigned short half)
     value;
 
   /*
-    The IEEE 754 standard specifies a half as having:
+    The IEEE 754 standard specifies half precision as having:
 
       Sign bit: 1 bit
       Exponent width: 5 bits
@@ -624,7 +624,7 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
     half;
 
   /*
-    The IEEE 754 standard specifies a half as having:
+    The IEEE 754 standard specifies half precision as having:
 
       Sign bit: 1 bit
       Exponent width: 5 bits
