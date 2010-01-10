@@ -53,6 +53,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/pixel.h"
 #include "magick/pixel-private.h"
 #include "magick/quantum.h"
 #include "magick/random_.h"
@@ -3236,7 +3237,8 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   if (pixels == (PixelPacket *) NULL)
     return((const PixelPacket *) NULL);
   offset=(MagickOffsetType) region.y*cache_info->columns+region.x;
-  length=(MagickSizeType) (region.height-1)*cache_info->columns+region.width-1;
+  length=(MagickSizeType) (region.height-1L)*cache_info->columns+
+    region.width-1L;
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
   if ((offset >= 0) && (((MagickSizeType) offset+length) < number_pixels))
     if ((x >= 0) && ((long) (x+columns) <= (long) cache_info->columns) &&
@@ -3278,35 +3280,35 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   {
     case BlackVirtualPixelMethod:
     {
-      virtual_pixel.red=0;
-      virtual_pixel.green=0;
-      virtual_pixel.blue=0;
-      virtual_pixel.opacity=OpaqueOpacity;
+      SetRedPixelComponent(&virtual_pixel,0);
+      SetGreenPixelComponent(&virtual_pixel,0);
+      SetBluePixelComponent(&virtual_pixel,0);
+      SetOpacityPixelComponent(&virtual_pixel,OpaqueOpacity);
       break;
     }
     case GrayVirtualPixelMethod:
     {
-      virtual_pixel.red=(Quantum) QuantumRange/2;
-      virtual_pixel.green=(Quantum) QuantumRange/2;
-      virtual_pixel.blue=(Quantum) QuantumRange/2;
-      virtual_pixel.opacity=(Quantum) OpaqueOpacity;
+      SetRedPixelComponent(&virtual_pixel,(Quantum) QuantumRange/2);
+      SetGreenPixelComponent(&virtual_pixel,(Quantum) QuantumRange/2);
+      SetBluePixelComponent(&virtual_pixel,(Quantum) QuantumRange/2);
+      SetOpacityPixelComponent(&virtual_pixel,OpaqueOpacity);
       break;
     }
     case TransparentVirtualPixelMethod:
     {
-      virtual_pixel.red=(Quantum) 0;
-      virtual_pixel.green=(Quantum) 0;
-      virtual_pixel.blue=(Quantum) 0;
-      virtual_pixel.opacity=(Quantum) TransparentOpacity;
+      SetRedPixelComponent(&virtual_pixel,0);
+      SetGreenPixelComponent(&virtual_pixel,0);
+      SetBluePixelComponent(&virtual_pixel,0);
+      SetOpacityPixelComponent(&virtual_pixel,TransparentOpacity);
       break;
     }
     case MaskVirtualPixelMethod:
     case WhiteVirtualPixelMethod:
     {
-      virtual_pixel.red=(Quantum) QuantumRange;
-      virtual_pixel.green=(Quantum) QuantumRange;
-      virtual_pixel.blue=(Quantum) QuantumRange;
-      virtual_pixel.opacity=OpaqueOpacity;
+      SetRedPixelComponent(&virtual_pixel,(Quantum) QuantumRange);
+      SetGreenPixelComponent(&virtual_pixel,(Quantum) QuantumRange);
+      SetBluePixelComponent(&virtual_pixel,(Quantum) QuantumRange);
+      SetOpacityPixelComponent(&virtual_pixel,OpaqueOpacity);
       break;
     }
     default:
