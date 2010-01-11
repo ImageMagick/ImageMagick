@@ -1751,7 +1751,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 if (strchr(argv[i+1],',') != (char *) NULL)
                   (void) GammaImage(*image,argv[i+1]);
                 else
-                  (void) GammaImageChannel(*image,channel,StringToDouble(argv[i+1]));
+                  (void) GammaImageChannel(*image,channel,
+                    StringToDouble(argv[i+1]));
                 InheritException(exception,&(*image)->exception);
               }
             break;
@@ -2467,8 +2468,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Radial blur image.
             */
             (void) SyncImageSettings(image_info,*image);
-            blur_image=RadialBlurImageChannel(*image,channel,StringToDouble(argv[i+1]),
-              exception);
+            blur_image=RadialBlurImageChannel(*image,channel,
+              StringToDouble(argv[i+1]),exception);
             if (blur_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
