@@ -399,6 +399,9 @@
 /* Define to 1 if you have the `sigemptyset' function. */
 #undef HAVE_SIGEMPTYSET
 
+/* Define to 1 if you have the `spawnvp' function. */
+#undef HAVE_SPAWNVP
+
 /* Define to 1 if you have the `sqrt' function. */
 #undef HAVE_SQRT
 

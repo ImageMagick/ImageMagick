@@ -604,6 +604,9 @@
 #define MAGICKCORE_HAVE_SIGEMPTYSET  1 
 #endif
 
+/* Define to 1 if you have the `spawnvp' function. */
+/* #undef HAVE_SPAWNVP */
+
 /* Define to 1 if you have the `sqrt' function. */
 /* #undef HAVE_SQRT */
 
