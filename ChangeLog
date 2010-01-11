@@ -6,6 +6,7 @@
   * Permit interactive resizing with the display program.
   * Support heterogeneous distributed processing, see
     http://www.imagemagick.org/script/architecture.php#distributed.
+  * Fix semaphore assertion when reading a corrupt image with Magick++.
 
 2010-01-05  6.5.9-0 Stephan Menzel  <stephan.menzel@gmail...>
   * Add support for the BGRA raw image format.
