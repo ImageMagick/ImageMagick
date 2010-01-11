@@ -90,9 +90,6 @@ extern "C" {
 #define PerlIO_importFILE(f, fl)  (f)
 #define PerlIO_findFILE(f)  NULL
 #endif
-#define RoundToQuantum(value)  ((Quantum) ((value) < 0.0 ? 0.0 : \
-  ((value) > (MagickRealType) QuantumRange) ? (MagickRealType) \
-  QuantumRange : (value)+0.5))
 #ifndef sv_undef
 #define sv_undef  PL_sv_undef
 #endif
@@ -524,6 +521,9 @@ static struct
     { "Clamp", { {"channel", MagickChannelOptions} } },
     { "Filter", { {"kernel", StringReference},
       {"channel", MagickChannelOptions}, {"bias", StringReference} } },
+    { "BrightnessContrast", { {"levels", StringReference},
+      {"brightness", RealReference},{"contrast", RealReference},
+      {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -1243,9 +1243,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 pixel.red=geometry_info.rho;
                 pixel.green=geometry_info.sigma;
                 pixel.blue=geometry_info.xi;
-                color->red=RoundToQuantum(pixel.red);
-                color->green=RoundToQuantum(pixel.green);
-                color->blue=RoundToQuantum(pixel.blue);
+                color->red=ClampToQuantum(pixel.red);
+                color->green=ClampToQuantum(pixel.green);
+                color->blue=ClampToQuantum(pixel.blue);
               }
           }
           break;
@@ -1817,14 +1817,14 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                     if ((flags & ChiValue) != 0)
                       pixel.index=geometry_info.chi;
                   }
-                p->red=RoundToQuantum(pixel.red);
-                p->green=RoundToQuantum(pixel.green);
-                p->blue=RoundToQuantum(pixel.blue);
-                p->opacity=RoundToQuantum(pixel.opacity);
+                p->red=ClampToQuantum(pixel.red);
+                p->green=ClampToQuantum(pixel.green);
+                p->blue=ClampToQuantum(pixel.blue);
+                p->opacity=ClampToQuantum(pixel.opacity);
                 if (((image->colorspace == CMYKColorspace) ||
                      (image->storage_class == PseudoClass)) &&
                     (indexes != (IndexPacket *) NULL))
-                  *indexes=RoundToQuantum(pixel.index);
+                  *indexes=ClampToQuantum(pixel.index);
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -6838,6 +6838,8 @@ Mogrify(ref,...)
     ClampImage         = 260
     Filter             = 261
     FilterImage        = 262
+    BrightnessContrast = 263
+    BrightnessContrastImage = 264
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -7843,7 +7845,7 @@ Mogrify(ref,...)
                     for (x=0; x < (long) composite_image->columns; x++)
                     {
                       if (q->opacity == OpaqueOpacity)
-                        q->opacity=RoundToQuantum(opacity);
+                        q->opacity=ClampToQuantum(opacity);
                       q++;
                     }
                     sync=SyncCacheViewAuthenticPixels(composite_view,exception);
@@ -8586,7 +8588,7 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[3] != 0)
             invert=(MagickBooleanType) argument_list[3].long_reference;
-          (void) TransparentPaintImage(image,&target,RoundToQuantum(opacity),
+          (void) TransparentPaintImage(image,&target,ClampToQuantum(opacity),
             invert);
           break;
         }
@@ -8862,8 +8864,8 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].long_reference;
-          image=MotionBlurImageChannel(image,channel,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
+          image=MotionBlurImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
         case 71:  /* OrderedDither */
@@ -10069,6 +10071,32 @@ Mogrify(ref,...)
               QuantumRange);
           image=FilterImageChannel(image,channel,kernel,exception);
           kernel=DestroyKernel(kernel);
+          break;
+        }
+        case 132:  /* BrightnessContrast */
+        {
+          double
+            brightness,
+            contrast;
+
+          brightness=0.0;
+          contrast=0.0;
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              brightness=geometry_info.rho;
+              if ((flags & SigmaValue) == 0)
+                contrast=geometry_info.sigma;
+            }
+          if (attribute_flag[1] != 0)
+            brightness=argument_list[1].real_reference;
+          if (attribute_flag[2] != 0)
+            contrast=argument_list[2].real_reference;
+          if (attribute_flag[4] != 0)
+            channel=(ChannelType) argument_list[4].long_reference;
+          (void) BrightnessContrastImageChannel(image,channel,brightness,
+            contrast);
           break;
         }
       }
@@ -12771,28 +12799,28 @@ SetPixel(ref,...)
           scale=QuantumRange;
         if (((channel & RedChannel) != 0) && (i <= av_len(av)))
           {
-            q->red=RoundToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
+            q->red=ClampToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
             i++;
           }
         if (((channel & GreenChannel) != 0) && (i <= av_len(av)))
           {
-            q->green=RoundToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
+            q->green=ClampToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
             i++;
           }
         if (((channel & BlueChannel) != 0) && (i <= av_len(av)))
           {
-            q->blue=RoundToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
+            q->blue=ClampToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
             i++;
           }
         if ((((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace)) && (i <= av_len(av)))
           {
-            *indexes=RoundToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
+            *indexes=ClampToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
             i++;
           }
         if (((channel & OpacityChannel) != 0) && (i <= av_len(av)))
           {
-            q->opacity=RoundToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
+            q->opacity=ClampToQuantum(QuantumRange*SvNV(*(av_fetch(av,i,0))));
             i++;
           }
         (void) SyncAuthenticPixels(image,exception);

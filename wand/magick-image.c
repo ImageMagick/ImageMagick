@@ -1112,6 +1112,73 @@ WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k B r i g h t n e s s C o n t r a s t S t r e t c h I m a g e   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Use MagickBrightnessContrastImage() to change the brightness and/or contrast
+%  of an image.  It converts the brightness and contrast parameters into slope
+%  and intercept and calls a polynomical function to apply to the image.
+
+%
+%  The format of the MagickBrightnessContrastImage method is:
+%
+%      MagickBooleanType MagickBrightnessContrastImage(MagickWand *wand,
+%        const double brightness,const double contrast)
+%      MagickBooleanType MagickBrightnessContrastImageChannel(MagickWand *wand,
+%        const ChannelType channel,const double brightness,
+%        const double contrast)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o brightness: the brightness percent (-100 .. 100).
+%
+%    o contrast: the contrast percent (-100 .. 100).
+%
+*/
+
+WandExport MagickBooleanType MagickBrightnessContrastImage(MagickWand *wand,
+  const double brightness,const double contrast)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickBrightnessContrastImageChannel(wand,DefaultChannels,brightness,
+    contrast);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickBrightnessContrastImageChannel(
+  MagickWand *wand,const ChannelType channel,const double brightness,
+  const double contrast)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=BrightnessContrastImageChannel(wand->images,channel,brightness,
+    contrast);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C h a r c o a l I m a g e                                     %
 %                                                                             %
 %                                                                             %

@@ -209,6 +209,8 @@ static const OptionInfo
     { "-borderwidth", 1L, MagickFalse },
     { "+box", 0L, MagickFalse },
     { "-box", 1L, MagickFalse },
+    { "+brightness-contrast", 0L, MagickFalse },
+    { "-brightness-contrast", 1L, MagickFalse },
     { "+cache", 0L, MagickFalse },
     { "-cache", 1L, MagickFalse },
     { "+cdl", 1L, MagickFalse },

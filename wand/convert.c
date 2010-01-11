@@ -161,6 +161,8 @@ static MagickBooleanType ConvertUsage(void)
       "-blur geometry       reduce image noise and reduce detail levels",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
+      "-brightness-contrast geometry",
+      "                     improve brightness / contrast of the image",
       "-cdl filename        color correct with a color decision list",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
@@ -797,6 +799,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (long) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("brightness-contrast",option+1) == 0)
+          {
+            i++;
+            if (i == (long) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
