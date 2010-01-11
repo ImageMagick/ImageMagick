@@ -2626,7 +2626,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
               x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
               x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
               if (image->matte != MagickFalse)
-                x_vector[x].opacity=(MagickRealType) GetOpacityPixelComponent(p);
+                x_vector[x].opacity=(MagickRealType)
+                  GetOpacityPixelComponent(p);
               if (indexes != (IndexPacket *) NULL)
                 x_vector[x].index=(MagickRealType) indexes[x];
               p++;
@@ -2923,7 +2924,7 @@ MagickExport Image *ThumbnailImage(const Image *image,
   {
     if ((LocaleCompare(name,"icc") != 0) && (LocaleCompare(name,"icm") != 0))
      {
-       DeleteImageProfile(thumbnail_image,name);
+       (void) DeleteImageProfile(thumbnail_image,name);
        ResetImageProfileIterator(thumbnail_image);
      }
     name=GetNextImageProfile(thumbnail_image);
