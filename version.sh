@@ -47,6 +47,6 @@ PACKAGE_LIB_SUBVERSION="-${PACKAGE_RELEASE}"
 #     increment age.
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
-MAGICK_LIBRARY_CURRENT=2
-MAGICK_LIBRARY_REVISION=1
+MAGICK_LIBRARY_CURRENT=3
+MAGICK_LIBRARY_REVISION=0
 MAGICK_LIBRARY_AGE=0
