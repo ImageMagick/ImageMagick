@@ -4680,7 +4680,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 :
                     gamma);
-                  blur_indexes[x]=ClampToQuantum(gamma*GetIndexPixelComponent(&pixel));
+                  blur_indexes[x]=ClampToQuantum(gamma*
+                    GetIndexPixelComponent(&pixel));
                 }
             }
         }
@@ -4738,7 +4739,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 :
                     gamma);
-                  SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
+                  SetOpacityPixelComponent(q,
+                    ClampOpacityPixelComponent(&pixel));
                 }
             }
           if (((channel & IndexChannel) != 0) &&
@@ -4765,7 +4767,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 :
                     gamma);
-                  blur_indexes[x]=ClampToQuantum(gamma*GetIndexPixelComponent(&pixel));
+                  blur_indexes[x]=ClampToQuantum(gamma*
+                    GetIndexPixelComponent(&pixel));
                 }
             }
         }
