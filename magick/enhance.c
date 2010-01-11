@@ -51,6 +51,7 @@
 #include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/fx.h"
 #include "magick/gem.h"
 #include "magick/geometry.h"
 #include "magick/histogram.h"
@@ -225,6 +226,88 @@ MagickExport MagickBooleanType AutoLevelImageChannel(Image *image,
     This is simply a convenience function around a Min/Max Histogram Stretch
   */
   return MinMaxStretchImage(image, channel, 0.0, 0.0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     B r i g h t n e s s C o n t r a s t I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Use BrightnessContrastImage() to change the brightness and/or contrast of
+%  an image.  It converts the brightness and contrast parameters into slope
+%  and intercept and calls a polynomical function to apply to the image.
+%
+%  The format of the BrightnessContrastImage method is:
+%
+%      MagickBooleanType BrightnessContrastImage(Image *image,
+%        const double brightness,const double contrast)
+%      MagickBooleanType BrightnessContrastImageChannel(Image *image,
+%        const ChannelType channel,const double brightness,
+%        const double contrast)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o brightness: the brightness percent (-100 .. 100).
+%
+%    o contrast: the contrast percent (-100 .. 100).
+%
+*/
+
+MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
+  const double brightness,const double contrast)
+{
+  MagickBooleanType
+    status;
+
+  status=BrightnessContrastImageChannel(image,DefaultChannels,brightness,
+    contrast);
+  return(status);
+}
+
+MagickExport MagickBooleanType BrightnessContrastImageChannel(Image *image,
+  const ChannelType channel,const double brightness,const double contrast)
+{
+#define BrightnessContastImageTag  "BrightnessContast/Image"
+
+  double
+    alpha,
+    intercept,
+    coefficients[2],
+    slope;
+
+  MagickBooleanType
+    status;
+
+  /*
+    Compute slope and intercept.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  alpha=contrast;
+  if ((100-contrast) <= 0.1)
+    alpha=99.0;
+  slope=1.0+atan(MagickPI*(((alpha*alpha)/20000.0)+(3.0*contrast/
+    200.0))/4.0);
+  if (slope < 0.0)
+    slope=0.0;
+  intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
+  coefficients[0]=slope;
+  coefficients[1]=intercept;
+  status=FunctionImageChannel(image,channel,PolynomialFunction,2,coefficients,
+    &image->exception);
+  return(status);
 }
 
 /*
