@@ -970,6 +970,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(image_info,*image);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             brightness=geometry_info.rho;
+            contrast=0.0;
             if ((flags & SigmaValue) != 0)
               contrast=geometry_info.sigma;
             (void) BrightnessImageChannel(*image,channel,brightness,contrast);
