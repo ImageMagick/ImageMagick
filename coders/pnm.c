@@ -1477,9 +1477,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
   QuantumType
     quantum_type;
 
-  register long
-    i;
-
   register unsigned char
     *pixels,
     *q;
@@ -1660,13 +1657,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
     {
       case '1':
       {
-        unsigned char
-          pixels[2048];
+        char
+          *pixels;
 
         /*
           Convert image to a PBM image.
         */
-        q=pixels;
+        pixels=AcquireString((const char *) NULL);
         for (y=0; y < (long) image->rows; y++)
         {
           register const IndexPacket
@@ -1682,21 +1679,16 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetVirtualIndexQueue(image);
+          *pixels='\0';
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=PixelIntensityToQuantum(p);
-            *q++=(unsigned char) (pixel >= (Quantum) (QuantumRange/2) ?
-              '0' : '1');
-            *q++=' ';
-            if ((q-pixels+2) >= 80)
-              {
-                *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
-                q=pixels;
-                i=0;
-              }
+            (void) ConcatenateString(&pixels,
+              pixel >= (Quantum) (QuantumRange/2) ? "0 " : "1 ");
             p++;
           }
+          (void) ConcatenateString(&pixels,"\n");
+          (void) WriteBlob(image,strlen(pixels),(unsigned char *) pixels);
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,y,image->rows);
@@ -1704,17 +1696,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                 break;
             }
         }
-        if (q != pixels)
-          {
-            *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
-          }
+        pixels=DestroyString(pixels);
         break;
       }
       case '2':
       {
-        unsigned char
-          pixels[2048];
+        char
+          *pixels;
 
         /*
           Convert image to a PGM image.
@@ -1723,7 +1711,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,"255\n");
         else
           (void) WriteBlobString(image,"65535\n");
-        q=pixels;
+        pixels=AcquireString((const char *) NULL);
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
@@ -1735,6 +1723,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
+          *pixels='\0';
           for (x=0; x < (long) image->columns; x++)
           {
             index=PixelIntensityToQuantum(p);
@@ -1744,17 +1733,11 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             else
               count=(ssize_t) FormatMagickString(buffer,MaxTextExtent,"%u ",
                 ScaleQuantumToShort(index));
-            extent=(size_t) count;
-            (void) strncpy((char *) q,buffer,extent);
-            q+=extent;
-            if ((q-pixels+extent) >= 80)
-              {
-                *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
-                q=pixels;
-              }
+            (void) ConcatenateString(&pixels,buffer);
             p++;
           }
+          (void) ConcatenateString(&pixels,"\n");
+          (void) WriteBlob(image,strlen(pixels),(unsigned char *) pixels);
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,y,image->rows);
@@ -1762,17 +1745,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                 break;
             }
         }
-        if (q != pixels)
-          {
-            *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
-          }
+        pixels=DestroyString(pixels);
         break;
       }
       case '3':
       {
-        unsigned char
-          pixels[2048];
+        char
+          *pixels;
 
         /*
           Convert image to a PNM image.
@@ -1781,7 +1760,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,"255\n");
         else
           (void) WriteBlobString(image,"65535\n");
-        q=pixels;
+        pixels=AcquireString((const char *) NULL);
         for (y=0; y < (long) image->rows; y++)
         {
           register const PixelPacket
@@ -1793,27 +1772,24 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
+          *pixels='\0';
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->depth <= 8)
               count=(ssize_t) FormatMagickString(buffer,MaxTextExtent,
                 "%u %u %u ",ScaleQuantumToChar(GetRedPixelComponent(p)),
-                ScaleQuantumToChar(GetGreenPixelComponent(p)),ScaleQuantumToChar(GetBluePixelComponent(p)));
+                ScaleQuantumToChar(GetGreenPixelComponent(p)),
+                ScaleQuantumToChar(GetBluePixelComponent(p)));
             else
               count=(ssize_t) FormatMagickString(buffer,MaxTextExtent,
                 "%u %u %u ",ScaleQuantumToShort(GetRedPixelComponent(p)),
-                ScaleQuantumToShort(GetGreenPixelComponent(p)),ScaleQuantumToShort(GetBluePixelComponent(p)));
-            extent=(size_t) count;
-            (void) strncpy((char *) q,buffer,extent);
-            q+=extent;
-            if ((q-pixels+extent) >= 80)
-              {
-                *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
-                q=pixels;
-              }
+                ScaleQuantumToShort(GetGreenPixelComponent(p)),
+                ScaleQuantumToShort(GetBluePixelComponent(p)));
+            (void) ConcatenateString(&pixels,buffer);
             p++;
           }
+          (void) ConcatenateString(&pixels,"\n");
+          (void) WriteBlob(image,strlen(pixels),(unsigned char *) pixels);
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,y,image->rows);
@@ -1821,11 +1797,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                 break;
             }
         }
-        if (q != pixels)
-          {
-            *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
-          }
+        pixels=DestroyString(pixels);
         break;
       }
       case '4':
