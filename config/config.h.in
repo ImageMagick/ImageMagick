@@ -348,6 +348,9 @@
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
 
+/* Define to 1 if you have the <process.h> header file. */
+#undef HAVE_PROCESS_H
+
 /* Define if you have POSIX threads libraries and header files. */
 #undef HAVE_PTHREAD
 

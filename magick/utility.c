@@ -58,6 +58,9 @@
 #include "magick/string_.h"
 #include "magick/token.h"
 #include "magick/utility.h"
+#if defined(MAGICKCORE_HAVE_PROCESS_H)
+#include <process.h>
+#endif
 #if defined(MAGICKCORE_HAVE_MACH_O_DYLD_H)
 #include <mach-o/dyld.h>
 #endif
@@ -1901,7 +1904,9 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
       (void) fflush(stderr);
     }
 #if defined(MAGICKCORE_POSIX_SUPPORT)
-#if !defined(MAGICKCORE_HAVE_EXECVP)
+#if defined(MAGICKCORE_HAVE_SPAWNVP)
+  status=spawnvp(_P_WAIT,arguments[1],arguments+1);
+#elif !defined(MAGICKCORE_HAVE_EXECVP)
   status=system(command);
 #else
   if (strspn(command,"&;<>|") == 0)
@@ -1947,7 +1952,7 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
     }
 #endif
 #elif defined(__WINDOWS__)
-  status=NTSystemCommand(command);
+  status=spawnvp(_P_WAIT,arguments[1],arguments+1);
 #elif defined(macintosh)
   status=MACSystemCommand(command);
 #elif defined(vms)

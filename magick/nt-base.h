@@ -187,6 +187,9 @@ extern "C" {
 #if !defined(setmode)
 #  define setmode  _setmode
 #endif
+#if !defined(spawnvp)
+#  define spawnvp  _spawnvp
+#endif
 #if !defined(stat) && !defined(__BORLANDC__)
 #if defined(__WINDOWS__) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)

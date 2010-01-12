@@ -763,7 +763,7 @@ fi
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(arm/limits.h complex.h errno.h fcntl.h inttypes.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h stdarg.h stddef.h string.h strings.h sys/ipc.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/wait.h unistd.h wchar.h)
+AC_CHECK_HEADERS(arm/limits.h complex.h errno.h fcntl.h inttypes.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h process.h stdarg.h stddef.h string.h strings.h sys/ipc.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/wait.h unistd.h wchar.h)
 
 ########
 #
