@@ -1815,7 +1815,7 @@ MagickExport int NTSyncMemory(void *address,size_t length,int flags)
 %
 %  The format of the NTSystemCommand method is:
 %
-%      int NTSystemCommand(const char *command)
+%      int NTSystemCommand(MagickFalse,const char *command)
 %
 %  A description of each parameter follows:
 %

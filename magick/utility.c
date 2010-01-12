@@ -1851,10 +1851,14 @@ MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
 %
 %  The format of the SystemCommand method is:
 %
-%      int SystemCommand(const MagickBooleanType verbose,const char *command,
+%      int SystemCommand(const MagickBooleanType asynchronous,
+%        const MagickBooleanType verbose,const char *command,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
+%
+%    o asynchronous: a value other than 0 executes the parent program
+%      concurrently with the new child process.
 %
 %    o verbose: a value other than 0 prints the executed command before it is
 %      invoked.
@@ -1864,11 +1868,12 @@ MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
 %    o exception: return any errors here.
 %
 */
-MagickExport int SystemCommand(const MagickBooleanType verbose,
-  const char *command,ExceptionInfo *exception)
+MagickExport int SystemCommand(const MagickBooleanType asynchronous,
+  const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
 {
   char
-    **arguments;
+    **arguments,
+    *shell_command;
 
   int
     number_arguments,
@@ -1887,8 +1892,8 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
   arguments=StringToArgv(command,&number_arguments);
   if (arguments == (char **) NULL)
     return(status);
-  domain=DelegatePolicyDomain;
   rights=ExecutePolicyRights;
+  domain=DelegatePolicyDomain;
   if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
     {
       errno=EPERM;
@@ -1904,12 +1909,18 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
       (void) fprintf(stderr,"%s\n",command);
       (void) fflush(stderr);
     }
+  shell_command=(char *) command;
+  if (asynchronous != MagickFalse)
+    {
+      shell_command=AcquireString(command);
+      (void) ConcatenateMagickString(shell_command,"&",MaxTextExtent);
+    }
 #if defined(MAGICKCORE_POSIX_SUPPORT)
 #if !defined(MAGICKCORE_HAVE_EXECVP)
-  status=system(command);
+  status=system(shell_command);
 #else
-  if (strspn(command,"&;<>|") == 0)
-    status=system(command);
+  if ((asynchronous != MagickFalse) || (strspn(shell_command,"&;<>|") == 0))
+    status=system(shell_command);
   else
     {
       pid_t
@@ -1956,44 +1967,22 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
       mode;
 
     mode=_P_WAIT;
-    if (command[strlen(command)-1] == '&')
-      {
-        char
-          *local_command;
-
-        /*
-          Asynchronous spawn.
-        */
-        for (i=0; i < number_arguments; i++)
-          arguments[i]=DestroyString(arguments[i]);
-        arguments=(char **) RelinquishMagickMemory(arguments);
-        local_command=AcquireString(command);
-        local_command[strlen(command)-1]='\0';
-        arguments=StringToArgv(local_command,&number_arguments);
-        local_command=DestroyString(local_command);
-        if (arguments == (char **) NULL)
-          return(status);
-        mode=_P_NOWAIT;
-      }
+    if (asynchronous != MagickFalse)
+      mode=_P_NOWAIT;
     status=spawnvp(mode,arguments[1],arguments+1);
   }
 #elif defined(macintosh)
-  status=MACSystemCommand(command);
+  status=MACSystemCommand(shell_command);
 #elif defined(vms)
-  status=system(command);
+  status=system(shell_command);
 #else
 #  error No suitable system() method.
 #endif
   if (status < 0)
-    {
-      char
-        *message;
-
-      message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "`%s': %s",command,message);
-      message=DestroyString(message);
-    }
+    (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+      "`%s' (%d)",command,status);
+  if (shell_command != command)
+    shell_command=DestroyString(shell_command);
   for (i=0; i < number_arguments; i++)
     arguments[i]=DestroyString(arguments[i]);
   arguments=(char **) RelinquishMagickMemory(arguments);

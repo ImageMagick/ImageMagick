@@ -903,12 +903,11 @@ MagickExport void MACSetEventHook(MACEventHookPtr hook)
 %
 %  The format of the MACSystemCommand method is:
 %
-%      int MACSystemCommand(const char * command)
+%      int MACSystemCommand(MagickFalse,const char * command)
 %
 %  A description of each parameter follows:
 %
 %    o command: This string is the command to execute.
-%
 %
 */
 MagickExport int MACSystemCommand(const char * command)
