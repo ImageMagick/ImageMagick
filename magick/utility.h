@@ -44,7 +44,8 @@ extern MagickExport FILE
   *OpenMagickStream(const char *,const char *);
 
 extern MagickExport int
-  SystemCommand(const MagickBooleanType,const char *,ExceptionInfo *);
+  SystemCommand(const MagickBooleanType,const MagickBooleanType,const char *,
+    ExceptionInfo *);
 
 extern MagickExport long
   GetMagickPageSize(void);

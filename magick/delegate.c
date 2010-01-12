@@ -1036,10 +1036,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         /*
           Execute delegate.
         */
-        if (delegate_info->spawn != MagickFalse)
-          (void) ConcatenateString(&command," &");
-        status=SystemCommand(image_info->verbose,command,exception) != 0 ?
-          MagickTrue : MagickFalse;
+        status=SystemCommand(delegate_info->spawn,image_info->verbose,command,
+          exception) != 0 ? MagickTrue : MagickFalse;
         if (delegate_info->spawn != MagickFalse)
           (void) sleep(2);
         command=DestroyString(command);

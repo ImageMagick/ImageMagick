@@ -153,7 +153,7 @@ static MagickBooleanType InvokePostscriptDelegate(
 #endif
   if (ghost_info == (GhostInfo *) NULL)
     {
-      status=SystemCommand(verbose,command,exception);
+      status=SystemCommand(MagickFalse,verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
     }
   if (verbose != MagickFalse)
@@ -164,7 +164,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   status=(ghost_info->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
     {
-      status=SystemCommand(verbose,command,exception);
+      status=SystemCommand(MagickFalse,verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
     }
   argv=StringToArgv(command,&argc);
@@ -195,7 +195,7 @@ static MagickBooleanType InvokePostscriptDelegate(
     }
   return(MagickTrue);
 #else
-  status=SystemCommand(verbose,command,exception);
+  status=SystemCommand(MagickFalse,verbose,command,exception);
   return(status == 0 ? MagickTrue : MagickFalse);
 #endif
 }
