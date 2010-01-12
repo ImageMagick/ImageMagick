@@ -521,6 +521,9 @@
 #define MAGICKCORE_HAVE_PRELOADED_SYMBOLS  1 
 #endif
 
+/* Define to 1 if you have the <process.h> header file. */
+/* #undef HAVE_PROCESS_H */
+
 /* Define if you have POSIX threads libraries and header files. */
 #ifndef MAGICKCORE_HAVE_PTHREAD 
 #define MAGICKCORE_HAVE_PTHREAD  1 
