@@ -95,6 +95,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
     {
+      errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",tag);
       return(MagickFalse);
