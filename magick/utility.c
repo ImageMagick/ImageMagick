@@ -1891,6 +1891,7 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
   rights=ExecutePolicyRights;
   if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
     {
+      errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",arguments[1]);
       for (i=0; i < number_arguments; i++)
@@ -1904,9 +1905,7 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
       (void) fflush(stderr);
     }
 #if defined(MAGICKCORE_POSIX_SUPPORT)
-#if defined(MAGICKCORE_HAVE_SPAWNVP)
-  status=spawnvp(_P_WAIT,arguments[1],arguments+1);
-#elif !defined(MAGICKCORE_HAVE_EXECVP)
+#if !defined(MAGICKCORE_HAVE_EXECVP)
   status=system(command);
 #else
   if (strspn(command,"&;<>|") == 0)

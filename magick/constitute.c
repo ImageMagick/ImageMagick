@@ -448,6 +448,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(domain,rights,read_info->magick) == MagickFalse)
     {
+      errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",read_info->filename);
       return((Image *) NULL);
@@ -1028,6 +1029,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if (IsRightsAuthorized(domain,rights,write_info->magick) == MagickFalse)
     {
       sans_exception=DestroyExceptionInfo(sans_exception);
+      errno=EPERM;
       ThrowBinaryException(PolicyError,"NotAuthorized",filename);
     }
   magick_info=GetMagickInfo(write_info->magick,sans_exception);

@@ -865,12 +865,14 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   rights=ExecutePolicyRights;
   if (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse)
     {
+      errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",decode);
       return(MagickFalse);
     }
   if (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse)
     {
+      errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",encode);
       return(MagickFalse);

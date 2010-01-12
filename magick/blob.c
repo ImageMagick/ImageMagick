@@ -2247,6 +2247,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     rights=WritePolicyRights;
   if (IsRightsAuthorized(PathPolicyDomain,rights,filename) == MagickFalse)
     {
+      errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",filename);
       return(MagickFalse);
