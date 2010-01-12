@@ -1951,7 +1951,32 @@ MagickExport int SystemCommand(const MagickBooleanType verbose,
     }
 #endif
 #elif defined(__WINDOWS__)
-  status=spawnvp(_P_WAIT,arguments[1],arguments+1);
+  {
+    int
+      mode;
+
+    mode=_P_WAIT;
+    if (command[strlen(command)-1] == '&')
+      {
+        char
+          *local_command;
+
+        /*
+          Asynchronous spawn.
+        */
+        for (i=0; i < number_arguments; i++)
+          arguments[i]=DestroyString(arguments[i]);
+        arguments=(char **) RelinquishMagickMemory(arguments);
+        local_command=AcquireString(command);
+        local_command[strlen(command)-1]='\0';
+        arguments=StringToArgv(local_command,&number_arguments);
+        local_command=DestroyString(local_command);
+        if (arguments == (char **) NULL)
+          return(status);
+        mode=_P_NOWAIT;
+      }
+    status=spawnvp(mode,arguments[1],arguments+1);
+  }
 #elif defined(macintosh)
   status=MACSystemCommand(command);
 #elif defined(vms)
