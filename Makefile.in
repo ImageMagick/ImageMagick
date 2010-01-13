@@ -215,8 +215,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
-TESTS = $(PERLMAGICK_TESTS) $(TESTS_TESTS) $(am__EXEEXT_6) \
-	$(WAND_TESTS)
+TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS)
 XFAIL_TESTS = $(am__EXEEXT_7) $(am__EXEEXT_7)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
