@@ -731,17 +731,12 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
          {
            if ((qvalue < hash[i]) && (sum < sums[i]))
              continue;
-           if ((qvalue <= hash[i]) && (sum <= sums[i]))
+           if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
              image->quality=(unsigned long) i+1;
            if (image->debug != MagickFalse)
-             {
-               if (image->quality != UndefinedCompressionQuality)
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                   "Quality: %ld",image->quality);
-               else
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                   "Quality: %ld (approximate)",i+1);
-             }
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "Quality: %ld (%s)",i+1,(qvalue <= hash[i]) &&
+               (sum <= sums[i]) ? "exact" : "approximate");
            break;
          }
        }
@@ -785,16 +780,12 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
            {
              if ((qvalue < hash[i]) && (sum < sums[i]))
                continue;
-             image->quality=(unsigned long) i+1;
+             if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
+               image->quality=(unsigned long) i+1;
              if (image->debug != MagickFalse)
-               {
-                 if ((qvalue > hash[i]) || (sum > sums[i]))
-                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "Quality: %ld (approximate)",i+1);
-                 else
-                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "Quality: %ld",i+1);
-               }
+               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "Quality: %ld (%s)",i+1,(qvalue <= hash[i]) &&
+                 (sum <= sums[i]) ? "exact" : "approximate");
              break;
            }
          }

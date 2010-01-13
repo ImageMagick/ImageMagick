@@ -76,7 +76,7 @@ int main( int /*argc*/, char ** argv)
     //
     // Floodfill object with blue
     //
-    image.colorFuzz( 80 );
+    image.colorFuzz( 0.8*QuantumRange );
     image.floodFillColor( "+132+62", "blue" );
 
     //
