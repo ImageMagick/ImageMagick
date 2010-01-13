@@ -145,6 +145,9 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register long
     i;
 
+  size_t
+    length;
+
   ssize_t
     count;
 
@@ -204,7 +207,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=DestroyImageList(image);
         return((Image *) NULL);
       }
-    (void) fwrite("SFW94A",1,6,file);
+    length=fwrite("SFW94A",1,6,file);
     filesize=65535UL*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < (long) filesize; i++)
     {
