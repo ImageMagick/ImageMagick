@@ -130,7 +130,7 @@
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
 </div>
 <div  class="sponsor">
-  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201004010120 Buchhorn -->
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201006010120 Buchhorn -->
 </div>
 <div  class="sponsor">
   <a href="http://www.blumenversender.com">Blumenversand</a><!-- 201005010120 -->
@@ -139,10 +139,10 @@
   <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
 </div>
 <div  class="sponsor">
-   <a href="http://www.goyax.de">Börse</a><!-- 201001000240 Gewiese digital-finance.de -->
+   <a href="http://www.goyax.de">Börse</a><!-- 201004010240 Gewiese digital-finance.de -->
 </div>
 <div  class="sponsor">
-   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
   <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
@@ -157,7 +157,7 @@
 
 
 
-<p class="navigation-index">[<a href="#overview">Architecture Overview</a> &bull; <a href="#cache">The Pixel Cache</a> &bull; <a href="#stream">Streaming Pixels</a> &bull; <a href="#properties">Image Properties and Profiles</a> &bull; <a href="#threads">Threads of Execution</a> &bull; <a href="#coders">Custom Image Coders</a> &bull; <a href="#filters">Custom Image Filters</a>]</p>
+<p class="navigation-index">[<a href="#overview">Architecture Overview</a> &bull; <a href="#cache">The Pixel Cache</a> &bull; <a href="#stream">Streaming Pixels</a> &bull; <a href="#properties">Image Properties and Profiles</a> &bull; <a href="#threads">Threads of Execution</a> &bull; <a href="#distributed">Heterogeneous Distributed Processing</a> &bull; <a href="#coders">Custom Image Coders</a> &bull; <a href="#filters">Custom Image Filters</a>]</p>
 
 <div class="doc-section">
 <p>The citizens of Oz were quite content with their benefactor, the all-powerful Wizard.  They accepted his wisdom and benevolence without ever questioning the who, why, and where of his power.  Like the citizens of Oz, if you feel comfortable that ImageMagick can help you convert, edit, or compose your images without knowing what goes on behind the curtain, feel free to skip this section.  However, if you want to know more about the software and algorithms behind ImageMagick, read on.  To fully benefit from this discussion, you should be comfortable with image nomenclature and be familiar with computer programming.</p>
@@ -241,7 +241,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have using the <a href="../www/command-line-options.html#version">&#x2011;version</a> option, as with this command: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.8-10 2010-01-01 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.9-0 2010-01-01 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).</p>
 </div>
 
@@ -514,7 +514,7 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 
 <p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the dual and quad-core processor technologies. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only. To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="../www/api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single image over a different image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="../www/magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
-<p>Here is an example of how ImageMagick can take advantage of threads of execution with the OpenMP programming paradigm:</p>
+<p>Here is an example of how ImageMagick can take advantage of threads of execution with the <a href="http://en.wikipedia.org/wiki/OpenMP">OpenMP</a> programming paradigm:</p>
 
 <div class="viewport">
 <pre class="code">
@@ -572,6 +572,80 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 </div>
 
 <p>If you call the ImageMagick API from your OpenMP-enabled application and you intend to dynamically increase the number of threads available in subsequent parallel regions, be sure to perform the increase <em>before</em> you call the API otherwise ImageMagick may fault.</p>
+
+</div>
+
+<h2><a name="distributed"></a>Heterogeneous Distributed Processing</h2>
+<div class="doc-section">
+<p>ImageMagick includes support for heterogeneous distributed processing with the <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a> framework.  OpenCL kernels within ImageMagick permit image processing algorithms to execute across heterogeneous platforms consisting of CPUs, GPUs, and other processors.  Depending on your platform, speed-ups can be an order of magnitude faster than the traditional single CPU.</p>
+
+<p>To speed up image convolution, for example, use this image filter:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.pam -process "convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'" gpu.pam</span></p>
+<p>Here is an example OpenCL kernel that convolves an image:</p>
+
+<div class="viewport">
+<pre class="code">
+static inline long ClampToCanvas(const long offset,const ulong range)
+{
+  if (offset &lt; 0L)
+    return(0L);
+  if (offset >= range)
+    return((long) (range-1L));
+  return(offset);
+}
+
+static inline CLQuantum ClampToQuantum(const double value)
+{
+  if (value &lt; 0.0)
+    return((CLQuantum) 0);
+  if (value >= (double) QuantumRange)
+    return((CLQuantum) QuantumRange);
+  return((CLQuantum) (value+0.5));
+}
+
+__kernel void Convolve(const __global CLPixelType *source,__constant double *filter,
+  const ulong width,const ulong height,__global CLPixelType *destination)
+{
+  const ulong columns = get_global_size(0);
+  const ulong rows = get_global_size(1);
+
+  const long x = get_global_id(0);
+  const long y = get_global_id(1);
+
+  const double scale = (1.0/QuantumRange);
+  const long mid_width = (width-1)/2;
+  const long mid_height = (height-1)/2;
+  double4 sum = { 0.0, 0.0, 0.0, 0.0 };
+  double gamma = 0.0;
+  register ulong i = 0;
+
+  for (long v=(-mid_height); v &lt;= mid_height; v++)
+  {
+    for (long u=(-mid_width); u &lt;= mid_width; u++)
+    {
+      register const ulong index=ClampToCanvas(y+v,rows)*columns+ClampToCanvas(x+u,columns);
+      const double alpha=scale*(QuantumRange-source[index].w);
+      sum.x+=alpha*filter[i]*source[index].x;
+      sum.y+=alpha*filter[i]*source[index].y;
+      sum.z+=alpha*filter[i]*source[index].z;
+      sum.w+=filter[i]*source[index].w;
+      gamma+=alpha*filter[i];
+      i++;
+    }
+  }
+
+  gamma=1.0/(fabs(gamma) &lt;= MagickEpsilon ? 1.0 : gamma);
+  const ulong index=y*columns+x;
+  destination[index].x=ClampToQuantum(gamma*sum.x);
+  destination[index].y=ClampToQuantum(gamma*sum.y);
+  destination[index].z=ClampToQuantum(gamma*sum.z);
+  destination[index].w=ClampToQuantum(sum.w);
+};
+</pre>
+</div>
+
+<p>See <a href="http://trac.imagemagick.org/browser/ImageMagick/trunk/filters/convolve.c">filters/convolve.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
 
 </div>
 
@@ -1234,7 +1308,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

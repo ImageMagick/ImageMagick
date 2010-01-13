@@ -130,7 +130,7 @@
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
 </div>
 <div  class="sponsor">
-  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201004010120 Buchhorn -->
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201006010120 Buchhorn -->
 </div>
 <div  class="sponsor">
   <a href="http://www.blumenversender.com">Blumenversand</a><!-- 201005010120 -->
@@ -139,10 +139,10 @@
   <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
 </div>
 <div  class="sponsor">
-   <a href="http://www.goyax.de">Börse</a><!-- 201001000240 Gewiese digital-finance.de -->
+   <a href="http://www.goyax.de">Börse</a><!-- 201004010240 Gewiese digital-finance.de -->
 </div>
 <div  class="sponsor">
-   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
   <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
@@ -217,7 +217,7 @@ _8c.html" target="source" name="GetAuthenticPixels">GetAuthenticPixels</a></h2>
 
 <p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.</p></ol>
 
-<p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file. The returned pointer should *never* be deallocated by the user.</p></ol>
+<p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p></ol>
 
 <p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or if the storage class is PseduoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p></ol>
 
@@ -404,7 +404,7 @@ _8c.html" target="source" name="GetVirtualPixelQueue">GetVirtualPixelQueue</a></
 _8c.html" target="source" name="GetVirtualPixels">GetVirtualPixels</a></h2>
 <div class="doc-section">
 
-<p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned. The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file.  The returned pointer should *never* be deallocated by the user.</p></ol>
+<p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file.  The returned pointer must *never* be deallocated by the user.</p></ol>
 
 <p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access the black color component or to obtain the colormap indexes (of type IndexPacket) corresponding to the region.</p></ol>
 
@@ -440,7 +440,7 @@ _8c.html" target="source" name="QueueAuthenticPixels">QueueAuthenticPixels</a></
 
 <p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p></ol>
 
-<p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file. The returned pointer should *never* be deallocated by the user.</p></ol>
+<p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p></ol>
 
 <p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or the colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p></ol>
 
@@ -516,7 +516,7 @@ _8c.html" target="source" name="SyncAuthenticPixels">SyncAuthenticPixels</a></h2
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
       <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
