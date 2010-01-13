@@ -124,13 +124,13 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
 </div>
 <div  class="sponsor">
-  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201004010120 Buchhorn -->
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201006010120 Buchhorn -->
 </div>
 <div  class="sponsor">
   <a href="http://www.blumenversender.com">Blumenversand</a><!-- 201005010120 -->
@@ -139,10 +139,10 @@
   <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
 </div>
 <div  class="sponsor">
-   <a href="http://www.goyax.de">Börse</a><!-- 201001000240 Gewiese digital-finance.de -->
+   <a href="http://www.goyax.de">Börse</a><!-- 201004010240 Gewiese digital-finance.de -->
 </div>
 <div  class="sponsor">
-   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012001200 allesdruck.de-->
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
   <a href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 201002010000 -->
@@ -155,7 +155,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AutoGammaImage">AutoGammaImage</a> &bull; <a href="#AutoLevelImage">AutoLevelImage</a> &bull; <a href="#ColorDecisionListImage">ColorDecisionListImage</a> &bull; <a href="#ClutImage">ClutImage</a> &bull; <a href="#ContrastImage">ContrastImage</a> &bull; <a href="#The ContrastStretchImage">The ContrastStretchImage</a> &bull; <a href="#EnhanceImage">EnhanceImage</a> &bull; <a href="#EqualizeImage">EqualizeImage</a> &bull; <a href="#GammaImage">GammaImage</a> &bull; <a href="#HaldClutImage">HaldClutImage</a> &bull; <a href="#LevelImage">LevelImage</a> &bull; <a href="#LevelizeImage">LevelizeImage</a> &bull; <a href="#LevelizeImageChannel">LevelizeImageChannel</a> &bull; <a href="#LevelImageColor">LevelImageColor</a> &bull; <a href="#The LinearStretchImage">The LinearStretchImage</a> &bull; <a href="#ModulateImage">ModulateImage</a> &bull; <a href="#NegateImage">NegateImage</a> &bull; <a href="#The NormalizeImage">The NormalizeImage</a> &bull; <a href="#SigmoidalContrastImage">SigmoidalContrastImage</a>]</p>
+<p class="navigation-index">[<a href="#AutoGammaImage">AutoGammaImage</a> &bull; <a href="#AutoLevelImage">AutoLevelImage</a> &bull; <a href="#Use BrightnessContrastImage">Use BrightnessContrastImage</a> &bull; <a href="#ColorDecisionListImage">ColorDecisionListImage</a> &bull; <a href="#ClutImage">ClutImage</a> &bull; <a href="#ContrastImage">ContrastImage</a> &bull; <a href="#The ContrastStretchImage">The ContrastStretchImage</a> &bull; <a href="#EnhanceImage">EnhanceImage</a> &bull; <a href="#EqualizeImage">EqualizeImage</a> &bull; <a href="#GammaImage">GammaImage</a> &bull; <a href="#HaldClutImage">HaldClutImage</a> &bull; <a href="#LevelImage">LevelImage</a> &bull; <a href="#LevelizeImage">LevelizeImage</a> &bull; <a href="#LevelizeImageChannel">LevelizeImageChannel</a> &bull; <a href="#LevelImageColor">LevelImageColor</a> &bull; <a href="#The LinearStretchImage">The LinearStretchImage</a> &bull; <a href="#ModulateImage">ModulateImage</a> &bull; <a href="#NegateImage">NegateImage</a> &bull; <a href="#The NormalizeImage">The NormalizeImage</a> &bull; <a href="#SigmoidalContrastImage">SigmoidalContrastImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/enhance
 _8c.html" target="source" name="AutoGammaImage">AutoGammaImage</a></h2>
@@ -201,6 +201,37 @@ _8c.html" target="source" name="AutoLevelImage">AutoLevelImage</a></h2>
 
 <h5>channel</h5>
 <ol><p>The channels to auto-level.  If the special 'SyncChannels' flag is set the min/max/mean value of all given channels is used for all given channels, to all channels in the same way.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance
+_8c.html" target="source" name="Use BrightnessContrastImage">Use BrightnessContrastImage</a></h2>
+<div class="doc-section">
+
+<p>Use BrightnessContrastImage() to change the brightness and/or contrast of an image.  It converts the brightness and contrast parameters into slope and intercept and calls a polynomical function to apply to the image.</p></ol>
+
+<p>The format of the BrightnessContrastImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType BrightnessContrastImage(Image *image,
+    const double brightness,const double contrast)
+  MagickBooleanType BrightnessContrastImageChannel(Image *image,
+    const ChannelType channel,const double brightness,
+    const double contrast)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel.</p></ol>
+
+<h5>brightness</h5>
+<ol><p>the brightness percent (-100 .. 100).</p></ol>
+
+<h5>contrast</h5>
+<ol><p>the contrast percent (-100 .. 100).</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/enhance
