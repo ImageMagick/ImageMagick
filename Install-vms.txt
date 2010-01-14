@@ -1,4 +1,3 @@
-
 VMS COMPILATION
 
   You might want to check the values of certain program definitions
@@ -7,7 +6,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-6.1.0.zip
+      unzip ImageMagick-6.5.9-0.zip
 			set default [.imagemagick]
 			@make
       set display/create/node=node_name::
@@ -26,14 +25,8 @@ VMS COMPILATION
 
       display
 
-  Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
-  from
-
-      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-6.1.0.zip
-
   Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
-  as well as the VMS versions of the JPEG, PNG, TTF, and TIFF
-  libraries.
+  as well as the VMS versions of the JPEG, PNG, TTF, and TIFF libraries.
 
   Thanks to Joukj@hrem.stm.tudelft.{nl} for providing a patches to get
   ImageMagick working under OpenVMS.  See

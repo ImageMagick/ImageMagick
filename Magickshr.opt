@@ -1,5 +1,5 @@
-IDENTIFICATION="Magick V6.4"
-GSMATCH=LEQUAL,6,4
+IDENTIFICATION="Magick V6.5"
+GSMATCH=LEQUAL,6,5
 case_sensitive=YES
 symbol_vector=(AcquireImageInfo=PROCEDURE)
 symbol_vector=(AcquireMemory=PROCEDURE)
@@ -61,7 +61,6 @@ symbol_vector=(HuffmanDecodeImage=PROCEDURE)
 symbol_vector=(HuffmanEncodeImage=PROCEDURE)
 symbol_vector=(ImageToBlob=PROCEDURE)
 symbol_vector=(ImplodeImage=PROCEDURE)
-symbol_vector=(IsAccessible=PROCEDURE)
 symbol_vector=(IsGeometry=PROCEDURE)
 symbol_vector=(IsGrayImage=PROCEDURE)
 symbol_vector=(LiberateMemory=PROCEDURE)
@@ -246,4 +245,7 @@ symbol_vector=(MagickCoreTerminus=PROCEDURE)
 symbol_vector=(GetElapsedTime=PROCEDURE)
 symbol_vector=(GetTimerInfo=PROCEDURE)
 symbol_vector=(GetUserTime=PROCEDURE)
+symbol_vector=(AcquireTimerInfo=PROCEDURE)
+symbol_vector=(DestroyTimerInfo=PROCEDURE)
+symbol_vector=(MagickCommandGenesis=PROCEDURE)
 sys$share:decw$xlibshr.exe/share

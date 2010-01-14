@@ -86,11 +86,6 @@
 #define ulonglong  unsigned long long
 #endif
 
-#ifdef __VMS
-#define JAS_VERSION 1.700.0
-#define PACKAGE jasper
-#define VERSION 1.700.0
-#endif
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
 #undef PACKAGE_TARNAME
