@@ -72,6 +72,7 @@ $ then
 $    write sys$output "Making shareable image"
 $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
   [.coders]libCoders.olb/lib,[.magick]libMagick.olb/lib, -
+  []magickshr.opt/opt, -
   sys$library:freetype.olb/lib, -
   sys$library:libjasper.olb/lib, -
   sys$library:libjpeg.olb/lib, -
@@ -79,9 +80,7 @@ $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
   sys$library:tiff.olb/lib, -
   sys$library:libz.olb/lib, -
   sys$library:libbz2.olb/lib, -
-  sys$library:df.olb/lib, -
-  sys$library:libjbig.olb/lib, -
-  []magickshr.opt/opt
+  sys$library:libjbig.olb/lib
 $ libr/crea/share/log magickshr.olb magickshr.exe
 $    set file/trunc magickshr.olb
 $    purge magickshr.olb
@@ -98,7 +97,6 @@ $    link_libraries := [.magick]libMagick.olb/lib, -
   sys$library:tiff.olb/lib, -
   sys$library:freetype.olb/l, -
   sys$library:libz.olb/lib,-
-  sys$library:df.olb/lib, -
   sys$library:libjbig.olb/lib, -
   sys$library:libbz2.olb/lib
 $ endif

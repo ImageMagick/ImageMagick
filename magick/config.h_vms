@@ -282,3 +282,5 @@
 #define MAGICKCORE_HAVE_MKSTEMP 1
 
 #define round nint
+
+#define MAGICKCORE_CIPHER_SUPPORT 1

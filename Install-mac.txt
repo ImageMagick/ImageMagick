@@ -1,55 +1,53 @@
 Mac OS X-specific Build instructions
-
-Perform these steps as an administrator or with the sudo command:
-
-    * Install Fink. The default setup creates a /sw folder on your main hard
-    * drive. Make sure /sw/bin is in your path.
-    * Install the latest Xcode from Apple.
-    * Create a symbolic link in /Developer/SDKs/MacOSX10.4u.sdk/ to /sw:
-
-        cd /Developer/SDKs/MacOSX10.4u.sdk
-        ln -s sw /sw
-
-    * Use Fink, or FinkCommander to install any delegate libraries you
-    * require, for example:
-
-        fink install libjpeg
-
-As a regular user or administrator:
-
-    * Download the ImageMagick source distribution.
-    * Unpack and change into the top-level ImageMagick directory:
-
-        tar xvfz ImageMagick-6.3.3-0.tar.gz
-        cd ImageMagick-6.3.3
-
-    * Choose an architecture and set your CFLAGS environment variable. Here we
-    * set CFLAGS for an Intel build:
-
-        export CFLAGS="-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk/ -arch i386 -I/sw/include/"
-
-    * Set your LDFLAGS environment variable to:
-
-        export
-LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk/,-L/sw/lib/"
-
-    * Configure ImageMagick:
-
-        ./configure --prefix=/sw --with-quantum-depth=16 \
-          --disable-dependency-tracking --with-x=yes \
-          --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib \
-          --without-perl
-
-    * Build ImageMagick:
-
-        make
-
-    * Install ImageMagick:
-
-        sudo make install
-
-    * To test the ImageMagick GUI, start X11 and in a new shell and type:
-
-        display -display :0
-
-
+  
+  Perform these steps as an administrator or with the sudo command:
+  
+  Install MacPorts. Download and install http://www.macports.org/ and type the
+  following commands:
+  
+    $magick> sudo port -v install freetype +bytecode
+    $magick> sudo port -v install librsvg
+    $magick> sudo port -v install +graphviz +gs +wmf +jbig +jpeg2 +lcms
+  
+  This installs many of the delegate libraries ImageMagick will utilize such as
+  JPEG and FreeType.
+  
+  Install the latest Xcode from Apple.
+  
+  Use the port command to install any delegate libraries you require, for example:
+  
+    $magick> sudo port install jpeg
+  
+  Now lets build ImageMagick:
+  
+  Download the ImageMagick source distribution and verify the distribution
+  against its message digest.
+  
+  Unpack and change into the top-level ImageMagick directory:
+  
+    $magick> tar xvfz ImageMagick-6.5.9-0.tar.gz $magick> cd ImageMagick-6.5.9
+  
+  Configure ImageMagick:
+  
+    $magick> ./configure --prefix=/opt --with-quantum-depth=16 \
+      --disable-dependency-tracking --with-x=yes \
+      --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
+      --without-perl
+  
+  Build ImageMagick:
+  
+    $magick> make
+  
+  Install ImageMagick:
+  
+    $magick> sudo make install
+  
+  To verify your install, type
+  
+    $magick> /opt/local/bin/identify -list font
+  
+  to list all the fonts ImageMagick knows about.
+  
+  To test the ImageMagick GUI, in a new shell, type:
+  
+    $magick> display -display :0
