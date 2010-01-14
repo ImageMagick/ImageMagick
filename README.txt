@@ -54,6 +54,10 @@ Features and Capabilities
     * Threads of execution support: ImageMagick is thread safe and most
       internal algorithms are OpenMP-enabled to take advantage of speed-ups
       offered by the dual and quad-core processor technologies
+    * Heterogeneous distributed processing: certain algorithms are
+      OpenCL-enabled to take advantage of speed-ups offered by executing in
+      concert across heterogeneous platforms consisting of CPUs, GPUs, and
+      other processors.
 
   Examples of ImageMagick Usage, http://www.imagemagick.org/Usage/,
   shows how to use ImageMagick from the command-line to accomplish any
