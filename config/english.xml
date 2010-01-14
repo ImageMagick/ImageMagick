@@ -36,7 +36,7 @@
     <cache>
       <error>
         <message name="CacheResourcesExhausted">
-          Cache resources exhausted
+          cache resources exhausted
         </message>
         <message name="InconsistentPersistentCacheDepth">
           inconsistent persistent cache depth
@@ -99,7 +99,7 @@
           encrypted WPG image file not supported
         </message>
         <message name="FractalCompressNotSupported">
-          Fractal compression not supported
+          fractal compression not supported
         </message>
         <message name="ImageColumnOrRowSizeIsNotSupported">
           image column or row size is not supported
@@ -129,16 +129,16 @@
           JPEG embedding failed
         </message>
         <message name="LocationTypeIsNotSupported">
-          Location type is not supported
+          location type is not supported
         </message>
         <message name="MapStorageTypeIsNotSupported">
-          Map storage type is not supported
+          map storage type is not supported
         </message>
         <message name="MultidimensionalMatricesAreNotSupported">
-          Multi-dimensional matrices are not supported
+          multi-dimensional matrices are not supported
         </message>
         <message name="MultipleRecordListNotSupported">
-          Multiple record list not supported
+          multiple record list not supported
         </message>
         <message name="NoBitmapOnClipboard">
           no bitmap on clipboard
@@ -200,7 +200,7 @@
       </error>
       <warning>
         <message name="LosslessToLossyJPEGConversion">
-          Lossless to lossy JPEG conversion
+          lossless to lossy JPEG conversion
         </message>
       </warning>
     </coder>
@@ -223,19 +223,19 @@
       <image>
         <error>
           <message name="AnErrorHasOccurredReadingFromFile">
-            An error has occurred reading from file
+            an error has occurred reading from file
           </message>
           <message name="AnErrorHasOccurredWritingToFile">
-            An error has occurred writing to file
+            an error has occurred writing to file
           </message>
           <message name="CipherSupportNotEnabled">
             cipher support not enabled
           </message>
           <message name="ColormapExceeds256Colors">
-            Colormap exceeded 256 colors
+            colormap exceeded 256 colors
           </message>
           <message name="CorruptImage">
-            Corrupt image
+            corrupt image
           </message>
           <message name="FileFormatVersionMismatch">
             file format version mismatch
@@ -250,40 +250,40 @@
             image type not supported
           </message>
           <message name="ImproperImageHeader">
-            Improper image header
+            improper image header
           </message>
           <message name="InsufficientImageDataInFile">
-            Insufficient image data in file
+            insufficient image data in file
           </message>
           <message name="InvalidColormapIndex">
-            Invalid colormap index
+            invalid colormap index
           </message>
           <message name="InvalidPixel">
-            Invalid pixel
+            invalid pixel
           </message>
           <message name="LengthAndFilesizeDoNotMatch">
-            Length and filesize do not match
+            length and filesize do not match
           </message>
           <message name="MaximumChannelsExceeded">
             maximum channels exceeded
           </message>
           <message name="NegativeOrZeroImageSize">
-            Negative or zero image size
+            negative or zero image size
           </message>
           <message name="NonOS2HeaderSizeError">
-            Non OS2 BMP header size less than 40
+            non OS2 BMP header size less than 40
           </message>
           <message name="NotEnoughPixelData">
-            Not enough pixel data
+            not enough pixel data
           </message>
           <message name="NotEnoughTiles">
-            Not enough tiles found in level
+            not enough tiles found in level
           </message>
           <message name="TooMuchImageDataInFile">
-            Too much image data in file
+            too much image data in file
           </message>
           <message name="StaticPlanesValueNotEqualToOne">
-            Static planes value not equal to 1
+            static planes value not equal to 1
           </message>
           <message name="UnableToReadExtensionBlock">
             unable to read extension block
@@ -301,13 +301,13 @@
             unable to uncompress image
           </message>
           <message name="UnexpectedEndOfFile">
-            Unexpected end-of-file
+            unexpected end-of-file
           </message>
           <message name="UnexpectedSamplingFactor">
-            Unexpected sampling factor
+            unexpected sampling factor
           </message>
           <message name="UnknownPatternType">
-            Unknown pattern type
+            unknown pattern type
           </message>
           <message name="UnrecognizedAlphaChannelType">
             unrecognized alpha channel tpe
@@ -329,7 +329,7 @@
         </fatalerror>
         <warning>
           <message name="SkipToSyncByte">
-            Corrupt PCD image, skipping to sync byte
+            corrupt PCD image, skipping to sync byte
           </message>
         </warning>
       </image>
@@ -337,16 +337,16 @@
     <delegate>
       <error>
         <message name="DelegateFailed">
-          Delegate failed
+          delegate failed
         </message>
         <message name="FailedToComputeOutputSize">
-          Failed to compute output size
+          failed to compute output size
         </message>
         <message name="FailedToRenderFile">
-          Failed to render file
+          failed to render file
         </message>
         <message name="FailedToScanFile">
-          Failed to scan file
+          failed to scan file
         </message>
         <message name="NoTagFound">
           no tag found
@@ -419,22 +419,22 @@
     <draw>
       <error>
         <message name="AlreadyPushingPatternDefinition">
-          Already pushing pattern definition
+          already pushing pattern definition
         </message>
         <message name="NonconformingDrawingPrimitiveDefinition">
-          Non-conforming drawing primitive definition
+          non-conforming drawing primitive definition
         </message>
         <message name="NotARelativeURL">
-          Not a relative URL
+          not a relative URL
         </message>
         <message name="NotCurrentlyPushingPatternDefinition">
-          Not currently pushing pattern definition
+          not currently pushing pattern definition
         </message>
         <message name="SegmentStackOverflow">
-          Segment stack overflow
+          segment stack overflow
         </message>
         <message name="TooManyBezierCoordinates">
-          Too many bezier coordinates
+          too many bezier coordinates
         </message>
         <message name="UnableToPrint">
           unable to print
@@ -468,13 +468,13 @@
           angle is discontinuous
         </message>
         <message name="ColormappedImageRequired">
-          Colormapped image required
+          colormapped image required
         </message>
         <message name="ColorSeparatedImageRequired">
-          Color separated image required
+          color separated image required
         </message>
         <message name="ColorspaceColorProfileMismatch">
-          Color profile operates on another colorspace
+          color profile operates on another colorspace
         </message>
         <message name="ImageDepthNotSupported">
           image depth not supported
@@ -492,7 +492,7 @@
           left and right image sizes differ
         </message>
         <message name="NegativeOrZeroImageSize">
-          Negative or zero image size
+          negative or zero image size
         </message>
         <message name="NoImagesWereFound">
           no images were found
@@ -507,7 +507,7 @@
           unable to create color transform
         </message>
         <message name="WidthOrHeightExceedsLimit">
-          Width or height exceeds limit
+          width or height exceeds limit
         </message>
       </error>
       <warning>
@@ -516,6 +516,13 @@
         </message>
       </warning>
     </image>
+    <filter>
+      <error>
+        <message name="FilterFailed">
+          filter failed
+        </message>
+      </error>
+    </filter>
     <missing>
       <delegate>
         <error>
@@ -622,13 +629,13 @@
           missing expression
         </message>
         <message name="MissingNullSeparator">
-          Missing Null Image List Separator
+          missing Null Image List Separator
         </message>
         <message name="MustSpecifyAnImageName">
-          Must specify an image name
+          must specify an image name
         </message>
         <message name="MustSpecifyImageSize">
-          Must specify image size
+          must specify image size
         </message>
         <message name="NoBlobDefined">
           no Binary Large OBjects defined
@@ -891,10 +898,10 @@
       <limit>
         <error>
           <message name="PixelCacheAllocationFailed">
-            Pixel cache allocation failed
+            pixel cache allocation failed
           </message>
           <message name="MemoryAllocationFailed">
-            Memory allocation failed
+            memory allocation failed
           </message>
           <message name="UnableToAcquireString">
             unable to acquire string
@@ -1017,7 +1024,7 @@
           no stream handler is defined
         </message>
         <message name="PixelCacheIsNotOpen">
-          Pixel cache is not open
+          pixel cache is not open
         </message>
       </error>
     </stream>
@@ -1033,13 +1040,13 @@
           unable to open file
         </message>
         <message name="QuantumDepthMismatch">
-          Wand quantum depth does not match that of the core API
+          wand quantum depth does not match that of the core API
         </message>
         <message name="ContainsNoImages">
-          Wand contains no images
+          wand contains no images
         </message>
         <message name="ContainsNoIterators">
-          Wand contains no iterators
+          wand contains no iterators
         </message>
       </error>
     </wand>
@@ -1169,235 +1176,235 @@
   <monitor>
     <AddNoise>
       <message name="Image">
-        Add noise to image
+        add noise to image
       </message>
     </AddNoise>
     <Append>
       <message name="Image">
-        Append image sequence
+        append image sequence
       </message>
     </Append>
     <assign>
       <message name="Image">
-        Assign image colors
+        assign image colors
       </message>
     </assign>
     <Average>
       <message name="Image">
-        Average image sequence
+        average image sequence
       </message>
     </Average>
     <Chop>
       <message name="Image">
-        Chop image
+        chop image
       </message>
     </Chop>
     <Classify>
       <message name="Image">
-        Classify image colors
+        classify image colors
       </message>
     </Classify>
     <ColorReplace>
       <message name="Image">
-        Replace color in image
+        replace color in image
       </message>
     </ColorReplace>
     <Colorize>
       <message name="Image">
-        Colorize image
+        colorize image
       </message>
     </Colorize>
     <Combine>
       <message name="Image">
-        Combine image
+        combine image
       </message>
     </Combine>
     <ContrastStretch>
       <message name="Image">
-         Contrast-stretch image
+         contrast-stretch image
       </message>
     </ContrastStretch>
     <Convolve>
       <message name="Image">
-        Convolve image
+        convolve image
       </message>
     </Convolve>
     <Crop>
       <message name="Image">
-        Crop image
+        crop image
       </message>
     </Crop>
     <Decode>
       <message name="Image">
-        Decode image
+        decode image
       </message>
     </Decode>
     <Despeckle>
       <message name="Image">
-        Despeckle image
+        despeckle image
       </message>
     </Despeckle>
     <Distort>
       <message name="Image">
-        Distort image
+        distort image
       </message>
     </Distort>
     <Dither>
       <message name="Image">
-        Dither image colors
+        dither image colors
       </message>
     </Dither>
     <DullContrast>
       <message name="Image">
-        Dull image contrast
+        dull image contrast
       </message>
     </DullContrast>
     <Equalize>
       <message name="Image">
-        Equalize image
+        equalize image
       </message>
     </Equalize>
     <Flip>
       <message name="Image">
-        Flip image
+        flip image
       </message>
     </Flip>
     <Flop>
       <message name="Image">
-        Flop image
+        flop image
       </message>
     </Flop>
     <Frame>
       <message name="Image">
-        Add frame to image
+        add frame to image
       </message>
     </Frame>
     <Fx>
       <message name="Image">
-        Fx image
+        fx image
       </message>
     </Fx>
     <GammaCorrect>
       <message name="Image">
-        Gamma correct image
+        gamma correct image
       </message>
     </GammaCorrect>
     <Histogram>
       <message name="Image">
-        Compute image histogram
+        compute image histogram
       </message>
     </Histogram>
     <Implode>
       <message name="Image">
-        Implode image
+        implode image
       </message>
     </Implode>
     <Level>
       <message name="Image">
-        Level image
+        level image
       </message>
     </Level>
     <Load>
       <message name="Image">
-        Load image
+        load image
       </message>
       <message name="Images">
-        Load images
+        load images
       </message>
     </Load>
     <Magnfiy>
       <message name="Image">
-        Magnfiy image
+        magnfiy image
       </message>
     </Magnfiy>
     <MedianFilter>
       <message name="Image">
-        Filter image with neighborhood ranking
+        filter image with neighborhood ranking
       </message>
     </MedianFilter>
     <Minify>
       <message name="Image">
-        Minify image
+        minify image
       </message>
     </Minify>
     <Modulate>
       <message name="Image">
-        Modulate image
+        modulate image
       </message>
     </Modulate>
     <Mogrify>
       <message name="Image">
-        Mogrify image
+        mogrify image
       </message>
     </Mogrify>
     <Montage>
       <message name="Image">
-        Montage image
+        montage image
       </message>
     </Montage>
     <Morph>
       <message name="Image">
-        Morph image sequence
+        morph image sequence
       </message>
     </Morph>
     <Mosaic>
       <message name="Image">
-        Mosaic image
+        mosaic image
       </message>
     </Mosaic>
     <Negate>
       <message name="Image">
-        Negate image
+        negate image
       </message>
     </Negate>
     <OilPaint>
       <message name="Image">
-        Oil paint image
+        oil paint image
       </message>
     </OilPaint>
     <Opaque>
       <message name="Image">
-        Set opaque color in image
+        set opaque color in image
       </message>
     </Opaque>
     <Plasma>
       <message name="Image">
-        Plasma image
+        plasma image
       </message>
     </Plasma>
     <Preview>
       <message name="Image">
-        Preview image
+        preview image
       </message>
     </Preview>
     <Raise>
       <message name="Image">
-        Raise image
+        raise image
       </message>
     </Raise>
     <Recolor>
       <message name="Image">
-        Recolor color image
+        recolor color image
       </message>
     </Recolor>
     <Reduce>
       <message name="Image">
-        Reduce image colors
+        reduce image colors
       </message>
     </Reduce>
     <ReduceNoise>
       <message name="Image">
-        Reduce the image noise
+        reduce the image noise
       </message>
     </ReduceNoise>
     <Render>
       <message name="Image">
-        Render image
+        render image
       </message>
     </Render>
     <Resize>
       <message name="Image">
-        Resize image
+        resize image
       </message>
     </Resize>
     <RGBTransform>
@@ -1407,140 +1414,140 @@
     </RGBTransform>
     <Roll>
       <message name="Image">
-        Roll image
+        roll image
       </message>
     </Roll>
     <Rotate>
       <message name="Image">
-        Rotate image
+        rotate image
       </message>
     </Rotate>
     <Sample>
       <message name="Image">
-        Sample image
+        sample image
       </message>
     </Sample>
     <Save>
       <message name="Image">
-        Save image
+        save image
       </message>
       <message name="Images">
-        Save images
+        save images
       </message>
     </Save>
     <Scale>
       <message name="Image">
-        Scale image
+        scale image
       </message>
     </Scale>
     <Segment>
       <message name="Image">
-        Segment image
+        segment image
       </message>
     </Segment>
     <Separate>
       <message name="Image">
-        Extract a channel from image
+        extract a channel from image
       </message>
     </Separate>
     <SepiaTone>
       <message name="Image">
-        Sepia-tone image
+        sepia-tone image
       </message>
     </SepiaTone>
     <Shade>
       <message name="Image">
-        Shade image
+        shade image
       </message>
     </Shade>
     <Sharpen>
       <message name="Image">
-        Sharpen image
+        sharpen image
       </message>
     </Sharpen>
     <SharpenContrast>
       <message name="Image">
-        Sharpen image contrast
+        sharpen image contrast
       </message>
     </SharpenContrast>
     <SigmoidalContrast>
       <message name="Image">
-        Sigmoidal contrast image
+        sigmoidal contrast image
       </message>
     </SigmoidalContrast>
     <Solarize>
       <message name="Image">
-        Solarize image
+        solarize image
       </message>
     </Solarize>
     <Splice>
       <message name="Image">
-        Splice image
+        splice image
       </message>
     </Splice>
     <Spread>
       <message name="Image">
-        Spread image
+        spread image
       </message>
     </Spread>
     <Stegano>
       <message name="Image">
-        Stegano image
+        stegano image
       </message>
     </Stegano>
     <Stereo>
       <message name="Image">
-        Stereo image
+        stereo image
       </message>
     </Stereo>
     <Swirl>
       <message name="Image">
-        Swirl image
+        swirl image
       </message>
     </Swirl>
     <Texture>
       <message name="Image">
-        Texture image
+        texture image
       </message>
     </Texture>
     <Threshold>
       <message name="Image">
-        Threshold image
+        threshold image
       </message>
     </Threshold>
     <Tile>
       <message name="Image">
-        Tile image
+        tile image
       </message>
     </Tile>
     <Tint>
       <message name="Image">
-        Tint image
+        tint image
       </message>
     </Tint>
     <TransformRGB>
       <message name="Image">
-        Transform RGB image
+        transform RGB image
       </message>
     </TransformRGB>
     <Transparent>
       <message name="Image">
-        Set transparent color in image
+        set transparent color in image
       </message>
     </Transparent>
     <Wave>
       <message name="Image">
-        Wave image
+        wave image
       </message>
     </Wave>
     <XShear>
       <message name="Image">
-        X Shear image
+        x shear image
       </message>
     </XShear>
     <YShear>
       <message name="Image">
-        Y Shear image
+        y shear image
       </message>
     </YShear>
   </monitor>
