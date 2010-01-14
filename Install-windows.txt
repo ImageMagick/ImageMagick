@@ -299,7 +299,8 @@ Create a Self-Installing Binary Distribution
   Prerequisites
   
      1. Download and install Inno Setup 5.
-     2. Download and install ActiveState ActivePerl.
+     2. Download and install ActiveState ActivePerl @
+        http://www.activestate.com/activeperl/downloads/.
   
   Run the Configure Wizard
   
