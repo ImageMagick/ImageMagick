@@ -282,7 +282,7 @@ static void OpenCLNotify(const char *message,const void *data,size_t length,
   (void) length;
   exception=(ExceptionInfo *) user_context;
   (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
-    "","`%s'",message);
+    "FilterFailed","`%s'",message);
 }
 
 static MagickBooleanType BindCLParameters(CLInfo *cl_info,Image *image,

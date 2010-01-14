@@ -459,6 +459,13 @@
         </error>
       </open>
     </file>
+    <filter>
+      <error>
+        <message name="FilterFailed">
+          filter failed
+        </message>
+      </error>
+    </filter>
     <image>
       <error>
         <message name="AngleIsDiscontinuous">
