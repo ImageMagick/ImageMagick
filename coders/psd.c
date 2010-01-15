@@ -1200,8 +1200,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   indexes=GetAuthenticIndexQueue(layer_info[i].image);
                   for (x=0; x < (long) layer_info[i].image->columns; x++)
                   {
-                    q->opacity=(Quantum) (QuantumRange-(Quantum)
-                      (QuantumScale*(q->opacity*layer_info[i].opacity)));
+                    q->opacity=(Quantum) (QuantumRange-(Quantum) (QuantumScale*
+                      ((QuantumRange-q->opacity)*(QuantumRange-
+                      layer_info[i].opacity))));
                     q++;
                   }
                   if (SyncAuthenticPixels(layer_info[i].image,exception) == MagickFalse)
