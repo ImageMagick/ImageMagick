@@ -31,7 +31,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>''/,
   '977b812cb06e16d0ee7da6c80a9470cb85c2d33ba33f5919f26b05058f0eb177',
   'fea8915dc67163d86e93a6e611c900185f82bdc5fc67c7a3e53a4b76639aaa56',
-  '54276cda8971bcb5a16625ccd406cb3cd36f54e328be39c29de6fdf197e52bb4');
+  '8de04216e6f60ad3bf63d5a2c54386cb824579e1c4a677af726e0306e0c7fb09');
 
 #
 # 2) Test Center gravity
@@ -42,7 +42,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'Center'/,
   '9a3f16a11fa4173f43642e7759070b32ce66a21c72312a7c99ed5dab711dc377',
   '633267a42b30c1a5709d8929ef9ad24e6612f28e10299315a0ff386ccba7ec9a',
-  'a1d7da5474ef2620fe5ecd48865db96c03089856f2f59e58fcaab141caacb9e3');
+  '2a381bc2cc7dc751c95df0f6a88c5f04232e82d06094b65b3909f488e4347f93');
 
 #
 # 3) Test NorthWest gravity
@@ -53,7 +53,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'NorthWest'/,
   '1ace55dbec2814d4d12e911f6ab21e0eac769cf12fbdcf516376f356222b74e1',
   '9d4854b04b3072c4f371a55289ed0583c5fab1a52758e514008462bfb890be41',
-  'de8e3ea5416787b269c1244a240ab57dbc64b5cdbdc2039de045d11d222b24ac');
+  'f3be8f6f4ecabc14d6da8a3d8b6a2e369ad005d045f381df6f24ca2410406380');
 
 #
 # 4) Test North gravity
@@ -64,7 +64,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'North'/,
   '02840dc5ac270f2e26422b8c90c5e5c3af81fd6e6739e9554977115e152a6872',
   '67ee49456bfc3500aac4a2425b7b45c9cd32d8948232a97fabe62713ddd7f859',
-  '4309283a879e7dbf967848c4550f93d877a6bc26c721203aadf2812f56aa798c');
+  'abd7f530c44e953ac799a04846a3eef613d0ab7b08aa92bb6cabe8abf275d5b6');
 
 #
 # 5) Test NorthEast gravity
@@ -75,7 +75,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'NorthEast'/,
   'c5a10e80cb4f3b1c866d03e8cad4154f1139758ec86ffeef4fe2a802ac118ae2',
   '66b8ac0676dbf6c48703cb16422e75174ee676003cacfd58de546a697075b469',
-  'd6ee493b206d493fa2c14a037b56d180c9894677bbcc390ed4f0e2244e106cd7');
+  'bb35ddfaab468d869f2a3bafb16b3751015f2bb94e87438c48c7b294831d2bb8');
 
 #
 # 6) Test West gravity
@@ -86,7 +86,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'West'/,
   '60f394bc620fba50b97dfe55c6026eed616a26ceee7a97fa66485b1853182ff8',
   '46eed993d02f46dc553478fcdda6c0632b4d1161d478d5a9409b2925a8624c09',
-  '0869c4c7fda245c38fb2edaa1b777958d045f3cd6ad08c932efa7f5f42f9d2c4');
+  '09bb863d97be728ee75411ff87f1d09a5ef272b03fd23edca07b692239ce9346');
 
 #
 # 7) Test East gravity
@@ -97,7 +97,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'East'/,
   '48e3b6f793ef83ff702a4a164a6d91f1e3711ff9d7eee9f2eb7f8ce704783355',
   '2285ea36a814317b190c43012f509a70a779cac61afc0dcd0a54f089cbd6b284',
-  'ba46e2687647ca67cfa68e82656338e42be9d05034f22a653d3dc3b18dd74078');
+  '932cf84bf09b180ed7e01976dabf6ba7088fc374c539991ea42600ae40cedcbd');
 
 #
 # 8) Test SouthWest gravity
@@ -108,7 +108,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'SouthWest'/,
   'a7bdd145d3a98e1ba42ccff175ef3ff91c04ccff47cab1b0c8ae8ad21315f680',
   '6e4b779635b9dbd54490aa6a71aa45c4414c51554e449ccd88570ced42975b1b',
-  '1a604be81140ea226ae74fd9f9d9a75c566cc9b5c8404d3322557a92b363dbc1');
+  'ef5b118bfa9dfbed332c1cf349b8cc792280f535a1dcba053e878657cb060198');
 
 #
 # 9) Test South gravity
@@ -119,7 +119,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'South'/,
   '35c31352e889dc7912ddb0ae23af45c3776f36bc77a874b751d2594415cee1e6',
   'b72b1f24b49d9a3bb0507f3e5d5588b0c11cde499fab27d02df41d36dd87f099',
-  'caca511b3b8ee70eb1f030ce1e013e62152a7bc98204f9340479d3f5f140adb4');
+  '3fd57e40caef146868326f177db65265e8970c88ce20ba099152a1c5e8027e1f');
 
 #
 # 10) Test SouthEast gravity
@@ -130,7 +130,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'SouthEast'/,
   'd46836aea9de6ca6441a856b103edbe1bee6ceeeab189ac8bdf61bac35556774',
   '192a8ee4da1c5d62d14ab7837378d06fec13c37cb097d7ee00f97534f86d8304',
-  '4053414da05c9fd4f86850f8da3b9880a1dea880471cf6fa079dc65cbd496cc4');
+  'c94a37024d7f8ff664c5aae0977ed6ff5d3aa92f46425b09b179c2ab32494e0c');
 
 #
 # 11) Test Framed Montage
@@ -144,7 +144,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   '5110ae8eb21ded2d8e6b6d3f5cc80317a6c58304f84731810a318bd76473427a',
   'ed4b38de6a8bc7408585a5b38efb677d6877244a80cff9ca2d95dbacdaf8df3f',
-  'a850f7c36bd1f36c2716503fba898a26f7139340888f0cfe6923c6615d8348d5');
+  '7e6adf7d0f1dd962c66e1be4069d0b808fc5ba81d00cb473080e6b742e209cc3');
 
 #
 # 12) Test Framed Montage with drop-shadows
@@ -155,7 +155,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
   '61645a8c80a7220a4260133a2b1ae720bf2755f2ed880a3fef0e9453641f5b79',
   '9ec1ec229079b7526bb89876a0009994dfdb96186c9e1892100c7ca52b21c090',
-  '132a618050740b0d2df1987b4f627a74e5d61149b63c9d39cec518e8957b1f43');
+  '105eede4ff37f8067fed104dd42feea9eff899caf872e7f11316d33ca02ecbf6');
 
 #
 # 13) Test Framed Montage with drop-shadows and background texture
@@ -166,7 +166,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
   '4655b59218afbd58d24a9ecf162a42868b3de40ecc8e9f9671dccf8b17e1aa33',
   'a995c2de45028cf28077e281ca5dd5114a98df62fc578a142c8dcd9be5be3bdd',
-  'e1da83a6f13af63cd29c6905eae906188a688e53a3dbcc80c889e4d54c52b496');
+  'd2413f59b630f2fd5ad4416f441cdb3b839765c4da8f2fe4210ceecefc0c8716');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
@@ -177,7 +177,7 @@ testMontage( q//,
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   '5b5b6e7667055dee87a282cac637bceeec605644d8063972f79a01b2c07f9872',
   'd313d29183c31fb1aa91b0fb44ef04c8cd7ad6f7648a553fe0ec3c6ba7872fb4',
-  '407e153c5a2348f7860c9d70f3b9951b020e338f3cd86845f79334fb875c5196');
+  '438478e6380519b065e4e24e33bab0e6dd6c4ab5a8c6449e22537fd55269babb');
 
 #
 # 15) Test Bordered, Un-framed Montage (mode=>'Unframe')
@@ -188,7 +188,7 @@ testMontage( q/bordercolor=>'red'/,
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'fadebb098990a6230d30c55f45c4f1a31effc70055d4eb66c8f46c913257e1fb',
   '9468d6ff4312772656e980874be56ae69cf97946e78461de1f67e96c6c76675c',
-  '380f416d496c68516b54e02ecf44d1c232f8b47427528db176eef3bd046bc2b8');
+  '535b6d2dd565ee5d01c3500569e60112812f5cd4d88525d528d35a5d02bbe681');
 
 #
 # 16) Test Bordered, Un-framed Montage (mode=>'UnFrame')
@@ -199,7 +199,7 @@ testMontage( q/bordercolor=>'red'/,
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'fadebb098990a6230d30c55f45c4f1a31effc70055d4eb66c8f46c913257e1fb',
   '9468d6ff4312772656e980874be56ae69cf97946e78461de1f67e96c6c76675c',
-  '380f416d496c68516b54e02ecf44d1c232f8b47427528db176eef3bd046bc2b8');
+  '535b6d2dd565ee5d01c3500569e60112812f5cd4d88525d528d35a5d02bbe681');
 
 #
 # 17) Test Un-bordered, Un-framed Montage with 16x1 tile
@@ -210,7 +210,7 @@ testMontage( q//,
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'bead47d8f45327614e1a91f3537443317f59eebb960839f613365a1231b163ff',
   'ecc4b83e0b76129f1635c2e866bc641cce6a5d65a6c89bc497b5b81e4bb0f3b6',
-  'f384e3db0dd52e7420239be24e25c1cf438b6d08550a5a55137838bf329a0433');
+  'ad05ecff14b56693e2785eb4b6f06215c215eb1309eb19591d9380027aacfe21');
 
 #
 # 18) Test concatenated thumbnail Montage (concatenated via special Concatenate mode)
@@ -221,7 +221,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80>', mode=>'Concatenate'/,
   '73dba1cf6a2077fca9c3d6a4f82ee5aa4481d64481423cffbb676b92e3f3c7dd',
   '108b50e6f8d5155f6c6f60dfe939e83ec465a917b3d8ec6fa1419d27ffa3cdb3',
-  '06db877ef6a9842d12f4f604940d23622826884333c32f169ce795af10d7a2ea');
+  '1fdca151dfe00fdc106832696815eff00b7e32a5fb0af64b41cb08610661880e');
 #
 # 19) Test concatenated thumbnail Montage (concatentated by setting params to zero)
 #     Thumbnails should be compacted tightly together in a grid
@@ -232,4 +232,4 @@ testMontage( q//,
   borderwidth=>'0', background=>'gray'/,
   '73dba1cf6a2077fca9c3d6a4f82ee5aa4481d64481423cffbb676b92e3f3c7dd',
   '108b50e6f8d5155f6c6f60dfe939e83ec465a917b3d8ec6fa1419d27ffa3cdb3',
-  '06db877ef6a9842d12f4f604940d23622826884333c32f169ce795af10d7a2ea');
+  '1fdca151dfe00fdc106832696815eff00b7e32a5fb0af64b41cb08610661880e');
