@@ -131,13 +131,13 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
         if (count == -128)
           continue;
         pixel=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+        q=GetAuthenticPixels(image,(long) (x % image->columns),
+          (long) (x/image->columns),-count+1,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        indexes=GetAuthenticIndexQueue(image);
         for (count=(-count+1); count > 0; count--)
         {
-          q=GetAuthenticPixels(image,(long) (x % image->columns),
-            (long) (x/image->columns),1,1,exception);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetAuthenticIndexQueue(image);
           switch (channel)
           {
             case -1:
@@ -188,20 +188,22 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
+          q++;
+          indexes++;
           x++;
           number_pixels--;
         }
         continue;
       }
     count++;
+    q=GetAuthenticPixels(image,(long) (x % image->columns),
+      (long) (x/image->columns),count,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
     for (i=(long) count; i > 0; i--)
     {
       pixel=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-      q=GetAuthenticPixels(image,(long) (x % image->columns),
-        (long) (x/image->columns),1,1,exception);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetAuthenticIndexQueue(image);
       switch (channel)
       {
         case -1:
@@ -252,6 +254,8 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
+      q++;
+      indexes++;
       x++;
       number_pixels--;
     }
