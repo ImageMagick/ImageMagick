@@ -1490,7 +1490,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 %
 %  The format of the SetMagickPrecision method is:
 %
-%      void SetMagickPrecision(void)
+%      void SetMagickPrecision(const int precision)
 %
 %  A description of each parameter follows:
 %
