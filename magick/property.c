@@ -2254,7 +2254,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelKurtosis(image,image_info->channel,&kurtosis,
             &skewness,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",kurtosis);
+          (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),kurtosis);
           break;
         }
       break;
@@ -2285,7 +2286,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelMean(image,image_info->channel,&mean,
             &standard_deviation,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",mean);
+          (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),mean);
           break;
         }
       if (LocaleNCompare("min",property,3) == 0)
@@ -2370,7 +2372,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelKurtosis(image,image_info->channel,&kurtosis,
             &skewness,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",skewness);
+          (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),skewness);
           break;
         }
       if ((LocaleNCompare("standard-deviation",property,18) == 0) ||
@@ -2382,8 +2385,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelMean(image,image_info->channel,&mean,
             &standard_deviation,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",
-            standard_deviation);
+          (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),standard_deviation);
           break;
         }
        break;
