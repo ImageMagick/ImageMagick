@@ -577,7 +577,8 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
     domain=MagickOptionToMnemonic(MagickPolicyDomainOptions,
       policy_info[i]->domain);
     (void) fprintf(file,"  Policy: %s\n",domain);
-    if (policy_info[i]->domain == ResourcePolicyDomain)
+    if ((policy_info[i]->domain == ResourcePolicyDomain) ||
+        (policy_info[i]->domain == SystemPolicyDomain))
       {
         if (policy_info[i]->name != (char *) NULL)
           (void) fprintf(file,"    name: %s\n",policy_info[i]->name);

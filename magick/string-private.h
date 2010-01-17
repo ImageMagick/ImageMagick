@@ -56,14 +56,19 @@ static inline double StringToDouble(const char *value)
   return(strtod(value,(char **) NULL));
 }
 
+static inline int StringToInteger(const char *value)
+{
+  return((int) strtol(value,(char **) NULL,10));
+}
+
 static inline long StringToLong(const char *value)
 {
-  return(strtol(value,(char **) NULL,0));
+  return(strtol(value,(char **) NULL,10));
 }
 
 static inline unsigned long StringToUnsignedLong(const char *value)
 {
-  return(strtoul(value,(char **) NULL,0));
+  return(strtoul(value,(char **) NULL,10));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
