@@ -106,7 +106,8 @@ extern MagickExport EncodeImageHandler
   *GetImageEncoder(const MagickInfo *);
 
 extern MagickExport int
-  GetMagickPrecision(void);
+  GetMagickPrecision(void),
+  SetMagickPrecision(const int);
 
 extern MagickExport MagickBooleanType
   GetImageMagick(const unsigned char *,const size_t,char *),
@@ -133,8 +134,7 @@ extern MagickExport MagickStatusType
 extern MagickExport void
   MagickComponentTerminus(void),
   MagickCoreGenesis(const char *,const MagickBooleanType),
-  MagickCoreTerminus(void),
-  SetMagickPrecision(const int);
+  MagickCoreTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
