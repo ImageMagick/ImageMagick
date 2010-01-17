@@ -11,7 +11,7 @@
 <!--
   Configure ImageMagick policies.
 
-  Domains include delegate, coder, filter, path, or resource.
+  Domains include system, delegate, coder, filter, path, or resource.
 
   Rights include none, read, write, and execute.  Use | to combine them,
   for example: "read | write" to permit read from, or write to, a path.
@@ -40,6 +40,7 @@
     <policy domain="resource" name="area" value="1gb"/>
 -->
 <policymap>
+  <!-- <policy domain="system" name="precision" value="6"/> -->
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
   <!-- <policy domain="resource" name="memory" value="2gb"/> -->
   <!-- <policy domain="resource" name="map" value="4gb"/> -->

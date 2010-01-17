@@ -105,6 +105,9 @@ extern MagickExport DecodeImageHandler
 extern MagickExport EncodeImageHandler
   *GetImageEncoder(const MagickInfo *);
 
+extern MagickExport int
+  GetMagickPrecision(void);
+
 extern MagickExport MagickBooleanType
   GetImageMagick(const unsigned char *,const size_t,char *),
   GetMagickAdjoin(const MagickInfo *),

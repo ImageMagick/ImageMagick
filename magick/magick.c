@@ -70,6 +70,7 @@
 #include "magick/signature-private.h"
 #include "magick/splay-tree.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread_.h"
 #include "magick/thread-private.h"
 #include "magick/token.h"
@@ -638,7 +639,49 @@ MagickExport char **GetMagickList(const char *pattern,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c k E n d i a n S u p p o r t                               %
++   G e t M a g i c k P r e c i s i o n                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickPrecision() returns the maximum number of significant digits to be
+%  printed.
+%
+%  The format of the GetMagickPrecision method is:
+%
+%      MagickBooleanType GetMagickPrecision(void)
+%
+*/
+MagickExport int GetMagickPecision(void)
+{
+  static int
+    precision = -1;
+
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  if (precision < 0)
+    {
+      char
+        *limit;
+
+        limit=GetEnvironmentValue("MAGICK_PRECISION");
+        if (limit == (char *) NULL)
+          limit=GetPolicyValue("precision");
+        if (limit != (char *) NULL)
+          {
+            precision=StringToInteger(limit);
+            limit=DestroyString(limit);
+          }
+    }
+  return(precision);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k R a w S u p p o r t                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

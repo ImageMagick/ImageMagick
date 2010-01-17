@@ -1255,7 +1255,8 @@ static const OptionInfo
     { "Delegate", (long) DelegatePolicyDomain, MagickFalse },
     { "Filter", (long) FilterPolicyDomain, MagickFalse },
     { "Path", (long) PathPolicyDomain, MagickFalse },
-    { "Resource", (long) ResourcePolicyDomain, MagickFalse }
+    { "Resource", (long) ResourcePolicyDomain, MagickFalse },
+    { "System", (long) SystemPolicyDomain, MagickFalse }
   },
   PolicyRightsOptions[] =
   {
