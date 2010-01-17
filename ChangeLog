@@ -1,5 +1,7 @@
 2010-01-15  6.5.9-1 Cristy  <quetzlzacatenango@image...>
   * Speed up reading the PSD image format.
+  * Add the -precision option.  Use it to set the maximum number of significant
+    digits to be printed.
 
 2010-01-01  6.5.9-0 Cristy  <quetzlzacatenango@image...>
   * Add support for compact floating point (i.e. -depth 16 -define
