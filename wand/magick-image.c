@@ -1633,7 +1633,7 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatMagickString(percent_opaque,MaxTextExtent,
-    "%.15g,%.15g,%.15g,%.15g",(double) (100.0*QuantumScale*
+    "%g,%g,%g,%g",(double) (100.0*QuantumScale*
     PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
@@ -6911,7 +6911,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(modulate,MaxTextExtent,"%.15g,%.15g,%.15g",
+  (void) FormatMagickString(modulate,MaxTextExtent,"%g,%g,%g",
     brightness,saturation,hue);
   status=ModulateImage(wand->images,modulate);
   if (status == MagickFalse)
@@ -8290,7 +8290,7 @@ WandExport MagickBooleanType MagickRandomThresholdImageChannel(
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(threshold,MaxTextExtent,"%.15gx%.15g",low,high);
+  (void) FormatMagickString(threshold,MaxTextExtent,"%gx%g",low,high);
   status=RandomThresholdImageChannel(wand->images,channel,threshold,
     wand->exception);
   if (status == MagickFalse)
@@ -11964,7 +11964,7 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatMagickString(percent_opaque,MaxTextExtent,
-    "%.15g,%.15g,%.15g,%.15g",(double) (100.0*QuantumScale*
+    "%g,%g,%g,%g",(double) (100.0*QuantumScale*
     PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*

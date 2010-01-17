@@ -660,7 +660,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Set Postscript render geometry.
         */
         (void) FormatMagickString(geometry,MaxTextExtent,
-          "%.15gx%.15g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
+          "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
           bounds.x1,bounds.y1);
         (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry);
         page.width=(unsigned long) (bounds.x2-bounds.x1+0.5);
@@ -687,7 +687,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     "<</UseCIEColor true>>setpagedevice\n",MaxTextExtent);
   count=write(file,command,(unsigned int) strlen(command));
   (void) FormatMagickString(translate_geometry,MaxTextExtent,
-    "%.15g %.15g translate\n",-bounds.x1,-bounds.y1);
+    "%g %g translate\n",-bounds.x1,-bounds.y1);
   count=write(file,translate_geometry,strlen(translate_geometry));
   file=close(file)-1;
   /*
@@ -714,7 +714,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  (void) FormatMagickString(density,MaxTextExtent,"%.15gx%.15g",
+  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
   page.width=(unsigned long) (page.width*image->x_resolution/delta.x+0.5);
   page.height=(unsigned long) (page.height*image->y_resolution/delta.y+0.5);
@@ -1481,7 +1481,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               (long) (bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "%%%%HiResBoundingBox: %.15g %.15g %.15g %.15g\n",bounds.x1,
+              "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
               bounds.y1,bounds.x2,bounds.y2);
           }
         (void) WriteBlobString(image,buffer);
@@ -1636,7 +1636,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "  0 y %.15g add moveto label show pop\n",j*pointsize+12);
+              "  0 y %g add moveto label show pop\n",j*pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
         for (s=PostscriptEpilog; *s != (char *) NULL; s++)
@@ -1674,7 +1674,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%ld %ld\n%.15g %.15g\n%.15g\n",geometry.x,geometry.y,scale.x,scale.y,
+      "%ld %ld\n%g %g\n%g\n",geometry.x,geometry.y,scale.x,scale.y,
       pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
@@ -2082,7 +2082,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
         (long) (bounds.y1+0.5),(long) (bounds.x2+0.5),(long) (bounds.y2+0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "%%%%HiResBoundingBox: %.15g %.15g %.15g %.15g\n",bounds.x1,bounds.y1,
+        "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
         bounds.x2,bounds.y2);
       (void) WriteBlobString(image,buffer);
     }

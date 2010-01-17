@@ -191,7 +191,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->y_resolution=image->x_resolution;
     }
-  (void) FormatMagickString(density,MaxTextExtent,"%.15gx%.15g",
+  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
   /*
     Determine page geometry from the XPS media box.

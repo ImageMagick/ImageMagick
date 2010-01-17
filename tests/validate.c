@@ -602,7 +602,7 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
       difference_image=DestroyImage(difference_image);
       if ((distortion/QuantumRange) > fuzz)
         {
-          (void) fprintf(stdout,"... fail (with distortion %.15g).\n",
+          (void) fprintf(stdout,"... fail (with distortion %g).\n",
             distortion/QuantumRange);
           (*fail)++;
           continue;
@@ -809,7 +809,7 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
       difference_image=DestroyImage(difference_image);
       if ((distortion/QuantumRange) > fuzz)
         {
-          (void) fprintf(stdout,"... fail (with distortion %.15g).\n",
+          (void) fprintf(stdout,"... fail (with distortion %g).\n",
             distortion/QuantumRange);
           (*fail)++;
           continue;
@@ -979,7 +979,7 @@ static unsigned long ValidateImportExportPixels(ImageInfo *image_info,
       difference_image=DestroyImage(difference_image);
       if ((distortion/QuantumRange) > 0.0)
         {
-          (void) fprintf(stdout,"... fail (with distortion %.15g).\n",
+          (void) fprintf(stdout,"... fail (with distortion %g).\n",
             distortion/QuantumRange);
           (*fail)++;
           continue;
@@ -1440,7 +1440,7 @@ int main(int argc,char **argv)
       elapsed_time=GetElapsedTime(timer);
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,
-        "Performance: %lui %.15gips %0.3fu %ld:%02ld.%03ld\n",
+        "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
         iterations,1.0*iterations/elapsed_time,user_time,(long)
         (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),
         (long) (1000.0*(elapsed_time-floor(elapsed_time))));

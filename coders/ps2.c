@@ -585,7 +585,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
               (long) (bounds.x2+0.5),(long) (bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "%%%%HiResBoundingBox: %.15g %.15g %.15g %.15g\n",bounds.x1,
+              "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
               bounds.y1,bounds.x2,bounds.y2);
           }
         (void) WriteBlobString(image,buffer);
@@ -658,7 +658,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "  0 y %.15g add moveto label show pop\n",j*pointsize+12);
+              "  0 y %g add moveto label show pop\n",j*pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
         for (q=PostscriptEpilog; *q; q++)
@@ -702,7 +702,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%ld %ld\n%.15g %.15g\n%.15g\n",geometry.x,geometry.y,scale.x,scale.y,
+      "%ld %ld\n%g %g\n%g\n",geometry.x,geometry.y,scale.x,scale.y,
       pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
@@ -1097,7 +1097,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
         (long) (bounds.y1+0.5),(long) (bounds.x2+0.5),(long) (bounds.y2+0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "%%%%HiResBoundingBox: %.15g %.15g %.15g %.15g\n",bounds.x1,bounds.y1,
+        "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
         bounds.x2,bounds.y2);
       (void) WriteBlobString(image,buffer);
     }

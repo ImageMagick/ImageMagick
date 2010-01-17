@@ -217,7 +217,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       elapsed_time=GetElapsedTime(timer);
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,
-        "Performance: %lui %.15gips %0.3fu %ld:%02ld.%03ld\n",
+        "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
         iterations,1.0*iterations/elapsed_time,user_time,(long)
         (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
         (long) (1000.0*(elapsed_time-floor(elapsed_time))));
@@ -3800,6 +3800,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-page geometry       size and location of an image canvas (setting)",
       "-ping                efficiently determine image attributes",
       "-pointsize value     font point size",
+      "-precision value     set the maximum number of significant digits to be printed",
       "-preview type        image preview type",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
@@ -5437,6 +5438,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("precision",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("print",option+1) == 0)
           {
             if (*option == '+')
@@ -7007,6 +7019,11 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             else
               (void) ParseGeometry(argv[i+1],&geometry_info);
             image_info->pointsize=geometry_info.rho;
+            break;
+          }
+        if (LocaleCompare("precision",option+1) == 0)
+          {
+            SetMagickPrecision(StringToInteger(argv[i+1]));
             break;
           }
         if (LocaleCompare("preview",option+1) == 0)
