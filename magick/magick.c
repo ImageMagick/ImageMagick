@@ -102,9 +102,6 @@ typedef MAGICKCORE_RETSIGTYPE
 /*
   Global declarations.
 */
-static int
-  magick_precision = (-1);
-
 static SemaphoreInfo
   *magick_semaphore = (SemaphoreInfo *) NULL;
 
@@ -661,23 +658,22 @@ MagickExport int GetMagickPrecision(void)
 #define MagickPrecision  6
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (magick_precision < 0)
+  if (SetMagickPrecision(0) == 0)
     {
       char
         *limit;
 
+      (void) SetMagickPrecision(MagickPrecision);
       limit=GetEnvironmentValue("MAGICK_PRECISION");
       if (limit == (char *) NULL)
         limit=GetPolicyValue("precision");
       if (limit != (char *) NULL)
         {
-          magick_precision=StringToInteger(limit);
+          (void) SetMagickPrecision(StringToInteger(limit));
           limit=DestroyString(limit);
         }
     }
-  if (magick_precision < 0)
-    return(MagickPrecision);
-  return(magick_precision);
+  return(SetMagickPrecision(0));
 }
 
 /*
@@ -1486,21 +1482,26 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickPrecision() sets the maximum number of significant digits to be
-%  printed.
+%  printed and returns it.
 %
 %  The format of the SetMagickPrecision method is:
 %
-%      void SetMagickPrecision(const int precision)
+%      int SetMagickPrecision(const int precision)
 %
 %  A description of each parameter follows:
 %
 %    o precision: set the maximum number of significant digits to be printed.
 %
 */
-MagickExport void SetMagickPrecision(const int precision)
+MagickExport int SetMagickPrecision(const int precision)
 {
+  static int
+    magick_precision = 0;
+
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  magick_precision=precision;
+  if (precision != 0)
+    magick_precision=precision;
+  return(magick_precision);
 }
 
 /*

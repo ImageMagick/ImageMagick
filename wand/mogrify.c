@@ -7023,7 +7023,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
           }
         if (LocaleCompare("precision",option+1) == 0)
           {
-            SetMagickPrecision(StringToInteger(argv[i+1]));
+            (void) SetMagickPrecision(StringToInteger(argv[i+1]));
             break;
           }
         if (LocaleCompare("preview",option+1) == 0)
