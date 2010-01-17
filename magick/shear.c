@@ -151,10 +151,10 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %
 %  The format of the CropToFitImage method is:
 %
-%      Image *CropToFitImage(Image **image,const MagickRealType x_shear,
-%        const MagickRealType x_shear,const MagickRealType width,
-%        const MagickRealType height,const MagickBooleanType rotate,
-%        ExceptionInfo *exception)
+%      MagickBooleanType CropToFitImage(Image **image,
+%        const MagickRealType x_shear,const MagickRealType x_shear,
+%        const MagickRealType width,const MagickRealType height,
+%        const MagickBooleanType rotate,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -165,10 +165,10 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline void CropToFitImage(Image **image,const MagickRealType x_shear,
-  const MagickRealType y_shear,const MagickRealType width,
-  const MagickRealType height,const MagickBooleanType rotate,
-  ExceptionInfo *exception)
+static MagickBooleanType CropToFitImage(Image **image,
+  const MagickRealType x_shear,const MagickRealType y_shear,
+  const MagickRealType width,const MagickRealType height,
+  const MagickBooleanType rotate,ExceptionInfo *exception)
 {
   Image
     *crop_image;
@@ -225,13 +225,12 @@ static inline void CropToFitImage(Image **image,const MagickRealType x_shear,
   page=(*image)->page;
   (void) ParseAbsoluteGeometry("0x0+0+0",&(*image)->page);
   crop_image=CropImage(*image,&geometry,exception);
-  (*image)->page=page;
-  if (crop_image != (Image *) NULL)
-    {
-      crop_image->page=page;
-      *image=DestroyImage(*image);
-      *image=crop_image;
-    }
+  if (crop_image == (Image *) NULL)
+    return(MagickFalse);
+  crop_image->page=page;
+  *image=DestroyImage(*image);
+  *image=crop_image;
+  return(MagickTrue);
 }
 
 /*
@@ -1178,7 +1177,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
               status=MagickFalse;
           }
       }
-      (void) SetImageProgress(image,RotateImageTag,image->rows-1,image->rows);
+      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+        image->rows-1,image->rows);
       Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.width != 0)
@@ -1367,7 +1367,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
               status=MagickFalse;
           }
       }
-      (void) SetImageProgress(image,RotateImageTag,image->rows-1,image->rows);
+      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+        image->rows-1,image->rows);
       Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.height != 0)
@@ -1405,7 +1406,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
 %
 %      MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
 %        const unsigned long width,const unsigned long height,
-%        const long x_offset,const long y_offset)
+%        const long x_offset,const long y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1417,10 +1418,12 @@ static Image *IntegralRotateImage(const Image *image,unsigned long rotations,
 %    o width, height, x_offset, y_offset: Defines a region of the image
 %      to shear.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   const unsigned long width,const unsigned long height,const long x_offset,
-  const long y_offset)
+  const long y_offset,ExceptionInfo *exception)
 {
 #define XShearImageTag  "XShear/Image"
 
@@ -1432,9 +1435,6 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   long
     progress,
@@ -1460,7 +1460,6 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress, status)
@@ -1625,7 +1624,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
 %
 %      MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
 %        const unsigned long width,const unsigned long height,
-%        const long x_offset,const long y_offset)
+%        const long x_offset,const long y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1637,10 +1636,12 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
 %    o width, height, x_offset, y_offset: Defines a region of the image
 %      to shear.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   const unsigned long width,const unsigned long height,const long x_offset,
-  const long y_offset)
+  const long y_offset,ExceptionInfo *exception)
 {
 #define YShearImageTag  "YShear/Image"
 
@@ -1652,9 +1653,6 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   long
     progress,
@@ -1680,7 +1678,6 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress, status)
@@ -1874,6 +1871,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     x_offset,
     y_offset;
 
+  MagickBooleanType
+    status;
+
   MagickRealType
     angle;
 
@@ -1949,14 +1949,34 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   /*
     Rotate the image.
   */
-  (void) XShearImage(rotate_image,shear.x,width,height,x_offset,
-    ((long) rotate_image->rows-height)/2);
-  (void) YShearImage(rotate_image,shear.y,y_width,height,
-    ((long) rotate_image->columns-y_width)/2,y_offset);
-  (void) XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
-    ((long) rotate_image->columns-y_width)/2,0);
-  CropToFitImage(&rotate_image,shear.x,shear.y,(MagickRealType) width,
+  status=XShearImage(rotate_image,shear.x,width,height,x_offset,((long)
+    rotate_image->rows-height)/2,exception);
+  if (status == MagickFalse)
+    {
+      rotate_image=DestroyImage(rotate_image);
+      return((Image *) NULL);
+    }
+  status=YShearImage(rotate_image,shear.y,y_width,height,((long)
+    rotate_image->columns-y_width)/2,y_offset,exception);
+  if (status == MagickFalse)
+    {
+      rotate_image=DestroyImage(rotate_image);
+      return((Image *) NULL);
+    }
+  status=XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,((long)
+    rotate_image->columns-y_width)/2,0,exception);
+  if (status == MagickFalse)
+    {
+      rotate_image=DestroyImage(rotate_image);
+      return((Image *) NULL);
+    }
+  status=CropToFitImage(&rotate_image,shear.x,shear.y,(MagickRealType) width,
     (MagickRealType) height,MagickTrue,exception);
+  if (status == MagickFalse)
+    {
+      rotate_image=DestroyImage(rotate_image);
+      return((Image *) NULL);
+    }
   rotate_image->compose=image->compose;
   rotate_image->page.width=0;
   rotate_image->page.height=0;
@@ -2013,6 +2033,9 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     x_offset,
     y_offset;
 
+  MagickBooleanType
+    status;
+
   PointInfo
     shear;
 
@@ -2065,20 +2088,35 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   border_info.width=(unsigned long) x_offset;
   border_info.height=(unsigned long) y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);
+  integral_image=DestroyImage(integral_image);
   if (shear_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  integral_image=DestroyImage(integral_image);
   /*
     Shear the image.
   */
   if (shear_image->matte == MagickFalse)
     (void) SetImageAlphaChannel(shear_image,OpaqueAlphaChannel);
-  (void) XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
-    ((long) shear_image->rows-image->rows)/2);
-  (void) YShearImage(shear_image,shear.y,y_width,image->rows,
-    ((long) shear_image->columns-y_width)/2,y_offset);
-  CropToFitImage(&shear_image,shear.x,shear.y,(MagickRealType) image->columns,
-    (MagickRealType) image->rows,MagickFalse,exception);
+  status=XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
+    ((long) shear_image->rows-image->rows)/2,exception);
+  if (status == MagickFalse)
+    {
+      shear_image=DestroyImage(shear_image);
+      return((Image *) NULL);
+    }
+  status=YShearImage(shear_image,shear.y,y_width,image->rows,((long)
+    shear_image->columns-y_width)/2,y_offset,exception);
+  if (status == MagickFalse)
+    {
+      shear_image=DestroyImage(shear_image);
+      return((Image *) NULL);
+    }
+  status=CropToFitImage(&shear_image,shear.x,shear.y,(MagickRealType)
+    image->columns,(MagickRealType) image->rows,MagickFalse,exception);
+  if (status == MagickFalse)
+    {
+      shear_image=DestroyImage(shear_image);
+      return((Image *) NULL);
+    }
   shear_image->compose=image->compose;
   shear_image->page.width=0;
   shear_image->page.height=0;
