@@ -2703,7 +2703,7 @@ WandExport MagickBooleanType MagickSetResolution(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(density,MaxTextExtent,"%.15gx%.15g",x_resolution,
+  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",x_resolution,
     y_resolution);
   (void) CloneString(&wand->image_info->density,density);
   return(MagickTrue);
@@ -2757,12 +2757,12 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
     return(MagickTrue);
   for (i=0; i < (long) (number_factors-1); i++)
   {
-    (void) FormatMagickString(sampling_factor,MaxTextExtent,"%.15g,",
+    (void) FormatMagickString(sampling_factor,MaxTextExtent,"%g,",
       sampling_factors[i]);
     (void) ConcatenateString(&wand->image_info->sampling_factor,
       sampling_factor);
   }
-  (void) FormatMagickString(sampling_factor,MaxTextExtent,"%.15g",
+  (void) FormatMagickString(sampling_factor,MaxTextExtent,"%g",
     sampling_factors[i]);
   (void) ConcatenateString(&wand->image_info->sampling_factor,sampling_factor);
   return(MagickTrue);

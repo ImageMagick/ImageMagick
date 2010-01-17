@@ -133,7 +133,8 @@ extern MagickExport MagickStatusType
 extern MagickExport void
   MagickComponentTerminus(void),
   MagickCoreGenesis(const char *,const MagickBooleanType),
-  MagickCoreTerminus(void);
+  MagickCoreTerminus(void),
+  SetMagickPrecision(const int);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

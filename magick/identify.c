@@ -133,9 +133,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   const MagickBooleanType verbose)
 {
 #define IdentifyFormat "    %s:\n      min: " QuantumFormat  \
-  " (%.15g)\n      max: " QuantumFormat " (%.15g)\n"  \
-  "      mean: %.15g (%.15g)\n      standard deviation: %.15g (%.15g)\n"  \
-  "      kurtosis: %.15g\n      skewness: %.15g\n"
+  " (%g)\n      max: " QuantumFormat " (%g)\n"  \
+  "      mean: %g (%g)\n      standard deviation: %g (%g)\n"  \
+  "      kurtosis: %g\n      skewness: %g\n"
 
   char
     color[MaxTextExtent],
@@ -288,9 +288,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->magick_rows);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
-      (void) fprintf(file,"  Resolution: %.15gx%.15g\n",image->x_resolution,
+      (void) fprintf(file,"  Resolution: %gx%g\n",image->x_resolution,
         image->y_resolution);
-      (void) fprintf(file,"  Print size: %.15gx%.15g\n",(double) image->columns/
+      (void) fprintf(file,"  Print size: %gx%g\n",(double) image->columns/
         image->x_resolution,(double) image->rows/image->y_resolution);
     }
   (void) fprintf(file,"  Units: %s\n",MagickOptionToMnemonic(
@@ -616,18 +616,18 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
     }
   if (image->error.mean_error_per_pixel != 0.0)
-    (void) fprintf(file,"  Mean error per pixel: %.15g\n",
+    (void) fprintf(file,"  Mean error per pixel: %g\n",
       image->error.mean_error_per_pixel);
   if (image->error.normalized_mean_error != 0.0)
-    (void) fprintf(file,"  Normalized mean error: %.15g\n",
+    (void) fprintf(file,"  Normalized mean error: %g\n",
       image->error.normalized_mean_error);
   if (image->error.normalized_maximum_error != 0.0)
-    (void) fprintf(file,"  Normalized maximum error: %.15g\n",
+    (void) fprintf(file,"  Normalized maximum error: %g\n",
       image->error.normalized_maximum_error);
   (void) fprintf(file,"  Rendering intent: %s\n",MagickOptionToMnemonic(
     MagickIntentOptions,(long) image->rendering_intent));
   if (image->gamma != 0.0)
-    (void) fprintf(file,"  Gamma: %.15g\n",image->gamma);
+    (void) fprintf(file,"  Gamma: %g\n",image->gamma);
   if ((image->chromaticity.red_primary.x != 0.0) ||
       (image->chromaticity.green_primary.x != 0.0) ||
       (image->chromaticity.blue_primary.x != 0.0) ||
@@ -637,14 +637,14 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         Display image chromaticity.
       */
       (void) fprintf(file,"  Chromaticity:\n");
-      (void) fprintf(file,"    red primary: (%.15g,%.15g)\n",
+      (void) fprintf(file,"    red primary: (%g,%g)\n",
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      (void) fprintf(file,"    green primary: (%.15g,%.15g)\n",
+      (void) fprintf(file,"    green primary: (%g,%g)\n",
         image->chromaticity.green_primary.x,
         image->chromaticity.green_primary.y);
-      (void) fprintf(file,"    blue primary: (%.15g,%.15g)\n",
+      (void) fprintf(file,"    blue primary: (%g,%g)\n",
         image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      (void) fprintf(file,"    white point: (%.15g,%.15g)\n",
+      (void) fprintf(file,"    white point: (%g,%g)\n",
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if ((image->extract_info.width*image->extract_info.height) != 0)

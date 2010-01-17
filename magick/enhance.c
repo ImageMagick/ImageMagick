@@ -524,25 +524,25 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
         "  Color Correction Collection:");
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.red.slope: %.15g",color_correction.red.slope);
+        "  color_correction.red.slope: %g",color_correction.red.slope);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.red.offset: %.15g",color_correction.red.offset);
+        "  color_correction.red.offset: %g",color_correction.red.offset);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.red.power: %.15g",color_correction.red.power);
+        "  color_correction.red.power: %g",color_correction.red.power);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.green.slope: %.15g",color_correction.green.slope);
+        "  color_correction.green.slope: %g",color_correction.green.slope);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.green.offset: %.15g",color_correction.green.offset);
+        "  color_correction.green.offset: %g",color_correction.green.offset);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.green.power: %.15g",color_correction.green.power);
+        "  color_correction.green.power: %g",color_correction.green.power);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.blue.slope: %.15g",color_correction.blue.slope);
+        "  color_correction.blue.slope: %g",color_correction.blue.slope);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.blue.offset: %.15g",color_correction.blue.offset);
+        "  color_correction.blue.offset: %g",color_correction.blue.offset);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.blue.power: %.15g",color_correction.blue.power);
+        "  color_correction.blue.power: %g",color_correction.blue.power);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  color_correction.saturation: %.15g",color_correction.saturation);
+        "  color_correction.saturation: %g",color_correction.saturation);
     }
   cdl_map=(PixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*cdl_map));
   if (cdl_map == (PixelPacket *) NULL)

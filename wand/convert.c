@@ -366,6 +366,7 @@ static MagickBooleanType ConvertUsage(void)
       "-page geometry       size and location of an image canvas (setting)",
       "-ping                efficiently determine image attributes",
       "-pointsize value     font point size",
+      "-precision value     set the maximum number of significant digits to be printed",
       "-preview type        image preview type",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
@@ -2024,6 +2025,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("posterize",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("precision",option+1) == 0)
           {
             if (*option == '+')
               break;

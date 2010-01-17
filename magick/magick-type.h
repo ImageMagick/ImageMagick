@@ -46,7 +46,7 @@ typedef double MagickRealType;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  255.0
-#define QuantumFormat  "%.15g"
+#define QuantumFormat  "%g"
 #else
 typedef unsigned char Quantum;
 #define QuantumRange  255UL
@@ -62,7 +62,7 @@ typedef double MagickRealType;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  65535.0
-#define QuantumFormat  "%.15g"
+#define QuantumFormat  "%g"
 #else
 typedef unsigned short Quantum;
 #define QuantumRange  65535UL
@@ -78,7 +78,7 @@ typedef double MagickRealType;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  4294967295.0
-#define QuantumFormat  "%.15g"
+#define QuantumFormat  "%g"
 #else
 typedef unsigned int Quantum;
 #define QuantumRange  4294967295UL
@@ -94,7 +94,7 @@ typedef long double MagickRealType;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef double Quantum;
 #define QuantumRange  18446744073709551615.0
-#define QuantumFormat  "%.15g"
+#define QuantumFormat  "%g"
 #else
 typedef unsigned long long Quantum;
 #define QuantumRange  MagickULLConstant(18446744073709551615)

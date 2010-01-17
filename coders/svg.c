@@ -1017,7 +1017,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"linearGradient") == 0)
         {
           MVGPrintf(svg_info->file,
-            "push gradient '%s' linear %.15g,%.15g %.15g,%.15g\n",id,
+            "push gradient '%s' linear %g,%g %g,%g\n",id,
             svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
             svg_info->segment.y2);
           break;
@@ -1035,7 +1035,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"pattern") == 0)
         {
           MVGPrintf(svg_info->file,
-            "push pattern '%s' %.15g,%.15g %.15g,%.15g\n",id,
+            "push pattern '%s' %g,%g %g,%g\n",id,
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
             svg_info->bounds.height);
           break;
@@ -1058,7 +1058,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"radialGradient") == 0)
         {
           MVGPrintf(svg_info->file,
-            "push gradient '%s' radial %.15g,%.15g %.15g,%.15g %.15g\n",
+            "push gradient '%s' radial %g,%g %g,%g %g\n",
             id,svg_info->element.cx,svg_info->element.cy,
             svg_info->element.major,svg_info->element.minor,
             svg_info->element.angle);
@@ -1103,7 +1103,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 *text;
 
               text=EscapeString(svg_info->text,'\'');
-              MVGPrintf(svg_info->file,"text %.15g,%.15g '%s'\n",
+              MVGPrintf(svg_info->file,"text %g,%g '%s'\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
                 svg_info->center.y,text);
               text=DestroyString(text);
@@ -1138,7 +1138,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"angle") == 0)
             {
-              MVGPrintf(svg_info->file,"angle %.15g\n",
+              MVGPrintf(svg_info->file,"angle %g\n",
                 GetUserSpaceCoordinateValue(svg_info,0,value));
               break;
             }
@@ -1249,7 +1249,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"font-size") == 0)
             {
               svg_info->pointsize=GetUserSpaceCoordinateValue(svg_info,0,value);
-              MVGPrintf(svg_info->file,"font-size %.15g\n",svg_info->pointsize);
+              MVGPrintf(svg_info->file,"font-size %g\n",svg_info->pointsize);
               break;
             }
           if (LocaleCompare(keyword,"font-weight") == 0)
@@ -1401,7 +1401,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   current.ty;
               }
               MVGPrintf(svg_info->file,
-                "affine %.15g %.15g %.15g %.15g %.15g %.15g\n",transform.sx,
+                "affine %g %g %g %g %g %g\n",transform.sx,
                 transform.rx,transform.ry,transform.sy,transform.tx,
                 transform.ty);
               for (j=0; tokens[j] != (char *) NULL; j++)
@@ -1497,11 +1497,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 angle;
 
               angle=GetUserSpaceCoordinateValue(svg_info,0,value);
-              MVGPrintf(svg_info->file,"translate %.15g,%.15g\n",
+              MVGPrintf(svg_info->file,"translate %g,%g\n",
                 svg_info->bounds.x,svg_info->bounds.y);
               svg_info->bounds.x=0;
               svg_info->bounds.y=0;
-              MVGPrintf(svg_info->file,"rotate %.15g\n",angle);
+              MVGPrintf(svg_info->file,"rotate %g\n",angle);
               break;
             }
           if (LocaleCompare(keyword,"rx") == 0)
@@ -1582,7 +1582,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"stroke-width") == 0)
             {
-              MVGPrintf(svg_info->file,"stroke-width %.15g\n",
+              MVGPrintf(svg_info->file,"stroke-width %g\n",
                 GetUserSpaceCoordinateValue(svg_info,1,value));
               break;
             }
@@ -1674,7 +1674,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         svg_info->pointsize=GetUserSpaceCoordinateValue(
                           svg_info,0,value);
-                        MVGPrintf(svg_info->file,"font-size %.15g\n",
+                        MVGPrintf(svg_info->file,"font-size %g\n",
                           svg_info->pointsize);
                         break;
                       }
@@ -1690,7 +1690,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"offset") == 0)
                       {
-                        MVGPrintf(svg_info->file,"offset %.15g\n",
+                        MVGPrintf(svg_info->file,"offset %g\n",
                           GetUserSpaceCoordinateValue(svg_info,1,value));
                         break;
                       }
@@ -1763,7 +1763,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"stroke-width") == 0)
                       {
-                        MVGPrintf(svg_info->file,"stroke-width %.15g\n",
+                        MVGPrintf(svg_info->file,"stroke-width %g\n",
                           GetUserSpaceCoordinateValue(svg_info,1,value));
                         break;
                       }
@@ -1993,7 +1993,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   current.ty;
               }
               MVGPrintf(svg_info->file,
-                "affine %.15g %.15g %.15g %.15g %.15g %.15g\n",transform.sx,
+                "affine %g %g %g %g %g %g\n",transform.sx,
                 transform.rx,transform.ry,transform.sy,transform.tx,
                 transform.ty);
               for (j=0; tokens[j] != (char *) NULL; j++)
@@ -2120,7 +2120,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->height);
           sx=(double) svg_info->width/svg_info->view_box.width;
           sy=(double) svg_info->height/svg_info->view_box.height;
-          MVGPrintf(svg_info->file,"affine %.15g 0 0 %.15g 0.0 0.0\n",sx,sy);
+          MVGPrintf(svg_info->file,"affine %g 0 0 %g 0.0 0.0\n",sx,sy);
         }
     }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
@@ -2147,7 +2147,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"circle") == 0)
         {
-          MVGPrintf(svg_info->file,"circle %.15g,%.15g %.15g,%.15g\n",
+          MVGPrintf(svg_info->file,"circle %g,%g %g,%g\n",
             svg_info->element.cx,svg_info->element.cy,svg_info->element.cx,
             svg_info->element.cy+svg_info->element.minor);
           MVGPrintf(svg_info->file,"pop graphic-context\n");
@@ -2197,7 +2197,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             angle;
 
           angle=svg_info->element.angle;
-          MVGPrintf(svg_info->file,"ellipse %.15g,%.15g %.15g,%.15g 0,360\n",
+          MVGPrintf(svg_info->file,"ellipse %g,%g %g,%g 0,360\n",
             svg_info->element.cx,svg_info->element.cy,
             angle == 0.0 ? svg_info->element.major : svg_info->element.minor,
             angle == 0.0 ? svg_info->element.minor : svg_info->element.major);
@@ -2221,7 +2221,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"image") == 0)
         {
-          MVGPrintf(svg_info->file,"image Over %.15g,%.15g %.15g,%.15g '%s'\n",
+          MVGPrintf(svg_info->file,"image Over %g,%g %g,%g '%s'\n",
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
             svg_info->bounds.height,svg_info->url);
           MVGPrintf(svg_info->file,"pop graphic-context\n");
@@ -2234,7 +2234,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"line") == 0)
         {
-          MVGPrintf(svg_info->file,"line %.15g,%.15g %.15g,%.15g\n",
+          MVGPrintf(svg_info->file,"line %g,%g %g,%g\n",
             svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
             svg_info->segment.y2);
           MVGPrintf(svg_info->file,"pop graphic-context\n");
@@ -2287,7 +2287,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
         {
           if ((svg_info->radius.x == 0.0) && (svg_info->radius.y == 0.0))
             {
-              MVGPrintf(svg_info->file,"rectangle %.15g,%.15g %.15g,%.15g\n",
+              MVGPrintf(svg_info->file,"rectangle %g,%g %g,%g\n",
                 svg_info->bounds.x,svg_info->bounds.y,
                 svg_info->bounds.x+svg_info->bounds.width,
                 svg_info->bounds.y+svg_info->bounds.height);
@@ -2299,7 +2299,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
           if (svg_info->radius.y == 0.0)
             svg_info->radius.y=svg_info->radius.x;
           MVGPrintf(svg_info->file,
-            "roundRectangle %.15g,%.15g %.15g,%.15g %.15g,%.15g\n",
+            "roundRectangle %g,%g %g,%g %g,%g\n",
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.x+
             svg_info->bounds.width,svg_info->bounds.y+svg_info->bounds.height,
             svg_info->radius.x,svg_info->radius.y);
@@ -2338,7 +2338,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
 
               text=EscapeString(svg_info->text,'\'');
               StripString(text);
-              MVGPrintf(svg_info->file,"text %.15g,%.15g '%s'\n",
+              MVGPrintf(svg_info->file,"text %g,%g '%s'\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
                 svg_info->center.y,text);
               text=DestroyString(text);
@@ -2362,7 +2362,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
 
               text=EscapeString(svg_info->text,'\'');
               StripString(text);
-              MVGPrintf(svg_info->file,"text %.15g,%.15g '%s'\n",
+              MVGPrintf(svg_info->file,"text %g,%g '%s'\n",
                 svg_info->bounds.x,svg_info->bounds.y,text);
               text=DestroyString(text);
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
@@ -3178,7 +3178,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
               return;
             }
           (void) FormatMagickString(transform,MaxTextExtent,
-            "\" transform=\"scale(%.15g,%.15g)\">\n",affine->sx,affine->sy);
+            "\" transform=\"scale(%g,%g)\">\n",affine->sx,affine->sy);
           (void) WriteBlobString(image,transform);
           return;
         }
@@ -3194,7 +3194,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
 
               theta=(180.0/MagickPI)*atan2(affine->rx,affine->sx);
               (void) FormatMagickString(transform,MaxTextExtent,
-                "\" transform=\"rotate(%.15g)\">\n",theta);
+                "\" transform=\"rotate(%g)\">\n",theta);
               (void) WriteBlobString(image,transform);
               return;
             }
@@ -3208,13 +3208,13 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
           (fabs(affine->sy-1.0) < MagickEpsilon))
         {
           (void) FormatMagickString(transform,MaxTextExtent,
-            "\" transform=\"translate(%.15g,%.15g)\">\n",affine->tx,affine->ty);
+            "\" transform=\"translate(%g,%g)\">\n",affine->tx,affine->ty);
           (void) WriteBlobString(image,transform);
           return;
         }
     }
   (void) FormatMagickString(transform,MaxTextExtent,
-    "\" transform=\"matrix(%.15g %.15g %.15g %.15g %.15g %.15g)\">\n",
+    "\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
   (void) WriteBlobString(image,transform);
 }
@@ -3850,8 +3850,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                 svg_info.segment.y2=StringToDouble(token);
                 svg_info.element.minor=StringToDouble(token);
                 (void) FormatMagickString(message,MaxTextExtent,
-                  "<%sGradient id=\"%s\" x1=\"%.15g\" y1=\"%.15g\" x2=\"%.15g\" "
-                  "y2=\"%.15g\">\n",type,name,svg_info.segment.x1,
+                  "<%sGradient id=\"%s\" x1=\"%g\" y1=\"%g\" x2=\"%g\" "
+                  "y2=\"%g\">\n",type,name,svg_info.segment.x1,
                   svg_info.segment.y1,svg_info.segment.x2,svg_info.segment.y2);
                 if (LocaleCompare(type,"radial") == 0)
                   {
@@ -3860,8 +3860,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                       GetMagickToken(q,&q,token);
                     svg_info.element.angle=StringToDouble(token);
                     (void) FormatMagickString(message,MaxTextExtent,
-                      "<%sGradient id=\"%s\" cx=\"%.15g\" cy=\"%.15g\" r=\"%.15g\" "
-                      "fx=\"%.15g\" fy=\"%.15g\">\n",type,name,
+                      "<%sGradient id=\"%s\" cx=\"%g\" cy=\"%g\" r=\"%g\" "
+                      "fx=\"%g\" fy=\"%g\">\n",type,name,
                       svg_info.element.cx,svg_info.element.cy,
                       svg_info.element.angle,svg_info.element.major,
                       svg_info.element.minor);
@@ -3899,8 +3899,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                   GetMagickToken(q,&q,token);
                 svg_info.bounds.height=StringToDouble(token);
                 (void) FormatMagickString(message,MaxTextExtent,
-                  "<pattern id=\"%s\" x=\"%.15g\" y=\"%.15g\" width=\"%.15g\" "
-                  "height=\"%.15g\">\n",name,svg_info.bounds.x,
+                  "<pattern id=\"%s\" x=\"%g\" y=\"%g\" width=\"%g\" "
+                  "height=\"%g\">\n",name,svg_info.bounds.x,
                   svg_info.bounds.y,svg_info.bounds.width,
                   svg_info.bounds.height);
                 (void) WriteBlobString(image,message);
@@ -4204,7 +4204,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             break;
           }
           (void) FormatMagickString(message,MaxTextExtent,
-          "  <line x1=\"%.15g\" y1=\"%.15g\" x2=\"%.15g\" y2=\"%.15g\"/>\n",
+          "  <line x1=\"%g\" y1=\"%g\" x2=\"%g\" y2=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
         (void) WriteBlobString(image,message);
@@ -4218,7 +4218,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             break;
           }
           (void) FormatMagickString(message,MaxTextExtent,
-          "  <rect x=\"%.15g\" y=\"%.15g\" width=\"%.15g\" height=\"%.15g\"/>\n",
+          "  <rect x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x-primitive_info[j].point.x,
           primitive_info[j+1].point.y-primitive_info[j].point.y);
@@ -4233,8 +4233,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             break;
           }
         (void) FormatMagickString(message,MaxTextExtent,
-          "  <rect x=\"%.15g\" y=\"%.15g\" width=\"%.15g\" height=\"%.15g\" rx=\"%.15g\" "
-          "ry=\"%.15g\"/>\n",primitive_info[j].point.x,
+          "  <rect x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" rx=\"%g\" "
+          "ry=\"%g\"/>\n",primitive_info[j].point.x,
           primitive_info[j].point.y,primitive_info[j+1].point.x-
           primitive_info[j].point.x,primitive_info[j+1].point.y-
           primitive_info[j].point.y,primitive_info[j+2].point.x,
@@ -4259,7 +4259,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             break;
           }
           (void) FormatMagickString(message,MaxTextExtent,
-          "  <ellipse cx=\"%.15g\" cy=\"%.15g\" rx=\"%.15g\" ry=\"%.15g\"/>\n",
+          "  <ellipse cx=\"%g\" cy=\"%g\" rx=\"%g\" ry=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
         (void) WriteBlobString(image,message);
@@ -4279,7 +4279,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         alpha=primitive_info[j+1].point.x-primitive_info[j].point.x;
         beta=primitive_info[j+1].point.y-primitive_info[j].point.y;
         (void) FormatMagickString(message,MaxTextExtent,
-          "  <circle cx=\"%.15g\" cy=\"%.15g\" r=\"%.15g\"/>\n",
+          "  <circle cx=\"%g\" cy=\"%g\" r=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           hypot(alpha,beta));
         (void) WriteBlobString(image,message);
@@ -4297,7 +4297,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         length=strlen(message);
         for ( ; j < i; j++)
         {
-          (void) FormatMagickString(message,MaxTextExtent,"%.15g,%.15g ",
+          (void) FormatMagickString(message,MaxTextExtent,"%g,%g ",
             primitive_info[j].point.x,primitive_info[j].point.y);
           length+=strlen(message);
           if (length >= 80)
@@ -4326,7 +4326,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         length=strlen(message);
         for ( ; j < i; j++)
         {
-          (void) FormatMagickString(message,MaxTextExtent,"%.15g,%.15g ",
+          (void) FormatMagickString(message,MaxTextExtent,"%g,%g ",
             primitive_info[j].point.x,primitive_info[j].point.y);
           length+=strlen(message);
           if (length >= 80)
@@ -4409,7 +4409,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         GetMagickToken(q,&q,token);
         (void) FormatMagickString(message,MaxTextExtent,
-          "  <text x=\"%.15g\" y=\"%.15g\">",primitive_info[j].point.x,
+          "  <text x=\"%g\" y=\"%g\">",primitive_info[j].point.x,
           primitive_info[j].point.y);
         (void) WriteBlobString(image,message);
         for (p=token; *p != '\0'; p++)
@@ -4432,7 +4432,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         GetMagickToken(q,&q,token);
         (void) FormatMagickString(message,MaxTextExtent,
-          "  <image x=\"%.15g\" y=\"%.15g\" width=\"%.15g\" height=\"%.15g\" "
+          "  <image x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" "
           "xlink:href=\"%s\"/>\n",primitive_info[j].point.x,
           primitive_info[j].point.y,primitive_info[j+1].point.x,
           primitive_info[j+1].point.y,token);

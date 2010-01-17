@@ -525,7 +525,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Set PDF render geometry.
         */
         (void) FormatMagickString(geometry,MaxTextExtent,
-          "%.15gx%.15g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
+          "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
            bounds.x1,bounds.y1);
         (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry);
         page.width=(unsigned long) (bounds.x2-bounds.x1+0.5);
@@ -579,7 +579,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   *options='\0';
-  (void) FormatMagickString(density,MaxTextExtent,"%.15gx%.15g",
+  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
   if (image_info->page != (char *) NULL)
     {
@@ -1307,11 +1307,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       object+3);
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "/MediaBox [0 0 %.15g %.15g]\n",72.0*media_info.width/resolution.x,
+      "/MediaBox [0 0 %g %g]\n",72.0*media_info.width/resolution.x,
       72.0*media_info.height/resolution.y);
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "/CropBox [0 0 %.15g %.15g]\n",72.0*media_info.width/resolution.x,
+      "/CropBox [0 0 %g %g]\n",72.0*media_info.width/resolution.x,
       72.0*media_info.height/resolution.y);
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,"/Contents %lu 0 R\n",
@@ -1340,7 +1340,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       for (i=0; labels[i] != (char *) NULL; i++)
       {
         (void) WriteBlobString(image,"BT\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"/F%lu %.15g Tf\n",
+        (void) FormatMagickString(buffer,MaxTextExtent,"/F%lu %g Tf\n",
           image->scene,pointsize);
         (void) WriteBlobString(image,buffer);
         (void) FormatMagickString(buffer,MaxTextExtent,"%ld %ld Td\n",
@@ -1352,7 +1352,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         labels[i]=DestroyString(labels[i]);
       }
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%.15g 0 0 %.15g %ld %ld cm\n",scale.x,scale.y,geometry.x,geometry.y);
+      "%g 0 0 %g %ld %ld cm\n",scale.x,scale.y,geometry.x,geometry.y);
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,"/Im%lu Do\n",image->scene);
     (void) WriteBlobString(image,buffer);

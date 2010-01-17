@@ -620,7 +620,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
           rational;
 
         if (TIFFGetField(tiff,exif_info[i].tag,&rational) != 0)
-          (void) FormatMagickString(value,MaxTextExtent,"%.15g",rational);
+          (void) FormatMagickString(value,MaxTextExtent,"%g",rational);
         break;
       }
       default:

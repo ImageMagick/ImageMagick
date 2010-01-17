@@ -102,6 +102,9 @@ typedef MAGICKCORE_RETSIGTYPE
 /*
   Global declarations.
 */
+static int
+  magick_precision = (-1);
+
 static SemaphoreInfo
   *magick_semaphore = (SemaphoreInfo *) NULL;
 
@@ -639,7 +642,7 @@ MagickExport char **GetMagickList(const char *pattern,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c k P r e c i s i o n                                       %
+%   G e t M a g i c k P r e c i s i o n                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -650,30 +653,31 @@ MagickExport char **GetMagickList(const char *pattern,
 %
 %  The format of the GetMagickPrecision method is:
 %
-%      MagickBooleanType GetMagickPrecision(void)
+%      int GetMagickPrecision(void)
 %
 */
-MagickExport int GetMagickPecision(void)
+MagickExport int GetMagickPrecision(void)
 {
-  static int
-    precision = -1;
+#define MagickPrecision  6
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (precision < 0)
+  if (magick_precision < 0)
     {
       char
         *limit;
 
-        limit=GetEnvironmentValue("MAGICK_PRECISION");
-        if (limit == (char *) NULL)
-          limit=GetPolicyValue("precision");
-        if (limit != (char *) NULL)
-          {
-            precision=StringToInteger(limit);
-            limit=DestroyString(limit);
-          }
+      limit=GetEnvironmentValue("MAGICK_PRECISION");
+      if (limit == (char *) NULL)
+        limit=GetPolicyValue("precision");
+      if (limit != (char *) NULL)
+        {
+          magick_precision=StringToInteger(limit);
+          limit=DestroyString(limit);
+        }
     }
-  return(precision);
+  if (magick_precision < 0)
+    return(MagickPrecision);
+  return(magick_precision);
 }
 
 /*
@@ -1468,6 +1472,35 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
     EncoderThreadSupport);
   magick_info->signature=MagickSignature;
   return(magick_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t M a g i c k P r e c i s i o n                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMagickPrecision() sets the maximum number of significant digits to be
+%  printed.
+%
+%  The format of the SetMagickPrecision method is:
+%
+%      void SetMagickPrecision(void)
+%
+%  A description of each parameter follows:
+%
+%    o precision: set the maximum number of significant digits to be printed.
+%
+*/
+MagickExport void SetMagickPrecision(const int precision)
+{
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  magick_precision=precision;
 }
 
 /*

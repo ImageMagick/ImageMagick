@@ -747,15 +747,15 @@ WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(color,MaxTextExtent,"%.15g,%.15g,%.15g",
+  (void) FormatMagickString(color,MaxTextExtent,"%g,%g,%g",
     (double) (QuantumScale*wand->pixel.red),
     (double) (QuantumScale*wand->pixel.green),
     (double) (QuantumScale*wand->pixel.blue));
   if (wand->pixel.colorspace == CMYKColorspace)
-    (void) FormatMagickString(color+strlen(color),MaxTextExtent,",%.15g",
+    (void) FormatMagickString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.index));
   if (wand->pixel.matte != MagickFalse)
-    (void) FormatMagickString(color+strlen(color),MaxTextExtent,",%.15g",
+    (void) FormatMagickString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.opacity));
   return(ConstantString(color));
 }
