@@ -2705,7 +2705,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
-            (void) fprintf(fx_info->file,"%s[%ld,%ld].%s: %s=%*g\n",
+            (void) fprintf(fx_info->file,"%s[%ld,%ld].%s: %s=%.*g\n",
               fx_info->images->filename,x,y,type,subexpression,
               GetMagickPrecision(),(double) alpha);
           return(0.0);
