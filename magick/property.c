@@ -59,6 +59,7 @@
 #include "magick/image.h"
 #include "magick/layer.h"
 #include "magick/list.h"
+#include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/montage.h"
