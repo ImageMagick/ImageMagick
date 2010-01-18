@@ -262,7 +262,7 @@ static char
     "    }\n"
     "  }\n"
     "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
-    "  const ulong index=y*columns+x;\n"
+    "  const ulong index = y*columns+x;\n"
     "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
     "  output[index].y=ClampToQuantum(gamma*sum.y);\n"
     "  output[index].z=ClampToQuantum(gamma*sum.z);\n"
