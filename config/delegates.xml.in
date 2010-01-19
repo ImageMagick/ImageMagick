@@ -7,6 +7,7 @@
 <!ATTLIST delegate mode CDATA #IMPLIED>
 <!ATTLIST delegate spawn CDATA #IMPLIED>
 <!ATTLIST delegate stealth CDATA #IMPLIED>
+<!ATTLIST delegate thread-support CDATA #IMPLIED>
 <!ATTLIST delegate command CDATA #REQUIRED>
 ]>
 <!--
