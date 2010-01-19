@@ -3559,10 +3559,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             stream_info->offset_count,sizeof(*stream_info->offsets));
           if (stream_info->offsets == (ssize_t *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          for (i=0; i < (long) stream_info->offsets; i++)
+          for (i=0; i < (long) stream_info->offset_count; i++)
             stream_info->offsets[i]=(ssize_t) ReadBlobLSBLong(image);
           offset=TellBlob(image);
-          for (i=0; i < (long) stream_info->offsets; i++)
+          for (i=0; i < (long) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
         }
     }
