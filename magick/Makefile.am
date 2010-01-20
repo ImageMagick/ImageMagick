@@ -54,6 +54,8 @@ magick_libMagickCore_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
 MAGICK_BASE_SRCS = \
 	magick/ImageMagick.h \
 	magick/MagickCore.h \
+	magick/accelerate.c \
+	magick/accelerate.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/animate-private.h \
@@ -276,6 +278,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/ImageMagick.h \
 	magick/MagickCore.h \
 	magick/PreRvIcccm.h \
+	magick/accelerate.h \
 	magick/animate.h \
 	magick/annotate.h \
 	magick/api.h \

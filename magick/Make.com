@@ -22,6 +22,7 @@ $  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)
 $endif
 $
 $write sys$output "Making Magick..."
+$call Make accelerate.c
 $call Make animate.c
 $call Make annotate.c
 $call Make artifact.c
@@ -134,17 +135,17 @@ $ set default [-.magick]
 $ deass magick
 $ deass wand
 $library/create libMagick.olb -
-  animate, annotate, artifact, attribute, blob, cache, cache-view, cipher, -
-  client, coder, color, colormap, colorspace, compare, composite, compress, -
-  configure, constitute, decorate, delegate, deprecate, display, distort, -
-  draw, effect, enhance, exception, fourier, fx, gem, geometry, hashmap, histogram, -
-  identify, image, layer, list, locale, log, magic, magick, matrix, memory, -
-  mime, module, monitor, montage, option, paint, pixel, PreRvIcccm, profile, -
-  quantize, quantum,quantum-export,quantum-import,random, registry, resample, -
-  resize, resource, segment, semaphore, morphology, -
-  shear, signature, splay-tree, static, stream, string, thread, timer, token, -
-  transform, threshold, type, utility, version, vms, widget, xwindow, -
-	statistic, policy, prepress, property, xml-tree, -
+  accelerate, animate, annotate, artifact, attribute, blob, cache, cache-view, -
+  cipher, client, coder, color, colormap, colorspace, compare, composite, -
+  compress, configure, constitute, decorate, delegate, deprecate, display, -
+  distort, draw, effect, enhance, exception, fourier, fx, gem, geometry, -
+  hashmap, histogram, identify, image, layer, list, locale, log, magic, -
+  magick, matrix, memory, mime, module, monitor, montage, morphology, option, -
+  paint, pixel, PreRvIcccm, profile, quantize, quantum, quantum-export, -
+  quantum-import,random, registry, resample, resize, resource, segment, -
+  semaphore, shear, signature, splay-tree, static, stream, string, thread, -
+  timer, token, transform, threshold, type, utility, version, vms, widget, -
+  xwindow, statistic, policy, prepress, property, xml-tree, -
 	[-.filters]analyze,[-.wand]drawing-wand, pixel-wand, pixel-view, conjure, -
   convert,import, mogrify, animate-wand, compare-wand, composite-wand, -
   display-wand,identify-wand,montage-wand

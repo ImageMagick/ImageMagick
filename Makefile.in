@@ -1309,16 +1309,17 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(ltdl_shl_load_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
-	magick/MagickCore.h magick/animate.c magick/animate.h \
-	magick/animate-private.h magick/annotate.c magick/annotate.h \
-	magick/api.h magick/artifact.c magick/artifact.h \
-	magick/attribute.c magick/attribute.h magick/blob.c \
-	magick/blob.h magick/blob-private.h magick/cache.c \
-	magick/cache.h magick/cache-private.h magick/cache-view.c \
-	magick/cache-view.h magick/cipher.c magick/cipher.h \
-	magick/client.c magick/client.h magick/coder.c magick/coder.h \
-	magick/color.c magick/color.h magick/color-private.h \
-	magick/colormap.c magick/colormap.h magick/colormap-private.h \
+	magick/MagickCore.h magick/accelerate.c magick/accelerate.h \
+	magick/animate.c magick/animate.h magick/animate-private.h \
+	magick/annotate.c magick/annotate.h magick/api.h \
+	magick/artifact.c magick/artifact.h magick/attribute.c \
+	magick/attribute.h magick/blob.c magick/blob.h \
+	magick/blob-private.h magick/cache.c magick/cache.h \
+	magick/cache-private.h magick/cache-view.c magick/cache-view.h \
+	magick/cipher.c magick/cipher.h magick/client.c \
+	magick/client.h magick/coder.c magick/coder.h magick/color.c \
+	magick/color.h magick/color-private.h magick/colormap.c \
+	magick/colormap.h magick/colormap-private.h \
 	magick/colorspace.c magick/colorspace.h \
 	magick/colorspace-private.h magick/compare.c magick/compare.h \
 	magick/composite.c magick/composite.h \
@@ -1404,7 +1405,8 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	coders/jp2.c coders/png.c coders/ept.c coders/tiff.c \
 	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c \
 	filters/convolve.c
-am__objects_2 = magick/magick_libMagickCore_la-animate.lo \
+am__objects_2 = magick/magick_libMagickCore_la-accelerate.lo \
+	magick/magick_libMagickCore_la-animate.lo \
 	magick/magick_libMagickCore_la-annotate.lo \
 	magick/magick_libMagickCore_la-artifact.lo \
 	magick/magick_libMagickCore_la-attribute.lo \
@@ -3685,6 +3687,8 @@ magick_libMagickCore_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
 MAGICK_BASE_SRCS = \
 	magick/ImageMagick.h \
 	magick/MagickCore.h \
+	magick/accelerate.c \
+	magick/accelerate.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/animate-private.h \
@@ -3902,6 +3906,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/ImageMagick.h \
 	magick/MagickCore.h \
 	magick/PreRvIcccm.h \
+	magick/accelerate.h \
 	magick/animate.h \
 	magick/annotate.h \
 	magick/api.h \
@@ -5402,6 +5407,8 @@ magick/$(am__dirstamp):
 magick/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) magick/$(DEPDIR)
 	@: > magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-accelerate.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-animate.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-annotate.lo: magick/$(am__dirstamp) \
@@ -6683,6 +6690,8 @@ mostlyclean-compile:
 	-rm -f ltdl/ltdl_libltdlc_la-slist.lo
 	-rm -f magick/magick_libMagickCore_la-PreRvIcccm.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-PreRvIcccm.lo
+	-rm -f magick/magick_libMagickCore_la-accelerate.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-accelerate.lo
 	-rm -f magick/magick_libMagickCore_la-animate.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-animate.lo
 	-rm -f magick/magick_libMagickCore_la-annotate.$(OBJEXT)
@@ -7193,6 +7202,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/shl_load.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-PreRvIcccm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-accelerate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-animate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-annotate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-artifact.Plo@am__quote@
@@ -8332,6 +8342,14 @@ ltdl/ltdl_libltdlc_la-slist.lo: ltdl/slist.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ltdl/slist.c' object='ltdl/ltdl_libltdlc_la-slist.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
+
+magick/magick_libMagickCore_la-accelerate.lo: magick/accelerate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-accelerate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-accelerate.Tpo -c -o magick/magick_libMagickCore_la-accelerate.lo `test -f 'magick/accelerate.c' || echo '$(srcdir)/'`magick/accelerate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-accelerate.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-accelerate.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/accelerate.c' object='magick/magick_libMagickCore_la-accelerate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-accelerate.lo `test -f 'magick/accelerate.c' || echo '$(srcdir)/'`magick/accelerate.c
 
 magick/magick_libMagickCore_la-animate.lo: magick/animate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-animate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-animate.Tpo -c -o magick/magick_libMagickCore_la-animate.lo `test -f 'magick/animate.c' || echo '$(srcdir)/'`magick/animate.c

@@ -146,6 +146,7 @@ extern "C" {
 # include "magick/methods.h"
 #endif
 #include "magick/magick-type.h"
+#include "magick/accelerate.h"
 #include "magick/animate.h"
 #include "magick/annotate.h"
 #include "magick/artifact.h"
