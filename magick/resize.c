@@ -2440,6 +2440,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
 {
 #define ScaleImageTag  "Scale/Image"
 
+  CacheView
+    *image_view,
+    *scale_view;
+
   Image
     *scale_image;
 
@@ -2522,6 +2526,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   GetMagickPixelPacket(image,&pixel);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   i=0;
+  image_view=AcquireCacheView(image);
+  scale_view=AcquireCacheView(scale_image);
   for (y=0; y < (long) scale_image->rows; y++)
   {
     register const IndexPacket
@@ -2543,7 +2549,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     register PixelPacket
       *restrict q;
 
-    q=QueueAuthenticPixels(scale_image,0,y,scale_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(scale_view,0,y,scale_image->columns,1,
+      exception);
     if (q == (PixelPacket *) NULL)
       break;
     scale_indexes=GetAuthenticIndexQueue(scale_image);
@@ -2552,10 +2559,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         /*
           Read a new scanline.
         */
-        p=GetVirtualPixels(image,0,i++,image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,
+          exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetVirtualIndexQueue(image);
+        indexes=GetCacheViewVirtualIndexQueue(image_view);
         for (x=0; x < (long) image->columns; x++)
         {
           x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
@@ -2580,17 +2588,19 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
               /*
                 Read a new scanline.
               */
-              p=GetVirtualPixels(image,0,i++,image->columns,1,exception);
+              p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,
+                exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetVirtualIndexQueue(image);
+              indexes=GetCacheViewVirtualIndexQueue(image_view);
               for (x=0; x < (long) image->columns; x++)
               {
                 x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
                 x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
                 x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
                 if (image->matte != MagickFalse)
-                  x_vector[x].opacity=(MagickRealType) GetOpacityPixelComponent(p);
+                  x_vector[x].opacity=(MagickRealType)
+                   GetOpacityPixelComponent(p);
                 if (indexes != (IndexPacket *) NULL)
                   x_vector[x].index=(MagickRealType) indexes[x];
                 p++;
@@ -2616,10 +2626,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
             /*
               Read a new scanline.
             */
-            p=GetVirtualPixels(image,0,i++,image->columns,1,exception);
+            p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,
+              exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(image);
+            indexes=GetCacheViewVirtualIndexQueue(image_view);
             for (x=0; x < (long) image->columns; x++)
             {
               x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
@@ -2778,12 +2789,14 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         q++;
       }
     }
-    if (SyncAuthenticPixels(scale_image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(scale_view,exception) == MagickFalse)
       break;
     proceed=SetImageProgress(image,ScaleImageTag,y,image->rows);
     if (proceed == MagickFalse)
       break;
   }
+  scale_view=DestroyCacheView(scale_view);
+  image_view=DestroyCacheView(image_view);
   /*
     Free allocated memory.
   */
