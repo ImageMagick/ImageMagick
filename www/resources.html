@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -342,63 +342,53 @@ file or data stream.</p>
 
 <dl class="doc">
 <dt class="doc">HOME</dt>
-  <dd>Set path to search for configuration files in <em>$HOME/.magick</em> if the directory exists.</dd>
+  <dd>Set path to search for configuration files in <em>$HOME/.magick</em> if the directory exists.</dd><br />
 <dt class="doc">LD_LIBRARY_PATH</dt>
-  <dd>Set path to the ImageMagick shareable libraries and other dependent libraries.</dd>
+  <dd>Set path to the ImageMagick shareable libraries and other dependent libraries.</dd><br />
 <dt class="doc">MAGICK_AREA_LIMIT</dt>
-  <dd>Set the maximum <em>width * height</em> of an image that can reside in the pixel cache memory.
-  <p>Images that exceed the area limit are cached to disk (see <a href="#disk-limit">MAGICK_DISK_LIMIT</a>).</p>
-  </dd>
+  <dd>Set the maximum <em>width * height</em> of an image that can reside in the pixel cache memory.</dd><br />
+  <dd>Images that exceed the area limit are cached to disk (see <a href="#disk-limit">MAGICK_DISK_LIMIT</a>).</dd><br />
 <dt class="doc">MAGICK_CODER_FILTER_PATH</dt>
-  <dd>Set search path to use when searching for filter process modules (invoked via  <a href="../www/command-line-options.html#process">-process</a>).
-  <p>This path permits the user to extend ImageMagick's image processing functionality by adding loadable modules to a preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</p>
-  </dd>
+  <dd>Set search path to use when searching for filter process modules (invoked via  <a href="../www/command-line-options.html#process">-process</a>).<dd><br />
+  <dd>This path permits the user to extend ImageMagick's image processing functionality by adding loadable modules to a preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</dd><br />
 <dt class="doc">MAGICK_CODER_MODULE_PATH</dt>
-  <dd>Set path where ImageMagick can locate its coder modules.
-  <p>This path permits the user to arbitrarily extend the image formats supported by ImageMagick by adding loadable coder modules from an preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</p>
-  </dd>
+  <dd>Set path where ImageMagick can locate its coder modules.</dd><br />
+  <dd>This path permits the user to arbitrarily extend the image formats supported by ImageMagick by adding loadable coder modules from an preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</dd><br />
 <dt class="doc">MAGICK_CONFIGURE_PATH</dt>
-  <dd>Set path where ImageMagick can locate its configuration files
-  <p>Use this search path to search for configuration (.xml) files. The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#configure">default search path</a>.</p>
-  </dd>
+  <dd>Set path where ImageMagick can locate its configuration files</dd><br />
+  <dd>Use this search path to search for configuration (.xml) files. The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#configure">default search path</a>.</dd><br />
 <dt class="doc">MAGICK_DEBUG</dt>
-  <dd>Set debug options.
-  <p>See <a href="../www/command-line-options.html#debug">-debug</a> for a description of debugging options.</p>
-  </dd>
+  <dd>Set debug options.</dd><br />
+  <dd>See <a href="../www/command-line-options.html#debug">-debug</a> for a description of debugging options.</dd><br />
 <dt class="doc"><a name="disk-limit"></a>MAGICK_DISK_LIMIT</dt>
-  <dd>Set maximum amount of disk space in bytes permitted for use by the pixel cache.
-  <p>When this limit is exceeded, the pixel cache is not be created and an error message is returned.</p>
-  </dd>
+  <dd>Set maximum amount of disk space in bytes permitted for use by the pixel cache.</dd><br />
+  <dd>When this limit is exceeded, the pixel cache is not be created and an error message is returned.</dd><br />
 <dt class="doc">MAGICK_FILE_LIMIT</dt>
-  <dd>Set maximum number of open pixel cache files.
-  <p>When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand.  This behavior permits a large number of images to be accessed simultaneously on disk, but with a speed penalty due to repeated open/close calls.</p>
-  </dd>
+  <dd>Set maximum number of open pixel cache files.</dd><br />
+  <dd>When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand.  This behavior permits a large number of images to be accessed simultaneously on disk, but with a speed penalty due to repeated open/close calls.</dd><br />
 <dt class="doc">MAGICK_FONT_PATH</dt>
-  <dd>Set path ImageMagick searches for TrueType and Postscript Type1 font files.
-  <p>This path is only consulted if a particular font file is not found in the current directory.</p>
-  </dd>
+  <dd>Set path ImageMagick searches for TrueType and Postscript Type1 font files.</dd><br />
+  <dd>This path is only consulted if a particular font file is not found in the current directory.</dd><br />
 <dt class="doc">MAGICK_HOME</dt>
-  <dd>Set the path at the top of ImageMagick installation directory.
-  <p>This path is consulted by <em>uninstalled</em> builds of ImageMagick which do not have their location hard-coded or set by an installer.</p>
-  </dd>
+  <dd>Set the path at the top of ImageMagick installation directory.</dd><br />
+  <dd>This path is consulted by <em>uninstalled</em> builds of ImageMagick which do not have their location hard-coded or set by an installer.</dd><br />
 <dt class="doc"><a name="map-limit"></a>MAGICK_MAP_LIMIT</dt>
-  <dd>Set maximum amount of memory map in bytes to allocate for the pixel cache.
-  <p>When this limit is exceeded, the image pixels are cached to disk (see MAGICK_DISK_LIMIT).</p>
-  </dd>
+  <dd>Set maximum amount of memory map in bytes to allocate for the pixel cache.</dd><br />
+  <dd>When this limit is exceeded, the image pixels are cached to disk (see MAGICK_DISK_LIMIT).</dd>
+  </dd><br />
 <dt class="doc">MAGICK_MEMORY_LIMIT</dt>
-  <dd>Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.
-  <p>When this limit is exceeded, the image pixels are cached to memory-mapped disk (see <a href="#map-limit">MAGICK_MAP_LIMIT</a>).</p>
-  </dd>
+  <dd>Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.</dd><br />
+  <dd>When this limit is exceeded, the image pixels are cached to memory-mapped disk (see <a href="#map-limit">MAGICK_MAP_LIMIT</a>).</dd><br />
+<dt class="doc">MAGICK_PRECISION</dt>
+  <dd>Set the maximum number of significant digits to be printed.</dd><br />
 <dt class="doc">MAGICK_TEMPORARY_PATH</dt>
-  <dd>Set path to store temporary files.</dd>
+  <dd>Set path to store temporary files.</dd><br />
 <dt class="doc">MAGICK_THREAD_LIMIT</dt>
-  <dd>Set maximum parallel threads.
-  <p>Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this enviroment variable to set the maximum number of threads that is permitted to run in parallel.</p>
-  </dd>
+  <dd>Set maximum parallel threads.</dd><br />
+  <dd>Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this enviroment variable to set the maximum number of threads that are permitted to run in parallel.</dd><br />
 <dt class="doc">MAGICK_TIME_LIMIT</dt>
-  <dd>Set maximum time in seconds.
-  <p>When this limit is exceeded, an exception is thrown and processing stops.</p>
-  </dd>
+  <dd>Set maximum time in seconds.</dd><br />
+  <dd>When this limit is exceeded, an exception is thrown and processing stops.</dd>
 </dl>
 </div>
 
@@ -408,7 +398,6 @@ file or data stream.</p>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
     <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>

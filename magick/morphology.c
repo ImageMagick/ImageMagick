@@ -221,6 +221,7 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
   kernel->type = UserDefinedKernel;
+  kernel->signature = MagickSignature;
 
   /* Has a ':' in argument - New user kernel specification */
   p = strchr(kernel_string, ':');
@@ -495,6 +496,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
   kernel->value_min = kernel->value_max = 0.0;
   kernel->range_neg = kernel->range_pos = 0.0;
   kernel->type = type;
+  kernel->signature = MagickSignature;
 
   switch(type) {
     /* Convolution Kernels */

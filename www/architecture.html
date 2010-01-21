@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -157,7 +157,7 @@
 
 
 
-<p class="navigation-index">[<a href="#overview">Architecture Overview</a> &bull; <a href="#cache">The Pixel Cache</a> &bull; <a href="#stream">Streaming Pixels</a> &bull; <a href="#properties">Image Properties and Profiles</a> &bull; <a href="#threads">Threads of Execution</a> &bull; <a href="#distributed">Heterogeneous Distributed Processing</a> &bull; <a href="#coders">Custom Image Coders</a> &bull; <a href="#filters">Custom Image Filters</a>]</p>
+<p class="navigation-index">[<a href="#overview">Architecture Overview</a> &bull; <a href="#cache">The Pixel Cache</a> &bull; <a href="#stream">Streaming Pixels</a> &bull; <a href="#properties">Image Properties and Profiles</a> &bull; <a href="#tera-pixel">Large Image Support</a> &bull; <a href="#threads">Threads of Execution</a> &bull; <a href="#distributed">Heterogeneous Distributed Processing</a> &bull; <a href="#coders">Custom Image Coders</a> &bull; <a href="#filters">Custom Image Filters</a>]</p>
 
 <div class="doc-section">
 <p>The citizens of Oz were quite content with their benefactor, the all-powerful Wizard.  They accepted his wisdom and benevolence without ever questioning the who, why, and where of his power.  Like the citizens of Oz, if you feel comfortable that ImageMagick can help you convert, edit, or compose your images without knowing what goes on behind the curtain, feel free to skip this section.  However, if you want to know more about the software and algorithms behind ImageMagick, read on.  To fully benefit from this discussion, you should be comfortable with image nomenclature and be familiar with computer programming.</p>
@@ -193,15 +193,16 @@
   <li>a pixel component that is unsigned or in a floating-point representation (e.g. 0.17836)</li>
   <li>a high-dynamic range pixel that can include negative values as well as values that exceed the quantum depth (e.g. -0.00716)</li>
   <li>one or more pixels simultaneously in different threads of execution</li>
+  <li>all the pixels in memory to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors</li>
 </ul>
 
 <p>In addition, some images include a clip mask that define which pixels are eligible to be updated.  Pixels outside the area defined by the clip mask remain untouched.</p>
 
-<p>Given the varied image formats and image processing requirements, we implemented the ImageMagick <a href="#cache">pixel cache</a> to provide convenient sequential or parallel access to any pixel on demand anywhere inside the image region and from any image in a sequence.  In addition, the pixel cache permits access to pixels outside the boundaries defined by the image (we call these <a href="#virtual-pixels">virtual pixels</a>).</p>
+<p>Given the varied image formats and image processing requirements, we implemented the ImageMagick <a href="#cache">pixel cache</a> to provide convenient sequential or parallel access to any pixel on demand anywhere inside the image region (we call these <a href="#authentic-pixels">authentic pixels</a>)  and from any image in a sequence.  In addition, the pixel cache permits access to pixels outside the boundaries defined by the image (we call these <a href="#virtual-pixels">virtual pixels</a>).</p>
 
 <p>In addition to pixels, images have a plethora of <a href="#properties">image properties and profiles</a>.  Properties include the well known items such as width, height, depth, and colorspace.  An image may have optional properties which might include the image author, a comment, a create date, and others.  Some images also include profiles for color management, or EXIF, IPTC, 8BIM, or XMP informational profiles.  ImageMagick provides command line options and programming methods to get, set, or view image properties or profiles or apply profiles.</p>
 
-<p>ImageMagick consists of more than 375,000 lines of C code and optionally depends on several million lines of code in dependent libraries (e.g. JPEG, PNG, TIFF libraries).  Given that, one might expect a huge architecture document.  However, a great majority of image processing is simply accessing pixels and its metadata and our simple and elegant implementation makes this easy for the ImageMagick developer.  We discuss the implementation of the pixel cache and getting and setting image properties and profiles in the next few sections. Next, we discuss using ImageMagick within a <a href="#threads">thread</a> of execution.  In the final sections, we discuss <a href="#coders">image coders</a> to read or write a particular image format followed by a few words on creating a <a href="#filters">filter</a> to access or update pixels based on your custom requirements.</p>
+<p>ImageMagick consists of more than 400,000 lines of C code and optionally depends on several million lines of code in dependent libraries (e.g. JPEG, PNG, TIFF libraries).  Given that, one might expect a huge architecture document.  However, a great majority of image processing is simply accessing pixels and its metadata and our simple and elegant implementation makes this easy for the ImageMagick developer.  We discuss the implementation of the pixel cache and getting and setting image properties and profiles in the next few sections. Next, we discuss using ImageMagick within a <a href="#threads">thread</a> of execution.  In the final sections, we discuss <a href="#coders">image coders</a> to read or write a particular image format followed by a few words on creating a <a href="#filters">filter</a> to access or update pixels based on your custom requirements.</p>
 
 </div>
 
@@ -237,15 +238,15 @@
     { /* an exception was thrown */ }
 </p>
 
-<p>In our discussion of the pixel cache we use the <a href="../www/magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
+<p>In our discussion of the pixel cache, we use the <a href="../www/magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
-<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have using the <a href="../www/command-line-options.html#version">&#x2011;version</a> option, as with this command: </p>
+<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.5.9-0 2010-01-15 Q16 http://www.imagemagick.org</span></p>
-<p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).</p>
+<p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
-<h3>Access the Pixel Cache</h3>
+<h3><a name="authentic-pixels"></a>Access the Pixel Cache</h3>
 <div class="doc-section">
 
 <p>Once the pixel cache is associated with an image, you typically want to get, update, or put pixels into it.  We refer to pixels inside the image region as <em>authentic pixels</em> and outside the region as <em>virtual pixels</em>.  Use these methods to access the pixels in the cache:</p>
@@ -256,7 +257,7 @@
   <li><a href="../www/api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> update the pixel cache with any modified pixels</li>
 </ul>
 
-<p>Here is a typical <a href="../www/magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
+<p>Here is a typical <a href="../www/magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
 <div class="viewport">
 <pre class="code">
@@ -317,7 +318,7 @@
     /* an exception was thrown */
 </pre>
 
-<p>The pixel cache manager decides whether to give you direct or indirect access to the image pixels.  In some cases the pixels are staged to an intermediate buffer-- and that is why you must call SyncAuthenticPixels() to ensure this buffer is <em>pushed</em> out to the pixel cache to guarantee the corresponding pixels in the cache are updated.  For this reason we recommend that you only read or update a scanline or a few scanlines of pixels at a time.  However, you can get any rectangular region of pixels you want.  GetAuthenticPixels() requires that the region you request is within the bounds of the image area.  For a 640 by 480 image, you can get a scanline of 640 pixels but if you ask for 641 pixels, an exception is returned.  GetVirtualPixels() does not have this constraint.  For example,</p>
+<p>The pixel cache manager decides whether to give you direct or indirect access to the image pixels.  In some cases the pixels are staged to an intermediate buffer-- and that is why you must call SyncAuthenticPixels() to ensure this buffer is <em>pushed</em> out to the pixel cache to guarantee the corresponding pixels in the cache are updated.  For this reason we recommend that you only read or update a scanline or a few scanlines of pixels at a time.  However, you can get any rectangular region of pixels you want.  GetAuthenticPixels() requires that the region you request is within the bounds of the image area.  For a 640 by 480 image, you can get a scanline of 640 pixels at row 479 but if you ask for a scanline at row 480, an exception is returned (rows are numbered starting at 0).  GetVirtualPixels() does not have this constraint.  For example,</p>
 
 <pre class="code">
   p=GetVirtualPixels(source,-3,3,source-&gt;columns+7,7,exception);
@@ -355,7 +356,7 @@
 <h3>Cache Storage and Resource Requirements</h3>
 <div class="doc-section">
 
-<p>We mentioned previously that this simple and elegant design of the ImageMagick pixel cache comes at a cost in terms of storage and processing speed.  The pixel cache storage requirements scales with the area of the image and the bit depth of the pixel components.  For example, if we have a 640 by 480 image and we're using the Q16 version of ImageMagick, the pixel cache consumes image <em>width * height * bit-depth / 8 * channels</em> bytes or approximately 2.3 mebibytes (i.e. 640 * 480 * 2 * 4).  Not too bad, but what if your image is 25000 by 25000 pixels?  The pixel cache requires approximately 4.7 gibibytes of storage.  Ouch.  ImageMagick accounts for possible huge storage requirements by caching large images to disk rather than memory.  Typically the pixel cache is stored in memory using heap memory. If heap memory is exhausted, pixels are stored in in an anonymous map; if the anonymous memory map is exhausted, we create the pixel cache on disk and attempt to memory-map it; and if memory-map memory is exhausted, we simply use standard disk I/O.  Disk storage is cheap but it is also very slow, upwards of 1000 times slower than memory.  We can get some speed improvements, up to 5 times, if we use memory mapping to the disk-based cache.  These decisions about storage are made <em>automagically</em> by the pixel cache manager negotiating with the operating system.  However, you can influence how the pixel cache manager allocates the pixel cache with <em>cache resource limits</em>.  The limits include:</p>
+<p>Recall that this simple and elegant design of the ImageMagick pixel cache comes at a cost in terms of storage and processing speed.  The pixel cache storage requirements scales with the area of the image and the bit depth of the pixel components.  For example, if we have a 640 by 480 image and we are using the Q16 version of ImageMagick, the pixel cache consumes image <em>width * height * bit-depth / 8 * channels</em> bytes or approximately 2.3 mebibytes (i.e. 640 * 480 * 2 * 4).  Not too bad, but what if your image is 25000 by 25000 pixels?  The pixel cache requires approximately 4.7 gibibytes of storage.  Ouch.  ImageMagick accounts for possible huge storage requirements by caching large images to disk rather than memory.  Typically the pixel cache is stored in memory using heap memory. If heap memory is exhausted, pixels are stored in in an anonymous map; if the anonymous memory map is exhausted, we create the pixel cache on disk and attempt to memory-map it; and if memory-map memory is exhausted, we simply use standard disk I/O.  Disk storage is cheap but it is also very slow, upwards of 1000 times slower than memory.  We can get some speed improvements, up to 5 times, if we use memory mapping to the disk-based cache.  These decisions about storage are made <em>automagically</em> by the pixel cache manager negotiating with the operating system.  However, you can influence how the pixel cache manager allocates the pixel cache with <em>cache resource limits</em>.  The limits include:</p>
 
 <dl class="doc">
   <dt class="doc">files</dt>
@@ -413,7 +414,7 @@
 <h3>Magick Persistent Cache Format</h3>
 <div class="doc-section">
 
-<p>Recall that each image format is decoded by ImageMagick and the pixels are deposited in the pixel cache.  If you write an image, the pixels are read from the pixel cache and encoded as required by the format you are writing (e.g. GIF, PNG, etc.).  The Magick Persistent Cache (MPC) format is designed to eliminate the overhead of decoding and encoding pixels to and from an image format.  MPC writes two files.  One, with the extension <kbd>.mpc</kbd>, retains all the properties associated with the image or image sequence (e.g. width, height, colorspace, etc.) and the second, with the extension <kbd>.cache</kbd>, is the pixel cache in the native format.  When reading an MPC image file, ImageMagick reads the image properties and memory maps the pixel cache on disk eliminating the need for decoding the image pixels.  The tradeoff is in disk space.  MPC is generally larger in file size than most other image formats.</p>
+<p>Recall that each image format is decoded by ImageMagick and the pixels are deposited in the pixel cache.  If you write an image, the pixels are read from the pixel cache and encoded as required by the format you are writing (e.g. GIF, PNG, etc.).  The Magick Persistent Cache (MPC) format is designed to eliminate the overhead of decoding and encoding pixels to and from an image format.  MPC writes two files.  One, with the extension <kbd>.mpc</kbd>, retains all the properties associated with the image or image sequence (e.g. width, height, colorspace, etc.) and the second, with the extension <kbd>.cache</kbd>, is the pixel cache in the native raw format.  When reading an MPC image file, ImageMagick reads the image properties and memory maps the pixel cache on disk eliminating the need for decoding the image pixels.  The tradeoff is in disk space.  MPC is generally larger in file size than most other image formats.</p>
 </div>
 
 <h3>Best Practices</h3>
@@ -433,7 +434,7 @@
 
 <p>The ImageMagick Q16 version of ImageMagick permits you to read and write 16 bit images without scaling but the pixel cache consumes twice as much resources as the Q8 version.  If your system has constrained memory or disk resources, consider the Q8 version of ImageMagick.  In addition, the Q8 version typically executes faster than the Q16 version.</p>
 
-<p>A great majority of image formats and algorithms restrict themselves to a fixed range of pixel values from 0 to some maximum value, for example, the Q16 version of ImageMagick permit intensities from 0 to 65535.  High dynamic-range imaging (HDRI), however, permits a far greater dynamic range of exposures (i.e. a large difference between light and dark areas) than standard digital imaging techniques. HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  Enable <a href="../www/high-dynamic-range.html">HDRI</a> at ImageMagick build time to deal with high dynamic-range images, but be mindful that each pixel component is a 32-bit floating point value. In addition pixel values are not clamped so some algorithms may perform differently than  the non-HDRI version.</p>
+<p>A great majority of image formats and algorithms restrict themselves to a fixed range of pixel values from 0 to some maximum value, for example, the Q16 version of ImageMagick permit intensities from 0 to 65535.  High dynamic-range imaging (HDRI), however, permits a far greater dynamic range of exposures (i.e. a large difference between light and dark areas) than standard digital imaging techniques. HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  Enable <a href="../www/high-dynamic-range.html">HDRI</a> at ImageMagick build time to deal with high dynamic-range images, but be mindful that each pixel component is a 32-bit floating point value. In addition, pixel values are not clamped by default so some algorithms may perform differently than the non-HDRI version.</p>
 
 <p>If you are dealing with large images, make sure the pixel cache is written to a disk area with plenty of free space.  Under Unix, this is typically <kbd>/tmp</kbd> and for Windows, <kbd>c:/temp</kbd>.  You can tell ImageMagick to write the pixel cache to an alternate location with the MAGICK_TEMPORARY_PATH environment variable.  For example,</p>
 
@@ -492,6 +493,8 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
     (void) printf("Image comment: %s\n",comment);
 </pre>
 
+<p>ImageMagick supports artifacts with the GetImageArtifact() and SetImageArtifact() methods.  Artifacts are stealth properties that are not exported to image formats (e.g. PNG) and they do not display when identifying an image.</p>
+
 <p>Image profiles are handled with <a href="../www/api/profile.html#GetImageProfile">GetImageProfile()</a>, <a href="../www/api/profile.html#SetImageProfile">SetImageProfile()</a>, and <a href="../www/api/profile.html#ProfileImage">ProfileImage()</a> methods.  Here we set a profile and fetch it right back:</p>
 
 <pre class="code">
@@ -508,6 +511,24 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 </pre>
 
 </div>
+
+<h2><a name="tera-pixel"></a>Large Image Support</h2>
+<div class="doc-section">
+<p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  For example, here we resize an image to a quarter million pixels square:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 250000x250000 logo.miff</span></p>
+<p>For large images, ImageMagick will more than likely create a pixel cache on disk.  Make sure you have plenty of temporary disk space.  If your default temporary disk partition is too small, tell ImageMagick to use another partition with plenty of free space.  For example:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo: -resize 250000x250000 logo.miff</span></p>
+<p>To ensure large images do not consume all the memory on your system, force the image pixels to memory-mapped disk with resource limits:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb logo: -resize 250000x250000 logo.miff</span></p>
+<p>Here we force all image pixels to disk:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0 logo: -resize 250000x250000 logo.miff</span></p>
+<p>Caching pixels to disk is about 1000 times slower than memory.  Expect long run times when processing large images with ImageMagick.  You can monitor progress with this command:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0 logo: -resize 250000x250000 logo.miff</span></p></div>
 
 <h2><a name="threads"></a>Threads of Execution</h2>
 <div class="doc-section">
@@ -579,9 +600,14 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 <div class="doc-section">
 <p>ImageMagick includes support for heterogeneous distributed processing with the <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a> framework.  OpenCL kernels within ImageMagick permit image processing algorithms to execute across heterogeneous platforms consisting of CPUs, GPUs, and other processors.  Depending on your platform, speed-ups can be an order of magnitude faster than the traditional single CPU.</p>
 
-<p>To speed up image convolution, for example, use this image filter:</p>
+<p>First verify that your version of ImageMagick includes support for the OpenCL feature:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.pam -process "convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'" gpu.pam</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
+<p>If so, run this command to realize a significant speed-up for image convolution:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1' convolve.png</span></p>
+<p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
+
 <p>Here is an example OpenCL kernel that convolves an image:</p>
 
 <div class="viewport">
@@ -1307,8 +1333,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-      <a href="../www/mailing-list.html">Mailing Lists</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
