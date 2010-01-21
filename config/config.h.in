@@ -884,6 +884,9 @@
 /* Define to 1 if on MINIX. */
 #undef _MINIX
 
+/* Define this for the OpenCL Accelerator */
+#undef _OPENCL
+
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */
 #undef _POSIX_1_SOURCE
