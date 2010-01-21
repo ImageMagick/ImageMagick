@@ -50,7 +50,7 @@ extern "C" {
 #define AcquireImage  PrependMagickMethod(AcquireImage)
 #define AcquireIndexes  PrependMagickMethod(AcquireIndexes)
 #define AcquireKernelBuiltIn  PrependMagickMethod(AcquireKernelBuiltIn)
-#define AcquireKernelFromString  PrependMagickMethod(AcquireKernelFromString)
+#define AcquireKernelInfo  PrependMagickMethod(AcquireKernelInfo)
 #define AcquireMagickMatrix  PrependMagickMethod(AcquireMagickMatrix)
 #define AcquireMagickMemory  PrependMagickMethod(AcquireMagickMemory)
 #define AcquireMagickResource  PrependMagickMethod(AcquireMagickResource)

@@ -89,7 +89,7 @@ typedef enum
   MagickTypeOptions,
   MagickValidateOptions,
   MagickVirtualPixelOptions,
-  MagickKernelOptions,
+  KernelInfoOptions,
   MagickMorphologyOptions
 } MagickOption;
 

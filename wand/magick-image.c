@@ -3194,9 +3194,9 @@ WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
 %  The format of the MagickFilterImage method is:
 %
 %      MagickBooleanType MagickFilterImage(MagickWand *wand,
-%        const MagickKernel *kernel)
+%        const KernelInfo *kernel)
 %      MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
-%        const ChannelType channel,const MagickKernel *kernel)
+%        const ChannelType channel,const KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -3209,7 +3209,7 @@ WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
 */
 
 WandExport MagickBooleanType MagickFilterImage(MagickWand *wand,
-  const MagickKernel *kernel)
+  const KernelInfo *kernel)
 {
   MagickBooleanType
     status;
@@ -3219,7 +3219,7 @@ WandExport MagickBooleanType MagickFilterImage(MagickWand *wand,
 }
 
 WandExport MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickKernel *kernel)
+  const ChannelType channel,const KernelInfo *kernel)
 {
   Image
     *filter_image;
@@ -3228,7 +3228,7 @@ WandExport MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (kernel == (const MagickKernel *) NULL)
+  if (kernel == (const KernelInfo *) NULL)
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
