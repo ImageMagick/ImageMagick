@@ -549,8 +549,8 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
     }
   (void) FormatMagickString(options,MaxTextExtent,CLOptions,(double)
     QuantumRange,MagickEpsilon);
-  status=clBuildProgram(convolve_info->program,1,convolve_info->devices,
-    options,NULL,NULL);
+  status=clBuildProgram(convolve_info->program,1,convolve_info->devices,options,
+    NULL,NULL);
   if ((convolve_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
     {
       char
