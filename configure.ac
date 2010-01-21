@@ -335,7 +335,7 @@ case "$host" in
     LDFLAGS="$LDFLAGS -L/sw/lib"
   fi
   dnl OS X universal binary support, requires --disable-dependency-tracking
-  AC_ARG_ENABLE(osx-universal-binary,
+  AC_ARG_ENABLE([osx-universal-binary],
         AC_HELP_STRING([--enable-osx-universal-binary],
            [build universal binary on OS X [[default=no]]]),
         [build_osxuniversal="${enableval}"], [build_osxuniversal=no])
@@ -386,7 +386,7 @@ MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 AC_SUBST(OPENMP_CFLAGS)
 
 # Enable support for OpenCL
-AX_CHECK_CL
+AX_CHECK_CL([C])
 CFLAGS="$CL_CFLAGS $CFLAGS"
 LIBS="$CL_LIBS $LIBS"
 AC_SUBST(CL_CFLAGS)
