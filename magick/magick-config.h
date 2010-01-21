@@ -1337,7 +1337,9 @@
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
-/* #undef inline */
+#ifndef _magickcore_inline 
+#define _magickcore_inline  __inline__ 
+#endif
 #endif
 
 /* Define to `int' if <sys/types.h> does not define. */

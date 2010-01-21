@@ -804,6 +804,7 @@ ShowImageDelegate
 type_include_files
 ghostscript_font_dir
 windows_font_dir
+dejavu_font_dir
 PrintDelegate
 ZipDelegate
 XPSDelegate
@@ -1228,6 +1229,7 @@ with_zlib
 with_autotrace
 with_dps
 with_djvu
+with_dejavu_font_dir
 with_fftw
 with_fpx
 with_fontconfig
@@ -1972,6 +1974,8 @@ Optional Packages:
   --with-autotrace        enable autotrace support
   --without-dps           disable Display Postscript support
   --without-djvu          disable DjVu support
+  --with-dejavu-font-dir=DIR
+                          DejaVu font directory
   --without-fftw          disable FFTW support
   --without-fpx           disable FlashPIX support
   --without-fontconfig    disable fontconfig support
@@ -3333,7 +3337,7 @@ ac_config_headers="$ac_config_headers config/config.h"
 
 ac_config_commands="$ac_config_commands magick/magick-config.h"
 
-ac_config_files="$ac_config_files config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
+ac_config_files="$ac_config_files config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
 
 
 #
@@ -6451,7 +6455,7 @@ fi
     then
       if test "$GXX" = "yes"
       then
-        ac_compile_warnings_opt='-Wall -W'
+        ac_compile_warnings_opt='-Wall -W -ansi -pedantic'
       fi
       CXXFLAGS="$CXXFLAGS $ac_compile_warnings_opt"
       ac_compile_warnings_msg="$ac_compile_warnings_opt for C++"
@@ -6461,7 +6465,7 @@ fi
   then
     if test "$GCC" = "yes"
     then
-      ac_compile_warnings_opt='-Wall -W'
+      ac_compile_warnings_opt='-Wall -W -ansi -pedantic'
     fi
     CFLAGS="$CFLAGS $ac_compile_warnings_opt"
     ac_compile_warnings_msg="$ac_compile_warnings_msg $ac_compile_warnings_opt for C"
@@ -8193,13 +8197,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:8196: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:8200: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:8199: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:8203: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:8202: output\"" >&5)
+  (eval echo "\"\$as_me:8206: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -9390,7 +9394,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 9393 "configure"' > conftest.$ac_ext
+  echo '#line 9397 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -11475,11 +11479,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11478: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11482: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11482: \$? = $ac_status" >&5
+   echo "$as_me:11486: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11814,11 +11818,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11817: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11821: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11821: \$? = $ac_status" >&5
+   echo "$as_me:11825: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11919,11 +11923,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11922: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11926: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11926: \$? = $ac_status" >&5
+   echo "$as_me:11930: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11974,11 +11978,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11977: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11981: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11981: \$? = $ac_status" >&5
+   echo "$as_me:11985: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14344,7 +14348,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14347 "configure"
+#line 14351 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14440,7 +14444,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14443 "configure"
+#line 14447 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16396,11 +16400,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16399: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16403: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16403: \$? = $ac_status" >&5
+   echo "$as_me:16407: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16495,11 +16499,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16498: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16502: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16502: \$? = $ac_status" >&5
+   echo "$as_me:16506: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16547,11 +16551,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16550: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16554: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16554: \$? = $ac_status" >&5
+   echo "$as_me:16558: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17959,7 +17963,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 17962 "configure"
+#line 17966 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -25213,6 +25217,23 @@ fi
 
 
 #
+# Set DejaVu font directory.
+#
+
+# Check whether --with-dejavu-font-dir was given.
+if test "${with_dejavu_font_dir+set}" = set; then :
+  withval=$with_dejavu_font_dir; with_dejavu_font_dir=$withval
+else
+  with_dejavu_font_dir='default'
+fi
+
+
+if test "$with_dejavu_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-dejavu-font-dir=$with_dejavu_font_dir "
+fi
+
+
+#
 # Check for FFTW delegate library.
 #
 
@@ -29830,12 +29851,36 @@ have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then hav
 #
 type_include_files=''
 
+# Dejavu fonts.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Dejavu fonts directory" >&5
+$as_echo_n "checking for Dejavu fonts directory... " >&6; }
+dejavu_font_dir=''
+if test "${with_dejavu_font_dir}" != 'default'; then
+  dejavu_font_dir="${with_dejavu_font_dir}/"
+else
+  for font_dir in "${prefix}/share/dejavu/fonts/" '/usr/share/fonts/dejavu/'; do
+    if test -f "${font_dir}DejaVuSerif.ttf"; then
+      dejavu_font_dir="${font_dir}"
+      break 1
+    fi
+  done
+fi
+if test "${dejavu_font_dir}x" != 'x'; then
+  type_include_files="${type_include_files} "'<include file="type-dejavu.xml" />'
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $dejavu_font_dir" >&5
+$as_echo "$dejavu_font_dir" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found!" >&5
+$as_echo "not found!" >&6; };
+fi
+
+
 # Windows
 windows_font_dir=''
 if test "$with_windows_font_dir" != "no" && test -n "$with_windows_font_dir"; then
    windows_font_dir="${with_windows_font_dir}/"
 fi
-if test -n "$windows_font_dir"; then
+if test "${windows_font_dir}x" != 'x'; then
     if test -f '/usr/X11R6/lib/X11/fonts/truetype/arial.ttf'; then
       windows_font_dir='/usr/X11R6/lib/X11/fonts/truetype/'
     fi
@@ -29846,7 +29891,7 @@ if test -n "$windows_font_dir"; then
       windows_font_dir='/usr/share/fonts/msttcore/truetype/'
     fi
 fi
-if test -n "$windows_font_dir"; then
+if test "${windows_font_dir}x" != 'x'; then
   type_include_files="$type_include_files "'<include file="type-windows.xml" />'
 fi
 
@@ -32193,6 +32238,7 @@ do
     "config/ImageMagick.rdf") CONFIG_FILES="$CONFIG_FILES config/ImageMagick.rdf" ;;
     "config/MagickCore.dox") CONFIG_FILES="$CONFIG_FILES config/MagickCore.dox" ;;
     "config/MagickWand.dox") CONFIG_FILES="$CONFIG_FILES config/MagickWand.dox" ;;
+    "config/type-dejavu.xml") CONFIG_FILES="$CONFIG_FILES config/type-dejavu.xml" ;;
     "config/type-ghostscript.xml") CONFIG_FILES="$CONFIG_FILES config/type-ghostscript.xml" ;;
     "config/type-windows.xml") CONFIG_FILES="$CONFIG_FILES config/type-windows.xml" ;;
     "config/type.xml") CONFIG_FILES="$CONFIG_FILES config/type.xml" ;;
@@ -33859,6 +33905,11 @@ fi
 
 rm -f magick-version
 
+result_dejavu_font_dir='none'
+if test "${dejavu_font_dir}x" != 'x'; then
+    result_dejavu_font_dir=$dejavu_font_dir
+fi
+
 result_ghostscript_font_dir='none'
 if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
@@ -33889,6 +33940,7 @@ High Dynamic Range Imagery
 Delegate Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
 Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
+Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw
@@ -33959,6 +34011,7 @@ High Dynamic Range Imagery
 Delegate Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
 Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
+Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw

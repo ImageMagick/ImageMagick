@@ -37,6 +37,7 @@ configlib_DATA = \
 	config/locale.xml \
 	config/policy.xml \
 	config/type.xml \
+	config/type-dejavu.xml \
 	config/type-ghostscript.xml \
 	config/type-windows.xml
 
@@ -56,6 +57,7 @@ CONFIG_EXTRA_DIST = \
 	config/policy.xml \
 	config/sRGB.icm \
 	config/thresholds.xml \
+	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
 	config/type-windows.xml.in \
 	config/type.xml.in

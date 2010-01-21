@@ -242,6 +242,7 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(top_srcdir)/config/config.h.in \
 	$(top_srcdir)/config/configure.xml.in \
 	$(top_srcdir)/config/delegates.xml.in \
+	$(top_srcdir)/config/type-dejavu.xml.in \
 	$(top_srcdir)/config/type-ghostscript.xml.in \
 	$(top_srcdir)/config/type-windows.xml.in \
 	$(top_srcdir)/config/type.xml.in $(top_srcdir)/configure \
@@ -301,13 +302,13 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config/config.h
 CONFIG_CLEAN_FILES = config/configure.xml config/delegates.xml \
 	config/ImageMagick.rdf config/MagickCore.dox \
-	config/MagickWand.dox config/type-ghostscript.xml \
-	config/type-windows.xml config/type.xml ImageMagick.spec \
-	Magick++/bin/Magick++-config magick/ImageMagick.pc \
-	Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc \
-	magick/Magick-config magick/MagickCore-config \
-	magick/MagickCore.pc magick/version.h magick.sh \
-	PerlMagick/Magick.pm PerlMagick/Makefile.PL \
+	config/MagickWand.dox config/type-dejavu.xml \
+	config/type-ghostscript.xml config/type-windows.xml \
+	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
+	magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc \
+	Magick++/lib/Magick++.pc magick/Magick-config \
+	magick/MagickCore-config magick/MagickCore.pc magick/version.h \
+	magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL \
 	PerlMagick/check.sh utilities/animate.1 utilities/compare.1 \
 	utilities/composite.1 utilities/conjure.1 utilities/convert.1 \
 	utilities/display.1 utilities/identify.1 \
@@ -2473,6 +2474,7 @@ build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
+dejavu_font_dir = @dejavu_font_dir@
 
 # Architecture independent data files installed in the package's data directory
 docdir = $(SHARE_PATH)
@@ -2664,6 +2666,7 @@ configlib_DATA = \
 	config/locale.xml \
 	config/policy.xml \
 	config/type.xml \
+	config/type-dejavu.xml \
 	config/type-ghostscript.xml \
 	config/type-windows.xml
 
@@ -2683,6 +2686,7 @@ CONFIG_EXTRA_DIST = \
 	config/policy.xml \
 	config/sRGB.icm \
 	config/thresholds.xml \
+	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
 	config/type-windows.xml.in \
 	config/type.xml.in
@@ -4648,6 +4652,8 @@ config/ImageMagick.rdf: $(top_builddir)/config.status $(top_srcdir)/config/Image
 config/MagickCore.dox: $(top_builddir)/config.status $(top_srcdir)/config/MagickCore.dox.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/MagickWand.dox: $(top_builddir)/config.status $(top_srcdir)/config/MagickWand.dox.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+config/type-dejavu.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-dejavu.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/type-ghostscript.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-ghostscript.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

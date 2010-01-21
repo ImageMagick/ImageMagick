@@ -1,4 +1,6 @@
-##### http://autoconf-archive.cryp.to/ax_prefix_config_h.html
+# ===========================================================================
+#       http://www.nongnu.org/autoconf-archive/ax_prefix_config_h.html
+# ===========================================================================
 #
 # SYNOPSIS
 #
@@ -8,16 +10,16 @@
 #
 #   This is a new variant from ac_prefix_config_ this one will use a
 #   lowercase-prefix if the config-define was starting with a
-#   lowercase-char, e.g. "#define const", "#define restrict", or
-#   "#define off_t", (and this one can live in another directory, e.g.
-#   testpkg/config.h therefore I decided to move the output-header to
-#   be the first arg)
+#   lowercase-char, e.g. "#define const", "#define restrict", or "#define
+#   off_t", (and this one can live in another directory, e.g.
+#   testpkg/config.h therefore I decided to move the output-header to be the
+#   first arg)
 #
-#   takes the usual config.h generated header file; looks for each of
-#   the generated "#define SOMEDEF" lines, and prefixes the defined
-#   name (ie. makes it "#define PREFIX_SOMEDEF". The result is written
-#   to the output config.header file. The PREFIX is converted to
-#   uppercase for the conversions.
+#   takes the usual config.h generated header file; looks for each of the
+#   generated "#define SOMEDEF" lines, and prefixes the defined name (ie.
+#   makes it "#define PREFIX_SOMEDEF". The result is written to the output
+#   config.header file. The PREFIX is converted to uppercase for the
+#   conversions.
 #
 #   Defaults:
 #
@@ -25,10 +27,9 @@
 #     PREFIX = $PACKAGE
 #     ORIG-HEADER, from AM_CONFIG_HEADER(config.h)
 #
-#   Your configure.ac script should contain both macros in this order,
-#   and unlike the earlier variations of this prefix-macro it is okay
-#   to place the AX_PREFIX_CONFIG_H call before the AC_OUTPUT
-#   invokation.
+#   Your configure.ac script should contain both macros in this order, and
+#   unlike the earlier variations of this prefix-macro it is okay to place
+#   the AX_PREFIX_CONFIG_H call before the AC_OUTPUT invokation.
 #
 #   Example:
 #
@@ -41,10 +42,9 @@
 #     AC_OUTPUT(Makefile)                 # creates the "config.h" now
 #                                         # and also mylib/_config.h
 #
-#   if the argument to AX_PREFIX_CONFIG_H would have been omitted then
-#   the default outputfile would have been called simply
-#   "testpkg-config.h", but even under the name "mylib/_config.h" it
-#   contains prefix-defines like
+#   if the argument to AX_PREFIX_CONFIG_H would have been omitted then the
+#   default outputfile would have been called simply "testpkg-config.h", but
+#   even under the name "mylib/_config.h" it contains prefix-defines like
 #
 #     #ifndef TESTPKG_VERSION
 #     #define TESTPKG_VERSION "0.1.1"
@@ -57,26 +57,26 @@
 #     #endif
 #
 #   and this "mylib/_config.h" can be installed along with other
-#   header-files, which is most convenient when creating a shared
-#   library (that has some headers) where some functionality is
-#   dependent on the OS-features detected at compile-time. No need to
-#   invent some "mylib-confdefs.h.in" manually. :-)
+#   header-files, which is most convenient when creating a shared library
+#   (that has some headers) where some functionality is dependent on the
+#   OS-features detected at compile-time. No need to invent some
+#   "mylib-confdefs.h.in" manually. :-)
 #
-#   Note that some AC_DEFINEs that end up in the config.h file are
-#   actually self-referential - e.g. AC_C_INLINE, AC_C_CONST, and the
-#   AC_TYPE_OFF_T say that they "will define inline|const|off_t if the
-#   system does not do it by itself". You might want to clean up about
-#   these - consider an extra mylib/conf.h that reads something like:
+#   Note that some AC_DEFINEs that end up in the config.h file are actually
+#   self-referential - e.g. AC_C_INLINE, AC_C_CONST, and the AC_TYPE_OFF_T
+#   say that they "will define inline|const|off_t if the system does not do
+#   it by itself". You might want to clean up about these - consider an
+#   extra mylib/conf.h that reads something like:
 #
 #      #include <mylib/_config.h>
 #      #ifndef _testpkg_const
 #      #define _testpkg_const const
 #      #endif
 #
-#   and then start using _testpkg_const in the header files. That is
-#   also a good thing to differentiate whether some library-user has
-#   starting to take up with a different compiler, so perhaps it could
-#   read something like this:
+#   and then start using _testpkg_const in the header files. That is also a
+#   good thing to differentiate whether some library-user has starting to
+#   take up with a different compiler, so perhaps it could read something
+#   like this:
 #
 #     #ifdef _MSC_VER
 #     #include <mylib/_msvc.h>
@@ -87,45 +87,37 @@
 #     #define _testpkg_const const
 #     #endif
 #
-# LAST MODIFICATION
+# LICENSE
 #
-#   2007-01-17
+#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
+#   Copyright (c) 2008 Marten Svantesson
+#   Copyright (c) 2008 Gerald Point <Gerald.Point@labri.fr>
 #
-# COPYLEFT
-#
-#   Copyright (c) 2007 Guido U. Draheim <guidod@gmx.de>
-#   Copyright (c) 2007 Marten Svantesson
-#   Copyright (c) 2007 Gerald Point <Gerald.Point@labri.fr>
-#
-#   This program is free software; you can redistribute it and/or
-#   modify it under the terms of the GNU General Public License as
-#   published by the Free Software Foundation; either version 2 of the
-#   License, or (at your option) any later version.
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the
+#   Free Software Foundation; either version 2 of the License, or (at your
+#   option) any later version.
 #
 #   This program is distributed in the hope that it will be useful, but
 #   WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-#   General Public License for more details.
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#   Public License for more details.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-#   02111-1307, USA.
+#   You should have received a copy of the GNU General Public License along
+#   with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-#   As a special exception, the respective Autoconf Macro's copyright
-#   owner gives unlimited permission to copy, distribute and modify the
-#   configure scripts that are the output of Autoconf when processing
-#   the Macro. You need not follow the terms of the GNU General Public
-#   License when using or distributing such scripts, even though
-#   portions of the text of the Macro appear in them. The GNU General
-#   Public License (GPL) does govern all other use of the material that
-#   constitutes the Autoconf Macro.
+#   As a special exception, the respective Autoconf Macro's copyright owner
+#   gives unlimited permission to copy, distribute and modify the configure
+#   scripts that are the output of Autoconf when processing the Macro. You
+#   need not follow the terms of the GNU General Public License when using
+#   or distributing such scripts, even though portions of the text of the
+#   Macro appear in them. The GNU General Public License (GPL) does govern
+#   all other use of the material that constitutes the Autoconf Macro.
 #
-#   This special exception to the GPL applies to versions of the
-#   Autoconf Macro released by the Autoconf Macro Archive. When you
-#   make and distribute a modified version of the Autoconf Macro, you
-#   may extend this special exception to the GPL to apply to your
-#   modified version as well.
+#   This special exception to the GPL applies to versions of the Autoconf
+#   Macro released by the Autoconf Archive. When you make and distribute a
+#   modified version of the Autoconf Macro, you may extend this special
+#   exception to the GPL to apply to your modified version as well.
 
 AC_DEFUN([AX_PREFIX_CONFIG_H],[dnl
 AC_BEFORE([AC_CONFIG_HEADERS],[$0])dnl
