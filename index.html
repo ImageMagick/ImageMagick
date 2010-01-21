@@ -160,11 +160,13 @@
 <div style="margin: auto;">
   <h2><a name="intro"></a>Introduction to ImageMagick</h2>
 </div>
+<div class="doc-section">
 <p>ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> is a software suite to create, edit, and compose bitmap images.  It can read, convert and write images in a variety of <a href="www/formats.html">formats</a> (over 100) including <a href="www/motion-picture.html">DPX</a>, <a href="www/high-dynamic-range.html">EXR</a>, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG, and TIFF.  Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
 
 <p>The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: <a href="www/api.html#ada">G2F</a> (Ada), <a href="www/api.html#c">MagickCore</a> (C), <a href="www/api.html#c">MagickWand</a> (C), <a href="www/api.html#ch">ChMagick</a> (Ch), <a href="www/api.html#com+">ImageMagickObject</a> (COM+), <a href="www/api.html#c++">Magick++</a> (C++), <a href="www/api.html#java">JMagick</a> (Java), <a href="www/api.html#lisp">L-Magick</a> (Lisp), <a href="www/api.html#neko">NMagick</a> (Neko/haXe), <a href="www/api.html#dot-net">MagickNet</a> (.NET), <a href="www/api.html#pascal">PascalMagick</a> (Pascal),  <a href="www/api.html#perl">PerlMagick</a> (Perl), <a href="www/api.html#php">MagickWand for PHP</a> (PHP),  <a href="www/api.html#php">IMagick</a> (PHP), <a href="www/api.html#python">PythonMagick</a> (Python), <a href="www/api.html#ruby">RMagick</a> (Ruby), or <a href="www/api.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <em>automagically</em>.</p>
 
 <p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute. Its <a href="http://www.imagemagick.org/www/license.html" rel="license">license</a> is compatible with the <a href="http://www.fsf.org/licensing/licenses/">GPL</a>.  It runs on all major operating systems.</p>
+</div>
 
 <div class="siz-mod-head">
   <span class="siz-mod-title"></span>
@@ -173,6 +175,7 @@
 <div style="margin: auto;">
   <h2><a name="features"></a>Features and Capabilities</h2>
 </div>
+<div class="doc-section">
 <p>Here are just a few <a href="www/examples.html">examples</a> of what ImageMagick can do:</p>
 
 <ul style="font-size: 80%;">
@@ -193,26 +196,29 @@
   <li><a href="www/high-dynamic-range.html">High dynamic-range images</a>: accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</li>
   <li><a href="www/cipher.html">Encipher or decipher an image</a>: convert ordinary images into unintelligible gibberish and back again.</li>
   <li>Virtual pixel support: convenient access to pixels outside the image region.</li>
-  <li>Large image support: read, process, or write mega-, giga-, or tera-pixel image sizes.</li>
+  <li><a href="www/architecture.html#tera-pixel">Large image support</a>: read, process, or write mega-, giga-, or tera-pixel image sizes.</li>
   <li><a href="www/architecture.html#threads">Threads of execution support</a>: ImageMagick is thread safe and most internal algorithms are OpenMP-enabled to take advantage of speed-ups offered by the dual and quad-core processor technologies.</li>
   <li><a href="www/architecture.html#distributed">Heterogeneous distributed processing</a>: certain algorithms are OpenCL-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</li>
 </ul>
 
 <p><a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations.</p>
+</div>
 
 <div style="margin: auto;">
   <h2><a name="books"></a>Books About ImageMagick</h2>
 </div>
+<div class="doc-section">
 <p><a href="http://www.amazon.com/exec/obidos/redirect?link_code=ur2&amp;camp=1789&amp;tag=imagemagick-20&amp;creative=9325&amp;path=tg/detail/-/1590595904/qid=1123551819/sr=8-1/ref=pd_bbs_sbs_1?v=glance%26s=books%26n=507846"><img alt="Definitive Guide to ImageMagick" class="icon" width="100" height="136" src="images/definitive-guide.png"/></a> An open source project backed by years of continual development, ImageMagick supports about 100 image formats and can perform impressive operations such as creating images from scratch; changing colors; stretching, rotating, and overlaying images; and overlaying text on images. Whether you use ImageMagick to manage the family photos or to embark on a job involving millions of images, this book provides you with the knowledge to manage your images with ease.<br /><br />The <em>Definitive Guide to ImageMagick</em> explains all of these capabilities and more in a practical, learn-by-example fashion. You'll get comfortable using ImageMagick for any image-processing task. Through the book's coverage of the ImageMagick interfaces for C, Perl, PHP, and Ruby, you'll learn how to incorporate ImageMagick features into a variety of applications.</p><br />
 
 <p><a href="http://www.amazon.com/exec/obidos/redirect?link_code=ur2&amp;camp=1789&amp;tag=imagemagick-20&amp;creative=9325&amp;path=tg/detail/-/1904811868/qid=1123551819/sr=8-1/ref=pd_bbs_sbs_1?v=glance%26s=books%26n=507846"><img alt="ImageMagick Tricks" class="icon" width="100" height="123" src="images/tricks.png"/></a> <em>ImageMagick Tricks</em> by Sohail Salehi: This fast-paced and practical tutorial is packed with examples of photo manipulations, logo creation, animations, and complete web projects. With this book up your sleeve, you'll be creating spellbinding images from code in no time. The publisher, <a href="http://www.packtpub.com/">Packt</a>, is donating a percentage of every book sold to the ImageMagick project.</p><br />
+</div>
 
 <div style="margin: auto;">
   <h2><a name="community"></a>User Community</h2>
 </div>
-
-<p>To join the ImageMagick user community, try the <a href="http://www.imagemagick.org/discourse-server/">discourse server</a> or <a href="www/mailing-list.html">mailing lists</a>.  Both permit you to review questions or comments (with informed responses) posed by ImageMagick users as well as an opportunity to ask your own questions.</p>
-
+<div class="doc-section">
+<p>To join the ImageMagick user community, try the <a href="http://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions.</p>
+</div>
 
 </div>
 
@@ -220,7 +226,6 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-      <a href="www/mailing-list.html">Mailing Lists</a> &bull;
     <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>

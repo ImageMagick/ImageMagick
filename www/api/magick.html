@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -155,8 +155,21 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#IsMagickInstantiated">IsMagickInstantiated</a> &bull; <a href="#MagickCoreGenesis">MagickCoreGenesis</a> &bull; <a href="#MagickCoreTerminus">MagickCoreTerminus</a>]</p>
+<p class="navigation-index">[<a href="#GetMagickPrecision">GetMagickPrecision</a> &bull; <a href="#IsMagickInstantiated">IsMagickInstantiated</a> &bull; <a href="#MagickCoreGenesis">MagickCoreGenesis</a> &bull; <a href="#MagickCoreTerminus">MagickCoreTerminus</a> &bull; <a href="#SetMagickPrecision">SetMagickPrecision</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" target="source" name="GetMagickPrecision">GetMagickPrecision</a></h2>
+<div class="doc-section">
+
+<p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p></ol>
+
+<p>The format of the GetMagickPrecision method is:</p>
+
+<pre class="code">
+  int GetMagickPrecision(void)
+</pre>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/magick
 _8c.html" target="source" name="IsMagickInstantiated">IsMagickInstantiated</a></h2>
 <div class="doc-section">
@@ -205,6 +218,24 @@ _8c.html" target="source" name="MagickCoreTerminus">MagickCoreTerminus</a></h2>
 </pre>
 
  </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" target="source" name="SetMagickPrecision">SetMagickPrecision</a></h2>
+<div class="doc-section">
+
+<p>SetMagickPrecision() sets the maximum number of significant digits to be printed and returns it.</p></ol>
+
+<p>The format of the SetMagickPrecision method is:</p>
+
+<pre class="code">
+  int SetMagickPrecision(const int precision)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>precision</h5>
+<ol><p>set the maximum number of significant digits to be printed.</p></ol>
+
+ </div>
 
 </div>
 
@@ -212,7 +243,6 @@ _8c.html" target="source" name="MagickCoreTerminus">MagickCoreTerminus</a></h2>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-      <a href="../../www/mailing-list.html">Mailing Lists</a> &bull;
     <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>

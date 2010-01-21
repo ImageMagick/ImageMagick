@@ -271,6 +271,56 @@ MagickExport NexusInfo **AcquirePixelCacheNexus(
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   A c q u i r e P i x e l C a c h e P i x e l s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquirePixelCachePixels() returns the pixels associated with the specified
+%  image.
+%
+%  The format of the AcquirePixelCachePixels() method is:
+%
+%      const void *AcquirePixelCachePixels(const Image *image,
+%        MagickSizeType *length,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length: the pixel cache length.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport const void *AcquirePixelCachePixels(const Image *image,
+  MagickSizeType *length,ExceptionInfo *exception)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  *length=0;
+  if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
+    return((const void *) NULL);
+  *length=cache_info->length;
+  return((const void *) cache_info->pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C a c h e C o m p o n e n t G e n e s i s                                 %
 %                                                                             %
 %                                                                             %
@@ -3912,7 +3962,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
 %
 */
 
-static inline void AcquirePixelCachePixels(CacheInfo *cache_info)
+static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
 {
   cache_info->mapped=MagickFalse;
   cache_info->pixels=(PixelPacket *) AcquireMagickMemory((size_t)
@@ -4016,7 +4066,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if (((cache_info->type == UndefinedCache) && (status != MagickFalse)) ||
           (cache_info->type == MemoryCache))
         {
-          AcquirePixelCachePixels(cache_info);
+          AllocatePixelCachePixels(cache_info);
           if (cache_info->pixels == (PixelPacket *) NULL)
             cache_info->pixels=source_info.pixels;
           else

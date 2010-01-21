@@ -32,6 +32,9 @@ extern MagickExport const PixelPacket
     const unsigned long,ExceptionInfo *),
   *GetVirtualPixelQueue(const Image *);
 
+extern MagickExport const void
+  *AcquirePixelCachePixels(const Image *,MagickSizeType *,ExceptionInfo *);
+
 extern MagickExport IndexPacket
   *GetAuthenticIndexQueue(const Image *);
 

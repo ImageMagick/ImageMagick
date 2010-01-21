@@ -18,13 +18,11 @@
 filtersdir = $(FILTER_PATH)
 
 MAGICK_FILTER_SRCS = \
-	filters/analyze.c \
-	filters/convolve.c
+	filters/analyze.c
 
 if WITH_MODULES
 filters_LTLIBRARIES = \
-	filters/analyze.la \
-	filters/convolve.la
+	filters/analyze.la
 else
 filters_LTLIBRARIES =
 endif # WITH_MODULES
@@ -34,9 +32,3 @@ filters_analyze_la_SOURCES      = filters/analyze.c
 filters_analyze_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 filters_analyze_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
-
-# convolve filter module
-filters_convolve_la_SOURCES     = filters/convolve.c
-filters_convolve_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
-filters_convolve_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-filters_convolve_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)

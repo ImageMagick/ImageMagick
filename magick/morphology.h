@@ -82,6 +82,8 @@ typedef struct
   MagickBooleanType
     normalized;
 
+  unsigned long
+    signature;
 } MagickKernel;
 
 extern MagickExport MagickKernel

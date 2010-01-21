@@ -41,7 +41,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
+#include "magick/accelerate.h"
 #include "magick/blob.h"
 #include "magick/cache-view.h"
 #include "magick/color.h"
@@ -2165,9 +2165,6 @@ MagickExport Image *FilterImageChannel(const Image *image,
     *filter_view,
     *image_view;
 
-  double
-    *normal_kernel;
-
   Image
     *filter_image;
 
@@ -2180,12 +2177,6 @@ MagickExport Image *FilterImageChannel(const Image *image,
 
   MagickPixelPacket
     bias;
-
-  MagickRealType
-    gamma;
-
-  register long
-    i;
 
   /*
     Initialize filter image attributes.
@@ -2238,22 +2229,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
       }
       message=DestroyString(message);
     }
-  /*
-    Normalize kernel.
-  */
-  normal_kernel=(double *) AcquireQuantumMemory(kernel->width*kernel->height,
-    sizeof(*normal_kernel));
-  if (normal_kernel == (double *) NULL)
-    {
-      filter_image=DestroyImage(filter_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  gamma=0.0;
-  for (i=0; i < (long) (kernel->width*kernel->height); i++)
-    gamma+=kernel->values[i];
-  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-  for (i=0; i < (long) (kernel->width*kernel->height); i++)
-    normal_kernel[i]=gamma*kernel->values[i];
+  status=AccelerateConvolveImage(image,kernel,filter_image,exception);
+  if (status == MagickTrue)
+    return(filter_image);
   /*
     Filter image.
   */
@@ -2318,7 +2296,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
         u;
 
       pixel=bias;
-      k=normal_kernel;
+      k=kernel->values;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
         {
@@ -2341,7 +2319,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
-              k=normal_kernel;
+              k=kernel->values;
               kernel_pixels=p;
               for (v=0; v < (long) kernel->width; v++)
               {
@@ -2360,7 +2338,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               register const IndexPacket
                 *restrict kernel_indexes;
 
-              k=normal_kernel;
+              k=kernel->values;
               kernel_indexes=indexes;
               for (v=0; v < (long) kernel->width; v++)
               {
@@ -2404,7 +2382,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
-              k=normal_kernel;
+              k=kernel->values;
               kernel_pixels=p;
               for (v=0; v < (long) kernel->width; v++)
               {
@@ -2423,7 +2401,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               register const IndexPacket
                 *restrict kernel_indexes;
 
-              k=normal_kernel;
+              k=kernel->values;
               kernel_pixels=p;
               kernel_indexes=indexes;
               for (v=0; v < (long) kernel->width; v++)
@@ -2464,7 +2442,6 @@ MagickExport Image *FilterImageChannel(const Image *image,
   filter_image->type=image->type;
   filter_view=DestroyCacheView(filter_view);
   image_view=DestroyCacheView(image_view);
-  normal_kernel=(double *) RelinquishMagickMemory(normal_kernel);
   if (status == MagickFalse)
     filter_image=DestroyImage(filter_image);
   return(filter_image);
