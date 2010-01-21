@@ -101,7 +101,8 @@ CPPFLAGS=$ax_save_CPPFLAGS])
 
 AS_IF([test "X$ax_cv_check_cl_libcl" = Xno],
       [no_cl=yes; CL_CFLAGS=""; CL_LIBS=""],
-      [CL_LIBS="$ax_cv_check_cl_libcl $CL_LIBS"])
+      [CL_LIBS="$ax_cv_check_cl_libcl $CL_LIBS"; AC_DEFINE([_OPENCL], [1],
+    [Define this for the OpenCL Accelerator])])
 AC_LANG_POP([C])
 
 AC_SUBST([CL_CFLAGS])

@@ -10059,13 +10059,13 @@ Mogrify(ref,...)
         }
         case 131:  /* Filter */
         {
-          MagickKernel
+          KernelInfo
             *kernel;
 
           if (attribute_flag[0] == 0)
             break;
           kernel=AcquireKernelFromString(argument_list[0].string_reference);
-          if (kernel == (MagickKernel *) NULL)
+          if (kernel == (KernelInfo *) NULL)
             break;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].long_reference;
