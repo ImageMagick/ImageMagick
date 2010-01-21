@@ -1,15 +1,15 @@
 # -*- mode: autoconf -*-
 #
-# AX_CHECK_CL
+# AX_OPENCL
 #
-# Check for an OpenCL implementation.  If CL is found, the required compiler
-# and linker flags are included in the output variables "CL_CFLAGS" and
-# "CL_LIBS", respectively.  If no usable CL implementation is found, "no_cl"
-# is set to "yes".
+# Check for an OpenCL implementation.  If CL is found, _OPENCL is defined and
+# the required compiler and linker flags are included in the output variables
+# "CL_CFLAGS" and "CL_LIBS", respectively.  If no usable CL implementation is
+# found, "no_cl" is set to "yes".
 #
-# If the header "CL/OpenCL.h" is found, "HAVE_CL_OPENCL_H" is defined.  If the header
-# "OpenCL/OpenCL.h" is found, HAVE_OPENCL_OPENCL_H is defined.  These preprocessor
-# definitions may not be mutually exclusive.
+# If the header "CL/OpenCL.h" is found, "HAVE_CL_OPENCL_H" is defined.  If the
+# header "OpenCL/OpenCL.h" is found, HAVE_OPENCL_OPENCL_H is defined.  These
+# preprocessor definitions may not be mutually exclusive.
 #
 # Based on AX_CHECK_GL, version: 2.4 author: Braden McDaniel
 # <braden@endoframe.com>
@@ -34,7 +34,7 @@
 # the Macro.  You need not follow the terms of the GNU General Public
 # License when using or distributing such scripts.
 #
-AC_DEFUN([AX_CHECK_CL],
+AC_DEFUN([AX_OPENCL],
 [AC_REQUIRE([AC_CANONICAL_HOST])dnl
 AC_REQUIRE([AC_PROG_SED])dnl
 AC_REQUIRE([ACX_PTHREAD])dnl
@@ -58,7 +58,7 @@ if test "$disable_opencl" = 'yes'; then
   
   AC_CHECK_HEADERS([windows.h])
   
-  m4_define([AX_CHECK_CL_PROGRAM],
+  m4_define([AX_OPENCL_PROGRAM],
             [AC_LANG_PROGRAM([[
   # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
   #   include <windows.h>
@@ -88,19 +88,19 @@ if test "$disable_opencl" = 'yes'; then
           [ax_try_lib=`echo $ax_lib | $SED -e 's/^-l//' -e 's/$/.lib/'`],
           [ax_try_lib=$ax_lib])
     LIBS="$ax_try_lib $CL_LIBS $ax_save_LIBS"
-  AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
+  AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                  [ax_cv_check_cl_libcl=$ax_try_lib; break],
                  [ax_check_cl_nvidia_flags="-L/usr/$ax_check_cl_libdir/nvidia" LIBS="$ax_try_lib $ax_check_cl_nvidia_flags $CL_LIBS $ax_save_LIBS"
-                 AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
+                 AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                                 [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_nvidia_flags"; break],
                                 [ax_check_cl_dylib_flag='-framework OpenCL -L/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
-                                AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
+                                AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                                                [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_dylib_flag"; break])])])
   done
   
   AS_IF([test "X$ax_cv_check_cl_libcl" = Xno -a X$no_x = Xyes],
         [LIBS='-framework OpenCL'
-        AC_LINK_IFELSE([AX_CHECK_CL_PROGRAM],
+        AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                        [ax_cv_check_cl_libcl=$LIBS])])
   
   LIBS=$ax_save_LIBS

@@ -20,7 +20,7 @@ M4_EXTRA_DIST =  \
   ac_prog_perl_version.m4 \
   acx_pthread.m4 \
   argz.m4 \
-  ax_check_cl.m4 \
+  ax_opencl.m4 \
   ax_lang_compiler_ms.m4 \
   ax_prefix_config_h.m4 \
   cxx_have_bool.m4 \
