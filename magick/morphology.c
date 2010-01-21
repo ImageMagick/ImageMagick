@@ -103,7 +103,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireKernelFromString() takes the given string (generally supplied by the
+%  AcquireKernelInfo() takes the given string (generally supplied by the
 %  user) and converts it into a Morphology/Convolution Kernel.  This allows
 %  users to specify a kernel from a number of pre-defined kernels, or to fully
 %  specify their own kernel for a specific Convolution or Morphology
@@ -152,7 +152,7 @@
 %
 %  The format of the AcquireKernal method is:
 %
-%      MagickKernel *AcquireKernelFromString(const char *kernel_string)
+%      KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  A description of each parameter follows:
 %
@@ -160,9 +160,9 @@
 %
 */
 
-MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
+MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 {
-  MagickKernel
+  KernelInfo
     *kernel;
 
   char
@@ -190,9 +190,9 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
     long
       type;
 
-    type=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+    type=ParseMagickOption(KernelInfoOptions,MagickFalse,token);
     if ( type < 0 || type == UserDefinedKernel )
-      return((MagickKernel *)NULL);
+      return((KernelInfo *)NULL);
 
     while (((isspace((int) ((unsigned char) *p)) != 0) ||
            (*p == ',') || (*p == ':' )) && (*p != '\0'))
@@ -213,11 +213,11 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
         args.psi = (double)(((long)args.sigma-1)/2);
     }
 
-    return(AcquireKernelBuiltIn((MagickKernelType)type, &args));
+    return(AcquireKernelBuiltIn((KernelInfoType)type, &args));
   }
 
-  kernel=(MagickKernel *) AcquireMagickMemory(sizeof(*kernel));
-  if (kernel == (MagickKernel *)NULL)
+  kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+  if (kernel == (KernelInfo *)NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
   kernel->type = UserDefinedKernel;
@@ -322,7 +322,7 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
 %
 %  The format of the AcquireKernalBuiltIn method is:
 %
-%      MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
+%      KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %           const GeometryInfo args)
 %
 %  A description of each parameter follows:
@@ -473,10 +473,10 @@ MagickExport MagickKernel *AcquireKernelFromString(const char *kernel_string)
 %
 */
 
-MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
+MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
    const GeometryInfo *args)
 {
-  MagickKernel
+  KernelInfo
     *kernel;
 
   register unsigned long
@@ -489,8 +489,8 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
   double
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
 
-  kernel=(MagickKernel *) AcquireMagickMemory(sizeof(*kernel));
-  if (kernel == (MagickKernel *) NULL)
+  kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+  if (kernel == (KernelInfo *) NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
   kernel->value_min = kernel->value_max = 0.0;
@@ -656,7 +656,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
             kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
           }
         else {
-            /* NOTE: user defaults set in "AcquireKernelFromString()" */
+            /* NOTE: user defaults set in "AcquireKernelInfo()" */
             if ( args->rho < 1.0 || args->sigma < 1.0 )
               return(DestroyKernel(kernel));       /* invalid args given */
             kernel->width = (unsigned long)args->rho;
@@ -858,7 +858,7 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
 %
 %  The format of the DestroyKernel method is:
 %
-%      MagickKernel *DestroyKernel(MagickKernel *kernel)
+%      KernelInfo *DestroyKernel(KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -866,11 +866,11 @@ MagickExport MagickKernel *AcquireKernelBuiltIn(const MagickKernelType type,
 %
 */
 
-MagickExport MagickKernel *DestroyKernel(MagickKernel *kernel)
+MagickExport KernelInfo *DestroyKernel(KernelInfo *kernel)
 {
-  assert(kernel != (MagickKernel *) NULL);
+  assert(kernel != (KernelInfo *) NULL);
   kernel->values=(double *)RelinquishMagickMemory(kernel->values);
-  kernel=(MagickKernel *) RelinquishMagickMemory(kernel);
+  kernel=(KernelInfo *) RelinquishMagickMemory(kernel);
   return(kernel);
 }
 
@@ -890,14 +890,14 @@ MagickExport MagickKernel *DestroyKernel(MagickKernel *kernel)
 %
 %  The format of the KernelNormalize method is:
 %
-%      void KernelRotate (MagickKernel *kernel)
+%      void KernelRotate (KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o kernel: the Morphology/Convolution kernel
 %
 */
-MagickExport void KernelNormalize(MagickKernel *kernel)
+MagickExport void KernelNormalize(KernelInfo *kernel)
 {
   register unsigned long
     i;
@@ -928,21 +928,21 @@ MagickExport void KernelNormalize(MagickKernel *kernel)
 %
 %  The format of the KernelNormalize method is:
 %
-%      void KernelPrint (MagickKernel *kernel)
+%      void KernelPrint (KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o kernel: the Morphology/Convolution kernel
 %
 */
-MagickExport void KernelPrint(MagickKernel *kernel)
+MagickExport void KernelPrint(KernelInfo *kernel)
 {
   unsigned long
     i, u, v;
 
   fprintf(stderr,
         "Kernel \"%s\" of size %lux%lu%+ld%+ld  with value from %lg to %lg\n",
-        MagickOptionToMnemonic(MagickKernelOptions, kernel->type),
+        MagickOptionToMnemonic(KernelInfoOptions, kernel->type),
         kernel->width, kernel->height,
         kernel->offset_x, kernel->offset_y,
         kernel->value_min, kernel->value_max);
@@ -973,7 +973,7 @@ MagickExport void KernelPrint(MagickKernel *kernel)
 %
 %  The format of the KernelRotate method is:
 %
-%      void KernelRotate (MagickKernel *kernel, double angle)
+%      void KernelRotate (KernelInfo *kernel, double angle)
 %
 %  A description of each parameter follows:
 %
@@ -982,7 +982,7 @@ MagickExport void KernelPrint(MagickKernel *kernel)
 %    o angle: angle to rotate in degrees
 %
 */
-MagickExport void KernelRotate(MagickKernel *kernel, double angle)
+MagickExport void KernelRotate(KernelInfo *kernel, double angle)
 {
   /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
   **
@@ -1087,8 +1087,11 @@ MagickExport void KernelRotate(MagickKernel *kernel, double angle)
 %  The format of the MorphologyImage method is:
 %
 %      Image *MorphologyImage(const Image *image, const MorphologyMethod
-%        method, const long iterations, const ChannelType channel,
-%        const MagickKernel *kernel, ExceptionInfo *exception)
+%        method, const long iterations, const KernelInfo *kernel,
+%        ExceptionInfo *exception)
+%      Image *MorphologyImage(const Image *image, const ChannelType channel,
+%        const MorphologyMethod method, const long iterations, 
+%        const KernelInfo *kernel, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1142,9 +1145,9 @@ static inline double MagickMax(const MagickRealType x,const MagickRealType y)
  */
 static unsigned long MorphologyApply(const Image *image, Image
      *result_image, const MorphologyMethod method, const ChannelType channel,
-     const MagickKernel *kernel, ExceptionInfo *exception)
+     const KernelInfo *kernel, ExceptionInfo *exception)
 {
-  #define MorphologyTag  "Morphology/Image"
+#define MorphologyTag  "Morphology/Image"
 
   long
     progress,
@@ -1576,9 +1579,20 @@ static unsigned long MorphologyApply(const Image *image, Image
   return(status ? changed : 0);
 }
 
-MagickExport Image *MorphologyImage(const Image *image,
+MagickExport Image *MorphologyImage(const Image *image,MorphologyMethod method,
+  const long iterations,KernelInfo *kernel, ExceptionInfo *exception)
+{
+  Image
+    *morphology_image;
+
+  morphology_image=MorphologyImageChannel(image,DefaultChannels,method,
+    iterations,kernel,exception);
+  return(morphology_image);
+}
+
+MagickExport Image *MorphologyImageChannel(const Image *image,
   const ChannelType channel, MorphologyMethod method, const long iterations,
-  MagickKernel *kernel, ExceptionInfo *exception)
+  KernelInfo *kernel, ExceptionInfo *exception)
 {
   unsigned long
     count,
@@ -1603,7 +1617,7 @@ MagickExport Image *MorphologyImage(const Image *image,
   /* kernel must be valid at this point
    * (except maybe for posible future morphology methods like "Prune"
    */
-  assert(kernel != (MagickKernel *)NULL);
+  assert(kernel != (KernelInfo *)NULL);
 
   count = 0;
   limit = iterations;
@@ -1614,28 +1628,28 @@ MagickExport Image *MorphologyImage(const Image *image,
   changed=MagickFalse;
   switch( method ) {
     case CloseMorphology:
-      new_image = MorphologyImage(image, DialateMorphology, iterations, channel,
+      new_image = MorphologyImageChannel(image, DialateMorphology, iterations, channel,
             kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);
       method = ErodeMorphology;
       break;
     case OpenMorphology:
-      new_image = MorphologyImage(image, ErodeMorphology, iterations, channel,
+      new_image = MorphologyImageChannel(image, ErodeMorphology, iterations, channel,
             kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);
       method = DialateMorphology;
       break;
     case CloseIntensityMorphology:
-      new_image = MorphologyImage(image, DialateIntensityMorphology,
+      new_image = MorphologyImageChannel(image, DialateIntensityMorphology,
             iterations, channel, kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);
       method = ErodeIntensityMorphology;
       break;
     case OpenIntensityMorphology:
-      new_image = MorphologyImage(image, ErodeIntensityMorphology,
+      new_image = MorphologyImageChannel(image, ErodeIntensityMorphology,
             iterations, channel, kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);

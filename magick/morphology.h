@@ -42,7 +42,7 @@ typedef enum
   ManhattenKernel,
   EuclideanKernel,
   UserDefinedKernel   /* user specified kernel values */
-} MagickKernelType;
+} KernelInfoType;
 
 typedef enum
 {
@@ -61,7 +61,7 @@ typedef enum
 
 typedef struct
 {
-  MagickKernelType
+  KernelInfoType
     type;
 
   unsigned long
@@ -70,8 +70,8 @@ typedef struct
     offset_x,
     offset_y;
 
-  double *
-    values;
+  double
+    *values;
 
   double
     value_min,
@@ -84,22 +84,23 @@ typedef struct
 
   unsigned long
     signature;
-} MagickKernel;
+} KernelInfo;
 
-extern MagickExport MagickKernel
-  *AcquireKernelFromString(const char *),
-  *AcquireKernelBuiltIn(const MagickKernelType, const GeometryInfo *),
-  *DestroyKernel(MagickKernel *);
+extern MagickExport KernelInfo
+  *AcquireKernelInfo(const char *),
+  *AcquireKernelBuiltIn(const KernelInfoType, const GeometryInfo *),
+  *DestroyKernel(KernelInfo *);
 
 extern MagickExport void
-  KernelNormalize(MagickKernel *),
-  KernelPrint(MagickKernel *),
-  KernelRotate(MagickKernel *, double);
+  KernelNormalize(KernelInfo *),
+  KernelPrint(KernelInfo *),
+  KernelRotate(KernelInfo *, double);
 
 extern MagickExport Image
-  *MorphologyImage(const Image *, const ChannelType, MorphologyMethod,
-      const long, MagickKernel *, ExceptionInfo *);
-
+  *MorphologyImage(const Image *,MorphologyMethod,const long,KernelInfo *,
+    ExceptionInfo *),
+  *MorphologyImageChannel(const Image *,const ChannelType,MorphologyMethod,
+    const long,KernelInfo *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

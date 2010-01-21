@@ -96,7 +96,7 @@
 %  The format of the AccelerateConvolveImage method is:
 %
 %      Image *AccelerateConvolveImage(const Image *image,
-%        const MagickKernel *kernel,Image *convolve_image,
+%        const KernelInfo *kernel,Image *convolve_image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -587,13 +587,13 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
 #endif
 
 MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
-  const MagickKernel *kernel,Image *convolve_image,ExceptionInfo *exception)
+  const KernelInfo *kernel,Image *convolve_image,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(kernel != (MagickKernel *) NULL);
+  assert(kernel != (KernelInfo *) NULL);
   assert(kernel->signature == MagickSignature);
   assert(convolve_image != (Image *) NULL);
   assert(convolve_image->signature == MagickSignature);

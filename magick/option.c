@@ -1115,7 +1115,7 @@ static const OptionInfo
     { "Intent", (long) MagickIntentOptions, MagickFalse },
     { "Interlace", (long) MagickInterlaceOptions, MagickFalse },
     { "Interpolate", (long) MagickInterpolateOptions, MagickFalse },
-    { "Kernel", (long) MagickKernelOptions, MagickFalse },
+    { "Kernel", (long) KernelInfoOptions, MagickFalse },
     { "Layers", (long) MagickLayerOptions, MagickFalse },
     { "LineCap", (long) MagickLineCapOptions, MagickFalse },
     { "LineJoin", (long) MagickLineJoinOptions, MagickFalse },
@@ -1702,7 +1702,7 @@ static const OptionInfo *GetOptionInfo(const MagickOption option)
     case MagickIntentOptions: return(IntentOptions);
     case MagickInterlaceOptions: return(InterlaceOptions);
     case MagickInterpolateOptions: return(InterpolateOptions);
-    case MagickKernelOptions: return(KernelOptions);
+    case KernelInfoOptions: return(KernelOptions);
     case MagickLayerOptions: return(LayerOptions);
     case MagickLineCapOptions: return(LineCapOptions);
     case MagickLineJoinOptions: return(LineJoinOptions);

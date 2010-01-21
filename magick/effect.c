@@ -2129,10 +2129,10 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %  The format of the FilterImage method is:
 %
-%      Image *FilterImage(const Image *image,const MagickKernel *kernel,
+%      Image *FilterImage(const Image *image,const KernelInfo *kernel,
 %        ExceptionInfo *exception)
 %      Image *FilterImageChannel(const Image *image,const ChannelType channel,
-%        const MagickKernel *kernel,ExceptionInfo *exception)
+%        const KernelInfo *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2146,7 +2146,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 */
 
-MagickExport Image *FilterImage(const Image *image,const MagickKernel *kernel,
+MagickExport Image *FilterImage(const Image *image,const KernelInfo *kernel,
   ExceptionInfo *exception)
 {
   Image
@@ -2157,7 +2157,7 @@ MagickExport Image *FilterImage(const Image *image,const MagickKernel *kernel,
 }
 
 MagickExport Image *FilterImageChannel(const Image *image,
-  const ChannelType channel,const MagickKernel *kernel,ExceptionInfo *exception)
+  const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
 {
 #define FilterImageTag  "Filter/Image"
 
