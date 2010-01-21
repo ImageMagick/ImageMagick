@@ -28,6 +28,7 @@ AC_CONFIG_FILES([\
     config/ImageMagick.rdf \
     config/MagickCore.dox \
     config/MagickWand.dox \
+    config/type-dejavu.xml \
     config/type-ghostscript.xml \
     config/type-windows.xml \
     config/type.xml \
@@ -1585,6 +1586,21 @@ AC_SUBST(DJVU_LIBS)
 dnl ===========================================================================
 
 #
+# Set DejaVu font directory.
+#
+AC_ARG_WITH([dejavu-font-dir],
+    [AC_HELP_STRING([--with-dejavu-font-dir=DIR],
+                    [DejaVu font directory])],
+    [with_dejavu_font_dir=$withval],
+    [with_dejavu_font_dir='default'])
+
+if test "$with_dejavu_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-dejavu-font-dir=$with_dejavu_font_dir "
+fi
+
+dnl ===========================================================================
+
+#
 # Check for FFTW delegate library.
 #
 AC_ARG_WITH([fftw],
@@ -2729,12 +2745,33 @@ have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then hav
 #
 type_include_files=''
 
+# Dejavu fonts.
+AC_MSG_CHECKING(for Dejavu fonts directory)
+dejavu_font_dir=''
+if test "${with_dejavu_font_dir}" != 'default'; then
+  dejavu_font_dir="${with_dejavu_font_dir}/"
+else
+  for font_dir in "${prefix}/share/dejavu/fonts/" '/usr/share/fonts/dejavu/'; do
+    if test -f "${font_dir}DejaVuSerif.ttf"; then
+      dejavu_font_dir="${font_dir}"
+      break 1
+    fi
+  done
+fi
+if test "${dejavu_font_dir}x" != 'x'; then
+  type_include_files="${type_include_files} "'<include file="type-dejavu.xml" />'
+  AC_MSG_RESULT([$dejavu_font_dir])
+else
+  AC_MSG_RESULT([not found!]);
+fi
+AC_SUBST(dejavu_font_dir)
+
 # Windows
 windows_font_dir=''
 if test "$with_windows_font_dir" != "no" && test -n "$with_windows_font_dir"; then
    windows_font_dir="${with_windows_font_dir}/"
 fi
-if test -n "$windows_font_dir"; then
+if test "${windows_font_dir}x" != 'x'; then
     if test -f '/usr/X11R6/lib/X11/fonts/truetype/arial.ttf'; then
       windows_font_dir='/usr/X11R6/lib/X11/fonts/truetype/'
     fi
@@ -2745,7 +2782,7 @@ if test -n "$windows_font_dir"; then
       windows_font_dir='/usr/share/fonts/msttcore/truetype/'
     fi
 fi
-if test -n "$windows_font_dir"; then
+if test "${windows_font_dir}x" != 'x'; then
   type_include_files="$type_include_files "'<include file="type-windows.xml" />'
 fi
 AC_SUBST(windows_font_dir)
@@ -3320,6 +3357,11 @@ AC_OUTPUT
 
 rm -f magick-version
 
+result_dejavu_font_dir='none'
+if test "${dejavu_font_dir}x" != 'x'; then
+    result_dejavu_font_dir=$dejavu_font_dir
+fi
+
 result_ghostscript_font_dir='none'
 if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
@@ -3350,6 +3392,7 @@ High Dynamic Range Imagery
 Delegate Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
 Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
+Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw

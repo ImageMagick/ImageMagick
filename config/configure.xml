@@ -10,19 +10,19 @@
   <configure name="LIB_VERSION" value="0x659"/>
   <configure name="LIB_VERSION_NUMBER" value="6,5,9,1"/>
   <configure name="RELEASE_DATE" value="2010-01-21"/>
-  <configure name="CONFIGURE" value="./configure  '--enable-maintainer-mode'"/>
+  <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="VERSION" value="6.5.9"/>
   <configure name="CC" value="gcc -std=gnu99"/>
-  <configure name="CFLAGS" value="-fopenmp -g -O2 -Wall -W -pthread"/>
+  <configure name="CFLAGS" value="-fopenmp -g -O2 -Wall -W -ansi -pedantic -pthread"/>
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib "/>
   <configure name="LIBS" value="-lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -ldjvulibre -lfftw3 -lfontconfig -lwmflite -lXext -lXt -lSM -lICE -lX11 -lbz2 -pthread -lrsvg-2 -lgdk_pixbuf-2.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lrt -lglib-2.0 -lxml2 -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
-  <configure name="CXXFLAGS" value="-g -O2 -Wall -W -pthread"/>
+  <configure name="CXXFLAGS" value="-g -O2 -Wall -W -ansi -pedantic -pthread"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath="/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
   <configure name="DELEGATES" value="bzlib djvu fftw fontconfig freetype jpeg jng jp2 lcms mpeg png rsvg tiff x11 xml wmf zlib"/>
