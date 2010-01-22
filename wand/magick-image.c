@@ -7082,6 +7082,78 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k M o r p h o l o g y I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMorphologyImage() applies a user supplied kernel to the image
+%  according to the given mophology method.
+%
+%  The format of the MagickMorphologyImage method is:
+%
+%      MagickBooleanType MagickMorphologyImage(MagickWand *wand,
+%        MorphologyMethod method,const long iterations,KernelInfo *kernel)
+%      MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
+%        ChannelType channel,MorphologyMethod method,const long iterations,
+%        KernelInfo *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o method: the morphology method to be applied.
+%
+%    o iterations: apply the operation this many times (or no change).
+%      A value of -1 means loop until no change found.  How this is applied
+%      may depend on the morphology method.  Typically this is a value of 1.
+%
+%    o kernel: An array of doubles representing the morphology kernel.
+%
+*/
+
+WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
+  MorphologyMethod method,const long iterations,KernelInfo *kernel)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickMorphologyImageChannel(wand,DefaultChannels,method,iterations,
+    kernel);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
+  const ChannelType channel,MorphologyMethod method,const long iterations,
+  KernelInfo *kernel)
+{
+  Image
+    *morphology_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (kernel == (const KernelInfo *) NULL)
+    return(MagickFalse);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  morphology_image=MorphologyImageChannel(wand->images,channel,method,
+    iterations,kernel,wand->exception);
+  if (morphology_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,morphology_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k M o t i o n B l u r I m a g e                                 %
 %                                                                             %
 %                                                                             %

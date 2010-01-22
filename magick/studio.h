@@ -159,23 +159,45 @@ extern "C" {
 
 #include <stdarg.h>
 #include <stdio.h>
+#if defined(MAGICKCORE_HAVE_SYS_STAT_H)
+# include <sys/stat.h>
+#endif
+#if defined(MAGICKCORE_STDC_HEADERS)
+# include <stdlib.h>
+# include <stddef.h>
+#else
+# if defined(MAGICKCORE_HAVE_STDLIB_H)
+#  include <stdlib.h>
+# endif
+#endif
+#if defined(MAGICKCORE_HAVE_STRING_H)
+# if !defined(STDC_HEADERS) && defined(MAGICKCORE_HAVE_MEMORY_H)
+#  include <memory.h>
+# endif
+# include <string.h>
+#endif
+#if defined(MAGICKCORE_HAVE_STRINGS_H)
+# include <strings.h>
+#endif
+#if defined(MAGICKCORE_HAVE_INTTYPES_H)
+# include <inttypes.h>
+#endif
+#if defined(MAGICKCORE_HAVE_STDINT_H)
+# include <stdint.h>
+#endif
+#if defined(MAGICKCORE_HAVE_UNISTD_H)
+# include <unistd.h>
+#endif
 #if defined(__WINDOWS__) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
-#include <stdlib.h>
-#if !defined(__WINDOWS__)
-# include <unistd.h>
-#else
+#if defined(__WINDOWS__)
 # include <direct.h>
 # if !defined(MAGICKCORE_HAVE_STRERROR)
 #  define HAVE_STRERROR
 # endif
 #endif
 
-#if defined(MAGICKCORE_HAVE_STRINGS_H)
-# include <strings.h>
-#endif
-#include <string.h>
 #include <ctype.h>
 #include <locale.h>
 #include <errno.h>
