@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -377,10 +377,10 @@ _8c.html" target="source" name="FilterImage">FilterImage</a></h2>
 <p>The format of the FilterImage method is:</p>
 
 <pre class="code">
-  Image *FilterImage(const Image *image,const MagickKernel *kernel,
+  Image *FilterImage(const Image *image,const KernelInfo *kernel,
     ExceptionInfo *exception)
   Image *FilterImageChannel(const Image *image,const ChannelType channel,
-    const MagickKernel *kernel,ExceptionInfo *exception)
+    const KernelInfo *kernel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
