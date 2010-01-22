@@ -1473,8 +1473,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
       case 'k': channel=BlackChannel; break;
       default: break;
     }
-  (void) FormatMagickString(key,MaxTextExtent,"%p.%ld.%s",image,(long) channel,
-    symbol);
+  (void) FormatMagickString(key,MaxTextExtent,"%p.%ld.%s",(void *) image,
+    (long) channel,symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
     return(QuantumScale*StringToDouble(value));
