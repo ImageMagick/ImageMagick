@@ -1573,8 +1573,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
 #if !defined(MAGICKCORE_BUILD_MODULES)
   {
     extern unsigned long
-      analyzeImage(Image **,const int,const char **,ExceptionInfo *),
-      convolveImage(Image **,const int,const char **,ExceptionInfo *);
+      analyzeImage(Image **,const int,const char **,ExceptionInfo *);
 
     ImageFilterHandler
       *image_filter;
@@ -1582,8 +1581,6 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     image_filter=(ImageFilterHandler *) NULL;
     if (LocaleCompare("analyze",tag) == 0)
       image_filter=analyzeImage;
-    if (LocaleCompare("convolve",tag) == 0)
-      image_filter=convolveImage;
     if (image_filter != (ImageFilterHandler *) NULL)
       {
         unsigned long

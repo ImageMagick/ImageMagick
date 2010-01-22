@@ -216,6 +216,12 @@ AC_SUBST(MAGICK_CONFIGURE_BUILD_PATH)
 AC_SUBST(MAGICK_FILTER_MODULE_PATH)
 AC_SUBST(DIRSEP)
 
+
+#
+# Enable OS features.
+#
+AC_USE_SYSTEM_EXTENSIONS
+
 # Check for programs
 AC_PROG_CC
 AC_PROG_CXX
@@ -224,17 +230,13 @@ AC_PROG_CPP
 AC_PROG_LD
 AC_SUBST(LD)
 AM_PROG_CC_C_O
+AC_COMPILE_WARNINGS
+AC_INCLUDES_DEFAULT
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-AC_COMPILE_WARNINGS
 AC_PROG_LN_S
 AM_WITH_DMALLOC
 PKG_PROG_PKG_CONFIG
-
-#
-# Enable OS features.
-#
-AC_USE_SYSTEM_EXTENSIONS
 
 #
 # Enable run-time checking.
@@ -761,10 +763,11 @@ if ! test x"$ac_cv_header_stdc" = x"yes"; then
     header files.  Compilation cannot proceed.  Please install the ANSI C
     headers and rerun this script.]);
 fi
+AC_HEADER_ASSERT
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(arm/limits.h complex.h errno.h fcntl.h inttypes.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h process.h stdarg.h stddef.h string.h strings.h sys/ipc.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/wait.h unistd.h wchar.h)
+AC_CHECK_HEADERS(arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h process.h stdarg.h sys/ipc.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h)
 
 ########
 #
@@ -779,10 +782,6 @@ AC_HEADER_STAT
 AC_HEADER_TIME
 AC_STRUCT_TM
 AC_SYS_INTERPRETER
-
-# If the C compiler does not fully support the ANSI C qualifier const,
-# define const to be empty.
-AC_C_CONST
 
 # If the C compiler supports the keyword inline, do nothing. Otherwise
 # define inline to __inline__ or __inline if it accepts one of those,

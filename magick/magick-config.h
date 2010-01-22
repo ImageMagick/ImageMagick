@@ -629,9 +629,7 @@
 #endif
 
 /* Define to 1 if you have the <stddef.h> header file. */
-#ifndef MAGICKCORE_HAVE_STDDEF_H 
-#define MAGICKCORE_HAVE_STDDEF_H  1 
-#endif
+/* #undef HAVE_STDDEF_H */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #ifndef MAGICKCORE_HAVE_STDINT_H 
@@ -1043,7 +1041,7 @@
 /* Magick API method prefix */
 /* #undef NAMESPACE_PREFIX */
 
-/* Turn off assert statements */
+/* Define to 1 if assertions should be disabled. */
 /* #undef NDEBUG */
 
 /* Define if dlsym() requires a leading underscore in symbol names. */
@@ -1327,9 +1325,6 @@
 
 /* Define to appropriate substitue if compiler does not have __func__ */
 /* #undef __func__ */
-
-/* Define to empty if `const' does not conform to ANSI C. */
-/* #undef const */
 
 /* Define to a type to use for `error_t' if it is not otherwise available. */
 /* #undef error_t */

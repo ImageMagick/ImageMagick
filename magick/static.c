@@ -108,8 +108,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 #else
   {
     extern unsigned long
-      analyzeImage(Image **,const int,char **,ExceptionInfo *),
-      convolveImage(Image **,const int,char **,ExceptionInfo *);
+      analyzeImage(Image **,const int,char **,ExceptionInfo *);
 
     ImageFilterHandler
       *image_filter;
@@ -117,8 +116,6 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
     image_filter=(ImageFilterHandler *) NULL;
     if (LocaleCompare("analyze",tag) == 0)
       image_filter=(ImageFilterHandler *) analyzeImage;
-    if (LocaleCompare("convolve",tag) == 0)
-      image_filter=(ImageFilterHandler *) convolveImage;
     if (image_filter != (ImageFilterHandler *) NULL)
       {
         unsigned long

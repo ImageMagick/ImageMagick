@@ -692,7 +692,7 @@
 /* Magick API method prefix */
 #undef NAMESPACE_PREFIX
 
-/* Turn off assert statements */
+/* Define to 1 if assertions should be disabled. */
 #undef NDEBUG
 
 /* Define if dlsym() requires a leading underscore in symbol names. */
@@ -904,9 +904,6 @@
 
 /* Define to appropriate substitue if compiler does not have __func__ */
 #undef __func__
-
-/* Define to empty if `const' does not conform to ANSI C. */
-#undef const
 
 /* Define to a type to use for `error_t' if it is not otherwise available. */
 #undef error_t
