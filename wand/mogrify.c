@@ -1197,9 +1197,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               black_point,
               white_point;
 
-            GeometryInfo
-              geometry_info;
-
             MagickStatusType
               flags;
 
@@ -1953,9 +1950,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("level",option+1) == 0)
           {
-            GeometryInfo
-              geometry_info;
-
             MagickRealType
               black_point,
               gamma,
@@ -2035,9 +2029,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             double
               black_point,
               white_point;
-
-            GeometryInfo
-              geometry_info;
 
             MagickStatusType
               flags;
@@ -2183,6 +2174,52 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(image_info,*image);
             (void) SetImageType(*image,BilevelType);
             InheritException(exception,&(*image)->exception);
+            break;
+          }
+        if (LocaleCompare("morphology",option+1) == 0)
+          {
+            MorphologyMethod
+              method;
+
+            KernelInfo
+              *kernel;
+
+            char
+              token[MaxTextExtent];
+
+            const char
+              *p;
+
+            unsigned long
+              iterations;
+
+            Image
+              *morphology_image;
+            /*
+              Morphological Image Operation
+            */
+            (void) SyncImageSettings(image_info,*image);
+            p=argv[i+1];
+            GetMagickToken(p,&p,token);
+            method=(MorphologyMethod) ParseMagickOption(MagickMorphologyOptions,
+                      MagickFalse,token);
+            iterations = 1UL;
+            GetMagickToken(p,&p,token);
+            if ( (*p == ':') || (*p == ','))
+              GetMagickToken(p,&p,token);
+            if ( (*p != '\0') )
+              iterations = StringToLong(p);
+            kernel=AcquireKernelInfo(argv[i+2]);
+            if (kernel == (KernelInfo *) NULL)
+              ThrowWandFatalException(ResourceLimitFatalError,
+                "MemoryAllocationFailed",(*image)->filename);
+            morphology_image=MorphologyImageChannel(*image,channel,method,
+                 iterations,kernel,exception);
+            kernel=DestroyKernel(kernel);
+            if (morphology_image == (Image *) NULL)
+              break;
+            *image=DestroyImage(*image);
+            *image=morphology_image;
             break;
           }
         if (LocaleCompare("motion-blur",option+1) == 0)
@@ -3653,6 +3690,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
+      "-morphology method[:interation] kernel_specification",
+      "                     apply a morphology method to the image",
       "-motion-blur geometry",
       "                     simulate motion blur",
       "-negate              replace every pixel with its complementary color ",
@@ -4452,13 +4491,36 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
+            char
+              token[MaxTextExtent];
+
             if (*option == '+')
               break;
             i++;
             if (i == (long) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
+#if 1
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+#else
+            /* Allow the use of built-in kernels like 'gaussian'
+             * These may not work for kernels with 'nan' values, like 'diamond'
+             */
+            GetMagickToken(argv[i],NULL,token);
+            if ( isalpha((int)token[0]) )
+              {
+                long
+                op;
+
+                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+                if (op < 0)
+                  ThrowMogrifyException(OptionError,"UnrecognizedKernelType",
+                       token);
+              }
+            /* geometry current returns invalid if 'nan' values are used */
+            else if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+#endif
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -5287,6 +5349,42 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("morphology",option+1) == 0)
+          {
+            long
+              op;
+
+            char
+              token[MaxTextExtent];
+
+            i++;
+            if (i == (long) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            GetMagickToken(argv[i],NULL,token);
+            op=ParseMagickOption(MagickMorphologyOptions,MagickFalse,token);
+            if (op < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedMorphologyMethod",
+                   token);
+            i++;
+            if (i == (long) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            GetMagickToken(argv[i],NULL,token);
+            if ( isalpha((int)token[0]) )
+              {
+                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+                if (op < 0)
+                  ThrowMogrifyException(OptionError,"UnrecognizedKernelType",
+                       token);
+              }
+#if 0
+  /* DO NOT ENABLE, geometry can not handle user defined kernels
+   * which include 'nan' values, though '-' are acceptable.
+   */
+            else if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+#endif
             break;
           }
         if (LocaleCompare("mosaic",option+1) == 0)

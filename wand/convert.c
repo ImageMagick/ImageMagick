@@ -219,6 +219,8 @@ static MagickBooleanType ConvertUsage(void)
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
+      "-morphology method[:interation] kernel_specification",
+      "                     apply a morphology method to the image",
       "-motion-blur geometry",
       "                     simulate motion blur",
       "-negate              replace every pixel with its complementary color ",
@@ -1033,13 +1035,36 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
+            char
+              token[MaxTextExtent];
+
             if (*option == '+')
               break;
             i++;
             if (i == (long) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
+#if 1
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+#else
+            /* Allow the use of built-in kernels like 'gaussian'
+             * These may not work for kernels with 'nan' values, like 'diamond'
+             */
+            GetMagickToken(argv[i],NULL,token);
+            if ( isalpha((int)token[0]) )
+              {
+                long
+                op;
+
+                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+                if (op < 0)
+                  ThrowConvertException(OptionError,"UnrecognizedKernelType",
+                       token);
+              }
+            /* geometry is currently invalid if a 'nan' value is included */
+            else if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+#endif
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -1894,6 +1919,42 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("morphology",option+1) == 0)
+          {
+            long
+              op;
+
+            char
+              token[MaxTextExtent];
+
+            i++;
+            if (i == (long) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            GetMagickToken(argv[i],NULL,token);
+            op=ParseMagickOption(MagickMorphologyOptions,MagickFalse,token);
+            if (op < 0)
+              ThrowConvertException(OptionError,"UnrecognizedMorphologyMethod",
+                  token);
+            i++;
+            if (i == (long) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            GetMagickToken(argv[i],NULL,token);
+            if ( isalpha((int)token[0]) )
+              {
+                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+                if (op < 0)
+                  ThrowConvertException(OptionError,"UnrecognizedKernelType",
+                       token);
+              }
+#if 0
+  /* DO NOT ENABLE, geometry can not handle user defined kernels
+   * which include 'nan' values, though '-' are acceptable.
+   */
+            else if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+#endif
             break;
           }
         if (LocaleCompare("mosaic",option+1) == 0)
