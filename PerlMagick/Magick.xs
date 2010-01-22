@@ -524,6 +524,9 @@ static struct
     { "BrightnessContrast", { {"levels", StringReference},
       {"brightness", RealReference},{"contrast", RealReference},
       {"channel", MagickChannelOptions} } },
+    { "Morphology", { {"kernel", StringReference},
+      {"channel", MagickChannelOptions}, {"method", MagickMorphologyOptions},
+      {"iterations", IntegerReference} } },
   };
 
 static SplayTreeInfo
@@ -6840,6 +6843,8 @@ Mogrify(ref,...)
     FilterImage        = 262
     BrightnessContrast = 263
     BrightnessContrastImage = 264
+    Morphology         = 265
+    MorphologyImage    = 266
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10100,6 +10105,35 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[4].long_reference;
           (void) BrightnessContrastImageChannel(image,channel,brightness,
             contrast);
+          break;
+        }
+        case 133:  /* Morphology */
+        {
+          KernelInfo
+            *kernel;
+
+          MorphologyMethod
+            method;
+
+          long
+            iterations;
+
+          if (attribute_flag[0] == 0)
+            break;
+          kernel=AcquireKernelInfo(argument_list[0].string_reference);
+          if (kernel == (KernelInfo *) NULL)
+            break;
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].long_reference;
+          method=UndefinedMorphology;
+          if (attribute_flag[2] != 0)
+            method=argument_list[2].long_reference;
+          iterations=1;
+          if (attribute_flag[3] != 0)
+            iterations=argument_list[4].long_reference;
+          image=MorphologyImageChannel(image,channel,method,iterations,kernel,
+            exception);
+          kernel=DestroyKernel(kernel);
           break;
         }
       }
