@@ -125,7 +125,6 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       */
       (void) GetImageChannelMean(image,channel,&mean,&sans,&image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      //return GammaImageChannel(image, channel, gamma);
       return LevelImageChannel(image, channel,
                                0.0, (double)QuantumRange, gamma);
     }
@@ -139,7 +138,6 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,RedChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      //status = status && GammaImageChannel(image, RedChannel, gamma);
       status = status && LevelImageChannel(image, RedChannel,
                                0.0, (double)QuantumRange, gamma);
     }
@@ -148,7 +146,6 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,GreenChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      //status = status && GammaImageChannel(image, GreenChannel, gamma);
       status = status && LevelImageChannel(image, GreenChannel,
                                0.0, (double)QuantumRange, gamma);
     }
@@ -157,7 +154,6 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,BlueChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      //status = status && GammaImageChannel(image, BlueChannel, gamma);
       status = status && LevelImageChannel(image, BlueChannel,
                                0.0, (double)QuantumRange, gamma);
     }
@@ -167,7 +163,6 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,OpacityChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      //status = status && GammaImageChannel(image, OpacityChannel, gamma);
       status = status && LevelImageChannel(image, OpacityChannel,
                                0.0, (double)QuantumRange, gamma);
     }
@@ -177,7 +172,6 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,IndexChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      //status = status && GammaImageChannel(image, IndexChannel, gamma);
       status = status && LevelImageChannel(image, IndexChannel,
                                0.0, (double)QuantumRange, gamma);
     }
