@@ -230,7 +230,7 @@ extern "C" {
 #if defined(MAGICKCORE_HAVE_OPENCL_CL_H)
 #  include <OpenCL/cl.h>
 #endif
-#  define MAGICKCORE_OPENMP_SUPPORT  1
+#  define MAGICKCORE_OPENCL_SUPPORT  1
 #endif
 
 #if defined(_OPENMP) && (_OPENMP >= 200203)
