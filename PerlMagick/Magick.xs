@@ -508,9 +508,9 @@ static struct
       {"threshold", RealReference}, {"channel", MagickChannelOptions} } },
     { "HaldClut", { {"image", ImageReference},
       {"channel", MagickChannelOptions} } },
-    { "BlueShift", {"factor", StringReference} },
-    { "ForwardFourierTransform", {"magnitude", MagickBooleanOptions} },
-    { "InverseFourierTransform", {"magnitude", MagickBooleanOptions} },
+    { "BlueShift", { {"factor", StringReference} } },
+    { "ForwardFourierTransform", { {"magnitude", MagickBooleanOptions} } },
+    { "InverseFourierTransform", { {"magnitude", MagickBooleanOptions} } },
     { "ColorDecisionList", {
       {"color-correction-collection", StringReference} } },
     { "AutoGamma", { {"channel", MagickChannelOptions} } },
@@ -10064,7 +10064,7 @@ Mogrify(ref,...)
 
           if (attribute_flag[0] == 0)
             break;
-          kernel=AcquireKernelFromString(argument_list[0].string_reference);
+          kernel=AcquireKernelInfo(argument_list[0].string_reference);
           if (kernel == (KernelInfo *) NULL)
             break;
           if (attribute_flag[1] != 0)

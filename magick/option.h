@@ -58,6 +58,7 @@ typedef enum
   MagickIntentOptions,
   MagickInterlaceOptions,
   MagickInterpolateOptions,
+  MagickKernelOptions,
   MagickLayerOptions,
   MagickLineCapOptions,
   MagickLineJoinOptions,
@@ -71,6 +72,7 @@ typedef enum
   MagickMimeOptions,
   MagickModeOptions,
   MagickModuleOptions,
+  MagickMorphologyOptions,
   MagickNoiseOptions,
   MagickOrientationOptions,
   MagickPolicyOptions,
@@ -88,9 +90,7 @@ typedef enum
   MagickThresholdOptions,
   MagickTypeOptions,
   MagickValidateOptions,
-  MagickVirtualPixelOptions,
-  KernelInfoOptions,
-  MagickMorphologyOptions
+  MagickVirtualPixelOptions
 } MagickOption;
 
 typedef enum
