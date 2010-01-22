@@ -71,7 +71,7 @@ AC_MSG_CHECKING([maximum warning verbosity option])
     then
       if test "$GXX" = "yes"
       then
-        ac_compile_warnings_opt='-Wall -W -ansi -pedantic'
+        ac_compile_warnings_opt='-Wall -W'
       fi
       CXXFLAGS="$CXXFLAGS $ac_compile_warnings_opt"
       ac_compile_warnings_msg="$ac_compile_warnings_opt for C++"
@@ -81,7 +81,7 @@ AC_MSG_CHECKING([maximum warning verbosity option])
   then
     if test "$GCC" = "yes"
     then
-      ac_compile_warnings_opt='-Wall -W -ansi -pedantic'
+      ac_compile_warnings_opt='-Wall -W'
     fi
     CFLAGS="$CFLAGS $ac_compile_warnings_opt"
     ac_compile_warnings_msg="$ac_compile_warnings_msg $ac_compile_warnings_opt for C"
