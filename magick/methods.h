@@ -216,7 +216,6 @@ extern "C" {
 #define ConvertRGBToHSL  PrependMagickMethod(ConvertRGBToHSL)
 #define ConvertRGBToHWB  PrependMagickMethod(ConvertRGBToHWB)
 #define ConvolveImageChannel  PrependMagickMethod(ConvolveImageChannel)
-#define convolveImage  PrependMagickMethod(convolveImage)
 #define ConvolveImage  PrependMagickMethod(ConvolveImage)
 #define CopyMagickMemory  PrependMagickMethod(CopyMagickMemory)
 #define CopyMagickString  PrependMagickMethod(CopyMagickString)
