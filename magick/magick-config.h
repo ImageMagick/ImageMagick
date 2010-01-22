@@ -628,9 +628,6 @@
 #define MAGICKCORE_HAVE_STDBOOL_H  1 
 #endif
 
-/* Define to 1 if you have the <stddef.h> header file. */
-/* #undef HAVE_STDDEF_H */
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #ifndef MAGICKCORE_HAVE_STDINT_H 
 #define MAGICKCORE_HAVE_STDINT_H  1 
@@ -1332,9 +1329,7 @@
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
-#ifndef _magickcore_inline 
-#define _magickcore_inline  __inline__ 
-#endif
+/* #undef inline */
 #endif
 
 /* Define to `int' if <sys/types.h> does not define. */
