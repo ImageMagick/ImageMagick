@@ -1314,6 +1314,9 @@ static unsigned long MorphologyApply(const Image *image, Image
         q_indexes[x] = p_indexes[r];
 
       result.index=0; /* stop compiler warnings */
+      result.green=0; /* stop compiler warnings */
+      result.blue=0; /* stop compiler warnings */
+      result.opacity=0; /* stop compiler warnings */
       switch (method) {
         case ConvolveMorphology:
           result=bias;
