@@ -221,9 +221,7 @@ extern "C" {
 # include <arm/limits.h>
 #endif
 
-#define _OPENCL  MAGICKCORE__OPENCL
-
-#if defined(_OPENCL)
+#if defined(MAGICKCORE__OPENCL)
 #if defined(MAGICKCORE_HAVE_CL_CL_H)
 #  include <CL/cl.h>
 #endif
