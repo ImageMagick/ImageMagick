@@ -3893,9 +3893,9 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   if ((image_nexus == (NexusInfo **) NULL) ||
       (clip_nexus == (NexusInfo **) NULL))
     ThrowBinaryException(CacheError,"UnableToGetCacheNexus",image->filename);
-  p=GetAuthenticPixelCacheNexus(image,nexus_info->region.x,nexus_info->region.y,
-    nexus_info->region.width,nexus_info->region.height,image_nexus[0],
-    exception);
+  p=GetAuthenticPixelCacheNexus(image,nexus_info->region.x,
+    nexus_info->region.y,nexus_info->region.width,nexus_info->region.height,
+    image_nexus[0],exception);
   indexes=GetPixelCacheNexusIndexes(image->cache,image_nexus[0]);
   q=nexus_info->pixels;
   nexus_indexes=nexus_info->indexes;
@@ -4287,7 +4287,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       (cache_info->reference_count == 1))
     {
       LockSemaphoreInfo(cache_info->semaphore);
-      if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
+      if ((cache_info->mode != ReadMode) &&
+          (cache_info->type != MemoryCache) &&
           (cache_info->reference_count == 1))
         {
           int
