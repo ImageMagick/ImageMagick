@@ -216,7 +216,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
       MagickWarning(p->severity,p->reason,p->description);
     if ((p->severity >= ErrorException) && (p->severity < FatalErrorException))
       MagickError(p->severity,p->reason,p->description);
-    if (exception->severity >= FatalErrorException)
+    if (p->severity >= FatalErrorException)
       MagickFatalError(p->severity,p->reason,p->description);
     p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
       exception->exceptions);
@@ -946,7 +946,8 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     reason[MaxTextExtent];
 
   const char
-    *locale;
+    *locale,
+    *type;
 
   int
     n;
@@ -972,8 +973,15 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     reason[MaxTextExtent-1]='\0';
   status=LogMagickEvent(ExceptionEvent,module,function,line,"%s",reason);
   GetPathComponent(module,TailPath,path);
-  (void) FormatMagickString(message,MaxTextExtent,"%s @ %s/%s/%ld",reason,path,
-    function,line);
+  type="undefined";
+  if ((severity >= WarningException) && (severity < ErrorException))
+    type="warning";
+  if ((severity >= ErrorException) && (severity < FatalErrorException))
+    type="error";
+  if (severity >= FatalErrorException)
+    type="fatal";
+  (void) FormatMagickString(message,MaxTextExtent,"%s @ %s/%s/%s/%ld",reason,
+    type,path,function,line);
   (void) ThrowException(exception,severity,message,(char *) NULL);
   return(status);
 }

@@ -313,8 +313,8 @@ static void ConvolveNotify(const char *message,const void *data,size_t length,
   (void) data;
   (void) length;
   exception=(ExceptionInfo *) user_context;
-  (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
-    "FilterFailed","`%s'",message);
+  (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
+    "DelegateFailed","`%s'",message);
 }
 
 static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
@@ -486,8 +486,8 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   /*
     Create OpenCL context.
   */
-  convolve_info->context=clCreateContextFromType((cl_context_properties *) NULL,
-    CL_DEVICE_TYPE_GPU,ConvolveNotify,exception,&status);
+  convolve_info->context=clCreateContextFromType((cl_context_properties *)
+    NULL,CL_DEVICE_TYPE_GPU,ConvolveNotify,exception,&status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     convolve_info->context=clCreateContextFromType((cl_context_properties *)
       NULL,CL_DEVICE_TYPE_CPU,ConvolveNotify,exception,&status);
@@ -496,7 +496,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
       NULL,CL_DEVICE_TYPE_DEFAULT,ConvolveNotify,exception,&status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
         "failed to create OpenCL context","`%s' (%d)",image->filename,status);
       DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
@@ -566,7 +566,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
         }
       status=clGetProgramBuildInfo(convolve_info->program,
         convolve_info->devices[0],CL_PROGRAM_BUILD_LOG,length,log,&length);
-      (void) ThrowMagickException(exception,GetMagickModule(),FilterError,
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
         "failed to build OpenCL program","`%s' (%s)",image->filename,log);
       log=DestroyString(log);
       DestroyConvolveInfo(convolve_info);
