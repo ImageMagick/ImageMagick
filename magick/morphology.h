@@ -48,11 +48,11 @@ typedef enum
 {
   UndefinedMorphology,
   ConvolveMorphology,          /* Weighted Sum of pixels - Convolve */
-  DialateMorphology,           /* Weighted Value Maximum */
+  DilateMorphology,            /* Weighted Value Maximum */
   ErodeMorphology,             /* Weighted Value Minimum */
-  CloseMorphology,             /* Erode then Dialate */
-  OpenMorphology,              /* Dialate then Erode */
-  DialateIntensityMorphology,  /* Pixel Pick using GreyScale Dialate */
+  CloseMorphology,             /* Erode then Dilate */
+  OpenMorphology,              /* Dilate then Erode */
+  DilateIntensityMorphology,   /* Pixel Pick using GreyScale Dialate */
   ErodeIntensityMorphology,    /* Pixel Pick using GreyScale Erode */
   CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
   OpenIntensityMorphology,     /* Pixel Pick using GreyScale Open */
@@ -89,12 +89,7 @@ typedef struct
 extern MagickExport KernelInfo
   *AcquireKernelInfo(const char *),
   *AcquireKernelBuiltIn(const KernelInfoType, const GeometryInfo *),
-  *DestroyKernel(KernelInfo *);
-
-extern MagickExport void
-  KernelNormalize(KernelInfo *),
-  KernelPrint(KernelInfo *),
-  KernelRotate(KernelInfo *, double);
+  *DestroyKernelInfo(KernelInfo *);
 
 extern MagickExport Image
   *MorphologyImage(const Image *,MorphologyMethod,const long,KernelInfo *,

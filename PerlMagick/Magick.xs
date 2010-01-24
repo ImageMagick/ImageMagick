@@ -10078,7 +10078,7 @@ Mogrify(ref,...)
             image->bias=SiPrefixToDouble(argument_list[2].string_reference,
               QuantumRange);
           image=FilterImageChannel(image,channel,kernel,exception);
-          kernel=DestroyKernel(kernel);
+          kernel=DestroyKernelInfo(kernel);
           break;
         }
         case 132:  /* BrightnessContrast */
@@ -10133,7 +10133,7 @@ Mogrify(ref,...)
             iterations=argument_list[4].long_reference;
           image=MorphologyImageChannel(image,channel,method,iterations,kernel,
             exception);
-          kernel=DestroyKernel(kernel);
+          kernel=DestroyKernelInfo(kernel);
           break;
         }
       }
