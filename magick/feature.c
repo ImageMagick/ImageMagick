@@ -135,8 +135,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     *channel_features;
 
   LongPixelPacket
-    count,
-    *histogram;
+    pixel,
+    *pixels;
 
   long
     y;
@@ -162,11 +162,10 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(channel_features,0,length*
     sizeof(*channel_features));
   /*
-    Form histogram.
+    Form pixels.
   */
-  histogram=(LongPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
-    sizeof(*histogram));
-  if (histogram == (LongPixelPacket *) NULL)
+  pixels=(LongPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*pixels));
+  if (pixels == (LongPixelPacket *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -176,11 +175,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     }
   for (i=0; i <= (long) MaxMap; i++)
   {
-    histogram[i].red=(~0);
-    histogram[i].green=(~0);
-    histogram[i].blue=(~0);
-    histogram[i].opacity=(~0);
-    histogram[i].index=(~0);
+    pixels[i].red=(~0UL);
+    pixels[i].green=(~0UL);
+    pixels[i].blue=(~0UL);
+    pixels[i].opacity=(~0UL);
+    pixels[i].index=(~0UL);
   }
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -209,35 +208,42 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (long) image->columns; x++)
     {
-      histogram[ScaleQuantumToMap(p->red)].red=ScaleQuantumToMap(p->red);
-      histogram[ScaleQuantumToMap(p->green)].green=ScaleQuantumToMap(p->green);
-      histogram[ScaleQuantumToMap(p->blue)].blue=ScaleQuantumToMap(p->blue);
+      pixels[ScaleQuantumToMap(p->red)].red=ScaleQuantumToMap(p->red);
+      pixels[ScaleQuantumToMap(p->green)].green=ScaleQuantumToMap(p->green);
+      pixels[ScaleQuantumToMap(p->blue)].blue=ScaleQuantumToMap(p->blue);
       if (image->matte != MagickFalse)
-        histogram[ScaleQuantumToMap(p->opacity)].opacity=
+        pixels[ScaleQuantumToMap(p->opacity)].opacity=
           ScaleQuantumToMap(p->opacity);
       if (image->colorspace == CMYKColorspace)
-        histogram[ScaleQuantumToMap(indexes[x])].index=
+        pixels[ScaleQuantumToMap(indexes[x])].index=
           ScaleQuantumToMap(indexes[x]);
       p++;
     }
   }
-  (void) ResetMagickMemory(&count,0,sizeof(count));
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      pixels=(LongPixelPacket *) RelinquishMagickMemory(pixels);
+      channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+        channel_features);
+      return(channel_features);
+    }
+  (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
   for (i=0; i <= (long) MaxMap; i++)
   {
-    if (histogram[i].red != ~0)
-      histogram[count.red++].red=histogram[i].red;
-    if (histogram[i].green != ~0)
-      histogram[count.green++].green=histogram[i].green;
-    if (histogram[i].blue != ~0)
-      histogram[count.blue++].blue=histogram[i].blue;
+    if (pixels[i].red != ~0UL)
+      pixels[pixel.red++].red=pixels[i].red;
+    if (pixels[i].green != ~0UL)
+      pixels[pixel.green++].green=pixels[i].green;
+    if (pixels[i].blue != ~0UL)
+      pixels[pixel.blue++].blue=pixels[i].blue;
     if (image->matte != MagickFalse)
-      if (histogram[i].opacity != ~0)
-        histogram[count.opacity++].opacity=histogram[i].opacity;
+      if (pixels[i].opacity != ~0UL)
+        pixels[pixel.opacity++].opacity=pixels[i].opacity;
     if (image->colorspace == CMYKColorspace)
-      if (histogram[i].index != ~0)
-        histogram[count.index++].index=histogram[i].index;
+      if (pixels[i].index != ~0UL)
+        pixels[pixel.index++].index=pixels[i].index;
   }
-  image_view=DestroyCacheView(image_view);
-  histogram=(LongPixelPacket *) RelinquishMagickMemory(histogram);
+  pixels=(LongPixelPacket *) RelinquishMagickMemory(pixels);
   return(channel_features);
 }
