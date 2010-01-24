@@ -33,6 +33,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%  The PES coders is derived from Robert Heel's PHP script (see
+%  http://bobosch.dyndns.org/embroidery/showFile.php?pes.php) and pesconvert
+%  (see http://torvalds-family.blogspot.com/2010/01/embroidery-gaah.html).
 %
 */
 
@@ -68,6 +71,88 @@
 #include "magick/module.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
+
+/*
+  PES Colors.
+*/
+
+typedef struct _PESColorInfo
+{
+  unsigned char
+    red,
+    green,
+    blue;
+} PESColorInfo;
+
+static const PESColorInfo
+  PESColor[256] =
+  {
+    {   0,   0,   0 },
+    {  14,  31, 124 },
+    {  10,  85, 163 },
+    {  48, 135, 119 },
+    {  75, 107, 175 },
+    { 237,  23,  31 },
+    { 209,  92,   0 },
+    { 145,  54, 151 },
+    { 228, 154, 203 },
+    { 145,  95, 172 },
+    { 157, 214, 125 },
+    { 232, 169,   0 },
+    { 254, 186,  53 },
+    { 255, 255,   0 },
+    { 112, 188,  31 },
+    { 192, 148,   0 },
+    { 168, 168, 168 },
+    { 123, 111,   0 },
+    { 255, 255, 179 },
+    {  79,  85,  86 },
+    {   0,   0,   0 },
+    {  11,  61, 145 },
+    { 119,   1, 118 },
+    {  41,  49,  51 },
+    {  42,  19,   1 },
+    { 246,  74, 138 },
+    { 178, 118,  36 },
+    { 252, 187, 196 },
+    { 254,  55,  15 },
+    { 240, 240, 240 },
+    { 106,  28, 138 },
+    { 168, 221, 196 },
+    {  37, 132, 187 },
+    { 254, 179,  67 },
+    { 255, 240, 141 },
+    { 208, 166,  96 },
+    { 209,  84,   0 },
+    { 102, 186,  73 },
+    {  19,  74,  70 },
+    { 135, 135, 135 },
+    { 216, 202, 198 },
+    {  67,  86,   7 },
+    { 254, 227, 197 },
+    { 249, 147, 188 },
+    {   0,  56,  34 },
+    { 178, 175, 212 },
+    { 104, 106, 176 },
+    { 239, 227, 185 },
+    { 247,  56, 102 },
+    { 181,  76, 100 },
+    {  19,  43,  26 },
+    { 199,   1,  85 },
+    { 254, 158,  50 },
+    { 168, 222, 235 },
+    {   0, 103,  26 },
+    {  78,  41, 144 },
+    {  47, 126,  32 },
+    { 253, 217, 222 },
+    { 255, 217,  17 },
+    {   9,  91, 166 },
+    { 240, 249, 112 },
+    { 227, 243,  91 },
+    { 255, 200, 100 },
+    { 255, 200, 150 },
+    { 255, 200, 200 },
+};
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,11 +222,24 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  PESColorInfo
+    colors[256];
+
+  register long
+    i;
+
   ssize_t
     count;
 
+  size_t
+    length;
+
   unsigned char
-    magick[4];
+    magick[4],
+    version[4];
+
+  unsigned long
+    number_colors;    
 
   /*
     Open image file.
@@ -160,9 +258,30 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  /*
+    Verify PES identifier.
+  */
   count=ReadBlob(image,4,magick);
   if ((count != 4) || (LocaleNCompare((char *) magick,"#PES",4) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  count=ReadBlob(image,4,version);
+  length=(size_t) ReadBlobLSBLong(image);
+  for (i=0; i < 37; i++)
+    if (ReadBlobByte(image) == EOF)
+      break;
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+  /*
+    Get PES colors.
+  */
+  number_colors=ReadBlobByte(image)+1;
+  for (i=0; i < (long) number_colors; i++)
+    colors[i]=PESColor[ReadBlobByte(image)];
+  for (i=0; i < (532-number_colors-49); i++)
+    if (ReadBlobByte(image) == EOF)
+      break;
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   return(GetFirstImageInList(image));
 }
 
