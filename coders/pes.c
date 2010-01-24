@@ -137,6 +137,12 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  ssize_t
+    count;
+
+  unsigned char
+    magick[4];
+
   /*
     Open image file.
   */
@@ -154,6 +160,9 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  count=ReadBlob(image,4,magick);
+  if ((count != 4) || (LocaleNCompare((char *) magick,"#PES",4) != 0))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   return(GetFirstImageInList(image));
 }
 
@@ -188,9 +197,9 @@ ModuleExport unsigned long RegisterPESImage(void)
   entry=SetMagickInfo("PES");
   entry->decoder=(DecodeImageHandler *) ReadPESImage;
   entry->magick=(IsImageFormatHandler *) IsPES;
-  entry->adjoin=MagickFalse;
   entry->description=ConstantString("Brother PES");
   entry->module=ConstantString("PES");
+  (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
 

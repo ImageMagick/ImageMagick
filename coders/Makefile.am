@@ -667,7 +667,6 @@ coders_pcx_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pcx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_pcx_la_LIBADD       = $(MAGICKCORE_LIBS)
 
-
 # PDB coder module
 coders_pdb_la_SOURCES      = coders/pdb.c
 coders_pdb_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
@@ -967,4 +966,3 @@ coders_yuv_la_SOURCES      = coders/yuv.c
 coders_yuv_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_yuv_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD       = $(MAGICKCORE_LIBS)
-
