@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore image methods.
+  MagickCore statistical methods.
 */
 #ifndef _MAGICKCORE_STATISTIC_H
 #define _MAGICKCORE_STATISTIC_H

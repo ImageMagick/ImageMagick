@@ -174,6 +174,7 @@ extern "C" {
 #include "magick/effect.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
+#include "magick/feature.h"
 #include "magick/fourier.h"
 #include "magick/fx.h"
 #include "magick/gem.h"

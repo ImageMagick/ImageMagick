@@ -122,6 +122,8 @@ MAGICK_BASE_SRCS = \
 	magick/exception.c \
 	magick/exception.h \
 	magick/exception-private.h \
+	magick/feature.c \
+	magick/feature.h \
 	magick/fourier.c \
 	magick/fourier.h \
 	magick/fx.c \
@@ -307,6 +309,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/effect.h \
 	magick/enhance.h \
 	magick/exception.h \
+	magick/feature.h \
 	magick/fourier.h \
 	magick/fx.h \
 	magick/gem.h \
