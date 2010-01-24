@@ -1,3 +1,12 @@
+2010-01-24  6.5.9-1 Anthony Thyssen <A.Thyssen@griffith...>
+  * added use of -precision in 'showkernel' output of -morphology
+  * correct use of a 'reflected kernel' for 'Convolve' 'Dilate' and
+    'Distance' Morphology primatives. This does not have a performance hit,
+    though is only truely applicable when the kernel is asymmetric.  Note that
+    'Erode' does not use a 'reflected' kernel, so that 'Open' and 'Close'
+    operations work properly.  This 'reflected usage is defined by online
+    morphology lecture notes (Google for "EECE253_17_BinaryMorphology.pdf")
+
 2010-01-15  6.5.9-1 Cristy  <quetzlzacatenango@image...>
   * Speed up reading the PSD image format.
   * Add the -precision option.  Use it to set the maximum number of significant
@@ -28,7 +37,7 @@
     including the use of 'nan' to represent elements which are not part
     of the kernel definition.  List built-in kernel types use "-list kernel"
   * Added -morphology {method}[:{iteration}] {kernel_string}
-    Initial methods includes no only the basic morphology methods: Dialate,
+    Initial methods includes no only the basic morphology methods: Dilate,
     Erode, Open, Close; and a pixel color preserving 'Intensity' version, but
     also the special methods: Convolve, and Distance.  Of course the
     appropriate kernel should be provided for each specific method.

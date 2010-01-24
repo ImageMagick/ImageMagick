@@ -1232,7 +1232,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (kernel == (KernelInfo *) NULL)
               break;
             convolve_image=FilterImageChannel(*image,channel,kernel,exception);
-            kernel=DestroyKernel(kernel);
+            kernel=DestroyKernelInfo(kernel);
             if (convolve_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -2215,7 +2215,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 "MemoryAllocationFailed",(*image)->filename);
             morphology_image=MorphologyImageChannel(*image,channel,method,
                  iterations,kernel,exception);
-            kernel=DestroyKernel(kernel);
+            kernel=DestroyKernelInfo(kernel);
             if (morphology_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
