@@ -128,11 +128,24 @@
 MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   ChannelFeatures
     *channel_features;
 
+  LongPixelPacket
+    count,
+    *histogram;
+
   long
     y;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
 
   size_t
     length;
@@ -148,6 +161,32 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(channel_features,0,length*
     sizeof(*channel_features));
+  /*
+    Form histogram.
+  */
+  histogram=(LongPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
+    sizeof(*histogram));
+  if (histogram == (LongPixelPacket *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+        channel_features);
+      return(channel_features);
+    }
+  for (i=0; i <= (long) MaxMap; i++)
+  {
+    histogram[i].red=(~0);
+    histogram[i].green=(~0);
+    histogram[i].blue=(~0);
+    histogram[i].opacity=(~0);
+    histogram[i].index=(~0);
+  }
+  status=MagickTrue;
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
   for (y=0; y < (long) image->rows; y++)
   {
     register const IndexPacket
@@ -159,14 +198,46 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     register long
       x;
 
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetVirtualIndexQueue(image);
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (long) image->columns; x++)
     {
+      histogram[ScaleQuantumToMap(p->red)].red=ScaleQuantumToMap(p->red);
+      histogram[ScaleQuantumToMap(p->green)].green=ScaleQuantumToMap(p->green);
+      histogram[ScaleQuantumToMap(p->blue)].blue=ScaleQuantumToMap(p->blue);
+      if (image->matte != MagickFalse)
+        histogram[ScaleQuantumToMap(p->opacity)].opacity=
+          ScaleQuantumToMap(p->opacity);
+      if (image->colorspace == CMYKColorspace)
+        histogram[ScaleQuantumToMap(indexes[x])].index=
+          ScaleQuantumToMap(indexes[x]);
       p++;
     }
   }
+  (void) ResetMagickMemory(&count,0,sizeof(count));
+  for (i=0; i <= (long) MaxMap; i++)
+  {
+    if (histogram[i].red != ~0)
+      histogram[count.red++].red=histogram[i].red;
+    if (histogram[i].green != ~0)
+      histogram[count.green++].green=histogram[i].green;
+    if (histogram[i].blue != ~0)
+      histogram[count.blue++].blue=histogram[i].blue;
+    if (image->matte != MagickFalse)
+      if (histogram[i].opacity != ~0)
+        histogram[count.opacity++].opacity=histogram[i].opacity;
+    if (image->colorspace == CMYKColorspace)
+      if (histogram[i].index != ~0)
+        histogram[count.index++].index=histogram[i].index;
+  }
+  image_view=DestroyCacheView(image_view);
+  histogram=(LongPixelPacket *) RelinquishMagickMemory(histogram);
   return(channel_features);
 }
