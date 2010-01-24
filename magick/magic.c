@@ -146,6 +146,7 @@ static const MagicMapInfo
     { "PCX", 0, MagickString("\012\005") },
     { "PDB", 60, MagickString("vIMGView") },
     { "PDF", 0, MagickString("%PDF-") },
+    { "PES", 0, MagickString("#PES") },
     { "PFA", 0, MagickString("%!PS-AdobeFont-1.0") },
     { "PFB", 6, MagickString("%!PS-AdobeFont-1.0") },
     { "PGX", 0, MagickString("\050\107\020\115\046") },
