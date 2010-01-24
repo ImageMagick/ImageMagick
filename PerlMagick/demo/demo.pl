@@ -252,8 +252,15 @@ push(@$images,$example);
 $example=$model->Clone();
 
 print "Monochrome...\n";
+$example=$model->Clone();
 $example->Label('Monochrome');
 $example->Quantize(colorspace=>'gray',colors=>2,dither=>'false');
+push(@$images,$example);
+
+print "Morphology...\n";
+$example=$model->Clone();
+$example->Label('Morphology');
+$example->Morphology(method=>'Dilate',kernel=>'Diamond',iterations=>3);
 push(@$images,$example);
 
 print "Motion Blur...\n";
