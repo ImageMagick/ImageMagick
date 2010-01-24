@@ -50,6 +50,7 @@ $call Make draw.c
 $call Make effect.c
 $call Make enhance.c
 $call Make exception.c
+$call Make feature.c
 $call Make fourier.c
 $call Make fx.c
 $call Make gem.c
@@ -138,14 +139,14 @@ $library/create libMagick.olb -
   accelerate, animate, annotate, artifact, attribute, blob, cache, cache-view, -
   cipher, client, coder, color, colormap, colorspace, compare, composite, -
   compress, configure, constitute, decorate, delegate, deprecate, display, -
-  distort, draw, effect, enhance, exception, fourier, fx, gem, geometry, -
-  hashmap, histogram, identify, image, layer, list, locale, log, magic, -
-  magick, matrix, memory, mime, module, monitor, montage, morphology, option, -
-  paint, pixel, PreRvIcccm, profile, quantize, quantum, quantum-export, -
-  quantum-import,random, registry, resample, resize, resource, segment, -
-  semaphore, shear, signature, splay-tree, static, stream, string, thread, -
-  timer, token, transform, threshold, type, utility, version, vms, widget, -
-  xwindow, statistic, policy, prepress, property, xml-tree, -
+  distort, draw, effect, enhance, exception, feature, fourier, fx, gem, -
+  geometry, hashmap, histogram, identify, image, layer, list, locale, log, -
+  magic, magick, matrix, memory, mime, module, monitor, montage, morphology, -
+  option, paint, pixel, PreRvIcccm, profile, quantize, quantum, -
+  quantum-export, quantum-import,random, registry, resample, resize, resource, -
+  segment, semaphore, shear, signature, splay-tree, static, stream, string, -
+  thread, timer, token, transform, threshold, type, utility, version, vms, -
+  widget, xwindow, statistic, policy, prepress, property, xml-tree, -
 	[-.filters]analyze,[-.wand]drawing-wand, pixel-wand, pixel-view, conjure, -
   convert,import, mogrify, animate-wand, compare-wand, composite-wand, -
   display-wand,identify-wand,montage-wand

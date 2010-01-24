@@ -1323,15 +1323,16 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/distort.h magick/draw.c magick/draw.h \
 	magick/draw-private.h magick/effect.c magick/effect.h \
 	magick/enhance.c magick/enhance.h magick/exception.c \
-	magick/exception.h magick/exception-private.h magick/fourier.c \
-	magick/fourier.h magick/fx.c magick/fx.h magick/fx-private.h \
-	magick/gem.c magick/gem.h magick/geometry.c magick/geometry.h \
-	magick/hashmap.c magick/hashmap.h magick/histogram.c \
-	magick/histogram.h magick/identify.c magick/identify.h \
-	magick/image.c magick/image.h magick/image-private.h \
-	magick/layer.c magick/layer.h magick/list.c magick/list.h \
-	magick/locale.c magick/locale_.h magick/log.c magick/log.h \
-	magick/mac.h magick/magic.c magick/magic.h magick/magick.c \
+	magick/exception.h magick/exception-private.h magick/feature.c \
+	magick/feature.h magick/fourier.c magick/fourier.h magick/fx.c \
+	magick/fx.h magick/fx-private.h magick/gem.c magick/gem.h \
+	magick/geometry.c magick/geometry.h magick/hashmap.c \
+	magick/hashmap.h magick/histogram.c magick/histogram.h \
+	magick/identify.c magick/identify.h magick/image.c \
+	magick/image.h magick/image-private.h magick/layer.c \
+	magick/layer.h magick/list.c magick/list.h magick/locale.c \
+	magick/locale_.h magick/log.c magick/log.h magick/mac.h \
+	magick/magic.c magick/magic.h magick/magick.c \
 	magick/magick-config.h magick/magick-type.h magick/magick.h \
 	magick/matrix.c magick/matrix.h magick/memory.c \
 	magick/memory_.h magick/methods.h magick/mime.c magick/mime.h \
@@ -1423,6 +1424,7 @@ am__objects_2 = magick/magick_libMagickCore_la-accelerate.lo \
 	magick/magick_libMagickCore_la-effect.lo \
 	magick/magick_libMagickCore_la-enhance.lo \
 	magick/magick_libMagickCore_la-exception.lo \
+	magick/magick_libMagickCore_la-feature.lo \
 	magick/magick_libMagickCore_la-fourier.lo \
 	magick/magick_libMagickCore_la-fx.lo \
 	magick/magick_libMagickCore_la-gem.lo \
@@ -3746,6 +3748,8 @@ MAGICK_BASE_SRCS = \
 	magick/exception.c \
 	magick/exception.h \
 	magick/exception-private.h \
+	magick/feature.c \
+	magick/feature.h \
 	magick/fourier.c \
 	magick/fourier.h \
 	magick/fx.c \
@@ -3926,6 +3930,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/effect.h \
 	magick/enhance.h \
 	magick/exception.h \
+	magick/feature.h \
 	magick/fourier.h \
 	magick/fx.h \
 	magick/gem.h \
@@ -5444,6 +5449,8 @@ magick/magick_libMagickCore_la-enhance.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-exception.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-feature.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-fourier.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-fx.lo: magick/$(am__dirstamp) \
@@ -6721,6 +6728,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libMagickCore_la-enhance.lo
 	-rm -f magick/magick_libMagickCore_la-exception.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-exception.lo
+	-rm -f magick/magick_libMagickCore_la-feature.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-feature.lo
 	-rm -f magick/magick_libMagickCore_la-fourier.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-fourier.lo
 	-rm -f magick/magick_libMagickCore_la-fx.$(OBJEXT)
@@ -7203,6 +7212,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-exception.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-fourier.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-gem.Plo@am__quote@
@@ -8531,6 +8541,14 @@ magick/magick_libMagickCore_la-exception.lo: magick/exception.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/exception.c' object='magick/magick_libMagickCore_la-exception.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-exception.lo `test -f 'magick/exception.c' || echo '$(srcdir)/'`magick/exception.c
+
+magick/magick_libMagickCore_la-feature.lo: magick/feature.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-feature.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-feature.Tpo -c -o magick/magick_libMagickCore_la-feature.lo `test -f 'magick/feature.c' || echo '$(srcdir)/'`magick/feature.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-feature.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-feature.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/feature.c' object='magick/magick_libMagickCore_la-feature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-feature.lo `test -f 'magick/feature.c' || echo '$(srcdir)/'`magick/feature.c
 
 magick/magick_libMagickCore_la-fourier.lo: magick/fourier.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-fourier.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-fourier.Tpo -c -o magick/magick_libMagickCore_la-fourier.lo `test -f 'magick/fourier.c' || echo '$(srcdir)/'`magick/fourier.c

@@ -10,7 +10,7 @@
 %        SSSSS    T    A   A    T    IIIII  SSSSS    T    IIIII   CCCC        %
 %                                                                             %
 %                                                                             %
-%                          MagickCore Image Methods                           %
+%                     MagickCore Image Statistical Methods                    %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
