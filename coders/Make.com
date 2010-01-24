@@ -80,6 +80,7 @@ $call Make pcl.c
 $call Make pcx.c
 $call Make pdb.c
 $call Make pdf.c
+$call Make pes.c
 $call Make pict.c
 $call Make pix.c
 $call Make plasma.c
@@ -136,7 +137,7 @@ $library/create libCoders.olb art,avs,bmp,braille,clip,clipboard,cip,cmyk, -
   hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2,label,cals, -
   caption,palm,map,mat,matte, -
   meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg,null,otb,pattern,pcd,pcl,pcx,pdb, -
-  pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,raw,rgb,rla,rle, -
+  pdf,pes,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,raw,rgb,rla,rle, -
   sct,sfw,sgi,stegano,sun,svg,tga,thumbnail,tiff,tile,tim,ttf,txt,uil,url, -
   uyvy,vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xps,xwd,ycbcr,yuv,cin, -
   magick,scr,[-.magick]compress,[-.magick]prervicccm
