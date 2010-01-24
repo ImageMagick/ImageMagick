@@ -243,6 +243,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterPCXImage();
   (void) RegisterPDBImage();
   (void) RegisterPDFImage();
+  (void) RegisterPESImage();
   (void) RegisterPICTImage();
   (void) RegisterPIXImage();
   (void) RegisterPLASMAImage();
@@ -408,6 +409,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterPCXImage();
   UnregisterPDBImage();
   UnregisterPDFImage();
+  UnregisterPESImage();
   UnregisterPICTImage();
   UnregisterPIXImage();
   UnregisterPLASMAImage();
