@@ -468,7 +468,6 @@ t/reference/write/jpeg/read_non_interlaced.miff
 t/reference/write/jpeg/read_plane_interlaced.miff
 t/reference/write/jpeg/write_non_interlaced.miff
 t/reference/write/jpeg/write_plane_interlaced.miff
-t/reference/write/output_p7.miff
 t/reference/write/read/gradient.miff
 t/reference/write/read/granite.miff
 t/reference/write/read/input_avs.miff
