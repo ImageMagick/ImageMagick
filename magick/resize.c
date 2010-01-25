@@ -641,6 +641,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->blur*=bessel_zeros[0];
         break;
       }
+      default:
+        break;
     }
   artifact=GetImageArtifact(image,"filter:filter");
   if (artifact != (const char *) NULL)
