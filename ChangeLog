@@ -6,6 +6,10 @@
     'Erode' does not use a 'reflected' kernel, so that 'Open' and 'Close'
     operations work properly.  This 'reflected usage is defined by online
     morphology lecture notes (Google for "EECE253_17_BinaryMorphology.pdf")
+  * Added convolve kernel scaling setting "-set option:convolve:scale N"
+    If undefined morphology convolve does not do any scaling or normalization
+    of the convolution kernel.  A value of 0.0 causes normalization for both
+    zero and non-zero (added weights) kernel types.
 
 2010-01-15  6.5.9-1 Cristy  <quetzlzacatenango@image...>
   * Speed up reading the PSD image format.
