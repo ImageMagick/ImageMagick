@@ -128,6 +128,12 @@
 MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   ExceptionInfo *exception)
 {
+  typedef struct _SpatialDependenceMatrix
+  {
+    LongPixelPacket
+      tone[4];
+  } SpatialDependenceMatrix;
+
   CacheView
     *image_view;
 
@@ -135,8 +141,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     *channel_features;
 
   LongPixelPacket
-    pixel,
-    *pixels;
+    tone,
+    *tones;
 
   long
     y;
@@ -150,6 +156,12 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   size_t
     length;
 
+  SpatialDependenceMatrix
+    **pixels;
+
+  unsigned long
+    number_tones;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -162,10 +174,10 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(channel_features,0,length*
     sizeof(*channel_features));
   /*
-    Form pixels.
+    Form tones.
   */
-  pixels=(LongPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*pixels));
-  if (pixels == (LongPixelPacket *) NULL)
+  tones=(LongPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*tones));
+  if (tones == (LongPixelPacket *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -175,11 +187,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     }
   for (i=0; i <= (long) MaxMap; i++)
   {
-    pixels[i].red=(~0UL);
-    pixels[i].green=(~0UL);
-    pixels[i].blue=(~0UL);
-    pixels[i].opacity=(~0UL);
-    pixels[i].index=(~0UL);
+    tones[i].red=(~0UL);
+    tones[i].green=(~0UL);
+    tones[i].blue=(~0UL);
+    tones[i].opacity=(~0UL);
+    tones[i].index=(~0UL);
   }
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -208,14 +220,14 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (long) image->columns; x++)
     {
-      pixels[ScaleQuantumToMap(p->red)].red=ScaleQuantumToMap(p->red);
-      pixels[ScaleQuantumToMap(p->green)].green=ScaleQuantumToMap(p->green);
-      pixels[ScaleQuantumToMap(p->blue)].blue=ScaleQuantumToMap(p->blue);
+      tones[ScaleQuantumToMap(p->red)].red=ScaleQuantumToMap(p->red);
+      tones[ScaleQuantumToMap(p->green)].green=ScaleQuantumToMap(p->green);
+      tones[ScaleQuantumToMap(p->blue)].blue=ScaleQuantumToMap(p->blue);
       if (image->matte != MagickFalse)
-        pixels[ScaleQuantumToMap(p->opacity)].opacity=
+        tones[ScaleQuantumToMap(p->opacity)].opacity=
           ScaleQuantumToMap(p->opacity);
       if (image->colorspace == CMYKColorspace)
-        pixels[ScaleQuantumToMap(indexes[x])].index=
+        tones[ScaleQuantumToMap(indexes[x])].index=
           ScaleQuantumToMap(indexes[x]);
       p++;
     }
@@ -223,27 +235,130 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     {
-      pixels=(LongPixelPacket *) RelinquishMagickMemory(pixels);
+      tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
       return(channel_features);
     }
-  (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+  (void) ResetMagickMemory(&tone,0,sizeof(tone));
   for (i=0; i <= (long) MaxMap; i++)
   {
-    if (pixels[i].red != ~0UL)
-      pixels[pixel.red++].red=pixels[i].red;
-    if (pixels[i].green != ~0UL)
-      pixels[pixel.green++].green=pixels[i].green;
-    if (pixels[i].blue != ~0UL)
-      pixels[pixel.blue++].blue=pixels[i].blue;
+    if (tones[i].red != ~0UL)
+      tones[tone.red++].red=tones[i].red;
+    if (tones[i].green != ~0UL)
+      tones[tone.green++].green=tones[i].green;
+    if (tones[i].blue != ~0UL)
+      tones[tone.blue++].blue=tones[i].blue;
     if (image->matte != MagickFalse)
-      if (pixels[i].opacity != ~0UL)
-        pixels[pixel.opacity++].opacity=pixels[i].opacity;
+      if (tones[i].opacity != ~0UL)
+        tones[tone.opacity++].opacity=tones[i].opacity;
     if (image->colorspace == CMYKColorspace)
-      if (pixels[i].index != ~0UL)
-        pixels[pixel.index++].index=pixels[i].index;
+      if (tones[i].index != ~0UL)
+        tones[tone.index++].index=tones[i].index;
   }
-  pixels=(LongPixelPacket *) RelinquishMagickMemory(pixels);
+  /*
+    Allocate spatial dependence matrix.
+  */
+  number_tones=tone.red;
+  if (tone.green > number_tones)
+    number_tones=tone.green;
+  if (tone.blue > number_tones)
+    number_tones=tone.blue;
+  if (image->matte != MagickFalse)
+    if (tone.opacity > number_tones)
+      number_tones=tone.opacity;
+  if (image->colorspace == CMYKColorspace)
+    if (tone.index > number_tones)
+      number_tones=tone.index;
+  pixels=(SpatialDependenceMatrix **) AcquireQuantumMemory(number_tones,
+    sizeof(**pixels));
+  if (pixels == (SpatialDependenceMatrix **) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
+      channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+        channel_features);
+      return(channel_features);
+    }
+  for (i=0; i <= (long) number_tones; i++)
+  {
+    pixels[i]=(SpatialDependenceMatrix *) AcquireQuantumMemory(number_tones,
+      sizeof(*pixels));
+    if (pixels[i] == (SpatialDependenceMatrix *) NULL)
+      break;
+    (void) ResetMagickMemory(pixels[i],0,number_tones*sizeof(*pixels));
+  }
+  if (i <= (long) number_tones)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      for (i--; i >= 0; i--)
+        pixels[i]=(SpatialDependenceMatrix *) RelinquishMagickMemory(pixels[i]);
+      pixels=(SpatialDependenceMatrix **) RelinquishMagickMemory(pixels);
+      tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
+      channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+        channel_features);
+      return(channel_features);
+    }
+  /*
+    Initialize spatial dependence matrix.
+  */
+  status=MagickTrue;
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    long
+      u,
+      v;
+
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict p;
+
+    register long
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      for (i=0; i < 4; i++)
+      {
+      }
+    }
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      for (i=0; i <= (long) number_tones; i++)
+        pixels[i]=(SpatialDependenceMatrix *) RelinquishMagickMemory(pixels[i]);
+      pixels=(SpatialDependenceMatrix **) RelinquishMagickMemory(pixels);
+      tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
+      channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+        channel_features);
+      return(channel_features);
+    }
+  /*
+    Relinquish resources.
+  */
+  for (i=0; i <= (long) number_tones; i++)
+    pixels[i]=(SpatialDependenceMatrix *) RelinquishMagickMemory(pixels[i]);
+  pixels=(SpatialDependenceMatrix **) RelinquishMagickMemory(pixels);
+  tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
   return(channel_features);
 }
