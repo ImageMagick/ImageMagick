@@ -700,7 +700,7 @@ ModuleExport unsigned long RegisterPESImage(void)
   entry=SetMagickInfo("PES");
   entry->decoder=(DecodeImageHandler *) ReadPESImage;
   entry->magick=(IsImageFormatHandler *) IsPES;
-  entry->description=ConstantString("Brother PES");
+  entry->description=ConstantString("Embrid Embroidery Format");
   entry->module=ConstantString("PES");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
