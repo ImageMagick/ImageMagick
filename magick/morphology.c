@@ -111,9 +111,10 @@ static inline double MagickMax(const double x,const double y)
  * OR may become externally available to API's
  */
 static MagickExport void
-  NormalizeKernel(KernelInfo *),
   RotateKernel(KernelInfo *, double),
-  ShowKernel(KernelInfo *);
+  ScaleKernel(KernelInfo *, double),
+  ShowKernel(KernelInfo *),
+  ZeroKernelNans(KernelInfo *);
 
 
 /*
@@ -331,9 +332,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       Maximize(kernel->value_max, kernel->values[i]);
     }
   }
+  /* check that we recieved at least one real (non-nan) value! */
+  if ( kernel->value_min == MagickHuge )
+    return(DestroyKernelInfo(kernel));
 
-  /* This should not be needed for a fully defined defined kernel
+  /* This should not be needed for a fully defined kernel
    * Perhaps an error should be reported instead!
+   * Kept for backward compatibility.
    */
   if ( i < kernel->width*kernel->height ) {
     Minimize(kernel->value_min, kernel->values[i]);
@@ -570,7 +575,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->value_max = kernel->values[
                          kernel->offset_y*kernel->width+kernel->offset_x ];
 
-        NormalizeKernel(kernel);
+        ScaleKernel(kernel, 0.0); /* Normalize Kernel Values */
 
         break;
       }
@@ -620,20 +625,20 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #endif
         kernel->value_min = 0;
         kernel->value_max = kernel->values[ kernel->offset_x ];
-        /* Note that both the above methods do not generate a normalized
-        ** kernel, though it gets close. The kernel may be 'clipped' by a user
-        ** defined radius, producing a smaller (darker) kernel.  Also for very
-        ** small sigma's (> 0.1) the central value becomes larger than one,
-        ** and thus producing a very bright kernel.
+        /* Note that neither methods above generate a normalized kernel,
+        ** though it gets close. The kernel may be 'clipped' by a user defined
+        ** radius, producing a smaller (darker) kernel.  Also for very small
+        ** sigma's (> 0.1) the central value becomes larger than one, and thus
+        ** producing a very bright kernel.
         */
-#if 1
+
         /* Normalize the 1D Gaussian Kernel
         **
         ** Because of this the divisor in the above kernel generator is
         ** not needed, so is not done above.
         */
-        NormalizeKernel(kernel);
-#endif
+        ScaleKernel(kernel, 0.0); /* Normalize Kernel Values */
+
         /* rotate the kernel by given angle */
         RotateKernel(kernel, args->xi);
         break;
@@ -683,7 +688,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->value_min = 0;
         kernel->value_max = kernel->values[0];
 
-        NormalizeKernel(kernel);
+        ScaleKernel(kernel, 0.0); /* Normalize Kernel Values */
         RotateKernel(kernel, args->xi);
         break;
       }
@@ -716,12 +721,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
+        /* set all kernel values to 1.0 */
         u=kernel->width*kernel->height;
         for ( i=0; i < (unsigned long)u; i++)
             kernel->values[i] = 1.0;
-        break;
-        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
+        kernel->value_min = kernel->value_max = 1.0; /* a flat shape */
         kernel->range_pos = (double) u;
+        break;
       }
     case DiamondKernel:
       {
@@ -736,13 +742,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
+        /* set all kernel values within diamond area to 1.0 */
         for ( i=0, v=-kernel->offset_y; v <= (long)kernel->offset_y; v++)
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             if ((labs(u)+labs(v)) <= (long)kernel->offset_x)
               kernel->range_pos += kernel->values[i] = 1.0;
             else
               kernel->values[i] = nan;
-        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
+        kernel->value_min = kernel->value_max = 1.0; /* a flat shape */
         break;
       }
     case DiskKernel:
@@ -762,13 +769,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
+        /* set all kernel values within disk area to 1.0 */
         for ( i=0, v=-kernel->offset_y; v <= (long)kernel->offset_y; v++)
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             if ((u*u+v*v) <= limit)
               kernel->range_pos += kernel->values[i] = 1.0;
             else
               kernel->values[i] = nan;
-        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
+        kernel->value_min = kernel->value_max = 1.0; /* a flat shape */
         break;
       }
     case PlusKernel:
@@ -784,10 +792,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
+        /* set all kernel values along axises to 1.0 */
         for ( i=0, v=-kernel->offset_y; v <= (long)kernel->offset_y; v++)
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             kernel->values[i] = (u == 0 || v == 0) ? 1.0 : nan;
-        kernel->value_min = kernel->value_max = 1.0; /* a flat kernel */
+        kernel->value_min = kernel->value_max = 1.0; /* a flat shape */
         kernel->range_pos = kernel->width*2.0 - 1.0;
         break;
       }
@@ -1005,13 +1014,13 @@ static unsigned long MorphologyApply(const Image *image, Image
 
   GetMagickPixelPacket(image,&bias);
   SetMagickPixelPacketBias(image,&bias);
+  /* Future: handle auto-bias from user, based on kernel input */
 
   p_view=AcquireCacheView(image);
   q_view=AcquireCacheView(result_image);
 
-  /* some methods (including convolve) needs to apply a reflected kernel
-   * the offset for getting the kernel view needs to be adjusted for this
-   * situation.
+  /* Some methods (including convolve) needs use a reflected kernel.
+   * Adjust 'origin' offsets for this reflected kernel.
    */
   offx = kernel->offset_x;
   offy = kernel->offset_y;
@@ -1429,6 +1438,9 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     *new_image,
     *old_image;
 
+  const char
+    *artifact;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -1483,12 +1495,16 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       break;
 
     case ConvolveMorphology:
-      /* NormalizeKernel(kernel);  removed, by default use kernel as defined */
-      /* TODO: auto-bias, auto-scaling and user-scaling of kernel according
-       * to expert user settings */
+      /* Scale or Normalize kernel according to user wishes
+      ** WARNING: this directly modifies the kernel
+      ** which probably should not be done.
+      */
+      artifact = GetImageArtifact(image,"convolve:scale");
+      if ( artifact != (char *)NULL )
+        ScaleKernel(kernel, StringToDouble(artifact) );
       /* FALL-THRU */
     default:
-      /* Do a morphology just once at this point!
+      /* Do a morphology iteration just once at this point!
         This ensures a new_image has been generated, but allows us
         to skip the creation of 'old_image' if it isn't needed.
       */
@@ -1510,7 +1526,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
               count, changed);
   }
 
-  /* Repeat the interative morphology until count or no change */
+  /* Repeat an interative morphology until count or no change reached */
   if ( count < limit && changed > 0 ) {
     old_image = CloneImage(new_image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
@@ -1538,48 +1554,6 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   }
 
   return(new_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+     N o r m a l i z e K e r n e l                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NormalizeKernel() normalize the kernel so its convolution output will
-%  be over a unit range.
-%
-%  Assumes the 'range_*' attributes of the kernel structure have been
-%  correctly set during the kernel creation.
-%
-%  The format of the NormalizeKernel method is:
-%
-%      void NormalizeKernel(KernelInfo *kernel)
-%
-%  A description of each parameter follows:
-%
-%    o kernel: the Morphology/Convolution kernel
-%
-*/
-static void NormalizeKernel(KernelInfo *kernel)
-{
-  register unsigned long
-    i;
-
-  for (i=0; i < kernel->width*kernel->height; i++)
-    kernel->values[i] /= (kernel->range_pos - kernel->range_neg);
-
-  kernel->range_pos /= (kernel->range_pos - kernel->range_neg);
-  kernel->range_neg /= (kernel->range_pos - kernel->range_neg);
-  kernel->value_max /= (kernel->range_pos - kernel->range_neg);
-  kernel->value_min /= (kernel->range_pos - kernel->range_neg);
-
-  return;
 }
 
 /*
@@ -1725,7 +1699,65 @@ static void RotateKernel(KernelInfo *kernel, double angle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     S h o w K e r n e l                                                     %
++     S c a l e K e r n e l                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleKernel() scales the kernel by the given amount.  Scaling by value of
+%  zero will result in a normalization of the kernel.
+%
+%  For positive kernels normalization scales the kernel so the addition os all
+%  values is 1.0.  While for kernels where values add to zero it is scaled
+%  so that the convolution output range covers 1.0.  In such 'zero kernels'
+%  it is generally recomended that the user also provides a 50% bias to the
+%  output results.
+%
+%  Correct normalization assumes the 'range_*' attributes of the kernel
+%  structure have been correctly set during the kernel creation.
+%
+%  The format of the ScaleKernel method is:
+%
+%      void ScaleKernel(KernelInfo *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+%    o scale: multiple all values by this, if zero normalize instead.
+%
+*/
+static void ScaleKernel(KernelInfo *kernel, double scale)
+{
+  register unsigned long
+    i;
+
+  if ( fabs(scale) < MagickEpsilon ) {
+    if ( fabs(kernel->range_pos + kernel->range_neg) < MagickEpsilon )
+      scale = 1/(kernel->range_pos - kernel->range_neg); /* zero kernels */
+    else
+      scale = 1/(kernel->range_pos + kernel->range_neg); /* non-zero kernel */
+  }
+
+  for (i=0; i < kernel->width*kernel->height; i++)
+    if ( ! IsNan(kernel->values[i]) )
+      kernel->values[i] *= scale;
+
+  kernel->range_pos *= scale; /* convolution output range */
+  kernel->range_neg *= scale;
+  kernel->value_max *= scale; /* maximum and minimum values in kernel */
+  kernel->value_min *= scale;
+
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++     S h o w K e r n e l                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1736,7 +1768,7 @@ static void RotateKernel(KernelInfo *kernel, double angle)
 %
 %  The format of the ShowKernel method is:
 %
-%      void KernelPrint (KernelInfo *kernel)
+%      void ShowKernel(KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -1750,14 +1782,16 @@ static void ShowKernel(KernelInfo *kernel)
     i, u, v;
 
   fprintf(stderr,
-        "Kernel \"%s\" of size %lux%lu%+ld%+ld  with values from %lg to %lg\n",
+        "Kernel \"%s\" of size %lux%lu%+ld%+ld with values from %.*lg to %.*lg\n",
         MagickOptionToMnemonic(MagickKernelOptions, kernel->type),
         kernel->width, kernel->height,
         kernel->offset_x, kernel->offset_y,
-        kernel->value_min, kernel->value_max);
-  fprintf(stderr, "Forming convolution output range from %lg to %lg%s\n",
-        kernel->range_neg, kernel->range_pos,
-        kernel->normalized == MagickTrue ? " (normalized)" : "" );
+        GetMagickPrecision(), kernel->value_min,
+        GetMagickPrecision(), kernel->value_max);
+  fprintf(stderr, "Forming convolution output range from %.*lg to %.*lg%s\n",
+        GetMagickPrecision(), kernel->range_neg,
+        GetMagickPrecision(), kernel->range_pos,
+        /*kernel->normalized == MagickTrue ? " (normalized)" : */ "" );
   for (i=v=0; v < kernel->height; v++) {
     fprintf(stderr,"%2ld:",v);
     for (u=0; u < kernel->width; u++, i++)
@@ -1768,4 +1802,42 @@ static void ShowKernel(KernelInfo *kernel)
              GetMagickPrecision(), kernel->values[i]);
     fprintf(stderr,"\n");
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++     Z e r o K e r n e l N a n s                                             % 
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ZeroKernelNans() replaces any special 'nan' value that may be present in
+%  the kernel with a zero value.  This is typically done when the kernel will
+%  be used in special hardware (GPU) convolution processors, to simply
+%  matters.
+%
+%  The format of the ZeroKernelNans method is:
+%
+%      voidZeroKernelNans (KernelInfo *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+% FUTURE: return the information in a string for API usage.
+*/
+static void ZeroKernelNans(KernelInfo *kernel)
+{
+  register unsigned long
+    i;
+
+  for (i=0; i < kernel->width*kernel->height; i++)
+    if ( IsNan(kernel->values[i]) )
+      kernel->values[i] = 0.0;
+
+  return;
 }

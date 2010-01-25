@@ -79,9 +79,6 @@ typedef struct
     range_neg,
     range_pos;
 
-  MagickBooleanType
-    normalized;
-
   unsigned long
     signature;
 } KernelInfo;
