@@ -89,6 +89,7 @@
 #include "magick/signature.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/timer.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -509,13 +510,17 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
       artifact=GetImageArtifact(image,"identify:features");
-      if ((artifact != (const char *) NULL) &&
-          (IsMagickTrue(artifact) != MagickFalse) && (ping == MagickFalse))
+      if ((artifact != (const char *) NULL) && (ping == MagickFalse))
         {
           ChannelFeatures
             *channel_features;
 
-          channel_features=GetImageChannelFeatures(image,1,&image->exception);
+          unsigned long
+            distance;
+
+          distance=StringToUnsignedLong(artifact);
+          channel_features=GetImageChannelFeatures(image,distance,
+            &image->exception);
           channel_features=(ChannelFeatures *) RelinquishMagickMemory(
             channel_features);
         }

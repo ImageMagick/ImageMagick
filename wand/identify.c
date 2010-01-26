@@ -119,10 +119,10 @@ static MagickBooleanType IdentifyUsage(void)
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-extract geometry    extract area from image",
-      "-features            display image features (e.g. contrast, correlation)",
+      "-features value      display image features (e.g. contrast, correlation)",
       "-format \"string\"     output formatted image characteristics",
       "-fuzz distance       colors within this distance are considered equal",
-      "-gamma value         level of gamma correction",
+      "-gamma value         of gamma correction",
       "-interlace type      type of image interlacing scheme",
       "-interpolate method  pixel color interpolation method",
       "-limit type value    pixel cache resource limit",
@@ -511,7 +511,16 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       case 'f':
       {
         if (LocaleCompare("features",option+1) == 0)
-          break;
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowIdentifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("format",option+1) == 0)
           {
             format=(char *) NULL;
