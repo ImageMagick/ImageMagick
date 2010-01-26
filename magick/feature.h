@@ -45,7 +45,7 @@ typedef struct _ChannelFeatures
 } ChannelFeatures;
 
 extern MagickExport ChannelFeatures
-  *GetImageChannelFeatures(const Image *,ExceptionInfo *);
+  *GetImageChannelFeatures(const Image *,const unsigned long,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
