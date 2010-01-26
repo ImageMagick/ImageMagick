@@ -59,6 +59,7 @@
 #include "magick/effect.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/feature.h"
 #include "magick/gem.h"
 #include "magick/geometry.h"
 #include "magick/histogram.h"
@@ -507,6 +508,17 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
+      artifact=GetImageArtifact(image,"identify:features");
+      if ((artifact != (const char *) NULL) &&
+          (IsMagickTrue(artifact) != MagickFalse) && (ping == MagickFalse))
+        {
+          ChannelFeatures
+            *channel_features;
+
+          channel_features=GetImageChannelFeatures(image,1,&image->exception);
+          channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+            channel_features);
+        }
       if (image->colorspace == CMYKColorspace)
         (void) fprintf(file,"  Total ink density: %.0f%%\n",100.0*
           GetImageTotalInkDensity(image)/(double) QuantumRange);
@@ -553,18 +565,15 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               (void) fprintf(file,"  %s\n",tuple);
             }
         }
-      if (ping == MagickFalse)
+      artifact=GetImageArtifact(image,"identify:unique");
+      if ((artifact != (const char *) NULL) &&
+          (IsMagickTrue(artifact) != MagickFalse))
+        (void) fprintf(file,"  Colors: %lu\n",GetNumberColors(image,
+          (FILE *) NULL,&image->exception));
+      if (IsHistogramImage(image,&image->exception) != MagickFalse)
         {
-          artifact=GetImageArtifact(image,"identify:unique");
-          if ((artifact != (const char *) NULL) &&
-              (IsMagickTrue(artifact) != MagickFalse))
-            (void) fprintf(file,"  Colors: %lu\n",GetNumberColors(image,
-              (FILE *) NULL,&image->exception));
-          if (IsHistogramImage(image,&image->exception) != MagickFalse)
-            {
-              (void) fprintf(file,"  Histogram:\n");
-              (void) GetNumberColors(image,file,&image->exception);
-            }
+          (void) fprintf(file,"  Histogram:\n");
+          (void) GetNumberColors(image,file,&image->exception);
         }
     }
   if (image->storage_class == PseudoClass)

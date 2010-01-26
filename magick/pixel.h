@@ -68,6 +68,16 @@ extern "C" {
 #define SetYellowPixelComponent(q,component) ((q)->blue=(component))
 #define SetBlackPixelComponent(q,component) ((q)->opacity=(component))
 
+typedef struct _DoublePixelPacket
+{
+  double
+    red,
+    green,
+    blue,
+    opacity,
+    index;
+} DoublePixelPacket;
+
 typedef struct _LongPixelPacket
 {
   unsigned long

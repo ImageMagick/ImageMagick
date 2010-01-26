@@ -4262,46 +4262,52 @@ WandExport double *MagickGetImageChannelDistortions(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l M e a n                         %
+%   M a g i c k G e t I m a g e C h a n n e l F e a t u r e s                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageChannelMean() gets the mean and standard deviation of one or
-%  more image channels.
+%  MagickGetImageChannelFeatures() returns features for each channel in the
+%  image at at 0, 45, 90, and 135 degrees for the specified distance.  The
+%  features include the angular second moment, contrast, correlation, sum of
+%  squares: variance, inverse difference moment, sum average, sum varience,
+%  sum entropy, entropy, difference variance, difference entropy, information
+%  measures of correlation 1, information measures of correlation 2, and
+%  maximum correlation coefficient.  You can access the red channel contrast,
+%  for example, like this:
 %
-%  The format of the MagickGetImageChannelMean method is:
+%      channel_features=MagickGetImageChannelFeatures(wand,1);
+%      contrast=channel_features[RedChannel].contrast[0];
 %
-%      MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
-%        const ChannelType channel,double *mean,double *standard_deviation)
+%  Use MagickRelinquishMemory() to free the statistics buffer.
+%
+%  The format of the MagickGetImageChannelFeatures method is:
+%
+%      ChannelFeatures *MagickGetImageChannelFeatures(MagickWand *wand,
+%        const unsigned long distance)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
-%    o mean:  The mean pixel value for the specified channel(s).
-%
-%    o standard_deviation:  The standard deviation for the specified channel(s).
+%    o distance: the distance.
 %
 */
-WandExport MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
-  const ChannelType channel,double *mean,double *standard_deviation)
+WandExport ChannelFeatures *MagickGetImageChannelFeatures(MagickWand *wand,
+  const unsigned long distance)
 {
-  MagickBooleanType
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GetImageChannelMean(wand->images,channel,mean,standard_deviation,
-    wand->exception);
-  return(status);
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return((ChannelFeatures *) NULL);
+    }
+  return(GetImageChannelFeatures(wand->images,distance,wand->exception));
 }
 
 /*
@@ -4350,7 +4356,54 @@ WandExport MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
     wand->exception);
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e C h a n n e l M e a n                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageChannelMean() gets the mean and standard deviation of one or
+%  more image channels.
+%
+%  The format of the MagickGetImageChannelMean method is:
+%
+%      MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
+%        const ChannelType channel,double *mean,double *standard_deviation)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o mean:  The mean pixel value for the specified channel(s).
+%
+%    o standard_deviation:  The standard deviation for the specified channel(s).
+%
+*/
+WandExport MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
+  const ChannelType channel,double *mean,double *standard_deviation)
+{
+  MagickBooleanType
+    status;
 
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=GetImageChannelMean(wand->images,channel,mean,standard_deviation,
+    wand->exception);
+  return(status);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4413,7 +4466,7 @@ WandExport MagickBooleanType MagickGetImageChannelRange(MagickWand *wand,
 %  maxima, the mean, the standard deviation, the kurtosis and the skewness.
 %  You can access the red channel mean, for example, like this:
 %
-%      channel_statistics=MagickGetImageChannelStatistics(image,excepton);
+%      channel_statistics=MagickGetImageChannelStatistics(wand);
 %      red_mean=channel_statistics[RedChannel].mean;
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.

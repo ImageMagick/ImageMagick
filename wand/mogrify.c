@@ -6711,6 +6711,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       }
       case 'f':
       {
+        if (LocaleCompare("features",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) DeleteImageOption(image_info,"identify:features");
+                break;
+              }
+            (void) SetImageOption(image_info,"identify:features","true");
+            break;
+          }
         if (LocaleCompare("fill",option+1) == 0)
           {
             if (*option == '+')

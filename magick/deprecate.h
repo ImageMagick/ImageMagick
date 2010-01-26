@@ -57,16 +57,6 @@ extern "C" {
 #define XDownscale(value)  ScaleShortToQuantum(value)
 #define XUpscale(quantum)  ScaleQuantumToShort(quantum)
 
-typedef struct _DoublePixelPacket
-{
-  double
-    red,
-    green,
-    blue,
-    opacity,
-    index;
-} DoublePixelPacket;
-
 typedef enum
 {
   UndefinedMagickLayerMethod
