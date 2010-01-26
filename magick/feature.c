@@ -148,7 +148,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     *tones;
 
   long
-    y;
+    y,
+    z;
 
   MagickBooleanType
     status;
@@ -514,6 +515,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   /*
     Compute texture features.
   */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
   for (y=0; y < (long) number_tones; y++)
   {
     register long
@@ -524,7 +528,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       for (i=0; i < 4; i++)
       {
         /*
-          Angular second moment.
+          Angular second moment:  measure of homogeneity of the image.
         */
         channel_features[RedChannel].angular_second_moment[i]+=
           pixels[x][y].tones[i].red*pixels[x][y].tones[i].red;
@@ -536,9 +540,58 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
           channel_features[OpacityChannel].angular_second_moment[i]+=
             pixels[x][y].tones[i].opacity*pixels[x][y].tones[i].opacity;
         if (image->colorspace == CMYKColorspace)
-          channel_features[IndexChannel].angular_second_moment[i]+=
+          channel_features[BlackChannel].angular_second_moment[i]+=
             pixels[x][y].tones[i].index*pixels[x][y].tones[i].index;
       }
+    }
+  }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (z=0; z < (long) number_tones; z++)
+  {
+    register long
+      y;
+
+    SpatialDependenceMatrix
+      pixel;
+
+    (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+    for (y=0; y < (long) number_tones; y++)
+    {
+      register long
+        x;
+
+      for (x=0; x < (long) number_tones; x++)
+      {
+        for (i=0; i < 4; i++)
+        {
+          /*
+            Contrast:  amount of local variations present in an image.
+          */
+          if (((y-x) == z) || ((x-y) == z))
+            {
+              pixel.tones[i].red+=pixels[x][y].tones[i].red;
+              pixel.tones[i].green+=pixels[x][y].tones[i].green;
+              pixel.tones[i].blue+=pixels[x][y].tones[i].blue;
+              if (image->matte != MagickFalse)
+                pixel.tones[i].opacity+=pixels[x][y].tones[i].opacity;
+              if (image->colorspace == CMYKColorspace)
+                pixel.tones[i].index+=pixels[x][y].tones[i].index;
+            }
+        }
+      }
+    }
+    for (i=0; i < 4; i++)
+    {
+      channel_features[RedChannel].contrast[i]+=z*z*pixel.tones[i].red;
+      channel_features[GreenChannel].contrast[i]+=z*z*pixel.tones[i].green;
+      channel_features[BlueChannel].contrast[i]+=z*z*pixel.tones[i].blue;
+      if (image->matte != MagickFalse)
+        channel_features[OpacityChannel].contrast[i]+=z*z*
+          pixel.tones[i].opacity;
+      if (image->colorspace == CMYKColorspace)
+        channel_features[BlackChannel].contrast[i]+=z*z*pixel.tones[i].index;
     }
   }
   /*
