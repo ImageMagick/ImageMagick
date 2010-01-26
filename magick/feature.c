@@ -100,15 +100,16 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelFeatures() returns features for each channel in the
-%  image.  The features include the angular second momentum, contrast,
-%  correlation, sum of squares: variance, inverse difference moment, sum
-%  average, sum varience, sum entropy, entropy, difference variance, difference
-%  entropy, information measures of correlation 1, information measures of
-%  correlation 2, and maximum correlation coefficient.  You can access the red
-%  channel contrast, for example, like this:
+%  GetImageChannelFeatures() returns features for each channel in the image at
+%  at 0, 45, 90, and 135 degrees for the specified distance.  The features
+%  include the angular second momentum, contrast, correlation, sum of squares:
+%  variance, inverse difference moment, sum average, sum varience, sum entropy,
+%  entropy, difference variance, difference entropy, information measures of
+%  correlation 1, information measures of correlation 2, and maximum
+%  correlation coefficient.  You can access the red channel contrast, for
+%  example, like this:
 %
-%      channel_features=GetImageChannelFeatures(image,excepton);
+%      channel_features=GetImageChannelFeatures(image,1,excepton);
 %      contrast=channel_features[RedChannel].contrast;
 %
 %  Use MagickRelinquishMemory() to free the features buffer.
@@ -122,16 +123,18 @@
 %
 %    o image: the image.
 %
+%    o distance: the distance.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
-  ExceptionInfo *exception)
+  const unsigned long distance,ExceptionInfo *exception)
 {
   typedef struct _SpatialDependenceMatrix
   {
     LongPixelPacket
-      tone[4];
+      tones[4];
   } SpatialDependenceMatrix;
 
   CacheView
@@ -166,6 +169,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((image->columns < (distance+1)) || (image->rows < (distance+1)))
+    return((ChannelFeatures *) NULL);
   length=AllChannels+1UL;
   channel_features=(ChannelFeatures *) AcquireQuantumMemory(length,
     sizeof(*channel_features));
@@ -271,7 +276,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     if (tone.index > number_tones)
       number_tones=tone.index;
   pixels=(SpatialDependenceMatrix **) AcquireQuantumMemory(number_tones,
-    sizeof(**pixels));
+    sizeof(*pixels));
   if (pixels == (SpatialDependenceMatrix **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -281,15 +286,15 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         channel_features);
       return(channel_features);
     }
-  for (i=0; i <= (long) number_tones; i++)
+  for (i=0; i < (long) number_tones; i++)
   {
     pixels[i]=(SpatialDependenceMatrix *) AcquireQuantumMemory(number_tones,
-      sizeof(*pixels));
+      sizeof(**pixels));
     if (pixels[i] == (SpatialDependenceMatrix *) NULL)
       break;
     (void) ResetMagickMemory(pixels[i],0,number_tones*sizeof(*pixels));
   }
-  if (i <= (long) number_tones)
+  if (i < (long) number_tones)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -324,20 +329,108 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     register long
       x;
 
+    ssize_t
+      offset;
+
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,-(long) distance,y,image->columns+
+      2*distance,distance+1,exception);
     if (p == (const PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
+    p+=distance;
+    indexes+=distance;
     for (x=0; x < (long) image->columns; x++)
     {
       for (i=0; i < 4; i++)
       {
+        switch (i)
+        {
+          case 0:
+          {
+            /*
+              0 degrees.
+            */
+            offset=(ssize_t) distance;
+            break;
+          }
+          case 1:
+          {
+            /*
+              45 degrees.
+            */
+            offset=(ssize_t) (image->columns+2*distance)-distance;
+            break;
+          }
+          case 2:
+          {
+            /*
+              90 degrees.
+            */
+            offset=(ssize_t) (image->columns+2*distance);
+            break;
+          }
+          case 3:
+          {
+            /*
+              135 degrees.
+            */
+            offset=(ssize_t) (image->columns+2*distance)+distance;
+            break;
+          }
+        }
+        u=0;
+        v=0;
+        while (tones[u].red != ScaleQuantumToMap(p->red))
+          u++;
+        while (tones[v].red != ScaleQuantumToMap((p+offset)->red))
+          v++;
+        pixels[u][v].tones[i].red++;
+        pixels[v][u].tones[i].red++;
+        u=0;
+        v=0;
+        while (tones[u].green != ScaleQuantumToMap(p->green))
+          u++;
+        while (tones[v].green != ScaleQuantumToMap((p+offset)->green))
+          v++;
+        pixels[u][v].tones[i].green++;
+        pixels[v][u].tones[i].green++;
+        u=0;
+        v=0;
+        while (tones[u].blue != ScaleQuantumToMap(p->blue))
+          u++;
+        while (tones[v].blue != ScaleQuantumToMap((p+offset)->blue))
+          v++;
+        pixels[u][v].tones[i].blue++;
+        pixels[v][u].tones[i].blue++;
+        if (image->matte != MagickFalse)
+          {
+            u=0;
+            v=0;
+            while (tones[u].opacity != ScaleQuantumToMap(p->opacity))
+              u++;
+            while (tones[v].opacity != ScaleQuantumToMap((p+offset)->opacity))
+              v++;
+            pixels[u][v].tones[i].opacity++;
+            pixels[v][u].tones[i].opacity++;
+          }
+        if (image->colorspace == CMYKColorspace)
+          {
+            u=0;
+            v=0;
+            while (tones[u].index != ScaleQuantumToMap(indexes[x]))
+              u++;
+            while (tones[v].index != ScaleQuantumToMap(indexes[x+offset]))
+              v++;
+            pixels[u][v].tones[i].index++;
+            pixels[v][u].tones[i].index++;
+          }
       }
+      p++;
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -345,7 +438,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      for (i=0; i <= (long) number_tones; i++)
+      for (i=0; i < (long) number_tones; i++)
         pixels[i]=(SpatialDependenceMatrix *) RelinquishMagickMemory(pixels[i]);
       pixels=(SpatialDependenceMatrix **) RelinquishMagickMemory(pixels);
       tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
@@ -354,9 +447,66 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       return(channel_features);
     }
   /*
+    Normalize spatial dependence matrix.
+  */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (y=0; y < (long) number_tones; y++)
+  {
+    register long
+      x;
+
+    unsigned long
+      normalize;
+
+    for (x=0; x < (long) number_tones; x++)
+    {
+      for (i=0; i < 4; i++)
+      {
+        switch (i)
+        {
+          case 0:
+          {
+            /*
+              0 degrees.
+            */
+            normalize=2*image->rows*(image->columns-distance);
+            break;
+          }
+          case 1:
+          {
+            /*
+              45 degrees.
+            */
+            normalize=2*(image->rows-distance)*(image->columns-distance);
+            break;
+          }
+          case 2:
+          {
+            /*
+              90 degrees.
+            */
+            normalize=2*(image->rows-distance)*image->columns;
+            break;
+          }
+          case 3:
+          {
+            /*
+              135 degrees.
+            */
+            normalize=2*(image->rows-distance)*(image->columns-distance);
+            break;
+          }
+        }
+        pixels[x][y].tones[i].red/=normalize;
+      }
+    }
+  }
+  /*
     Relinquish resources.
   */
-  for (i=0; i <= (long) number_tones; i++)
+  for (i=0; i < (long) number_tones; i++)
     pixels[i]=(SpatialDependenceMatrix *) RelinquishMagickMemory(pixels[i]);
   pixels=(SpatialDependenceMatrix **) RelinquishMagickMemory(pixels);
   tones=(LongPixelPacket *) RelinquishMagickMemory(tones);
