@@ -28,7 +28,7 @@ extern "C" {
 typedef struct _ChannelFeatures
 {
   double
-    angular_second_momentum[4],
+    angular_second_moment[4],
     contrast[4],
     correlation[4],
     variance_sum_of_squares[4],

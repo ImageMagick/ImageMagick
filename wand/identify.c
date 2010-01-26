@@ -119,6 +119,7 @@ static MagickBooleanType IdentifyUsage(void)
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-extract geometry    extract area from image",
+      "-features            display image features (e.g. contrast, correlation)",
       "-format \"string\"     output formatted image characteristics",
       "-fuzz distance       colors within this distance are considered equal",
       "-gamma value         level of gamma correction",
@@ -509,6 +510,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       }
       case 'f':
       {
+        if (LocaleCompare("features",option+1) == 0)
+          break;
         if (LocaleCompare("format",option+1) == 0)
           {
             format=(char *) NULL;

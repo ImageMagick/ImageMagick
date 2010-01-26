@@ -110,14 +110,14 @@
 %  example, like this:
 %
 %      channel_features=GetImageChannelFeatures(image,1,excepton);
-%      contrast=channel_features[RedChannel].contrast;
+%      contrast=channel_features[RedChannel].contrast[0];
 %
 %  Use MagickRelinquishMemory() to free the features buffer.
 %
 %  The format of the GetImageChannelFeatures method is:
 %
 %      ChannelFeatures *GetImageChannelFeatures(const Image *image,
-%        ExceptionInfo *exception)
+%        const unsigned long distance,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -133,7 +133,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 {
   typedef struct _SpatialDependenceMatrix
   {
-    LongPixelPacket
+    DoublePixelPacket
       tones[4];
   } SpatialDependenceMatrix;
 
@@ -351,6 +351,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         switch (i)
         {
           case 0:
+          default:
           {
             /*
               0 degrees.
@@ -454,11 +455,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 #endif
   for (y=0; y < (long) number_tones; y++)
   {
+    double
+      normalize;
+
     register long
       x;
-
-    unsigned long
-      normalize;
 
     for (x=0; x < (long) number_tones; x++)
     {
@@ -467,11 +468,12 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         switch (i)
         {
           case 0:
+          default:
           {
             /*
               0 degrees.
             */
-            normalize=2*image->rows*(image->columns-distance);
+            normalize=2.0*image->rows*(image->columns-distance);
             break;
           }
           case 1:
@@ -479,7 +481,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
             /*
               45 degrees.
             */
-            normalize=2*(image->rows-distance)*(image->columns-distance);
+            normalize=2.0*(image->rows-distance)*(image->columns-distance);
             break;
           }
           case 2:
@@ -487,7 +489,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
             /*
               90 degrees.
             */
-            normalize=2*(image->rows-distance)*image->columns;
+            normalize=2.0*(image->rows-distance)*image->columns;
             break;
           }
           case 3:
@@ -495,11 +497,47 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
             /*
               135 degrees.
             */
-            normalize=2*(image->rows-distance)*(image->columns-distance);
+            normalize=2.0*(image->rows-distance)*(image->columns-distance);
             break;
           }
         }
         pixels[x][y].tones[i].red/=normalize;
+        pixels[x][y].tones[i].green/=normalize;
+        pixels[x][y].tones[i].blue/=normalize;
+        if (image->matte != MagickFalse)
+          pixels[x][y].tones[i].opacity/=normalize;
+        if (image->colorspace == CMYKColorspace)
+          pixels[x][y].tones[i].index/=normalize;
+      }
+    }
+  }
+  /*
+    Compute texture features.
+  */
+  for (y=0; y < (long) number_tones; y++)
+  {
+    register long
+      x;
+
+    for (x=0; x < (long) number_tones; x++)
+    {
+      for (i=0; i < 4; i++)
+      {
+        /*
+          Angular second moment.
+        */
+        channel_features[RedChannel].angular_second_moment[i]+=
+          pixels[x][y].tones[i].red*pixels[x][y].tones[i].red;
+        channel_features[GreenChannel].angular_second_moment[i]+=
+          pixels[x][y].tones[i].green*pixels[x][y].tones[i].green;
+        channel_features[BlueChannel].angular_second_moment[i]+=
+          pixels[x][y].tones[i].blue*pixels[x][y].tones[i].blue;
+        if (image->matte != MagickFalse)
+          channel_features[OpacityChannel].angular_second_moment[i]+=
+            pixels[x][y].tones[i].opacity*pixels[x][y].tones[i].opacity;
+        if (image->colorspace == CMYKColorspace)
+          channel_features[IndexChannel].angular_second_moment[i]+=
+            pixels[x][y].tones[i].index*pixels[x][y].tones[i].index;
       }
     }
   }
