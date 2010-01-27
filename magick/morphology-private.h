@@ -26,4 +26,7 @@ extern "C" {
 }
 #endif
 
+void
+  ZeroKernelNans(KernelInfo *);
+
 #endif
