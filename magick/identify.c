@@ -131,18 +131,79 @@
 %
 */
 
-MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
-  const MagickBooleanType verbose)
+static int PrintChannelFeatures(FILE *file,const ChannelType channel,
+  const char *name,const double scale,const ChannelFeatures *channel_features)
 {
-#define IdentifyFormat "    %s:\n      min: " QuantumFormat  \
+#define FeaturesFormat "    %s:\n" \
+  "      angular second moment:\n" \
+  "        %g, %g, %g, %g\n" \
+  "      contrast:\n" \
+  "        %g, %g, %g, %g\n"
+
+  int
+    status;
+
+  status=fprintf(file,FeaturesFormat,name,
+    channel_features[channel].angular_second_moment[0],
+    channel_features[channel].angular_second_moment[1],
+    channel_features[channel].angular_second_moment[2],
+    channel_features[channel].angular_second_moment[3],
+    channel_features[channel].contrast[0],
+    channel_features[channel].contrast[1],
+    channel_features[channel].contrast[2],
+    channel_features[channel].contrast[3]);
+  return(status);
+}
+
+static int PrintChannelStatistics(FILE *file,const ChannelType channel,
+  const char *name,const double scale,
+  const ChannelStatistics *channel_statistics)
+{
+#define StatisticsFormat "    %s:\n      min: " QuantumFormat  \
   " (%g)\n      max: " QuantumFormat " (%g)\n"  \
   "      mean: %g (%g)\n      standard deviation: %g (%g)\n"  \
   "      kurtosis: %g\n      skewness: %g\n"
 
+  double
+    maxima,
+    mean,
+    minima;
+
+  int
+    status;
+
+  minima=channel_statistics[channel].minima;
+  maxima=channel_statistics[channel].maxima;
+  mean=channel_statistics[channel].mean;
+  if (channel == AlphaChannel)
+    {
+      minima=QuantumRange-minima;
+      maxima=QuantumRange-maxima;
+      mean=QuantumRange-mean;
+    }
+  status=fprintf(file,StatisticsFormat,name,(Quantum) (scale*minima),minima/
+    (double) QuantumRange,(Quantum) (maxima/scale),maxima/(double) QuantumRange,
+    scale*mean,mean/(double) QuantumRange,
+    scale*channel_statistics[channel].standard_deviation,
+    channel_statistics[channel].standard_deviation/(double)
+    QuantumRange,channel_statistics[channel].kurtosis,
+    channel_statistics[channel].skewness);
+  return(status);
+}
+
+MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
+  const MagickBooleanType verbose)
+{
   char
     color[MaxTextExtent],
     format[MaxTextExtent],
     key[MaxTextExtent];
+
+  ChannelFeatures
+    *channel_features;
+
+  ChannelStatistics
+    *channel_statistics;
 
   ColorspaceType
     colorspace;
@@ -181,6 +242,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     x;
 
   unsigned long
+    distance,
     scale;
 
   assert(image != (Image *) NULL);
@@ -309,11 +371,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   */
   (void) fprintf(file,"  Colorspace: %s\n",MagickOptionToMnemonic(
     MagickColorspaceOptions,(long) image->colorspace));
+  channel_statistics=(ChannelStatistics *) NULL;
   if (ping == MagickFalse)
+    channel_statistics=GetImageChannelStatistics(image,&image->exception);
+  if (channel_statistics != (ChannelStatistics *) NULL)
     {
-      ChannelStatistics
-        *channel_statistics;
-
       unsigned long
         depth;
 
@@ -322,7 +384,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (void) fprintf(file,"  Depth: %lu-bit\n",image->depth);
       else
         (void) fprintf(file,"  Depth: %lu/%lu-bit\n",image->depth,depth);
-      channel_statistics=GetImageChannelStatistics(image,&image->exception);
       (void) fprintf(file,"  Channel depth:\n");
       colorspace=image->colorspace;
       if (IsGrayImage(image,&image->exception) != MagickFalse)
@@ -378,152 +439,99 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) fprintf(file,IdentifyFormat,"red",(Quantum)
-            (channel_statistics[RedChannel].minima/scale),(double)
-            channel_statistics[RedChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[RedChannel].maxima/scale),(double)
-            channel_statistics[RedChannel].maxima/(double) QuantumRange,
-            channel_statistics[RedChannel].mean/(double) scale,
-            channel_statistics[RedChannel].mean/(double) QuantumRange,
-            channel_statistics[RedChannel].standard_deviation/(double) scale,
-            channel_statistics[RedChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[RedChannel].kurtosis,
-            channel_statistics[RedChannel].skewness);
-          (void) fprintf(file,IdentifyFormat,"green",(Quantum)
-            (channel_statistics[GreenChannel].minima/scale),(double)
-            channel_statistics[GreenChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[GreenChannel].maxima/scale),(double)
-            channel_statistics[GreenChannel].maxima/(double) QuantumRange,
-            channel_statistics[GreenChannel].mean/(double) scale,
-            channel_statistics[GreenChannel].mean/(double) QuantumRange,
-            channel_statistics[GreenChannel].standard_deviation/(double) scale,
-            channel_statistics[GreenChannel].standard_deviation/(double)
-            QuantumRange,
-            channel_statistics[GreenChannel].kurtosis,
-            channel_statistics[GreenChannel].skewness);
-          (void) fprintf(file,IdentifyFormat,"blue",(Quantum)
-            (channel_statistics[BlueChannel].minima/scale),(double)
-            channel_statistics[BlueChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[BlueChannel].maxima/scale),(double)
-            channel_statistics[BlueChannel].maxima/(double) QuantumRange,
-            channel_statistics[BlueChannel].mean/(double) scale,
-            channel_statistics[BlueChannel].mean/(double) QuantumRange,
-            channel_statistics[BlueChannel].standard_deviation/(double) scale,
-            channel_statistics[BlueChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[BlueChannel].kurtosis,
-            channel_statistics[BlueChannel].skewness);
+          (void) PrintChannelStatistics(file,RedChannel,"Red",1.0/scale,
+            channel_statistics);
+          (void) PrintChannelStatistics(file,GreenChannel,"Green",1.0/scale,
+            channel_statistics);
+          (void) PrintChannelStatistics(file,BlueChannel,"Blue",1.0/scale,
+            channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
-          (void) fprintf(file,IdentifyFormat,"cyan",(Quantum)
-            (channel_statistics[CyanChannel].minima/scale),(double)
-            channel_statistics[CyanChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[CyanChannel].maxima/scale),(double)
-            channel_statistics[CyanChannel].maxima/(double) QuantumRange,
-            channel_statistics[CyanChannel].mean/(double) scale,
-            channel_statistics[CyanChannel].mean/(double) QuantumRange,
-            channel_statistics[CyanChannel].standard_deviation/(double) scale,
-            channel_statistics[CyanChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[CyanChannel].kurtosis,
-            channel_statistics[CyanChannel].skewness);
-          (void) fprintf(file,IdentifyFormat,"magenta",(Quantum)
-            (channel_statistics[MagentaChannel].minima/scale),(double)
-            channel_statistics[MagentaChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[MagentaChannel].maxima/scale),(double)
-            channel_statistics[MagentaChannel].maxima/(double) QuantumRange,
-            channel_statistics[MagentaChannel].mean/(double) scale,
-            channel_statistics[MagentaChannel].mean/(double) QuantumRange,
-            channel_statistics[MagentaChannel].standard_deviation/(double)
-            scale,channel_statistics[MagentaChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[MagentaChannel].kurtosis,
-            channel_statistics[MagentaChannel].skewness);
-          (void) fprintf(file,IdentifyFormat,"yellow",(Quantum)
-            (channel_statistics[YellowChannel].minima/scale),(double)
-            channel_statistics[YellowChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[YellowChannel].maxima/scale),(double)
-            channel_statistics[YellowChannel].maxima/(double) QuantumRange,
-            channel_statistics[YellowChannel].mean/(double) scale,
-            channel_statistics[YellowChannel].mean/(double) QuantumRange,
-            channel_statistics[YellowChannel].standard_deviation/(double) scale,
-            channel_statistics[YellowChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[YellowChannel].kurtosis,
-            channel_statistics[YellowChannel].skewness);
-          (void) fprintf(file,IdentifyFormat,"black",(Quantum)
-            (channel_statistics[BlackChannel].minima/scale),(double)
-            channel_statistics[BlackChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[BlackChannel].maxima/scale),(double)
-            channel_statistics[BlackChannel].maxima/(double) QuantumRange,
-            channel_statistics[BlackChannel].mean/(double) scale,
-            channel_statistics[BlackChannel].mean/(double) QuantumRange,
-            channel_statistics[BlackChannel].standard_deviation/(double) scale,
-            channel_statistics[BlackChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[BlackChannel].kurtosis,
-            channel_statistics[BlackChannel].skewness);
+          (void) PrintChannelStatistics(file,CyanChannel,"Cyan",1.0/scale,
+            channel_statistics);
+          (void) PrintChannelStatistics(file,MagentaChannel,"Magenta",1.0/scale,
+            channel_statistics);
+          (void) PrintChannelStatistics(file,YellowChannel,"Yellow",1.0/scale,
+            channel_statistics);
+          (void) PrintChannelStatistics(file,BlackChannel,"Black",1.0/scale,
+            channel_statistics);
           break;
         }
         case GRAYColorspace:
         {
-          (void) fprintf(file,IdentifyFormat,"gray",(Quantum)
-            (channel_statistics[GrayChannel].minima/scale),(double)
-            channel_statistics[GrayChannel].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[GrayChannel].maxima/scale),(double)
-            channel_statistics[GrayChannel].maxima/(double) QuantumRange,
-            channel_statistics[GrayChannel].mean/(double) scale,
-            channel_statistics[GrayChannel].mean/(double) QuantumRange,
-            channel_statistics[GrayChannel].standard_deviation/(double) scale,
-            channel_statistics[GrayChannel].standard_deviation/(double)
-            QuantumRange,channel_statistics[GrayChannel].kurtosis,
-            channel_statistics[GrayChannel].skewness);
+          (void) PrintChannelStatistics(file,GrayChannel,"Gray",1.0/scale,
+            channel_statistics);
           break;
         }
       }
       if (image->matte != MagickFalse)
-        (void) fprintf(file,IdentifyFormat,"alpha",(Quantum)
-          ((QuantumRange-channel_statistics[AlphaChannel].maxima)/scale),
-          (double) (QuantumRange-channel_statistics[AlphaChannel].maxima)/
-          (double) QuantumRange, (Quantum) ((QuantumRange-
-          channel_statistics[AlphaChannel].minima)/scale),(double)
-          (QuantumRange-channel_statistics[AlphaChannel].minima)/(double)
-          QuantumRange,(QuantumRange-channel_statistics[AlphaChannel].mean)/
-          (double) scale,(QuantumRange-channel_statistics[AlphaChannel].mean)/
-          (double) QuantumRange,
-          channel_statistics[AlphaChannel].standard_deviation/(double) scale,
-          channel_statistics[AlphaChannel].standard_deviation/(double)
-          QuantumRange,channel_statistics[AlphaChannel].kurtosis,
-          channel_statistics[AlphaChannel].skewness);
+        (void) PrintChannelStatistics(file,AlphaChannel,"Alpha",1.0/scale,
+          channel_statistics);
       if (colorspace != GRAYColorspace)
         {
           (void) fprintf(file,"  Image statistics:\n");
-          (void) fprintf(file,IdentifyFormat,"Overall",(Quantum)
-            (channel_statistics[AllChannels].minima/scale),(double)
-            channel_statistics[AllChannels].minima/(double) QuantumRange,
-            (Quantum) (channel_statistics[AllChannels].maxima/scale),(double)
-            channel_statistics[AllChannels].maxima/(double) QuantumRange,
-            channel_statistics[AllChannels].mean/(double) scale,
-            channel_statistics[AllChannels].mean/(double) QuantumRange,
-            channel_statistics[AllChannels].standard_deviation/(double) scale,
-            channel_statistics[AllChannels].standard_deviation/(double)
-            QuantumRange,channel_statistics[AllChannels].kurtosis,
-            channel_statistics[AllChannels].skewness);
+          (void) PrintChannelStatistics(file,AllChannels,"Overall",1.0/scale,
+            channel_statistics);
         }
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
-      artifact=GetImageArtifact(image,"identify:features");
-      if ((artifact != (const char *) NULL) && (ping == MagickFalse))
+    }
+  channel_features=(ChannelFeatures *) NULL;
+  artifact=GetImageArtifact(image,"identify:features");
+  distance=StringToUnsignedLong(artifact);
+  if ((ping == MagickFalse) && (artifact != (const char *) NULL))
+    channel_features=GetImageChannelFeatures(image,distance,&image->exception);
+  if (channel_features != (ChannelFeatures *) NULL)
+    {
+      (void) fprintf(file,"  Channel features (0, 45, 90, 135):\n");
+      switch (colorspace)
+      {
+        case RGBColorspace:
+        default:
         {
-          ChannelFeatures
-            *channel_features;
-
-          unsigned long
-            distance;
-
-          distance=StringToUnsignedLong(artifact);
-          channel_features=GetImageChannelFeatures(image,distance,
-            &image->exception);
-          channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+          (void) PrintChannelFeatures(file,RedChannel,"Red",1.0/scale,
+            channel_features);
+          (void) PrintChannelFeatures(file,GreenChannel,"Green",1.0/scale,
+            channel_features);
+          (void) PrintChannelFeatures(file,BlueChannel,"Blue",1.0/scale,
+            channel_features);
+          break;
+        }
+        case CMYKColorspace:
+        {
+          (void) PrintChannelFeatures(file,CyanChannel,"Cyan",1.0/scale,
+            channel_features);
+          (void) PrintChannelFeatures(file,MagentaChannel,"Magenta",1.0/
+            scale,channel_features);
+          (void) PrintChannelFeatures(file,YellowChannel,"Yellow",1.0/scale,
+            channel_features);
+          (void) PrintChannelFeatures(file,BlackChannel,"Black",1.0/scale,
+            channel_features);
+          break;
+        }
+        case GRAYColorspace:
+        {
+          (void) PrintChannelFeatures(file,GrayChannel,"Gray",1.0/scale,
+            channel_features);
+          break;
+        }
+      }
+      if (image->matte != MagickFalse)
+        (void) PrintChannelFeatures(file,AlphaChannel,"Alpha",1.0/scale,
+          channel_features);
+      if (colorspace != GRAYColorspace)
+        {
+          (void) fprintf(file,"  Image features:\n");
+          (void) PrintChannelFeatures(file,AllChannels,"Overall",1.0/scale,
             channel_features);
         }
+      channel_features=(ChannelFeatures *) RelinquishMagickMemory(
+        channel_features);
+    }
+  if (ping == MagickFalse)
+    {
       if (image->colorspace == CMYKColorspace)
         (void) fprintf(file,"  Total ink density: %.0f%%\n",100.0*
           GetImageTotalInkDensity(image)/(double) QuantumRange);
