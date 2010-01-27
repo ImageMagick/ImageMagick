@@ -488,7 +488,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (channel_features != (ChannelFeatures *) NULL)
     {
-      (void) fprintf(file,"  Channel features (0, 45, 90, 135):\n");
+      (void) fprintf(file,"  Channel features (horizontal, vertical, left and right diagonals):\n");
       switch (colorspace)
       {
         case RGBColorspace:

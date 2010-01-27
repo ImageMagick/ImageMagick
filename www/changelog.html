@@ -124,6 +124,9 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+</div>
+<div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
 </div>
 <div  class="sponsor">
@@ -152,9 +155,14 @@
 
 <div class="main">
 
-<ul><dt>2010-01-15  6.5.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-01-24  6.5.9-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> added use of -precision in 'showkernel' output of -morphology</li>
+  <li> correct use of a 'reflected kernel' for 'Convolve' 'Dilate' and    'Distance' Morphology primatives. This does not have a performance hit,    though is only truely applicable when the kernel is asymmetric.  Note that    'Erode' does not use a 'reflected' kernel, so that 'Open' and 'Close'    operations work properly.  This 'reflected usage is defined by online    morphology lecture notes (Google for "EECE253_17_BinaryMorphology.pdf")</li>
+  <li> Added convolve kernel scaling setting "-set option:convolve:scale N"    If undefined morphology convolve does not do any scaling or normalization    of the convolution kernel.  A value of 0.0 causes normalization for both    zero and non-zero (added weights) kernel types.</li><br />
+<dt>2010-01-15  6.5.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Speed up reading the PSD image format.</li>
-  <li> Add the -precision option.  Use it to set the maximum number of significant    digits to be printed.</li><br />
+  <li> Add the -precision option.  Use it to set the maximum number of significant    digits to be printed.</li>
+  <li> Add -features option to the identify program to display channel features.</li><br />
 <dt>2010-01-01  6.5.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Add support for compact floating point (i.e. -depth 16 -define    quantum:format=floating-point).</li>
   <li> Transparent images no longer flicker on certain system when using the    display program.</li>
@@ -166,7 +174,7 @@
   <li> Add support for the BGRA raw image format.</li><br />
 <dt>2010-01-04  6.5.9-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Added Kernel Generator to generate kernels from user strings, which    allows the generation in many built in kernels for both Convolution    and other Morphological methods.  New Kernels currently include..      Convolution: Gaussian, Blur, Comet      Morphological: Rectangle, Square, Diamond, Disk, Plus      Distance: Chebyshev, Manhatten, Knight, Euclidean    And both old and new (rectangular) user defined kernel specifications    including the use of 'nan' to represent elements which are not part    of the kernel definition.  List built-in kernel types use "-list kernel"</li>
-  <li> Added -morphology {method}[:{iteration}] {kernel_string}    Initial methods includes no only the basic morphology methods: Dialate,    Erode, Open, Close; and a pixel color preserving 'Intensity' version, but    also the special methods: Convolve, and Distance.  Of course the    appropriate kernel should be provided for each specific method.</li><br />
+  <li> Added -morphology {method}[:{iteration}] {kernel_string}    Initial methods includes no only the basic morphology methods: Dilate,    Erode, Open, Close; and a pixel color preserving 'Intensity' version, but    also the special methods: Convolve, and Distance.  Of course the    appropriate kernel should be provided for each specific method.</li><br />
 <dt>2010-01-01  6.5.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Add OpenCL-enabled filter (e.g.  convert image.png -process    "convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'" image.jpg).</li>
   <li> Added StringTo...() processing functions</li><br />
@@ -1350,7 +1358,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
