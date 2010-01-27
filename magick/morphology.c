@@ -106,15 +106,11 @@ static inline double MagickMax(const double x,const double y)
 #define Minimize(assign,value) assign=MagickMin(assign,value)
 #define Maximize(assign,value) assign=MagickMax(assign,value)
 
-/* Currently these are internal to this module
- * Eventually these may become 'private' to library
- * OR may become externally available to API's
- */
-static MagickExport void
+/* Currently these are only internal to this module */
+static void
   RotateKernel(KernelInfo *, double),
   ScaleKernel(KernelInfo *, double),
-  ShowKernel(KernelInfo *),
-  ZeroKernelNans(KernelInfo *);
+  ShowKernel(KernelInfo *);
 
 
 /*
@@ -1561,7 +1557,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     R o t a t e K e r n e l                                                 %
++     R o t a t e K e r n e l                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1580,8 +1576,11 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 %
 %    o angle: angle to rotate in degrees
 %
+% This function is only internel to this module, as it is not finalized,
+% especially with regard to non-orthogonal angles, and rotation of larger
+% 2D kernels.
 */
-static void RotateKernel(KernelInfo *kernel, double angle)
+MagickExport void RotateKernel(KernelInfo *kernel, double angle)
 {
   /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
   **
@@ -1727,8 +1726,10 @@ static void RotateKernel(KernelInfo *kernel, double angle)
 %
 %    o scale: multiple all values by this, if zero normalize instead.
 %
+% This function is internal to this module only at this time, but can be
+% exported to other modules if needed.
 */
-static void ScaleKernel(KernelInfo *kernel, double scale)
+MagickExport void ScaleKernel(KernelInfo *kernel, double scale)
 {
   register unsigned long
     i;
@@ -1774,7 +1775,8 @@ static void ScaleKernel(KernelInfo *kernel, double scale)
 %
 %    o kernel: the Morphology/Convolution kernel
 %
-% FUTURE: return the information in a string for API usage.
+% This function is internal to this module only at this time. That may change
+% in the future.
 */
 static void ShowKernel(KernelInfo *kernel)
 {
@@ -1830,7 +1832,7 @@ static void ShowKernel(KernelInfo *kernel)
 %
 % FUTURE: return the information in a string for API usage.
 */
-static void ZeroKernelNans(KernelInfo *kernel)
+MagickExport void ZeroKernelNans(KernelInfo *kernel)
 {
   register unsigned long
     i;

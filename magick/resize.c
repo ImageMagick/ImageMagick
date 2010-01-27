@@ -629,6 +629,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         /*
           Gaussian is scaled by 4*ln(2) and not 4*sqrt(2/MagickPI) according to
           Paul Heckbert's paper on EWA resampling.
+          FUTURE: to be reviewed.
         */
         resize_filter->blur*=2.0*log(2.0)/sqrt(2.0/MagickPI);
         break;
