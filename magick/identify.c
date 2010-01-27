@@ -480,9 +480,12 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   channel_features=(ChannelFeatures *) NULL;
   artifact=GetImageArtifact(image,"identify:features");
-  distance=StringToUnsignedLong(artifact);
   if ((ping == MagickFalse) && (artifact != (const char *) NULL))
-    channel_features=GetImageChannelFeatures(image,distance,&image->exception);
+    {
+      distance=StringToUnsignedLong(artifact);
+      channel_features=GetImageChannelFeatures(image,distance,
+        &image->exception);
+    }
   if (channel_features != (ChannelFeatures *) NULL)
     {
       (void) fprintf(file,"  Channel features (0, 45, 90, 135):\n");
