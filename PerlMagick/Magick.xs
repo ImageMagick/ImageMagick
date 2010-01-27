@@ -3540,9 +3540,13 @@ Features(ref,...)
     featuresimage = 3
   PPCODE:
   {
-#define ChannelFeatures(channel) \
+#define ChannelFeatures(channel,angle) \
 { \
-  (void) FormatMagickString(message,MaxTextExtent,"%.15g",1.0); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].angular_second_moment[angle]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].contrast[angle]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
 
@@ -3640,13 +3644,16 @@ Features(ref,...)
         continue;
       count++;
       EXTEND(sp,75*count);
-      ChannelFeatures(RedChannel);
-      ChannelFeatures(GreenChannel);
-      ChannelFeatures(BlueChannel);
-      if (image->colorspace == CMYKColorspace)
-        ChannelFeatures(IndexChannel);
-      if (image->matte != MagickFalse)
-        ChannelFeatures(OpacityChannel);
+      for (i=0; i < 4; i++)
+      {
+        ChannelFeatures(RedChannel,i);
+        ChannelFeatures(GreenChannel,i);
+        ChannelFeatures(BlueChannel,i);
+        if (image->colorspace == CMYKColorspace)
+          ChannelFeatures(IndexChannel,i);
+        if (image->matte != MagickFalse)
+          ChannelFeatures(OpacityChannel,i);
+      }
       channel_features=(ChannelFeatures *)
         RelinquishMagickMemory(channel_features);
     }
