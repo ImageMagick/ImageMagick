@@ -5,7 +5,7 @@
     though is only truely applicable when the kernel is asymmetric.  Note that
     'Erode' does not use a 'reflected' kernel, so that 'Open' and 'Close'
     operations work properly.  This 'reflected usage is defined by online
-    morphology lecture notes (Google for "EECE253_17_BinaryMorphology.pdf")
+    morphology lecture notes (Google for "EECE Binary Morphology")
   * Added convolve kernel scaling setting "-set option:convolve:scale N"
     If undefined morphology convolve does not do any scaling or normalization
     of the convolution kernel.  A value of 0.0 causes normalization for both
