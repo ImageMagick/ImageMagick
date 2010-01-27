@@ -454,54 +454,54 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) number_tones; y++)
+  for (i=0; i < 4; i++)
   {
     double
       normalize;
 
-    register long
-      x;
-
-    for (x=0; x < (long) number_tones; x++)
+    switch (i)
     {
-      for (i=0; i < 4; i++)
+      case 0:
+      default:
       {
-        switch (i)
-        {
-          case 0:
-          default:
-          {
-            /*
-              0 degrees.
-            */
-            normalize=2.0*image->rows*(image->columns-distance);
-            break;
-          }
-          case 1:
-          {
-            /*
-              45 degrees.
-            */
-            normalize=2.0*(image->rows-distance)*(image->columns-distance);
-            break;
-          }
-          case 2:
-          {
-            /*
-              90 degrees.
-            */
-            normalize=2.0*(image->rows-distance)*image->columns;
-            break;
-          }
-          case 3:
-          {
-            /*
-              135 degrees.
-            */
-            normalize=2.0*(image->rows-distance)*(image->columns-distance);
-            break;
-          }
-        }
+        /*
+          0 degrees.
+        */
+        normalize=2.0*image->rows*(image->columns-distance);
+        break;
+      }
+      case 1:
+      {
+        /*
+          45 degrees.
+        */
+        normalize=2.0*(image->rows-distance)*(image->columns-distance);
+        break;
+      }
+      case 2:
+      {
+        /*
+          90 degrees.
+        */
+        normalize=2.0*(image->rows-distance)*image->columns;
+        break;
+      }
+      case 3:
+      {
+        /*
+          135 degrees.
+        */
+        normalize=2.0*(image->rows-distance)*(image->columns-distance);
+        break;
+      }
+    }
+    for (y=0; y < (long) number_tones; y++)
+    {
+      register long
+        x;
+
+      for (x=0; x < (long) number_tones; x++)
+      {
         pixels[x][y].tones[i].red/=normalize;
         pixels[x][y].tones[i].green/=normalize;
         pixels[x][y].tones[i].blue/=normalize;
@@ -518,14 +518,17 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) number_tones; y++)
+  for (i=0; i < 4; i++)
   {
     register long
-      x;
+      y;
 
-    for (x=0; x < (long) number_tones; x++)
+    for (y=0; y < (long) number_tones; y++)
     {
-      for (i=0; i < 4; i++)
+      register long
+        x;
+
+      for (x=0; x < (long) number_tones; x++)
       {
         /*
           Angular second moment:  measure of homogeneity of the image.
@@ -548,23 +551,23 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (z=0; z < (long) number_tones; z++)
+  for (i=0; i < 4; i++)
   {
-    register long
-      y;
-
-    SpatialDependenceMatrix
-      pixel;
-
-    (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
-    for (y=0; y < (long) number_tones; y++)
+    for (z=0; z < (long) number_tones; z++)
     {
       register long
-        x;
+        y;
 
-      for (x=0; x < (long) number_tones; x++)
+      SpatialDependenceMatrix
+        pixel;
+
+      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+      for (y=0; y < (long) number_tones; y++)
       {
-        for (i=0; i < 4; i++)
+        register long
+          x;
+
+        for (x=0; x < (long) number_tones; x++)
         {
           /*
             Contrast:  amount of local variations present in an image.
@@ -581,9 +584,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
             }
         }
       }
-    }
-    for (i=0; i < 4; i++)
-    {
       channel_features[RedChannel].contrast[i]+=z*z*pixel.tones[i].red;
       channel_features[GreenChannel].contrast[i]+=z*z*pixel.tones[i].green;
       channel_features[BlueChannel].contrast[i]+=z*z*pixel.tones[i].blue;
