@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -2281,6 +2281,14 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 </pre>
 
 <p>copies all the images from object <kbd>$p</kbd> to <kbd>$q</kbd>. You can use this method for single or multi-image sequences.</p>
+
+<p>The Features() method returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second momentum, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance, difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  Values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
+
+<pre class="code">
+  @features = $image-&gt;Features(1);
+</pre>
+
+<p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
 

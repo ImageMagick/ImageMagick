@@ -4269,13 +4269,14 @@ WandExport double *MagickGetImageChannelDistortions(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetImageChannelFeatures() returns features for each channel in the
-%  image at at 0, 45, 90, and 135 degrees for the specified distance.  The
-%  features include the angular second moment, contrast, correlation, sum of
-%  squares: variance, inverse difference moment, sum average, sum varience,
-%  sum entropy, entropy, difference variance, difference entropy, information
-%  measures of correlation 1, information measures of correlation 2, and
-%  maximum correlation coefficient.  You can access the red channel contrast,
-%  for example, like this:
+%  image in each of four directions (horizontal, vertical, left and right
+%  diagonals) for the specified distance.  The features include the angular
+%  second moment, contrast, correlation, sum of squares: variance, inverse
+%  difference moment, sum average, sum varience, sum entropy, entropy,
+%  difference variance, difference entropy, information measures of
+%  correlation 1, information measures of correlation 2, and maximum
+%  correlation coefficient.  You can access the red channel contrast, for
+%  example, like this:
 %
 %      channel_features=MagickGetImageChannelFeatures(wand,1);
 %      contrast=channel_features[RedChannel].contrast[0];
