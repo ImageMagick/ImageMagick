@@ -3551,6 +3551,12 @@ Features(ref,...)
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
     channel_features[channel].constant[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].variance_sum_of_squares[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].inverse_difference_moment[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
 
     AV

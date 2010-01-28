@@ -141,6 +141,10 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
   "        %g, %g, %g, %g\n" \
   "      Correlation:\n" \
   "        %g, %g, %g, %g\n" \
+  "      Sum of Square: Variance:\n" \
+  "        %g, %g, %g, %g\n" \
+  "      Inverse Difference Moment:\n" \
+  "        %g, %g, %g, %g\n"
 
   int
     status;
@@ -157,7 +161,15 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
     channel_features[channel].correlation[0],
     channel_features[channel].correlation[1],
     channel_features[channel].correlation[2],
-    channel_features[channel].correlation[3]);
+    channel_features[channel].correlation[3],
+    channel_features[channel].variance_sum_of_squares[0],
+    channel_features[channel].variance_sum_of_squares[1],
+    channel_features[channel].variance_sum_of_squares[2],
+    channel_features[channel].variance_sum_of_squares[3],
+    channel_features[channel].inverse_difference_moment[0],
+    channel_features[channel].inverse_difference_moment[1],
+    channel_features[channel].inverse_difference_moment[2],
+    channel_features[channel].inverse_difference_moment[3]);
   return(status);
 }
 

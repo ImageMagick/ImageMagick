@@ -145,9 +145,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   ChannelStatistics
     **cooccurrence,
     correlation,
+    inverse_difference_moment,
     mean,
     *sum,
-    sum_squares;
+    sum_squares,
+    variance;
 
   LongPixelPacket
     gray,
@@ -539,6 +541,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(&correlation,0,sizeof(correlation));
   (void) ResetMagickMemory(&mean,0,sizeof(mean));
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
+  (void) ResetMagickMemory(&inverse_difference_moment,0,
+    sizeof(inverse_difference_moment));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
@@ -595,6 +599,21 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           correlation.direction[i].index+=x*y*
             cooccurrence[x][y].direction[i].index;
+        /*
+          Inverse Difference Moment.
+        */
+        inverse_difference_moment.direction[i].red+=
+          cooccurrence[x][y].direction[i].red/((y-x)*(y-x)+1);
+        inverse_difference_moment.direction[i].green+=
+          cooccurrence[x][y].direction[i].green/((y-x)*(y-x)+1);
+        inverse_difference_moment.direction[i].blue+=
+          cooccurrence[x][y].direction[i].blue/((y-x)*(y-x)+1);
+        if (image->matte != MagickFalse)
+          inverse_difference_moment.direction[i].opacity+=
+            cooccurrence[x][y].direction[i].opacity/((y-x)*(y-x)+1);
+        if (image->colorspace == CMYKColorspace)
+          inverse_difference_moment.direction[i].index+=
+            cooccurrence[x][y].direction[i].index/((y-x)*(y-x)+1);
       }
       mean.direction[i].red+=y*sum[y].direction[i].red;
       sum_squares.direction[i].red+=y*y*sum[y].direction[i].red;
@@ -649,6 +668,59 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         sum_squares.direction[i].index-(mean.direction[i].index*
         mean.direction[i].index)));
   }
+  /*
+    Compute more texture features.
+  */
+  (void) ResetMagickMemory(&variance,0,sizeof(variance));
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (i=0; i < 4; i++)
+  {
+    register long
+      y;
+
+    for (y=0; y < (long) number_grays; y++)
+    {
+      register long
+        x;
+
+      for (x=0; x < (long) number_grays; x++)
+      {
+        /*
+          Sum of Squares: Variance
+        */
+        variance.direction[i].red+=(y-mean.direction[i].red+1)*
+          (y-mean.direction[i].red+1)*cooccurrence[x][y].direction[i].red;
+        variance.direction[i].green+=(y-mean.direction[i].green+1)*
+          (y-mean.direction[i].green+1)*cooccurrence[x][y].direction[i].green;
+        variance.direction[i].blue+=(y-mean.direction[i].blue+1)*
+          (y-mean.direction[i].blue+1)*cooccurrence[x][y].direction[i].blue;
+        if (image->matte != MagickFalse)
+          variance.direction[i].opacity+=(y-mean.direction[i].opacity+1)*
+            (y-mean.direction[i].opacity+1)*
+            cooccurrence[x][y].direction[i].opacity;
+        if (image->colorspace == CMYKColorspace)
+          variance.direction[i].index+=(y-mean.direction[i].index+1)*
+            (y-mean.direction[i].index+1)*cooccurrence[x][y].direction[i].index;
+      }
+    }
+    channel_features[RedChannel].variance_sum_of_squares[i]=
+      variance.direction[i].red;
+    channel_features[GreenChannel].variance_sum_of_squares[i]=
+      variance.direction[i].green;
+    channel_features[BlueChannel].variance_sum_of_squares[i]=
+      variance.direction[i].blue;
+    if (image->matte != MagickFalse)
+      channel_features[RedChannel].variance_sum_of_squares[i]=
+        variance.direction[i].opacity;
+    if (image->colorspace == CMYKColorspace)
+      channel_features[RedChannel].variance_sum_of_squares[i]=
+        variance.direction[i].index;
+  }
+  /*
+    Compute more texture features.
+  */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
