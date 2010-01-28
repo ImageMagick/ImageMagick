@@ -135,10 +135,12 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
   const char *name,const double scale,const ChannelFeatures *channel_features)
 {
 #define FeaturesFormat "    %s:\n" \
-  "      angular second moment:\n" \
+  "      Angular Second Moment:\n" \
   "        %g, %g, %g, %g\n" \
-  "      contrast:\n" \
-  "        %g, %g, %g, %g\n"
+  "      Contrast:\n" \
+  "        %g, %g, %g, %g\n" \
+  "      Correlation:\n" \
+  "        %g, %g, %g, %g\n" \
 
   int
     status;
@@ -151,7 +153,11 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
     channel_features[channel].contrast[0],
     channel_features[channel].contrast[1],
     channel_features[channel].contrast[2],
-    channel_features[channel].contrast[3]);
+    channel_features[channel].contrast[3],
+    channel_features[channel].correlation[0],
+    channel_features[channel].correlation[1],
+    channel_features[channel].correlation[2],
+    channel_features[channel].correlation[3]);
   return(status);
 }
 

@@ -578,38 +578,76 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
           Correlation: measure of linear-dependencies in the image.
         */
         sum[y].direction[i].red+=cooccurrence[x][y].direction[i].red;
-        correlation.direction[i].red+=x*y*cooccurrence[x][y].direction[i].red;
-        mean.direction[i].red+=y*sum[y].direction[i].red;
-        sum_squares.direction[i].red+=y*y*sum[y].direction[i].red;
         sum[y].direction[i].green+=cooccurrence[x][y].direction[i].green;
+        sum[y].direction[i].blue+=cooccurrence[x][y].direction[i].blue;
+        if (image->matte != MagickFalse)
+          sum[y].direction[i].opacity+=cooccurrence[x][y].direction[i].opacity;
+        if (image->colorspace == CMYKColorspace)
+          sum[y].direction[i].index+=cooccurrence[x][y].direction[i].index;
+        correlation.direction[i].red+=x*y*cooccurrence[x][y].direction[i].red;
         correlation.direction[i].green+=x*y*
           cooccurrence[x][y].direction[i].green;
-        mean.direction[i].green+=y*sum[y].direction[i].green;
-        sum_squares.direction[i].green+=y*y*sum[y].direction[i].green;
-        sum[y].direction[i].blue+=cooccurrence[x][y].direction[i].blue;
         correlation.direction[i].blue+=x*y*
           cooccurrence[x][y].direction[i].blue;
-        mean.direction[i].blue+=y*sum[y].direction[i].blue;
-        sum_squares.direction[i].blue+=y*y*sum[y].direction[i].blue;
         if (image->matte != MagickFalse)
-          {
-            sum[y].direction[i].opacity+=
-              cooccurrence[x][y].direction[i].opacity;
-            correlation.direction[i].opacity+=x*y*
-              cooccurrence[x][y].direction[i].opacity;
-            mean.direction[i].opacity+=y*sum[y].direction[i].opacity;
-            sum_squares.direction[i].opacity+=y*y*sum[y].direction[i].opacity;
-          }
+          correlation.direction[i].opacity+=x*y*
+            cooccurrence[x][y].direction[i].opacity;
         if (image->colorspace == CMYKColorspace)
-          {
-            sum[y].direction[i].index+=cooccurrence[x][y].direction[i].index;
-            correlation.direction[i].index+=x*y*
-              cooccurrence[x][y].direction[i].index;
-            mean.direction[i].index+=y*sum[y].direction[i].index;
-            sum_squares.direction[i].index+=y*y*sum[y].direction[i].index;
-          }
+          correlation.direction[i].index+=x*y*
+            cooccurrence[x][y].direction[i].index;
       }
+      mean.direction[i].red+=y*sum[y].direction[i].red;
+      sum_squares.direction[i].red+=y*y*sum[y].direction[i].red;
+      mean.direction[i].green+=y*sum[y].direction[i].green;
+      sum_squares.direction[i].green+=y*y*sum[y].direction[i].green;
+      mean.direction[i].blue+=y*sum[y].direction[i].blue;
+      sum_squares.direction[i].blue+=y*y*sum[y].direction[i].blue;
+      if (image->matte != MagickFalse)
+        {
+          mean.direction[i].opacity+=y*sum[y].direction[i].opacity;
+          sum_squares.direction[i].opacity+=y*y*sum[y].direction[i].opacity;
+        }
+      if (image->colorspace == CMYKColorspace)
+        {
+          mean.direction[i].index+=y*sum[y].direction[i].index;
+          sum_squares.direction[i].index+=y*y*sum[y].direction[i].index;
+        }
     }
+    /*
+      Correlation: measure of linear-dependencies in the image.
+    */
+    channel_features[RedChannel].correlation[i]=
+      (correlation.direction[i].red-mean.direction[i].red*
+      mean.direction[i].red)/(sqrt(sum_squares.direction[i].red-
+      (mean.direction[i].red*mean.direction[i].red))*sqrt(
+      sum_squares.direction[i].red-(mean.direction[i].red*
+      mean.direction[i].red)));
+    channel_features[GreenChannel].correlation[i]=
+      (correlation.direction[i].green-mean.direction[i].green*
+      mean.direction[i].green)/(sqrt(sum_squares.direction[i].green-
+      (mean.direction[i].green*mean.direction[i].green))*sqrt(
+      sum_squares.direction[i].green-(mean.direction[i].green*
+      mean.direction[i].green)));
+    channel_features[BlueChannel].correlation[i]=
+      (correlation.direction[i].blue-mean.direction[i].blue*
+      mean.direction[i].blue)/(sqrt(sum_squares.direction[i].blue-
+      (mean.direction[i].blue*mean.direction[i].blue))*sqrt(
+      sum_squares.direction[i].blue-(mean.direction[i].blue*
+      mean.direction[i].blue)));
+    if (image->matte != MagickFalse)
+      channel_features[OpacityChannel].correlation[i]=
+        (correlation.direction[i].opacity-mean.direction[i].opacity*
+        mean.direction[i].opacity)/(sqrt(sum_squares.direction[i].opacity-
+        (mean.direction[i].opacity*mean.direction[i].opacity))*sqrt(
+        sum_squares.direction[i].opacity-(mean.direction[i].opacity*
+        mean.direction[i].opacity)));
+    if (image->colorspace == CMYKColorspace)
+      channel_features[IndexChannel].correlation[i]=
+        (correlation.direction[i].index-mean.direction[i].index*
+        mean.direction[i].index)/(sqrt(sum_squares.direction[i].index-
+        (mean.direction[i].index*mean.direction[i].index))*sqrt(
+        sum_squares.direction[i].index-(mean.direction[i].index*
+        mean.direction[i].index)));
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)

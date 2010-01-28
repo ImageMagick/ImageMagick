@@ -3540,13 +3540,16 @@ Features(ref,...)
     featuresimage = 3
   PPCODE:
   {
-#define ChannelFeatures(channel,angle) \
+#define ChannelFeatures(channel,direction) \
 { \
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
-    channel_features[channel].angular_second_moment[angle]); \
+    channel_features[channel].angular_second_moment[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
-    channel_features[channel].contrast[angle]); \
+    channel_features[channel].contrast[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].constant[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
 
