@@ -86,7 +86,7 @@
  * migration to libpng-2.0, remove these defines and then
  * fix any code that generates warnings.
  */
-#define PNG_DEPRECATED  /* Use of this function is deprecated */
+/* #define PNG_DEPRECATED   Use of this function is deprecated */
 #define PNG_USE_RESULT  /* The result of this function must be checked */
 #define PNG_NORETURN    /* This function does not return */
 #define PNG_ALLOCATED   /* The result of the function is new memory */
@@ -1844,8 +1844,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_set_read_user_chunk_fn(ping, image, read_vpag_chunk_callback);
 #endif
 
-#if defined(PNG_USE_PNGGCCRD) && defined(PNG_ASSEMBLER_CODE_SUPPORTED) && \
- (PNG_LIBPNG_VER >= 10200) && (PNG_LIBPNG_VER < 10220) && defined(__i386__)
+#if (PNG_LIBPNG_VER < 10400)
+#  if defined(PNG_USE_PNGGCCRD) && defined(PNG_ASSEMBLER_CODE_SUPPORTED) && \
+   (PNG_LIBPNG_VER >= 10200) && (PNG_LIBPNG_VER < 10220) && defined(__i386__)
   /* Disable thread-unsafe features of pnggccrd */
   if (png_access_version_number() >= 10200)
   {
@@ -1859,6 +1860,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     asm_flags=png_get_asm_flags(ping);
     png_set_asm_flags(ping, asm_flags & ~mmx_disable_mask);
   }
+#  endif
 #endif
 
   png_read_info(ping,ping_info);
@@ -7353,7 +7355,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if ((mng_info->write_png_depth &&
       mng_info->write_png_depth != ping_info->bit_depth) ||
      (mng_info->write_png_colortype &&
-      mng_info->write_png_colortype-1 != ping_info->color_type))
+     (mng_info->write_png_colortype-1 != ping_info->color_type &&
+      mng_info->write_png_colortype != 7 &&
+      !(mng_info->write_png_colortype == 5 && ping_info->color_type == 0))))
     {
       if (logging != MagickFalse)
         {

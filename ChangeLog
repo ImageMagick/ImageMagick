@@ -1,3 +1,6 @@
+2010-01-27  6.5.9-1 Glenn Randers-Pehrson <glennrp@image...>
+  * Make -define png:color-type less persnickity about what it will accept.
+
 2010-01-24  6.5.9-1 Anthony Thyssen <A.Thyssen@griffith...>
   * added use of -precision in 'showkernel' output of -morphology
   * correct use of a 'reflected kernel' for 'Convolve' 'Dilate' and
