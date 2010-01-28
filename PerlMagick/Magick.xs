@@ -3549,7 +3549,7 @@ Features(ref,...)
     channel_features[channel].contrast[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
-    channel_features[channel].constant[direction]); \
+    channel_features[channel].contrast[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
     channel_features[channel].variance_sum_of_squares[direction]); \
