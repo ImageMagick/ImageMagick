@@ -145,7 +145,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   ChannelStatistics
     **cooccurrence,
     correlation,
-    inverse_difference_moment,
     mean,
     *sum,
     sum_squares,
@@ -541,8 +540,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(&correlation,0,sizeof(correlation));
   (void) ResetMagickMemory(&mean,0,sizeof(mean));
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
-  (void) ResetMagickMemory(&inverse_difference_moment,0,
-    sizeof(inverse_difference_moment));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
@@ -602,17 +599,17 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         /*
           Inverse Difference Moment.
         */
-        inverse_difference_moment.direction[i].red+=
+        channel_features[RedChannel].inverse_difference_moment[i]+=
           cooccurrence[x][y].direction[i].red/((y-x)*(y-x)+1);
-        inverse_difference_moment.direction[i].green+=
+        channel_features[GreenChannel].inverse_difference_moment[i]+=
           cooccurrence[x][y].direction[i].green/((y-x)*(y-x)+1);
-        inverse_difference_moment.direction[i].blue+=
+        channel_features[BlueChannel].inverse_difference_moment[i]+=
           cooccurrence[x][y].direction[i].blue/((y-x)*(y-x)+1);
         if (image->matte != MagickFalse)
-          inverse_difference_moment.direction[i].opacity+=
+          channel_features[OpacityChannel].inverse_difference_moment[i]+=
             cooccurrence[x][y].direction[i].opacity/((y-x)*(y-x)+1);
         if (image->colorspace == CMYKColorspace)
-          inverse_difference_moment.direction[i].index+=
+          channel_features[IndexChannel].inverse_difference_moment[i]+=
             cooccurrence[x][y].direction[i].index/((y-x)*(y-x)+1);
       }
       mean.direction[i].red+=y*sum[y].direction[i].red;
