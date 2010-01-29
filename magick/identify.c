@@ -160,7 +160,15 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
   "      Entropy:\n" \
   "        %.*g, %.*g, %.*g, %.*g\n" \
   "      Difference Variance:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n"
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Difference Entropy:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Information Measure of Correlation 1:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Information Measure of Correlation 2:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Maximum Correlation Coefficient:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" 
 
   int
     status;
@@ -175,7 +183,11 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
     PrintFeature(channel_features[channel].sum_variance),
     PrintFeature(channel_features[channel].sum_entropy),
     PrintFeature(channel_features[channel].entropy),
-    PrintFeature(channel_features[channel].difference_variance));
+    PrintFeature(channel_features[channel].difference_variance),
+    PrintFeature(channel_features[channel].difference_entropy),
+    PrintFeature(channel_features[channel].measure_of_correlation_1),
+    PrintFeature(channel_features[channel].measure_of_correlation_2),
+    PrintFeature(channel_features[channel].maximum_correlation_coefficient));
   return(status);
 }
 

@@ -894,25 +894,25 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
           sum_average[x].direction[i].index;
     }
     channel_features[RedChannel].difference_variance[i]=
-      ((number_grays*number_grays*sum_squares.direction[i].red)-
+      (((double) number_grays*number_grays*sum_squares.direction[i].red)-
       (variance.direction[i].red*variance.direction[i].red))/
       ((double) number_grays*number_grays*number_grays*number_grays);
     channel_features[GreenChannel].difference_variance[i]=
-      ((number_grays*number_grays*sum_squares.direction[i].green)-
+      (((double) number_grays*number_grays*sum_squares.direction[i].green)-
       (variance.direction[i].green*variance.direction[i].green))/
       ((double) number_grays*number_grays*number_grays*number_grays);
     channel_features[BlueChannel].difference_variance[i]=
-      ((number_grays*number_grays*sum_squares.direction[i].blue)-
+      (((double) number_grays*number_grays*sum_squares.direction[i].blue)-
       (variance.direction[i].blue*variance.direction[i].blue))/
       ((double) number_grays*number_grays*number_grays*number_grays);
     if (image->matte != MagickFalse)
       channel_features[OpacityChannel].difference_variance[i]=
-        ((number_grays*number_grays*sum_squares.direction[i].opacity)-
+        (((double) number_grays*number_grays*sum_squares.direction[i].opacity)-
         (variance.direction[i].opacity*variance.direction[i].opacity))/
         ((double) number_grays*number_grays*number_grays*number_grays);
     if (image->colorspace == CMYKColorspace)
       channel_features[IndexChannel].difference_variance[i]=
-        ((number_grays*number_grays*sum_squares.direction[i].index)-
+        (((double) number_grays*number_grays*sum_squares.direction[i].index)-
         (variance.direction[i].index*variance.direction[i].index))/
         ((double) number_grays*number_grays*number_grays*number_grays);
   }
