@@ -127,6 +127,14 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline long MagickAbsoluteValue(const long x)
+{
+  if (x < 0)
+    return(-x);
+  return(x);
+}
+
 MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   const unsigned long distance,ExceptionInfo *exception)
 {
@@ -147,6 +155,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     correlation,
     mean,
     *sum,
+    *sum_average,
     sum_squares,
     variance;
 
@@ -189,10 +198,10 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   grays=(LongPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*grays));
   if (grays == (LongPixelPacket *) NULL)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(channel_features);
     }
   for (i=0; i <= (long) MaxMap; i++)
@@ -284,11 +293,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     sizeof(*cooccurrence));
   if (cooccurrence == (ChannelStatistics **) NULL)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       grays=(LongPixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(channel_features);
     }
   for (i=0; i < (long) number_grays; i++)
@@ -302,8 +311,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   }
   if (i < (long) number_grays)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       for (i--; i >= 0; i--)
         cooccurrence[i]=(ChannelStatistics *)
           RelinquishMagickMemory(cooccurrence[i]);
@@ -311,6 +318,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       grays=(LongPixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(channel_features);
     }
   /*
@@ -444,8 +453,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       for (i=0; i < (long) number_grays; i++)
         cooccurrence[i]=(ChannelStatistics *)
           RelinquishMagickMemory(cooccurrence[i]);
@@ -453,6 +460,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       grays=(LongPixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(channel_features);
     }
   /*
@@ -523,10 +532,15 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     Compute texture features.
   */
   sum=(ChannelStatistics *) AcquireQuantumMemory(number_grays,sizeof(*sum));
-  if (sum == (ChannelStatistics *) NULL)
+  sum_average=(ChannelStatistics *) AcquireQuantumMemory(2*number_grays,
+    sizeof(*sum_average));
+  if ((sum == (ChannelStatistics *) NULL) || 
+      (sum_average == (ChannelStatistics *) NULL))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      if (sum_average != (ChannelStatistics *) NULL)
+        sum_average=(ChannelStatistics *) RelinquishMagickMemory(sum_average);
+      if (sum != (ChannelStatistics *) NULL)
+        sum=(ChannelStatistics *) RelinquishMagickMemory(sum);
       for (i=0; i < (long) number_grays; i++)
         cooccurrence[i]=(ChannelStatistics *)
           RelinquishMagickMemory(cooccurrence[i]);
@@ -534,9 +548,12 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       grays=(LongPixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(channel_features);
     }
   (void) ResetMagickMemory(sum,0,number_grays*sizeof(*sum));
+  (void) ResetMagickMemory(sum_average,0,2*number_grays*sizeof(*sum_average));
   (void) ResetMagickMemory(&correlation,0,sizeof(correlation));
   (void) ResetMagickMemory(&mean,0,sizeof(mean));
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
@@ -611,6 +628,41 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           channel_features[IndexChannel].inverse_difference_moment[i]+=
             cooccurrence[x][y].direction[i].index/((y-x)*(y-x)+1);
+        /*
+          Sum average.
+        */
+        sum_average[y+x+2].direction[i].red+=
+          cooccurrence[x][y].direction[i].red;
+        sum_average[y+x+2].direction[i].green+=
+          cooccurrence[x][y].direction[i].green;
+        sum_average[y+x+2].direction[i].blue+=
+          cooccurrence[x][y].direction[i].blue;
+        if (image->matte != MagickFalse)
+          sum_average[y+x+2].direction[i].opacity+=
+            cooccurrence[x][y].direction[i].opacity;
+        if (image->colorspace == CMYKColorspace)
+          sum_average[y+x+2].direction[i].index+=
+            cooccurrence[x][y].direction[i].index;
+        /*
+          Entropy.
+        */
+        channel_features[RedChannel].entropy[i]-=
+          cooccurrence[x][y].direction[i].red*
+          log10(cooccurrence[x][y].direction[i].red+MagickEpsilon);
+        channel_features[GreenChannel].entropy[i]-=
+          cooccurrence[x][y].direction[i].green*
+          log10(cooccurrence[x][y].direction[i].green+MagickEpsilon);
+        channel_features[BlueChannel].entropy[i]-=
+          cooccurrence[x][y].direction[i].blue*
+          log10(cooccurrence[x][y].direction[i].blue+MagickEpsilon);
+        if (image->matte != MagickFalse)
+          channel_features[OpacityChannel].entropy[i]-=
+            cooccurrence[x][y].direction[i].opacity*
+            log10(cooccurrence[x][y].direction[i].opacity+MagickEpsilon);
+        if (image->colorspace == CMYKColorspace)
+          channel_features[IndexChannel].entropy[i]-=
+            cooccurrence[x][y].direction[i].index*
+            log10(cooccurrence[x][y].direction[i].index+MagickEpsilon);
       }
       mean.direction[i].red+=y*sum[y].direction[i].red;
       sum_squares.direction[i].red+=y*y*sum[y].direction[i].red;
@@ -668,7 +720,83 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   /*
     Compute more texture features.
   */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (i=0; i < 4; i++)
+  {
+    register long
+      x;
+
+    for (x=2; x < (long) (2*number_grays); x++)
+    {
+      /*
+        Sum average.
+      */
+      channel_features[RedChannel].sum_average[i]+=
+        x*sum_average[x].direction[i].red;
+      channel_features[GreenChannel].sum_average[i]+=
+        x*sum_average[x].direction[i].green;
+      channel_features[BlueChannel].sum_average[i]+=
+        x*sum_average[x].direction[i].blue;
+      if (image->matte != MagickFalse)
+        channel_features[OpacityChannel].sum_average[i]+=
+          x*sum_average[x].direction[i].opacity;
+      if (image->colorspace == CMYKColorspace)
+        channel_features[IndexChannel].sum_average[i]+=
+          x*sum_average[x].direction[i].index;
+      /*
+        Sum entropy.
+      */
+      channel_features[RedChannel].sum_entropy[i]-=
+        sum_average[x].direction[i].red*
+        log10(sum_average[x].direction[i].red+MagickEpsilon);
+      channel_features[GreenChannel].sum_entropy[i]-=
+        sum_average[x].direction[i].green*
+        log10(sum_average[x].direction[i].green+MagickEpsilon);
+      channel_features[BlueChannel].sum_entropy[i]-=
+        sum_average[x].direction[i].blue*
+        log10(sum_average[x].direction[i].blue+MagickEpsilon);
+      if (image->matte != MagickFalse)
+        channel_features[OpacityChannel].sum_entropy[i]-=
+          sum_average[x].direction[i].opacity*
+          log10(sum_average[x].direction[i].opacity+MagickEpsilon);
+      if (image->colorspace == CMYKColorspace)
+        channel_features[IndexChannel].sum_entropy[i]-=
+          sum_average[x].direction[i].index*
+          log10(sum_average[x].direction[i].index+MagickEpsilon);
+      /*
+        Sum variance.
+      */
+      channel_features[RedChannel].sum_variance[i]+=
+        (x-channel_features[RedChannel].sum_entropy[i])*
+        (x-channel_features[RedChannel].sum_entropy[i])*
+        sum_average[x].direction[i].red;
+      channel_features[GreenChannel].sum_variance[i]+=
+        (x-channel_features[GreenChannel].sum_entropy[i])*
+        (x-channel_features[GreenChannel].sum_entropy[i])*
+        sum_average[x].direction[i].green;
+      channel_features[BlueChannel].sum_variance[i]+=
+        (x-channel_features[BlueChannel].sum_entropy[i])*
+        (x-channel_features[BlueChannel].sum_entropy[i])*
+        sum_average[x].direction[i].blue;
+      if (image->matte != MagickFalse)
+        channel_features[OpacityChannel].sum_variance[i]+=
+          (x-channel_features[OpacityChannel].sum_entropy[i])*
+          (x-channel_features[OpacityChannel].sum_entropy[i])*
+          sum_average[x].direction[i].opacity;
+      if (image->colorspace == CMYKColorspace)
+        channel_features[IndexChannel].sum_variance[i]+=
+          (x-channel_features[IndexChannel].sum_entropy[i])*
+          (x-channel_features[IndexChannel].sum_entropy[i])*
+          sum_average[x].direction[i].index;
+    }
+  }
+  /*
+    Compute more texture features.
+  */
   (void) ResetMagickMemory(&variance,0,sizeof(variance));
+  (void) ResetMagickMemory(sum_average,0,2*number_grays*sizeof(*sum_average));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
@@ -700,6 +828,21 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           variance.direction[i].index+=(y-mean.direction[i].index+1)*
             (y-mean.direction[i].index+1)*cooccurrence[x][y].direction[i].index;
+        /*
+          Sum average.
+        */
+        sum_average[MagickAbsoluteValue(y-x)].direction[i].red+=
+          cooccurrence[x][y].direction[i].red;
+        sum_average[MagickAbsoluteValue(y-x)].direction[i].green+=
+          cooccurrence[x][y].direction[i].green;
+        sum_average[MagickAbsoluteValue(y-x)].direction[i].blue+=
+          cooccurrence[x][y].direction[i].blue;
+        if (image->matte != MagickFalse)
+          sum_average[MagickAbsoluteValue(y-x)].direction[i].opacity+=
+            cooccurrence[x][y].direction[i].opacity;
+        if (image->colorspace == CMYKColorspace)
+          sum_average[MagickAbsoluteValue(y-x)].direction[i].index+=
+            cooccurrence[x][y].direction[i].index;
       }
     }
     channel_features[RedChannel].variance_sum_of_squares[i]=
@@ -714,6 +857,64 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     if (image->colorspace == CMYKColorspace)
       channel_features[RedChannel].variance_sum_of_squares[i]=
         variance.direction[i].index;
+  }
+  /*
+    Compute more texture features.
+  */
+  (void) ResetMagickMemory(&variance,0,sizeof(variance));
+  (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (i=0; i < 4; i++)
+  {
+    register long
+      x;
+
+    for (x=0; x < (long) number_grays; x++)
+    {
+      variance.direction[i].red+=sum_average[x].direction[i].red;
+      variance.direction[i].green+=sum_average[x].direction[i].green;
+      variance.direction[i].blue+=sum_average[x].direction[i].blue;
+      if (image->matte != MagickFalse)
+        variance.direction[i].opacity+=sum_average[x].direction[i].opacity;
+      if (image->colorspace == CMYKColorspace)
+        variance.direction[i].index+=sum_average[x].direction[i].index;
+      sum_squares.direction[i].red+=sum_average[x].direction[i].red*
+        sum_average[x].direction[i].red;
+      sum_squares.direction[i].green+=sum_average[x].direction[i].green*
+        sum_average[x].direction[i].green;
+      sum_squares.direction[i].blue+=sum_average[x].direction[i].blue*
+        sum_average[x].direction[i].blue;
+      if (image->matte != MagickFalse)
+        sum_squares.direction[i].opacity+=sum_average[x].direction[i].opacity*
+          sum_average[x].direction[i].opacity;
+      if (image->colorspace == CMYKColorspace)
+        sum_squares.direction[i].index+=sum_average[x].direction[i].index*
+          sum_average[x].direction[i].index;
+    }
+    channel_features[RedChannel].difference_variance[i]=
+      ((number_grays*number_grays*sum_squares.direction[i].red)-
+      (variance.direction[i].red*variance.direction[i].red))/
+      ((double) number_grays*number_grays*number_grays*number_grays);
+    channel_features[GreenChannel].difference_variance[i]=
+      ((number_grays*number_grays*sum_squares.direction[i].green)-
+      (variance.direction[i].green*variance.direction[i].green))/
+      ((double) number_grays*number_grays*number_grays*number_grays);
+    channel_features[BlueChannel].difference_variance[i]=
+      ((number_grays*number_grays*sum_squares.direction[i].blue)-
+      (variance.direction[i].blue*variance.direction[i].blue))/
+      ((double) number_grays*number_grays*number_grays*number_grays);
+    if (image->matte != MagickFalse)
+      channel_features[OpacityChannel].difference_variance[i]=
+        ((number_grays*number_grays*sum_squares.direction[i].opacity)-
+        (variance.direction[i].opacity*variance.direction[i].opacity))/
+        ((double) number_grays*number_grays*number_grays*number_grays);
+    if (image->colorspace == CMYKColorspace)
+      channel_features[IndexChannel].difference_variance[i]=
+        ((number_grays*number_grays*sum_squares.direction[i].index)-
+        (variance.direction[i].index*variance.direction[i].index))/
+        ((double) number_grays*number_grays*number_grays*number_grays);
   }
   /*
     Compute more texture features.
@@ -769,6 +970,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   /*
     Relinquish resources.
   */
+  sum_average=(ChannelStatistics *) RelinquishMagickMemory(sum_average);
   sum=(ChannelStatistics *) RelinquishMagickMemory(sum);
   for (i=0; i < (long) number_grays; i++)
     cooccurrence[i]=(ChannelStatistics *)
