@@ -3557,6 +3557,21 @@ Features(ref,...)
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
     channel_features[channel].inverse_difference_moment[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].sum_average[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].sum_variance[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].sum_entropy[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].entropy[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
+    channel_features[channel].difference_variance[direction]); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
 
     AV

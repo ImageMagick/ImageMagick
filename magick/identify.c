@@ -132,44 +132,50 @@
 */
 
 static int PrintChannelFeatures(FILE *file,const ChannelType channel,
-  const char *name,const double scale,const ChannelFeatures *channel_features)
+  const char *name,const ChannelFeatures *channel_features)
 {
+#define PrintFeature(feature) \
+  GetMagickPrecision(),(feature)[0], \
+  GetMagickPrecision(),(feature)[1], \
+  GetMagickPrecision(),(feature)[2], \
+  GetMagickPrecision(),(feature)[3]
+
 #define FeaturesFormat "    %s:\n" \
   "      Angular Second Moment:\n" \
-  "        %g, %g, %g, %g\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
   "      Contrast:\n" \
-  "        %g, %g, %g, %g\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
   "      Correlation:\n" \
-  "        %g, %g, %g, %g\n" \
-  "      Sum of Square: Variance:\n" \
-  "        %g, %g, %g, %g\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Sum of Squares: Variance:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
   "      Inverse Difference Moment:\n" \
-  "        %g, %g, %g, %g\n"
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Sum Average:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Sum Variance:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Sum Entropy:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Entropy:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "      Difference Variance:\n" \
+  "        %.*g, %.*g, %.*g, %.*g\n"
 
   int
     status;
 
   status=fprintf(file,FeaturesFormat,name,
-    channel_features[channel].angular_second_moment[0],
-    channel_features[channel].angular_second_moment[1],
-    channel_features[channel].angular_second_moment[2],
-    channel_features[channel].angular_second_moment[3],
-    channel_features[channel].contrast[0],
-    channel_features[channel].contrast[1],
-    channel_features[channel].contrast[2],
-    channel_features[channel].contrast[3],
-    channel_features[channel].correlation[0],
-    channel_features[channel].correlation[1],
-    channel_features[channel].correlation[2],
-    channel_features[channel].correlation[3],
-    channel_features[channel].variance_sum_of_squares[0],
-    channel_features[channel].variance_sum_of_squares[1],
-    channel_features[channel].variance_sum_of_squares[2],
-    channel_features[channel].variance_sum_of_squares[3],
-    channel_features[channel].inverse_difference_moment[0],
-    channel_features[channel].inverse_difference_moment[1],
-    channel_features[channel].inverse_difference_moment[2],
-    channel_features[channel].inverse_difference_moment[3]);
+    PrintFeature(channel_features[channel].angular_second_moment),
+    PrintFeature(channel_features[channel].contrast),
+    PrintFeature(channel_features[channel].correlation),
+    PrintFeature(channel_features[channel].variance_sum_of_squares),
+    PrintFeature(channel_features[channel].inverse_difference_moment),
+    PrintFeature(channel_features[channel].sum_average),
+    PrintFeature(channel_features[channel].sum_variance),
+    PrintFeature(channel_features[channel].sum_entropy),
+    PrintFeature(channel_features[channel].entropy),
+    PrintFeature(channel_features[channel].difference_variance));
   return(status);
 }
 
@@ -512,40 +518,35 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelFeatures(file,RedChannel,"Red",1.0/scale,
+          (void) PrintChannelFeatures(file,RedChannel,"Red",channel_features);
+          (void) PrintChannelFeatures(file,GreenChannel,"Green",
             channel_features);
-          (void) PrintChannelFeatures(file,GreenChannel,"Green",1.0/scale,
-            channel_features);
-          (void) PrintChannelFeatures(file,BlueChannel,"Blue",1.0/scale,
-            channel_features);
+          (void) PrintChannelFeatures(file,BlueChannel,"Blue",channel_features);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelFeatures(file,CyanChannel,"Cyan",1.0/scale,
+          (void) PrintChannelFeatures(file,CyanChannel,"Cyan",channel_features);
+          (void) PrintChannelFeatures(file,MagentaChannel,"Magenta",
             channel_features);
-          (void) PrintChannelFeatures(file,MagentaChannel,"Magenta",1.0/
-            scale,channel_features);
-          (void) PrintChannelFeatures(file,YellowChannel,"Yellow",1.0/scale,
+          (void) PrintChannelFeatures(file,YellowChannel,"Yellow",
             channel_features);
-          (void) PrintChannelFeatures(file,BlackChannel,"Black",1.0/scale,
+          (void) PrintChannelFeatures(file,BlackChannel,"Black",
             channel_features);
           break;
         }
         case GRAYColorspace:
         {
-          (void) PrintChannelFeatures(file,GrayChannel,"Gray",1.0/scale,
-            channel_features);
+          (void) PrintChannelFeatures(file,GrayChannel,"Gray",channel_features);
           break;
         }
       }
       if (image->matte != MagickFalse)
-        (void) PrintChannelFeatures(file,AlphaChannel,"Alpha",1.0/scale,
-          channel_features);
+        (void) PrintChannelFeatures(file,AlphaChannel,"Alpha",channel_features);
       if (colorspace != GRAYColorspace)
         {
           (void) fprintf(file,"  Image features:\n");
-          (void) PrintChannelFeatures(file,AllChannels,"Overall",1.0/scale,
+          (void) PrintChannelFeatures(file,AllChannels,"Overall",
             channel_features);
         }
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
