@@ -892,7 +892,30 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         sum_squares.direction[i].index+=sum_average[x].direction[i].index*
           sum_average[x].direction[i].index;
+      /*
+        Difference entropy.
+      */
+      channel_features[RedChannel].difference_entropy[i]-=
+        sum_average[x].direction[i].red*
+        log10(sum_average[x].direction[i].red+MagickEpsilon);
+      channel_features[GreenChannel].difference_entropy[i]-=
+        sum_average[x].direction[i].green*
+        log10(sum_average[x].direction[i].green+MagickEpsilon);
+      channel_features[BlueChannel].difference_entropy[i]-=
+        sum_average[x].direction[i].blue*
+        log10(sum_average[x].direction[i].blue+MagickEpsilon);
+      if (image->matte != MagickFalse)
+        channel_features[OpacityChannel].difference_entropy[i]-=
+          sum_average[x].direction[i].opacity*
+          log10(sum_average[x].direction[i].opacity+MagickEpsilon);
+      if (image->colorspace == CMYKColorspace)
+        channel_features[IndexChannel].difference_entropy[i]-=
+          sum_average[x].direction[i].index*
+          log10(sum_average[x].direction[i].index+MagickEpsilon);
     }
+    /*
+      Difference variance.
+    */
     channel_features[RedChannel].difference_variance[i]=
       (((double) number_grays*number_grays*sum_squares.direction[i].red)-
       (variance.direction[i].red*variance.direction[i].red))/
