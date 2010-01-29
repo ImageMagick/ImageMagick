@@ -39,8 +39,8 @@ typedef struct _ChannelFeatures
     entropy[4],
     difference_variance[4],
     difference_entropy[4],
-    correlation_measure_1[4],
-    correlation_measure_2[4],
+    measure_of_correlation_1[4],
+    measure_of_correlation_2[4],
     maximum_correlation_coefficient[4];
 } ChannelFeatures;
 
