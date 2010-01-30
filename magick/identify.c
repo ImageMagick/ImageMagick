@@ -138,37 +138,38 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
   GetMagickPrecision(),(feature)[0], \
   GetMagickPrecision(),(feature)[1], \
   GetMagickPrecision(),(feature)[2], \
-  GetMagickPrecision(),(feature)[3]
+  GetMagickPrecision(),(feature)[3], \
+  GetMagickPrecision(),((feature)[0]+(feature)[1]+(feature)[2]+(feature)[3])/4.0 \
 
 #define FeaturesFormat "    %s:\n" \
   "      Angular Second Moment:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Contrast:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Correlation:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Sum of Squares: Variance:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Inverse Difference Moment:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Sum Average:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Sum Variance:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Sum Entropy:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Entropy:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Difference Variance:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Difference Entropy:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Information Measure of Correlation 1:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Information Measure of Correlation 2:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" \
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Maximum Correlation Coefficient:\n" \
-  "        %.*g, %.*g, %.*g, %.*g\n" 
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" 
 
   int
     status;
@@ -524,7 +525,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (channel_features != (ChannelFeatures *) NULL)
     {
-      (void) fprintf(file,"  Channel features (horizontal, vertical, left and right diagonals):\n");
+      (void) fprintf(file,"  Channel features (horizontal, vertical, left and right diagonals, average):\n");
       switch (colorspace)
       {
         case RGBColorspace:
