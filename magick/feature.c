@@ -539,7 +539,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     Compute texture features.
   */
   sum=(ChannelStatistics *) AcquireQuantumMemory(number_grays,sizeof(*sum));
-  sum_average=(ChannelStatistics *) AcquireQuantumMemory(2*number_grays,
+  sum_average=(ChannelStatistics *) AcquireQuantumMemory(2*(number_grays+1),
     sizeof(*sum_average));
   mpm_x=(ChannelStatistics *) AcquireQuantumMemory(number_grays,sizeof(*mpm_x));
   mpm_y=(ChannelStatistics *) AcquireQuantumMemory(number_grays,sizeof(*mpm_y));
