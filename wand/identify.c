@@ -137,6 +137,7 @@ static MagickBooleanType IdentifyUsage(void)
       "-set attribute value set an image attribute",
       "-size geometry       width and height of image",
       "-strip               strip image of all profiles and comments",
+      "-unique              display the number of unique colors in the image",
       "-units type          the units of image resolution",
       "-verbose             print detailed information about the image",
       "-virtual-pixel method",
@@ -760,6 +761,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       }
       case 'u':
       {
+        if (LocaleCompare("unique",option+1) == 0)
+          break;
         if (LocaleCompare("units",option+1) == 0)
           {
             long
