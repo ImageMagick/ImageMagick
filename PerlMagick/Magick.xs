@@ -433,7 +433,8 @@ static struct
     { "Shadow", { {"geometry", StringReference}, {"opacity", RealReference},
       {"sigma", RealReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
-    { "Identify", { {"file", FileReference}, {"features", StringReference} } },
+    { "Identify", { {"file", FileReference}, {"features", StringReference},
+      {"unique", MagickBooleanOptions} } },
     { "SepiaTone", { {"threshold", RealReference} } },
     { "SigmoidalContrast", { {"geometry", StringReference},
       {"contrast", RealReference}, {"mid-point", RealReference},
@@ -9474,6 +9475,10 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             (void) SetImageArtifact(image,"identify:features",
               argument_list[1].string_reference);
+          if ((attribute_flag[2] != 0) &&
+              (argument_list[2].long_reference != 0))
+            (void) SetImageArtifact(image,"identify:unique","true");
+          (void) FloodfillPaintImage(image,channel,draw_info,&target,geometry.x,
           (void) IdentifyImage(image,argument_list[0].file_reference,
             MagickTrue);
           break;

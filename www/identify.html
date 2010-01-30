@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.hygi.de">Reinigungsmittel</a><!-- 201002000400+ -->
 </div>
 <div  class="sponsor">
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
@@ -232,9 +232,9 @@
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -depth 8 -size 640x480 image.raw</span><span class='crtout'>image.raw RGB 640x480 DirectClass 9kb 0.000u 0:01</span></p>
-<p>Here we display the number of unique colors in the image:</p>
+<p>Here we display the image texture features and the number of unique colors in the image:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -define unique=true -verbose image.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -verbose -features 1 -unique image.png</span></p>
 <p>You can find additional examples of using <kbd>identify</kbd> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 </div>
@@ -390,6 +390,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td valign="top"><a href="../www/command-line-options.html#strip">-strip</a></td>
     <td valign="top">strip image of all profiles and comments</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../www/command-line-options.html#unique">-unique</a></td>
+    <td valign="top">display image the number of unique colors in the image.</td>
   </tr>
 
   <tr>

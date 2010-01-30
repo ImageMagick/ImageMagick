@@ -1845,19 +1845,25 @@ colormap entry is shifted.</p>
 <p>The following definitions may be created:</p>
 
 <ul>
-<dt>jpeg:extent=value</dt>
+<dt>dcm:display-range=reset</dt>
+  <dd>Set the display range to the minimum and maximum pixel values for the DCM image format.</dd><br />
+<dt>dot:layout-engine=<em class="arg">value</em></dt>
+  <dd>Set the specify the layout engine for the DOT image format (e.g. <kbd>neato</kbd>).</dd><br />
+<dt>jpeg:extent=<em class="arg">value</em></dt>
   <dd>Restrict the maximum JPEG file size, for example <kbd>-define jpeg:extent=400kb</kbd>.</dd><br />
-<dt>jpeg:size=geometry</dt>
+<dt>jpeg:size=<em class="arg">geometry</em></dt>
   <dd>Set the size hint of a JPEG image, for example, -define jpeg:size=128x128.  It is most useful for increasing performance and reducing the memory requirements when reducing the size of a large JPEG image.</dd><br />
-<dt>jp2:rate=value</dt>
+<dt>jp2:rate=<em class="arg">value</em></dt>
   <dd>Specify the compression factor to use while writing JPEG-2000 files. The compression factor is the reciprocal of the compression ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless compression. If defined, this value overrides the -quality setting.  A quality setting of 75 results in a rate value of 0.06641.</dd><br />
 <dt>mng:need-cacheoff</dt>
   <dd>turn playback caching off for streaming MNG.</dd><br />
-<dt>png:bit-depth=value</dt>
-<dt>png:color-type=value</dt>
+<dt>png:bit-depth=<em class="arg">value</em></dt>
+<dt>png:color-type=<em class="arg">value</em></dt>
   <dd>desired bit-depth and color-type for PNG output.  You can force the PNG encoder to use a different bit-depth and color-type than it would have normally selected, but only if this does not cause any loss of image quality. Any attempt to reduce image quality is treated as an error and no PNG file is written.  E.g., if you have a 1-bit black-and-white image, you can use these "defines" to cause it to be written as an 8-bit grayscale, indexed, or even a 64-bit RGBA.  But if you have a 16-million color image, you cannot force it to be written as a grayscale or indexed PNG.  If you wish to do this, you must use the appropriate <a href="#depth">-depth</a>, <a href="#colors">-colors</a>, or <a href="#type">-type</a> directives to reduce the image quality prior to using the PNG encoder. Note that in indexed PNG files, "bit-depth" refers to the number of bits per index, which can range from 1 to 8.  In such files, the color samples always have 8-bit depth.</dd><br />
 <dt>ps:imagemask</dt>
-  <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create Postscript files that render bilevel images with the Postscript imagemask operator instead of the image operator.</dd>
+  <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create Postscript files that render bilevel images with the Postscript imagemask operator instead of the image operator.</dd><br />
+<dt>quantum:format=<em class="arg">type</em></dt>
+  <dd>Set the type to <kbd>floating-point</kbd> to specify a single precision floating-point format for raw files (e.g. GRAY:).</dd>
 </ul>
 
 <p>For example, to create a postscript file that will render only the black pixels of a bilevel image, use:</p>
@@ -5758,7 +5764,7 @@ percentage, which defaults to 100 percent (no color change). </p>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
