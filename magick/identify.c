@@ -556,12 +556,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       }
       if (image->matte != MagickFalse)
         (void) PrintChannelFeatures(file,AlphaChannel,"Alpha",channel_features);
-      if (colorspace != GRAYColorspace)
-        {
-          (void) fprintf(file,"  Image features:\n");
-          (void) PrintChannelFeatures(file,AllChannels,"Overall",
-            channel_features);
-        }
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
     }
