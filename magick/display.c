@@ -15513,35 +15513,31 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         /*
           Refresh windows that are now exposed.
         */
-        if (event.xexpose.window == windows->image.id)
-          if ((event.xexpose.count == 0) &&
-              (windows->image.mapped != MagickFalse))
-            {
-              XRefreshWindow(display,&windows->image,&event);
-              delay=display_image->delay/MagickMax(
-                display_image->ticks_per_second,1L);
-              timer=time((time_t *) NULL)+(delay == 0 ? 1 : delay)+1;
-              break;
-            }
-        if (event.xexpose.window == windows->magnify.id)
-          if (event.xexpose.count == 0)
-            if (windows->magnify.mapped != MagickFalse)
-              {
-                XMakeMagnifyImage(display,windows);
-                break;
-              }
+        if ((event.xexpose.window == windows->image.id) &&
+            (windows->image.mapped != MagickFalse))
+          {
+            XRefreshWindow(display,&windows->image,&event);
+            delay=display_image->delay/MagickMax(
+              display_image->ticks_per_second,1L);
+            timer=time((time_t *) NULL)+(delay == 0 ? 1 : delay)+1;
+            break;
+          }
+        if ((event.xexpose.window == windows->magnify.id) &&
+            (windows->magnify.mapped != MagickFalse))
+          {
+            XMakeMagnifyImage(display,windows);
+            break;
+          }
         if (event.xexpose.window == windows->pan.id)
-          if (event.xexpose.count == 0)
-            {
-              XDrawPanRectangle(display,windows);
-              break;
-            }
+          {
+            XDrawPanRectangle(display,windows);
+            break;
+          }
         if (event.xexpose.window == windows->icon.id)
-          if (event.xexpose.count == 0)
-            {
-              XRefreshWindow(display,&windows->icon,&event);
-              break;
-            }
+          {
+            XRefreshWindow(display,&windows->icon,&event);
+            break;
+          }
         break;
       }
       case KeyPress:
