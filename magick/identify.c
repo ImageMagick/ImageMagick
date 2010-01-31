@@ -409,20 +409,27 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) fprintf(file,"  Colorspace: %s\n",MagickOptionToMnemonic(
     MagickColorspaceOptions,(long) image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
+  channel_features=(ChannelFeatures *) NULL;
+  colorspace=image->colorspace;
   if (ping == MagickFalse)
-    channel_statistics=GetImageChannelStatistics(image,&image->exception);
-  if (channel_statistics != (ChannelStatistics *) NULL)
     {
       unsigned long
         depth;
 
+      channel_statistics=GetImageChannelStatistics(image,&image->exception);
+      artifact=GetImageArtifact(image,"identify:features");
+      if (artifact != (const char *) NULL)
+        {
+          distance=StringToUnsignedLong(artifact);
+          channel_features=GetImageChannelFeatures(image,distance,
+            &image->exception);
+        }
       depth=GetImageDepth(image,&image->exception);
       if (image->depth == depth)
         (void) fprintf(file,"  Depth: %lu-bit\n",image->depth);
       else
         (void) fprintf(file,"  Depth: %lu/%lu-bit\n",image->depth,depth);
       (void) fprintf(file,"  Channel depth:\n");
-      colorspace=image->colorspace;
       if (IsGrayImage(image,&image->exception) != MagickFalse)
         colorspace=GRAYColorspace;
       switch (colorspace)
@@ -470,6 +477,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
         scale=QuantumRange/((unsigned long) QuantumRange >> ((unsigned long)
           MAGICKCORE_QUANTUM_DEPTH-image->depth));
+    }
+  if (channel_statistics != (ChannelStatistics *) NULL)
+    {
       (void) fprintf(file,"  Channel statistics:\n");
       switch (colorspace)
       {
@@ -514,14 +524,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
-    }
-  channel_features=(ChannelFeatures *) NULL;
-  artifact=GetImageArtifact(image,"identify:features");
-  if ((ping == MagickFalse) && (artifact != (const char *) NULL))
-    {
-      distance=StringToUnsignedLong(artifact);
-      channel_features=GetImageChannelFeatures(image,distance,
-        &image->exception);
     }
   if (channel_features != (ChannelFeatures *) NULL)
     {

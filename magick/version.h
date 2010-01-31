@@ -30,9 +30,9 @@ extern "C" {
 #define MagickLibVersion  0x659
 #define MagickLibVersionText  "6.5.9"
 #define MagickLibVersionNumber  3,0,0
-#define MagickLibSubversion  "-1"
+#define MagickLibAddendum  "-1"
 #define MagickLibInterface  3
-#define MagickReleaseDate  "2010-01-30"
+#define MagickReleaseDate  "2010-01-31"
 #define MagickChangeDate   "20100127"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.5.9/index.html"
@@ -70,7 +70,7 @@ extern "C" {
 #define MagickFeatures \
   MagickHDRIFeature MagickOPENMPFeature MagickOPENCLFeature
 #define MagickVersion  \
-  MagickPackageName " " MagickLibVersionText MagickLibSubversion " " \
+  MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
   MagickReleaseDate " " MagickQuantumDepth " " MagickAuthoritativeURL
 
 extern MagickExport char
