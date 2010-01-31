@@ -30,7 +30,7 @@ extern "C" {
 #define MagickLibVersion  @PACKAGE_LIB_VERSION@
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber  @MAGICK_LIB_VERSION_NUMBER@
-#define MagickLibSubversion  "@PACKAGE_LIB_SUBVERSION@"
+#define MagickLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
 #define MagickLibInterface  @MAGICK_LIBRARY_CURRENT@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
@@ -70,7 +70,7 @@ extern "C" {
 #define MagickFeatures \
   MagickHDRIFeature MagickOPENMPFeature MagickOPENCLFeature
 #define MagickVersion  \
-  MagickPackageName " " MagickLibVersionText MagickLibSubversion " " \
+  MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
   MagickReleaseDate " " MagickQuantumDepth " " MagickAuthoritativeURL
 
 extern MagickExport char

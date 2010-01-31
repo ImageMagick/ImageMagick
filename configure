@@ -1116,7 +1116,7 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
-PACKAGE_LIB_SUBVERSION
+PACKAGE_VERSION_ADDENDUM
 PACKAGE_RELEASE_DATE
 PACKAGE_LIB_VERSION_NUMBER
 PACKAGE_LIB_VERSION
@@ -3360,7 +3360,7 @@ CONFIGURE_ARGS="$0 ${ac_configure_args}"
 # Source file containing package/library versioning information.
 . ${srcdir}/version.sh
 
-echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_LIB_SUBVERSION}"
+echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 # Make sure we can run config.sub.
 $SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
   as_fn_error "cannot run $SHELL $ac_aux_dir/config.sub" "$LINENO" 5
@@ -3915,7 +3915,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=$PACKAGE_NAME
- VERSION="${PACKAGE_VERSION}${PACKAGE_LIB_SUBVERSION}"
+ VERSION="${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 
 
 # Some tools Automake needs.
