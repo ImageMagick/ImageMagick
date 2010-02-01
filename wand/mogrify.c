@@ -2224,7 +2224,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               ThrowWandFatalException(ResourceLimitFatalError,
                 "MemoryAllocationFailed",(*image)->filename);
             morphology_image=MorphologyImageChannel(*image,channel,method,
-                 iterations,kernel,exception);
+              iterations,kernel,exception);
             kernel=DestroyKernelInfo(kernel);
             if (morphology_image == (Image *) NULL)
               break;
@@ -3710,7 +3710,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
-      "-morphology method[:interation] kernel_specification",
+      "-morphology method[:iterations] kernel",
       "                     apply a morphology method to the image",
       "-motion-blur geometry",
       "                     simulate motion blur",

@@ -219,7 +219,7 @@ static MagickBooleanType ConvertUsage(void)
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
-      "-morphology method[:interation] kernel_specification",
+      "-morphology method[:iterations] kernel",
       "                     apply a morphology method to the image",
       "-motion-blur geometry",
       "                     simulate motion blur",
