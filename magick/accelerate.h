@@ -24,7 +24,7 @@ extern "C" {
 
 #include <magick/morphology.h>
 
-extern MagickBooleanType
+extern MagickExport MagickBooleanType
   AccelerateConvolveImage(const Image *,const KernelInfo *,Image *,
     ExceptionInfo *);
 
