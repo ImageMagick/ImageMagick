@@ -104,6 +104,11 @@ static MagickBooleanType IdentifyUsage(void)
       "-version             print version information",
       (char *) NULL
     },
+    *operators[]=
+    {
+      "-negate              replace every pixel with its complementary color ",
+      (char *) NULL
+    },
     *settings[]=
     {
       "-alpha option        on, activate, off, deactivate, set, opaque, copy",
@@ -152,6 +157,9 @@ static MagickBooleanType IdentifyUsage(void)
     "file ... ]\n",GetClientName());
   (void) printf("\nImage Settings:\n");
   for (p=settings; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Operators:\n");
+  for (p=operators; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf("\nMiscellaneous Options:\n");
   for (p=miscellaneous; *p != (char *) NULL; p++)
@@ -671,6 +679,12 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("matte",option+1) == 0)
           break;
         if (LocaleCompare("monitor",option+1) == 0)
+          break;
+        ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'n':
+      {
+        if (LocaleCompare("negate",option+1) == 0)
           break;
         ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
       }
