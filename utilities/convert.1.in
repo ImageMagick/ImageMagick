@@ -152,6 +152,8 @@ Image Operators:
   \-median radius       apply a median filter to the image
   \-modulate value      vary the brightness, saturation, and hue
   \-monochrome          transform image to black and white
+  \-morphology method kernel
+                       apply a morphology method to the image
   \-motion-blur geometry
                        simulate motion blur
   \-negate              replace every pixel with its complementary color 

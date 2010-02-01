@@ -119,7 +119,7 @@ static MagickBooleanType IdentifyUsage(void)
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-extract geometry    extract area from image",
-      "-features value      display image features (e.g. contrast, correlation)",
+      "-features distance   display image features (e.g. contrast, correlation)",
       "-format \"string\"     output formatted image characteristics",
       "-fuzz distance       colors within this distance are considered equal",
       "-gamma value         of gamma correction",
