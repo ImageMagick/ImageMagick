@@ -45,6 +45,9 @@ Image Settings:
   \-virtual-pixel method
                        virtual pixel access method
 
+Image Operators:
+  \-negate              replace every pixel with its complementary color 
+
 Miscellaneous Options:
   \-debug events        display copious debugging information
   \-help                print program options
