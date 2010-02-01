@@ -69,15 +69,15 @@ typedef struct
     height;
 
   long
-    offset_x,
-    offset_y;
+    x,
+    y;
 
   double
     *values,
-    value_min,
-    value_max,
-    range_neg,
-    range_pos;
+    minimum,
+    maximum,
+    negative_range,
+    positive_range;
 
   unsigned long
     signature;
