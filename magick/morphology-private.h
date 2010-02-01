@@ -26,7 +26,7 @@ extern "C" {
 }
 #endif
 
-void
+extern MagickExport void
   ZeroKernelNans(KernelInfo *);
 
 #endif

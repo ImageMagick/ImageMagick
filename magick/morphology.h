@@ -66,14 +66,14 @@ typedef struct
 
   unsigned long
     width,
-    height,
+    height;
+
+  long
     offset_x,
     offset_y;
 
   double
-    *values;
-
-  double
+    *values,
     value_min,
     value_max,
     range_neg,
