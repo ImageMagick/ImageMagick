@@ -191,7 +191,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   char
     token[MaxTextExtent];
 
-  register unsigned long
+  register long
     i;
 
   const char
@@ -254,7 +254,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   if ( p != (char *) NULL)
     {
       /* ParseGeometry() needs the geometry separated! -- Arrgghh */
-      memcpy(token, kernel_string, p-kernel_string);
+      memcpy(token, kernel_string, (size_t) (p-kernel_string));
       token[p-kernel_string] = '\0';
       flags = ParseGeometry(token, &args);
 
@@ -271,12 +271,12 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       /* Offset Handling and Checks */
       if ( args.xi  < 0.0 || args.psi < 0.0 )
         return(DestroyKernelInfo(kernel));
-      kernel->offset_x = ((flags & XValue)!=0) ? (unsigned long)args.xi
-                                               : (kernel->width-1)/2;
-      kernel->offset_y = ((flags & YValue)!=0) ? (unsigned long)args.psi
-                                               : (kernel->height-1)/2;
-      if ( kernel->offset_x >= kernel->width ||
-           kernel->offset_y >= kernel->height )
+      kernel->offset_x = ((flags & XValue)!=0) ? (long)args.xi
+                                               : (long) (kernel->width-1)/2;
+      kernel->offset_y = ((flags & YValue)!=0) ? (long)args.psi
+                                               : (long) (kernel->height-1)/2;
+      if ( kernel->offset_x >= (long) kernel->width ||
+           kernel->offset_y >= (long) kernel->height )
         return(DestroyKernelInfo(kernel));
 
       p++; /* advance beyond the ':' */
@@ -295,7 +295,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       }
       /* set the size of the kernel - old sized square */
       kernel->width = kernel->height= (unsigned long) sqrt((double) i+1.0);
-      kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+      kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
       p=(const char *) kernel_string;
       while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '\''))
         p++;  /* ignore "'" chars for convolve filter usage - Cristy */
@@ -310,7 +310,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   kernel->value_min = +MagickHuge;
   kernel->value_max = -MagickHuge;
   kernel->range_neg = kernel->range_pos = 0.0;
-  for (i=0; (i < kernel->width*kernel->height) && (*p != '\0'); i++)
+  for (i=0; (i < (long) (kernel->width*kernel->height)) && (*p != '\0'); i++)
   {
     GetMagickToken(p,&p,token);
     if (*token == ',')
@@ -336,10 +336,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
    * Perhaps an error should be reported instead!
    * Kept for backward compatibility.
    */
-  if ( i < kernel->width*kernel->height ) {
+  if ( i < (long) (kernel->width*kernel->height) ) {
     Minimize(kernel->value_min, kernel->values[i]);
     Maximize(kernel->value_max, kernel->values[i]);
-    for ( ; i < kernel->width*kernel->height; i++)
+    for ( ; i < (long) (kernel->width*kernel->height); i++)
       kernel->values[i]=0.0;
   }
 
@@ -524,7 +524,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   KernelInfo
     *kernel;
 
-  register unsigned long
+  register long
     i;
 
   register long
@@ -553,7 +553,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         kernel->width = kernel->height =
                             GetOptimalKernelWidth2D(args->rho,sigma);
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
         kernel->range_neg = kernel->range_pos = 0.0;
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -582,7 +582,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         sigma = (sigma <= MagickEpsilon) ? 1.0 : sigma;
 
         kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
-        kernel->offset_x = (kernel->width-1)/2;
+        kernel->offset_x = (long) (kernel->width-1)/2;
         kernel->height = 1;
         kernel->offset_y = 0;
         kernel->range_neg = kernel->range_pos = 0.0;
@@ -602,7 +602,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** I am told this method originally came from Photoshop.
         */
         sigma *= KernelRank;                /* simplify expanded curve */
-        v = (kernel->width*KernelRank-1)/2; /* start/end points to fit range */
+        v = (long) (kernel->width*KernelRank-1)/2; /* start/end points to fit range */
         (void) ResetMagickMemory(kernel->values,0, (size_t)
                        kernel->width*sizeof(double));
         for ( u=-v; u <= v; u++) {
@@ -610,7 +610,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                 exp(-((double)(u*u))/(2.0*sigma*sigma))
                        /*   / (MagickSQ2PI*sigma/KernelRank)  */ ;
         }
-        for (i=0; i < kernel->width; i++)
+        for (i=0; i < (long) kernel->width; i++)
           kernel->range_pos += kernel->values[i];
 #else
         for ( i=0, u=-kernel->offset_x; i < kernel->width; i++, u++)
@@ -664,7 +664,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #if 1
 #define KernelRank 3
         sigma *= KernelRank;                /* simplify expanded curve */
-        v = kernel->width*KernelRank; /* start/end points to fit range */
+        v = (long) kernel->width*KernelRank; /* start/end points to fit range */
         (void) ResetMagickMemory(kernel->values,0, (size_t)
                        kernel->width*sizeof(double));
         for ( u=0; u < v; u++) {
@@ -672,10 +672,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                exp(-((double)(u*u))/(2.0*sigma*sigma))
                        /*   / (MagickSQ2PI*sigma/KernelRank)  */ ;
         }
-        for (i=0; i < kernel->width; i++)
+        for (i=0; i < (long) kernel->width; i++)
           kernel->range_pos += kernel->values[i];
 #else
-        for ( i=0; i < kernel->width; i++)
+        for ( i=0; i < (long) kernel->width; i++)
           kernel->range_pos += (
             kernel->values[i] =
                exp(-((double)(i*i))/(2.0*sigma*sigma))
@@ -697,8 +697,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (args->rho < 1.0)
               kernel->width = kernel->height = 3;  /* default radius = 1 */
             else
-              kernel->width = kernel->height = 2*(long)args->rho+1;
-            kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+              kernel->width = kernel->height = (unsigned long) (2*args->rho+1);
+            kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
           }
         else {
             /* NOTE: user defaults set in "AcquireKernelInfo()" */
@@ -709,8 +709,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if ( args->xi  < 0.0 || args->xi  > (double)kernel->width ||
                  args->psi < 0.0 || args->psi > (double)kernel->height )
               return(DestroyKernelInfo(kernel));    /* invalid args given */
-            kernel->offset_x = (unsigned long)args->xi;
-            kernel->offset_y = (unsigned long)args->psi;
+            kernel->offset_x = (long) args->xi;
+            kernel->offset_y = (long) args->psi;
           }
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -718,8 +718,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(DestroyKernelInfo(kernel));
 
         /* set all kernel values to 1.0 */
-        u=kernel->width*kernel->height;
-        for ( i=0; i < (unsigned long)u; i++)
+        u=(long) kernel->width*kernel->height;
+        for ( i=0; i < u; i++)
             kernel->values[i] = 1.0;
         kernel->value_min = kernel->value_max = 1.0; /* a flat shape */
         kernel->range_pos = (double) u;
@@ -731,7 +731,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
           kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -758,7 +758,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = 7L, limit = 10L;
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -766,7 +766,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(DestroyKernelInfo(kernel));
 
         /* set all kernel values within disk area to 1.0 */
-        for ( i=0, v=-kernel->offset_y; v <= (long)kernel->offset_y; v++)
+        for ( i=0, v= -kernel->offset_y; v <= (long)kernel->offset_y; v++)
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             if ((u*u+v*v) <= limit)
               kernel->range_pos += kernel->values[i] = 1.0;
@@ -781,7 +781,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = 5;  /* default radius 2 */
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -793,7 +793,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           for ( u=-kernel->offset_x; u <= (long)kernel->offset_x; u++, i++)
             kernel->values[i] = (u == 0 || v == 0) ? 1.0 : nan;
         kernel->value_min = kernel->value_max = 1.0; /* a flat shape */
-        kernel->range_pos = kernel->width*2.0 - 1.0;
+        kernel->range_pos = (double) kernel->width*2.0 - 1.0;
         break;
       }
     /* Distance Measuring Kernels */
@@ -806,7 +806,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
           kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -830,7 +830,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -854,7 +854,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
            kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->offset_x = kernel->offset_y = (kernel->width-1)/2;
+        kernel->offset_x = kernel->offset_y = (long) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -873,7 +873,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case LaplacianKernel:
     case LOGKernel:
     case DOGKernel:
-      assert("Kernel Type has not been defined yet");
+      perror("Kernel Type has not been defined yet");
       /* FALL THRU */
     default:
       /* Generate a No-Op minimal kernel - 1x1 pixel */
@@ -985,9 +985,7 @@ static unsigned long MorphologyApply(const Image *image, Image
 #define MorphologyTag  "Morphology/Image"
 
   long
-    progress;
-
-  unsigned long
+    progress,
     y, offx, offy,
     changed;
 
@@ -1027,15 +1025,15 @@ static unsigned long MorphologyApply(const Image *image, Image
       break;
     default:
       /* kernel needs to be reflected */
-      offx = kernel->width-offx-1;
-      offy = kernel->height-offy-1;
+      offx = (long) kernel->width-offx-1;
+      offy = (long) kernel->height-offy-1;
       break;
   }
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     MagickBooleanType
       sync;
@@ -1052,7 +1050,7 @@ static unsigned long MorphologyApply(const Image *image, Image
     register IndexPacket
       *restrict q_indexes;
 
-    register unsigned long
+    register long
       x;
 
     unsigned long
@@ -1073,12 +1071,12 @@ static unsigned long MorphologyApply(const Image *image, Image
     q_indexes=GetCacheViewAuthenticIndexQueue(q_view);
     r = (image->columns+kernel->width)*offy+offx; /* constant */
 
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
-       unsigned long
+       long
         v;
 
-      register unsigned long
+      register long
         u;
 
       register const double
@@ -1100,7 +1098,7 @@ static unsigned long MorphologyApply(const Image *image, Image
       if (image->colorspace == CMYKColorspace)
         q_indexes[x] = p_indexes[r];
 
-      result.index=0; /* stop compiler warnings */
+      result.index=(MagickRealType) 0; /* stop compiler warnings */
       switch (method) {
         case ConvolveMorphology:
           result=bias;
@@ -1123,12 +1121,12 @@ static unsigned long MorphologyApply(const Image *image, Image
 #endif
         default:
           /* Otherwise just start with the original pixel value */
-          result.red     = p[r].red;
-          result.green   = p[r].green;
-          result.blue    = p[r].blue;
-          result.opacity = QuantumRange - p[r].opacity;
+          result.red     = (MagickRealType) p[r].red;
+          result.green   = (MagickRealType) p[r].green;
+          result.blue    = (MagickRealType) p[r].blue;
+          result.opacity = QuantumRange - (MagickRealType) p[r].opacity;
           if ( image->colorspace == CMYKColorspace)
-             result.index   = p_indexes[r];
+             result.index   = (MagickRealType) p_indexes[r];
           break;
       }
 
@@ -1147,8 +1145,8 @@ static unsigned long MorphologyApply(const Image *image, Image
                 k = &kernel->values[ kernel->width*kernel->height-1 ];
                 k_pixels = p;
                 k_indexes = p_indexes;
-                for (v=0; v < kernel->height; v++) {
-                  for (u=0; u < kernel->width; u++, k--) {
+                for (v=0; v < (long) kernel->height; v++) {
+                  for (u=0; u < (long) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
                     result.red     += (*k)*k_pixels[u].red;
                     result.green   += (*k)*k_pixels[u].green;
@@ -1171,8 +1169,8 @@ static unsigned long MorphologyApply(const Image *image, Image
                 k = &kernel->values[ kernel->width*kernel->height-1 ];
                 k_pixels = p;
                 k_indexes = p_indexes;
-                for (v=0; v < kernel->height; v++) {
-                  for (u=0; u < kernel->width; u++, k--) {
+                for (v=0; v < (long) kernel->height; v++) {
+                  for (u=0; u < (long) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
                     alpha=(*k)*(QuantumScale*(QuantumRange-
                                           k_pixels[u].opacity));
@@ -1211,15 +1209,15 @@ static unsigned long MorphologyApply(const Image *image, Image
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
-            for (v=0; v < kernel->height; v++) {
-              for (u=0; u < kernel->width; u++, k--) {
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k--) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
-                Maximize(result.red,     k_pixels[u].red);
-                Maximize(result.green,   k_pixels[u].green);
-                Maximize(result.blue,    k_pixels[u].blue);
-                Maximize(result.opacity, QuantumRange-k_pixels[u].opacity);
+                Maximize(result.red,     (double) k_pixels[u].red);
+                Maximize(result.green,   (double) k_pixels[u].green);
+                Maximize(result.blue,    (double) k_pixels[u].blue);
+                Maximize(result.opacity, QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
-                  Maximize(result.index,   k_indexes[u]);
+                  Maximize(result.index,   (double) k_indexes[u]);
               }
               k_pixels += image->columns+kernel->width;
               k_indexes += image->columns+kernel->width;
@@ -1238,15 +1236,15 @@ static unsigned long MorphologyApply(const Image *image, Image
             k = kernel->values;
             k_pixels = p;
             k_indexes = p_indexes;
-            for (v=0; v < kernel->height; v++) {
-              for (u=0; u < kernel->width; u++, k++) {
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
-                Minimize(result.red,     k_pixels[u].red);
-                Minimize(result.green,   k_pixels[u].green);
-                Minimize(result.blue,    k_pixels[u].blue);
-                Minimize(result.opacity, QuantumRange-k_pixels[u].opacity);
+                Minimize(result.red,     (double) k_pixels[u].red);
+                Minimize(result.green,   (double) k_pixels[u].green);
+                Minimize(result.blue,    (double) k_pixels[u].blue);
+                Minimize(result.opacity, QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
-                  Minimize(result.index,   k_indexes[u]);
+                  Minimize(result.index,   (double) k_indexes[u]);
               }
               k_pixels += image->columns+kernel->width;
               k_indexes += image->columns+kernel->width;
@@ -1267,8 +1265,8 @@ static unsigned long MorphologyApply(const Image *image, Image
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
-            for (v=0; v < kernel->height; v++) {
-              for (u=0; u < kernel->width; u++, k--) {
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k--) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
                 if ( result.red == 0.0 ||
                      PixelIntensity(&(k_pixels[u])) > PixelIntensity(q) ) {
@@ -1295,8 +1293,8 @@ static unsigned long MorphologyApply(const Image *image, Image
             k = kernel->values;
             k_pixels = p;
             k_indexes = p_indexes;
-            for (v=0; v < kernel->height; v++) {
-              for (u=0; u < kernel->width; u++, k++) {
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 if ( result.red == 0.0 ||
                      PixelIntensity(&(k_pixels[u])) < PixelIntensity(q) ) {
@@ -1338,8 +1336,8 @@ static unsigned long MorphologyApply(const Image *image, Image
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
-            for (v=0; v < kernel->height; v++) {
-              for (u=0; u < kernel->width; u++, k--) {
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k--) {
                 if ( IsNan(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
@@ -1407,7 +1405,7 @@ static unsigned long MorphologyApply(const Image *image, Image
   result_image->type=image->type;
   q_view=DestroyCacheView(q_view);
   p_view=DestroyCacheView(p_view);
-  return(status ? changed : 0);
+  return(status ? (unsigned long) changed : 0);
 }
 
 MagickExport Image *MorphologyImage(const Image *image,MorphologyMethod method,
@@ -1425,10 +1423,8 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   const ChannelType channel, MorphologyMethod method, const long iterations,
   KernelInfo *kernel, ExceptionInfo *exception)
 {
-  unsigned long
-    count,
-    limit,
-    changed;
+  long
+    count;
 
   Image
     *new_image,
@@ -1436,6 +1432,10 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   const char
     *artifact;
+
+  unsigned long
+    changed,
+    limit;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1455,7 +1455,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   count = 0;
   changed = 1;
-  limit = iterations;
+  limit = (unsigned long) iterations;
   if ( iterations < 0 )
     limit = image->columns > image->rows ? image->columns : image->rows;
 
@@ -1517,13 +1517,13 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
             exception);
       count++;
       if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-        fprintf(stderr, "Morphology %s:%lu => Changed %lu\n",
+        fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
               MagickOptionToMnemonic(MagickMorphologyOptions, method),
               count, changed);
   }
 
   /* Repeat an interative morphology until count or no change reached */
-  if ( count < limit && changed > 0 ) {
+  if ( count < (long) limit && changed > 0 ) {
     old_image = CloneImage(new_image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
         return(DestroyImage(new_image));
@@ -1533,7 +1533,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         old_image=DestroyImage(old_image);
         return(DestroyImage(new_image));
       }
-    while( count < limit && changed != 0 )
+    while( count < (long) limit && changed != 0 )
       {
         Image *tmp = old_image;
         old_image = new_image;
@@ -1542,11 +1542,11 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
               exception);
         count++;
         if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-          fprintf(stderr, "Morphology %s:%lu => Changed %lu\n",
+          fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
                 MagickOptionToMnemonic(MagickMorphologyOptions, method),
                 count, changed);
       }
-    DestroyImage(old_image);
+    old_image=DestroyImage(old_image);
   }
 
   return(new_image);
@@ -1580,7 +1580,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
-MagickExport void RotateKernel(KernelInfo *kernel, double angle)
+static void RotateKernel(KernelInfo *kernel, double angle)
 {
   /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
   **
@@ -1644,8 +1644,8 @@ MagickExport void RotateKernel(KernelInfo *kernel, double angle)
       for ( i=0, j=kernel->width*kernel->height-1;  i<j;  i++, j--)
         t=k[i],  k[i]=k[j],  k[j]=t;
 
-      kernel->offset_x = kernel->width - kernel->offset_x - 1;
-      kernel->offset_y = kernel->width - kernel->offset_y - 1;
+      kernel->offset_x = (long) kernel->width - kernel->offset_x - 1;
+      kernel->offset_y = (long) kernel->width - kernel->offset_y - 1;
       angle = fmod(angle+180.0, 360.0);
     }
   if ( 45.0 < angle && angle <= 135.0 )
@@ -1655,11 +1655,11 @@ MagickExport void RotateKernel(KernelInfo *kernel, double angle)
        * WARNING: this assumes the original image was a 1 dimentional image
        * but currently that is the only built-ins it is applied to.
        */
-      unsigned long
+      long
         t;
-      t = kernel->width;
+      t = (long) kernel->width;
       kernel->width = kernel->height;
-      kernel->height = t;
+      kernel->height = (unsigned long) t;
       t = kernel->offset_x;
       kernel->offset_x = kernel->offset_y;
       kernel->offset_y = t;
@@ -1677,7 +1677,7 @@ MagickExport void RotateKernel(KernelInfo *kernel, double angle)
        */
       unsigned long
         y;
-      register unsigned long
+      register long
         x,r;
       register double
         *k,t;
@@ -1729,9 +1729,9 @@ MagickExport void RotateKernel(KernelInfo *kernel, double angle)
 % This function is internal to this module only at this time, but can be
 % exported to other modules if needed.
 */
-MagickExport void ScaleKernel(KernelInfo *kernel, double scale)
+static void ScaleKernel(KernelInfo *kernel, double scale)
 {
-  register unsigned long
+  register long
     i;
 
   if ( fabs(scale) < MagickEpsilon ) {
@@ -1741,7 +1741,7 @@ MagickExport void ScaleKernel(KernelInfo *kernel, double scale)
       scale = 1/(kernel->range_pos + kernel->range_neg); /* non-zero kernel */
   }
 
-  for (i=0; i < kernel->width*kernel->height; i++)
+  for (i=0; i < (long) (kernel->width*kernel->height); i++)
     if ( ! IsNan(kernel->values[i]) )
       kernel->values[i] *= scale;
 
@@ -1780,7 +1780,7 @@ MagickExport void ScaleKernel(KernelInfo *kernel, double scale)
 */
 static void ShowKernel(KernelInfo *kernel)
 {
-  unsigned long
+  long
     i, u, v;
 
   fprintf(stderr,
@@ -1794,9 +1794,9 @@ static void ShowKernel(KernelInfo *kernel)
         GetMagickPrecision(), kernel->range_neg,
         GetMagickPrecision(), kernel->range_pos,
         /*kernel->normalized == MagickTrue ? " (normalized)" : */ "" );
-  for (i=v=0; v < kernel->height; v++) {
+  for (i=v=0; v < (long) kernel->height; v++) {
     fprintf(stderr,"%2ld:",v);
-    for (u=0; u < kernel->width; u++, i++)
+    for (u=0; u < (long) kernel->width; u++, i++)
       if ( IsNan(kernel->values[i]) )
         fprintf(stderr," %*s", GetMagickPrecision()+2, "nan");
       else
@@ -1834,10 +1834,10 @@ static void ShowKernel(KernelInfo *kernel)
 */
 MagickExport void ZeroKernelNans(KernelInfo *kernel)
 {
-  register unsigned long
+  register long
     i;
 
-  for (i=0; i < kernel->width*kernel->height; i++)
+  for (i=0; i < (long) (kernel->width*kernel->height); i++)
     if ( IsNan(kernel->values[i]) )
       kernel->values[i] = 0.0;
 
