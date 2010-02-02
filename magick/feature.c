@@ -366,8 +366,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         (Q[i] == (ChannelStatistics *) NULL))
       break;
     (void) ResetMagickMemory(cooccurrence[i],0,number_grays*
-      sizeof(*cooccurrence));
-    (void) ResetMagickMemory(Q[i],0,number_grays*sizeof(*Q));
+      sizeof(**cooccurrence));
+    (void) ResetMagickMemory(Q[i],0,number_grays*sizeof(**Q));
   }
   if (i < (long) number_grays)
     {
