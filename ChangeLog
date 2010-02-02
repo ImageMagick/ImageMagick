@@ -98,7 +98,7 @@
 2009-11-26  6.5.8-1 Chris Madison  <madisonblu@gmail...>
   * Eliminate bogus 'skip to sync byte' exception for PCD image format.
   * -threshold option: threshold to white if the computed intensity of the
-	  color channels exceeds the threshold.
+    color channels exceeds the threshold.
   * Add -define jpeg:extent option to restrict the maximum JPEG image file size.
 
 2009-11-26  6.5.8-1 Dr. Ingo Bremer <bremer@wias-...>
@@ -514,7 +514,7 @@
 
 2009-05-04  6.5.2-1 Chris Madison  <madisonblu@gmail...>
   * Accept file lists on the command line (e.g. echo "rose: rose.png" | 
-	  convert @- ...).
+    convert @- ...).
   * Duplicate line in tiff.c breaking read of zip compressed tif (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13688).
   * Support policies to permit or deny any coder, delegate, filter, or file
@@ -823,7 +823,7 @@
 
 2009-01-01  6.4.8-4 Cristy  <quetzlzacatenango@image...>
   * Support %[] embedded filename tag (e.g. convert rose: -set area "%wx%h"
-	  'rose-%[area].png').
+    'rose-%[area].png').
   * Do not set the fill element when 'opacity' is set (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10594).
   * Restore support for decoding the DVI format.
@@ -930,7 +930,7 @@
   * AppendImage() respects gravity.
   * Protect against circular image list when cropping.
   * The index variable must be long rather than unsigned long for the DCM
-	  coder.
+    coder.
 
 2008-12-02  6.4.6-9 Cristy  <quetzlzacatenango@image...>
   * Use ScaleQuantumToMap() to prevent fault in SetGrayscaleImage() when
