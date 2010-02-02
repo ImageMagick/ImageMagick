@@ -40,7 +40,7 @@ CLEANFILES = \
 	$(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES) \
-  magick/wizard-config.h \
+  magick/magick-config.h \
   _configs.sed
 
 bin_PROGRAMS = \
