@@ -302,6 +302,7 @@ extern MagickExport void
   HSLTransform(const double,const double,const double,Quantum *,Quantum *,
     Quantum *) magick_attribute((deprecated)),
   InitializeMagick(const char *) magick_attribute((deprecated)),
+  MagickIncarnate(const char *) magick_attribute((deprecated)),
   ReacquireMemory(void **,const size_t) magick_attribute((deprecated)),
   ResetImageAttributeIterator(const Image *) magick_attribute((deprecated)),
   SetCacheThreshold(const unsigned long) magick_attribute((deprecated)),
