@@ -299,11 +299,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       number_grays=gray.index;
   cooccurrence=(ChannelStatistics **) AcquireQuantumMemory(number_grays,
     sizeof(*cooccurrence));
-  density_x=(ChannelStatistics *) AcquireQuantumMemory(number_grays,
+  density_x=(ChannelStatistics *) AcquireQuantumMemory(2*(number_grays+1),
     sizeof(*density_x));
   density_xy=(ChannelStatistics *) AcquireQuantumMemory(2*(number_grays+1),
     sizeof(*density_xy));
-  density_y=(ChannelStatistics *) AcquireQuantumMemory(number_grays,
+  density_y=(ChannelStatistics *) AcquireQuantumMemory(2*(number_grays+1),
     sizeof(*density_y));
   Q=(ChannelStatistics **) AcquireQuantumMemory(number_grays,sizeof(*Q));
   sum=(ChannelStatistics *) AcquireQuantumMemory(number_grays,sizeof(*sum));
@@ -344,9 +344,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       return(channel_features);
     }
   (void) ResetMagickMemory(&correlation,0,sizeof(correlation));
-  (void) ResetMagickMemory(density_x,0,number_grays*sizeof(*density_x));
-  (void) ResetMagickMemory(density_xy,0,2*number_grays*sizeof(*density_xy));
-  (void) ResetMagickMemory(density_y,0,number_grays*sizeof(*density_y));
+  (void) ResetMagickMemory(density_x,0,2*(number_grays+1)*sizeof(*density_x));
+  (void) ResetMagickMemory(density_xy,0,2*(number_grays+1)*sizeof(*density_xy));
+  (void) ResetMagickMemory(density_y,0,2*(number_grays+1)*sizeof(*density_y));
   (void) ResetMagickMemory(&mean,0,sizeof(mean));
   (void) ResetMagickMemory(sum,0,number_grays*sizeof(*sum));
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
