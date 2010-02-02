@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # libtool - Provide generalized library-building support services.
-# Generated automatically by config.status (ImageMagick) 6.5.9-1
+# Generated automatically by config.status (ImageMagick) 6.5.9-2
 # Libtool was configured on host magick.imagemagick.org:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
@@ -138,7 +138,7 @@ old_postuninstall_cmds=""
 LTCC="gcc -std=gnu99"
 
 # LTCC compiler flags.
-LTCFLAGS="-fopenmp -g -O2 -Wall -W -pthread"
+LTCFLAGS="-fopenmp -O3 -g -Wall -W -pthread"
 
 # Take the output of nm and produce a listing of raw symbols and C names.
 global_symbol_pipe="sed -n -e 's/^.*[	 ]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[	 ][	 ]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p'"
