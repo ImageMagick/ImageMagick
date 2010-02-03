@@ -3253,11 +3253,14 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       /*
         Rectify multi-image file support.
       */
-      (void) InterpretImageFilename(image_info,(Image *) NULL,
-        image_info->filename,(int) image_info->scene,filename);
-      if ((LocaleCompare(filename,image_info->filename) != 0) &&
-          (strchr(filename,'%') == (char *) NULL))
-        image_info->adjoin=MagickFalse;
+      if (image_info->adjoin != MagickFalse)
+        {
+          (void) InterpretImageFilename(image_info,(Image *) NULL,
+            image_info->filename,(int) image_info->scene,filename);
+          if ((LocaleCompare(filename,image_info->filename) != 0) &&
+              (strchr(filename,'%') == (char *) NULL))
+            image_info->adjoin=MagickFalse;
+        }
       magick_info=GetMagickInfo(magic,exception);
       if (magick_info != (const MagickInfo *) NULL)
         if (GetMagickAdjoin(magick_info) == MagickFalse)

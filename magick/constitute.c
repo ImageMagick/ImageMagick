@@ -1099,6 +1099,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               (void) AcquireUniqueFilename(image->filename);
               temporary=MagickTrue;
             }
+          else
+            if (image_info->adjoin == MagickFalse)
+              (void) CopyMagickString(image->filename,image_info->filename,
+                MaxTextExtent);
           (void) CloseBlob(image);
         }
     }
