@@ -5846,7 +5846,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
-  if ((image->storage_class == DirectClass) && (image->matte != MagickFalse))
+  if ((window->immutable != MagickFalse) &&
+      (image->storage_class == DirectClass) && (image->matte != MagickFalse))
     {
       char
         size[MaxTextExtent];
@@ -6458,7 +6459,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
-  if ((image->storage_class == DirectClass) && (image->matte != MagickFalse))
+  if ((window->immutable != MagickFalse) &&
+      (image->storage_class == DirectClass) && (image->matte != MagickFalse))
     {
       char
         size[MaxTextExtent];
