@@ -707,7 +707,6 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
 %
 %    o text_font:  True is font should be mono-spaced (typewriter style).
 %
-%
 */
 
 static char **FontToList(char *font)
@@ -2107,7 +2106,6 @@ MagickExport void XDisplayImageInfo(Display *display,
 %
 %    o ximage: Specifies a pointer to a XImage structure;  returned from
 %      XCreateImage.
-%
 %
 */
 static void XDitherImage(Image *image,XImage *ximage)
@@ -3744,7 +3742,6 @@ MagickExport char *XGetScreenDensity(Display *display)
 %    o y: the y coordinate of the pointer relative to the origin of the
 %      window.
 %
-%
 */
 static Window XGetSubwindow(Display *display,Window window,int x,int y)
 {
@@ -3936,7 +3933,6 @@ MagickExport MagickBooleanType XGetWindowColor(Display *display,
 %      the initial call to XGetWindowImage.  A value of zero returns after
 %      one call.  A value of one causes the function to descend the window
 %      hierarchy and overlay the target image with each subwindow image.
-%
 %
 */
 static Image *XGetWindowImage(Display *display,const Window window,
@@ -6240,9 +6236,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     */
                     for (x=(int) canvas->columns-1; x >= 0; x--)
                     {
-                      *q++=ScaleQuantumToChar(XBlueGamma(GetBluePixelComponent(p)));
-                      *q++=ScaleQuantumToChar(XGreenGamma(GetGreenPixelComponent(p)));
-                      *q++=ScaleQuantumToChar(XRedGamma(GetRedPixelComponent(p)));
+                      *q++=ScaleQuantumToChar(XBlueGamma(
+                        GetBluePixelComponent(p)));
+                      *q++=ScaleQuantumToChar(XGreenGamma(
+                        GetGreenPixelComponent(p)));
+                      *q++=ScaleQuantumToChar(XRedGamma(
+                        GetRedPixelComponent(p)));
                       *q++=0;
                       p++;
                     }
@@ -6281,9 +6280,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                       */
                       for (x=(int) canvas->columns-1; x >= 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(XRedGamma(GetRedPixelComponent(p)));
-                        *q++=ScaleQuantumToChar(XGreenGamma(GetGreenPixelComponent(p)));
-                        *q++=ScaleQuantumToChar(XBlueGamma(GetBluePixelComponent(p)));
+                        *q++=ScaleQuantumToChar(XRedGamma(
+                          GetRedPixelComponent(p)));
+                        *q++=ScaleQuantumToChar(XGreenGamma(
+                          GetGreenPixelComponent(p)));
+                        *q++=ScaleQuantumToChar(XBlueGamma(
+                          GetBluePixelComponent(p)));
                         *q++=0;
                         p++;
                       }
@@ -6291,9 +6293,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     }
                   for (x=(int) canvas->columns-1; x >= 0; x--)
                   {
-                    *q++=ScaleQuantumToChar((Quantum) GetRedPixelComponent(p));
-                    *q++=ScaleQuantumToChar((Quantum) GetGreenPixelComponent(p));
-                    *q++=ScaleQuantumToChar((Quantum) GetBluePixelComponent(p));
+                    *q++=ScaleQuantumToChar((Quantum)
+                      GetRedPixelComponent(p));
+                    *q++=ScaleQuantumToChar((Quantum)
+                      GetGreenPixelComponent(p));
+                    *q++=ScaleQuantumToChar((Quantum)
+                      GetBluePixelComponent(p));
                     *q++=0;
                     p++;
                   }
@@ -6410,7 +6415,6 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 %
 %    o matte_image: Specifies a pointer to a XImage structure;  returned from
 %      XCreateImage.
-%
 %
 */
 static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
@@ -6845,9 +6849,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                     for (x=(int) canvas->columns-1; x >= 0; x--)
                     {
                       *q++=0;
-                      *q++=ScaleQuantumToChar(XRedGamma(GetRedPixelComponent(p)));
-                      *q++=ScaleQuantumToChar(XGreenGamma(GetGreenPixelComponent(p)));
-                      *q++=ScaleQuantumToChar(XBlueGamma(GetBluePixelComponent(p)));
+                      *q++=ScaleQuantumToChar(XRedGamma(
+                        GetRedPixelComponent(p)));
+                      *q++=ScaleQuantumToChar(XGreenGamma(
+                        GetGreenPixelComponent(p)));
+                      *q++=ScaleQuantumToChar(XBlueGamma(
+                        GetBluePixelComponent(p)));
                       p++;
                     }
                     continue;
@@ -6886,9 +6893,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                       for (x=(int) canvas->columns-1; x >= 0; x--)
                       {
                         *q++=0;
-                        *q++=ScaleQuantumToChar(XBlueGamma(GetBluePixelComponent(p)));
-                        *q++=ScaleQuantumToChar(XGreenGamma(GetGreenPixelComponent(p)));
-                        *q++=ScaleQuantumToChar(XRedGamma(GetRedPixelComponent(p)));
+                        *q++=ScaleQuantumToChar(XBlueGamma(
+                          GetBluePixelComponent(p)));
+                        *q++=ScaleQuantumToChar(XGreenGamma(
+                          GetGreenPixelComponent(p)));
+                        *q++=ScaleQuantumToChar(XRedGamma(
+                          GetRedPixelComponent(p)));
                         p++;
                       }
                       continue;
@@ -6896,9 +6906,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   for (x=(int) canvas->columns-1; x >= 0; x--)
                   {
                     *q++=0;
-                    *q++=ScaleQuantumToChar((Quantum) GetBluePixelComponent(p));
-                    *q++=ScaleQuantumToChar((Quantum) GetGreenPixelComponent(p));
-                    *q++=ScaleQuantumToChar((Quantum) GetRedPixelComponent(p));
+                    *q++=ScaleQuantumToChar((Quantum)
+                      GetBluePixelComponent(p));
+                    *q++=ScaleQuantumToChar((Quantum)
+                      GetGreenPixelComponent(p));
+                    *q++=ScaleQuantumToChar((Quantum)
+                      GetRedPixelComponent(p));
                     p++;
                   }
                 }
@@ -7469,7 +7482,6 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
 %
 %    o window: Specifies a pointer to a XWindowInfo structure.
 %
-%
 */
 static MagickBooleanType XMakePixmap(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window)
@@ -7571,7 +7583,6 @@ static MagickBooleanType XMakePixmap(Display *display,
 %      initialized with info from the Standard Colormap.
 %
 %    o pixel: Specifies a pointer to a XPixelInfo structure.
-%
 %
 */
 
@@ -8935,7 +8946,6 @@ MagickExport void XRetainWindowColors(Display *display,const Window window)
 %    o crop_info: Specifies a pointer to a RectangleInfo structure.  It
 %      contains the extents of any cropping rectangle.
 %
-%
 */
 static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 {
@@ -9288,7 +9298,6 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
 %      string.
 %
 %    o class: Specifies the visual class.
-%
 %
 */
 static const char *XVisualClassName(const int visual_class)
