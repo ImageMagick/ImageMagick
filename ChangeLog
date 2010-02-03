@@ -1,3 +1,6 @@
+2010-02-03  6.5.9-2 Cristy  <quetzlzacatenango@image...>
+  * display -immutable to display transparent image without a checkboard.
+
 2010-01-27  6.5.9-1 Glenn Randers-Pehrson <glennrp@image...>
   * Make -define png:color-type less persnickity about what it will accept.
 
