@@ -334,10 +334,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    {
-      (void) MontageUsage();
-      return(MagickTrue);
-    }
+    return(MontageUsage());
   format="%w,%h,%m";
   first_scene=0;
   j=1;

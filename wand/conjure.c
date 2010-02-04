@@ -178,10 +178,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(exception != (ExceptionInfo *) NULL);
   if (argc < 2)
-    {
-      (void) ConjureUsage();
-      return(MagickTrue);
-    }
+    return(ConjureUsage());
   image=NewImageList();
   number_images=0;
   option=(char *) NULL;

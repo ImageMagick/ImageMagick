@@ -4016,10 +4016,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 2)
-    {
-      (void) MogrifyUsage();
-      return(MagickTrue);
-    }
+    return(MogrifyUsage());
   format=(char *) NULL;
   path=(char *) NULL;
   global_colormap=MagickFalse;

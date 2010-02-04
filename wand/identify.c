@@ -250,10 +250,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 2)
-    {
-      (void) IdentifyUsage();
-      return(MagickTrue);
-    }
+    return(IdentifyUsage());
   count=0;
   format=NULL;
   j=1;

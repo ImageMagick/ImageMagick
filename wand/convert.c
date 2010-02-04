@@ -521,10 +521,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    {
-      (void) ConvertUsage();
-      return(MagickTrue);
-    }
+    return(ConvertUsage());
   filename=(char *) NULL;
   format="%w,%h,%m";
   j=1;
