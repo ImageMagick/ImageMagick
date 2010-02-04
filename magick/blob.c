@@ -2325,7 +2325,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       (void) CopyMagickString(filename,image->filename,MaxTextExtent);
       if ((image_info->adjoin == MagickFalse) &&
-          ((image->previous != (Image *) NULL) ||
+          ((GetPreviousImageInList(image) != (Image *) NULL) ||
            (GetNextImageInList(image) != (Image *) NULL)))
         {
           /*
