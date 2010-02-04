@@ -1089,7 +1089,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       (void) CopyMagickString(image->filename,filename,MaxTextExtent);
       if (status != MagickFalse)
         {
-          if (IsBlobSeekable(image) == MagickFalse)
+          if (IsBlobSeekable(image) != MagickFalse)
+            (void) CopyMagickString(image->filename,image_info->filename,
+              MaxTextExtent);
+          else
             {
               /*
                 A seekable stream is required by the encoder.
@@ -1099,10 +1102,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               (void) AcquireUniqueFilename(image->filename);
               temporary=MagickTrue;
             }
-          else
-            if (image_info->adjoin == MagickFalse)
-              (void) CopyMagickString(image->filename,image_info->filename,
-                MaxTextExtent);
           (void) CloseBlob(image);
         }
     }
