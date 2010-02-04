@@ -2324,31 +2324,29 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   if (*type == 'w')
     {
       (void) CopyMagickString(filename,image->filename,MaxTextExtent);
-      if (image_info->adjoin == MagickFalse)
+      if ((image_info->adjoin == MagickFalse) &&
+          ((image->previous != (Image *) NULL) ||
+           (GetNextImageInList(image) != (Image *) NULL)))
         {
           /*
             Form filename for multi-part images.
           */
           (void) InterpretImageFilename(image_info,image,image->filename,(int)
             image->scene,filename);
-          if ((image->previous != (Image *) NULL) ||
-              (GetNextImageInList(image) != (Image *) NULL))
+          if (LocaleCompare(filename,image->filename) == 0)
             {
-              if (LocaleCompare(filename,image->filename) == 0)
-                {
-                  char
-                    extension[MaxTextExtent],
-                    path[MaxTextExtent];
+              char
+                extension[MaxTextExtent],
+                path[MaxTextExtent];
 
-                  GetPathComponent(image->filename,RootPath,path);
-                  GetPathComponent(image->filename,ExtensionPath,extension);
-                  if (*extension == '\0')
-                    (void) FormatMagickString(filename,MaxTextExtent,"%s-%lu",
-                      path,image->scene);
-                  else
-                    (void) FormatMagickString(filename,MaxTextExtent,
-                      "%s-%lu.%s",path,image->scene,extension);
-                }
+              GetPathComponent(image->filename,RootPath,path);
+              GetPathComponent(image->filename,ExtensionPath,extension);
+              if (*extension == '\0')
+                (void) FormatMagickString(filename,MaxTextExtent,"%s-%lu",
+                  path,image->scene);
+              else
+                (void) FormatMagickString(filename,MaxTextExtent,
+                  "%s-%lu.%s",path,image->scene,extension);
             }
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);
 #if defined(macintosh)
