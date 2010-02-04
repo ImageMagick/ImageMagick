@@ -3598,8 +3598,7 @@ Features(ref,...)
       *channel_features;
 
     double
-      distance,
-      scale;
+      distance;
 
     ExceptionInfo
       *exception;
