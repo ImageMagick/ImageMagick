@@ -1089,10 +1089,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       (void) CopyMagickString(image->filename,filename,MaxTextExtent);
       if (status != MagickFalse)
         {
-          if (IsBlobSeekable(image) != MagickFalse)
-            (void) CopyMagickString(image->filename,image_info->filename,
-              MaxTextExtent);
-          else
+          if (IsBlobSeekable(image) == MagickFalse)
             {
               /*
                 A seekable stream is required by the encoder.
