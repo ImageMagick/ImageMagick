@@ -237,10 +237,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    {
-      (void) StreamUsage();
-      return(MagickTrue);
-    }
+    return(StreamUsage());
   format="%w,%h,%m";
   j=1;
   k=0;

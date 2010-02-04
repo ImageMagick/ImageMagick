@@ -267,10 +267,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    {
-      (void) CompareUsage();
-      return(MagickTrue);
-    }
+    return(CompareUsage());
   channels=AllChannels;
   difference_image=NewImageList();
   similarity_image=NewImageList();
