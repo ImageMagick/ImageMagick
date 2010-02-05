@@ -330,6 +330,9 @@ struct _Image
 
   MagickBooleanType
     dither;
+
+  MagickSizeType
+    extent;
 };
 
 struct _ImageInfo

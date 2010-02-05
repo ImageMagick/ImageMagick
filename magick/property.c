@@ -2607,17 +2607,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         char
           format[MaxTextExtent];
 
-        MagickSizeType
-          length;
-
         /*
           File size.
         */
-        length=GetBlobSize(image);
         (void) FormatMagickString(format,MaxTextExtent,"%lu",(unsigned long)
-          length);
-        if (length != (MagickSizeType) ((size_t) length))
-          (void) FormatMagickSize(length,MagickFalse,format);
+          image->extent);
+        if (image->extent != (MagickSizeType) ((size_t) image->extent))
+          (void) FormatMagickSize(image->extent,MagickFalse,format);
         q+=ConcatenateMagickString(q,format,extent);
         break;
       }

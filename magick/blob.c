@@ -483,6 +483,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   if (image->blob->synchronize != MagickFalse)
     SyncBlob(image);
   image->blob->size=GetBlobSize(image);
+  image->extent=image->blob->size;
   image->blob->eof=MagickFalse;
   if (image->blob->exempt != MagickFalse)
     {
@@ -1193,31 +1194,31 @@ MagickExport const struct stat *GetBlobProperties(const Image *image)
 MagickExport MagickSizeType GetBlobSize(const Image *image)
 {
   MagickSizeType
-    length;
+    extent;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
-  length=0;
+  extent=0;
   switch (image->blob->type)
   {
     case UndefinedStream:
     {
-      length=image->blob->size;
+      extent=image->blob->size;
       break;
     }
     case FileStream:
     {
       if (fstat(fileno(image->blob->file),&image->blob->properties) == 0)
-        length=(MagickSizeType) image->blob->properties.st_size;
+        extent=(MagickSizeType) image->blob->properties.st_size;
       break;
     }
     case StandardStream:
     case PipeStream:
     {
-      length=image->blob->size;
+      extent=image->blob->size;
       break;
     }
     case ZipStream:
@@ -1228,18 +1229,18 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
 
       status=GetPathAttributes(image->filename,&image->blob->properties);
       if (status != MagickFalse)
-        length=(MagickSizeType) image->blob->properties.st_size;
+        extent=(MagickSizeType) image->blob->properties.st_size;
       break;
     }
     case FifoStream:
       break;
     case BlobStream:
     {
-      length=(MagickSizeType) image->blob->length;
+      extent=(MagickSizeType) image->blob->extent;
       break;
     }
   }
-  return(length);
+  return(extent);
 }
 
 /*
