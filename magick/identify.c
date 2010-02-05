@@ -301,7 +301,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         if (LocaleCompare(image->magick_filename,image->filename) != 0)
           (void) fprintf(file,"%s=>",image->magick_filename);
        if ((GetPreviousImageInList(image) == (Image *) NULL) &&
-           (GetNextImageInList(image) == (Image *) NULL) && (image->scene == 0))
+           (GetNextImageInList(image) == (Image *) NULL) &&
+           (image->scene == 0))
         (void) fprintf(file,"%s ",image->filename);
       else
         (void) fprintf(file,"%s[%lu] ",image->filename,image->scene);
