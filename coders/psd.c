@@ -1113,6 +1113,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     {
                       if (layer_info[i].image->colors > 256)
                         packet_size++;
+                      else
+                        if (layer_info[i].image->depth > 8)
+                          packet_size++;
                     }
                   else
                     if (layer_info[i].image->depth > 8)
@@ -1313,6 +1316,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (image->colors > 256)
             packet_size++;
+          else
+            if (image->depth > 8)
+              packet_size++;
         }
       else
         if (image->depth > 8)
