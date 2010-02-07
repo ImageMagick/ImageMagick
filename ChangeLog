@@ -1,4 +1,7 @@
-2010-02-07  6.5.9-2 Anthony Thyssen <A.Thyssen@griffith...>
+2010-02-07  6.5.9-3 Cristy  <quetzlzacatenango@image...>
+  * Initialize grayscale colormap for PSD images.
+
+2010-02-07  6.5.9-3 Anthony Thyssen <A.Thyssen@griffith...>
   * Final testing and fixing of basic morphology operators
   * Addition Third-level Subtractive Morphology Methods
     edge-in, edge-out, edge, top-hat, bottom-hat

@@ -2553,9 +2553,8 @@ MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -av
 DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 CLEANFILES = $(LTDL_CLEANFILES) $(WAND_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) $(UTILITIES_CLEANFILES) \
-	$(TESTS_CLEANFILES) magick/magick-config.h _configs.sed \
-	ltdl/libltdl.la ltdl/libltdlc.la ltdl/libdlloader.la \
-	$(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
+	$(TESTS_CLEANFILES) ltdl/libltdl.la ltdl/libltdlc.la \
+	ltdl/libdlloader.la $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
 
 # Binary scripts
 bin_SCRIPTS = \
