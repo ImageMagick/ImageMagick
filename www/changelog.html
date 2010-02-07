@@ -130,7 +130,7 @@
   <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
 </div>
 <div  class="sponsor">
-  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201006010120 Buchhorn -->
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201007010120 Buchhorn -->
 </div>
 <div  class="sponsor">
   <a href="http://www.blumenversender.com">Blumenversand</a><!-- 201005010120 -->
@@ -155,7 +155,13 @@
 
 <div class="main">
 
-<ul><dt>2010-02-03  6.5.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-02-07  6.5.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Initialize grayscale colormap for PSD images.</li><br />
+<dt>2010-02-07  6.5.9-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Final testing and fixing of basic morphology operators</li>
+  <li> Addition Third-level Subtractive Morphology Methods    edge-in, edge-out, edge, top-hat, bottom-hat</li>
+  <li> Ensuring original kernels passed to morphology are cloned before being    modifified for use by specific methods (EG: convolve scale/normalize)</li><br />
+<dt>2010-02-03  6.5.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> display -immutable to display transparent image without a checkboard.</li><br />
 <dt>2010-01-27  6.5.9-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Make -define png:color-type less persnickity about what it will accept.</li><br />
@@ -166,7 +172,8 @@
 <dt>2010-01-15  6.5.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Speed up reading the PSD image format.</li>
   <li> Add the -precision option.  Use it to set the maximum number of significant    digits to be printed.</li>
-  <li> Add -features option to the identify program to display channel features.</li><br />
+  <li> Add -features option to the identify program to display channel features.</li>
+  <li> Add -unique option to the identify program to display channel features.</li><br />
 <dt>2010-01-01  6.5.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Add support for compact floating point (i.e. -depth 16 -define    quantum:format=floating-point).</li>
   <li> Transparent images no longer flicker on certain system when using the    display program.</li>
