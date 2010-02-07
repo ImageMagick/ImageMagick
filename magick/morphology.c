@@ -108,9 +108,11 @@ static inline double MagickMax(const double x,const double y)
 
 /* Currently these are only internal to this module */
 static void
-  RotateKernel(KernelInfo *, double),
-  ScaleKernel(KernelInfo *, double),
-  ShowKernel(KernelInfo *);
+  RotateKernelInfo(KernelInfo *, double),
+  ScaleKernelInfo(KernelInfo *, double);
+
+static KernelInfo
+  *CloneKernelInfo(KernelInfo *);
 
 
 /*
@@ -226,7 +228,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
     flags = ParseGeometry(p, &args);
 
     /* special handling of missing values in input string */
-    if ( type == RectangleKernel ) {
+    switch( type ) {
+    case RectangleKernel:
       if ( (flags & WidthValue) == 0 ) /* if no width then */
         args.rho = args.sigma;         /* then  width = height */
       if ( args.rho < 1.0 )            /* if width too small */
@@ -237,6 +240,16 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
         args.xi = (double)(((long)args.rho-1)/2);
       if ( (flags & YValue) == 0 )
         args.psi = (double)(((long)args.sigma-1)/2);
+      break;
+    case SquareKernel:
+    case DiamondKernel:
+    case DiskKernel:
+    case PlusKernel:
+      if ( (flags & HeightValue) == 0 ) /* if no scale */
+        args.sigma = 1.0;               /* then  scale = 1.0 */
+      break;
+    default:
+      break;
     }
 
     return(AcquireKernelBuiltIn((KernelInfoType)type, &args));
@@ -378,7 +391,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  Convolution Kernels
 %
-%    Gaussian  "[{radius}]x{sigma}"
+%    Gaussian  "{radius},{sigma}"
 %       Generate a two-dimentional gaussian kernel, as used by -gaussian
 %       A sigma is required, (with the 'x'), due to historical reasons.
 %
@@ -389,7 +402,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       radius will be determined so as to produce the best minimal error
 %       result, which is usally much larger than is normally needed.
 %
-%    Blur  "[{radius}]x{sigma}[+angle]"
+%    Blur  "{radius},{sigma},{angle}"
 %       As per Gaussian, but generates a 1 dimensional or linear gaussian
 %       blur, at the angle given (current restricted to orthogonal angles).
 %       If a 'radius' is given the kernel is clipped to a width of 2*radius+1.
@@ -397,7 +410,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       NOTE that two such blurs perpendicular to each other is equivelent to
 %       -blur and the previous gaussian, but is often 10 or more times faster.
 %
-%    Comet  "[{width}]x{sigma}[+angle]"
+%    Comet  "{width},{sigma},{angle}"
 %       Blur in one direction only, mush like how a bright object leaves
 %       a comet like trail.  The Kernel is actually half a gaussian curve,
 %       Adding two such blurs in oppiste directions produces a Linear Blur.
@@ -407,14 +420,24 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %    # Still to be implemented...
 %    #
-%    # Laplacian  "{radius}x{sigma}"
+%    # Sharpen "{radius},{sigma}
+%    #    Negated Gaussian (center zeroed and re-normalized),
+%    #    with a 2 unit positive peak.   -- Check On line documentation
+%    #
+%    # Laplacian  "{radius},{sigma}"
 %    #    Laplacian (a mexican hat like) Function
 %    #
 %    # LOG  "{radius},{sigma1},{sigma2}
 %    #    Laplacian of Gaussian
 %    #
 %    # DOG  "{radius},{sigma1},{sigma2}
-%    #    Difference of Gaussians
+%    #    Difference of two Gaussians
+%    #
+%    # Filter2D
+%    # Filter1D
+%    #    Set kernel values using a resize filter, and given scale (sigma)
+%    #    Cylindrical or Linear.   Is this posible with an image?
+%    #
 %
 %  Boolean Kernels
 %
@@ -425,12 +448,12 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %       Properly centered and odd sized rectangles work the best.
 %
-%    Diamond  "[{radius}]"
+%    Diamond  "[{radius}[,{scale}]]"
 %       Generate a diamond shaped kernal with given radius to the points.
 %       Kernel size will again be radius*2+1 square and defaults to radius 1,
 %       generating a 3x3 kernel that is slightly larger than a square.
 %
-%    Square  "[{radius}]"
+%    Square  "[{radius}[,{scale}]]"
 %       Generate a square shaped kernel of size radius*2+1, and defaulting
 %       to a 3x3 (radius 1).
 %
@@ -439,7 +462,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       that many times. However However iterating with the smaller radius 1
 %       default is actually faster than using a larger kernel radius.
 %
-%    Disk   "[{radius}]
+%    Disk   "[{radius}[,{scale}]]
 %       Generate a binary disk of the radius given, radius may be a float.
 %       Kernel size will be ceil(radius)*2+1 square.
 %       NOTE: Here are some disk shapes of specific interest
@@ -456,7 +479,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Because a "disk" is more circular when using a larger radius, using a
 %       larger radius is preferred over iterating the morphological operation.
 %
-%    Plus  "[{radius}]"
+%    Plus  "[{radius}[,{scale}]]"
 %       Generate a kernel in the shape of a 'plus' sign. The length of each
 %       arm is also the radius, which defaults to 2.
 %
@@ -516,6 +539,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       See the 'Distance' Morphological Method, for information of how it is
 %       applied.
 %
+%  # Hit-n-Miss Kernel-Lists -- Still to be implemented
+%  #
+%  # specifically for   Pruning,  Thinning,  Thickening
+%  #
 */
 
 MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
@@ -571,7 +598,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->maximum = kernel->values[
                          kernel->y*kernel->width+kernel->x ];
 
-        ScaleKernel(kernel, 0.0); /* Normalize Kernel Values */
+        ScaleKernelInfo(kernel, 0.0); /* Normalize Kernel Values */
 
         break;
       }
@@ -633,10 +660,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** Because of this the divisor in the above kernel generator is
         ** not needed, so is not done above.
         */
-        ScaleKernel(kernel, 0.0); /* Normalize Kernel Values */
+        ScaleKernelInfo(kernel, 0.0); /* Normalize Kernel Values */
 
         /* rotate the kernel by given angle */
-        RotateKernel(kernel, args->xi);
+        RotateKernelInfo(kernel, args->xi);
         break;
       }
     case CometKernel:
@@ -684,14 +711,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->minimum = 0;
         kernel->maximum = kernel->values[0];
 
-        ScaleKernel(kernel, 0.0); /* Normalize Kernel Values */
-        RotateKernel(kernel, args->xi);
+        ScaleKernelInfo(kernel, 0.0); /* Normalize Kernel Values */
+        RotateKernelInfo(kernel, args->xi);
         break;
       }
     /* Boolean Kernels */
     case RectangleKernel:
     case SquareKernel:
       {
+        double scale;
         if ( type == SquareKernel )
           {
             if (args->rho < 1.0)
@@ -699,6 +727,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             else
               kernel->width = kernel->height = (unsigned long) (2*args->rho+1);
             kernel->x = kernel->y = (long) (kernel->width-1)/2;
+            scale = args->sigma;
           }
         else {
             /* NOTE: user defaults set in "AcquireKernelInfo()" */
@@ -711,6 +740,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               return(DestroyKernelInfo(kernel));    /* invalid args given */
             kernel->x = (long) args->xi;
             kernel->y = (long) args->psi;
+            scale = 1.0;
           }
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
@@ -720,9 +750,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values to 1.0 */
         u=(long) kernel->width*kernel->height;
         for ( i=0; i < u; i++)
-            kernel->values[i] = 1.0;
-        kernel->minimum = kernel->maximum = 1.0; /* a flat shape */
-        kernel->positive_range = (double) u;
+            kernel->values[i] = scale;
+        kernel->minimum = kernel->maximum = scale;   /* a flat shape */
+        kernel->positive_range = scale*u;
         break;
       }
     case DiamondKernel:
@@ -738,14 +768,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set all kernel values within diamond area to 1.0 */
+        /* set all kernel values within diamond area to scale given */
         for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             if ((labs(u)+labs(v)) <= (long)kernel->x)
-              kernel->positive_range += kernel->values[i] = 1.0;
+              kernel->positive_range += kernel->values[i] = args->sigma;
             else
               kernel->values[i] = nan;
-        kernel->minimum = kernel->maximum = 1.0; /* a flat shape */
+        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
         break;
       }
     case DiskKernel:
@@ -769,10 +799,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         for ( i=0, v= -kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             if ((u*u+v*v) <= limit)
-              kernel->positive_range += kernel->values[i] = 1.0;
+              kernel->positive_range += kernel->values[i] = args->sigma;
             else
               kernel->values[i] = nan;
-        kernel->minimum = kernel->maximum = 1.0; /* a flat shape */
+        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
         break;
       }
     case PlusKernel:
@@ -791,9 +821,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values along axises to 1.0 */
         for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
-            kernel->values[i] = (u == 0 || v == 0) ? 1.0 : nan;
-        kernel->minimum = kernel->maximum = 1.0; /* a flat shape */
-        kernel->positive_range = (double) kernel->width*2.0 - 1.0;
+            kernel->values[i] = (u == 0 || v == 0) ? args->sigma : nan;
+        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+        kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
         break;
       }
     /* Distance Measuring Kernels */
@@ -897,6 +927,57 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++     C l o n e K e r n e l I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneKernelInfo() creates a new clone of the given Kernel so that its can
+%  be modified without effecting the original.  The cloned kernel should be
+%  destroyed using DestoryKernelInfo() when no longer needed.
+%
+%  The format of the DestroyKernelInfo method is:
+%
+%      KernelInfo *CloneKernelInfo(KernelInfo *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel to be cloned
+%
+*/
+
+static KernelInfo *CloneKernelInfo(KernelInfo *kernel)
+{
+  register long
+    i;
+
+  KernelInfo *
+    new;
+
+  assert(kernel != (KernelInfo *) NULL);
+
+  new=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+  if (new == (KernelInfo *) NULL)
+    return(new);
+  *new = *kernel; /* copy values in structure */
+
+  new->values=(double *) AcquireQuantumMemory(kernel->width,
+                              kernel->height*sizeof(double));
+  if (new->values == (double *) NULL)
+    return(DestroyKernelInfo(new));
+
+  for (i=0; i < (long) (kernel->width*kernel->height); i++)
+    new->values[i] = kernel->values[i];
+
+  return(new);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     D e s t r o y K e r n e l I n f o                                       %
 %                                                                             %
 %                                                                             %
@@ -919,6 +1000,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 {
   assert(kernel != (KernelInfo *) NULL);
+
+  kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                              kernel->height*sizeof(double));
   kernel->values=(double *)RelinquishMagickMemory(kernel->values);
   kernel=(KernelInfo *) RelinquishMagickMemory(kernel);
   return(kernel);
@@ -999,8 +1083,11 @@ static unsigned long MorphologyApply(const Image *image, Image
     *p_view,
     *q_view;
 
+  /* Only the most basic morphology is actually performed by this routine */
+  assert( method <= DistanceMorphology );
+
   /*
-    Apply Morphology to Image.
+    Apply Basic Morphology to Image.
   */
   status=MagickTrue;
   changed=0;
@@ -1103,7 +1190,6 @@ static unsigned long MorphologyApply(const Image *image, Image
         case ConvolveMorphology:
           result=bias;
           break;  /* default result is the convolution bias */
-#if 1
         case DilateMorphology:
           result.red     =
           result.green   =
@@ -1118,7 +1204,10 @@ static unsigned long MorphologyApply(const Image *image, Image
           result.opacity =
           result.index   = +MagickHuge;
           break;
-#endif
+        case DilateIntensityMorphology:
+        case ErodeIntensityMorphology:
+          result.red = 0.0;  /* flag indicating first match found */
+          break;
         default:
           /* Otherwise just start with the original pixel value */
           result.red     = (MagickRealType) p[r].red;
@@ -1194,6 +1283,33 @@ static unsigned long MorphologyApply(const Image *image, Image
               }
             break;
 
+        case ErodeMorphology:
+            /* Minimize Value within kernel shape
+             *
+             * NOTE that the kernel is not reflected for this operation!
+             *
+             * NOTE: in normal Greyscale Morphology, the kernel value should
+             * be added to the real value, this is currently not done, due to
+             * the nature of the boolean kernels being used.
+             */
+            k = kernel->values;
+            k_pixels = p;
+            k_indexes = p_indexes;
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k++) {
+                if ( IsNan(*k) || (*k) < 0.5 ) continue;
+                Minimize(result.red,     (double) k_pixels[u].red);
+                Minimize(result.green,   (double) k_pixels[u].green);
+                Minimize(result.blue,    (double) k_pixels[u].blue);
+                Minimize(result.opacity, QuantumRange-(double) k_pixels[u].opacity);
+                if ( image->colorspace == CMYKColorspace)
+                  Minimize(result.index,   (double) k_indexes[u]);
+              }
+              k_pixels += image->columns+kernel->width;
+              k_indexes += image->columns+kernel->width;
+            }
+            break;
+
         case DilateMorphology:
             /* Maximize Value within kernel shape
              *
@@ -1224,14 +1340,14 @@ static unsigned long MorphologyApply(const Image *image, Image
             }
             break;
 
-        case ErodeMorphology:
-            /* Minimize Value within kernel shape
+        case ErodeIntensityMorphology:
+            /* Select pixel with mimimum intensity within kernel shape
+             *
+             * WARNING: the intensity test fails for CMYK and does not
+             * take into account the moderating effect of teh alpha channel
+             * on the intensity.
              *
              * NOTE that the kernel is not reflected for this operation!
-             *
-             * NOTE: in normal Greyscale Morphology, the kernel value should
-             * be added to the real value, this is currently not done, due to
-             * the nature of the boolean kernels being used.
              */
             k = kernel->values;
             k_pixels = p;
@@ -1239,12 +1355,13 @@ static unsigned long MorphologyApply(const Image *image, Image
             for (v=0; v < (long) kernel->height; v++) {
               for (u=0; u < (long) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
-                Minimize(result.red,     (double) k_pixels[u].red);
-                Minimize(result.green,   (double) k_pixels[u].green);
-                Minimize(result.blue,    (double) k_pixels[u].blue);
-                Minimize(result.opacity, QuantumRange-(double) k_pixels[u].opacity);
-                if ( image->colorspace == CMYKColorspace)
-                  Minimize(result.index,   (double) k_indexes[u]);
+                if ( result.red == 0.0 ||
+                     PixelIntensity(&(k_pixels[u])) < PixelIntensity(q) ) {
+                  /* copy the whole pixel - no channel selection */
+                  *q = k_pixels[u];
+                  if ( result.red > 0.0 ) changed++;
+                  result.red = 1.0;
+                }
               }
               k_pixels += image->columns+kernel->width;
               k_indexes += image->columns+kernel->width;
@@ -1270,34 +1387,6 @@ static unsigned long MorphologyApply(const Image *image, Image
                 if ( IsNan(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
                 if ( result.red == 0.0 ||
                      PixelIntensity(&(k_pixels[u])) > PixelIntensity(q) ) {
-                  /* copy the whole pixel - no channel selection */
-                  *q = k_pixels[u];
-                  if ( result.red > 0.0 ) changed++;
-                  result.red = 1.0;
-                }
-              }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
-            }
-            break;
-
-        case ErodeIntensityMorphology:
-            /* Select pixel with mimimum intensity within kernel shape
-             *
-             * WARNING: the intensity test fails for CMYK and does not
-             * take into account the moderating effect of teh alpha channel
-             * on the intensity.
-             *
-             * NOTE that the kernel is not reflected for this operation!
-             */
-            k = kernel->values;
-            k_pixels = p;
-            k_indexes = p_indexes;
-            for (v=0; v < (long) kernel->height; v++) {
-              for (u=0; u < (long) kernel->width; u++, k++) {
-                if ( IsNan(*k) || (*k) < 0.5 ) continue;
-                if ( result.red == 0.0 ||
-                     PixelIntensity(&(k_pixels[u])) < PixelIntensity(q) ) {
                   /* copy the whole pixel - no channel selection */
                   *q = k_pixels[u];
                   if ( result.red > 0.0 ) changed++;
@@ -1408,8 +1497,9 @@ static unsigned long MorphologyApply(const Image *image, Image
   return(status ? (unsigned long) changed : 0);
 }
 
-MagickExport Image *MorphologyImage(const Image *image,MorphologyMethod method,
-  const long iterations,KernelInfo *kernel, ExceptionInfo *exception)
+
+MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
+  method, const long iterations,KernelInfo *kernel, ExceptionInfo *exception)
 {
   Image
     *morphology_image;
@@ -1419,16 +1509,18 @@ MagickExport Image *MorphologyImage(const Image *image,MorphologyMethod method,
   return(morphology_image);
 }
 
+
 MagickExport Image *MorphologyImageChannel(const Image *image,
-  const ChannelType channel, MorphologyMethod method, const long iterations,
-  KernelInfo *kernel, ExceptionInfo *exception)
+  const ChannelType channel, const MorphologyMethod method,
+  const long iterations, KernelInfo *kernel, ExceptionInfo *exception)
 {
   long
     count;
 
   Image
     *new_image,
-    *old_image;
+    *old_image,
+    *grad_image;
 
   const char
     *artifact;
@@ -1437,13 +1529,18 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     changed,
     limit;
 
+  KernelInfo
+    *curr_kernel;
+
+  MorphologyMethod
+    curr_method;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(kernel != (KernelInfo *) NULL);
+  assert(kernel->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
-  if ( GetImageArtifact(image,"showkernel") != (const char *) NULL)
-    ShowKernel(kernel);  /* request to display the kernel to stderr */
 
   if ( iterations == 0 )
     return((Image *)NULL); /* null operation - nothing to do! */
@@ -1453,56 +1550,87 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
    */
   assert(kernel != (KernelInfo *)NULL);
 
-  count = 0;
-  changed = 1;
+  count = 0;      /* interation count */
+  changed = 1;    /* if compound method assume image was changed */
+  curr_kernel = kernel;  /* allow kernel to be cloned and modified */
+  curr_method = method;  /* and the method to be changed */
+
   limit = (unsigned long) iterations;
   if ( iterations < 0 )
     limit = image->columns > image->rows ? image->columns : image->rows;
 
-  /* Special morphology cases */
-  switch( method ) {
-    case CloseMorphology:
-      new_image = MorphologyImageChannel(image, channel, DilateMorphology,
-            iterations, kernel, exception);
-      if (new_image == (Image *) NULL)
-        return((Image *) NULL);
-      method = ErodeMorphology;
+  /* Third-level morphology methods */
+  switch( curr_method ) {
+    case EdgeMorphology:
+      grad_image = MorphologyImageChannel(image, channel,
+            DilateMorphology, iterations, curr_kernel, exception);
+      /* FALL-THRU */
+    case EdgeInMorphology:
+      curr_method = ErodeMorphology;
       break;
-    case OpenMorphology:
-      new_image = MorphologyImageChannel(image, channel, ErodeMorphology,
-            iterations, kernel, exception);
-      if (new_image == (Image *) NULL)
-        return((Image *) NULL);
-      method = DilateMorphology;
+    case EdgeOutMorphology:
+      curr_method = DilateMorphology;
       break;
-    case CloseIntensityMorphology:
-      new_image = MorphologyImageChannel(image, channel, DilateIntensityMorphology,
-            iterations, kernel, exception);
+    case TopHatMorphology:
+      curr_method = OpenMorphology;
+      break;
+    case BottomHatMorphology:
+      curr_method = CloseMorphology;
+      break;
+    default:
+      break;
+  }
+
+  /* Second-level morphology methods */
+  switch( curr_method ) {
+    case OpenMorphology: /* Erode then Dilate without reflection */
+      new_image = MorphologyImageChannel(image, channel,
+            ErodeMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);
-      method = ErodeIntensityMorphology;
+      curr_method = DilateMorphology;
+      break;
+    case CloseMorphology: /* Dilate then Erode using reflected kernel */
+      curr_kernel = CloneKernelInfo(kernel);
+      RotateKernelInfo(curr_kernel,180);
+      new_image = MorphologyImageChannel(image, channel,
+            DilateMorphology, iterations, curr_kernel, exception);
+      if (new_image == (Image *) NULL)
+        return((Image *) NULL);
+      curr_method = ErodeMorphology;
       break;
     case OpenIntensityMorphology:
-      new_image = MorphologyImageChannel(image, channel, ErodeIntensityMorphology,
-            iterations, kernel, exception);
+      new_image = MorphologyImageChannel(image, channel,
+            ErodeIntensityMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);
-      method = DilateIntensityMorphology;
+      curr_method = DilateIntensityMorphology;
+      break;
+    case CloseIntensityMorphology:
+      curr_kernel = CloneKernelInfo(kernel); /* a reflected kernel is needed */
+      RotateKernelInfo(curr_kernel,180);
+      new_image = MorphologyImageChannel(image, channel,
+            DilateIntensityMorphology, iterations, curr_kernel, exception);
+      if (new_image == (Image *) NULL)
+        return((Image *) NULL);
+      curr_method = ErodeIntensityMorphology;
       break;
 
     case ConvolveMorphology:
-      /* Scale or Normalize kernel according to user wishes
-      ** WARNING: this directly modifies the kernel
-      ** which probably should not be done.
+      /* Scale or Normalize kernel, according to user wishes
+      ** before using it for the convolution method.
       */
       artifact = GetImageArtifact(image,"convolve:scale");
-      if ( artifact != (char *)NULL )
-        ScaleKernel(kernel, StringToDouble(artifact) );
+      if ( artifact != (char *)NULL ) {
+        curr_kernel = CloneKernelInfo(kernel);
+        ScaleKernelInfo(curr_kernel, StringToDouble(artifact) );
+      }
       /* FALL-THRU */
+
     default:
-      /* Do a morphology iteration just once at this point!
-        This ensures a new_image has been generated, but allows us
-        to skip the creation of 'old_image' if it isn't needed.
+      /* Do a iteration using a Basic Morphology method just once!
+      ** This ensures a new_image has been generated, but allows us
+      ** to skip the creation of 'old_image' if it isn't needed.
       */
       new_image=CloneImage(image,0,0,MagickTrue,exception);
       if (new_image == (Image *) NULL)
@@ -1513,16 +1641,16 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
           new_image=DestroyImage(new_image);
           return((Image *) NULL);
         }
-      changed = MorphologyApply(image,new_image,method,channel,kernel,
+      changed = MorphologyApply(image,new_image,curr_method,channel,curr_kernel,
             exception);
       count++;
       if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
         fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
-              MagickOptionToMnemonic(MagickMorphologyOptions, method),
+              MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
               count, changed);
   }
 
-  /* Repeat an interative morphology until count or no change reached */
+  /* Repeat a Basic morphology until count or no change reached */
   if ( count < (long) limit && changed > 0 ) {
     old_image = CloneImage(new_image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
@@ -1538,15 +1666,35 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         Image *tmp = old_image;
         old_image = new_image;
         new_image = tmp;
-        changed = MorphologyApply(old_image,new_image,method,channel,kernel,
-              exception);
+        changed = MorphologyApply(old_image,new_image,curr_method,channel,
+             curr_kernel, exception);
         count++;
         if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
           fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, method),
+                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
                 count, changed);
       }
     old_image=DestroyImage(old_image);
+  }
+  if ( curr_kernel != kernel )
+    curr_kernel=DestroyKernelInfo(curr_kernel);
+
+  /* Subtractive morphology cases */
+  switch( method ) {
+    case EdgeOutMorphology:
+    case EdgeInMorphology:
+    case TopHatMorphology:
+    case BottomHatMorphology:
+      CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
+          image, 0, 0);
+      break;
+    case EdgeMorphology:  /* subtract erode from dialate ??? */
+      CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
+          grad_image, 0, 0);
+      grad_image=DestroyImage(grad_image);
+      break;
+    default:
+      break;
   }
 
   return(new_image);
@@ -1557,18 +1705,18 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     R o t a t e K e r n e l                                                 %
++     R o t a t e K e r n e l I n f o                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RotateKernel() rotates the kernel by the angle given.  Currently it is
+%  RotateKernelInfo() rotates the kernel by the angle given.  Currently it is
 %  restricted to 90 degree angles, but this may be improved in the future.
 %
-%  The format of the RotateKernel method is:
+%  The format of the RotateKernelInfo method is:
 %
-%      void RotateKernel(KernelInfo *kernel, double angle)
+%      void RotateKernelInfo(KernelInfo *kernel, double angle)
 %
 %  A description of each parameter follows:
 %
@@ -1580,7 +1728,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
-static void RotateKernel(KernelInfo *kernel, double angle)
+static void RotateKernelInfo(KernelInfo *kernel, double angle)
 {
   /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
   **
@@ -1698,14 +1846,14 @@ static void RotateKernel(KernelInfo *kernel, double angle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     S c a l e K e r n e l                                                   %
++     S c a l e K e r n e l I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ScaleKernel() scales the kernel by the given amount.  Scaling by value of
-%  zero will result in a normalization of the kernel.
+%  ScaleKernelInfo() scales the kernel by the given amount.  Scaling by value
+%  of zero will result in a normalization of the kernel.
 %
 %  For positive kernels normalization scales the kernel so the addition os all
 %  values is 1.0.  While for kernels where values add to zero it is scaled
@@ -1716,9 +1864,9 @@ static void RotateKernel(KernelInfo *kernel, double angle)
 %  Correct normalization assumes the 'range_*' attributes of the kernel
 %  structure have been correctly set during the kernel creation.
 %
-%  The format of the ScaleKernel method is:
+%  The format of the ScaleKernelInfo method is:
 %
-%      void ScaleKernel(KernelInfo *kernel)
+%      void ScaleKernelInfo(KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -1729,7 +1877,7 @@ static void RotateKernel(KernelInfo *kernel, double angle)
 % This function is internal to this module only at this time, but can be
 % exported to other modules if needed.
 */
-static void ScaleKernel(KernelInfo *kernel, double scale)
+static void ScaleKernelInfo(KernelInfo *kernel, double scale)
 {
   register long
     i;
@@ -1758,18 +1906,18 @@ static void ScaleKernel(KernelInfo *kernel, double scale)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     S h o w K e r n e l                                                     %
++     S h o w K e r n e l I n f o                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShowKernel() Output the details of the given kernel defination to
-%  standard error, as per a users 'showkernel' option request.
+%  ShowKernelInfo() outputs the details of the given kernel defination to
+%  standard error, generally due to a users 'showkernel' option request.
 %
 %  The format of the ShowKernel method is:
 %
-%      void ShowKernel(KernelInfo *kernel)
+%      void ShowKernelInfo(KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -1778,7 +1926,7 @@ static void ScaleKernel(KernelInfo *kernel, double scale)
 % This function is internal to this module only at this time. That may change
 % in the future.
 */
-static void ShowKernel(KernelInfo *kernel)
+MagickExport void ShowKernelInfo(KernelInfo *kernel)
 {
   long
     i, u, v;
@@ -1811,7 +1959,7 @@ static void ShowKernel(KernelInfo *kernel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     Z e r o K e r n e l N a n s                                             % 
++     Z e r o K e r n e l N a n s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
