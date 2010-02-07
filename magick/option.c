@@ -1221,6 +1221,11 @@ static const OptionInfo
     { "ErodeI", (long) ErodeIntensityMorphology, MagickFalse },
     { "CloseI", (long) CloseIntensityMorphology, MagickFalse },
     { "OpenI", (long) OpenIntensityMorphology, MagickFalse },
+    { "EdgeOut", (long) EdgeOutMorphology, MagickFalse },
+    { "EdgeIn", (long) EdgeInMorphology, MagickFalse },
+    { "Edge", (long) EdgeMorphology, MagickFalse },
+    { "TopHat", (long) TopHatMorphology, MagickFalse },
+    { "BottomHat", (long) BottomHatMorphology, MagickFalse },
     { "Distance", (long) DistanceMorphology, MagickFalse },
     { (char *) NULL, (long) UndefinedMorphology, MagickFalse }
   },

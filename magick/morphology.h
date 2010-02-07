@@ -33,7 +33,7 @@ typedef enum
   LaplacianKernel,
   LOGKernel,
   DOGKernel,
-  RectangleKernel,    /* Boolean Kernels */
+  RectangleKernel,    /* Shape Kernels */
   SquareKernel,
   DiamondKernel,
   DiskKernel,
@@ -47,16 +47,23 @@ typedef enum
 typedef enum
 {
   UndefinedMorphology,
+/* Basic Morphology methods */
   ConvolveMorphology,          /* Weighted Sum of pixels - Convolve */
-  DilateMorphology,            /* Weighted Value Maximum */
   ErodeMorphology,             /* Weighted Value Minimum */
-  CloseMorphology,             /* Erode then Dilate */
-  OpenMorphology,              /* Dilate then Erode */
-  DilateIntensityMorphology,   /* Pixel Pick using GreyScale Dialate */
+  DilateMorphology,            /* Weighted Value Maximum */
   ErodeIntensityMorphology,    /* Pixel Pick using GreyScale Erode */
-  CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
+  DilateIntensityMorphology,   /* Pixel Pick using GreyScale Dialate */
+  DistanceMorphology,          /* Add to Value, take Minimum */
+/* Compound Morphology methods */
+  OpenMorphology,              /* Dilate then Erode */
+  CloseMorphology,             /* Erode then Dilate */
   OpenIntensityMorphology,     /* Pixel Pick using GreyScale Open */
-  DistanceMorphology           /* Add to Value, take Minimum */
+  CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
+  EdgeInMorphology,            /* Dilate difference from orig */
+  EdgeOutMorphology,           /* Erode difference from orig */
+  EdgeMorphology,              /* Dilate difference with Erode */
+  TopHatMorphology,            /* Close difference from Original */
+  BottomHatMorphology          /* Open difference from Original */
 } MorphologyMethod;
 
 typedef struct
@@ -87,6 +94,9 @@ extern MagickExport KernelInfo
   *AcquireKernelInfo(const char *),
   *AcquireKernelBuiltIn(const KernelInfoType, const GeometryInfo *),
   *DestroyKernelInfo(KernelInfo *);
+
+extern MagickExport void
+  ShowKernelInfo(KernelInfo *);
 
 extern MagickExport Image
   *MorphologyImage(const Image *,MorphologyMethod,const long,KernelInfo *,
