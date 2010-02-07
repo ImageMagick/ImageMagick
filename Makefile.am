@@ -39,9 +39,7 @@ CLEANFILES = \
 	$(WAND_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) \
-	$(TESTS_CLEANFILES) \
-  magick/magick-config.h \
-  _configs.sed
+	$(TESTS_CLEANFILES)
 
 bin_PROGRAMS = \
 	$(UTILITIES_PGMS)
