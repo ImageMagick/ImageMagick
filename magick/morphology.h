@@ -47,20 +47,23 @@ typedef enum
 typedef enum
 {
   UndefinedMorphology,
-/* Basic Morphology methods */
-  ConvolveMorphology,          /* Weighted Sum of pixels - Convolve */
-  ErodeMorphology,             /* Weighted Value Minimum */
-  DilateMorphology,            /* Weighted Value Maximum */
+/* Convolve / Correlate weighted sums */
+  ConvolveMorphology,          /* Weighted Sum with reflected kernel */
+  CorrelateMorphology,         /* Weighted Sum using a sliding window */
+/* Low-level Morphology methods */
+  ErodeMorphology,             /* Minimum Value in Neighbourhood */
+  DilateMorphology,            /* Maximum Value in Neighbourhood */
   ErodeIntensityMorphology,    /* Pixel Pick using GreyScale Erode */
   DilateIntensityMorphology,   /* Pixel Pick using GreyScale Dialate */
-  DistanceMorphology,          /* Add to Value, take Minimum */
-/* Compound Morphology methods */
+  DistanceMorphology,          /* Add Kernel Value, take Minimum */
+/* Second-level Morphology methods */
   OpenMorphology,              /* Dilate then Erode */
   CloseMorphology,             /* Erode then Dilate */
   OpenIntensityMorphology,     /* Pixel Pick using GreyScale Open */
   CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
-  EdgeInMorphology,            /* Dilate difference from orig */
-  EdgeOutMorphology,           /* Erode difference from orig */
+/* Third-level Morphology methods */
+  EdgeInMorphology,            /* Dilate difference from Original */
+  EdgeOutMorphology,           /* Erode difference from Original */
   EdgeMorphology,              /* Dilate difference with Erode */
   TopHatMorphology,            /* Close difference from Original */
   BottomHatMorphology          /* Open difference from Original */
@@ -99,10 +102,10 @@ extern MagickExport void
   ShowKernelInfo(KernelInfo *);
 
 extern MagickExport Image
-  *MorphologyImage(const Image *,MorphologyMethod,const long,KernelInfo *,
-    ExceptionInfo *),
-  *MorphologyImageChannel(const Image *,const ChannelType,MorphologyMethod,
-    const long,KernelInfo *,ExceptionInfo *);
+  *MorphologyImage(const Image *, const MorphologyMethod,const long, const
+       KernelInfo *, ExceptionInfo *),
+  *MorphologyImageChannel(const Image *,const ChannelType, const
+       MorphologyMethod, const long, const KernelInfo *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

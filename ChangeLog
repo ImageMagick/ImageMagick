@@ -1,10 +1,13 @@
+2010-02-08  6.5.9-3 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added Correlate method which does a Convolve without reflecting the kernel.
+
 2010-02-07  6.5.9-3 Cristy  <quetzlzacatenango@image...>
   * Initialize grayscale colormap for PSD images.
 
 2010-02-07  6.5.9-3 Anthony Thyssen <A.Thyssen@griffith...>
   * Final testing and fixing of basic morphology operators
-  * Addition Third-level Subtractive Morphology Methods
-    edge-in, edge-out, edge, top-hat, bottom-hat
+  * Addition Third-level Subtractive Morphology Methods:
+    EdgeIn, EdgeOut, Edge, TopHat, BottomHat
   * Ensuring original kernels passed to morphology are cloned before being
     modifified for use by specific methods (EG: convolve scale/normalize)
 

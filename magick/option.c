@@ -1208,6 +1208,7 @@ static const OptionInfo
   MorphologyOptions[] =
   {
     { "Undefined", (long) UndefinedMorphology, MagickTrue },
+    { "Correlate", (long) CorrelateMorphology, MagickFalse },
     { "Convolve", (long) ConvolveMorphology, MagickFalse },
     { "Dilate", (long) DilateMorphology, MagickFalse },
     { "Erode", (long) ErodeMorphology, MagickFalse },
