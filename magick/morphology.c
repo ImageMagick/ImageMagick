@@ -112,7 +112,7 @@ static void
   ScaleKernelInfo(KernelInfo *, double);
 
 static KernelInfo
-  *CloneKernelInfo(KernelInfo *);
+  *CloneKernelInfo(const KernelInfo *);
 
 
 /*
@@ -939,7 +939,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %
 %  The format of the DestroyKernelInfo method is:
 %
-%      KernelInfo *CloneKernelInfo(KernelInfo *kernel)
+%      KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -947,7 +947,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %
 */
 
-static KernelInfo *CloneKernelInfo(KernelInfo *kernel)
+static KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 {
   register long
     i;
@@ -1058,9 +1058,11 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %
 */
 
+
 /* Internal function
- * Apply the Morphology method with the given Kernel
- * And return the number of pixels that changed.
+ * Apply the Low-Level Morphology Method using the given Kernel
+ * Returning the number of pixels that changed.
+ * Two pre-created images must be provided, no image is created.
  */
 static unsigned long MorphologyApply(const Image *image, Image
      *result_image, const MorphologyMethod method, const ChannelType channel,
@@ -1084,7 +1086,6 @@ static unsigned long MorphologyApply(const Image *image, Image
     *q_view;
 
   /* Only the most basic morphology is actually performed by this routine */
-  assert( method <= DistanceMorphology );
 
   /*
     Apply Basic Morphology to Image.
@@ -1110,10 +1111,16 @@ static unsigned long MorphologyApply(const Image *image, Image
     case ErodeIntensityMorphology:
       /* kernel is not reflected */
       break;
-    default:
+    case ConvolveMorphology:
+    case DilateMorphology:
+    case DilateIntensityMorphology:
+    case DistanceMorphology:
       /* kernel needs to be reflected */
       offx = (long) kernel->width-offx-1;
       offy = (long) kernel->height-offy-1;
+      break;
+    default:
+      perror("Not a low level Morpholgy Method");
       break;
   }
 
@@ -1188,8 +1195,13 @@ static unsigned long MorphologyApply(const Image *image, Image
       result.index=(MagickRealType) 0; /* stop compiler warnings */
       switch (method) {
         case ConvolveMorphology:
+          /* Set the user defined bias of the weighted average output
+          **
+          ** FUTURE: provide some way for internal functions to disable
+          ** user defined bias and scaling effects.
+          */
           result=bias;
-          break;  /* default result is the convolution bias */
+          break;
         case DilateMorphology:
           result.red     =
           result.green   =
@@ -1221,16 +1233,28 @@ static unsigned long MorphologyApply(const Image *image, Image
 
       switch ( method ) {
         case ConvolveMorphology:
-            /* Weighted Average of pixels
-             *
-             * NOTE for correct working of this operation for asymetrical
-             * kernels, the kernel needs to be applied in its reflected form.
-             * That is its values needs to be reversed.
-             */
+            /* Weighted Average of pixels using reflected kernel
+            **
+            ** NOTE for correct working of this operation for asymetrical
+            ** kernels, the kernel needs to be applied in its reflected form.
+            ** That is its values needs to be reversed.
+            **
+            ** Correlation is actually the same as this but without reflecting
+            ** the kernel, and thus 'lower-level' that Convolution.  However
+            ** as Convolution is the more common method used, and it does not
+            ** really cost us much in terms of processing to use a reflected
+            ** kernel it is Convolution that is implemented.
+            **
+            ** Correlation will have its kernel reflected before calling
+            ** this function to do a Convolve.
+            **
+            ** For more details of Correlation vs Convolution see
+            **   http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
+            */
             if (((channel & OpacityChannel) == 0) ||
                       (image->matte == MagickFalse))
               {
-                /* Convolution (no transparency) */
+                /* Convolution without transparency effects */
                 k = &kernel->values[ kernel->width*kernel->height-1 ];
                 k_pixels = p;
                 k_indexes = p_indexes;
@@ -1284,14 +1308,14 @@ static unsigned long MorphologyApply(const Image *image, Image
             break;
 
         case ErodeMorphology:
-            /* Minimize Value within kernel shape
-             *
-             * NOTE that the kernel is not reflected for this operation!
-             *
-             * NOTE: in normal Greyscale Morphology, the kernel value should
-             * be added to the real value, this is currently not done, due to
-             * the nature of the boolean kernels being used.
-             */
+            /* Minimize Value within kernel neighbourhood
+            **
+            ** NOTE that the kernel is not reflected for this operation!
+            **
+            ** NOTE: in normal Greyscale Morphology, the kernel value should
+            ** be added to the real value, this is currently not done, due to
+            ** the nature of the boolean kernels being used.
+            */
             k = kernel->values;
             k_pixels = p;
             k_indexes = p_indexes;
@@ -1311,17 +1335,17 @@ static unsigned long MorphologyApply(const Image *image, Image
             break;
 
         case DilateMorphology:
-            /* Maximize Value within kernel shape
-             *
-             * NOTE for correct working of this operation for asymetrical
-             * kernels, the kernel needs to be applied in its reflected form.
-             * That is its values needs to be reversed.
-             *
-             * NOTE: in normal Greyscale Morphology, the kernel value should
-             * be added to the real value, this is currently not done, due to
-             * the nature of the boolean kernels being used.
-             *
-             */
+            /* Maximize Value within kernel neighbourhood
+            **
+            ** NOTE for correct working of this operation for asymetrical
+            ** kernels, the kernel needs to be applied in its reflected form.
+            ** That is its values needs to be reversed.
+            **
+            ** NOTE: in normal Greyscale Morphology, the kernel value should
+            ** be added to the real value, this is currently not done, due to
+            ** the nature of the boolean kernels being used.
+            **
+            */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
@@ -1341,14 +1365,14 @@ static unsigned long MorphologyApply(const Image *image, Image
             break;
 
         case ErodeIntensityMorphology:
-            /* Select pixel with mimimum intensity within kernel shape
-             *
-             * WARNING: the intensity test fails for CMYK and does not
-             * take into account the moderating effect of teh alpha channel
-             * on the intensity.
-             *
-             * NOTE that the kernel is not reflected for this operation!
-             */
+            /* Select Pixel with Minimum Intensity within kernel neighbourhood
+            **
+            ** WARNING: the intensity test fails for CMYK and does not
+            ** take into account the moderating effect of teh alpha channel
+            ** on the intensity.
+            **
+            ** NOTE that the kernel is not reflected for this operation!
+            */
             k = kernel->values;
             k_pixels = p;
             k_indexes = p_indexes;
@@ -1369,16 +1393,16 @@ static unsigned long MorphologyApply(const Image *image, Image
             break;
 
         case DilateIntensityMorphology:
-            /* Select pixel with maximum intensity within kernel shape
-             *
-             * WARNING: the intensity test fails for CMYK and does not
-             * take into account the moderating effect of teh alpha channel
-             * on the intensity.
-             *
-             * NOTE for correct working of this operation for asymetrical
-             * kernels, the kernel needs to be applied in its reflected form.
-             * That is its values needs to be reversed.
-             */
+            /* Select Pixel with Maximum Intensity within kernel neighbourhood
+            **
+            ** WARNING: the intensity test fails for CMYK and does not
+            ** take into account the moderating effect of teh alpha channel
+            ** on the intensity.
+            **
+            ** NOTE for correct working of this operation for asymetrical
+            ** kernels, the kernel needs to be applied in its reflected form.
+            ** That is its values needs to be reversed.
+            */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
@@ -1399,28 +1423,28 @@ static unsigned long MorphologyApply(const Image *image, Image
             break;
 
         case DistanceMorphology:
-          /* Add kernel value and select the minimum value found.
-           * The result is a iterative distance from edge function.
-           *
-           * All Distance Kernels are symetrical, but that may not always
-           * be the case. For example how about a distance from left edges?
-           * To make it work correctly for asymetrical kernels the reflected
-           * kernel needs to be applied.
-           */
+            /* Add kernel Value and select the minimum value found.
+            ** The result is a iterative distance from edge of image shape.
+            **
+            ** All Distance Kernels are symetrical, but that may not always
+            ** be the case. For example how about a distance from left edges?
+            ** To work correctly with asymetrical kernels the reflected kernel
+            ** needs to be applied.
+            */
 #if 0
-          /* No need to do distance morphology if original value is zero
-           * Unfortunatally I have not been able to get this right
-           * when channel selection also becomes involved. -- Arrgghhh
-           */
-          if (   ((channel & RedChannel) == 0 && p[r].red == 0)
-              || ((channel & GreenChannel) == 0 && p[r].green == 0)
-              || ((channel & BlueChannel) == 0 && p[r].blue == 0)
-              || ((channel & OpacityChannel) == 0 && p[r].opacity == 0)
-              || (( (channel & IndexChannel) == 0
-                  || image->colorspace != CMYKColorspace
-                                               ) && p_indexes[x] ==0 )
-             )
-            break;
+            /* No need to do distance morphology if original value is zero
+            ** Unfortunatally I have not been able to get this right
+            ** when channel selection also becomes involved. -- Arrgghhh
+            */
+            if (   ((channel & RedChannel) == 0 && p[r].red == 0)
+                || ((channel & GreenChannel) == 0 && p[r].green == 0)
+                || ((channel & BlueChannel) == 0 && p[r].blue == 0)
+                || ((channel & OpacityChannel) == 0 && p[r].opacity == 0)
+                || (( (channel & IndexChannel) == 0
+                    || image->colorspace != CMYKColorspace
+                                                ) && p_indexes[x] ==0 )
+              )
+              break;
 #endif
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
@@ -1448,7 +1472,7 @@ static unsigned long MorphologyApply(const Image *image, Image
         case UndefinedMorphology:
         case DilateIntensityMorphology:
         case ErodeIntensityMorphology:
-          break;  /* full pixel was directly assigned */
+          break;  /* full pixel was directly assigned - not a channel method */
         default:
           /* Assign the results */
           if ((channel & RedChannel) != 0)
@@ -1499,7 +1523,8 @@ static unsigned long MorphologyApply(const Image *image, Image
 
 
 MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
-  method, const long iterations,KernelInfo *kernel, ExceptionInfo *exception)
+  method, const long iterations,const KernelInfo *kernel, ExceptionInfo
+  *exception)
 {
   Image
     *morphology_image;
@@ -1510,9 +1535,10 @@ MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
 }
 
 
-MagickExport Image *MorphologyImageChannel(const Image *image,
-  const ChannelType channel, const MorphologyMethod method,
-  const long iterations, KernelInfo *kernel, ExceptionInfo *exception)
+MagickExport Image *MorphologyImageChannel(const Image *image, const
+  ChannelType channel, const MorphologyMethod method, const long
+  iterations, const KernelInfo *kernel, ExceptionInfo *exception)
+
 {
   long
     count;
@@ -1552,8 +1578,8 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   count = 0;      /* interation count */
   changed = 1;    /* if compound method assume image was changed */
-  curr_kernel = kernel;  /* allow kernel to be cloned and modified */
-  curr_method = method;  /* and the method to be changed */
+  curr_kernel = (KernelInfo *)kernel;  /* allow kernel and method */
+  curr_method = method;                /* to be changed as nessary */
 
   limit = (unsigned long) iterations;
   if ( iterations < 0 )
@@ -1578,26 +1604,18 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       curr_method = CloseMorphology;
       break;
     default:
-      break;
+      break; /* not a third-level method */
   }
 
   /* Second-level morphology methods */
   switch( curr_method ) {
-    case OpenMorphology: /* Erode then Dilate without reflection */
+    case OpenMorphology:
+      /* Open is a Erode then a Dilate without reflection */
       new_image = MorphologyImageChannel(image, channel,
             ErodeMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
         return((Image *) NULL);
       curr_method = DilateMorphology;
-      break;
-    case CloseMorphology: /* Dilate then Erode using reflected kernel */
-      curr_kernel = CloneKernelInfo(kernel);
-      RotateKernelInfo(curr_kernel,180);
-      new_image = MorphologyImageChannel(image, channel,
-            DilateMorphology, iterations, curr_kernel, exception);
-      if (new_image == (Image *) NULL)
-        return((Image *) NULL);
-      curr_method = ErodeMorphology;
       break;
     case OpenIntensityMorphology:
       new_image = MorphologyImageChannel(image, channel,
@@ -1606,8 +1624,23 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         return((Image *) NULL);
       curr_method = DilateIntensityMorphology;
       break;
+
+    case CloseMorphology:
+      /* Close is a Dilate then Erode using reflected kernel */
+      /* A reflected kernel is needed for a Close */
+      if ( curr_kernel == kernel )
+        curr_kernel = CloneKernelInfo(kernel);
+      RotateKernelInfo(curr_kernel,180);
+      new_image = MorphologyImageChannel(image, channel,
+            DilateMorphology, iterations, curr_kernel, exception);
+      if (new_image == (Image *) NULL)
+        return((Image *) NULL);
+      curr_method = ErodeMorphology;
+      break;
     case CloseIntensityMorphology:
-      curr_kernel = CloneKernelInfo(kernel); /* a reflected kernel is needed */
+      /* A reflected kernel is needed for a Close */
+      if ( curr_kernel == kernel )
+        curr_kernel = CloneKernelInfo(kernel);
       RotateKernelInfo(curr_kernel,180);
       new_image = MorphologyImageChannel(image, channel,
             DilateIntensityMorphology, iterations, curr_kernel, exception);
@@ -1616,21 +1649,43 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       curr_method = ErodeIntensityMorphology;
       break;
 
+    case CorrelateMorphology:
+      /* A Correlation is actually a Convolution with a reflected kernel.
+      ** However a Convolution is a weighted sum with a reflected kernel.
+      ** It may seem stange to convert a Correlation into a Convolution
+      ** as the Correleation is the simplier method, but Convolution is
+      ** much more commonly used, and it makes sense to implement it directly
+      ** so as to avoid the need to duplicate the kernel when it is not
+      ** required (which is typically the default).
+      */
+      if ( curr_kernel == kernel )
+        curr_kernel = CloneKernelInfo(kernel);
+      RotateKernelInfo(curr_kernel,180);
+      curr_method = ConvolveMorphology;
+      /* FALL-THRU into Correlate (weigthed sum without reflection) */
+
     case ConvolveMorphology:
       /* Scale or Normalize kernel, according to user wishes
-      ** before using it for the convolution method.
+      ** before using it for the Convolve/Correlate method.
+      **
+      ** FUTURE: provide some way for internal functions to disable
+      ** user bias and scaling effects.
       */
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (char *)NULL ) {
-        curr_kernel = CloneKernelInfo(kernel);
+        if ( curr_kernel == kernel )
+          curr_kernel = CloneKernelInfo(kernel);
         ScaleKernelInfo(curr_kernel, StringToDouble(artifact) );
       }
-      /* FALL-THRU */
+      /* FALL-THRU to do the first, and typically the only iteration */
 
     default:
-      /* Do a iteration using a Basic Morphology method just once!
-      ** This ensures a new_image has been generated, but allows us
-      ** to skip the creation of 'old_image' if it isn't needed.
+      /* Do a single iteration using the Low-Level Morphology method!
+      ** This ensures a "new_image" has been generated, but allows us to skip
+      ** the creation of 'old_image' if no more iterations are needed.
+      **
+      ** The "curr_method" should also be set to a low-level method that is
+      ** understood by the MorphologyApply() internal function.
       */
       new_image=CloneImage(image,0,0,MagickTrue,exception);
       if (new_image == (Image *) NULL)
@@ -1648,9 +1703,16 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
               MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
               count, changed);
+      break;
   }
 
-  /* Repeat a Basic morphology until count or no change reached */
+  /* At this point the "curr_method" should not only be set to a low-level
+  ** method that is understood by the MorphologyApply() internal function,
+  ** but "new_image" should now be defined, as the image to apply the
+  ** "curr_method" to.
+  */
+
+  /* Repeat the low-level morphology until count or no change reached */
   if ( count < (long) limit && changed > 0 ) {
     old_image = CloneImage(new_image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
@@ -1676,20 +1738,23 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       }
     old_image=DestroyImage(old_image);
   }
+
+  /* We are finished with kernel - destroy it if we made a clone */
   if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
 
-  /* Subtractive morphology cases */
+  /* Third-level Subtractive methods post-processing */
   switch( method ) {
     case EdgeOutMorphology:
     case EdgeInMorphology:
     case TopHatMorphology:
     case BottomHatMorphology:
-      (void) CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
+      /* Get Difference relative to the original image */
+      CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
           image, 0, 0);
       break;
-    case EdgeMorphology:  /* subtract erode from dialate ??? */
-      (void) CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
+    case EdgeMorphology:  /* subtract the Erode from a Dilate */
+      CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
           grad_image, 0, 0);
       grad_image=DestroyImage(grad_image);
       break;
@@ -1792,8 +1857,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       for ( i=0, j=kernel->width*kernel->height-1;  i<j;  i++, j--)
         t=k[i],  k[i]=k[j],  k[j]=t;
 
-      kernel->x = (long) kernel->width - kernel->x - 1;
-      kernel->y = (long) kernel->width - kernel->y - 1;
+      kernel->x = (long) kernel->width  - kernel->x - 1;
+      kernel->y = (long) kernel->height - kernel->y - 1;
       angle = fmod(angle+180.0, 360.0);
     }
   if ( 45.0 < angle && angle <= 135.0 )
