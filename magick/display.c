@@ -3504,8 +3504,8 @@ static MagickBooleanType XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],1.0*QuantumRange+
-                  1.0);
+                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],1.0*
+                  QuantumRange+1.0);
                 break;
               }
             (void) (void) CopyMagickString(fuzz,"20%",MaxTextExtent);
@@ -14491,10 +14491,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       GetPathComponent(display_image->magick_filename,TailPath,filename);
       if (GetImageListLength(display_image) == 1)
         (void) FormatMagickString(windows->image.name,MaxTextExtent,
-          "ImageMagick: %s",filename);
+          "%s: %s",MagickPackageName,filename);
       else
         (void) FormatMagickString(windows->image.name,MaxTextExtent,
-          "ImageMagick: %s[%lu of %lu]",filename,display_image->scene,
+          "%s: %s[%lu of %lu]",MagickPackageName,filename,display_image->scene,
           GetImageListLength(display_image));
       (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
     }
@@ -14526,7 +14526,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      (void) CloneString(&windows->backdrop.name,"ImageMagick Backdrop");
+      (void) CloneString(&windows->backdrop.name,"Backdrop");
       windows->backdrop.flags=(unsigned long) (USSize | USPosition);
       windows->backdrop.width=(unsigned int)
         XDisplayWidth(display,visual_info->screen);

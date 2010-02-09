@@ -2865,7 +2865,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           *t;
 
         GetMagickToken(q,&q,token);
-        k=1;
+        length=1;
         t=token;
         for (s=token; *s != '\0'; s=t)
         {
@@ -2878,9 +2878,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               t++;
               continue;
             }
-          k++;
+          length++;
         }
-        length+=k*BezierQuantum;
+        length=3*length/2+6*BezierQuantum+360+1;
         break;
       }
       case CirclePrimitive:
