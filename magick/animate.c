@@ -484,7 +484,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       *state&=(~AutoReverseAnimationState);
       GetPathComponent((*image)->magick_filename,BasePath,basename);
       (void) FormatMagickString(windows->image.name,MaxTextExtent,
-        "ImageMagick: %s",basename);
+        "%s: %s",MagickPackageName,basename);
       if (resource_info->title != (char *) NULL)
         {
           char
@@ -1654,7 +1654,7 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
       (void) FormatMagickString(windows->image.name,MaxTextExtent,
-        "ImageMagick: %s[%lu of %lu]",filename,display_image->scene,
+        "%s: %s[%lu of %lu]",MagickPackageName,filename,display_image->scene,
         number_scenes);
       (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
     }
@@ -1970,7 +1970,7 @@ MagickExport Image *XAnimateImages(Display *display,
         while ((p > image_list[scene]->magick_filename) && (*(p-1) != '/'))
           p--;
         (void) FormatMagickString(windows->image.name,MaxTextExtent,
-          "ImageMagick: %s[%lu of %lu]",p,scene+1,number_scenes);
+          "%s: %s[%lu of %lu]",MagickPackageName,p,scene+1,number_scenes);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
     if (status != Success)
@@ -2101,7 +2101,7 @@ MagickExport Image *XAnimateImages(Display *display,
               while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
                 p--;
               (void) FormatMagickString(windows->image.name,MaxTextExtent,
-                "ImageMagick: %s[%lu of %lu]",p,scene+1,number_scenes);
+                "%s: %s[%lu of %lu]",MagickPackageName,p,scene+1,number_scenes);
               if (resource_info->title != (char *) NULL)
                 {
                   char
