@@ -2332,7 +2332,9 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
           */
           (void) InterpretImageFilename(image_info,image,image->filename,(int)
             image->scene,filename);
-          if (LocaleCompare(filename,image->filename) == 0)
+          if ((LocaleCompare(filename,image->filename) == 0) &&
+              ((GetPreviousImageInList(image) != (Image *) NULL) ||
+               (GetNextImageInList(image) != (Image *) NULL)))
             {
               char
                 extension[MaxTextExtent],
