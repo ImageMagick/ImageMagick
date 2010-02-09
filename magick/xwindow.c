@@ -5846,7 +5846,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
-  if ((window->immutable != MagickFalse) &&
+  if ((window->immutable == MagickFalse) &&
       (image->storage_class == DirectClass) && (image->matte != MagickFalse))
     {
       char
