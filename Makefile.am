@@ -33,6 +33,8 @@ MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -av
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
 
+DISTCLEANFILES = _configs.sed magick/magick-config.h
+
 ## Make sure these will be cleaned even when they're not built by default.
 CLEANFILES = \
 	$(LTDL_CLEANFILES) \

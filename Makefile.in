@@ -2551,6 +2551,7 @@ MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -av
 # We want to preserve user-provided option variables so the same
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
+DISTCLEANFILES = _configs.sed magick/magick-config.h
 CLEANFILES = $(LTDL_CLEANFILES) $(WAND_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) $(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES) ltdl/libltdl.la ltdl/libltdlc.la \
@@ -10864,6 +10865,7 @@ distclean-generic:
 	-rm -f utilities/$(am__dirstamp)
 	-rm -f wand/$(DEPDIR)/$(am__dirstamp)
 	-rm -f wand/$(am__dirstamp)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
