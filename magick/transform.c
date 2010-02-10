@@ -1683,7 +1683,8 @@ MagickExport MagickBooleanType TransformImage(Image **image,
       if ((flags & AreaValue) != 0)
         {
           PointInfo
-            delta;
+            delta,
+            offset;
 
           RectangleInfo
             crop;
@@ -1710,38 +1711,42 @@ MagickExport MagickBooleanType TransformImage(Image **image,
           delta.x=(double) width/geometry.width;
           delta.y=(double) height/geometry.height;
           next=NewImageList();
-          for (y=0; y < (long) height; )
+          for (offset.y=0; offset.y < (double) height; )
           {
             if ((flags & AspectValue) == 0)
               {
-                crop.y=(long) MagickRound((MagickRealType) (y-
+                crop.y=(long) MagickRound((MagickRealType) (offset.y-
                   (geometry.y > 0 ? 0 : geometry.y)));
+                offset.y+=delta.y;
                 crop.height=(unsigned long) MagickRound((MagickRealType)
-                  (y+(geometry.y < 0 ? 0 : geometry.y)+delta.y));
+                  (offset.y+(geometry.y < 0 ? 0 : geometry.y)));
               }
             else
               {
-                crop.y=(long) MagickRound((MagickRealType) (y-
+                crop.y=(long) MagickRound((MagickRealType) (offset.y-
                   (geometry.y > 0 ? geometry.y : 0)));
+                offset.y+=delta.y;
                 crop.height=(unsigned long) MagickRound((MagickRealType)
-                  (y+(geometry.y < 0 ? geometry.y : 0)+delta.y));
+                  (offset.y+(geometry.y < 0 ? geometry.y : 0)));
               }
             crop.height-=crop.y;
-            for (x=0; x < (long) width; )
+            for (offset.x=0; offset.x < (double) width; )
             {
               if ((flags & AspectValue) == 0)
                 {
-                  crop.x=(long) MagickRound((MagickRealType) (x-
+                  crop.x=(long) MagickRound((MagickRealType) (offset.x-
                     (geometry.x > 0 ? 0 : geometry.x)));
+                  offset.x+=+delta.x;
                   crop.width=(unsigned long) MagickRound((MagickRealType)
-                    (x+(geometry.x < 0 ? 0 : geometry.x)+delta.x));
+                    (offset.x+(geometry.x < 0 ? 0 : geometry.x)));
                 }
               else
                 {
-                  crop.x=(long) MagickRound((MagickRealType) (x-
+                  crop.x=(long) MagickRound((MagickRealType) (offset.x-
                     (geometry.x > 0 ? geometry.x : 0)));
+                  offset.x+=+delta.x;
                   crop.width=(unsigned long) MagickRound((MagickRealType)
-                    (x+(geometry.x < 0 ? geometry.x : 0)+delta.x));
+                    (offset.x+(geometry.x < 0 ? geometry.x : 0)));
                 }
               crop.width-=crop.x;
               next=CropImage(transform_image,&crop,&(*image)->exception);
