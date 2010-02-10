@@ -47,6 +47,7 @@
 #include "magick/color-private.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite.h"
+#include "magick/draw.h"
 #include "magick/effect.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -1628,26 +1629,37 @@ MagickExport Image *SpliceImage(const Image *image,
 %      final size of the image.
 %
 */
-static inline double MagickRound(double x)
+static inline long MagickRound(MagickRealType x)
 {
-  /* round the fraction to nearest integer */
+  /*
+    Round the fraction to nearest integer.
+  */
   if (x >= 0.0)
-    return((double) ((long) (x+0.5)));
-  return((double) ((long) (x-0.5)));
+    return((long) (x+0.5));
+  return((long) (x-0.5));
 }
 
 MagickExport MagickBooleanType TransformImage(Image **image,
   const char *crop_geometry,const char *image_geometry)
 {
   Image
+    *next,
     *resize_image,
     *transform_image;
+
+  long
+    x,
+    y;
 
   MagickStatusType
     flags;
 
   RectangleInfo
     geometry;
+
+  unsigned long
+    height,
+    width;
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
@@ -1668,67 +1680,70 @@ MagickExport MagickBooleanType TransformImage(Image **image,
       crop_image=NewImageList();
       flags=ParseGravityGeometry(transform_image,crop_geometry,&geometry,
         &(*image)->exception);
-      /* crop into NxM tiles (@ flag) - AT */
-      if ((flags & AreaValue) != 0 )
+      if ((flags & AreaValue) != 0)
         {
-          Image
-            *next;
-
-          MagickRealType
-            width, height, w_step, h_step, x, y;
+          PointInfo
+            delta;
 
           RectangleInfo
             crop;
 
-          if ( geometry.width == 0 ) geometry.width = 1;
-          if ( geometry.height == 0 ) geometry.height = 1;
-
-          width=(MagickRealType)transform_image->columns;
-          height=(MagickRealType)transform_image->rows;
+          /*
+            Crop into NxM tiles (@ flag) - AT.
+          */
+          if (geometry.width == 0)
+            geometry.width=1;
+          if (geometry.height == 0)
+            geometry.height=1;
+          width=transform_image->columns;
+          height=transform_image->rows;
           if ((flags & AspectValue) == 0)
             {
-              width -= (MagickRealType)labs(geometry.x);
-              height -= (MagickRealType)labs(geometry.y);
+              width-=(geometry.x < 0 ? -1 : 1)*geometry.x;
+              height-=(geometry.y < 0 ? -1 : 1)*geometry.y;
             }
           else
             {
-              width += (MagickRealType)labs(geometry.x);
-              height += (MagickRealType)labs(geometry.y);
+              width+=(geometry.x < 0 ? -1 : 1)*geometry.x;
+              height+=(geometry.y < 0 ? -1 : 1)*geometry.y;
             }
-          w_step=width/geometry.width;
-          h_step=height/geometry.height;
-
+          delta.x=(double) width/geometry.width;
+          delta.y=(double) height/geometry.height;
           next=NewImageList();
-          for (y=0.0; y < height; )
+          for (y=0; y < (long) height; )
           {
             if ((flags & AspectValue) == 0)
               {
-                crop.y=MagickRound(y-(geometry.y>0?0:geometry.y));
-                y+=h_step;
-                crop.height=MagickRound(y+(geometry.y<0?0:geometry.y));
+                crop.y=(long) MagickRound((MagickRealType) (y-
+                  (geometry.y > 0 ? 0 : geometry.y)));
+                crop.height=(unsigned long) MagickRound((MagickRealType)
+                  (y+(geometry.y < 0 ? 0 : geometry.y)+delta.y));
               }
             else
               {
-                crop.y=MagickRound(y-(geometry.y>0?geometry.y:0) );
-                y+=h_step;
-                crop.height=MagickRound(y+(geometry.y<0?geometry.y:0) );
+                crop.y=(long) MagickRound((MagickRealType) (y-
+                  (geometry.y > 0 ? geometry.y : 0)));
+                crop.height=(unsigned long) MagickRound((MagickRealType)
+                  (y+(geometry.y < 0 ? geometry.y : 0)+delta.y));
               }
-            crop.height -= crop.y;
-            for (x=0.0; x < width; )
+            crop.height-=crop.y;
+            for (x=0; x < (long) width; )
             {
               if ((flags & AspectValue) == 0)
                 {
-                  crop.x=MagickRound(x-(geometry.x>0?0:geometry.x));
-                  x+=w_step;
-                  crop.width=MagickRound(x+(geometry.x<0?0:geometry.x));
+                  crop.x=(long) MagickRound((MagickRealType) (x-
+                    (geometry.x > 0 ? 0 : geometry.x)));
+                  crop.width=(unsigned long) MagickRound((MagickRealType)
+                    (x+(geometry.x < 0 ? 0 : geometry.x)+delta.x));
                 }
               else
                 {
-                  crop.x=MagickRound(x-(geometry.x>0?geometry.x:0) );
-                  x+=w_step;
-                  crop.width=MagickRound(x+(geometry.x<0?geometry.x:0) );
+                  crop.x=(long) MagickRound((MagickRealType) (x-
+                    (geometry.x > 0 ? geometry.x : 0)));
+                  crop.width=(unsigned long) MagickRound((MagickRealType)
+                    (x+(geometry.x < 0 ? geometry.x : 0)+delta.x));
                 }
-              crop.width -= crop.x;
+              crop.width-=crop.x;
               next=CropImage(transform_image,&crop,&(*image)->exception);
               if (next == (Image *) NULL)
                 break;
@@ -1738,67 +1753,84 @@ MagickExport MagickBooleanType TransformImage(Image **image,
               break;
           }
         }
-      /* crop a single region at +X+Y  */
-      else if (((geometry.width == 0) && (geometry.height == 0)) ||
+      else
+        if (((geometry.width == 0) && (geometry.height == 0)) ||
             ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        {
-          crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
-          if ((crop_image != (Image *) NULL) && ((flags & AspectValue) != 0))
-            {
-              crop_image->page.width=geometry.width;
-              crop_image->page.height=geometry.height;
-              crop_image->page.x-=geometry.x;
-              crop_image->page.y-=geometry.y;
-            }
-        }
-      /* crop into tiles of fixed size WxH  */
-      else if ((transform_image->columns > geometry.width) ||
-            (transform_image->rows > geometry.height))
-        {
-          Image
-            *next;
-
-          long
-            y;
-
-          register long
-            x;
-
-          unsigned long
-            height,
-            width;
-
-          /*
-            Crop repeatedly to create uniform scenes.
-          */
-          if (transform_image->page.width == 0)
-            transform_image->page.width=transform_image->columns;
-          if (transform_image->page.height == 0)
-            transform_image->page.height=transform_image->rows;
-          width=geometry.width;
-          if (width == 0)
-            width=transform_image->page.width;
-          height=geometry.height;
-          if (height == 0)
-            height=transform_image->page.height;
-          next=NewImageList();
-          for (y=0; y < (long) transform_image->page.height; y+=height)
           {
-            for (x=0; x < (long) transform_image->page.width; x+=width)
-            {
-              geometry.width=width;
-              geometry.height=height;
-              geometry.x=x;
-              geometry.y=y;
-              next=CropImage(transform_image,&geometry,&(*image)->exception);
-              if (next == (Image *) NULL)
-                break;
-              AppendImageToList(&crop_image,next);
-            }
-            if (next == (Image *) NULL)
-              break;
-          }
-        }
+            /*
+              Crop a single region at +X+Y.
+            */
+            crop_image=CropImage(transform_image,&geometry,
+              &(*image)->exception);
+            if ((crop_image != (Image *) NULL) && ((flags & AspectValue) != 0))
+              {
+                crop_image->page.width=geometry.width;
+                crop_image->page.height=geometry.height;
+                crop_image->page.x-=geometry.x;
+                crop_image->page.y-=geometry.y;
+              }
+         }
+       else
+         if ((transform_image->columns > geometry.width) ||
+             (transform_image->rows > geometry.height))
+           {
+             MagickBooleanType
+               proceed;
+
+             MagickProgressMonitor
+               progress_monitor;
+
+             MagickOffsetType
+               i;
+
+             MagickSizeType
+               number_images;
+
+             /*
+               Crop into tiles of fixed size WxH.
+             */
+             if (transform_image->page.width == 0)
+               transform_image->page.width=transform_image->columns;
+             if (transform_image->page.height == 0)
+               transform_image->page.height=transform_image->rows;
+             width=geometry.width;
+             if (width == 0)
+               width=transform_image->page.width;
+             height=geometry.height;
+             if (height == 0)
+               height=transform_image->page.height;
+             next=NewImageList();
+             proceed=MagickTrue;
+             i=0;
+             number_images=(MagickSizeType) transform_image->page.height*
+               transform_image->page.width/height/width;
+             for (y=0; y < (long) transform_image->page.height; y+=height)
+             {
+               for (x=0; x < (long) transform_image->page.width; x+=width)
+               {
+                 progress_monitor=SetImageProgressMonitor(transform_image,
+                   (MagickProgressMonitor) NULL,transform_image->client_data);
+                 geometry.width=width;
+                 geometry.height=height;
+                 geometry.x=x;
+                 geometry.y=y;
+                 next=CropImage(transform_image,&geometry,&(*image)->exception);
+                 (void) SetImageProgressMonitor(transform_image,
+                   progress_monitor,transform_image->client_data);
+                 proceed=SetImageProgress(transform_image,CropImageTag,i++,
+                   number_images);
+                 if (proceed == MagickFalse)
+                   break;
+                 if (next == (Image *) NULL)
+                   break;
+                 AppendImageToList(&crop_image,next);
+               }
+               if (next == (Image *) NULL)
+                 break;
+               if (proceed == MagickFalse)
+                 break;
+             }
+           }
       if (crop_image == (Image *) NULL)
         transform_image=CloneImage(*image,0,0,MagickTrue,&(*image)->exception);
       else

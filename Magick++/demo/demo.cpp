@@ -503,7 +503,7 @@ int main( int /*argc*/, char ** argv)
     for_each( montage.begin(), montage.end(), compressTypeImage( RLECompression) );
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
-    writeImages(montage.begin(),montage.end(),"demo_out.miff");
+    writeImages(montage.begin(),montage.end(),"demo_out_%d.miff");
 
     // Uncomment following lines to display image to screen
     //    cout <<  "Display image..." << endl;

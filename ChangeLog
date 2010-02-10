@@ -1,3 +1,7 @@
+2010-02-09  6.5.9-4 Cristy  <quetzlzacatenango@image...>
+  * Resolve "too many open files"  (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15546).
+
 2010-02-08  6.5.9-3 Anthony Thyssen <A.Thyssen@griffith...>
   * Added Correlate method which does a Convolve without reflecting the kernel.
 
