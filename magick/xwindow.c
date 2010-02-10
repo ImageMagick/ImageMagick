@@ -8734,6 +8734,14 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
       width=window->width;
       height=window->height;
       while (XCheckTypedWindowEvent(display,window->id,Expose,&sans_event)) ;
+      if (window->matte_pixmap != (Pixmap) NULL)
+        {
+#if defined(MAGICKCORE_HAVE_SHAPE)
+          if (window->shape != MagickFalse)
+            XShapeCombineMask(display,window->id,ShapeBounding,0,0,
+              window->matte_pixmap,ShapeSet);
+#endif
+        }
     }
   /*
     Check boundary conditions.
@@ -8746,15 +8754,7 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
     Refresh image.
   */
   if (window->matte_pixmap != (Pixmap) NULL)
-    {
-#if defined(MAGICKCORE_HAVE_SHAPE)
-      if (window->shape != MagickFalse)
-        XShapeCombineMask(display,window->id,ShapeBounding,0,0,
-          window->matte_pixmap,ShapeSet);
-#endif
-      (void) XSetClipMask(display,window->annotate_context,
-        window->matte_pixmap);
-    }
+    (void) XSetClipMask(display,window->annotate_context,window->matte_pixmap);
   if (window->pixmap != (Pixmap) NULL)
     {
       if (window->depth > 1)
