@@ -652,7 +652,8 @@ static MagickBooleanType ClosePixelCacheOnDisk(CacheInfo *cache_info)
     status;
 
   LockSemaphoreInfo(cache_info->disk_semaphore);
-  status=close(cache_info->file);
+  if (cache_info->file != -1)
+    status=close(cache_info->file);
   cache_info->file=(-1);
   RelinquishMagickResource(FileResource,1);
   UnlockSemaphoreInfo(cache_info->disk_semaphore);
@@ -681,24 +682,18 @@ static void LimitPixelCacheDescriptors(void)
   while (p != (CacheInfo *) NULL)
   {
     if ((p->type == DiskCache) && (p->file != -1))
-      {
-        if (IsMagickThreadEqual(p->id) != MagickFalse)
-          break;
-      }
+      break;
     p=(CacheInfo *) GetNextKeyInSplayTree(cache_resources);
   }
   for (q=p; p != (CacheInfo *) NULL; )
   {
     if ((p->type == DiskCache) && (p->file != -1) &&
         (p->timestamp < q->timestamp))
-      {
-        if (IsMagickThreadEqual(p->id) != MagickFalse)
-          q=p;
-      }
+      q=p;
     p=(CacheInfo *) GetNextKeyInSplayTree(cache_resources);
   }
   if (q != (CacheInfo *) NULL)
-    (void) ClosePixelCacheOnDisk(q);  /* relinquish least recently used cache */
+    (void) close(q->file); /* relinquish least recently used cache */
   UnlockSemaphoreInfo(cache_semaphore);
 }
 
