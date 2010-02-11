@@ -1807,8 +1807,10 @@ MagickExport MagickBooleanType TransformImage(Image **image,
              next=NewImageList();
              proceed=MagickTrue;
              i=0;
-             number_images=(MagickSizeType) transform_image->page.height*
-               transform_image->page.width/height/width;
+             number_images=0;
+             for (y=0; y < (long) transform_image->page.height; y+=height)
+               for (x=0; x < (long) transform_image->page.width; x+=width)
+                 number_images++;
              for (y=0; y < (long) transform_image->page.height; y+=height)
              {
                for (x=0; x < (long) transform_image->page.width; x+=width)

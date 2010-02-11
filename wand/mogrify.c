@@ -47,6 +47,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/monitor-private.h"
 #include "magick/thread-private.h"
 #include "magick/string-private.h"
 
@@ -8342,14 +8343,17 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     *image,
     *mogrify_images;
 
+  MagickBooleanType
+    proceed;
+
+  MagickSizeType
+    number_images;
+
   MagickStatusType
     status;
 
   register long
     i;
-
-  unsigned long
-    number_images;
 
   /*
     Apply options to individual images in the list.
@@ -8378,14 +8382,10 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
       continue;
     status&=MogrifyImage(image_info,argc,argv,&image,exception);
     AppendImageToList(&mogrify_images,image);
-    if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-        (QuantumTick(i,number_images) != MagickFalse))
-      {
-        status=image->progress_monitor(MogrifyImageTag,i,number_images,
-          image->client_data);
-        if (status == MagickFalse)
-          break;
-      }
+    proceed=SetImageProgress(image,MogrifyImageTag,(MagickOffsetType) i,
+      number_images);
+    if (proceed == MagickFalse)
+      break;
   }
   if (post != MagickFalse)
     status&=MogrifyImageList(image_info,argc,argv,&mogrify_images,exception);
