@@ -1522,6 +1522,11 @@
         Effet vagues pour l'image
       </message>
     </Wave>
+    <Write>
+      <message name="Image">
+        write image
+      </message>
+    </Write>
     <XShear>
       <message name="Image">
         X Shear image

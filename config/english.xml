@@ -1540,6 +1540,11 @@
         wave image
       </message>
     </Wave>
+    <Write>
+      <message name="Image">
+        write image
+      </message>
+    </Write>
     <XShear>
       <message name="Image">
         x shear image
