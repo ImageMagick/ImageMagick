@@ -55,6 +55,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/monitor.h"
+#include "magick/monitor-private.h"
 #include "magick/option.h"
 #include "magick/pixel.h"
 #include "magick/policy.h"
@@ -1221,6 +1222,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
 MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   Image *images,const char *filename,ExceptionInfo *exception)
 {
+#define WriteImageTag  "Write/Image"
+
   BlobInfo
     *blob;
 
@@ -1229,6 +1232,18 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
 
   ImageInfo
     *write_info;
+
+  MagickBooleanType
+    proceed;
+
+  MagickOffsetType
+    i;
+
+  MagickProgressMonitor
+    progress_monitor;
+
+  MagickSizeType
+    number_images;
 
   MagickStatusType
     status;
@@ -1276,11 +1291,19 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
     Write images.
   */
   status=MagickTrue;
+  i=0;
+  number_images=GetImageListLength(images);
   for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
+    progress_monitor=SetImageProgressMonitor(p,(MagickProgressMonitor) NULL,
+      p->client_data);
     status&=WriteImage(write_info,p);
     GetImageException(p,exception);
+    (void) SetImageProgressMonitor(p,progress_monitor,p->client_data);
     if (write_info->adjoin != MagickFalse)
+      break;
+    proceed=SetImageProgress(p,WriteImageTag,i++,number_images);
+    if (proceed == MagickFalse)
       break;
   }
   write_info=DestroyImageInfo(write_info);
