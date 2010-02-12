@@ -1853,8 +1853,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             extent;
 
           size_t
-            max,
-            min;
+            maximum,
+            minimum;
 
           /*
             Search for compression quality that does not exceed image extent.
@@ -1863,18 +1863,18 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           extent=(MagickSizeType) SiPrefixToDouble(option,100.0);
           (void) DeleteImageOption(jpeg_info,"jpeg:extent");
           (void) AcquireUniqueFilename(jpeg_image->filename);
-          min=0;
-          for (max=100; (max-min) > 1; )
+          minimum=0;
+          for (maximum=100; (maximum-minimum) > 1; )
           {
-            jpeg_image->quality=min+(max-min)/2;
+            jpeg_image->quality=minimum+(maximum-minimum)/2;
             status=WriteJPEGImage(jpeg_info,jpeg_image);
             if (GetBlobSize(jpeg_image) < extent)
-              min=jpeg_image->quality+1;
+              minimum=jpeg_image->quality+1;
             else
-              max=jpeg_image->quality-1;
+              maximum=jpeg_image->quality-1;
           }
           (void) RelinquishUniqueFileResource(jpeg_image->filename);
-          image->quality=max;
+          image->quality=minimum;
           jpeg_image=DestroyImage(jpeg_image);
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
