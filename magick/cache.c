@@ -694,7 +694,13 @@ static void LimitPixelCacheDescriptors(void)
     p=(CacheInfo *) GetNextKeyInSplayTree(cache_resources);
   }
   if (q != (CacheInfo *) NULL)
-    (void) close(q->file); /* relinquish least recently used cache */
+    {
+      /*
+        Close least recently used cache.
+      */
+      (void) close(q->file);
+      q->file=(-1);
+    }
   UnlockSemaphoreInfo(cache_semaphore);
 }
 
