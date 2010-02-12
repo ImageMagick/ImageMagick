@@ -651,6 +651,7 @@ static MagickBooleanType ClosePixelCacheOnDisk(CacheInfo *cache_info)
   int
     status;
 
+  status=(-1);
   LockSemaphoreInfo(cache_info->disk_semaphore);
   if (cache_info->file != -1)
     status=close(cache_info->file);

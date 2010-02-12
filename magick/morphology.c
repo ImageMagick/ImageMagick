@@ -1192,7 +1192,10 @@ static unsigned long MorphologyApply(const Image *image, Image
       if (image->colorspace == CMYKColorspace)
         q_indexes[x] = p_indexes[r];
 
-      result.index=(MagickRealType) 0; /* stop compiler warnings */
+      result.green=(MagickRealType) 0;
+      result.blue=(MagickRealType) 0;
+      result.opacity=(MagickRealType) 0;
+      result.index=(MagickRealType) 0;
       switch (method) {
         case ConvolveMorphology:
           /* Set the user defined bias of the weighted average output
@@ -1586,6 +1589,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image, const
     limit = image->columns > image->rows ? image->columns : image->rows;
 
   /* Third-level morphology methods */
+  grad_image=(Image *) NULL;
   switch( curr_method ) {
     case EdgeMorphology:
       grad_image = MorphologyImageChannel(image, channel,
