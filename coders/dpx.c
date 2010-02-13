@@ -1155,7 +1155,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickTrue : MagickFalse);
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
-  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
+  #pragma omp parallel for schedule(static) shared(row,status,quantum_type)
 #endif
       for (y=0; y < (long) image->rows; y++)
       {

@@ -76,8 +76,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Chop() removes a region of an image and collapses the image to occupy the
-%  removed portion.
+%  ChopImage() removes a region of an image and collapses the image to occupy
+%  the removed portion.
 %
 %  The format of the ChopImage method is:
 %
@@ -110,7 +110,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     y;
 
   MagickBooleanType
-    proceed;
+    proceed,
+    status;
 
   RectangleInfo
     extent;
@@ -155,10 +156,14 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   /*
     Extract chop image.
   */
+  status=MagickTrue;
   i=0;
   j=0;
   image_view=AcquireCacheView(image);
   chop_view=AcquireCacheView(chop_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status)
+#endif
   for (y=0; y < (long) extent.y; y++)
   {
     register const PixelPacket
@@ -174,11 +179,16 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     register PixelPacket
       *restrict q;
 
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(chop_view,0,j++,chop_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     chop_indexes=GetCacheViewAuthenticIndexQueue(chop_view);
     for (x=0; x < (long) image->columns; x++)
@@ -196,15 +206,18 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       p++;
     }
     if (SyncCacheViewAuthenticPixels(chop_view,exception) == MagickFalse)
-      break;
+      status=MagickFalse;
     proceed=SetImageProgress(image,ChopImageTag,y,chop_image->rows);
     if (proceed == MagickFalse)
-      break;
+      status=MagickFalse;
   }
   /*
     Extract chop image.
   */
   i+=extent.height;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status)
+#endif
   for (y=0; y < (long) (image->rows-(extent.y+extent.height)); y++)
   {
     register const PixelPacket
@@ -220,11 +233,16 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     register PixelPacket
       *restrict q;
 
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(chop_view,0,j++,chop_image->columns,1,
       exception);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     chop_indexes=GetCacheViewAuthenticIndexQueue(chop_view);
     for (x=0; x < (long) image->columns; x++)
@@ -242,10 +260,10 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       p++;
     }
     if (SyncCacheViewAuthenticPixels(chop_view,exception) == MagickFalse)
-      break;
+      status=MagickFalse;
     proceed=SetImageProgress(image,ChopImageTag,y,chop_image->rows);
     if (proceed == MagickFalse)
-      break;
+      status=MagickFalse;
   }
   chop_view=DestroyCacheView(chop_view);
   image_view=DestroyCacheView(image_view);
@@ -587,7 +605,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   image_view=AcquireCacheView(image);
   crop_view=AcquireCacheView(crop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=0; y < (long) crop_image->rows; y++)
   {
@@ -896,7 +914,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   flip_view=AcquireCacheView(flip_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=0; y < (long) flip_image->rows; y++)
   {
@@ -1014,7 +1032,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   flop_view=AcquireCacheView(flop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=0; y < (long) flop_image->rows; y++)
   {
