@@ -50,15 +50,15 @@ static UTFInfo
 
 static inline long GetNextUTFCode(const char *text,size_t *octets)
 {
+  long
+    code;
+
   register long
     i;
 
   register long
     c,
     unicode;
-
-  long
-    code;
 
   *octets=0;
   if (text == (const char *) NULL)
