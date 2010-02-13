@@ -155,11 +155,16 @@
 
 <div class="main">
 
-<ul><dt>2010-02-07  6.5.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-02-09  6.5.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Resolve "too many open files"  (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=15546).</li>
+  <li> The jpeg:extent define sometimes exceeded the specified limit.</li><br />
+<dt>2010-02-08  6.5.9-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added Correlate method which does a Convolve without reflecting the kernel.</li><br />
+<dt>2010-02-07  6.5.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Initialize grayscale colormap for PSD images.</li><br />
 <dt>2010-02-07  6.5.9-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Final testing and fixing of basic morphology operators</li>
-  <li> Addition Third-level Subtractive Morphology Methods    edge-in, edge-out, edge, top-hat, bottom-hat</li>
+  <li> Addition Third-level Subtractive Morphology Methods:    EdgeIn, EdgeOut, Edge, TopHat, BottomHat</li>
   <li> Ensuring original kernels passed to morphology are cloned before being    modifified for use by specific methods (EG: convolve scale/normalize)</li><br />
 <dt>2010-02-03  6.5.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> display -immutable to display transparent image without a checkboard.</li><br />
@@ -1369,7 +1374,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
