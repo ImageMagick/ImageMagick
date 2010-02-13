@@ -1179,7 +1179,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   for (p=draw_info->text; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) < 0)
       break;
-  if (GetUTFCode(p) >= 0)
+  if (GetUTFCode(p) == 0)
     for (p=draw_info->text; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     {
       /*
