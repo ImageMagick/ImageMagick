@@ -1863,7 +1863,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           extent=(MagickSizeType) SiPrefixToDouble(option,100.0);
           (void) DeleteImageOption(jpeg_info,"jpeg:extent");
           (void) AcquireUniqueFilename(jpeg_image->filename);
-          maximum=100;
+          maximum=101;
           for (minimum=0; minimum != maximum; )
           {
             jpeg_image->quality=minimum+(maximum-minimum)/2;
