@@ -30,7 +30,7 @@ extern "C" {
 
 typedef struct
 {
-  unsigned long
+  long
     code_mask,
     code_value,
     utf_mask,
@@ -48,25 +48,25 @@ static UTFInfo
     { 0xFE, 0xFC, 0x7ffffff, 0x4000000 },  /* 6 byte sequence */
   };
 
-static inline unsigned long GetNextUTFCode(const char *text,size_t *octets)
+static inline long GetNextUTFCode(const char *text,size_t *octets)
 {
   register long
     i;
 
-  register unsigned long
+  register long
     c,
     unicode;
 
-  unsigned long
+  long
     code;
 
   *octets=0;
   if (text == (const char *) NULL)
     {
       errno=EINVAL;
-      return(0);
+      return(-1);
     }
-  code=(unsigned long) (*text++) & 0xff;
+  code=(long) (*text++) & 0xff;
   unicode=code;
   for (i=0; i < MaxMultibyteCodes; i++)
   {
@@ -76,24 +76,24 @@ static inline unsigned long GetNextUTFCode(const char *text,size_t *octets)
         if (unicode < utf_info[i].utf_value)
           {
             errno=EILSEQ;
-            return(0);
+            return(-1);
           }
         *octets=(size_t) (i+1);
         return(unicode);
       }
-    c=(unsigned long) (*text++ ^ 0x80) & 0xff;
+    c=(long) (*text++ ^ 0x80) & 0xff;
     if ((c & 0xc0) != 0)
       {
         errno=EILSEQ;
-        return(0);
+        return(-1);
       }
     unicode=(unicode << 6) | c;
   }
   errno=EILSEQ;
-  return(0);
+  return(-1);
 }
 
-static unsigned long GetUTFCode(const char *text)
+static long GetUTFCode(const char *text)
 {
   size_t
     octets;
@@ -110,7 +110,7 @@ static size_t GetUTFOctets(const char *text)
   return(octets);
 }
 
-static inline MagickBooleanType IsUTFSpace(unsigned long code)
+static inline MagickBooleanType IsUTFSpace(long code)
 {
   if (((code >= 0x0009) && (code <= 0x000d)) || (code == 0x0020) ||
       (code == 0x0085) || (code == 0x00a0) || (code == 0x1680) ||
@@ -121,24 +121,24 @@ static inline MagickBooleanType IsUTFSpace(unsigned long code)
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsUTFValid(unsigned long code)
+static inline MagickBooleanType IsUTFValid(long code)
 {
-  unsigned long
+  long
     mask;
 
-  mask=(unsigned long) 0x7fffffff;
+  mask=(long) 0x7fffffff;
   if (((code & ~mask) != 0) && ((code < 0xd800) || (code > 0xdfff)) &&
       (code != 0xfffe) && (code != 0xffff))
     return(MagickFalse);
   return(MagickTrue);
 }
 
-static inline MagickBooleanType IsUTFAscii(unsigned long code)
+static inline MagickBooleanType IsUTFAscii(long code)
 {
-  unsigned long
+  long
     mask;
 
-  mask=(unsigned long) 0x7f;
+  mask=(long) 0x7f;
   if ((code & ~mask) != 0)
     return(MagickFalse);
   return(MagickTrue);
