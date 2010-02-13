@@ -394,7 +394,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       }
       case '[':
       {
-        unsigned long
+        long
           c;
 
         pattern+=GetUTFOctets(pattern);
