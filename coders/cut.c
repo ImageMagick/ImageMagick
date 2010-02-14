@@ -134,9 +134,6 @@ static void InsertRow(long depth,unsigned char *p,long y,Image *image)
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        /*            if (image->previous == (Image *) NULL)
-                      if (QuantumTick(y,image->rows) != MagickFalse)
-                      ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
         break;
       }
     case 2:  /* Convert PseudoColor scanline. */
@@ -184,9 +181,6 @@ static void InsertRow(long depth,unsigned char *p,long y,Image *image)
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        /*         if (image->previous == (Image *) NULL)
-                   if (QuantumTick(y,image->rows) != MagickFalse)
-                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
         break;
       }
 
@@ -215,9 +209,6 @@ static void InsertRow(long depth,unsigned char *p,long y,Image *image)
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        /*         if (image->previous == (Image *) NULL)
-                   if (QuantumTick(y,image->rows) != MagickFalse)
-                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
         break;
       }
     case 8: /* Convert PseudoColor scanline. */
@@ -235,9 +226,6 @@ static void InsertRow(long depth,unsigned char *p,long y,Image *image)
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        /*           if (image->previous == (Image *) NULL)
-                     if (QuantumTick(y,image->rows) != MagickFalse)
-                     ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
       }
       break;
 

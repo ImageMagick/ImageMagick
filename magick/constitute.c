@@ -1295,16 +1295,21 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   number_images=GetImageListLength(images);
   for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
-    progress_monitor=SetImageProgressMonitor(p,(MagickProgressMonitor) NULL,
-      p->client_data);
+    if (number_images != 1)
+      progress_monitor=SetImageProgressMonitor(p,(MagickProgressMonitor) NULL,
+        p->client_data);
     status&=WriteImage(write_info,p);
     GetImageException(p,exception);
-    (void) SetImageProgressMonitor(p,progress_monitor,p->client_data);
+    if (number_images != 1)
+      (void) SetImageProgressMonitor(p,progress_monitor,p->client_data);
     if (write_info->adjoin != MagickFalse)
       break;
-    proceed=SetImageProgress(p,WriteImageTag,i++,number_images);
-    if (proceed == MagickFalse)
-      break;
+    if (number_images != 1)
+      {
+        proceed=SetImageProgress(p,WriteImageTag,i++,number_images);
+        if (proceed == MagickFalse)
+          break;
+      }
   }
   write_info=DestroyImageInfo(write_info);
   return(status != 0 ? MagickTrue : MagickFalse);

@@ -1026,15 +1026,12 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) FormatMagickString(buffer,MaxTextExtent,"\"%s\n",
       (y == (long) (image->rows-1) ? "" : ","));
     (void) WriteBlobString(image,buffer);
-    if (QuantumTick(y,image->rows) != MagickFalse)
-      if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-          (QuantumTick(y,image->rows) != MagickFalse))
-        {
-          status=image->progress_monitor(SaveImageTag,y,image->rows,
-            image->client_data);
-          if (status == MagickFalse)
-            break;
-        }
+    if (image->previous == (Image *) NULL)
+      {
+        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        if (status == MagickFalse)
+          break;
+      }
   }
   (void) WriteBlobString(image,"};\n");
   (void) CloseBlob(image);

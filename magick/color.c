@@ -1652,13 +1652,14 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
     }
     if (x < (long) image->columns)
       break;
-    if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-        (QuantumTick(y,image->rows) != MagickFalse))
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
-        status=image->progress_monitor(SearchImageText,y,image->rows,
-          image->client_data);
-        if (status == MagickFalse)
-          break;
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,SearchImageText,y,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
       }
   }
   target_view=DestroyCacheView(target_view);

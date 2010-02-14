@@ -1112,6 +1112,9 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   ColorPacket
     *histogram;
 
+  MagickBooleanType
+    status;
+
   MagickPixelPacket
     pixel;
 
@@ -1167,10 +1170,15 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
     GetColorTuple(&pixel,MagickTrue,hex);
     (void) fprintf(file,MagickSizeFormat,p->count);
     (void) fprintf(file,": %s %s %s\n",tuple,hex,color);
-    if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-        (QuantumTick(i,number_colors) != MagickFalse))
-      (void) image->progress_monitor(HistogramImageTag,i,number_colors,
-        image->client_data);
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,HistogramImageTag,i,number_colors);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
     p++;
   }
   (void) fflush(file);
@@ -1207,6 +1215,9 @@ static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
   const NodeInfo *node_info,ExceptionInfo *exception)
 {
 #define UniqueColorsImageTag  "UniqueColors/Image"
+
+  MagickBooleanType
+    status;
 
   register long
     i;
@@ -1247,10 +1258,16 @@ static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
         cube_info->x++;
         p++;
       }
-      if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-          (QuantumTick(cube_info->progress,cube_info->colors) != MagickFalse))
-        (void) image->progress_monitor(UniqueColorsImageTag,cube_info->progress,
-          cube_info->colors,image->client_data);
+      if (image->progress_monitor != (MagickProgressMonitor) NULL)
+        {
+          MagickBooleanType
+            proceed;
+
+          proceed=SetImageProgress(image,UniqueColorsImageTag,
+            cube_info->progress,cube_info->colors);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
+        }
       cube_info->progress++;
     }
 }

@@ -853,13 +853,14 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             (montage_info->shadow != MagickFalse ? 4 : 0));
           max_height=0;
         }
-      if ((images->progress_monitor != (MagickProgressMonitor) NULL) &&
-          (QuantumTick(tiles,total_tiles) != MagickFalse))
+      if (images->progress_monitor != (MagickProgressMonitor) NULL)
         {
-          status=images->progress_monitor(MontageImageTag,tiles,total_tiles,
-            images->client_data);
-          if (status == MagickFalse)
-            break;
+          MagickBooleanType
+            proceed;
+
+          proceed=SetImageProgress(image,MontageImageTag,tiles,total_tiles);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
         }
       image_list[tile]=DestroyImage(image_list[tile]);
       image=DestroyImage(image);

@@ -222,9 +222,6 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
   }
   if (!SyncAuthenticPixels(image,exception))
     return;
-  /*          if (image->previous == (Image *) NULL)
-     if (QuantumTick(y,image->rows))
-     MagickMonitor(LoadImageText,image->rows-y-1,image->rows); */
   return;
 }
 
@@ -279,9 +276,6 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
   }
   if (!SyncAuthenticPixels(image,exception))
     return;
-  /*          if (image->previous == (Image *) NULL)
-     if (QuantumTick(y,image->rows))
-     MagickMonitor(LoadImageText,image->rows-y-1,image->rows); */
   return;
 }
 
