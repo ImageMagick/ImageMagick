@@ -161,9 +161,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   j=0;
   image_view=AcquireCacheView(image);
   chop_view=AcquireCacheView(chop_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
-#endif
   for (y=0; y < (long) extent.y; y++)
   {
     register const PixelPacket
@@ -215,9 +212,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     Extract chop image.
   */
   i+=extent.height;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
-#endif
   for (y=0; y < (long) (image->rows-(extent.y+extent.height)); y++)
   {
     register const PixelPacket
