@@ -1383,7 +1383,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
             q->opacity=ApplyFunction(q->opacity,function,number_parameters,
               parameters,exception);
           else
-            q->opacity=(Quantum) QuantumRange-ApplyFunction(
+            q->opacity=(Quantum) QuantumRange-ApplyFunction((Quantum)
               GetAlphaPixelComponent(q),function,number_parameters,parameters,
               exception);
         }
@@ -3554,13 +3554,14 @@ MagickExport Image *MorphImages(const Image *image,
             return((Image *) NULL);
           }
         AppendImageToList(&morph_images,morph_image);
-        if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-            (QuantumTick(i,number_frames) != MagickFalse))
+        if (image->progress_monitor != (MagickProgressMonitor) NULL)
           {
-            status=image->progress_monitor(MorphImageTag,i,number_frames,
-              image->client_data);
-            if (status == MagickFalse)
-              break;
+            MagickBooleanType
+              proceed;
+
+            proceed=SetImageProgress(image,MorphImageTag,i,number_frames);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
           }
       }
       return(GetFirstImageInList(morph_images));
@@ -5098,13 +5099,15 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
           j++;
       }
     }
-    if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-        (QuantumTick((MagickOffsetType) depth-i,depth) != MagickFalse))
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
-        status=image->progress_monitor(SteganoImageTag,(MagickOffsetType) depth-
-          i,depth,image->client_data);
-        if (status == MagickFalse)
-          break;
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,SteganoImageTag,(MagickOffsetType)
+          (depth-i),depth);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
       }
   }
   if (stegano_image->storage_class == PseudoClass)
@@ -5236,13 +5239,14 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
     }
     if (SyncAuthenticPixels(stereo_image,exception) == MagickFalse)
       break;
-    if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-        (QuantumTick(y,image->rows) != MagickFalse))
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
-        status=image->progress_monitor(StereoImageTag,y,stereo_image->rows,
-          stereo_image->client_data);
-        if (status == MagickFalse)
-          break;
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,StereoImageTag,y,stereo_image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
       }
   }
   return(stereo_image);

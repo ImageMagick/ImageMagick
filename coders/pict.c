@@ -1884,11 +1884,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         scanline[x]=(unsigned char) indexes[x];
       count+=EncodeImage(image,scanline,(unsigned long) (row_bytes & 0x7FFF),
         packed_scanline);
-      if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-          (QuantumTick(y,image->rows) != MagickFalse))
+      if (image->previous == (Image *) NULL)
         {
-          status=image->progress_monitor(SaveImageTag,y,image->rows,
-            image->client_data);
+          status=SetImageProgress(image,SaveImageTag,y,image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -1940,11 +1938,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
           }
           count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,
             packed_scanline);
-          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-              (QuantumTick(y,image->rows) != MagickFalse))
+          if (image->previous == (Image *) NULL)
             {
-              status=image->progress_monitor(SaveImageTag,y,image->rows,
-                image->client_data);
+              status=SetImageProgress(image,SaveImageTag,y,image->rows);
               if (status == MagickFalse)
                 break;
             }
