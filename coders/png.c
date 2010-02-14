@@ -2484,10 +2484,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             RGBQuantum,png_pixels+row_offset,exception);
 #endif
+        if ((image->previous == (Image *) NULL) && (num_passes == 1))
+          {
+            status=SetImageProgress(image,LoadImageTag,y,image->rows);
+            if (status == MagickFalse)
+              break;
+          }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
-      if (image->previous == (Image *) NULL)
+      if ((image->previous == (Image *) NULL) && (num_passes != 1))
         {
           status=SetImageProgress(image,LoadImageTag,pass,num_passes);
           if (status == MagickFalse)
@@ -2660,8 +2666,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           indices[x]=(*r++);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
+        if ((image->previous == (Image *) NULL) && (num_passes == 1))
+          {
+            status=SetImageProgress(image,LoadImageTag,y,image->rows);
+            if (status == MagickFalse)
+              break;
+          }
       }
-      if (image->previous == (Image *) NULL)
+      if ((image->previous == (Image *) NULL) && (num_passes != 1))
         {
           status=SetImageProgress(image,LoadImageTag,pass,num_passes);
           if (status == MagickFalse)
