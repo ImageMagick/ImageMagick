@@ -24,6 +24,13 @@ extern "C" {
 
 #include <magick/thread_.h>
 
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
+#define MagickCachePrefetch(address,mode,locality) \
+  __builtin_prefetch(address,mode,locality)
+#else
+#define MagickCachePrefetch(address,mode,locality)
+#endif
+
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   typedef pthread_mutex_t MagickMutexType;
 #elif defined(__WINDOWS__)
