@@ -108,6 +108,13 @@ typedef struct _GeometryInfo
     chi;
 } GeometryInfo;
 
+typedef struct _OffsetInfo
+{
+  long
+    x,
+    y;
+} OffsetInfo;
+
 typedef struct _RectangleInfo
 {
   unsigned long
