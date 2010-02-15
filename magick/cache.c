@@ -1616,11 +1616,11 @@ MagickExport Cache DestroyPixelCache(Cache cache)
       cache_info->number_threads);
   if (cache_info->random_info != (RandomInfo *) NULL)
     cache_info->random_info=DestroyRandomInfo(cache_info->random_info);
-  cache_info->signature=(~MagickSignature);
   if (cache_info->disk_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->disk_semaphore);
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
+  cache_info->signature=(~MagickSignature);
   cache_info=(CacheInfo *) RelinquishAlignedMemory(cache_info);
   cache=(Cache) NULL;
   return(cache);
