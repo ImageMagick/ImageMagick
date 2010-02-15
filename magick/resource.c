@@ -572,7 +572,7 @@ MagickExport MagickSizeType GetMagickResource(const ResourceType type)
 %
 %  The format of the GetMagickResourceLimit() method is:
 %
-%      unsigned long GetMagickResourceLimit(const ResourceType type)
+%      MagickSizeType GetMagickResourceLimit(const ResourceType type)
 %
 %  A description of each parameter follows:
 %
