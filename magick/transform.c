@@ -559,14 +559,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     }
   if ((unsigned long) (page.x+page.width) > image->columns)
     page.width=image->columns-page.x;
-  if (geometry->width != 0)
-    if (page.width > geometry->width)
-      page.width=geometry->width;
+  if ((geometry->width != 0) && (page.width > geometry->width))
+    page.width=geometry->width;
   if ((unsigned long) (page.y+page.height) > image->rows)
     page.height=image->rows-page.y;
-  if (geometry->height != 0)
-    if (page.height > geometry->height)
-      page.height=geometry->height;
+  if ((geometry->height != 0) && (page.height > geometry->height))
+    page.height=geometry->height;
   bounding_box.x+=page.x;
   bounding_box.y+=page.y;
   if ((page.width == 0) || (page.height == 0))
