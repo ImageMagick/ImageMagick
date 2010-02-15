@@ -2181,38 +2181,42 @@ MagickExport Cache GetImagePixelCache(Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   destroy=MagickFalse;
-  LockSemaphoreInfo(cache_info->semaphore);
   if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
     {
-      Image
-        clone_image;
-
-      CacheInfo
-        *clone_info;
-
-      /*
-        Clone pixel cache.
-      */
-      clone_image=(*image);
-      clone_image.cache=ClonePixelCache(cache_info);
-      clone_info=(CacheInfo *) clone_image.cache;
-      status=ClonePixelCacheNexus(cache_info,clone_info,exception);
-      if (status != MagickFalse)
+      LockSemaphoreInfo(cache_info->semaphore);
+      if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
         {
-          status=OpenPixelCache(&clone_image,IOMode,exception);
+          Image
+            clone_image;
+
+          CacheInfo
+            *clone_info;
+
+          /*
+            Clone pixel cache.
+          */
+          clone_image=(*image);
+          clone_image.cache=ClonePixelCache(cache_info);
+          clone_info=(CacheInfo *) clone_image.cache;
+          status=ClonePixelCacheNexus(cache_info,clone_info,exception);
           if (status != MagickFalse)
             {
-              if (clone != MagickFalse)
-                status=ClonePixelCachePixels(clone_info,cache_info,exception);
+              status=OpenPixelCache(&clone_image,IOMode,exception);
               if (status != MagickFalse)
                 {
-                  destroy=MagickTrue;
-                  image->cache=clone_image.cache;
+                  if (clone != MagickFalse)
+                    status=ClonePixelCachePixels(clone_info,cache_info,
+                      exception);
+                  if (status != MagickFalse)
+                    {
+                      destroy=MagickTrue;
+                      image->cache=clone_image.cache;
+                    }
                 }
             }
         }
+      UnlockSemaphoreInfo(cache_info->semaphore);
     }
-  UnlockSemaphoreInfo(cache_info->semaphore);
   if (destroy != MagickFalse)
     cache_info=(CacheInfo *) DestroyPixelCache(cache_info);
   if (status != MagickFalse)
