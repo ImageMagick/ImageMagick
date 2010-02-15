@@ -5000,15 +5000,14 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
   if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL) &&
       (image->mask == (Image *) NULL))
     {
-      OffsetInfo
-        offset_info;
+      long
+        x,
+        y;
 
-      offset_info.x=nexus_info->region.x+nexus_info->region.width-1;
-      offset_info.y=nexus_info->region.y+nexus_info->region.height-1;
-      if (((nexus_info->region.x >= 0) &&
-           (offset_info.x < (long) cache_info->columns) &&
-           (nexus_info->region.y >= 0) &&
-           (offset_info.y < (long) cache_info->rows)) &&
+      x=nexus_info->region.x+nexus_info->region.width-1;
+      y=nexus_info->region.y+nexus_info->region.height-1;
+      if (((nexus_info->region.x >= 0) && (x < (long) cache_info->columns) &&
+           (nexus_info->region.y >= 0) && (y < (long) cache_info->rows)) &&
           ((nexus_info->region.height == 1UL) ||
            ((nexus_info->region.x == 0) &&
            ((nexus_info->region.width == cache_info->columns) ||
