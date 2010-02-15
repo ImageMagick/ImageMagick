@@ -1264,9 +1264,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
              number_layers--;
              i--;
            }
-         } 
+         }
         mask_size = ReadBlobMSBLong(image);  /* global mask size: currently ignored */
-
           if (number_layers > 0)
             {
 
@@ -1500,9 +1499,118 @@ ModuleExport void UnregisterPSDImage(void)
 %
 */
 
-static void WriteOneChannel(const ImageInfo *image_info,Image *image,
-  Image *tmp_image,unsigned char *pixels,QuantumType quantum_type,
-  const MagickBooleanType compression_flag)
+static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
+  const unsigned char *pixels,unsigned char *compressed_pixels)
+{
+  int
+    count;
+
+  register long
+    i,
+    j;
+
+  register unsigned char
+    *q;
+
+  unsigned char
+    *packbits;
+
+  /*
+    Compress pixels with Packbits encoding.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(pixels != (unsigned char *) NULL);
+  packbits=(unsigned char *) AcquireQuantumMemory(128UL,sizeof(*packbits));
+  if (packbits == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  q=compressed_pixels;
+  for (i=(long) length; i != 0; )
+  {
+    switch (i)
+    {
+      case 1:
+      {
+        i--;
+        *q++=(unsigned char) 0;
+        *q++=(*pixels);
+        break;
+      }
+      case 2:
+      {
+        i-=2;
+        *q++=(unsigned char) 1;
+        *q++=(*pixels);
+        *q++=pixels[1];
+        break;
+      }
+      case 3:
+      {
+        i-=3;
+        if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
+          {
+            *q++=(unsigned char) ((256-3)+1);
+            *q++=(*pixels);
+            break;
+          }
+        *q++=(unsigned char) 2;
+        *q++=(*pixels);
+        *q++=pixels[1];
+        *q++=pixels[2];
+        break;
+      }
+      default:
+      {
+        if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
+          {
+            /*
+              Packed run.
+            */
+            count=3;
+            while (((long) count < i) && (*pixels == *(pixels+count)))
+            {
+              count++;
+              if (count >= 127)
+                break;
+            }
+            i-=count;
+            *q++=(unsigned char) ((256-count)+1);
+            *q++=(*pixels);
+            pixels+=count;
+            break;
+          }
+        /*
+          Literal run.
+        */
+        count=0;
+        while ((*(pixels+count) != *(pixels+count+1)) ||
+               (*(pixels+count+1) != *(pixels+count+2)))
+        {
+          packbits[count+1]=pixels[count];
+          count++;
+          if (((long) count >= (i-3)) || (count >= 127))
+            break;
+        }
+        i-=count;
+        *packbits=(unsigned char) (count-1);
+        for (j=0; j <= (long) count; j++)
+          *q++=packbits[j];
+        pixels+=count;
+        break;
+      }
+    }
+  }
+  *q++=(unsigned char) 128;  /* EOD marker */
+  packbits=(unsigned char *) RelinquishMagickMemory(packbits);
+  return(q-compressed_pixels);
+}
+
+static void WritePackbitsLength(const ImageInfo *image_info,Image *image,
+  Image *tmp_image,unsigned char *pixels,unsigned char *compressed_pixels,
+  const QuantumType quantum_type)
 {
   int
     y;
@@ -1514,22 +1622,64 @@ static void WriteOneChannel(const ImageInfo *image_info,Image *image,
     *p;
 
   size_t
+    length,
     packet_size;
 
-  if (compression_flag)
-    (void) WriteBlobMSBShort(image,0);  /* compression */
   if (tmp_image->depth > 8)
     tmp_image->depth=16;
-  quantum_info=AcquireQuantumInfo(image_info,image);
   packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
+  quantum_info=AcquireQuantumInfo(image_info,image);
   for (y=0; y < (long) tmp_image->rows; y++)
   {
     p=GetVirtualPixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
-    break;
-    (void) ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
+      break;
+    length=ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
-    (void) WriteBlob(image,packet_size*tmp_image->columns,pixels);
+    length=PSDPackbitsEncodeImage(image,length,pixels,compressed_pixels);
+    (void) WriteBlobMSBShort(image,length);
+  }
+  quantum_info=DestroyQuantumInfo(quantum_info);
+}
+
+static void WriteOneChannel(const ImageInfo *image_info,Image *image,
+  Image *tmp_image,unsigned char *pixels,unsigned char *compressed_pixels,
+  const QuantumType quantum_type,const MagickBooleanType compression_flag)
+{
+  int
+    y;
+
+  QuantumInfo
+    *quantum_info;
+
+  register const PixelPacket
+    *p;
+
+  size_t
+    length,
+    packet_size;
+
+  if ((compression_flag != MagickFalse) &&
+      (image->compression == NoCompression))
+    (void) WriteBlobMSBShort(image,0);
+  if (tmp_image->depth > 8)
+    tmp_image->depth=16;
+  packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  for (y=0; y < (long) tmp_image->rows; y++)
+  {
+    p=GetVirtualPixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    length=ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
+      quantum_type,pixels,&image->exception);
+    if (image->compression == NoCompression)
+      (void) WriteBlob(image,length,pixels);
+    else
+      {
+        length=PSDPackbitsEncodeImage(image,length,pixels,compressed_pixels);
+        (void) WriteBlob(image,length,compressed_pixels);
+      }
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
 }
@@ -1545,6 +1695,7 @@ static MagickBooleanType WriteImageChannels(const ImageInfo *image_info,
     packet_size;
 
   unsigned char
+    *compressed_pixels,
     *pixels;
 
   /*
@@ -1557,35 +1708,84 @@ static MagickBooleanType WriteImageChannels(const ImageInfo *image_info,
   packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
   pixels=(unsigned char *) AcquireQuantumMemory(channels*tmp_image->columns,
     packet_size*sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  compressed_pixels=(unsigned char *) AcquireQuantumMemory(2*channels*
+    tmp_image->columns,packet_size*sizeof(*pixels));
+  if ((pixels == (unsigned char *) NULL) ||
+      (compressed_pixels == (unsigned char *) NULL))
+    {
+      if (pixels != (unsigned char *) NULL)
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      if (compressed_pixels != (unsigned char *) NULL)
+        compressed_pixels=(unsigned char *)
+          RelinquishMagickMemory(compressed_pixels);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   i=0;
   if (tmp_image->storage_class == PseudoClass)
     {
+      if (image->compression != NoCompression)
+        {
+          /*
+            Packbits compression.
+          */
+          (void) WriteBlobMSBShort(image,1);
+          if (tmp_image->matte == MagickFalse)
+            WritePackbitsLength(image_info,image,tmp_image,pixels,
+              compressed_pixels,IndexQuantum);
+          else
+            WritePackbitsLength(image_info,image,tmp_image,pixels,
+              compressed_pixels,IndexAlphaQuantum);
+        }
       if (tmp_image->matte == MagickFalse)
-        WriteOneChannel(image_info,image,tmp_image,pixels,IndexQuantum,
-          (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
+        WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+          IndexQuantum,(i++ == 0) || (separate != MagickFalse) ?
+          MagickTrue : MagickFalse);
       else
-        WriteOneChannel(image_info,image,tmp_image,pixels,IndexAlphaQuantum,
-          (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
+        WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+          IndexAlphaQuantum,(i++ == 0) || (separate != MagickFalse) ?
+          MagickTrue : MagickFalse);
     }
   else
     {
       if (tmp_image->colorspace == CMYKColorspace)
         (void) NegateImage(image,MagickFalse);
-      if (tmp_image->matte)
-        WriteOneChannel(image_info,image,tmp_image,pixels,AlphaQuantum,
-          (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
-      WriteOneChannel(image_info,image,tmp_image,pixels,RedQuantum,
-        (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
-      WriteOneChannel(image_info,image,tmp_image,pixels,GreenQuantum,
-        (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
-      WriteOneChannel(image_info,image,tmp_image,pixels,BlueQuantum,
-        (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
+      if (image->compression != NoCompression)
+        {
+          /*
+            Packbits compression.
+          */
+          (void) WriteBlobMSBShort(image,1);
+          if (tmp_image->matte != MagickFalse)
+            WritePackbitsLength(image_info,image,tmp_image,pixels,
+              compressed_pixels,AlphaQuantum);
+          WritePackbitsLength(image_info,image,tmp_image,pixels,
+            compressed_pixels,RedQuantum);
+          WritePackbitsLength(image_info,image,tmp_image,pixels,
+            compressed_pixels,GreenQuantum);
+          WritePackbitsLength(image_info,image,tmp_image,pixels,
+            compressed_pixels,BlueQuantum);
+          if (tmp_image->colorspace == CMYKColorspace)
+            WritePackbitsLength(image_info,image,tmp_image,pixels,
+              compressed_pixels,BlackQuantum);
+        }
+      if (tmp_image->matte != MagickFalse)
+        WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+          AlphaQuantum,(i++ == 0) || (separate != MagickFalse) ?
+          MagickTrue : MagickFalse);
+      WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+        RedQuantum,(i++ == 0) || (separate != MagickFalse) ?
+        MagickTrue : MagickFalse);
+      WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+        GreenQuantum,(i++ == 0) || (separate != MagickFalse) ?
+        MagickTrue : MagickFalse);
+      WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+        BlueQuantum,(i++ == 0) || (separate != MagickFalse) ?
+        MagickTrue : MagickFalse);
       if (tmp_image->colorspace == CMYKColorspace)
         {
-          WriteOneChannel(image_info,image,tmp_image,pixels,BlackQuantum,
-            (i++ == 0) || (separate != MagickFalse) ? MagickTrue : MagickFalse);
+          WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
+            BlackQuantum,(i++ == 0) || (separate != MagickFalse) ?
+            MagickTrue : MagickFalse);
           (void) NegateImage(image,MagickFalse);
         }
     }
@@ -1740,7 +1940,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   Image
     * tmp_image = (Image *) NULL,
     * base_image = force_white_background ? image : GetNextImageInList(image);
-  
+
   /*
     Open output image file.
   */
@@ -1846,11 +2046,12 @@ compute_layer_info:
     else
       num_channels = (tmp_image->matte != MagickFalse ? 5UL : 4UL);
 
-  channelLength=(unsigned long) (tmp_image->columns * tmp_image->rows * packet_size + 2);
-  layer_info_size += (unsigned long) (4*4 + 2 + num_channels * 6 + 4 + 4 + 4 * 1 + 4 + 12 + num_channels * channelLength);
-
-  layer_count++;
-  tmp_image = GetNextImageInList(tmp_image);
+    channelLength=(unsigned long) (tmp_image->columns * tmp_image->rows *
+      packet_size + 2);
+    layer_info_size += (unsigned long) (4*4 + 2 + num_channels * 6 + 4 + 4 +
+      4 * 1 + 4 + 12 + num_channels * channelLength);
+    layer_count++;
+    tmp_image = GetNextImageInList(tmp_image);
   }
 
   /* if the image has a matte, then we need to use layers */
@@ -1885,7 +2086,8 @@ compute_layer_info:
       (void) WriteBlobMSBLong(image,tmp_image->columns);
 
       packet_size=tmp_image->depth > 8 ? 2UL : 1UL;
-      channel_size=(unsigned int) ((packet_size*tmp_image->rows*tmp_image->columns)+2);
+      channel_size=(unsigned int) ((packet_size*tmp_image->rows*
+        tmp_image->columns)+2);
       if (tmp_image->storage_class == PseudoClass) {
        (void) WriteBlobMSBShort(image,(unsigned short)
          (tmp_image->matte ? 2 : 1));
@@ -1929,11 +2131,12 @@ compute_layer_info:
        (void) WriteBlobMSBLong(image, channel_size);
       }
 
-      (void) WriteBlob(image, 4, (const unsigned char *) "8BIM");
-      (void) WriteBlob(image, 4, (const unsigned char *) CompositeOperatorToPSDBlendMode(tmp_image->compose));
-      (void) WriteBlobByte(image, 255);    /* BOGUS: layer opacity */
+      (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
+      (void) WriteBlob(image,4,(const unsigned char *)
+        CompositeOperatorToPSDBlendMode(tmp_image->compose));
+      (void) WriteBlobByte(image, 255); /* BOGUS: layer opacity */
       (void) WriteBlobByte(image, 0);
-      (void) WriteBlobByte(image, 1);    /* BOGUS: layer attributes - visible, etc. */
+      (void) WriteBlobByte(image, 1); /* BOGUS: layer attributes - visible, etc. */
       (void) WriteBlobByte(image, 0);
 
       (void) WriteBlobMSBLong(image, 12);

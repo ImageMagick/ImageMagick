@@ -1,3 +1,6 @@
+2010-02-14  6.5.9-6 Cristy  <quetzlzacatenango@image...>
+  * Support PSD RLE compression.
+
 2010-02-13  6.5.9-5 Cristy  <quetzlzacatenango@image...>
   * The jpeg:extent define sometimes exceeded the specified limit.
 
