@@ -1842,18 +1842,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
                    break;
                  (void) SetImageProgressMonitor(next,progress_monitor,
                    next->client_data);
-                 if (crop_image == (Image *) NULL)
-                   {
-                     crop_image=next;
-                     crop_image->scene=0;
-                   }
-                 else
-                   {
-                     next->previous=crop_image;
-                     crop_image->next=next;
-                     crop_image=crop_image->next;
-                     crop_image->scene=crop_image->previous->scene+1;
-                   }
+                 AppendImageToList(&crop_image,next);
                }
                if (next == (Image *) NULL)
                  break;
