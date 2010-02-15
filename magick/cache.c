@@ -4983,9 +4983,6 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
   MagickBooleanType
     status;
 
-  MagickOffsetType
-    offset;
-
   MagickSizeType
     length,
     number_pixels;
@@ -5003,36 +5000,33 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
   if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL) &&
       (image->mask == (Image *) NULL))
     {
-      offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
-        nexus_info->region.x;
-      length=(MagickSizeType) (nexus_info->region.height-1)*cache_info->columns+
-        nexus_info->region.width-1;
-      number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
-      if ((offset >= 0) && (((MagickSizeType) offset+length) < number_pixels))
-        {
-          OffsetInfo
-            offset_info;
+      OffsetInfo
+        offset_info;
 
-          offset_info.x=nexus_info->region.x+nexus_info->region.width;
-          offset_info.y=nexus_info->region.y+nexus_info->region.height;
-          if (((nexus_info->region.x >= 0) &&
-               (offset_info.x <= (long) cache_info->columns) &&
-               (nexus_info->region.y >= 0) &&
-               (offset_info.y <= (long) cache_info->rows)) &&
-              ((nexus_info->region.height == 1UL) ||
-               ((nexus_info->region.x == 0) &&
-               ((nexus_info->region.width == cache_info->columns) ||
-                ((nexus_info->region.width % cache_info->columns) == 0)))))
-            {
-              /*
-                Pixels are accessed directly from memory.
-              */
-              nexus_info->pixels=cache_info->pixels+offset;
-              nexus_info->indexes=(IndexPacket *) NULL;
-              if (cache_info->active_index_channel != MagickFalse)
-                nexus_info->indexes=cache_info->indexes+offset;
-              return(nexus_info->pixels);
-            }
+      offset_info.x=nexus_info->region.x+nexus_info->region.width-1;
+      offset_info.y=nexus_info->region.y+nexus_info->region.height-1;
+      if (((nexus_info->region.x >= 0) &&
+           (offset_info.x < (long) cache_info->columns) &&
+           (nexus_info->region.y >= 0) &&
+           (offset_info.y < (long) cache_info->rows)) &&
+          ((nexus_info->region.height == 1UL) ||
+           ((nexus_info->region.x == 0) &&
+           ((nexus_info->region.width == cache_info->columns) ||
+            ((nexus_info->region.width % cache_info->columns) == 0)))))
+        {
+          MagickOffsetType
+            offset;
+
+          /*
+            Pixels are accessed directly from memory.
+          */
+          offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
+            nexus_info->region.x;
+          nexus_info->pixels=cache_info->pixels+offset;
+          nexus_info->indexes=(IndexPacket *) NULL;
+          if (cache_info->active_index_channel != MagickFalse)
+            nexus_info->indexes=cache_info->indexes+offset;
+          return(nexus_info->pixels);
         }
     }
   /*
