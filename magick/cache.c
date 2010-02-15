@@ -150,9 +150,6 @@ static SemaphoreInfo
 
 static SplayTreeInfo
   *cache_resources = (SplayTreeInfo *) NULL;
-
-static time_t
-  cache_timer = 0;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2161,23 +2158,29 @@ MagickExport Cache GetImagePixelCache(Image *image,
   CacheInfo
     *cache_info;
 
-  MagickSizeType
-    time_limit;
-
   MagickBooleanType
     destroy,
     status;
+
+  static MagickSizeType
+    time_limit = 0;
 
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
   LockSemaphoreInfo(image->semaphore);
-  time_limit=GetMagickResourceLimit(TimeResource);
-  if (cache_timer == 0)
-    cache_timer=time((time_t *) NULL);
-  if ((time_limit != MagickResourceInfinity) &&
-      ((MagickSizeType) (time((time_t *) NULL)-cache_timer) >= time_limit))
-    ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
+  if (time_limit == 0)
+    time_limit=GetMagickResourceLimit(TimeResource);
+  if (time_limit != MagickResourceInfinity)
+    {
+      static time_t
+        cache_timer = 0;
+
+      if (cache_timer == 0)
+        cache_timer=time((time_t *) NULL);
+      if ((MagickSizeType) (time((time_t *) NULL)-cache_timer) >= time_limit)
+        ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
+    }
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   destroy=MagickFalse;
