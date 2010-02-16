@@ -1102,7 +1102,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     }
   image->columns=1;
   image->rows=1;
-  (void) SetImageBackgroundColor(image);
+  if (SetImageBackgroundColor(image) == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   length=1;
   if (LocaleNCompare(image_info->magick,"8BIM",4) == 0)
     {

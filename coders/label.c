@@ -184,7 +184,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   if (image->rows == 0)
     image->rows=(unsigned long) (draw_info->pointsize+draw_info->stroke_width+
       0.5);
-  (void) SetImageBackgroundColor(image);
+  if (SetImageBackgroundColor(image) == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   (void) AnnotateImage(image,draw_info);
   draw_info=DestroyDrawInfo(draw_info);
   return(GetFirstImageInList(image));

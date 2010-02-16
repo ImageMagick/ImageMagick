@@ -683,7 +683,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=psd_info.depth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
-  (void) SetImageBackgroundColor(image);
+  if (SetImageBackgroundColor(image) == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   image->matte=psd_info.channels >= 4 ? MagickTrue : MagickFalse;
   if (psd_info.mode == LabMode)
     image->colorspace=LabColorspace;
