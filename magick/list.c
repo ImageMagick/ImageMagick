@@ -89,7 +89,6 @@ MagickExport void AppendImageToList(Image **images,const Image *image)
   if ((*images) == (Image *) NULL)
     {
       *images=(Image *) image;
-      (*images)->scene=0;
       return;
     }
   assert((*images)->signature == MagickSignature);
@@ -97,7 +96,6 @@ MagickExport void AppendImageToList(Image **images,const Image *image)
   q=GetFirstImageInList(image);
   p->next=q;
   q->previous=p;
-  q->scene=q->previous->scene+1;
 }
 
 /*
