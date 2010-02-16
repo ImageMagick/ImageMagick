@@ -59,8 +59,8 @@
         <message name="UnableToGetCacheNexus">
           unable to get cache nexus
         </message>
-        <message name="UnableToOpenCache">
-          unable to open cache
+        <message name="UnableToOpenPixelCache">
+          unable to open pixel cache
         </message>
         <message name="UnableToPersistPixelCache">
           unable to persist pixel cache

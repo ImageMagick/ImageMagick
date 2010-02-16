@@ -59,8 +59,8 @@
         <message name="UnableToGetCacheNexus">
           impossible de récupérer le nexus du cache
         </message>
-        <message name="UnableToOpenCache">
-          impossible d'ouvrir le cache
+        <message name="UnableToOpenPixelCache">
+          impossible d'ouvrir le cache pixels
         </message>
         <message name="UnableToPersistPixelCache">
           impossible de rendre persistant le cache pixels
