@@ -867,11 +867,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   ErrorManager
     error_manager;
 
-  IndexPacket
-    jindex;
-
   Image
     *image;
+
+  IndexPacket
+    index;
 
   long
     y;
@@ -1177,9 +1177,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               pixel=(unsigned long) GETJSAMPLE(*p);
             else
               pixel=(unsigned long) ((GETJSAMPLE(*p) ^ 0x80) << 4);
-            jindex=ConstrainColormapIndex(image,pixel);
-            indexes[x]=jindex;
-            *q++=image->colormap[(int) jindex];
+            index=ConstrainColormapIndex(image,pixel);
+            indexes[x]=index;
+            *q++=image->colormap[(int) index];
             p++;
           }
         else
@@ -1214,9 +1214,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_info.output_components == 1)
         for (x=0; x < (long) image->columns; x++)
         {
-          jindex=ConstrainColormapIndex(image,(unsigned long) GETJSAMPLE(*p));
-          indexes[x]=(IndexPacket) jindex;
-          *q++=image->colormap[(int) jindex];
+          index=ConstrainColormapIndex(image,(unsigned long) GETJSAMPLE(*p));
+          indexes[x]=(IndexPacket) index;
+          *q++=image->colormap[(int) index];
           p++;
         }
       else
