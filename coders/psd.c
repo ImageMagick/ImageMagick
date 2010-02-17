@@ -57,6 +57,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/module.h"
+#include "magick/monitor-private.h"
 #include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
@@ -786,7 +787,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Layer and mask block.
   */
   layer_info=(LayerInfo *) NULL;
-  number_layers=0;
+  number_layers=1;
   length=ReadBlobMSBLong(image);
   if (length == 8)
     {
@@ -1225,6 +1226,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             if (layer_info[i].image->colorspace == CMYKColorspace)
               (void) NegateImage(layer_info[i].image,MagickFalse);
+            status=SetImageProgress(image,LoadImagesTag,i,number_layers);
+            if (status == MagickFalse)
+              break;
           }
         /* added by palf -> invisible group layer make layer of this group
            invisible I consider that all layer with width and height null are
@@ -1308,7 +1312,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (long) (image->rows*psd_info.channels); i++)
         (void) ReadBlobMSBShort(image);
       for (i=0; i < (long) psd_info.channels; i++)
+      {
         (void) DecodeImage(image,(int) i);
+        status=SetImageProgress(image,LoadImagesTag,i,psd_info.channels);
+        if (status == MagickFalse)
+          break;
+      }
     }
   else
     {
@@ -1407,6 +1416,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
         }
+        status=SetImageProgress(image,LoadImagesTag,i,psd_info.channels);
+        if (status == MagickFalse)
+          break;
       }
     }
   if (image->colorspace == CMYKColorspace)
@@ -1749,6 +1761,7 @@ static MagickBooleanType WriteImageChannels(const ImageInfo *image_info,
         WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
           IndexAlphaQuantum,(i++ == 0) || (separate != MagickFalse) ?
           MagickTrue : MagickFalse);
+      (void) SetImageProgress(image,SaveImagesTag,0,1);
     }
   else
     {
@@ -1773,19 +1786,24 @@ static MagickBooleanType WriteImageChannels(const ImageInfo *image_info,
             WritePackbitsLength(image_info,image,tmp_image,pixels,
               compressed_pixels,BlackQuantum);
         }
+      (void) SetImageProgress(image,SaveImagesTag,0,6);
       if (tmp_image->matte != MagickFalse)
         WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
           AlphaQuantum,(i++ == 0) || (separate != MagickFalse) ?
           MagickTrue : MagickFalse);
+      (void) SetImageProgress(image,SaveImagesTag,1,6);
       WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
         RedQuantum,(i++ == 0) || (separate != MagickFalse) ?
         MagickTrue : MagickFalse);
+      (void) SetImageProgress(image,SaveImagesTag,2,6);
       WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
         GreenQuantum,(i++ == 0) || (separate != MagickFalse) ?
         MagickTrue : MagickFalse);
+      (void) SetImageProgress(image,SaveImagesTag,3,6);
       WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
         BlueQuantum,(i++ == 0) || (separate != MagickFalse) ?
         MagickTrue : MagickFalse);
+      (void) SetImageProgress(image,SaveImagesTag,4,6);
       if (tmp_image->colorspace == CMYKColorspace)
         {
           WriteOneChannel(image_info,image,tmp_image,pixels,compressed_pixels,
@@ -1793,6 +1811,7 @@ static MagickBooleanType WriteImageChannels(const ImageInfo *image_info,
             MagickTrue : MagickFalse);
           (void) NegateImage(image,MagickFalse);
         }
+      (void) SetImageProgress(image,SaveImagesTag,5,6);
     }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   return(MagickTrue);
