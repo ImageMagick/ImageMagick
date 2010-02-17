@@ -2421,6 +2421,7 @@ RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 RPM = @RPM@
+RSVGDecodeDelegate = @RSVGDecodeDelegate@
 RSVG_CFLAGS = @RSVG_CFLAGS@
 RSVG_LIBS = @RSVG_LIBS@
 SBIN_DIR = @SBIN_DIR@
