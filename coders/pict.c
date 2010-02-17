@@ -1382,7 +1382,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu",
           MagickMax(image->columns,tile_image->columns),
           MagickMax(image->rows,tile_image->rows));
-        (void) TransformImage(&image,(char *) NULL,geometry);
+        (void) SetImageExtent(image,
+          MagickMax(image->columns,tile_image->columns),
+          MagickMax(image->rows,tile_image->rows));
         if (image->colorspace != RGBColorspace)
           (void) TransformImageColorspace(image,tile_image->colorspace);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
