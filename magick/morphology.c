@@ -109,7 +109,7 @@ static inline double MagickMax(const double x,const double y)
 /* Currently these are only internal to this module */
 static void
   RotateKernelInfo(KernelInfo *, double),
-  ScaleKernelInfo(KernelInfo *, double);
+  ScaleKernelInfo(KernelInfo *, const double, const MagickStatusType);
 
 static KernelInfo
   *CloneKernelInfo(const KernelInfo *);
@@ -598,7 +598,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->maximum = kernel->values[
                          kernel->y*kernel->width+kernel->x ];
 
-        ScaleKernelInfo(kernel, 0.0); /* Normalize Kernel Values */
+        ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
 
         break;
       }
@@ -660,7 +660,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** Because of this the divisor in the above kernel generator is
         ** not needed, so is not done above.
         */
-        ScaleKernelInfo(kernel, 0.0); /* Normalize Kernel Values */
+        ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
 
         /* rotate the kernel by given angle */
         RotateKernelInfo(kernel, args->xi);
@@ -711,8 +711,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->minimum = 0;
         kernel->maximum = kernel->values[0];
 
-        ScaleKernelInfo(kernel, 0.0); /* Normalize Kernel Values */
-        RotateKernelInfo(kernel, args->xi);
+        ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
+        RotateKernelInfo(kernel, args->xi); /* Rotate by angle */
         break;
       }
     /* Boolean Kernels */
@@ -1109,13 +1109,13 @@ static unsigned long MorphologyApply(const Image *image, Image
   switch(method) {
     case ErodeMorphology:
     case ErodeIntensityMorphology:
-      /* kernel is not reflected */
+      /* kernel is user as is, without reflection */
       break;
     case ConvolveMorphology:
     case DilateMorphology:
     case DilateIntensityMorphology:
     case DistanceMorphology:
-      /* kernel needs to be reflected */
+      /* kernel needs to used with reflection */
       offx = (long) kernel->width-offx-1;
       offy = (long) kernel->height-offy-1;
       break;
@@ -1541,7 +1541,6 @@ MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
 MagickExport Image *MorphologyImageChannel(const Image *image, const
   ChannelType channel, const MorphologyMethod method, const long
   iterations, const KernelInfo *kernel, ExceptionInfo *exception)
-
 {
   long
     count;
@@ -1677,9 +1676,17 @@ MagickExport Image *MorphologyImageChannel(const Image *image, const
       */
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (char *)NULL ) {
+        MagickStatusType
+          flags;
+        GeometryInfo
+          args;
+
         if ( curr_kernel == kernel )
           curr_kernel = CloneKernelInfo(kernel);
-        ScaleKernelInfo(curr_kernel, StringToDouble(artifact) );
+
+        args.rho = 1.0;
+        flags = ParseGeometry(artifact, &args);
+        ScaleKernelInfo(curr_kernel, args.rho, flags);
       }
       /* FALL-THRU to do the first, and typically the only iteration */
 
@@ -1921,51 +1928,128 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ScaleKernelInfo() scales the kernel by the given amount.  Scaling by value
-%  of zero will result in a normalization of the kernel.
+%  ScaleKernelInfo() scales the kernel by the given amount, with or without
+%  normalization of the sum of the kernel values.
 %
-%  For positive kernels normalization scales the kernel so the addition os all
-%  values is 1.0.  While for kernels where values add to zero it is scaled
-%  so that the convolution output range covers 1.0.  In such 'zero kernels'
-%  it is generally recomended that the user also provides a 50% bias to the
-%  output results.
+%  By default (no flags given) the values within the kernel is scaled
+%  according the given scaling factor.
 %
-%  Correct normalization assumes the 'range_*' attributes of the kernel
-%  structure have been correctly set during the kernel creation.
+%  If any 'normalize_flags' are given the kernel will be normalized and then
+%  further scaled by the scaleing factor value given.  A 'PercentValue' flag
+%  will cause the given scaling factor to be divided by one hundred percent.
+%
+%  Kernel normalization ('normalize_flags' given) is designed to ensure that
+%  any use of the kernel scaling factor with 'Convolve' or 'Correlate'
+%  morphology methods will fall into -1.0 to +1.0 range.  Note however that
+%  for non-HDRI versions of IM this may cause images to have any negative
+%  results clipped, unless some 'clip' any negative output from 'Convolve'
+%  with the use of some kernels.
+%
+%  More specifically.  Kernels which only contain positive values (such as a
+%  'Gaussian' kernel) will be scaled so that those values sum to +1.0,
+%  ensuring a 0.0 to +1.0 convolution output range for non-HDRI images.
+%
+%  For Kernels that contain some negative values, (such as 'Sharpen' kernels)
+%  the kernel will be scaled by the absolute of the sum of kernel values, so
+%  that it will generally fall within the +/- 1.0 range.
+%
+%  For kernels whose values sum to zero, (such as 'Laplician' kernels) kernel
+%  will be scaled by just the sum of the postive values, so that its output
+%  range will again fall into the  +/- 1.0 range.
+%
+%  For special kernels designed for locating shapes using 'Correlate', (often
+%  only containing +1 and -1 values, representing foreground/brackground
+%  matching) a special normalization method is provided to scale the positive
+%  values seperatally to those of the negative values, so the kernel will be
+%  forced to become a zero-sum kernel better suited to such searches.
+%
+%  WARNING: Correct normalization of the kernal assumes that the '*_range'
+%  attributes within the kernel structure have been correctly set during the
+%  kernels creation.
+%
+%  NOTE: The values used for 'normalize_flags' have been selected specifically
+%  to match the use of geometry options, so that '!' means NormalizeValue, '^'
+%  means CorrelateNormalizeValue, and '%' means PercentValue.  All other
+%  GeometryFlags values are ignored.
 %
 %  The format of the ScaleKernelInfo method is:
 %
-%      void ScaleKernelInfo(KernelInfo *kernel)
+%      void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
+%               const MagickStatusType normalize_flags )
 %
 %  A description of each parameter follows:
 %
 %    o kernel: the Morphology/Convolution kernel
 %
-%    o scale: multiple all values by this, if zero normalize instead.
+%    o scaling_factor:
+%             multiply all values (after normalization) by this factor if not
+%             zero.  If the kernel is normalized regardless of any flags.
+%
+%    o normalize_flags:
+%             GeometryFlags defining normalization method to use.
+%             specifically: NormalizeValue, CorrelateNormalizeValue,
+%                           and/or PercentValue
 %
 % This function is internal to this module only at this time, but can be
 % exported to other modules if needed.
 */
-static void ScaleKernelInfo(KernelInfo *kernel, double scale)
+static void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
+     const GeometryFlags normalize_flags)
 {
   register long
     i;
 
-  if ( fabs(scale) < MagickEpsilon ) {
-    if ( fabs(kernel->positive_range + kernel->negative_range) < MagickEpsilon )
-      scale = 1/(kernel->positive_range - kernel->negative_range); /* zero kernels */
+  register double
+    pos_scale,
+    neg_scale;
+
+  pos_scale = 1.0;
+  if ( (normalize_flags&NormalizeValue) != 0 ) {
+    /* normalize kernel appropriately */
+    if ( fabs(kernel->positive_range + kernel->negative_range) > MagickEpsilon )
+      pos_scale = fabs(kernel->positive_range + kernel->negative_range);
     else
-      scale = 1/(kernel->positive_range + kernel->negative_range); /* non-zero kernel */
+      pos_scale = kernel->positive_range; /* special zero-summing kernel */
+  }
+  /* force kernel into being a normalized zero-summing kernel */
+  if ( (normalize_flags&CorrelateNormalizeValue) != 0 ) {
+    pos_scale = ( fabs(kernel->positive_range) > MagickEpsilon )
+                 ? kernel->positive_range : 1.0;
+    neg_scale = ( fabs(kernel->negative_range) > MagickEpsilon )
+                 ? -kernel->negative_range : 1.0;
+  }
+  else
+    neg_scale = pos_scale;
+
+  /* finialize scaling_factor for positive and negative components */
+  pos_scale = scaling_factor/pos_scale;
+  neg_scale = scaling_factor/neg_scale;
+  if ( (normalize_flags&PercentValue) != 0 ) {
+    pos_scale /= 100.0;
+    neg_scale /= 100.0;
   }
 
   for (i=0; i < (long) (kernel->width*kernel->height); i++)
     if ( ! IsNan(kernel->values[i]) )
-      kernel->values[i] *= scale;
+      kernel->values[i] *= (kernel->values[i] >= 0) ? pos_scale : neg_scale;
 
-  kernel->positive_range *= scale; /* convolution output range */
-  kernel->negative_range *= scale;
-  kernel->maximum *= scale; /* maximum and minimum values in kernel */
-  kernel->minimum *= scale;
+  /* convolution output range */
+  kernel->positive_range *= pos_scale;
+  kernel->negative_range *= neg_scale;
+  /* maximum and minimum values in kernel */
+  kernel->maximum *= (kernel->maximum >= 0.0) ? pos_scale : neg_scale;
+  kernel->minimum *= (kernel->minimum >= 0.0) ? pos_scale : neg_scale;
+
+  /* swap kernel settings if user scaling factor is negative */
+  if ( scaling_factor < MagickEpsilon ) {
+    double t;
+    t = kernel->positive_range;
+    kernel->positive_range = kernel->negative_range;
+    kernel->negative_range = t;
+    t = kernel->maximum;
+    kernel->maximum = kernel->minimum;
+    kernel->minimum = 1;
+  }
 
   return;
 }
