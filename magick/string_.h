@@ -59,22 +59,22 @@ extern MagickExport char
 extern MagickExport const char
   *GetStringInfoPath(const StringInfo *);
 
+extern MagickExport int
+  CompareStringInfo(const StringInfo *,const StringInfo *),
+  LocaleCompare(const char *,const char *),
+  LocaleNCompare(const char *,const char *,const size_t);
+
 extern MagickExport long
   FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
   FormatMagickString(char *,const size_t,const char *,...)
     magick_attribute((format (printf,3,4))),
   FormatMagickStringList(char *,const size_t,const char *,va_list)
     magick_attribute((format (printf,3,0))),
-  FormatMagickTime(const time_t,const size_t,char *),
-  LocaleCompare(const char *,const char *),
-  LocaleNCompare(const char *,const char *,const size_t);
+  FormatMagickTime(const time_t,const size_t,char *);
 
 extern MagickExport MagickBooleanType
   ConcatenateString(char **,const char *),
   SubstituteString(char **,const char *,const char *);
-
-extern MagickExport int
-  CompareStringInfo(const StringInfo *,const StringInfo *);
 
 extern MagickExport size_t
   ConcatenateMagickString(char *,const char *,const size_t)

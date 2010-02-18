@@ -1334,7 +1334,7 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %
 %  The format of the LocaleCompare method is:
 %
-%      long LocaleCompare(const char *p,const char *q)
+%      int LocaleCompare(const char *p,const char *q)
 %
 %  A description of each parameter follows:
 %
@@ -1343,7 +1343,7 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %    o q: A pointer to a character string to compare to p.
 %
 */
-MagickExport long LocaleCompare(const char *p,const char *q)
+MagickExport int LocaleCompare(const char *p,const char *q)
 {
   if ((p == (char *) NULL) && (q == (char *) NULL))
     return(0);
@@ -1355,20 +1355,20 @@ MagickExport long LocaleCompare(const char *p,const char *q)
   return((long) strcasecmp(p,q));
 #else
   {
-    register unsigned int
+    register int
       c,
       d;
 
     for ( ; ; )
     {
-      c=(unsigned int) *((unsigned char *) p);
-      d=(unsigned int) *((unsigned char *) q);
-      if ((c == 0U) || (AsciiMap[c] != AsciiMap[d]))
+      c=(int) *((unsigned char *) p);
+      d=(int) *((unsigned char *) q);
+      if ((c == 0) || (AsciiMap[c] != AsciiMap[d]))
         break;
       p++;
       q++;
     }
-    return((long) AsciiMap[c]-AsciiMap[d]);
+    return(AsciiMap[c]-(int) AsciiMap[d]);
   }
 #endif
 }
@@ -1430,7 +1430,7 @@ MagickExport void LocaleLower(char *string)
 %
 %  The format of the LocaleNCompare method is:
 %
-%      long LocaleNCompare(const char *p,const char *q,const size_t n)
+%      int LocaleNCompare(const char *p,const char *q,const size_t n)
 %
 %  A description of each parameter follows:
 %
@@ -1441,8 +1441,7 @@ MagickExport void LocaleLower(char *string)
 %    o length: the number of characters to compare in strings p & q.
 %
 */
-MagickExport long LocaleNCompare(const char *p,const char *q,
-  const size_t length)
+MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
 {
   if (p == (char *) NULL)
     return(-1);
@@ -1452,7 +1451,7 @@ MagickExport long LocaleNCompare(const char *p,const char *q,
   return((long) strncasecmp(p,q,length));
 #else
   {
-    register unsigned int
+    register int
       c,
       d;
 
@@ -1461,16 +1460,16 @@ MagickExport long LocaleNCompare(const char *p,const char *q,
 
     for (n=length; n != 0; n--)
     {
-      c=(unsigned int) *((unsigned char *) p);
-      d=(unsigned int) *((unsigned char *) q);
+      c=(int) *((unsigned char *) p);
+      d=(int) *((unsigned char *) q);
       if (AsciiMap[c] != AsciiMap[d])
-        return(AsciiMap[c]-AsciiMap[d]);
-      if (c == 0U)
-        return(0L);
+        return(AsciiMap[c]-(int) AsciiMap[d]);
+      if (c == 0)
+        return(0);
       p++;
       q++;
     }
-    return(0L);
+    return(0);
   }
 #endif
 }
@@ -2396,7 +2395,7 @@ MagickExport MagickBooleanType SubstituteString(char **string,
         /*
           Make room for the replacement string.
         */
-        offset=p-(*string);
+        offset=(ssize_t) (p-(*string));
         extent=strlen(*string)+replace_extent-search_extent+1;
         *string=(char *) ResizeQuantumMemory(*string,extent+MaxTextExtent,
           sizeof(*p));
