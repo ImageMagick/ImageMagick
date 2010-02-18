@@ -1456,9 +1456,9 @@ MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
       d;
 
     register size_t
-      n;
+      i;
 
-    for (n=length; n != 0; n--)
+    for (i=length; i != 0; i--)
     {
       c=(int) *((unsigned char *) p);
       d=(int) *((unsigned char *) q);
