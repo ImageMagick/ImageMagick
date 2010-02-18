@@ -147,6 +147,7 @@ static MagickBooleanType DisplayUsage(void)
       "-sharpen geometry    sharpen the image",
       "-strip               strip image of all profiles and comments",
       "-threshold value     threshold the image",
+      "-thumbnail geometry  create a thumbnail of the image",
       "-trim                trim image edges",
       (char *) NULL
     },
