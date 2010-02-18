@@ -48,11 +48,11 @@ typedef enum
   ChiNegative = 0x0080,
   PercentValue = 0x1000,
   AspectValue = 0x2000,
-  NormalizeValue = 0x2000, /* see ScaleKernelValue() in morphology.c */
+  NormalizeValue = 0x2000,  /* see ScaleKernelValue() in morphology.c */
   LessValue = 0x4000,
   GreaterValue = 0x8000,
   MinimumValue = 0x10000,
-  CorrelateNormalizeValue = 0x10000, /* see ScaleKernelValue() */
+  CorrelateNormalizeValue = 0x10000,  /* see ScaleKernelValue() */
   AreaValue = 0x20000,
   DecimalValue = 0x40000,
 #undef AllValues

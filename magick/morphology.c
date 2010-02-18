@@ -1761,11 +1761,11 @@ MagickExport Image *MorphologyImageChannel(const Image *image, const
     case TopHatMorphology:
     case BottomHatMorphology:
       /* Get Difference relative to the original image */
-      CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
+      (void) CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
           image, 0, 0);
       break;
     case EdgeMorphology:  /* subtract the Erode from a Dilate */
-      CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
+      (void) CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
           grad_image, 0, 0);
       grad_image=DestroyImage(grad_image);
       break;
