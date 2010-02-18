@@ -1,5 +1,8 @@
+2010-02-18  6.5.9-8 Cristy  <quetzlzacatenango@image...>
+  * Detect PDF ICCBased colorspace.
+
 2010-02-18  6.5.9-7 Anthony Thyssen <A.Thyssen@griffith...>
-  * Finialized -set option:convolve:scale  kernel normalize/scale option
+  * Finalized -set option:convolve:scale  kernel normalize/scale option
 
 2010-02-16  6.5.9-7 Cristy  <quetzlzacatenango@image...>
   * TransformImage() resets the image blob when called in the PICT decoder;
