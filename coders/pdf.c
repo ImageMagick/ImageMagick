@@ -444,7 +444,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (LocaleNCompare(DeviceCMYK,command,strlen(DeviceCMYK)) == 0)
       cmyk=MagickTrue;
-    if (LocaleNCompare(ICCbased,command,strlen(ICCbased)) == 0)
+    if (LocaleNCompare(ICCbased,command,strlen(ICCBased)) == 0)
       cmyk=MagickTrue;
     if (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0)
       {
