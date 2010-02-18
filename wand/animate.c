@@ -121,6 +121,7 @@ static MagickBooleanType AnimateUsage(void)
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
       "-strip               strip image of all profiles and comments",
+      "-thumbnail geometry  create a thumbnail of the image",
       "-trim                trim image edges",
       (char *) NULL
     },
