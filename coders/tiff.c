@@ -1065,18 +1065,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           image->matte=MagickTrue;
       }
     else
+      for (i=0; i < extra_samples; i++)
       {
-        if (samples_per_pixel > 3)
+        if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
           {
             image->matte=MagickTrue;
             associated_alpha=MagickFalse;
           }
-        if (sample_info[0] == EXTRASAMPLE_UNASSALPHA)
-          {
-            image->matte=MagickTrue;
-            associated_alpha=MagickFalse;
-          }
-        if (sample_info[0] == EXTRASAMPLE_ASSOCALPHA)
+        if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
           {
             image->matte=MagickTrue;
             associated_alpha=MagickTrue;
