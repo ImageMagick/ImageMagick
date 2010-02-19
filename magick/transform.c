@@ -624,15 +624,13 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         status=MagickFalse;
         continue;
       }
-    (void) CopyMagickMemory(q,p,(size_t) crop_image->columns*sizeof(*q));
     indexes=GetCacheViewVirtualIndexQueue(image_view);
-    if (indexes != (IndexPacket *) NULL)
-      {
-        crop_indexes=GetCacheViewAuthenticIndexQueue(crop_view);
-        if (crop_indexes != (IndexPacket *) NULL)
-          (void) CopyMagickMemory(crop_indexes,indexes,(size_t)
-            crop_image->columns*sizeof(*crop_indexes));
-      }
+    crop_indexes=GetCacheViewAuthenticIndexQueue(crop_view);
+    (void) CopyMagickMemory(q,p,(size_t) crop_image->columns*sizeof(*q));
+    if ((indexes != (IndexPacket *) NULL) &&
+        (crop_indexes != (IndexPacket *) NULL))
+      (void) CopyMagickMemory(crop_indexes,indexes,(size_t) crop_image->columns*
+        sizeof(*crop_indexes));
     if (SyncCacheViewAuthenticPixels(crop_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
