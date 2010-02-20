@@ -634,13 +634,15 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
     case GaussianNoise:
     {
       double
+        gamma,
         tau;
 
       if (alpha == 0.0)
         alpha=1.0;
       beta=GetPseudoRandomValue(random_info);
-      sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
-      tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
+      gamma=sqrt(-2.0*log(alpha));
+      sigma=gamma*cos(2.0*MagickPI*beta);
+      tau=gamma*sin(2.0*MagickPI*beta);
       noise=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
         TauGaussian*tau;
       break;
