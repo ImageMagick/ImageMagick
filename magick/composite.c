@@ -236,7 +236,8 @@ static inline void CompositeBumpmap(const MagickPixelPacket *p,
   composite->red=QuantumScale*intensity*q->red;
   composite->green=QuantumScale*intensity*q->green;
   composite->blue=QuantumScale*intensity*q->blue;
-  composite->opacity=(MagickRealType) QuantumScale*intensity*GetOpacityPixelComponent(p);
+  composite->opacity=(MagickRealType) QuantumScale*intensity*
+    GetOpacityPixelComponent(p);
   if (q->colorspace == CMYKColorspace)
     composite->index=QuantumScale*intensity*q->index;
 }
@@ -529,7 +530,6 @@ static inline void CompositeHardLight(const MagickPixelPacket *p,
       q->index*Da,Da);
 }
 
-
 static void CompositeHSB(const MagickRealType red,const MagickRealType green,
   const MagickRealType blue,double *hue,double *saturation,double *brightness)
 {
@@ -682,7 +682,6 @@ static inline void CompositeLinearBurn(const MagickPixelPacket *p,
     composite->index=gamma*LinearBurn(QuantumScale*p->index*Sa,Sa,QuantumScale*
       q->index*Da,Da);
 }
-
 
 static inline MagickRealType LinearLight(const MagickRealType Sca,
   const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
@@ -1440,29 +1439,28 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     }
     case BlurCompositeOp:
     {
+      CacheView
+        *composite_view,
+        *destination_view;
+
       MagickPixelPacket
         pixel;
 
       MagickRealType
-        w, h,
-        blur_xu,
-        blur_xv,
-        blur_yu,
-        blur_yv,
+        angle_range,
         angle_start,
-        angle_range;
+        height,
+        width;
 
       ResampleFilter
         *resample_filter;
 
-      CacheView
-        *composite_view,
-        *dest_view;
+      SegmentInfo
+        blur;
 
       /*
-        Blur Image dictated by an overlay gradient map:
-          X = red_channel;  Y = green_channel;
-          compose:args =  x_scale[,y_scale[,angle]]
+        Blur Image dictated by an overlay gradient map: X = red_channel;
+          Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
       */
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         &image->exception);
@@ -1481,28 +1479,31 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
-      w=blur_xu=geometry_info.rho;
-      h=blur_yv=geometry_info.sigma;
-      blur_xv=blur_yu = 0.0;
+      width=geometry_info.rho;
+      height=geometry_info.sigma;
+      blur.x1=geometry_info.rho;
+      blur.x2=0.0;
+      blur.y1=0.0;
+      blur.y2=geometry_info.sigma;
       angle_start=0.0;
       angle_range=0.0;
       if ((flags & HeightValue) == 0)
-        blur_yv=blur_xu;
+        blur.y2=blur.x1;
       if ((flags & XValue) != 0 )
         {
           MagickRealType
             angle;
 
-          angle = DegreesToRadians(geometry_info.xi);
-          blur_xu = w*cos(angle);
-          blur_xv = w*sin(angle);
-          blur_yu = (-h*sin(angle));
-          blur_yv = h*cos(angle);
+          angle=DegreesToRadians(geometry_info.xi);
+          blur.x1=width*cos(angle);
+          blur.x2=width*sin(angle);
+          blur.y1=(-height*sin(angle));
+          blur.y2=height*cos(angle);
         }
       if ((flags & YValue) != 0 )
         {
-          angle_start = DegreesToRadians(geometry_info.xi);
-          angle_range = DegreesToRadians(geometry_info.psi) - angle_start;
+          angle_start=DegreesToRadians(geometry_info.xi);
+          angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
       /*
         Blur Image by resampling;
@@ -1511,7 +1512,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       exception=(&image->exception);
       resample_filter=AcquireResampleFilter(image,&image->exception);
       SetResampleFilter(resample_filter,GaussianFilter,1.0);
-      dest_view=AcquireCacheView(destination_image);
+      destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
       for (y=0; y < (long) composite_image->rows; y++)
       {
@@ -1534,11 +1535,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           continue;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
-        r=QueueCacheViewAuthenticPixels(dest_view,0,y,
+        r=QueueCacheViewAuthenticPixels(destination_view,0,y,
           destination_image->columns,1,&image->exception);
         if ((p == (const PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
           break;
-        destination_indexes=GetCacheViewAuthenticIndexQueue(dest_view);
+        destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
         for (x=0; x < (long) composite_image->columns; x++)
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
@@ -1546,49 +1547,54 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               p++;
               continue;
             }
-          if ( fabs(angle_range) > MagickEpsilon )
+          if (fabs(angle_range) > MagickEpsilon)
             {
               MagickRealType
                 angle;
 
-              angle = angle_start + angle_range*QuantumScale*GetBluePixelComponent(p);
-              blur_xu = w*cos(angle);
-              blur_xv = w*sin(angle);
-              blur_yu = (-h*sin(angle));
-              blur_yv = h*cos(angle);
+              angle=angle_start+angle_range*QuantumScale*
+                GetBluePixelComponent(p);
+              blur.x1=width*cos(angle);
+              blur.x2=width*sin(angle);
+              blur.y1=(-height*sin(angle));
+              blur.y2=height*cos(angle);
             }
-          ScaleResampleFilter(resample_filter,blur_xu*QuantumScale*p->red,
-            blur_yu*QuantumScale*p->green,blur_xv*QuantumScale*p->red,
-            blur_yv*QuantumScale*GetGreenPixelComponent(p));
+          ScaleResampleFilter(resample_filter,blur.x1*QuantumScale*p->red,
+            blur.y1*QuantumScale*p->green,blur.x2*QuantumScale*p->red,
+            blur.y2*QuantumScale*GetGreenPixelComponent(p));
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
           SetPixelPacket(destination_image,&pixel,r,destination_indexes+x);
           p++;
           r++;
         }
-        sync=SyncCacheViewAuthenticPixels(dest_view,exception);
+        sync=SyncCacheViewAuthenticPixels(destination_view,exception);
         if (sync == MagickFalse)
           break;
       }
       resample_filter=DestroyResampleFilter(resample_filter);
       composite_view=DestroyCacheView(composite_view);
-      dest_view=DestroyCacheView(dest_view);
+      destination_view=DestroyCacheView(destination_view);
       composite_image=destination_image;
       break;
     }
     case DisplaceCompositeOp:
     case DistortCompositeOp:
     {
+      CacheView
+        *composite_view,
+        *destination_view;
+
       MagickPixelPacket
         pixel;
 
       MagickRealType
         horizontal_scale,
-        vertical_scale,
-        x_center,
-        y_center,
-        x_lookup,
-        y_lookup;
+        vertical_scale;
+
+      PointInfo
+        center,
+        offset;
 
       register IndexPacket
         *restrict destination_indexes;
@@ -1599,14 +1605,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       ResampleFilter
         *resample_filter;
 
-      CacheView
-        *composite_view,
-        *dest_view;
-
       /*
         Displace/Distort based on overlay gradient map:
           X = red_channel;  Y = green_channel;
-          compose:args = x_scale[,y_scale[,x_center,y_center]]
+          compose:args = x_scale[,y_scale[,center.x,center.y]]
       */
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         &image->exception);
@@ -1618,17 +1620,19 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
       if ((flags & (WidthValue|HeightValue)) == 0 )
-        if ((flags & AspectValue) == 0)
-          {
-            horizontal_scale=(MagickRealType) (composite_image->columns-1.0)/
-              2.0;
-            vertical_scale=(MagickRealType) (composite_image->rows-1.0)/2.0;
-          }
-        else
-          {
-            horizontal_scale=(MagickRealType) (image->columns-1.0)/2.0;
-            vertical_scale=(MagickRealType) (image->rows-1.0)/2.0;
-          }
+        {
+          if ((flags & AspectValue) == 0)
+            {
+              horizontal_scale=(MagickRealType) (composite_image->columns-1.0)/
+                2.0;
+              vertical_scale=(MagickRealType) (composite_image->rows-1.0)/2.0;
+            }
+          else
+            {
+              horizontal_scale=(MagickRealType) (image->columns-1.0)/2.0;
+              vertical_scale=(MagickRealType) (image->rows-1.0)/2.0;
+            }
+        }
       else
         {
           horizontal_scale=geometry_info.rho;
@@ -1652,46 +1656,45 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       /*
         Determine fixed center point for absolute distortion map
          Absolute distort ==
-           Displace lookup relative to a fixed absolute point
+           Displace offset relative to a fixed absolute point
            Select that point according to +X+Y user inputs.
            default = center of overlay image
            flag '!' = locations/percentage relative to background image
       */
-      x_center=(MagickRealType) x_offset;
-      y_center=(MagickRealType) y_offset;
+      center.x=(MagickRealType) x_offset;
+      center.y=(MagickRealType) y_offset;
       if (compose == DistortCompositeOp)
         {
           if ((flags & XValue) == 0)
             if ((flags & AspectValue) == 0)
-              x_center=(MagickRealType) x_offset+ (composite_image->columns-1)/
+              center.x=(MagickRealType) x_offset+(composite_image->columns-1)/
                 2.0;
             else
-              x_center=((MagickRealType) image->columns-1)/2.0;
+              center.x=((MagickRealType) image->columns-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
-              x_center=(MagickRealType) x_offset+geometry_info.xi;
+              center.x=(MagickRealType) x_offset+geometry_info.xi;
             else
-              x_center=geometry_info.xi;
+              center.x=geometry_info.xi;
           if ((flags & YValue) == 0)
             if ((flags & AspectValue) == 0)
-              y_center=(MagickRealType) y_offset+
-                (composite_image->rows-1)/2.0;
+              center.y=(MagickRealType) y_offset+(composite_image->rows-1)/2.0;
             else
-              y_center=((MagickRealType) image->rows-1)/2.0;
+              center.y=((MagickRealType) image->rows-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
-              y_center=(MagickRealType) y_offset+geometry_info.psi;
+              center.y=(MagickRealType) y_offset+geometry_info.psi;
             else
-              y_center=geometry_info.psi;
+              center.y=geometry_info.psi;
         }
       /*
-        Shift the pixel lookup point as defined by the provided,
+        Shift the pixel offset point as defined by the provided,
         displacement/distortion map.  -- Like a lens...
       */
       pixel=zero;
       exception=(&image->exception);
       resample_filter=AcquireResampleFilter(image,&image->exception);
-      dest_view=AcquireCacheView(destination_image);
+      destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
       for (y=0; y < (long) composite_image->rows; y++)
       {
@@ -1708,11 +1711,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           continue;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
-        r=QueueCacheViewAuthenticPixels(dest_view,0,y,
+        r=QueueCacheViewAuthenticPixels(destination_view,0,y,
           destination_image->columns,1,&image->exception);
         if ((p == (const PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
           break;
-        destination_indexes=GetCacheViewAuthenticIndexQueue(dest_view);
+        destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
         for (x=0; x < (long) composite_image->columns; x++)
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
@@ -1721,32 +1724,32 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               continue;
             }
           /*
-            Displace the lookup.
+            Displace the offset.
           */
-          x_lookup=(horizontal_scale*(p->red-(((MagickRealType) QuantumRange+
+          offset.x=(horizontal_scale*(p->red-(((MagickRealType) QuantumRange+
             1.0)/2.0)))/(((MagickRealType) QuantumRange+1.0)/2.0)+
-            x_center+((compose == DisplaceCompositeOp) ? x : 0);
-          y_lookup=(vertical_scale*(p->green-(((MagickRealType) QuantumRange+
+            center.x+((compose == DisplaceCompositeOp) ? x : 0);
+          offset.y=(vertical_scale*(p->green-(((MagickRealType) QuantumRange+
             1.0)/2.0)))/(((MagickRealType) QuantumRange+1.0)/2.0)+
-            y_center+((compose == DisplaceCompositeOp) ? y : 0);
-          (void) ResamplePixelColor(resample_filter,(double) x_lookup,
-            (double) y_lookup,&pixel);
+            center.y+((compose == DisplaceCompositeOp) ? y : 0);
+          (void) ResamplePixelColor(resample_filter,(double) offset.x,
+            (double) offset.y,&pixel);
           /*
             Mask with 'invalid pixel mask' in alpha channel.
           */
-          pixel.opacity = (MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
+          pixel.opacity=(MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
             pixel.opacity)*(1.0-QuantumScale*GetOpacityPixelComponent(p)));
           SetPixelPacket(destination_image,&pixel,r,destination_indexes+x);
           p++;
           r++;
         }
-        sync=SyncCacheViewAuthenticPixels(dest_view,exception);
+        sync=SyncCacheViewAuthenticPixels(destination_view,exception);
         if (sync == MagickFalse)
           break;
       }
       resample_filter=DestroyResampleFilter(resample_filter);
       composite_view=DestroyCacheView(composite_view);
-      dest_view=DestroyCacheView(dest_view);
+      destination_view=DestroyCacheView(destination_view);
       composite_image=destination_image;
       break;
     }
