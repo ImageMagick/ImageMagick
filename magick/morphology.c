@@ -108,8 +108,8 @@ static inline double MagickMax(const double x,const double y)
 
 /* Currently these are only internal to this module */
 static void
-  RotateKernelInfo(KernelInfo *, double),
-  ScaleKernelInfo(KernelInfo *, const double, const MagickStatusType);
+  RotateKernelInfo(KernelInfo *,double),
+  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags);
 
 static KernelInfo
   *CloneKernelInfo(const KernelInfo *);
@@ -1993,8 +1993,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 % This function is internal to this module only at this time, but can be
 % exported to other modules if needed.
 */
-static void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
-     const GeometryFlags normalize_flags)
+static void ScaleKernelInfo(KernelInfo *kernel,const double scaling_factor,
+  const GeometryFlags normalize_flags)
 {
   register long
     i;
