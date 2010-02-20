@@ -3196,7 +3196,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       */
       format_type=UndefinedFormatType;
       i=0;
-      while ((format_type != UndefinedFormatType) &&
+      while ((format_type == UndefinedFormatType) &&
              (format_type_formats[i] != (char *) NULL))
       {
         if ((*magic == *format_type_formats[i]) &&
