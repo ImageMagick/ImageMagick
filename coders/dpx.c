@@ -571,9 +571,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register long
     i;
 
-  register PixelPacket
-    *q;
-
   ssize_t
     count;
 

@@ -768,9 +768,6 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 10:
         {
-          register unsigned short
-            pixel;
-
           range=GetQuantumRange(image->depth);
           if (quantum_info->pack == MagickFalse)
             {
@@ -802,7 +799,6 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             p++;
             q+=quantum_info->pad;
           }
-printf("%d\n",q-pixels);
           break;
         }
         case 12:
