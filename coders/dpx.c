@@ -400,7 +400,7 @@ static size_t GetBytesPerRow(unsigned long columns,
             bits_per_pixel+31)/32);
           break;
         }
-      bytes_per_row=4*(((size_t) (32*((samples_per_pixel*columns)/3))+31)/32);
+      bytes_per_row=4*(((size_t) (32*((samples_per_pixel*columns+2)/3))+31)/32);
       break;
     }
     case 12:
@@ -539,6 +539,9 @@ static void TimeCodeToString(const unsigned long timestamp,char *code)
 
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   char
     magick[4],
     value[MaxTextExtent];
@@ -550,6 +553,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   long
+    row,
     y;
 
   MagickBooleanType
@@ -557,6 +561,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickOffsetType
     offset;
+
+  QuantumInfo
+    *quantum_info;
 
   QuantumType
     quantum_type;
@@ -1064,159 +1071,80 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   extent=GetBytesPerRow(image->columns,samples_per_pixel,image->depth,
     dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
-  if ((quantum_type == GrayQuantum) &&
-      (dpx.image.image_element[0].packing != 0) && (image->depth == 10) &&
-      (image->endian == MSBEndian))
-    {
-      QuantumAny
-        range;
-
-      QuantumInfo
-        *quantum_info;
-
-      register long
-        x;
-
-      unsigned char
-        *pixels;
-
-      unsigned long
-        pixel;
-
-      quantum_info=AcquireQuantumInfo(image_info,image);
-      if (quantum_info == (QuantumInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      SetQuantumQuantum(quantum_info,32);
-      SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
-        MagickTrue : MagickFalse);
-      pixels=GetQuantumPixels(quantum_info);
-      pixel=0U;
-      i=0;
-      range=GetQuantumRange(image->depth);
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          switch (i++ % 3)
-          {
-            case 0:
-            {
-              pixel=ReadBlobMSBLong(image);
-              q->red=ScaleAnyToQuantum((pixel >> 0) & 0x3ff,range);
-              break;
-            }
-            case 1:
-            {
-              q->red=ScaleAnyToQuantum((pixel >> 10) & 0x3ff,range);
-              break;
-            }
-            case 2:
-            {
-              q->red=ScaleAnyToQuantum((pixel >> 20) & 0x3ff,range);
-              break;
-            }
-          }
-          q->green=q->red;
-          q->blue=q->red;
-          q++;
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-        status=SetImageProgress(image,LoadImageTag,y,image->rows);
-        if (status == MagickFalse)
-          break;
-      }
-      quantum_info=DestroyQuantumInfo(quantum_info);
-    }
-  else
-    {
-      long
-        row;
-
-      QuantumInfo
-        *quantum_info;
-
-      CacheView
-        *image_view;
-
-      /*
-        DPX any-bit pixel format.
-      */
-      status=MagickTrue;
-      row=0;
-      quantum_info=AcquireQuantumInfo(image_info,image);
-      if (quantum_info == (QuantumInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      SetQuantumQuantum(quantum_info,32);
-      SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
-        MagickTrue : MagickFalse);
-      image_view=AcquireCacheView(image);
+  /*
+    DPX any-bit pixel format.
+  */
+  status=MagickTrue;
+  row=0;
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  SetQuantumQuantum(quantum_info,32);
+  SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
+    MagickTrue : MagickFalse);
+  image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp parallel for schedule(static) shared(row,status,quantum_type)
 #endif
-      for (y=0; y < (long) image->rows; y++)
-      {
-        long
-          offset;
+  for (y=0; y < (long) image->rows; y++)
+  {
+    long
+      offset;
 
-        MagickBooleanType
-          sync;
+    MagickBooleanType
+      sync;
 
-        register PixelPacket
-          *q;
+    register PixelPacket
+      *q;
 
-        ssize_t
-          count;
+    ssize_t
+      count;
 
-        size_t
-          length;
+    size_t
+      length;
 
-        unsigned char
-          *pixels;
+    unsigned char
+      *pixels;
 
-        if (status == MagickFalse)
-          continue;
-        pixels=GetQuantumPixels(quantum_info);
+    if (status == MagickFalse)
+      continue;
+    pixels=GetQuantumPixels(quantum_info);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 200505)
   #pragma omp critical (MagickCore_ReadDPXImage)
 #endif
+    {
+      count=ReadBlob(image,extent,pixels);
+      if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+          (image->previous == (Image *) NULL))
         {
-          count=ReadBlob(image,extent,pixels);
-          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-              (image->previous == (Image *) NULL))
-            {
-              MagickBooleanType
-                proceed;
+          MagickBooleanType
+            proceed;
 
-              proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
-              if (proceed == MagickFalse)
-                status=MagickFalse;
-            }
-          offset=row++;
-        }
-        if (count != (ssize_t) extent)
-          status=MagickFalse;
-        q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
-          exception);
-        if (q == (PixelPacket *) NULL)
-          {
+          proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+          if (proceed == MagickFalse)
             status=MagickFalse;
-            continue;
-          }
-        length=ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
-          pixels,exception);
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      if (status == MagickFalse)
-        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+        }
+      offset=row++;
     }
+    if (count != (ssize_t) extent)
+      status=MagickFalse;
+    q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
+      exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    length=ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
+      pixels,exception);
+    sync=SyncCacheViewAuthenticPixels(image_view,exception);
+    if (sync == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  quantum_info=DestroyQuantumInfo(quantum_info);
+  if (status == MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   SetQuantumImageType(image,quantum_type);
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -1884,8 +1812,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
   extent=GetBytesPerRow(image->columns,image->matte != MagickFalse ? 4UL : 3UL,
     image->depth,MagickTrue);
-   if ((IsGrayImage(image,&image->exception) != MagickFalse) &&
-       (image->matte == MagickFalse))
+  if ((IsGrayImage(image,&image->exception) != MagickFalse) &&
+      (image->matte == MagickFalse))
     {
       quantum_type=GrayQuantum;
       extent=GetBytesPerRow(image->columns,1UL,image->depth,MagickTrue);

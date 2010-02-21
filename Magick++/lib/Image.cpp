@@ -876,7 +876,7 @@ void Magick::Image::extent ( const Geometry &geometry_, const Color &backgroundC
   backgroundColor ( backgroundColor_ );
   extent ( geometry_ );
 }
-void Magick::Image::extent ( const Geometry &geometry_, const GravityType &gravity_ )
+void Magick::Image::extent ( const Geometry &geometry_, const GravityType gravity_ )
 {
   image()->gravity  = gravity_;
   extent ( geometry_ );
