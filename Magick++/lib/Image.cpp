@@ -865,8 +865,27 @@ void Magick::Image::extent ( const Geometry &geometry_ )
 {
   RectangleInfo extentInfo = geometry_;
   modifyImage();
-  SetImageExtent ( image(), extentInfo.width, extentInfo.height);
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ExtentImage ( image(), &extentInfo, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+void Magick::Image::extent ( const Geometry &geometry_, const Color &backgroundColor_ )
+{
+  backgroundColor ( backgroundColor_ );
+  extent ( geometry_ );
+}
+void Magick::Image::extent ( const Geometry &geometry_, const GravityType &gravity_ )
+{
+  image()->gravity  = gravity_;
+  extent ( geometry_ );
+}
+void Magick::Image::extent ( const Geometry &geometry_, const Color &backgroundColor_, const GravityType gravity_ )
+{
+  image()->gravity  = gravity_;
+  backgroundColor ( backgroundColor_ );
+  extent ( geometry_ );
 }
 
 // Flip image (reflect each scanline in the vertical direction)
