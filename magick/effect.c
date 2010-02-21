@@ -3100,13 +3100,6 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   const double angle,ExceptionInfo *exception)
 {
-  typedef struct _OffsetInfo
-  {
-    long
-      x,
-      y;
-  } OffsetInfo;
-
   CacheView
     *blur_view,
     *image_view;

@@ -257,7 +257,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
   (void) SetImageVirtualPixelMethod(image,image_info->virtual_pixel_method);
-  SyncImageSettings(image_info,image);
+  (void) SyncImageSettings(image_info,image);
   return(image);
 }
 
@@ -3777,7 +3777,7 @@ MagickExport MagickBooleanType StripImage(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   DestroyImageProfiles(image);
-  DeleteImageProperty(image,"comment");
+  (void) DeleteImageProperty(image,"comment");
   return(MagickTrue);
 }
 
