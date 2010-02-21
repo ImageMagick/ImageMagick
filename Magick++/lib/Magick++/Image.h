@@ -299,6 +299,10 @@ namespace Magick
     
     // Extend the image as defined by the geometry.
     void            extent ( const Geometry &geometry_ );
+    void            extent ( const Geometry &geometry_, const Color &backgroundColor );
+    void            extent ( const Geometry &geometry_, const GravityType gravity_ );
+    void            extent ( const Geometry &geometry_, const Color &backgroundColor, const GravityType gravity_ );
+
     // Flip image (reflect each scanline in the vertical direction)
     void            flip ( void );
 
