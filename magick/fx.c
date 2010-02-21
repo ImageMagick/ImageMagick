@@ -336,7 +336,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
   noise_view=AcquireCacheView(noise_image);
-#if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -403,7 +403,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_AverageImages)
+        #pragma omp critical (MagickCore_AddNoiseImage)
 #endif
         proceed=SetImageProgress(image,AddNoiseImageTag,progress++,
           image->rows);
@@ -492,7 +492,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
   progress=0;
   image_view=AcquireCacheView(image);
   shift_view=AcquireCacheView(shift_image);
-#if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -557,7 +557,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_BlueShiftImage)
 #endif
         proceed=SetImageProgress(image,BlueShiftImageTag,progress++,
@@ -739,7 +739,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   progress=0;
   image_view=AcquireCacheView(image);
   colorize_view=AcquireCacheView(colorize_image);
-#if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -787,7 +787,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCOREMAGICKCORE_OPENMP_SUPPORT_SUPPORT_DEBUG)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ColorizeImage)
 #endif
         proceed=SetImageProgress(image,ColorizeImageTag,progress++,image->rows);
