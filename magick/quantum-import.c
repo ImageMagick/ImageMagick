@@ -810,15 +810,15 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                   for (x=0; x < (long) number_pixels/3; x++)
                   {
                     p=PushLongPixel(endian,p,&pixel);
-                    q->red=ScaleAnyToQuantum((pixel >> 0) & 0x3ff,range);
+                    q->red=ScaleAnyToQuantum((pixel >> 2) & 0x3ff,range);
                     q->green=q->red;
                     q->blue=q->red;
                     q++;
-                    q->red=ScaleAnyToQuantum((pixel >> 10) & 0x3ff,range);
+                    q->red=ScaleAnyToQuantum((pixel >> 12) & 0x3ff,range);
                     q->green=q->red;
                     q->blue=q->red;
                     q++;
-                    q->red=ScaleAnyToQuantum((pixel >> 20) & 0x3ff,range);
+                    q->red=ScaleAnyToQuantum((pixel >> 22) & 0x3ff,range);
                     q->green=q->red;
                     q->blue=q->red;
                     p+=quantum_info->pad;

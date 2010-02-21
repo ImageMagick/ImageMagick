@@ -1,3 +1,6 @@
+2010-02-20  6.5.9-10 Cristy  <quetzlzacatenango@image...>
+  * Write 10-bit grayscale DPX images properly.
+
 2010-02-18  6.5.9-8 Cristy  <quetzlzacatenango@image...>
   * Detect PDF ICCBased colorspace.
 

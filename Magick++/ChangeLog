@@ -1,6 +1,6 @@
-2009-12-06  6.5.8-4 Cristy  <quetzlzacatenango@image...>
-  * Add Magick::Options::file() method to read or write an image from an
-    existing file handle.
+2010-02-21  6.5.9-10 Cristy  <quetzlzacatenango@image...>
+  * Add extent() to extend the image as defined by the geometry, gravity, and
+	  image background color.
 
 2009-11-14  6.5.7-8 Cristy  <quetzlzacatenango@image...>
   * Add forwardFourierTransform(), inverseFourierTransform(), and
