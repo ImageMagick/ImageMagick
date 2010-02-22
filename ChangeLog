@@ -1,3 +1,7 @@
+2010-02-21  6.6.0-0 Cristy  <quetzlzacatenango@image...>
+  * Insufficient image data in EPT is a warning rather than an error.
+  * Respect -type TrueColor when writing gray DPX images.
+
 2010-02-20  6.5.9-10 Cristy  <quetzlzacatenango@image...>
   * Write 10-bit grayscale DPX images properly.
 
