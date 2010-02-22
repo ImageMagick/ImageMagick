@@ -39,8 +39,8 @@ static inline ResampleFilter **DestroyResampleFilterThreadSet(
 }
 
 static inline ResampleFilter **AcquireResampleFilterThreadSet(
-  const Image *image,const MagickBooleanType interpolate,
-  ExceptionInfo *exception)
+  const Image *image,const VirtualPixelMethod method,
+  const MagickBooleanType interpolate,ExceptionInfo *exception)
 {
   register long
     i;
@@ -62,6 +62,7 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
     filter[i]=AcquireResampleFilter(image,exception);
     if (filter[i] == (ResampleFilter *) NULL)
       return(DestroyResampleFilterThreadSet(filter));
+    SetResampleFilterVirtualPixelMethod(filter[i],method);
     if (interpolate != MagickFalse)
       SetResampleFilter(filter[i],PointFilter,1.0);
   }

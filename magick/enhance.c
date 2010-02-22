@@ -733,8 +733,8 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   GetMagickPixelPacket(clut_image,&zero);
   adjust=clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1;
   exception=(&image->exception);
-  resample_filter=AcquireResampleFilterThreadSet(clut_image,MagickTrue,
-    exception);
+  resample_filter=AcquireResampleFilterThreadSet(clut_image,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2300,8 +2300,8 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   width=(double) hald_image->columns;
   GetMagickPixelPacket(hald_image,&zero);
   exception=(&image->exception);
-  resample_filter=AcquireResampleFilterThreadSet(hald_image,MagickTrue,
-    exception);
+  resample_filter=AcquireResampleFilterThreadSet(hald_image,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)

@@ -1942,7 +1942,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     status=MagickTrue;
     progress=0;
     GetMagickPixelPacket(distort_image,&zero);
-    resample_filter=AcquireResampleFilterThreadSet(image,MagickFalse,exception);
+    resample_filter=AcquireResampleFilterThreadSet(image,
+      UndefinedVirtualPixelMethod,MagickFalse,exception);
     distort_view=AcquireCacheView(distort_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -1960,7 +1961,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         invalid;  /* the color to assign when distort result is invalid */
 
       PointInfo
-        d,s;  /* transform destination image x,y  to source image x,y */
+        d,
+        s;  /* transform destination image x,y  to source image x,y */
 
       register IndexPacket
         *restrict indexes;
