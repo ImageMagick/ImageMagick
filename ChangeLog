@@ -1,6 +1,8 @@
 2010-02-21  6.6.0-0 Cristy  <quetzlzacatenango@image...>
   * Insufficient image data in EPT is a warning rather than an error.
   * Respect -type TrueColor when writing gray DPX images.
+  * Fix problem reading 10-bit grayscale DPX images when scanline length is
+    not a multiple of 3.
 
 2010-02-20  6.5.9-10 Cristy  <quetzlzacatenango@image...>
   * Write 10-bit grayscale DPX images properly.
