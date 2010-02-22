@@ -214,13 +214,15 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,ept_info.tiff_length,ept_info.tiff);
   if (count != (ssize_t) (ept_info.tiff_length))
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+      "InsufficientImageDataInFile","`%s'",image->filename);
   offset=SeekBlob(image,ept_info.postscript_offset,SEEK_SET);
   if (offset < 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,ept_info.postscript_length,ept_info.postscript);
   if (count != (ssize_t) (ept_info.postscript_length))
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+      "InsufficientImageDataInFile","`%s'",image->filename);
   (void) CloseBlob(image);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
