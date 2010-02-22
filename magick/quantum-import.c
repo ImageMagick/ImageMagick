@@ -807,7 +807,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             {
               if (image->endian != LSBEndian)
                 {
-                  for (x=0; x < (long) number_pixels/3; x++)
+                  for (x=0; x < (long) (number_pixels-2); x+=3)
                   {
                     p=PushLongPixel(endian,p,&pixel);
                     q->red=ScaleAnyToQuantum((pixel >> 2) & 0x3ff,range);
@@ -824,9 +824,24 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                     p+=quantum_info->pad;
                     q++;
                   }
+                  p=PushLongPixel(endian,p,&pixel);
+                  if (x++ < (long) (number_pixels-1))
+                    {
+                      q->red=ScaleAnyToQuantum((pixel >> 2) & 0x3ff,range);
+                      q->green=q->red;
+                      q->blue=q->red;
+                      q++;
+                    }
+                  if (x++ < (long) number_pixels)
+                    {
+                      q->red=ScaleAnyToQuantum((pixel >> 12) & 0x3ff,range);
+                      q->green=q->red;
+                      q->blue=q->red;
+                      q++;
+                    }
                   break;
                 }
-              for (x=0; x < (long) number_pixels/3; x++)
+              for (x=0; x < (long) (number_pixels-2); x+=3)
               {
                 p=PushLongPixel(endian,p,&pixel);
                 q->red=ScaleAnyToQuantum((pixel >> 22) & 0x3ff,range);
@@ -843,6 +858,21 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 p+=quantum_info->pad;
                 q++;
               }
+              p=PushLongPixel(endian,p,&pixel);
+              if (x++ < (long) (number_pixels-1))
+                {
+                  q->red=ScaleAnyToQuantum((pixel >> 22) & 0x3ff,range);
+                  q->green=q->red;
+                  q->blue=q->red;
+                  q++;
+                }
+              if (x++ < (long) number_pixels)
+                {
+                  q->red=ScaleAnyToQuantum((pixel >> 12) & 0x3ff,range);
+                  q->green=q->red;
+                  q->blue=q->red;
+                  q++;
+                }
               break;
             }
           for (x=0; x < (long) number_pixels; x++)
