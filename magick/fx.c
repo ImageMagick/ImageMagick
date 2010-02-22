@@ -3381,7 +3381,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(implode_image,&zero);
-  resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
+  resample_filter=AcquireResampleFilterThreadSet(image,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   implode_view=AcquireCacheView(implode_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -5353,7 +5354,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(swirl_image,&zero);
-  resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
+  resample_filter=AcquireResampleFilterThreadSet(image,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   swirl_view=AcquireCacheView(swirl_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -5817,7 +5819,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(wave_image,&zero);
-  resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
+  resample_filter=AcquireResampleFilterThreadSet(image,
+    BackgroundVirtualPixelMethod,MagickTrue,exception);
   wave_view=AcquireCacheView(wave_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -5849,8 +5852,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     indexes=GetCacheViewAuthenticIndexQueue(wave_view);
     pixel=zero;
     id=GetOpenMPThreadId();
-    (void) SetResampleFilterVirtualPixelMethod(resample_filter[id],
-      BackgroundVirtualPixelMethod);
     for (x=0; x < (long) wave_image->columns; x++)
     {
       (void) ResamplePixelColor(resample_filter[id],(double) x,(double) (y-

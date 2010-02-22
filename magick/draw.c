@@ -1166,7 +1166,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   inverse_affine=InverseAffineMatrix(affine);
   GetMagickPixelPacket(image,&zero);
   exception=(&image->exception);
-  resample_filter=AcquireResampleFilterThreadSet(source,MagickTrue,exception);
+  resample_filter=AcquireResampleFilterThreadSet(source,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   source_view=AcquireCacheView(source);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

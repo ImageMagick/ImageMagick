@@ -5153,7 +5153,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   progress=0;
   GetMagickPixelPacket(spread_image,&bias);
   width=GetOptimalKernelWidth1D(radius,0.5);
-  resample_filter=AcquireResampleFilterThreadSet(image,MagickTrue,exception);
+  resample_filter=AcquireResampleFilterThreadSet(image,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(spread_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
