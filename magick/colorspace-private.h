@@ -24,6 +24,15 @@ extern "C" {
 
 #include <magick/pixel.h>
 
+static inline MagickBooleanType IsGrayColorspace(
+  const ColorspaceType colorspace)
+{
+  if ((colorspace == GRAYColorspace) || (colorspace == Rec601LumaColorspace) || 
+      (colorspace == Rec709LumaColorspace))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
 {
   MagickRealType
