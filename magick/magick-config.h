@@ -270,6 +270,11 @@
 #define MAGICKCORE_HAVE_EXECVP  1 
 #endif
 
+/* Define to 1 if you have the `fchmod' function. */
+#ifndef MAGICKCORE_HAVE_FCHMOD 
+#define MAGICKCORE_HAVE_FCHMOD  1 
+#endif
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #ifndef MAGICKCORE_HAVE_FCNTL_H 
 #define MAGICKCORE_HAVE_FCNTL_H  1 
@@ -876,6 +881,11 @@
 /* Define to 1 if you have the `usleep' function. */
 #ifndef MAGICKCORE_HAVE_USLEEP 
 #define MAGICKCORE_HAVE_USLEEP  1 
+#endif
+
+/* Define to 1 if you have the `utime' function. */
+#ifndef MAGICKCORE_HAVE_UTIME 
+#define MAGICKCORE_HAVE_UTIME  1 
 #endif
 
 /* Define to 1 if you have the `vfork' function. */

@@ -185,6 +185,9 @@
 /* Define to 1 if you have the `execvp' function. */
 #undef HAVE_EXECVP
 
+/* Define to 1 if you have the `fchmod' function. */
+#undef HAVE_FCHMOD
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -574,6 +577,9 @@
 
 /* Define to 1 if you have the `usleep' function. */
 #undef HAVE_USLEEP
+
+/* Define to 1 if you have the `utime' function. */
+#undef HAVE_UTIME
 
 /* Define to 1 if you have the `vfork' function. */
 #undef HAVE_VFORK
