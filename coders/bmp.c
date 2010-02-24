@@ -1233,7 +1233,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=ScaleShortToQuantum((unsigned short) blue);
             SetOpacityPixelComponent(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              q->opacity=ScaleShortToQuantum((unsigned short) opacity);
+              q->opacity=ScaleShortToQuantum((unsigned short) (65535-opacity));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1764,7 +1764,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
             *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-            *q++=ScaleQuantumToChar(GetOpacityPixelComponent(p));
+            *q++=ScaleQuantumToChar(QuantumRange-GetOpacityPixelComponent(p));
             p++;
           }
           if (image->previous == (Image *) NULL)
