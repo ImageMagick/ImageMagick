@@ -3,6 +3,7 @@
   * Respect -type TrueColor when writing gray DPX images.
   * Fix problem reading 10-bit grayscale DPX images when scanline length is
     not a multiple of 3.
+  * BMP has an alpha channel, it was treated as an opacity channel.
 
 2010-02-20  6.5.9-10 Cristy  <quetzlzacatenango@image...>
   * Write 10-bit grayscale DPX images properly.
