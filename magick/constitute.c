@@ -1291,6 +1291,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
     Write images.
   */
   status=MagickTrue;
+  progress_monitor=(MagickProgressMonitor) NULL;
   i=0;
   number_images=GetImageListLength(images);
   for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
