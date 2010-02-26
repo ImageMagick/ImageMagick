@@ -201,27 +201,15 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
   "      mean: %g (%g)\n      standard deviation: %g (%g)\n"  \
   "      kurtosis: %g\n      skewness: %g\n"
 
-  double
-    maxima,
-    mean,
-    minima;
-
   int
     status;
 
-  minima=channel_statistics[channel].minima;
-  maxima=channel_statistics[channel].maxima;
-  mean=channel_statistics[channel].mean;
-  if (channel == AlphaChannel)
-    {
-      minima=QuantumRange-minima;
-      maxima=QuantumRange-maxima;
-      mean=QuantumRange-mean;
-    }
-  status=fprintf(file,StatisticsFormat,name,(Quantum) (scale*minima+0.5),minima/
-    (double) QuantumRange,(Quantum) (scale*maxima+0.5),maxima/(double)
-    QuantumRange,scale*mean,mean/(double) QuantumRange,scale*
-    channel_statistics[channel].standard_deviation,
+  status=fprintf(file,StatisticsFormat,name,(Quantum) (scale*
+    channel_statistics[channel].minima+0.5),channel_statistics[channel].minima/
+    (double) QuantumRange,(Quantum) (scale*channel_statistics[channel].maxima+
+    0.5),channel_statistics[channel].maxima/(double) QuantumRange,scale*
+    channel_statistics[channel].mean,channel_statistics[channel].mean/
+    (double) QuantumRange,scale*channel_statistics[channel].standard_deviation,
     channel_statistics[channel].standard_deviation/(double) QuantumRange,
     channel_statistics[channel].kurtosis,channel_statistics[channel].skewness);
   return(status);
