@@ -743,8 +743,6 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
           break;
       }
       image_view=DestroyCacheView(image_view);
-      if (y == (long) image->rows)
-        ((Image *) image)->type=BilevelType;
       break;
     }
     case PseudoClass:
