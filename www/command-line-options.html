@@ -4827,6 +4827,9 @@ directly assign virtual canvas meta-data. </p>
 
 <p>If the <a href="#filter">-filter</a> option precedes the <a href="#resize">-resize</a> option, the image is resized with the specified filter.</p>
 
+<p>Many image processing algorithms assume your image is in a linear-light coding.  If your image is gamma-corrected, you can remove the nonlinear gamma correction, apply the transform, then restore it like this:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2 -quality 92 passport.jpg</span></p>
 <div style="margin: auto;">
   <h4><a name="respect-parentheses" id="respect-parentheses"></a>-respect-parentheses</h4>
 </div>
