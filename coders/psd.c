@@ -305,6 +305,8 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
     return(MagickFalse);
   if (LocaleNCompare((const char *) magick,"8BPS",4) == 0)
     return(MagickTrue);
+  if (LocaleNCompare((const char *) magick,"8BPB",4) == 0)
+    return(MagickTrue);
   return(MagickFalse);
 }
 
@@ -1455,6 +1457,13 @@ ModuleExport unsigned long RegisterPSDImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("PSB");
+  entry->decoder=(DecodeImageHandler *) ReadPSDImage;
+  entry->encoder=(EncodeImageHandler *) WritePSDImage;
+  entry->magick=(IsImageFormatHandler *) IsPSD;
+  entry->description=ConstantString("Adobe Large Document Format");
+  entry->module=ConstantString("PSD");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PSD");
   entry->decoder=(DecodeImageHandler *) ReadPSDImage;
   entry->encoder=(EncodeImageHandler *) WritePSDImage;
@@ -1486,6 +1495,7 @@ ModuleExport unsigned long RegisterPSDImage(void)
 */
 ModuleExport void UnregisterPSDImage(void)
 {
+  (void) UnregisterMagickInfo("PSB");
   (void) UnregisterMagickInfo("PSD");
 }
 

@@ -164,6 +164,7 @@ static const MagicMapInfo
     { "PS", 0, MagickString("%!") },
     { "PS", 0, MagickString("\004%!") },
     { "PS", 0, MagickString("\305\320\323\306") },
+    { "PSB", 0, MagickString("8BPB") },
     { "PSD", 0, MagickString("8BPS") },
     { "PWP", 0, MagickString("SFW95") },
     { "RAF", 0, MagickString("FUJIFILMCCD-RAW ") },
