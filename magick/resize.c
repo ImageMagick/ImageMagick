@@ -134,11 +134,11 @@ static MagickRealType Bessel(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    See Pratt "Digital Image Processing" p.97 for Bessel functions
+    See Pratt "Digital Image Processing" p.97 for Bessel functions.
 
     This function actually a X-scaled Jinc(x) function. See
     http://mathworld.wolfram.com/JincFunction.html and page 11 of
-    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf
+    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
     return((MagickRealType) (MagickPI/4.0));
@@ -177,16 +177,15 @@ static MagickRealType CubicBC(const MagickRealType x,
 {
   /*
     Cubic Filters using B,C determined values:
-
-    Mitchell-Netravali  B=1/3 C=1/3   Qualitively ideal Cubic Filter
-    Catmull-Rom         B= 0  C=1/2   Cublic Interpolation Function
-    Cubic B-Spline      B= 1  C= 0    Spline Approximation of Gaussian
-    Hermite             B= 0  C= 0    Quadratic Spline (support = 1)
+       Mitchell-Netravali  B=1/3 C=1/3   Qualitively ideal Cubic Filter
+       Catmull-Rom         B= 0  C=1/2   Cublic Interpolation Function
+       Cubic B-Spline      B= 1  C= 0    Spline Approximation of Gaussian
+       Hermite             B= 0  C= 0    Quadratic Spline (support = 1)
 
     See paper by Mitchell and Netravali, Reconstruction Filters in Computer
     Graphics Computer Graphics, Volume 22, Number 4, August 1988
     http://www.cs.utexas.edu/users/fussell/courses/cs384g/lectures/mitchell/
-    Mitchell.pdf
+    Mitchell.pdf.
 
     Coefficents are determined from B,C values:
        P0 = (  6 - 2*B       )/6
@@ -199,6 +198,7 @@ static MagickRealType CubicBC(const MagickRealType x,
        Q3 = (    - 1*B - 6*C )/6
 
     which are used to define the filter:
+
        P0 + P1*x + P2*x^2 + P3*x^3      0 <= x < 1
        Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x <= 2
 
@@ -273,7 +273,7 @@ static MagickRealType Lagrange(const MagickRealType x,
     Note that n is the specific piece of the piece-wise function to calculate.
 
     See Survey: Interpolation Methods, IEEE Transactions on Medical Imaging,
-    Vol 18, No 11, November 1999, p1049-1075, -- Equation 27 on p1064
+    Vol 18, No 11, November 1999, p1049-1075, -- Equation 27 on p1064.
   */
   if (x > resize_filter->support)
     return(0.0);
@@ -374,7 +374,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  recommended as it removes the correct filter selection for different
 %  filtering image operations.  Selecting a window filtering method is better.
 %
-%  Lanczos is purely special case of a Sinc windowed Sinc, but defulting to
+%  Lanczos is purely special case of a Sinc windowed Sinc, but defaulting to
 %  a 3 lobe support, rather that the default 4 lobe support.
 %
 %  Special options can be used to override specific, or all the filter
@@ -401,7 +401,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %        requirements.
 %
 %    "filter:support"  Set the support size for filtering to the size given
-%        This not recomented for Sinc/Bessel windowed filters, but is
+%        This not recommended for Sinc/Bessel windowed filters, but is
 %        used for simple filters like FIR filters, and the Gaussian Filter.
 %        This will override any 'filter:lobes' option.
 %
@@ -454,7 +454,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 */
 MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
-  const FilterTypes filter, const MagickRealType blur,
+  const FilterTypes filter,const MagickRealType blur,
   const MagickBooleanType cylindrical,ExceptionInfo *exception)
 {
   const char
@@ -1790,14 +1790,14 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       center,
       density;
 
+    register ContributionInfo
+      *restrict contribution;
+
     register const IndexPacket
       *restrict indexes;
 
     register const PixelPacket
       *restrict p;
-
-    register ContributionInfo
-      *restrict contribution;
 
     register IndexPacket
       *restrict resize_indexes;
@@ -2032,14 +2032,14 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       center,
       density;
 
+    register ContributionInfo
+      *restrict contribution;
+
     register const IndexPacket
       *restrict indexes;
 
     register const PixelPacket
       *restrict p;
-
-    register ContributionInfo
-      *restrict contribution;
 
     register IndexPacket
       *restrict resize_indexes;

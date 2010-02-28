@@ -1482,8 +1482,9 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
           dpx.image.image_element[i].descriptor=RGBComponentType;
           if (image->matte != MagickFalse)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
-          if ((IsGrayImage(image,&image->exception) != MagickFalse) &&
-              (image->matte == MagickFalse))
+          if ((image_info->type != TrueColorType) &&
+              (image->matte == MagickFalse) &&
+              (IsGrayImage(image,&image->exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }
