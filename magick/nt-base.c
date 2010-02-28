@@ -241,6 +241,75 @@ MagickExport int Exit(int status)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   g e t t i m e o f d a y                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The gettimeofday() method get the time of day.
+%
+%  The format of the gettimeofday method is:
+%
+%      int gettimeofday(struct timeval *time_value,struct timezone *time_zone)
+%
+%  A description of each parameter follows:
+%
+%    o time_value: the time value.
+%
+%    o time_zone: the time zone.
+%
+*/
+MagickExport int gettimeofday (struct timeval *time_value,
+  struct timezone *time_zone)
+{
+#if !defined(__GNUC__)
+#define EPOCHFILETIME  (116444736000000000i 64)
+#else
+#define EPOCHFILETIME  (116444736000000000LL)
+#endif
+
+  static int
+    is_tz_set;
+
+  if (time_value != (struct timeval *) NULL)
+    {
+      FILETIME
+        file_time;
+
+      __int64
+        time;
+
+      LARGE_INTEGER
+        date_time;
+
+      GetSystemTimeAsFileTime(&file_time);
+      date_time.LowPart=file_time.dwLowDateTime;
+      date_time.HighPart=file_time.dwHighDateTime;
+      time=date_time.QuadPart;
+      time-=EPOCHFILETIME;
+      time/=10;
+      time_value->tv_sec=(long) (time / 1000000);
+      time_value->tv_usec=(long) (time % 1000000);
+    }
+  if (time_zone != (struct timezone *) NULL)
+    {
+      if (is_tz_set == 0)
+        {
+          _tzset();
+          is_tz_set++;
+        }
+      time_zone->tz_minuteswest=_timezone/60;
+      time_zone->tz_dsttime=_daylight;
+    }
+  return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s W i n d o w s 9 5                                                     %
 %                                                                             %
 %                                                                             %

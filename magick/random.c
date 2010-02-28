@@ -398,7 +398,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     struct timeval
       timer;
 
-    if (gettimeofday(&timer,0) == 0)
+    if (gettimeofday(&timer,(struct timezone *) NULL) == 0)
       {
         seconds=timer.tv_sec;
         nanoseconds=1000UL*timer.tv_usec;

@@ -288,6 +288,20 @@ typedef struct _NTMEMORYSTATUSEX
     ullAvailExtendedVirtual;
 } NTMEMORYSTATUSEX;
 
+struct timeval
+{
+  long
+    tv_sec,
+    tv_usec;
+};
+
+struct timezone
+{
+  int
+    tz_minuteswest,
+    tz_dsttime;
+};
+
 typedef UINT
   (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
 
@@ -330,6 +344,7 @@ extern MagickExport double
 
 extern MagickExport int
   Exit(int),
+  gettimeofday(struct timeval *,struct timezone *),
   IsWindows95(),
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
