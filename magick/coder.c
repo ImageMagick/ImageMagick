@@ -184,6 +184,7 @@ static const CoderMapInfo
     { "PNG32", "PNG" },
     { "PNG8", "PNG" },
     { "PPM", "PNM" },
+    { "PSB", "PSD" },
     { "PTIF", "TIFF" },
     { "RADIAL-GRADIENT", "GRADIENT" },
     { "RAF", "DNG" },
