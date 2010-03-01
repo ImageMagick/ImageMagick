@@ -65,6 +65,93 @@
 #include "magick/string_.h"
 
 /*
+  Define declaractions.
+*/
+#define MaxPSDChannels  24
+
+/*
+  Enumerated declaractions.
+*/
+typedef enum
+{
+  BitmapMode = 0,
+  GrayscaleMode = 1,
+  IndexedMode = 2,
+  RGBMode = 3,
+  CMYKMode = 4,
+  MultichannelMode = 7,
+  DuotoneMode = 8,
+  LabMode = 9
+} PSDImageType;
+
+/*
+  Typedef declaractions.
+*/
+typedef struct _ChannelInfo
+{
+  short int
+    type;
+
+  unsigned long
+    size;
+} ChannelInfo;
+
+typedef struct _LayerInfo
+{
+  RectangleInfo
+    page,
+    mask;
+
+  unsigned short
+    channels;
+
+  ChannelInfo
+    channel_info[MaxPSDChannels];
+
+  char
+    blendkey[4];
+
+  Quantum
+    opacity;
+
+  unsigned char
+    clipping,
+    visible,
+    flags;
+
+  unsigned long
+    offset_x,
+    offset_y;
+
+  unsigned char
+    name[256];
+
+  Image
+    *image;
+} LayerInfo;
+
+typedef struct _PSDInfo
+{
+  char
+    signature[4];
+
+  unsigned short
+    channels,
+    version;
+
+  unsigned char
+    reserved[6];
+
+  unsigned long
+    rows,
+    columns;
+
+  unsigned short
+    depth,
+    mode;
+} PSDInfo;
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -337,6 +424,20 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
 %
 */
 
+static inline MagickOffsetType GetPSDOffset(PSDInfo *psd_info,Image *image)
+{
+  if (psd_info->version == 1)
+    return((MagickOffsetType) ReadBlobMSBShort(image));
+  return((MagickOffsetType) ReadBlobMSBLong(image));
+}
+
+static inline MagickSizeType GetPSDSize(PSDInfo *psd_info,Image *image)
+{
+  if (psd_info->version == 1)
+    return((MagickSizeType) ReadBlobMSBLong(image));
+  return((MagickSizeType) ReadBlobMSBLongLong(image));
+}
+
 static inline long MagickAbsoluteValue(const long x)
 {
   if (x < 0)
@@ -404,36 +505,11 @@ static const char *CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
     case LuminizeCompositeOp:  outMode = "lum ";  break;
     case ScreenCompositeOp:    outMode = "scrn";  break;
     case OverlayCompositeOp:  outMode = "over";  break;
-
     default:
       outMode = "norm";
-/*
-  if (LocaleNCompare(mode,"hLit",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"sLit",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"smud",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"div ",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"idiv",4) == 0)
-    return(OverCompositeOp);
-*/
   }
   return(outMode);
 }
-
-typedef enum
-{
-  BitmapMode = 0,
-  GrayscaleMode = 1,
-  IndexedMode = 2,
-  RGBMode = 3,
-  CMYKMode = 4,
-  MultichannelMode = 7,
-  DuotoneMode = 8,
-  LabMode = 9
-} PSDImageType;
 
 static const char *ModeToString( PSDImageType inType )
 {
@@ -518,72 +594,6 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
 
 static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define MaxPSDChannels  24
-
-  typedef struct _ChannelInfo
-  {
-    short int
-      type;
-
-    unsigned long
-      size;
-  } ChannelInfo;
-
-  typedef struct _LayerInfo
-  {
-    RectangleInfo
-      page,
-      mask;
-
-    unsigned short
-      channels;
-
-    ChannelInfo
-      channel_info[MaxPSDChannels];
-
-    char
-      blendkey[4];
-
-    Quantum
-      opacity;
-
-    unsigned char
-      clipping,
-      visible,
-      flags;
-
-    unsigned long
-      offset_x,
-      offset_y;
-
-    unsigned char
-      name[256];
-
-    Image
-      *image;
-  } LayerInfo;
-
-  typedef struct _PSDInfo
-  {
-    char
-      signature[4];
-
-    unsigned short
-      channels,
-      version;
-
-    unsigned char
-      reserved[6];
-
-    unsigned long
-      rows,
-      columns;
-
-    unsigned short
-      depth,
-      mode;
-  } PSDInfo;
-
   char
     s[MaxTextExtent],
     type[4];
@@ -614,7 +624,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register long
     i;
 
-  size_t
+  MagickSizeType
     length,
     combinedlength,
     size;
@@ -664,8 +674,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,4,(unsigned char *) psd_info.signature);
   psd_info.version=ReadBlobMSBShort(image);
-  if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
-      (psd_info.version != 1))
+  if ((count == 0) || ((LocaleNCompare(psd_info.signature,"8BPS",4) != 0) &&
+      (LocaleNCompare(psd_info.signature,"8BPB",4) != 0)) ||
+      ((psd_info.version != 1) && (psd_info.version != 2)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,6,psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
@@ -673,7 +684,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
   psd_info.rows=ReadBlobMSBLong(image);
   psd_info.columns=ReadBlobMSBLong(image);
+  if ((psd_info.version == 1) && ((psd_info.rows > 30000) ||
+      (psd_info.columns > 30000)))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((psd_info.version == 1) && ((psd_info.rows > 300000) ||
+      (psd_info.columns > 300000)))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   psd_info.depth=ReadBlobMSBShort(image);
+  if ((psd_info.depth != 1) && (psd_info.depth != 8) && (psd_info.depth != 16))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   psd_info.mode=ReadBlobMSBShort(image);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -790,7 +809,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   layer_info=(LayerInfo *) NULL;
   number_layers=1;
-  length=ReadBlobMSBLong(image);
+  length=GetPSDSize(&psd_info,image);
   if (length == 8)
     {
       length=ReadBlobMSBLong(image);
@@ -813,13 +832,17 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     {
       offset=TellBlob(image);
-      size=ReadBlobMSBLong(image);
+      size=GetPSDSize(&psd_info,image);
       if (size == 0)
         {
+          unsigned long
+            quantum;
+
           /*
             Skip layers & masks.
           */
-          for (j=0; j < (long) (length-4); j++)
+          quantum=psd_info.version == 1 ? 4 : 8;
+          for (j=0; j < (long) (length-quantum); j++)
             (void) ReadBlobByte(image);
         }
       else
@@ -1105,7 +1128,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "      layer data is RLE compressed");
                       for (y=0; y < (long) layer_info[i].image->rows; y++)
-                        (void) ReadBlobMSBShort(layer_info[i].image);
+                        (void) GetPSDOffset(&psd_info,layer_info[i].image);
                       (void) DecodeImage(layer_info[i].image,
                          layer_info[i].channel_info[j].type);
                       continue;
@@ -1312,7 +1335,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read Packbit encoded pixel datas separate planes.
       */
       for (i=0; i < (long) (image->rows*psd_info.channels); i++)
-        (void) ReadBlobMSBShort(image);
+        (void) GetPSDOffset(&psd_info,image);
       for (i=0; i < (long) psd_info.channels; i++)
       {
         (void) DecodeImage(image,(int) i);

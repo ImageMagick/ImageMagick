@@ -1,6 +1,7 @@
 2010-02-27  6.6.0-1 Cristy  <quetzlzacatenango@image...>
   * Check to see if ICON image width /height exceeds that of the image canvas.
   * Set the DPX descriptor to Luma only if the image type is not TrueColor.
+  * Add support for the Adobe Large Document format.
 
 2010-02-21  6.6.0-0 Cristy  <quetzlzacatenango@image...>
   * Insufficient image data in EPT is a warning rather than an error.

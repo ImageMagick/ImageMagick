@@ -3173,6 +3173,60 @@ MagickExport unsigned int ReadBlobMSBLong(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b M S B L o n g L o n g                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobMSBLongLong() reads a long value as a 64-bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the ReadBlobMSBLongLong method is:
+%
+%      unsigned int ReadBlobMSBLongLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport MagickSizeType ReadBlobMSBLongLong(Image *image)
+{
+  register const unsigned char
+    *p;
+
+  register MagickSizeType
+    value;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  *buffer='\0';
+  p=ReadBlobStream(image,8,buffer,&count);
+  if (count != 8)
+    return(MagickULLConstant(0));
+  value=((MagickSizeType) (*p++)) << 56;
+  value|=((MagickSizeType) (*p++)) << 48;
+  value|=((MagickSizeType) (*p++)) << 40;
+  value|=((MagickSizeType) (*p++)) << 32;
+  value|=((MagickSizeType) (*p++)) << 24;
+  value|=((MagickSizeType) (*p++)) << 16;
+  value|=((MagickSizeType) (*p++)) << 8;
+  value|=((MagickSizeType) (*p++));
+  return(value & MagickULLConstant(0xffffffffffffffff));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  R e a d B l o b M S B S h o r t                                            %
 %                                                                             %
 %                                                                             %
