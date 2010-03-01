@@ -2205,11 +2205,32 @@ static const char *FxOperatorPrecedence(const char *expression,
         expression++;
         continue;
       }
-    if (LocaleNCompare(expression,"atan2",5) == 0)
+    switch (*expression)
+    {
+      case 'A':
+      case 'a':
       {
-        expression+=5;
-        continue;
+        if (LocaleNCompare(expression,"atan2",5) == 0)
+          {
+            expression+=5;
+            break;
+          }
+        break;
       }
+      case 'J':
+      case 'j':
+      {
+        if ((LocaleNCompare(expression,"j0",2) == 0) ||
+            (LocaleNCompare(expression,"j1",2) == 0))
+          {
+            expression+=2;
+            break;
+          }
+        break;
+      }
+      default:
+        break;
+    }
     if ((c == (int) '{') || (c == (int) '['))
       level++;
     else
