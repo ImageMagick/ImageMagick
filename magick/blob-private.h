@@ -84,7 +84,8 @@ extern MagickExport MagickOffsetType
   TellBlob(const Image *);
 
 extern MagickExport MagickSizeType
-  ReadBlobLongLong(Image *);
+  ReadBlobLongLong(Image *),
+  ReadBlobMSBLongLong(Image *);
 
 extern MagickExport ssize_t
   ReadBlob(Image *,const size_t,unsigned char *),
