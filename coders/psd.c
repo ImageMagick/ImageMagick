@@ -67,7 +67,7 @@
 /*
   Define declaractions.
 */
-#define MaxPSDChannels  24
+#define MaxPSDChannels  56
 
 /*
   Enumerated declaractions.
