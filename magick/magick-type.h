@@ -37,7 +37,7 @@ extern "C" {
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#define MagickEpsilon  1.0e-6
+#define MagickEpsilon  (2.0*1.1920928955078125e-07)
 #define MagickHuge     1.0e6
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
@@ -53,7 +53,7 @@ typedef unsigned char Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#define MagickEpsilon  1.0e-10
+#define MagickEpsilon  (2.0*2.2204460492503131e-16)
 #define MagickHuge     1.0e12
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
@@ -69,7 +69,7 @@ typedef unsigned short Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define MagickEpsilon  1.0e-10
+#define MagickEpsilon  (2.0*2.2204460492503131e-16)
 #define MagickHuge     1.0e12
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
@@ -85,7 +85,7 @@ typedef unsigned int Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64) && defined(MAGICKCORE_HAVE_LONG_DOUBLE_WIDER)
-#define MagickEpsilon  1.0e-10
+#define MagickEpsilon  (2.0*2.2204460492503131e-16)
 #define MagickHuge     1.0e12
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
