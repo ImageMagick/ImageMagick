@@ -2828,6 +2828,14 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) j1((double) alpha));
         }
+      if (LocaleNCompare(expression,"jinc",4) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
+            exception);
+          if (alpha == 0)
+            return((MagickRealType) (MagickPI/4.0));
+          return((MagickRealType) j1((double) (MagickPI*alpha))/(2.0*alpha));
+        }
       break;
     }
     case 'L':
@@ -2945,6 +2953,16 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
             exception);
           return(alpha < 0.0 ? -1.0 : 1.0);
+        }
+      if (LocaleNCompare(expression,"sinc",4) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
+            exception);
+          if (alpha == 0)
+            return(1.0);
+          gamma=(MagickRealType) (sin((double) (MagickPI*alpha))/
+            (MagickPI*alpha));
+          return(gamma);
         }
       if (LocaleNCompare(expression,"sinh",4) == 0)
         {
