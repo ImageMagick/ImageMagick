@@ -2832,7 +2832,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
             exception);
-          if (alpha == 0)
+          if (alpha == 0.0)
             return((MagickRealType) (MagickPI/4.0));
           return((MagickRealType) j1((double) (MagickPI*alpha))/(2.0*alpha));
         }
