@@ -202,13 +202,17 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ept_info.tiff_length=ReadBlobLSBLong(image);
   (void) ReadBlobLSBShort(image);
   ept_info.postscript=(unsigned char *) AcquireQuantumMemory(
-    ept_info.postscript_length,sizeof(*ept_info.postscript));
+    ept_info.postscript_length+1,sizeof(*ept_info.postscript));
   if (ept_info.postscript == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  ept_info.tiff=(unsigned char *) AcquireQuantumMemory(ept_info.tiff_length,
+  (void) ResetMagickMemory(ept_info.postscript,0,(ept_info.postscript_length+1)*
+    sizeof(*ept_info.postscript));
+  ept_info.tiff=(unsigned char *) AcquireQuantumMemory(ept_info.tiff_length+1,
     sizeof(*ept_info.tiff));
-  if ((ept_info.tiff_length != 0) && (ept_info.tiff == (unsigned char *) NULL))
+  if (ept_info.tiff == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(ept_info.tiff,0,(ept_info.tiff_length+1)*
+    sizeof(*ept_info.tiff));
   offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
   if (offset < 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
