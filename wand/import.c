@@ -109,7 +109,6 @@ static MagickBooleanType ImportUsage(void)
     {
       "-annotate geometry text",
       "                     annotate the image with text",
-      "-border              include image borders in the output image",
       "-colors value        preferred number of colors in the image",
       "-crop geometry       preferred size and location of the cropped image",
       "-encipher filename   convert plain pixels to cipher pixels",
@@ -131,6 +130,7 @@ static MagickBooleanType ImportUsage(void)
     *settings[]=
     {
       "-adjoin              join images into a single multi-image file",
+      "-border              include window borders in the output image",
       "-channel type        apply option to select image channels",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
