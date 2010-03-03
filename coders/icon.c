@@ -314,10 +314,10 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         icon_info.colors_important=ReadBlobLSBLong(image);
         image->matte=MagickTrue;
         image->columns=(unsigned long) icon_file.directory[i].width;
-        if (image->columns > icon_info.width)
+        if ((long) image->columns > icon_info.width)
           image->columns=(unsigned long) icon_info.width;
         image->rows=(unsigned long) icon_file.directory[i].height;
-        if (image->rows > icon_info.height)
+        if ((long) image->rows > icon_info.height)
           image->rows=(unsigned long) icon_info.height;
         image->depth=8;
         if (image->debug != MagickFalse)

@@ -1066,17 +1066,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       for (i=0; i < extra_samples; i++)
       {
         image->matte=MagickTrue;
-        image->alpha_channel=UndefinedAlphaChannel;
         (void) SetImageProperty(image,"tiff:alpha","undefined");
+        SetQuantumAlphaType(quantum_info,UndefinedQuantumAlpha);
         if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
           {
-            image->alpha_channel=UnassociatedAlphaChannel;
+            SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
             (void) SetImageProperty(image,"tiff:alpha","unassociated");
           }
         if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
           {
-            image->alpha_channel=AssociatedAlphaChannel;
-            SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+            SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
             (void) SetImageProperty(image,"tiff:alpha","associated");
           }
       }

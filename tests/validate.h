@@ -317,7 +317,7 @@ static const struct ReferenceFormats
     { "RAS", UndefinedCompression, 0.0 },
     { "RGB", UndefinedCompression, 0.0 },
     { "RGBA", UndefinedCompression, 0.003 },
-    { "RGBO", UndefinedCompression, 0.0 },
+    { "RGBO", UndefinedCompression, 0.003 },
     { "RLA", UndefinedCompression, 0.0 },
     { "RLE", UndefinedCompression, 0.0 },
     { "SCR", UndefinedCompression, 0.0 },

@@ -1513,7 +1513,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             */
             (void) WriteBlobString(image,"\n%begin_xml_code\n");
             (void) FormatMagickString(buffer,MaxTextExtent,
-               "\n%%begin_xml_packet: %ld\n",GetStringInfoLength(profile));
+               "\n%%begin_xml_packet: %lu\n",(unsigned long)
+               GetStringInfoLength(profile));
             (void) WriteBlobString(image,buffer);
             for (i=0; i < (long) GetStringInfoLength(profile); i++)
               (void) WriteBlobByte(image,GetStringInfoDatum(profile)[i]);
