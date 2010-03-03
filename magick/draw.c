@@ -2881,7 +2881,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             }
           length++;
         }
-        length=3*length/2+6*BezierQuantum+360+1;
+        length=6*(3*length/2+BezierQuantum)+360+1;
         break;
       }
       case CirclePrimitive:
