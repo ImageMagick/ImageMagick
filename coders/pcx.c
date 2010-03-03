@@ -1126,14 +1126,16 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
       }
     pcx_pixels=(unsigned char *) RelinquishMagickMemory(pcx_pixels);
     pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
+    if (page_table == (MagickOffsetType *) NULL)
+      break;
+    if (scene >= 1023)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene++,
       GetImageListLength(image));
     if (status == MagickFalse)
-      break;
-    if (scene >= 1023)
       break;
   } while (image_info->adjoin != MagickFalse);
   if (page_table != (MagickOffsetType *) NULL)
