@@ -1506,15 +1506,18 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,"\n%EndPhotoshop\n");
           }
         profile=GetImageProfile(image,"xmp");
-        if (profile != (StringInfo *) NULL)
+        if (0 && (profile != (StringInfo *) NULL))
           {
             /*
               Embed XML profile.
             */
             (void) WriteBlobString(image,"\n%begin_xml_code\n");
+            (void) FormatMagickString(buffer,MaxTextExtent,
+               "\n%%begin_xml_packet: %ld\n",GetStringInfoLength(profile));
+            (void) WriteBlobString(image,buffer);
             for (i=0; i < (long) GetStringInfoLength(profile); i++)
               (void) WriteBlobByte(image,GetStringInfoDatum(profile)[i]);
-            (void) WriteBlobString(image,"\n%end_xml_code\n");
+            (void) WriteBlobString(image,"\n%end_xml_packet\n%end_xml_code\n");
           }
         value=GetImageProperty(image,"label");
         if (value != (const char *) NULL)
