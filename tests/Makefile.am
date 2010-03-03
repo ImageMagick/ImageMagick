@@ -32,6 +32,7 @@ TESTS_TESTS = \
 	tests/validate-identify.sh \
 	tests/validate-import.sh \
 	tests/validate-montage.sh \
+	tests/validate-pipe.sh \
 	tests/validate-stream.sh
 
 TESTS_EXTRA_DIST = \
