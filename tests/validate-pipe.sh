@@ -20,10 +20,10 @@ set -e # Exit on any error
 . ${srcdir}/tests/common.sh
 
 ${CONVERT} pnm:- 'null:' < ${REFERENCE_IMAGE}
-${CONVERT} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -format '%m %wx%h %r %q-bit' -
-${CONVERT} pnm:- -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -format '%m %wx%h %r %q-bit' -
+${CONVERT} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${CONVERT} pnm:- -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
 ${CONVERT} - 'null:' < ${REFERENCE_IMAGE}
-${CONVERT} - miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -format '%m %wx%h %r %q-bit' -
-${CONVERT} - -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -format '%m %wx%h %r %q-bit' -
-${CONVERT} ${REFERENCE_IMAGE} - | ${IDENTIFY} -format '%m %wx%h %r %q-bit' -
-${CONVERT} ${REFERENCE_IMAGE} miff:- | ${IDENTIFY} -format '%m %wx%h %r %q-bit' -
+${CONVERT} - miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${CONVERT} - -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${CONVERT} ${REFERENCE_IMAGE} - | ${IDENTIFY} -
+${CONVERT} ${REFERENCE_IMAGE} miff:- | ${IDENTIFY} -
