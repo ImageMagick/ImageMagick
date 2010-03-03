@@ -197,7 +197,8 @@ static const char
   {
     "",
     "-verbose",
-    "-features -verbose",
+    "-features 1 -verbose",
+    "-unique -verbose",
     (const char *) NULL
   };
 
