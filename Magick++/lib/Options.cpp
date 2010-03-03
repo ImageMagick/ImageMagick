@@ -359,11 +359,10 @@ void Magick::Options::magick ( const std::string &magick_ )
 
   FormatMagickString( _imageInfo->filename, MaxTextExtent, "%.1024s:", magick_.c_str() );
   GetExceptionInfo(&exception);
-  SetImageInfo( _imageInfo, MagickTrue, &exception);
+  SetImageInfo( _imageInfo, 1, &exception);
   if ( *_imageInfo->magick == '\0' )
-    throwExceptionExplicit( OptionWarning,
-			    "Unrecognized image format",
-			    magick_.c_str() );
+    throwExceptionExplicit( OptionWarning, "Unrecognized image format",
+	    magick_.c_str() );
   (void) DestroyExceptionInfo( &exception );
 }
 std::string Magick::Options::magick ( void ) const

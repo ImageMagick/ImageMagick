@@ -555,7 +555,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             (void) CopyMagickString(p->filename,filename,MaxTextExtent);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,MagickTrue,&image->exception);
+          SetImageInfo(clone_info,1,&image->exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
           GetExceptionInfo(&exception);
@@ -594,7 +594,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             (void) CopyMagickString(p->filename,filename,MaxTextExtent);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,MagickTrue,&image->exception);
+          SetImageInfo(clone_info,1,&image->exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
           status=WriteStream(clone_info,image,fifo);
@@ -623,7 +623,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             (void) CopyMagickString(p->filename,filename,MaxTextExtent);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,MagickTrue,&image->exception);
+          SetImageInfo(clone_info,1,&image->exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
           status=WriteStream(clone_info,image,SafeArrayFifo);

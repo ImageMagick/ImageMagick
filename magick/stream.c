@@ -1125,7 +1125,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
         return(0);
       stream_info->image=image;
       write_info=CloneImageInfo(stream_info->image_info);
-      (void) SetImageInfo(write_info,MagickFalse,stream_info->exception);
+      (void) SetImageInfo(write_info,1,stream_info->exception);
       if (write_info->extract != (char *) NULL)
         (void) ParseAbsoluteGeometry(write_info->extract,
           &stream_info->extract_info);

@@ -342,7 +342,7 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
       */
       read_info=CloneImageInfo(image_info);
       sans=AcquireExceptionInfo();
-      (void) SetImageInfo(read_info,MagickFalse,sans);
+      (void) SetImageInfo(read_info,0,sans);
       sans=DestroyExceptionInfo(sans);
       (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
@@ -442,7 +442,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   read_info=CloneImageInfo(image_info);
   (void) CopyMagickString(magick_filename,read_info->filename,MaxTextExtent);
-  (void) SetImageInfo(read_info,MagickFalse,exception);
+  (void) SetImageInfo(read_info,0,exception);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) CopyMagickString(magick,read_info->magick,MaxTextExtent);
   domain=CoderPolicyDomain;
@@ -558,7 +558,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         UnlockSemaphoreInfo(constitute_semaphore);
       image=DestroyImageList(image);
       read_info->temporary=MagickTrue;
-      (void) SetImageInfo(read_info,MagickFalse,exception);
+      (void) SetImageInfo(read_info,0,exception);
       magick_info=GetMagickInfo(read_info->magick,exception);
       if ((magick_info == (const MagickInfo *) NULL) ||
           (GetImageDecoder(magick_info) == (DecodeImageHandler *) NULL))
@@ -848,7 +848,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       */
       read_info=CloneImageInfo(image_info);
       sans=AcquireExceptionInfo();
-      (void) SetImageInfo(read_info,MagickFalse,sans);
+      (void) SetImageInfo(read_info,0,sans);
       sans=DestroyExceptionInfo(sans);
       (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
@@ -1011,7 +1011,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   (void) CopyMagickString(write_info->filename,image->filename,MaxTextExtent);
   if (*write_info->magick == '\0')
     (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
-  (void) SetImageInfo(write_info,MagickTrue,sans_exception);
+  (void) SetImageInfo(write_info,1,sans_exception);
   if (LocaleCompare(write_info->magick,"clipmask") == 0)
     {
       if (image->clip_mask == (Image *) NULL)
@@ -1021,7 +1021,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           return(MagickFalse);
         }
       image=image->clip_mask;
-      (void) SetImageInfo(write_info,MagickTrue,sans_exception);
+      (void) SetImageInfo(write_info,1,sans_exception);
     }
   (void) CopyMagickString(filename,image->filename,MaxTextExtent);
   (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
@@ -1270,7 +1270,8 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   if (*write_info->magick == '\0')
     (void) CopyMagickString(write_info->magick,images->magick,MaxTextExtent);
   sans_exception=AcquireExceptionInfo();
-  (void) SetImageInfo(write_info,MagickTrue,sans_exception);
+  (void) SetImageInfo(write_info,(unsigned int) GetImageListLength(images),
+    sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   p=images;
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))

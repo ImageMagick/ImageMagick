@@ -3028,21 +3028,19 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,
 %  The format of the SetImageInfo method is:
 %
 %      MagickBooleanType SetImageInfo(ImageInfo *image_info,
-%        const MagickBooleanType rectify,ExceptionInfo *exception)
+%        const unsigned int frames,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: the image info..
+%    o image_info: the image info.
 %
-%    o rectify: an unsigned value other than zero rectifies the attribute for
-%      multi-frame support (user may want multi-frame but image format may not
-%      support it).
+%    o frames: the number of images you intend to write.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
-  const MagickBooleanType rectify,ExceptionInfo *exception)
+  const unsigned int frames,ExceptionInfo *exception)
 {
   char
     extension[MaxTextExtent],
@@ -3084,48 +3082,52 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   *subimage='\0';
-  GetPathComponent(image_info->filename,SubimagePath,subimage);
-  if (*subimage != '\0')
+  if (frames == 0)
     {
-      /*
-        Look for scene specification (e.g. img0001.pcd[4]).
-      */
-      if (IsSceneGeometry(subimage,MagickFalse) == MagickFalse)
+      GetPathComponent(image_info->filename,SubimagePath,subimage);
+      if (*subimage != '\0')
         {
-          if (IsGeometry(subimage) != MagickFalse)
-            (void) CloneString(&image_info->extract,subimage);
-        }
-      else
-        {
-          unsigned long
-            first,
-            last;
+          /*
+            Look for scene specification (e.g. img0001.pcd[4]).
+          */
+          if (IsSceneGeometry(subimage,MagickFalse) == MagickFalse)
+            {
+              if (IsGeometry(subimage) != MagickFalse)
+                (void) CloneString(&image_info->extract,subimage);
+            }
+          else
+            {
+              unsigned long
+                first,
+                last;
 
-          (void) CloneString(&image_info->scenes,subimage);
-          image_info->scene=StringToUnsignedLong(image_info->scenes);
-          image_info->number_scenes=image_info->scene;
-          p=image_info->scenes;
-          for (q=(char *) image_info->scenes; *q != '\0'; p++)
-          {
-            while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
-              p++;
-            first=(unsigned long) strtol(p,&q,10);
-            last=first;
-            while (isspace((int) ((unsigned char) *q)) != 0)
-              q++;
-            if (*q == '-')
-              last=(unsigned long) strtol(q+1,&q,10);
-            if (first > last)
-              Swap(first,last);
-            if (first < image_info->scene)
-              image_info->scene=first;
-            if (last > image_info->number_scenes)
-              image_info->number_scenes=last;
-            p=q;
-          }
-          image_info->number_scenes-=image_info->scene-1;
-          image_info->subimage=image_info->scene;
-          image_info->subrange=image_info->number_scenes;
+              (void) CloneString(&image_info->scenes,subimage);
+              image_info->scene=StringToUnsignedLong(image_info->scenes);
+              image_info->number_scenes=image_info->scene;
+              p=image_info->scenes;
+              for (q=(char *) image_info->scenes; *q != '\0'; p++)
+              {
+                while ((isspace((int) ((unsigned char) *p)) != 0) ||
+                       (*p == ','))
+                  p++;
+                first=(unsigned long) strtol(p,&q,10);
+                last=first;
+                while (isspace((int) ((unsigned char) *q)) != 0)
+                  q++;
+                if (*q == '-')
+                  last=(unsigned long) strtol(q+1,&q,10);
+                if (first > last)
+                  Swap(first,last);
+                if (first < image_info->scene)
+                  image_info->scene=first;
+                if (last > image_info->number_scenes)
+                  image_info->number_scenes=last;
+                p=q;
+              }
+              image_info->number_scenes-=image_info->scene-1;
+              image_info->subimage=image_info->scene;
+              image_info->subrange=image_info->number_scenes;
+            }
         }
     }
   *extension='\0';
@@ -3251,89 +3253,95 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     image_info->endian=UndefinedEndian;
   GetPathComponent(image_info->filename,CanonicalPath,filename);
   (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-  if (rectify != MagickFalse)
+  if ((image_info->adjoin != MagickFalse) && (frames > 1))
     {
       /*
-        Rectify multi-image file support.
+        Test for multiple image support (e.g. image%02d.png).
       */
-      if (image_info->adjoin != MagickFalse)
-        {
-          (void) InterpretImageFilename(image_info,(Image *) NULL,
-            image_info->filename,(int) image_info->scene,filename);
-          if ((LocaleCompare(filename,image_info->filename) != 0) &&
-              (strchr(filename,'%') == (char *) NULL))
-            image_info->adjoin=MagickFalse;
-        }
+      (void) InterpretImageFilename(image_info,(Image *) NULL,
+        image_info->filename,(int) image_info->scene,filename);
+      if ((LocaleCompare(filename,image_info->filename) != 0) &&
+          (strchr(filename,'%') == (char *) NULL))
+        image_info->adjoin=MagickFalse;
+    }
+  if ((image_info->adjoin != MagickFalse) && (frames > 0))
+    {
+      /*
+        Some image formats do not support multiple frames per file.
+      */
       magick_info=GetMagickInfo(magic,exception);
       if (magick_info != (const MagickInfo *) NULL)
         if (GetMagickAdjoin(magick_info) == MagickFalse)
           image_info->adjoin=MagickFalse;
-      return(MagickTrue);
     }
   if (image_info->affirm != MagickFalse)
     return(MagickTrue);
-  /*
-    Determine the image format from the first few bytes of the file.
-  */
-  image=AcquireImage(image_info);
-  (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    {
-      image=DestroyImage(image);
-      return(MagickFalse);
-    }
-  if ((IsBlobSeekable(image) == MagickFalse) ||
-      (IsBlobExempt(image) != MagickFalse))
+  if (frames == 0)
     {
       /*
-        Copy standard input or pipe to temporary file.
+        Determine the image format from the first few bytes of the file.
       */
-      *filename='\0';
-      status=ImageToFile(image,filename,exception);
-      (void) CloseBlob(image);
-      if (status == MagickFalse)
-        {
-          image=DestroyImage(image);
-          return(MagickFalse);
-        }
-      SetImageInfoFile(image_info,(FILE *) NULL);
-      (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+      image=AcquireImage(image_info);
+      (void) CopyMagickString(image->filename,image_info->filename,
+        MaxTextExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == MagickFalse)
         {
           image=DestroyImage(image);
           return(MagickFalse);
         }
-      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-      image_info->temporary=MagickTrue;
-    }
-  (void) ResetMagickMemory(magick,0,sizeof(magick));
-  count=ReadBlob(image,2*MaxTextExtent,magick);
-  (void) CloseBlob(image);
-  image=DestroyImage(image);
-  /*
-    Check magic.xml configuration file.
-  */
-  sans_exception=AcquireExceptionInfo();
-  magic_info=GetMagicInfo(magick,(size_t) count,sans_exception);
-  if ((magic_info != (const MagicInfo *) NULL) &&
-      (GetMagicName(magic_info) != (char *) NULL))
-    {
-      (void) CopyMagickString(image_info->magick,GetMagicName(magic_info),
-        MaxTextExtent);
+      if ((IsBlobSeekable(image) == MagickFalse) ||
+          (IsBlobExempt(image) != MagickFalse))
+        {
+          /*
+            Copy standard input or pipe to temporary file.
+          */
+          *filename='\0';
+          status=ImageToFile(image,filename,exception);
+          (void) CloseBlob(image);
+          if (status == MagickFalse)
+            {
+              image=DestroyImage(image);
+              return(MagickFalse);
+            }
+          SetImageInfoFile(image_info,(FILE *) NULL);
+          (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+          status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+          if (status == MagickFalse)
+            {
+              image=DestroyImage(image);
+              return(MagickFalse);
+            }
+          (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+          image_info->temporary=MagickTrue;
+        }
+      (void) ResetMagickMemory(magick,0,sizeof(magick));
+      count=ReadBlob(image,2*MaxTextExtent,magick);
+      (void) CloseBlob(image);
+      image=DestroyImage(image);
+      /*
+        Check magic.xml configuration file.
+      */
+      sans_exception=AcquireExceptionInfo();
+      magic_info=GetMagicInfo(magick,(size_t) count,sans_exception);
+      if ((magic_info != (const MagicInfo *) NULL) &&
+          (GetMagicName(magic_info) != (char *) NULL))
+        {
+          (void) CopyMagickString(image_info->magick,GetMagicName(magic_info),
+            MaxTextExtent);
+          magick_info=GetMagickInfo(image_info->magick,sans_exception);
+          if ((magick_info == (const MagickInfo *) NULL) ||
+              (GetMagickEndianSupport(magick_info) == MagickFalse))
+            image_info->endian=UndefinedEndian;
+          sans_exception=DestroyExceptionInfo(sans_exception);
+          return(MagickTrue);
+        }
       magick_info=GetMagickInfo(image_info->magick,sans_exception);
       if ((magick_info == (const MagickInfo *) NULL) ||
           (GetMagickEndianSupport(magick_info) == MagickFalse))
         image_info->endian=UndefinedEndian;
       sans_exception=DestroyExceptionInfo(sans_exception);
-      return(MagickTrue);
     }
-  magick_info=GetMagickInfo(image_info->magick,sans_exception);
-  if ((magick_info == (const MagickInfo *) NULL) ||
-      (GetMagickEndianSupport(magick_info) == MagickFalse))
-    image_info->endian=UndefinedEndian;
-  sans_exception=DestroyExceptionInfo(sans_exception);
   return(MagickTrue);
 }
 
