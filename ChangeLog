@@ -5,6 +5,7 @@
   * Add support for -fx airy(), j0(), j1(), jinc(), and sinc() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=15685).
     Anthony, review these for correctness.
+  * Don't embed an XMP profile in an EPS image for now.
 
 2010-02-21  6.6.0-0 Cristy  <quetzlzacatenango@image...>
   * Insufficient image data in EPT is a warning rather than an error.

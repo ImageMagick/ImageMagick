@@ -4972,7 +4972,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
       crop_info.y=y;
       crop_info.width=(unsigned long) window_attributes.width;
       crop_info.height=(unsigned long) window_attributes.height;
-      if (ximage_info->borders)
+      if (ximage_info->borders != 0)
         {
           /*
             Include border in image.
