@@ -30,6 +30,8 @@ extern "C" {
 typedef enum
 {
   UndefinedAlphaChannel,
+  AssociatedAlphaChannel,
+  UnassociatedAlphaChannel,
   ActivateAlphaChannel,
   BackgroundAlphaChannel,
   CopyAlphaChannel,
@@ -333,6 +335,9 @@ struct _Image
 
   MagickSizeType
     extent;
+
+  AlphaChannelType
+    alpha_channel;
 };
 
 struct _ImageInfo
