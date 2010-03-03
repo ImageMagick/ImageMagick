@@ -591,7 +591,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               */
               (void) CopyMagickString(image->filename,
                 resource_info.write_filename,MaxTextExtent);
-              (void) SetImageInfo(image_info,MagickTrue,&image->exception);
+              (void) SetImageInfo(image_info,1,&image->exception);
               status&=WriteImage(image_info,image);
               GetImageException(image,exception);
             }

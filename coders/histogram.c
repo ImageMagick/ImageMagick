@@ -371,7 +371,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   (void) CopyMagickString(histogram_image->filename,image_info->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
-  (void) SetImageInfo(write_info,MagickTrue,&image->exception);
+  (void) SetImageInfo(write_info,1,&image->exception);
   if (LocaleCompare(write_info->magick,"HISTOGRAM") == 0)
     (void) FormatMagickString(histogram_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);

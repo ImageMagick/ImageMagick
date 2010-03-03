@@ -4927,7 +4927,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             (void) CopyMagickString(image_info->filename,format,MaxTextExtent);
             (void) ConcatenateMagickString(image_info->filename,":",
               MaxTextExtent);
-            (void) SetImageInfo(image_info,MagickFalse,exception);
+            (void) SetImageInfo(image_info,0,exception);
             if (*image_info->magick == '\0')
               ThrowMogrifyException(OptionError,"UnrecognizedImageFormat",
                 format);

@@ -2655,7 +2655,7 @@ Average(ref)
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
       MaxTextExtent);
-    SetImageInfo(info->image_info,MagickFalse,exception);
+    SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
     XSRETURN(1);
@@ -3820,7 +3820,7 @@ Flatten(ref)
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
       MaxTextExtent);
-    SetImageInfo(info->image_info,MagickFalse,exception);
+    SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
     XSRETURN(1);
@@ -6369,7 +6369,8 @@ ImageToBlob(ref,...)
       (void) CopyMagickString(next->filename,filename,MaxTextExtent);
       next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,MagickTrue,&image->exception);
+    SetImageInfo(package_info->image_info,(unsigned int)
+      GetImageListLength(image),&image->exception);
     EXTEND(sp,(long) GetImageListLength(image));
     for ( ; image; image=image->next)
     {
@@ -10974,7 +10975,7 @@ Mosaic(ref)
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     (void) CopyMagickString(image->filename,info->image_info->filename,
       MaxTextExtent);
-    SetImageInfo(info->image_info,MagickFalse,&image->exception);
+    SetImageInfo(info->image_info,0,&image->exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
     XSRETURN(1);
@@ -13497,7 +13498,8 @@ Write(ref,...)
       (void) CopyMagickString(next->filename,filename,MaxTextExtent);
       next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,MagickTrue,&image->exception);
+    SetImageInfo(package_info->image_info,(unsigned int)
+      GetImageListLength(image),&image->exception);
     for (next=image; next; next=next->next)
     {
       (void) WriteImage(package_info->image_info,next);

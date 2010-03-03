@@ -10150,7 +10150,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     (void *) NULL);
   (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
   exception=AcquireExceptionInfo();
-  (void) SetImageInfo(image_info,MagickFalse,exception);
+  (void) SetImageInfo(image_info,0,exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     {
       char
@@ -12380,7 +12380,7 @@ static MagickBooleanType XSaveImage(Display *display,
     }
   image_info=CloneImageInfo(resource_info->image_info);
   (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,&image->exception);
+  (void) SetImageInfo(image_info,1,&image->exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {

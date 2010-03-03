@@ -329,7 +329,7 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image)
   (void) CopyMagickString(montage_image->filename,image_info->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
-  (void) SetImageInfo(write_info,MagickTrue,&image->exception);
+  (void) SetImageInfo(write_info,1,&image->exception);
   if (LocaleCompare(write_info->magick,"VID") == 0)
     (void) FormatMagickString(montage_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);

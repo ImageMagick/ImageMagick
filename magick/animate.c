@@ -2931,7 +2931,7 @@ static MagickBooleanType XSaveImage(Display *display,
     }
   image_info=CloneImageInfo(resource_info->image_info);
   (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,&image->exception);
+  (void) SetImageInfo(image_info,1,&image->exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {

@@ -207,7 +207,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   (void) CopyMagickString(thumbnail_image->filename,image->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
-  (void) SetImageInfo(write_info,MagickTrue,&image->exception);
+  (void) SetImageInfo(write_info,1,&image->exception);
   if (LocaleCompare(write_info->magick,"THUMBNAIL") == 0)
     (void) FormatMagickString(thumbnail_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);

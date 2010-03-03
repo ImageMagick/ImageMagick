@@ -344,7 +344,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       image_info=AcquireImageInfo();
       (void) CopyMagickString(image_info->filename,pattern,MaxTextExtent);
       exception=AcquireExceptionInfo();
-      (void) SetImageInfo(image_info,MagickTrue,exception);
+      (void) SetImageInfo(image_info,0,exception);
       exception=DestroyExceptionInfo(exception);
       if (LocaleCompare(image_info->filename,pattern) != 0)
         {

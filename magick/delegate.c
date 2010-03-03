@@ -958,7 +958,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       magick=DestroyString(magick);
       (void) FormatMagickString(clone_info->filename,MaxTextExtent,"%s:",
         delegate_info->decode);
-      (void) SetImageInfo(clone_info,MagickTrue,exception);
+      (void) SetImageInfo(clone_info,(unsigned int) GetImageListLength(image),
+        exception);
       (void) CopyMagickString(clone_info->filename,image_info->filename,
         MaxTextExtent);
       (void) CopyMagickString(image_info->filename,image->filename,
