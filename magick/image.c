@@ -828,7 +828,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->signature=MagickSignature;
   clone_image->storage_class=image->storage_class;
   clone_image->colorspace=image->colorspace;
-  clone_image->alpha_channel=image->alpha_channel;
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
@@ -2761,8 +2760,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       break;
     }
     case UndefinedAlphaChannel:
-    case AssociatedAlphaChannel:
-    case UnassociatedAlphaChannel:
       break;
   }
   return(status);

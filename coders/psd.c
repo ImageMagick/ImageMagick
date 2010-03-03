@@ -1035,7 +1035,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      unsupported data: length=%ld",(long)
-                    size-combinedlength);
+                    (size-combinedlength));
                 for (j=0; j < (long) (size-combinedlength); j++)
                   (void) ReadBlobByte(image);
               }
