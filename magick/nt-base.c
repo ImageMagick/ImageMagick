@@ -264,7 +264,7 @@ MagickExport int gettimeofday (struct timeval *time_value,
   struct timezone *time_zone)
 {
 #if !defined(__GNUC__)
-#define EPOCHFILETIME  (116444736000000000i 64)
+#define EPOCHFILETIME  (116444736000000000i64)
 #else
 #define EPOCHFILETIME  (116444736000000000LL)
 #endif
