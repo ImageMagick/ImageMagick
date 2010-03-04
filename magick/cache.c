@@ -2167,8 +2167,6 @@ MagickExport Cache GetImagePixelCache(Image *image,
 
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=MagickTrue;
-  LockSemaphoreInfo(image->semaphore);
   if (time_limit == 0)
     time_limit=GetMagickResourceLimit(TimeResource);
   if (time_limit != MagickResourceInfinity)
@@ -2181,6 +2179,8 @@ MagickExport Cache GetImagePixelCache(Image *image,
       if ((MagickSizeType) (time((time_t *) NULL)-cache_timer) >= time_limit)
         ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
     }
+  status=MagickTrue;
+  LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   destroy=MagickFalse;
