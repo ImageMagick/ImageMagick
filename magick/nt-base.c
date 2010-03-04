@@ -263,11 +263,7 @@ MagickExport int Exit(int status)
 MagickExport int gettimeofday (struct timeval *time_value,
   struct timezone *time_zone)
 {
-#if !defined(__GNUC__)
-#define EPOCHFILETIME  (116444736000000000i64)
-#else
-#define EPOCHFILETIME  (116444736000000000LL)
-#endif
+#define EpochFiletime  MagickLLConstant(116444736000000000)
 
   static int
     is_tz_set;
@@ -287,7 +283,7 @@ MagickExport int gettimeofday (struct timeval *time_value,
       date_time.LowPart=file_time.dwLowDateTime;
       date_time.HighPart=file_time.dwHighDateTime;
       time=date_time.QuadPart;
-      time-=EPOCHFILETIME;
+      time-=EpochFiletime;
       time/=10;
       time_value->tv_sec=(long) (time / 1000000);
       time_value->tv_usec=(long) (time % 1000000);
