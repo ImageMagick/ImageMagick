@@ -229,9 +229,9 @@
      &amp;&amp; (logical AND),  || (logical OR),
      ~ (logical NOT),  ?: (ternary conditional)</dd>
   <dt class="doc"> math functions: </dt>
-     <dd> abs(), acos(), alt(), asin(), atan(), atan2(), ceil(), cos(), cosh(), debug(), exp(), floor(),
-     hypot(), int(), ln(), log(), logtwo(), max(), min(), mod(), pow(), rand(), round(),
-     sign(), sin(), sinh(), sqrt(), tan(), tanh()</dd>
+     <dd> abs(), acos(), airy(), alt(), asin(), atan(), atan2(), ceil(), cos(), cosh(), debug(), exp(), floor(),
+     hypot(), int(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), pow(), rand(), round(),
+     sign(), sin(), sinc(), sinh(), sqrt(), tan(), tanh()</dd>
   <dt class="doc"> channel functions: </dt>
     <dd> channel(r,g,b,a), channel(c,m,y,k,a)</dd>
   <dt class="doc"> color names:</dt>
@@ -340,6 +340,7 @@
 <li> <kbd>s, t, u, v, n, i, j, w, h, z, r, g, b, a, o, c, y, m, k</kbd>:  symbols</li>
 <li> <kbd>abs(</kbd><em>x</em><kbd>)</kbd>:  absolute value function</li>
 <li> <kbd>acos(</kbd><em>x</em><kbd>)</kbd>:  arc cosine function</li>
+<li> <kbd>airy(</kbd><em>x</em><kbd>)</kbd>:  return the Airy function Ai(<em>x</em>)</li>
 <li> <kbd>alt(</kbd><em>x</em><kbd>)</kbd>:  sign alternation function (return 1.0 if <kbd>int(</kbd><em>x</em><kbd>)</kbd> is even, -1.0 if <kbd>int(</kbd><em>x</em><kbd>)</kbd> is odd)</li>
 <li> <kbd>asin(</kbd><em>x</em><kbd>)</kbd>:  arc sine function</li>
 <li> <kbd>atan(</kbd><em>x</em><kbd>)</kbd>:  arc tangent function</li>
@@ -354,6 +355,9 @@
 <li> <kbd>floor(</kbd><em>x</em><kbd>)</kbd>:  largest integral value not greater than argument</li>
 <li> <kbd>hypot(</kbd><em>x</em>,<em>y</em><kbd>)</kbd>:  the square root of x<sup>2</sup>+y<sup>2</sup></li>
 <li> <kbd>int(</kbd><em>x</em><kbd>)</kbd>:  greatest integer function (return greatest integer less than or equal to <em>x</em>)</li>
+<li> <kbd>j0(</kbd><em>x</em><kbd>)</kbd>:  Bessel functions of <em>x</em> of the first kind of orders 0</li>
+<li> <kbd>j1(</kbd><em>x</em><kbd>)</kbd>:  Bessel functions of <em>x</em> of the first kind of orders 1</li>
+<li> <kbd>jinc(</kbd><em>x</em><kbd>)</kbd>:  jinc function</li>
 <li> <kbd>ln(</kbd><em>x</em><kbd>)</kbd>:  natural logarithm function</li>
 <li> <kbd>log(</kbd><em>x</em><kbd>)</kbd>:  logarithm base 10</li>
 <li> <kbd>logtwo(</kbd><em>x</em><kbd>)</kbd>:  logarithm base 2</li>
@@ -366,6 +370,7 @@
 <li> <kbd>round()</kbd>:  round to integral value, regardless of rounding direction</li>
 <li> <kbd>sign(</kbd><em>x</em><kbd>)</kbd>:  return -1.0 if <em>x</em> is less than 0.0 otherwise 1.0</li>
 <li> <kbd>sin(</kbd><em>x</em><kbd>)</kbd>:  sine function</li>
+<li> <kbd>sinc(</kbd><em>x</em><kbd>)</kbd>:  sinc function</li>
 <li> <kbd>sinh(</kbd><em>x</em><kbd>)</kbd>:  hyperbolic sine function</li>
 <li> <kbd>sqrt(</kbd><em>x</em><kbd>)</kbd>:  square root function</li>
 <li> <kbd>tan(</kbd><em>x</em><kbd>)</kbd>:  tangent function</li>
@@ -394,7 +399,7 @@
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2.0" image.jpg</span></p>
 <p>By default, the image to which <kbd>p</kbd>, <kbd>r</kbd>, <kbd>g</kbd>, <kbd>b</kbd>, <kbd>a</kbd>, etc., are applied is the first image <kbd>u</kbd> in the image list, which may also be referenced using <kbd>s</kbd>. </p>
 
-<p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, any other images being used only for their data. As an illustrative example, comsider the following, and note that the setting <a href="../www/command-line-options.html#channel">-channel red</a> instructs <a href="../www/command-line-options.html#fx">-fx</a> to modify only the red channel; nothing in the green or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
+<p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, other images are used only for their data. As an illustrative example, consider the following, and note that the setting <a href="../www/command-line-options.html#channel">-channel red</a> instructs <a href="../www/command-line-options.html#fx">-fx</a> to modify only the red channel; nothing in the green or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -channel red logo: -flop logo: -resize "20%"  -fx "(u+v)/2" image.jpg</span></p>
 <div class="image">
@@ -466,7 +471,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

@@ -152,7 +152,13 @@
 
 <div class="main">
 
-<ul><dt>2010-02-21  6.6.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-02-27  6.6.0-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Check to see if ICON image width /height exceeds that of the image canvas.</li>
+  <li> Set the DPX descriptor to Luma only if the image type is not TrueColor.</li>
+  <li> Add support for the Adobe Large Document format.</li>
+  <li> Add support for -fx airy(), j0(), j1(), jinc(), and sinc() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=15685).    Anthony, review these for correctness.</li>
+  <li> Don't embed an XMP profile in an EPS image for now.</li><br />
+<dt>2010-02-21  6.6.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Insufficient image data in EPT is a warning rather than an error.</li>
   <li> Respect -type TrueColor when writing gray DPX images.</li>
   <li> Fix problem reading 10-bit grayscale DPX images when scanline length is    not a multiple of 3.</li>
@@ -1387,7 +1393,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
