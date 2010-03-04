@@ -4629,12 +4629,6 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
   length=(MagickSizeType) nexus_info->region.width*sizeof(IndexPacket);
   rows=nexus_info->region.height;
   number_pixels=length*rows;
-  if ((cache_info->columns == nexus_info->region.width) &&
-      (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
-    {
-      length=number_pixels;
-      rows=1UL;
-    }
   q=nexus_info->indexes;
   switch (cache_info->type)
   {
@@ -4647,6 +4641,12 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
       /*
         Read indexes from memory.
       */
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+        {
+          length=number_pixels;
+          rows=1UL;
+        }
       p=cache_info->indexes+offset;
       for (y=0; y < (long) rows; y++)
       {
@@ -4666,6 +4666,12 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
           return(MagickFalse);
+        }
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels < MagickMaxBufferExtent))
+        {
+          length=number_pixels;
+          rows=1UL;
         }
       number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
       for (y=0; y < (long) rows; y++)
@@ -4754,12 +4760,6 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
   length=(MagickSizeType) nexus_info->region.width*sizeof(PixelPacket);
   rows=nexus_info->region.height;
   number_pixels=length*rows;
-  if ((cache_info->columns == nexus_info->region.width) &&
-      (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
-    {
-      length=number_pixels;
-      rows=1UL;
-    }
   q=nexus_info->pixels;
   switch (cache_info->type)
   {
@@ -4772,6 +4772,12 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       /*
         Read pixels from memory.
       */
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+        {
+          length=number_pixels;
+          rows=1UL;
+        }
       p=cache_info->pixels+offset;
       for (y=0; y < (long) rows; y++)
       {
@@ -4791,6 +4797,12 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
           return(MagickFalse);
+        }
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels < MagickMaxBufferExtent))
+        {
+          length=number_pixels;
+          rows=1UL;
         }
       for (y=0; y < (long) rows; y++)
       {
@@ -5333,12 +5345,6 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
   length=(MagickSizeType) nexus_info->region.width*sizeof(IndexPacket);
   rows=nexus_info->region.height;
   number_pixels=(MagickSizeType) length*rows;
-  if ((cache_info->columns == nexus_info->region.width) &&
-      (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
-    {
-      length=number_pixels;
-      rows=1UL;
-    }
   p=nexus_info->indexes;
   switch (cache_info->type)
   {
@@ -5351,6 +5357,12 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
       /*
         Write indexes to memory.
       */
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+        {
+          length=number_pixels;
+          rows=1UL;
+        }
       q=cache_info->indexes+offset;
       for (y=0; y < (long) rows; y++)
       {
@@ -5370,6 +5382,12 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
           return(MagickFalse);
+        }
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels < MagickMaxBufferExtent))
+        {
+          length=number_pixels;
+          rows=1UL;
         }
       number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
       for (y=0; y < (long) rows; y++)
@@ -5459,12 +5477,6 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
   length=(MagickSizeType) nexus_info->region.width*sizeof(PixelPacket);
   rows=nexus_info->region.height;
   number_pixels=length*rows;
-  if ((cache_info->columns == nexus_info->region.width) &&
-      (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
-    {
-      length=number_pixels;
-      rows=1UL;
-    }
   p=nexus_info->pixels;
   switch (cache_info->type)
   {
@@ -5477,6 +5489,12 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       /*
         Write pixels to memory.
       */
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+        {
+          length=number_pixels;
+          rows=1UL;
+        }
       q=cache_info->pixels+offset;
       for (y=0; y < (long) rows; y++)
       {
@@ -5496,6 +5514,12 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
           return(MagickFalse);
+        }
+      if ((cache_info->columns == nexus_info->region.width) &&
+          (number_pixels < MagickMaxBufferExtent))
+        {
+          length=number_pixels;
+          rows=1UL;
         }
       for (y=0; y < (long) rows; y++)
       {
