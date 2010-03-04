@@ -89,9 +89,10 @@
 %
 %  The format of the ExportQuantumPixels method is:
 %
-%      size_t ExportQuantumPixels(const Image *image,const CacheView *image_view,
-%        const QuantumInfo *quantum_info,const QuantumType quantum_type,
-%        unsigned char *pixels,ExceptionInfo *exception)
+%      size_t ExportQuantumPixels(const Image *image,
+%        const CacheView *image_view,const QuantumInfo *quantum_info,
+%        const QuantumType quantum_type,unsigned char *pixels,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2001,6 +2002,101 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             q=PopCharPixel(pixel,q);
             pixel=ScaleQuantumToChar(GetAlphaPixelComponent(p));
             q=PopCharPixel(pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+        case 10:
+        {
+          register unsigned long
+            pixel;
+
+          range=GetQuantumRange(image->depth);
+          if (quantum_info->pack == MagickFalse)
+            {
+              long
+                n;
+
+              register long
+                i;
+
+              unsigned long
+                quantum;
+
+              n=0;
+              quantum=0;
+              pixel=0;
+              for (x=0; x < (long) number_pixels; x++)
+              {
+                for (i=0; i < 4; i++)
+                {
+                  switch (i)
+                  {
+                    case 0: quantum=p->red; break;
+                    case 1: quantum=p->green; break;
+                    case 2: quantum=p->blue; break;
+                    case 3: quantum=QuantumRange-p->opacity; break;
+                  }
+                  switch (n % 3)
+                  {
+                    case 0:
+                    {
+                      pixel|=(unsigned long) (ScaleQuantumToAny(quantum,
+                        range) << 22);
+                      break;
+                    }
+                    case 1:
+                    {
+                      pixel|=(unsigned long) (ScaleQuantumToAny(quantum,
+                        range) << 12);
+                      break;
+                    }
+                    case 2:
+                    {
+                      pixel|=(unsigned long) (ScaleQuantumToAny(quantum,
+                        range) << 2);
+                      q=PopLongPixel(endian,pixel,q);
+                      pixel=0;
+                      break;
+                    }
+                  }
+                  n++;
+                }
+                p++;
+                q+=quantum_info->pad;
+              }
+              break;
+            }
+          if (quantum_info->quantum == 32UL)
+            {
+              for (x=0; x < (long) number_pixels; x++)
+              {
+                pixel=(unsigned long) ScaleQuantumToAny(p->red,range);
+                q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
+                pixel=(unsigned long) ScaleQuantumToAny(p->green,range);
+                q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
+                pixel=(unsigned long) ScaleQuantumToAny(p->blue,range);
+                q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
+                pixel=(unsigned long) ScaleQuantumToAny(QuantumRange-p->opacity,
+                  range);
+                q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
+                p++;
+                q+=quantum_info->pad;
+              }
+              break;
+            }
+          for (x=0; x < (long) number_pixels; x++)
+          {
+            pixel=(unsigned long) ScaleQuantumToAny(p->red,range);
+            q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
+            pixel=(unsigned long) ScaleQuantumToAny(p->green,range);
+            q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
+            pixel=(unsigned long) ScaleQuantumToAny(p->blue,range);
+            q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
+            pixel=(unsigned long) ScaleQuantumToAny(QuantumRange-
+              p->opacity,range);
+            q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
             p++;
             q+=quantum_info->pad;
           }

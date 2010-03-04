@@ -748,6 +748,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     y;
 
   MagickBooleanType
+    associated_alpha,
     debug,
     status;
 
@@ -1054,6 +1055,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
+    associated_alpha=MagickFalse;
     extra_samples=0;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
@@ -1066,19 +1068,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       for (i=0; i < extra_samples; i++)
       {
         image->matte=MagickTrue;
-        (void) SetImageProperty(image,"tiff:alpha","undefined");
-        SetQuantumAlphaType(quantum_info,UndefinedQuantumAlpha);
-        if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
-          {
-            SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
-            (void) SetImageProperty(image,"tiff:alpha","unassociated");
-          }
         if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
-          {
-            SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
-            (void) SetImageProperty(image,"tiff:alpha","associated");
-          }
+          SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
       }
+    option=GetImageOption(image_info,"tiff:alpha");
+    if (option != (const char *) NULL)
+      associated_alpha=LocaleCompare(option,"associated") == 0 ? MagickTrue :
+        MagickFalse;
+    if (image->matte != MagickFalse)
+      (void) SetImageProperty(image,"tiff:alpha",
+        associated_alpha != MagickFalse ? "associated" : "unassociated");
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
@@ -1648,7 +1647,7 @@ ModuleExport unsigned long RegisterTIFFImage(void)
 
   MagickInfo
     *entry;
-
+  
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
     tiff_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(tiff_semaphore);

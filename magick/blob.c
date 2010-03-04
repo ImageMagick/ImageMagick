@@ -1236,7 +1236,7 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
       break;
     case BlobStream:
     {
-      extent=(MagickSizeType) image->blob->extent;
+      extent=(MagickSizeType) image->blob->length;
       break;
     }
   }
