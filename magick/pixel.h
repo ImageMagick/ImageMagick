@@ -35,7 +35,7 @@ extern "C" {
 #define GetGreenPixelComponent(p) ((p)->green)
 #define GetBluePixelComponent(p) ((p)->blue)
 #define GetOpacityPixelComponent(p) ((p)->opacity)
-#define GetAlphaPixelComponent(p) (QuantumRange-(p)->opacity)
+#define GetAlphaPixelComponent(p) ((Quantum) (QuantumRange-(p)->opacity))
 #define GetIndexPixelComponent(p) ((p)->index)
 
 #define SetRedPixelComponent(q,component) ((q)->red=(component))
