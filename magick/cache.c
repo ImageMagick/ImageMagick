@@ -784,9 +784,9 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
   ssize_t
     count;
 
+  cache_info->timestamp=time(0);
 #if !defined(MAGICKCORE_HAVE_PREAD)
   LockSemaphoreInfo(cache_info->disk_semaphore);
-  cache_info->timestamp=time(0);
   if (MagickSeek(cache_info->file,offset,SEEK_SET) < 0)
     {
       UnlockSemaphoreInfo(cache_info->disk_semaphore);
@@ -828,9 +828,9 @@ static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
   ssize_t
     count;
 
+  cache_info->timestamp=time(0);
 #if !defined(MAGICKCORE_HAVE_PWRITE)
   LockSemaphoreInfo(cache_info->disk_semaphore);
-  cache_info->timestamp=time(0);
   if (MagickSeek(cache_info->file,offset,SEEK_SET) < 0)
     {
       UnlockSemaphoreInfo(cache_info->disk_semaphore);
