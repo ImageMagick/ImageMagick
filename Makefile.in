@@ -4544,7 +4544,6 @@ TESTS_EXTRA_DIST = \
 	$(TESTS_TESTS)
 
 TESTS_CLEANFILES = 
-PERLMAGICK_MAINTAINER_TARGETS = $(top_srcdir)/$(PERLMAGICK)/Magick.pm
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
@@ -4583,8 +4582,7 @@ doc_DATA = \
 	NEWS.txt
 
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
-@MAINTAINER_MODE_TRUE@  magick-version \
-@MAINTAINER_MODE_TRUE@  $(PERLMAGICK_MAINTAINER_TARGETS)
+@MAINTAINER_MODE_TRUE@	magick-version
 
 
 # Non-Automake subdirectories to distribute
@@ -11033,12 +11031,6 @@ perl-sources:
 	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
 	fi ; \
 	touch perl-sources
-
-$(top_srcdir)/$(PERLMAGICK)/Magick.pm : $(PERLMAGICK)/Magick.pm
-  @if test -n "$(VPATH)" ; then \
-      echo "Updating  $(PERLMAGICK)/Magick.pm ..." ; \
-      cp $(PERLMAGICK)/Magick.pm $(top_srcdir)/$(PERLMAGICK)/Magick.pm ; \
-  fi
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@$(PERLMAKEFILE): perl-sources $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(PERLMAKEMAKER)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL $(PERL_MAKE_OPTIONS)

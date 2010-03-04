@@ -26,14 +26,6 @@ perl-sources:
 	fi ; \
 	touch perl-sources
 
-$(top_srcdir)/$(PERLMAGICK)/Magick.pm : $(PERLMAGICK)/Magick.pm
-  @if test -n "$(VPATH)" ; then \
-      echo "Updating  $(PERLMAGICK)/Magick.pm ..." ; \
-      cp $(PERLMAGICK)/Magick.pm $(top_srcdir)/$(PERLMAGICK)/Magick.pm ; \
-  fi
-
-PERLMAGICK_MAINTAINER_TARGETS=$(top_srcdir)/$(PERLMAGICK)/Magick.pm
-
 if WITH_PERL
 
 PERLMAGICK=PerlMagick
