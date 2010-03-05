@@ -1232,7 +1232,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             kernel=AcquireKernelInfo(argv[i+1]);
             if (kernel == (KernelInfo *) NULL)
               break;
-            convolve_image=FilterImageChannel(*image,channel,kernel,exception);
+            convolve_image=ConvoleImageChannel(*image,channel,kernel,exception);
             kernel=DestroyKernelInfo(kernel);
             if (convolve_image == (Image *) NULL)
               break;
