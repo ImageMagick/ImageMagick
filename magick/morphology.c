@@ -76,25 +76,24 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/token.h"
-
-
+
 /*
- * The following test is for special floating point numbers of value NaN (not
- * a number), that may be used within a Kernel Definition.  NaN's are defined
- * as part of the IEEE standard for floating point number representation.
- *
- * These are used a Kernel value of NaN means that that kernal position is not
- * part of the normal convolution or morphology process, and thus allowing the
- * use of 'shaped' kernels.
- *
- * Special Properities Two NaN's are never equal, even if they are from the
- * same variable That is the IsNaN() macro is only true if the value is NaN.
- */
+  The following test is for special floating point numbers of value NaN (not
+  a number), that may be used within a Kernel Definition.  NaN's are defined
+  as part of the IEEE standard for floating point number representation.
+
+  These are used a Kernel value of NaN means that that kernal position is not
+  part of the normal convolution or morphology process, and thus allowing the
+  use of 'shaped' kernels.
+
+  Special properities two NaN's are never equal, even if they are from the
+  same variable That is the IsNaN() macro is only true if the value is NaN.
+*/
 #define IsNan(a)   ((a)!=(a))
 
 /*
- * Other global definitions used by module
- */
+  Other global definitions used by module.
+*/
 static inline double MagickMin(const double x,const double y)
 {
   return( x < y ? x : y);
