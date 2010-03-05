@@ -2312,6 +2312,14 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
 <p>Histogram() returns the unique colors in the image and a count for each one. The returned values are an array of red, green, blue, opacity, and count values.</p>
 
+<p>The IntensityProjection() method returns the maximum (or minimum) intensity
+projection for an image sequence.  For example, to compute the maximum intensity
+projection:</p>
+
+<pre class="code">
+  $p = $image-&gt;IntensityProjection(projection=>'false');
+</pre>
+
 <p>The Morph() method morphs a set of images. Both the image pixels and size are linearly interpolated to give the appearance of a meta-morphosis from one image to the next:</p>
 
 <pre class="code">

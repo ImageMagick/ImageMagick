@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -155,7 +155,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AverageImages">AverageImages</a> &bull; <a href="#GetImageChannelMean">GetImageChannelMean</a> &bull; <a href="#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &bull; <a href="#GetImageChannelRange">GetImageChannelRange</a> &bull; <a href="#GetImageChannelStatistics">GetImageChannelStatistics</a>]</p>
+<p class="navigation-index">[<a href="#AverageImages">AverageImages</a> &bull; <a href="#GetImageChannelMean">GetImageChannelMean</a> &bull; <a href="#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &bull; <a href="#GetImageChannelRange">GetImageChannelRange</a> &bull; <a href="#GetImageChannelStatistics">GetImageChannelStatistics</a> &bull; <a href="#IntensityProjectionImages">IntensityProjectionImages</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/statistic
 _8c.html" target="source" name="AverageImages">AverageImages</a></h2>
@@ -166,7 +166,7 @@ _8c.html" target="source" name="AverageImages">AverageImages</a></h2>
 <p>The format of the AverageImages method is:</p>
 
 <pre class="code">
-  Image *AverageImages(Image *image,ExceptionInfo *exception)
+  Image *AverageImages(Image *images,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -298,6 +298,31 @@ _8c.html" target="source" name="GetImageChannelStatistics">GetImageChannelStatis
 
 <h5>image</h5>
 <ol><p>the image.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic
+_8c.html" target="source" name="IntensityProjectionImages">IntensityProjectionImages</a></h2>
+<div class="doc-section">
+
+<p>IntensityProjectionImages() returns the maximum (or minimum) intensity projection of an image sequence.</p></ol>
+
+<p>The format of the IntensityProjectionImages method is:</p>
+
+<pre class="code">
+  Image *IntensityProjectionImages(Image *images,
+    const MagickBooleanType projection,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>images</h5>
+<ol><p>the image sequence.</p></ol>
+
+<h5>projection</h5>
+<ol><p>compute the minimum intensity projection for a value other than 0, otherwise compute the maximum.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
