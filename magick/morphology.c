@@ -108,12 +108,7 @@ static inline double MagickMax(const double x,const double y)
 
 /* Currently these are only internal to this module */
 static void
-  RotateKernelInfo(KernelInfo *, double),
-  ScaleKernelInfo(KernelInfo *, const double, const MagickStatusType);
-
-static KernelInfo
-  *CloneKernelInfo(const KernelInfo *);
-
+  RotateKernelInfo(KernelInfo *, double);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -946,7 +941,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %    o kernel: the Morphology/Convolution kernel to be cloned
 %
 */
-MagickBooleanType KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
+MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 {
   register long
     i;
@@ -1026,11 +1021,11 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %
 %  The format of the MorphologyImage method is:
 %
-%      Image *MorphologyImage(const Image *image, MorphologyMethod method,
-%        const long iterations, KernelInfo *kernel, ExceptionInfo *exception)
+%      Image *MorphologyImage(const Image *image,MorphologyMethod method,
+%        const long iterations,KernelInfo *kernel,ExceptionInfo *exception)
 %      Image *MorphologyImageChannel(const Image *image, const ChannelType
-%        channel, MorphologyMethod method, const long iterations, KernelInfo
-%        *kernel, ExceptionInfo *exception)
+%        channel,MorphologyMethod method,const long iterations,
+%        KernelInfo *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1537,9 +1532,9 @@ MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
 }
 
 
-MagickExport Image *MorphologyImageChannel(const Image *image, const
-  ChannelType channel, const MorphologyMethod method, const long
-  iterations, const KernelInfo *kernel, ExceptionInfo *exception)
+MagickExport Image *MorphologyImageChannel(const Image *image,
+  const ChannelType channel,const MorphologyMethod method,
+  const long iterations,const KernelInfo *kernel,ExceptionInfo *exception)
 {
   long
     count;

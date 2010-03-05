@@ -2201,7 +2201,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             const char
               *p;
 
-            unsigned long
+            long
               iterations;
 
             Image
@@ -2214,12 +2214,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             GetMagickToken(p,&p,token);
             method=(MorphologyMethod) ParseMagickOption(MagickMorphologyOptions,
                       MagickFalse,token);
-            iterations = 1UL;
+            iterations=1L;
             GetMagickToken(p,&p,token);
-            if ( (*p == ':') || (*p == ','))
+            if ((*p == ':') || (*p == ','))
               GetMagickToken(p,&p,token);
-            if ( (*p != '\0') )
-              iterations = StringToLong(p);
+            if ((*p != '\0'))
+              iterations=StringToLong(p);
             kernel=AcquireKernelInfo(argv[i+2]);
             if (kernel == (KernelInfo *) NULL)
               ThrowWandFatalException(ResourceLimitFatalError,
