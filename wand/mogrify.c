@@ -3796,6 +3796,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
+      "-mip                 return the maximum intensity projection for an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -5334,6 +5335,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("mip",option+1) == 0)
+          break;
         if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '+')
@@ -8085,6 +8088,23 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             i++;
+            break;
+          }
+        if (LocaleCompare("mip",option+1) == 0)
+          {
+            Image
+              *morph_image;
+
+            (void) SyncImagesSettings(image_info,*images);
+            morph_image=MorphImages(*images,StringToUnsignedLong(argv[i+1]),
+              exception);
+            if (morph_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=morph_image;
             break;
           }
         if (LocaleCompare("morph",option+1) == 0)
