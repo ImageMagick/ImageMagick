@@ -108,7 +108,7 @@
 %
 %  The format of the AverageImages method is:
 %
-%      Image *AverageImages(Image *image,ExceptionInfo *exception)
+%      Image *AverageImages(Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -161,7 +161,7 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
   return(pixels);
 }
 
-MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
+MagickExport Image *AverageImages(const Image *images,ExceptionInfo *exception)
 {
 #define AverageImageTag  "Average/Image"
 
@@ -191,19 +191,23 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   /*
     Ensure the image are the same size.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
-    if ((next->columns != image->columns) || (next->rows != image->rows))
-      ThrowImageException(OptionError,"ImageWidthsOrHeightsDiffer");
+  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
+    if ((next->columns != images->columns) || (next->rows != images->rows))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
+        return((Image *) NULL);
+      }
   /*
     Initialize average next attributes.
   */
-  average_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+  average_image=CloneImage(images,images->columns,images->rows,MagickTrue,
     exception);
   if (average_image == (Image *) NULL)
     return((Image *) NULL);
@@ -213,19 +217,21 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       average_image=DestroyImage(average_image);
       return((Image *) NULL);
     }
-  average_pixels=AcquirePixelThreadSet(image);
+  average_pixels=AcquirePixelThreadSet(images);
   if (average_pixels == (MagickPixelPacket **) NULL)
     {
       average_image=DestroyImage(average_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+      return((Image *) NULL);
     }
   /*
     Average image pixels.
   */
   status=MagickTrue;
   progress=0;
-  GetMagickPixelPacket(image,&zero);
-  number_images=GetImageListLength(image);
+  GetMagickPixelPacket(images,&zero);
+  number_images=GetImageListLength(images);
   average_view=AcquireCacheView(average_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic) shared(progress,status)
@@ -270,7 +276,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     average_pixel=average_pixels[id];
     for (x=0; x < (long) average_image->columns; x++)
       average_pixel[x]=zero;
-    next=image;
+    next=images;
     for (i=0; i < (long) number_images; i++)
     {
       register const IndexPacket
@@ -319,7 +325,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     }
     if (SyncCacheViewAuthenticPixels(average_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+    if (images->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
@@ -327,7 +333,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_AverageImages)
 #endif
-        proceed=SetImageProgress(image,AverageImageTag,progress++,
+        proceed=SetImageProgress(images,AverageImageTag,progress++,
           average_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1119,4 +1125,107 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       }
   }
   return(channel_statistics);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M a x i m u m I n t e n s i t y P r o j e c t i o n I m a g e s         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MaximumIntensityProjectionImages() returns the maximum intensity projection
+%  of an image sequence.
+%
+%  The format of the MaximumIntensityProjectionImages method is:
+%
+%      Image *MaximumIntensityProjectionImages(Image *images,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: the image sequence.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MaximumIntensityProjectionImages(const Image *images,
+  ExceptionInfo *exception)
+{
+#define MaximumIntensityProjectionImageTag  "MaximumIntensityProjection/Image"
+
+  const Image
+    *next;
+
+  Image
+    *mip_image;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  unsigned long
+    number_images;
+
+  /*
+    Ensure the image are the same size.
+  */
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
+    if ((next->columns != images->columns) || (next->rows != images->rows))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
+        return((Image *) NULL);
+      }
+  /*
+    Initialize mip_image next attributes.
+  */
+  mip_image=CloneImage(images,0,0,MagickTrue,exception);
+  if (mip_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(mip_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&mip_image->exception);
+      mip_image=DestroyImage(mip_image);
+      return((Image *) NULL);
+    }
+  /*
+    Compute the maximum intensity projection.
+  */
+  i=0;
+  number_images=GetImageListLength(images);
+  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
+  {
+    status=CompositeImage(mip_image,LightenCompositeOp,next,0,0);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&mip_image->exception);
+        mip_image=DestroyImage(mip_image);
+        break;
+      }
+    if (images->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_MaximumIntensityProjectionImages)
+#endif
+        proceed=SetImageProgress(images,MaximumIntensityProjectionImageTag,i++,
+          number_images);
+      }
+  }
+  return(mip_image);
 }

@@ -302,6 +302,7 @@ static MagickBooleanType ConvertUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
+      "-mip                 return the maximum intensity projection for an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -1881,6 +1882,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("mip",option+1) == 0)
+          break;
         if (LocaleCompare("median",option+1) == 0)
           {
             if (*option == '+')

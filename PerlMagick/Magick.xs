@@ -6752,6 +6752,101 @@ MagickToMime(ref,name)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   M a x i m u m I n t e n s i t y P r o j e c t i o n                       #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+MaximumIntensityProjection(ref)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    MaximumIntensityProjectionImage   = 1
+    maximumintensityprojection        = 2
+    maximumintensityprojectionimage   = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *p;
+
+    ExceptionInfo
+      *exception;
+
+    HV
+      *hv;
+
+    Image
+      *image;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *perl_exception,
+      *reference,
+      *rv,
+      *sv;
+
+    exception=AcquireExceptionInfo();
+    perl_exception=newSVpv("",0);
+    if (sv_isobject(ST(0)) == 0)
+      {
+        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
+          PackageName);
+        goto PerlException;
+      }
+    reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
+    image=MaximumIntensityProjectionImages(image,exception);
+    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+      goto PerlException;
+    /*
+      Create blessed Perl array for the returned image.
+    */
+    av=newAV();
+    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
+    AddImageToRegistry(image);
+    rv=newRV(sv);
+    av_push(av,sv_bless(rv,hv));
+    SvREFCNT_dec(sv);
+    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
+    (void) FormatMagickString(info->image_info->filename,MaxTextExtent,
+      "mip-%.*s",(int) (MaxTextExtent-9),
+      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
+    (void) CopyMagickString(image->filename,info->image_info->filename,
+      MaxTextExtent);
+    SetImageInfo(info->image_info,0,exception);
+    exception=DestroyExceptionInfo(exception);
+    SvREFCNT_dec(perl_exception);
+    XSRETURN(1);
+
+  PerlException:
+    InheritPerlException(exception,perl_exception);
+    exception=DestroyExceptionInfo(exception);
+    sv_setiv(perl_exception,(IV) SvCUR(perl_exception) != 0);
+    SvPOK_on(perl_exception);
+    ST(0)=sv_2mortal(perl_exception);
+    XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   M o g r i f y                                                             #
 #                                                                             #
 #                                                                             #

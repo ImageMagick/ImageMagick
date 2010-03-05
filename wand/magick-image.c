@@ -6457,6 +6457,46 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k M a x i m u m I n t e n s i t y P r o j e c t i o n I m a g e %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMaximumIntensityProjectionImages() returns the maximum intensity
+%  projection of an image sequence.
+%
+%  The format of the MagickMaximumIntensityProjectionImages method is:
+%
+%      MagickWand *MagickMaximumIntensityProjectionImages(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickWand *MagickMaximumIntensityProjectionImages(MagickWand *wand)
+{
+  Image
+    *mip_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  mip_image=MaximumIntensityProjectionImages(wand->images,wand->exception);
+  if (mip_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,mip_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k I n v e r s e F o u r i e r T r a n s f o r m I m a g e       %
 %                                                                             %
 %                                                                             %
