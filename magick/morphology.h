@@ -96,16 +96,18 @@ typedef struct
 extern MagickExport KernelInfo
   *AcquireKernelInfo(const char *),
   *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *),
+  *CloneKernelInfo(const KernelInfo *),
   *DestroyKernelInfo(KernelInfo *);
-
-extern MagickExport void
-  ShowKernelInfo(KernelInfo *);
 
 extern MagickExport Image
   *MorphologyImage(const Image *,const MorphologyMethod,const long,
     const KernelInfo *,ExceptionInfo *),
   *MorphologyImageChannel(const Image *,const ChannelType,
-     const MorphologyMethod,const long,const KernelInfo *,ExceptionInfo *);
+    const MorphologyMethod,const long,const KernelInfo *,ExceptionInfo *);
+
+extern MagickExport void
+  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
+  ShowKernelInfo(KernelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

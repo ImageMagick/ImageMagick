@@ -6457,28 +6457,33 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k M a x i m u m I n t e n s i t y P r o j e c t i o n I m a g e %
+%   M a g i c k I n t e n s i t y P r o j e c t i o n I m a g e s             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickMaximumIntensityProjectionImages() returns the maximum intensity
+%  MagickIntensityProjectionImages() returns the maximum (or minimum) intensity
 %  projection of an image sequence.
 %
-%  The format of the MagickMaximumIntensityProjectionImages method is:
+%  The format of the MagickIntensityProjectionImages method is:
 %
-%      MagickWand *MagickMaximumIntensityProjectionImages(MagickWand *wand)
+%      MagickWand *MagickIntensityProjectionImages(MagickWand *wand,
+%        const MagickBooleanType projection)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
+%    o projection: compute the minimum intensity projection for a value
+%      other than 0, otherwise compute the maximum.
+%
 */
-WandExport MagickWand *MagickMaximumIntensityProjectionImages(MagickWand *wand)
+WandExport MagickWand *MagickIntensityProjectionImages(MagickWand *wand,
+  const MagickBooleanType projection)
 {
   Image
-    *mip_image;
+    *projection_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -6486,10 +6491,11 @@ WandExport MagickWand *MagickMaximumIntensityProjectionImages(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  mip_image=MaximumIntensityProjectionImages(wand->images,wand->exception);
-  if (mip_image == (Image *) NULL)
+  projection_image=IntensityProjectionImages(wand->images,projection,
+    wand->exception);
+  if (projection_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWandFromImages(wand,mip_image));
+  return(CloneMagickWandFromImages(wand,projection_image));
 }
 
 /*

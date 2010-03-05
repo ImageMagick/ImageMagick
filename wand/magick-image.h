@@ -386,7 +386,7 @@ extern WandExport MagickWand
   *MagickGetImageClipMask(MagickWand *),
   *MagickGetImageRegion(MagickWand *,const unsigned long,const unsigned long,
     const long,const long),
-  *MagickMaximumIntensityProjectionImages(MagickWand *),
+  *MagickIntensityProjectionImages(MagickWand *,const MagickBooleanType),
   *MagickMergeImageLayers(MagickWand *,const ImageLayerMethod),
   *MagickMorphImages(MagickWand *,const unsigned long),
   *MagickMontageImage(MagickWand *,const DrawingWand *,const char *,

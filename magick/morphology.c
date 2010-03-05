@@ -927,7 +927,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     C l o n e K e r n e l I n f o                                           %
+%     C l o n e K e r n e l I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -946,8 +946,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %    o kernel: the Morphology/Convolution kernel to be cloned
 %
 */
-
-static KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
+MagickBooleanType KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 {
   register long
     i;
@@ -1922,7 +1921,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     S c a l e K e r n e l I n f o                                           %
+%     S c a l e K e r n e l I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1993,8 +1992,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 % This function is internal to this module only at this time, but can be
 % exported to other modules if needed.
 */
-static void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
-     const GeometryFlags normalize_flags)
+MagickExport void ScaleKernelInfo(KernelInfo *kernel,
+  const double scaling_factor,const GeometryFlags normalize_flags)
 {
   register long
     i;

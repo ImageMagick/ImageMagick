@@ -41,7 +41,8 @@ extern MagickExport ChannelStatistics
 
 extern MagickExport Image
   *AverageImages(const Image *,ExceptionInfo *),
-  *MaximumIntensityProjectionImages(const Image *,ExceptionInfo *);
+  *IntensityProjectionImages(const Image *,const MagickBooleanType,
+    ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageChannelExtrema(const Image *,const ChannelType,unsigned long *,

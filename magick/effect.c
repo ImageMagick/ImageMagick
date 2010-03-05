@@ -64,6 +64,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/montage.h"
+#include "magick/morphology.h"
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
 #include "magick/property.h"
@@ -2165,6 +2166,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
     *filter_view,
     *image_view;
 
+  KernelInfo
+    *normal_kernel;
+
   Image
     *filter_image;
 
@@ -2229,7 +2233,14 @@ MagickExport Image *FilterImageChannel(const Image *image,
       }
       message=DestroyString(message);
     }
-  status=AccelerateConvolveImage(image,kernel,filter_image,exception);
+  normal_kernel=CloneKernelInfo(kernel);
+  if (normal_kernel == (KernelInfo *) NULL)
+    {
+      filter_image=DestroyImage(filter_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  ScaleKernelInfo(normal_kernel,1.0,NormalizeValue);
+  status=AccelerateConvolveImage(image,normal_kernel,filter_image,exception);
   if (status == MagickTrue)
     return(filter_image);
   /*
@@ -2266,9 +2277,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((long) kernel->width/2L),
-      y-(long) (kernel->height/2L),image->columns+kernel->width,kernel->height,
-      exception);
+    p=GetCacheViewVirtualPixels(image_view,-((long) normal_kernel->width/2L),
+      y-(long) (normal_kernel->height/2L),image->columns+normal_kernel->width,
+      normal_kernel->height,exception);
     q=GetCacheViewAuthenticPixels(filter_view,0,y,filter_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2296,20 +2307,20 @@ MagickExport Image *FilterImageChannel(const Image *image,
         u;
 
       pixel=bias;
-      k=kernel->values;
+      k=normal_kernel->values;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
         {
-          for (v=0; v < (long) kernel->width; v++)
+          for (v=0; v < (long) normal_kernel->width; v++)
           {
-            for (u=0; u < (long) kernel->height; u++)
+            for (u=0; u < (long) normal_kernel->height; u++)
             {
               pixel.red+=(*k)*kernel_pixels[u].red;
               pixel.green+=(*k)*kernel_pixels[u].green;
               pixel.blue+=(*k)*kernel_pixels[u].blue;
               k++;
             }
-            kernel_pixels+=image->columns+kernel->width;
+            kernel_pixels+=image->columns+normal_kernel->width;
           }
           if ((channel & RedChannel) != 0)
             SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
@@ -2319,16 +2330,16 @@ MagickExport Image *FilterImageChannel(const Image *image,
             SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
-              k=kernel->values;
+              k=normal_kernel->values;
               kernel_pixels=p;
-              for (v=0; v < (long) kernel->width; v++)
+              for (v=0; v < (long) normal_kernel->width; v++)
               {
-                for (u=0; u < (long) kernel->height; u++)
+                for (u=0; u < (long) normal_kernel->height; u++)
                 {
                   pixel.opacity+=(*k)*kernel_pixels[u].opacity;
                   k++;
                 }
-                kernel_pixels+=image->columns+kernel->width;
+                kernel_pixels+=image->columns+normal_kernel->width;
               }
               SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
             }
@@ -2338,16 +2349,16 @@ MagickExport Image *FilterImageChannel(const Image *image,
               register const IndexPacket
                 *restrict kernel_indexes;
 
-              k=kernel->values;
+              k=normal_kernel->values;
               kernel_indexes=indexes;
-              for (v=0; v < (long) kernel->width; v++)
+              for (v=0; v < (long) normal_kernel->width; v++)
               {
-                for (u=0; u < (long) kernel->height; u++)
+                for (u=0; u < (long) normal_kernel->height; u++)
                 {
                   pixel.index+=(*k)*kernel_indexes[u];
                   k++;
                 }
-                kernel_indexes+=image->columns+kernel->width;
+                kernel_indexes+=image->columns+normal_kernel->width;
               }
               filter_indexes[x]=ClampToQuantum(pixel.index);
             }
@@ -2359,9 +2370,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
             gamma;
 
           gamma=0.0;
-          for (v=0; v < (long) kernel->width; v++)
+          for (v=0; v < (long) normal_kernel->width; v++)
           {
-            for (u=0; u < (long) kernel->height; u++)
+            for (u=0; u < (long) normal_kernel->height; u++)
             {
               alpha=(MagickRealType) (QuantumScale*(QuantumRange-
                 kernel_pixels[u].opacity));
@@ -2371,7 +2382,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               gamma+=(*k)*alpha;
               k++;
             }
-            kernel_pixels+=image->columns+kernel->width;
+            kernel_pixels+=image->columns+normal_kernel->width;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           if ((channel & RedChannel) != 0)
@@ -2382,16 +2393,16 @@ MagickExport Image *FilterImageChannel(const Image *image,
             q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
           if ((channel & OpacityChannel) != 0)
             {
-              k=kernel->values;
+              k=normal_kernel->values;
               kernel_pixels=p;
-              for (v=0; v < (long) kernel->width; v++)
+              for (v=0; v < (long) normal_kernel->width; v++)
               {
-                for (u=0; u < (long) kernel->height; u++)
+                for (u=0; u < (long) normal_kernel->height; u++)
                 {
                   pixel.opacity+=(*k)*kernel_pixels[u].opacity;
                   k++;
                 }
-                kernel_pixels+=image->columns+kernel->width;
+                kernel_pixels+=image->columns+normal_kernel->width;
               }
               SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
             }
@@ -2401,20 +2412,20 @@ MagickExport Image *FilterImageChannel(const Image *image,
               register const IndexPacket
                 *restrict kernel_indexes;
 
-              k=kernel->values;
+              k=normal_kernel->values;
               kernel_pixels=p;
               kernel_indexes=indexes;
-              for (v=0; v < (long) kernel->width; v++)
+              for (v=0; v < (long) normal_kernel->width; v++)
               {
-                for (u=0; u < (long) kernel->height; u++)
+                for (u=0; u < (long) normal_kernel->height; u++)
                 {
                   alpha=(MagickRealType) (QuantumScale*(QuantumRange-
                     kernel_pixels[u].opacity));
                   pixel.index+=(*k)*alpha*kernel_indexes[u];
                   k++;
                 }
-                kernel_pixels+=image->columns+kernel->width;
-                kernel_indexes+=image->columns+kernel->width;
+                kernel_pixels+=image->columns+normal_kernel->width;
+                kernel_indexes+=image->columns+normal_kernel->width;
               }
               filter_indexes[x]=ClampToQuantum(gamma*
                 GetIndexPixelComponent(&pixel));
@@ -2442,6 +2453,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
   filter_image->type=image->type;
   filter_view=DestroyCacheView(filter_view);
   image_view=DestroyCacheView(image_view);
+  normal_kernel=DestroyKernelInfo(normal_kernel);
   if (status == MagickFalse)
     filter_image=DestroyImage(filter_image);
   return(filter_image);

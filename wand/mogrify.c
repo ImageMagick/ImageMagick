@@ -1232,7 +1232,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             kernel=AcquireKernelInfo(argv[i+1]);
             if (kernel == (KernelInfo *) NULL)
               break;
-            convolve_image=ConvoleImageChannel(*image,channel,kernel,exception);
+            convolve_image=FilterImageChannel(*image,channel,kernel,exception);
             kernel=DestroyKernelInfo(kernel);
             if (convolve_image == (Image *) NULL)
               break;
@@ -3796,7 +3796,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
-      "-mip                 return the maximum intensity projection for an image sequence",
+      "-intensity-projection",
+      "                     the maximum (or minimum) intensity projection",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -5072,6 +5073,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("intensity-projection",option+1) == 0)
+          break;
         if (LocaleCompare("intent",option+1) == 0)
           {
             long
@@ -5335,8 +5338,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("mip",option+1) == 0)
-          break;
         if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '+')
@@ -7902,6 +7903,23 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             *images=GetFirstImageInList(q);
             break;
           }
+        if (LocaleCompare("intensity-projection",option+1) == 0)
+          {
+            Image
+              *projection_image;
+
+            (void) SyncImagesSettings(image_info,*images);
+            projection_image=IntensityProjectionImages(*images,*option == '+' ?
+              MagickTrue : MagickFalse,exception);
+            if (projection_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=projection_image;
+            break;
+          }
         break;
       }
       case 'l':
@@ -8088,23 +8106,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             i++;
-            break;
-          }
-        if (LocaleCompare("mip",option+1) == 0)
-          {
-            Image
-              *morph_image;
-
-            (void) SyncImagesSettings(image_info,*images);
-            morph_image=MorphImages(*images,StringToUnsignedLong(argv[i+1]),
-              exception);
-            if (morph_image == (Image *) NULL)
-              {
-                status=MagickFalse;
-                break;
-              }
-            *images=DestroyImageList(*images);
-            *images=morph_image;
             break;
           }
         if (LocaleCompare("morph",option+1) == 0)

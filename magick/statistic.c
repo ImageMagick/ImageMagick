@@ -1132,37 +1132,40 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M a x i m u m I n t e n s i t y P r o j e c t i o n I m a g e s         %
+%     I n t e n s i t y P r o j e c t i o n I m a g e s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MaximumIntensityProjectionImages() returns the maximum intensity projection
-%  of an image sequence.
+%  IntensityProjectionImages() returns the maximum (or minimum) intensity
+%  projection of an image sequence.
 %
-%  The format of the MaximumIntensityProjectionImages method is:
+%  The format of the IntensityProjectionImages method is:
 %
-%      Image *MaximumIntensityProjectionImages(Image *images,
-%        ExceptionInfo *exception)
+%      Image *IntensityProjectionImages(Image *images,
+%        const MagickBooleanType projection,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image sequence.
 %
+%    o projection: compute the minimum intensity projection for a value
+%      other than 0, otherwise compute the maximum.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *MaximumIntensityProjectionImages(const Image *images,
-  ExceptionInfo *exception)
+MagickExport Image *IntensityProjectionImages(const Image *images,
+  const MagickBooleanType projection,ExceptionInfo *exception)
 {
-#define MaximumIntensityProjectionImageTag  "MaximumIntensityProjection/Image"
+#define MIPImageTag  "MIP/Image"
 
   const Image
     *next;
 
   Image
-    *mip_image;
+    *projection_image;
 
   MagickBooleanType
     status;
@@ -1190,29 +1193,30 @@ MagickExport Image *MaximumIntensityProjectionImages(const Image *images,
         return((Image *) NULL);
       }
   /*
-    Initialize mip_image next attributes.
+    Initialize projection_image next attributes.
   */
-  mip_image=CloneImage(images,0,0,MagickTrue,exception);
-  if (mip_image == (Image *) NULL)
+  projection_image=CloneImage(images,0,0,MagickTrue,exception);
+  if (projection_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(mip_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(projection_image,DirectClass) == MagickFalse)
     {
-      InheritException(exception,&mip_image->exception);
-      mip_image=DestroyImage(mip_image);
+      InheritException(exception,&projection_image->exception);
+      projection_image=DestroyImage(projection_image);
       return((Image *) NULL);
     }
   /*
-    Compute the maximum intensity projection.
+    Compute the maximum (or minimim) intensity projection.
   */
   i=0;
   number_images=GetImageListLength(images);
   for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    status=CompositeImage(mip_image,LightenCompositeOp,next,0,0);
+    status=CompositeImage(projection_image,projection != MagickFalse ?
+      DarkenCompositeOp : LightenCompositeOp,next,0,0);
     if (status == MagickFalse)
       {
-        InheritException(exception,&mip_image->exception);
-        mip_image=DestroyImage(mip_image);
+        InheritException(exception,&projection_image->exception);
+        projection_image=DestroyImage(projection_image);
         break;
       }
     if (images->progress_monitor != (MagickProgressMonitor) NULL)
@@ -1221,11 +1225,11 @@ MagickExport Image *MaximumIntensityProjectionImages(const Image *images,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MaximumIntensityProjectionImages)
+        #pragma omp critical (MagickCore_IntensityProjectionImages)
 #endif
-        proceed=SetImageProgress(images,MaximumIntensityProjectionImageTag,i++,
+        proceed=SetImageProgress(images,MIPImageTag,i++,
           number_images);
       }
   }
-  return(mip_image);
+  return(projection_image);
 }
