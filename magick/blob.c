@@ -2040,6 +2040,10 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
       flags|=MAP_SHARED;
       map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
         (off_t) offset);
+#if defined(MAGICKCORE_HAVE_POSIX_MADVISE)
+      (void) posix_madvise(map,length,POSIX_MADV_SEQUENTIAL |
+        POSIX_MADV_WILLNEED);
+#endif
       break;
     }
     case IOMode:
