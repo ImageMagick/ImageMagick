@@ -30,8 +30,7 @@ typedef struct _ChannelStatistics
   double
     minima,
     maxima,
-    mean,
-    standard_deviation,
+    mean, standard_deviation,
     kurtosis,
     skewness;
 } ChannelStatistics;
@@ -41,8 +40,8 @@ extern MagickExport ChannelStatistics
 
 extern MagickExport Image
   *AverageImages(const Image *,ExceptionInfo *),
-  *IntensityProjectionImages(const Image *,const MagickBooleanType,
-    ExceptionInfo *);
+  *MaxImages(const Image *,ExceptionInfo *),
+  *MinImages(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageChannelExtrema(const Image *,const ChannelType,unsigned long *,
