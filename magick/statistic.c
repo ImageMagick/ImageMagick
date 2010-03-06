@@ -1132,17 +1132,17 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M a x I m a g e s                                                       %
+%     M a x i m u m I m a g e s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MaxImages() returns the maximum intensity of an image sequence.
+%  MaximumImages() returns the maximum intensity of an image sequence.
 %
 %  The format of the MaxImages method is:
 %
-%      Image *MaxImages(Image *images,ExceptionInfo *exception)
+%      Image *MaximumImages(Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1151,15 +1151,15 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *MaxImages(const Image *images,ExceptionInfo *exception)
+MagickExport Image *MaximumImages(const Image *images,ExceptionInfo *exception)
 {
-#define MaxImageTag  "Max/Image"
+#define MaximumImageTag  "Maximum/Image"
 
   const Image
     *next;
 
   Image
-    *max_image;
+    *maximum_image;
 
   MagickBooleanType
     status;
@@ -1189,13 +1189,13 @@ MagickExport Image *MaxImages(const Image *images,ExceptionInfo *exception)
   /*
     Initialize maximum itensity image.
   */
-  max_image=CloneImage(images,0,0,MagickTrue,exception);
-  if (max_image == (Image *) NULL)
+  maximum_image=CloneImage(images,0,0,MagickTrue,exception);
+  if (maximum_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(max_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(maximum_image,DirectClass) == MagickFalse)
     {
-      InheritException(exception,&max_image->exception);
-      max_image=DestroyImage(max_image);
+      InheritException(exception,&maximum_image->exception);
+      maximum_image=DestroyImage(maximum_image);
       return((Image *) NULL);
     }
   /*
@@ -1205,11 +1205,11 @@ MagickExport Image *MaxImages(const Image *images,ExceptionInfo *exception)
   number_images=GetImageListLength(images);
   for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    status=CompositeImage(max_image,LightenCompositeOp,next,0,0);
+    status=CompositeImage(maximum_image,LightenCompositeOp,next,0,0);
     if (status == MagickFalse)
       {
-        InheritException(exception,&max_image->exception);
-        max_image=DestroyImage(max_image);
+        InheritException(exception,&maximum_image->exception);
+        maximum_image=DestroyImage(maximum_image);
         break;
       }
     if (images->progress_monitor != (MagickProgressMonitor) NULL)
@@ -1218,12 +1218,12 @@ MagickExport Image *MaxImages(const Image *images,ExceptionInfo *exception)
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MaxImages)
+        #pragma omp critical (MagickCore_MaximumImages)
 #endif
-        proceed=SetImageProgress(images,MaxImageTag,i++,number_images);
+        proceed=SetImageProgress(images,MaximumImageTag,i++,number_images);
       }
   }
-  return(max_image);
+  return(maximum_image);
 }
 
 /*
@@ -1231,17 +1231,17 @@ MagickExport Image *MaxImages(const Image *images,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M i n I m a g e s                                                       %
+%     M i n i m u m I m a g e s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MinImages() returns the minimum intensity of an image sequence.
+%  MinimumImages() returns the minimum intensity of an image sequence.
 %
-%  The format of the MinImages method is:
+%  The format of the MinimumImages method is:
 %
-%      Image *MinImages(Image *images,ExceptionInfo *exception)
+%      Image *MinimumImages(Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1250,15 +1250,15 @@ MagickExport Image *MaxImages(const Image *images,ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *MinImages(const Image *images,ExceptionInfo *exception)
+MagickExport Image *MinimumImages(const Image *images,ExceptionInfo *exception)
 {
-#define MinImageTag  "Min/Image"
+#define MinimumImageTag  "Minimum/Image"
 
   const Image
     *next;
 
   Image
-    *min_image;
+    *minimum_image;
 
   MagickBooleanType
     status;
@@ -1288,13 +1288,13 @@ MagickExport Image *MinImages(const Image *images,ExceptionInfo *exception)
   /*
     Initialize minimum intensity image.
   */
-  min_image=CloneImage(images,0,0,MagickTrue,exception);
-  if (min_image == (Image *) NULL)
+  minimum_image=CloneImage(images,0,0,MagickTrue,exception);
+  if (minimum_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(min_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(minimum_image,DirectClass) == MagickFalse)
     {
-      InheritException(exception,&min_image->exception);
-      min_image=DestroyImage(min_image);
+      InheritException(exception,&minimum_image->exception);
+      minimum_image=DestroyImage(minimum_image);
       return((Image *) NULL);
     }
   /*
@@ -1304,11 +1304,11 @@ MagickExport Image *MinImages(const Image *images,ExceptionInfo *exception)
   number_images=GetImageListLength(images);
   for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    status=CompositeImage(min_image,DarkenCompositeOp,next,0,0);
+    status=CompositeImage(minimum_image,DarkenCompositeOp,next,0,0);
     if (status == MagickFalse)
       {
-        InheritException(exception,&min_image->exception);
-        min_image=DestroyImage(min_image);
+        InheritException(exception,&minimum_image->exception);
+        minimum_image=DestroyImage(minimum_image);
         break;
       }
     if (images->progress_monitor != (MagickProgressMonitor) NULL)
@@ -1319,8 +1319,8 @@ MagickExport Image *MinImages(const Image *images,ExceptionInfo *exception)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_MaxImages)
 #endif
-        proceed=SetImageProgress(images,MinImageTag,i++,number_images);
+        proceed=SetImageProgress(images,MinimumImageTag,i++,number_images);
       }
   }
-  return(min_image);
+  return(minimum_image);
 }
