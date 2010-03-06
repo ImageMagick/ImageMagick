@@ -40,8 +40,8 @@ extern MagickExport ChannelStatistics
 
 extern MagickExport Image
   *AverageImages(const Image *,ExceptionInfo *),
-  *MaxImages(const Image *,ExceptionInfo *),
-  *MinImages(const Image *,ExceptionInfo *);
+  *MaximumImages(const Image *,ExceptionInfo *),
+  *MinimumImages(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageChannelExtrema(const Image *,const ChannelType,unsigned long *,

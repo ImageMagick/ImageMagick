@@ -6752,7 +6752,7 @@ MagickToMime(ref,name)
 #                                                                             #
 #                                                                             #
 #                                                                             #
-#   M a x                                                                     #
+#   M a x i m u m                                                             #
 #                                                                             #
 #                                                                             #
 #                                                                             #
@@ -6760,12 +6760,12 @@ MagickToMime(ref,name)
 #
 #
 void
-Max(ref)
+Maximum(ref)
   Image::Magick ref=NO_INIT
   ALIAS:
-    MaxImage   = 1
-    max        = 2
-    maximage   = 3
+    MaximumImage   = 1
+    maximum        = 2
+    maximumimage   = 3
   PPCODE:
   {
     AV
@@ -6809,7 +6809,7 @@ Max(ref)
           PackageName);
         goto PerlException;
       }
-    image=MaxImages(image,exception);
+    image=MaximumImages(image,exception);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     /*
@@ -6847,7 +6847,7 @@ Max(ref)
 #                                                                             #
 #                                                                             #
 #                                                                             #
-#   M i n                                                                     #
+#   M i n i m u m                                                             #
 #                                                                             #
 #                                                                             #
 #                                                                             #
@@ -6855,12 +6855,12 @@ Max(ref)
 #
 #
 void
-Min(ref)
+Minimum(ref)
   Image::Magick ref=NO_INIT
   ALIAS:
-    MinImage   = 1
-    min        = 2
-    minimage   = 3
+    MinimumImage   = 1
+    minimum        = 2
+    minimumimage   = 3
   PPCODE:
   {
     AV
@@ -6904,7 +6904,7 @@ Min(ref)
           PackageName);
         goto PerlException;
       }
-    image=MinImages(image,exception);
+    image=MinimumImages(image,exception);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     /*
@@ -6919,7 +6919,7 @@ Min(ref)
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     (void) FormatMagickString(info->image_info->filename,MaxTextExtent,
-      "max-%.*s",(int) (MaxTextExtent-9),
+      "minimum-%.*s",(int) (MaxTextExtent-9),
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
       MaxTextExtent);

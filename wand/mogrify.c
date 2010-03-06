@@ -3808,8 +3808,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
-      "-max                 return the maximum intensity of an image sequence",
-      "-min                 return the minimum intensity of an image sequence",
+      "-maximum             return the maximum intensity of an image sequence",
+      "-minimum             return the minimum intensity of an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -5348,9 +5348,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("max",option+1) == 0)
+        if (LocaleCompare("maximum",option+1) == 0)
           break;
-        if (LocaleCompare("min",option+1) == 0)
+        if (LocaleCompare("minimum",option+1) == 0)
           break;
         if (LocaleCompare("modulate",option+1) == 0)
           {
@@ -8105,36 +8105,36 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             i++;
             break;
           }
-        if (LocaleCompare("max",option+1) == 0)
+        if (LocaleCompare("maximum",option+1) == 0)
           {
             Image
-              *max_image;
+              *maximum_image;
 
             (void) SyncImagesSettings(image_info,*images);
-            max_image=MaxImages(*images,exception);
-            if (max_image == (Image *) NULL)
+            maximum_image=MaximumImages(*images,exception);
+            if (maximum_image == (Image *) NULL)
               {
                 status=MagickFalse;
                 break;
               }
             *images=DestroyImageList(*images);
-            *images=max_image;
+            *images=maximum_image;
             break;
           }
-        if (LocaleCompare("min",option+1) == 0)
+        if (LocaleCompare("minimum",option+1) == 0)
           {
             Image
-              *min_image;
+              *minimum_image;
 
             (void) SyncImagesSettings(image_info,*images);
-            min_image=MinImages(*images,exception);
-            if (min_image == (Image *) NULL)
+            minimum_image=MinimumImages(*images,exception);
+            if (minimum_image == (Image *) NULL)
               {
                 status=MagickFalse;
                 break;
               }
             *images=DestroyImageList(*images);
-            *images=min_image;
+            *images=minimum_image;
             break;
           }
         if (LocaleCompare("morph",option+1) == 0)

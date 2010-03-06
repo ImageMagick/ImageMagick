@@ -6771,27 +6771,27 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k M a x I m a g e s                                             %
+%   M a g i c k M a x i m u m I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickMaxImages() returns the maximum intensity of an image sequence.
+%  MagickMaximumImages() returns the maximum intensity of an image sequence.
 %
-%  The format of the MagickMaxImages method is:
+%  The format of the MagickMaximumImages method is:
 %
-%      MagickWand *MagickMaxImages(MagickWand *wand)
+%      MagickWand *MagickMaximumImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport MagickWand *MagickMaxImages(MagickWand *wand)
+WandExport MagickWand *MagickMaximumImages(MagickWand *wand)
 {
   Image
-    *max_image;
+    *maximum_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -6799,10 +6799,10 @@ WandExport MagickWand *MagickMaxImages(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  max_image=MaxImages(wand->images,wand->exception);
-  if (max_image == (Image *) NULL)
+  maximum_image=MaximumImages(wand->images,wand->exception);
+  if (maximum_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWandFromImages(wand,max_image));
+  return(CloneMagickWandFromImages(wand,maximum_image));
 }
 
 /*
@@ -6917,27 +6917,27 @@ WandExport MagickWand *MagickMergeImageLayers(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k M i n I m a g e s                                             %
+%   M a g i c k M i n i m u m I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickMinImages() returns the minimum intensity of an image sequence.
+%  MagickMinimumImages() returns the minimum intensity of an image sequence.
 %
-%  The format of the MagickMinImages method is:
+%  The format of the MagickMinimumImages method is:
 %
-%      MagickWand *MagickMinImages(MagickWand *wand)
+%      MagickWand *MagickMinimumImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport MagickWand *MagickMinImages(MagickWand *wand)
+WandExport MagickWand *MagickMinimumImages(MagickWand *wand)
 {
   Image
-    *min_image;
+    *minimum_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -6945,10 +6945,10 @@ WandExport MagickWand *MagickMinImages(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  min_image=MinImages(wand->images,wand->exception);
-  if (min_image == (Image *) NULL)
+  minimum_image=MinimumImages(wand->images,wand->exception);
+  if (minimum_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWandFromImages(wand,min_image));
+  return(CloneMagickWandFromImages(wand,minimum_image));
 }
 
 /*
