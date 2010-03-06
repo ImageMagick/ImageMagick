@@ -1883,7 +1883,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("max",option+1) == 0)
+        if (LocaleCompare("maximum",option+1) == 0)
           break;
         if (LocaleCompare("median",option+1) == 0)
           {
@@ -1896,7 +1896,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("min",option+1) == 0)
+        if (LocaleCompare("minimum",option+1) == 0)
           break;
         if (LocaleCompare("modulate",option+1) == 0)
           {

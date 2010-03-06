@@ -984,6 +984,8 @@ static const OptionInfo
     { "layers", MagickTrue, MagickFalse },
     { "limit", MagickTrue, MagickFalse },
     { "map", MagickTrue, MagickFalse },
+    { "maximum", MagickTrue, MagickFalse },
+    { "minimum", MagickTrue, MagickFalse },
     { "morph", MagickTrue, MagickFalse },
     { "mosaic", MagickTrue, MagickFalse },
     { "optimize", MagickTrue, MagickFalse },
