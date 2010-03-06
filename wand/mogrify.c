@@ -1223,15 +1223,27 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
+            double
+              gamma;
+
             Image
               *convolve_image;
 
             KernelInfo
               *kernel;
 
+            register long
+              j;
+
             kernel=AcquireKernelInfo(argv[i+1]);
             if (kernel == (KernelInfo *) NULL)
               break;
+            gamma=0.0;
+            for (j=0; j < (long) (kernel->width*kernel->height); j++)
+              gamma+=kernel->values[j];
+            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            for (j=0; j < (long) (kernel->width*kernel->width); j++)
+              kernel->values[j]*=gamma;
             convolve_image=FilterImageChannel(*image,channel,kernel,exception);
             kernel=DestroyKernelInfo(kernel);
             if (convolve_image == (Image *) NULL)
