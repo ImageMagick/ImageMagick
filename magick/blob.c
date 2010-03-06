@@ -4265,6 +4265,50 @@ MagickExport ssize_t WriteBlobMSBLong(Image *image,const unsigned int value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  W r i t e B l o b M S B L o n g L o n g                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobMSBLongLong() writes a long long value as a 64-bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the WriteBlobMSBLongLong method is:
+%
+%      ssize_t WriteBlobMSBLongLong(Image *image,const MagickSizeType value)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Specifies the value to write.
+%
+%    o image: the image.
+%
+*/
+MagickExport ssize_t WriteBlobMSBLongLong(Image *image,
+  const MagickSizeType value)
+{
+  unsigned char
+    buffer[8];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  buffer[0]=(unsigned char) (value >> 56);
+  buffer[1]=(unsigned char) (value >> 48);
+  buffer[2]=(unsigned char) (value >> 40);
+  buffer[3]=(unsigned char) (value >> 32);
+  buffer[4]=(unsigned char) (value >> 24);
+  buffer[5]=(unsigned char) (value >> 16);
+  buffer[6]=(unsigned char) (value >> 8);
+  buffer[7]=(unsigned char) value;
+  return(WriteBlobStream(image,8,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  W r i t e B l o b M S B S h o r t                                          %
 %                                                                             %
 %                                                                             %
