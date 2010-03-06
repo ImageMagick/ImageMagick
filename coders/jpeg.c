@@ -811,7 +811,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
         jpeg_info->comp_info[2].v_samp_factor,
         jpeg_info->comp_info[3].h_samp_factor,
         jpeg_info->comp_info[3].v_samp_factor);
-        break;
+      break;
     }
     case JCS_GRAYSCALE:
     {
@@ -1051,6 +1051,36 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_info.do_block_smoothing=MagickFalse;
       if (IsMagickTrue(option) != MagickFalse)
         jpeg_info.do_block_smoothing=MagickTrue;
+    }
+  option=GetImageOption(image_info,"jpeg:dct-method");
+  if (option != (const char *) NULL)
+    switch (*option)
+    {
+      case 'D':
+      case 'd':
+      {
+        if (LocaleCompare(option,"default") == 0)
+          jpeg_info.dct_method=JDCT_DEFAULT;
+        break;
+      }
+      case 'F':
+      case 'f':
+      {
+        if (LocaleCompare(option,"fastest") == 0)
+          jpeg_info.dct_method=JDCT_FASTEST;
+        if (LocaleCompare(option,"float") == 0)
+          jpeg_info.dct_method=JDCT_FLOAT;
+        break;
+      }
+      case 'I':
+      case 'i':
+      {
+        if (LocaleCompare(option,"ifast") == 0)
+          jpeg_info.dct_method=JDCT_IFAST;
+        if (LocaleCompare(option,"islow") == 0)
+          jpeg_info.dct_method=JDCT_ISLOW;
+        break;
+      }
     }
   option=GetImageOption(image_info,"jpeg:fancy-upsampling");
   if (option != (const char *) NULL)
