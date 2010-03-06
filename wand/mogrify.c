@@ -3808,8 +3808,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
-      "-intensity-projection",
-      "                     the maximum (or minimum) intensity projection",
+      "-max                 return the maximum intensity of an image sequence",
+      "-min                 return the minimum intensity of an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -5085,8 +5085,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("intensity-projection",option+1) == 0)
-          break;
         if (LocaleCompare("intent",option+1) == 0)
           {
             long
@@ -5350,6 +5348,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("max",option+1) == 0)
+          break;
+        if (LocaleCompare("min",option+1) == 0)
+          break;
         if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '+')
@@ -7915,23 +7917,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             *images=GetFirstImageInList(q);
             break;
           }
-        if (LocaleCompare("intensity-projection",option+1) == 0)
-          {
-            Image
-              *projection_image;
-
-            (void) SyncImagesSettings(image_info,*images);
-            projection_image=IntensityProjectionImages(*images,*option == '+' ?
-              MagickTrue : MagickFalse,exception);
-            if (projection_image == (Image *) NULL)
-              {
-                status=MagickFalse;
-                break;
-              }
-            *images=DestroyImageList(*images);
-            *images=projection_image;
-            break;
-          }
         break;
       }
       case 'l':
@@ -8118,6 +8103,38 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             i++;
+            break;
+          }
+        if (LocaleCompare("max",option+1) == 0)
+          {
+            Image
+              *max_image;
+
+            (void) SyncImagesSettings(image_info,*images);
+            max_image=MaxImages(*images,exception);
+            if (max_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=max_image;
+            break;
+          }
+        if (LocaleCompare("min",option+1) == 0)
+          {
+            Image
+              *min_image;
+
+            (void) SyncImagesSettings(image_info,*images);
+            min_image=MinImages(*images,exception);
+            if (min_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=min_image;
             break;
           }
         if (LocaleCompare("morph",option+1) == 0)

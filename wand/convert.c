@@ -302,8 +302,8 @@ static MagickBooleanType ConvertUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
-      "-intensity-projection",
-      "                     the maximum (or minimum) intensity projection",
+      "-max                 return the maximum intensity of an image sequence",
+      "-min                 return the minimum intensity of an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -1609,8 +1609,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("intensity-projection",option+1) == 0)
-          break;
         if (LocaleCompare("intent",option+1) == 0)
           {
             long
@@ -1885,6 +1883,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("max",option+1) == 0)
+          break;
         if (LocaleCompare("median",option+1) == 0)
           {
             if (*option == '+')
@@ -1896,6 +1896,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("min",option+1) == 0)
+          break;
         if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '+')
