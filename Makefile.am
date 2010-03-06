@@ -76,7 +76,6 @@ TESTS_ENVIRONMENT = \
   IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify" \
   MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" \
   VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate" \
-  REFERENCE_IMAGE="@abs_top_builddir@/images/rose.pnm" \
 	LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}" \
 	MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@' \
 	MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@' \
