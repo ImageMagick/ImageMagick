@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" value="application/xhtml+xml" />
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
+  <style type="text/css" media="screen,projection"><!--
+    @import url("../../www/magick.css");
+  --></style>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/vnd.microsoft.icon"/>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Morphological Erosions, Dilations, Openings, and Closings</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, morphological, erosions, dilations, openings, closings, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2010 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../../index.html">
+  <img src="../../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../../index.html">
+  <img src="../../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="eastbar">
+
+<div class="menu">
+  <a href="../../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a href="../../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a href="../../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a href="../../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a href="../../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a href="../../Magick++/">Magick++</a>
+</div>
+<div class="menu">
+  <a href="../../www/architecture.html">Architecture</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a href="../../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="menu">
+  <a href="../../www/resources.html">Resources</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a href="../../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+    <a href="../../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a href="../../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.tomsgutscheine.de">Tom's Gutscheine</a><!-- 201005010360 invendio.de-->
+</div>
+<div  class="sponsor">
+  <a href="http://www.online-kredit-index.de">Kredit</a><!-- 201007010120 Buchhorn -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.blumenversender.com">Blumenversand</a><!-- 201005010120 -->
+</div>
+<div  class="sponsor">
+  <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
+</div>
+<div  class="sponsor">
+   <a href="http://www.goyax.de">Börse</a><!-- 201004010240 Gewiese digital-finance.de -->
+</div>
+<div  class="sponsor">
+   <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div class="main">
+
+<p class="navigation-index">[<a href="#same variable That is the IsNaN">same variable That is the IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#MorphologyImageChannel">MorphologyImageChannel</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a>]</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="same variable That is the IsNaN">same variable That is the IsNaN</a></h2>
+<div class="doc-section">
+
+<p>same variable That is the IsNaN() macro is only true if the value is NaN. </p>
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="AcquireKernelInfo">AcquireKernelInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireKernelInfo() takes the given string (generally supplied by the user) and converts it into a Morphology/Convolution Kernel.  This allows users to specify a kernel from a number of pre-defined kernels, or to fully specify their own kernel for a specific Convolution or Morphology Operation.</p></ol>
+
+<p>The kernel so generated can be any rectangular array of floating point values (doubles) with the 'control point' or 'pixel being affected' anywhere within that array of values.</p></ol>
+
+<p>Previously IM was restricted to a square of odd size using the exact center as origin, this is no longer the case, and any rectangular kernel with any value being declared the origin. This in turn allows the use of highly asymmetrical kernels.</p></ol>
+
+<p>The floating point values in the kernel can also include a special value known as 'nan' or 'not a number' to indicate that this value is not part of the kernel array. This allows you to shaped the kernel within its rectangular area. That is 'nan' values provide a 'mask' for the kernel shape.  However at least one non-nan value must be provided for correct working of a kernel.</p></ol>
+
+<p>The returned kernel should be free using the DestroyKernelInfo() when you are finished with it.</p></ol>
+
+<p>Input kernel defintion strings can consist of any of three types.</p></ol>
+
+<p>"name:args" Select from one of the built in kernels, using the name and geometry arguments supplied.  See AcquireKernelBuiltIn()</p></ol>
+
+<p>"WxH[+X+Y]:num, num, num ..." a kernal of size W by H, with W*H floating point numbers following. the 'center' can be optionally be defined at +X+Y (such that +0+0 is top left corner). If not defined the pixel in the center, for odd sizes, or to the immediate top or left of center for even sizes is automatically selected.</p></ol>
+
+<p>"num, num, num, num, ..." list of floating point numbers defining an 'old style' odd sized square kernel.  At least 9 values should be provided for a 3x3 square kernel, 25 for a 5x5 square kernel, 49 for 7x7, etc. Values can be space or comma separated.  This is not recommended.</p></ol>
+
+<p>Note that 'name' kernels will start with an alphabetic character while the new kernel specification has a ':' character in its specification string. If neither is the case, it is assumed an old style of a simple list of numbers generating a odd-sized square kernel has been given.</p></ol>
+
+<p>The format of the AcquireKernal method is:</p>
+
+<pre class="code">
+  KernelInfo *AcquireKernelInfo(const char *kernel_string)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>kernel_string</h5>
+<ol><p>the Morphology/Convolution kernel wanted.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
+<div class="doc-section">
+
+<p>AcquireKernelBuiltIn() returned one of the 'named' built-in types of kernels used for special purposes such as gaussian blurring, skeleton pruning, and edge distance determination.</p></ol>
+
+<p>They take a KernelType, and a set of geometry style arguments, which were typically decoded from a user supplied string, or from a more complex Morphology Method that was requested.</p></ol>
+
+<p>The format of the AcquireKernalBuiltIn method is:</p>
+
+<pre class="code">
+  KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
+       const GeometryInfo args)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>type</h5>
+<ol><p>the pre-defined type of kernel wanted</p></ol>
+
+<h5>args</h5>
+<ol><p>arguments defining or modifying the kernel</p></ol>
+
+<p>Convolution Kernels</p></ol>
+
+<p>Gaussian  "{radius},{sigma}" Generate a two-dimentional gaussian kernel, as used by -gaussian A sigma is required, (with the 'x'), due to historical reasons.</p></ol>
+
+<p>NOTE: that the 'radius' is optional, but if provided can limit (clip) the final size of the resulting kernel to a square 2*radius+1 in size. The radius should be at least 2 times that of the sigma value, or sever clipping and aliasing may result.  If not given or set to 0 the radius will be determined so as to produce the best minimal error result, which is usally much larger than is normally needed.</p></ol>
+
+<p>Blur  "{radius},{sigma},{angle}" As per Gaussian, but generates a 1 dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles). If a 'radius' is given the kernel is clipped to a width of 2*radius+1.</p></ol>
+
+<p>NOTE that two such blurs perpendicular to each other is equivelent to -blur and the previous gaussian, but is often 10 or more times faster.</p></ol>
+
+<p>Comet  "{width},{sigma},{angle}" Blur in one direction only, mush like how a bright object leaves a comet like trail.  The Kernel is actually half a gaussian curve, Adding two such blurs in oppiste directions produces a Linear Blur.</p></ol>
+
+<p>NOTE: that the first argument is the width of the kernel and not the radius of the kernel.</p></ol>
+
+<p># Still to be implemented... # # Sharpen "{radius},{sigma} #    Negated Gaussian (center zeroed and re-normalized), #    with a 2 unit positive peak.   -- Check On line documentation # # Laplacian  "{radius},{sigma}" #    Laplacian (a mexican hat like) Function # # LOG  "{radius},{sigma1},{sigma2} #    Laplacian of Gaussian # # DOG  "{radius},{sigma1},{sigma2} #    Difference of two Gaussians # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this posible with an image? #</p></ol>
+
+<p>Boolean Kernels</p></ol>
+
+<p>Rectangle "{geometry}" Simply generate a rectangle of 1's with the size given. You can also specify the location of the 'control point', otherwise the closest pixel to the center of the rectangle is selected.</p></ol>
+
+<p>Properly centered and odd sized rectangles work the best.</p></ol>
+
+<p>Diamond  "[{radius}[,{scale}]]" Generate a diamond shaped kernal with given radius to the points. Kernel size will again be radius*2+1 square and defaults to radius 1, generating a 3x3 kernel that is slightly larger than a square.</p></ol>
+
+<p>Square  "[{radius}[,{scale}]]" Generate a square shaped kernel of size radius*2+1, and defaulting to a 3x3 (radius 1).</p></ol>
+
+<p>Note that using a larger radius for the "Square" or the "Diamond" is also equivelent to iterating the basic morphological method that many times. However However iterating with the smaller radius 1 default is actually faster than using a larger kernel radius.</p></ol>
+
+<p>Disk   "[{radius}[,{scale}]] Generate a binary disk of the radius given, radius may be a float. Kernel size will be ceil(radius)*2+1 square. NOTE: Here are some disk shapes of specific interest "disk:1"    => "diamond" or "cross:1" "disk:1.5"  => "square" "disk:2"    => "diamond:2" "disk:2.5"  => a general disk shape of radius 2 "disk:2.9"  => "square:2" "disk:3.5"  => default - octagonal/disk shape of radius 3 "disk:4.2"  => roughly octagonal shape of radius 4 "disk:4.3"  => a general disk shape of radius 4 After this all the kernel shape becomes more and more circular.</p></ol>
+
+<p>Because a "disk" is more circular when using a larger radius, using a larger radius is preferred over iterating the morphological operation.</p></ol>
+
+<p>Plus  "[{radius}[,{scale}]]" Generate a kernel in the shape of a 'plus' sign. The length of each arm is also the radius, which defaults to 2.</p></ol>
+
+<p>This kernel is not a good general morphological kernel, but is used more for highlighting and marking any single pixels in an image using, a "Dilate" or "Erode" method as appropriate.</p></ol>
+
+<p>NOTE: "plus:1" is equivelent to a "Diamond" kernel.</p></ol>
+
+<p>Note that unlike other kernels iterating a plus does not produce the same result as using a larger radius for the cross.</p></ol>
+
+<p>Distance Measuring Kernels</p></ol>
+
+<p>Chebyshev "[{radius}][x{scale}]"   largest x or y distance (default r=1) Manhatten "[{radius}][x{scale}]"   square grid distance    (default r=1) Euclidean "[{radius}][x{scale}]"   direct distance         (default r=1)</p></ol>
+
+<p>Different types of distance measuring methods, which are used with the a 'Distance' morphology method for generating a gradient based on distance from an edge of a binary shape, though there is a technique for handling a anti-aliased shape.</p></ol>
+
+<p>Chebyshev Distance (also known as Tchebychev Distance) is a value of one to any neighbour, orthogonal or diagonal. One why of thinking of it is the number of squares a 'King' or 'Queen' in chess needs to traverse reach any other position on a chess board.  It results in a 'square' like distance function, but one where diagonals are closer than expected.</p></ol>
+
+<p>Manhatten Distance (also known as Rectilinear Distance, or the Taxi Cab metric), is the distance needed when you can only travel in orthogonal (horizontal or vertical) only.  It is the distance a 'Rook' in chess would travel. It results in a diamond like distances, where diagonals are further than expected.</p></ol>
+
+<p>Euclidean Distance is the 'direct' or 'as the crow flys distance. However by default the kernel size only has a radius of 1, which limits the distance to 'Knight' like moves, with only orthogonal and diagonal measurements being correct.  As such for the default kernel you will get octagonal like distance function, which is reasonally accurate.</p></ol>
+
+<p>However if you use a larger radius such as "Euclidean:4" you will get a much smoother distance gradient from the edge of the shape. Of course a larger kernel is slower to use, and generally not needed.</p></ol>
+
+<p>To allow the use of fractional distances that you get with diagonals the actual distance is scaled by a fixed value which the user can provide.  This is not actually nessary for either ""Chebyshev" or "Manhatten" distance kernels, but is done for all three distance kernels.  If no scale is provided it is set to a value of 100, allowing for a maximum distance measurement of 655 pixels using a Q16 version of IM, from any edge.  However for small images this can result in quite a dark gradient.</p></ol>
+
+<p>See the 'Distance' Morphological Method, for information of how it is applied.</p></ol>
+
+<p># Hit-n-Miss Kernel-Lists -- Still to be implemented # # specifically for   Pruning,  Thinning,  Thickening # </p>
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="CloneKernelInfo">CloneKernelInfo</a></h2>
+<div class="doc-section">
+
+<p>CloneKernelInfo() creates a new clone of the given Kernel so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no longer needed.</p></ol>
+
+<p>The format of the DestroyKernelInfo method is:</p>
+
+<pre class="code">
+  KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>kernel</h5>
+<ol><p>the Morphology/Convolution kernel to be cloned</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="DestroyKernelInfo">DestroyKernelInfo</a></h2>
+<div class="doc-section">
+
+<p>DestroyKernelInfo() frees the memory used by a Convolution/Morphology kernel.</p></ol>
+
+<p>The format of the DestroyKernelInfo method is:</p>
+
+<pre class="code">
+  KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>kernel</h5>
+<ol><p>the Morphology/Convolution kernel to be destroyed</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="MorphologyImageChannel">MorphologyImageChannel</a></h2>
+<div class="doc-section">
+
+<p>MorphologyImageChannel() applies a user supplied kernel to the image according to the given mophology method.</p></ol>
+
+<p>The given kernel is assumed to have been pre-scaled appropriatally, usally by the kernel generator.</p></ol>
+
+<p>The format of the MorphologyImage method is:</p>
+
+<pre class="code">
+  Image *MorphologyImage(const Image *image,MorphologyMethod method,
+    const long iterations,KernelInfo *kernel,ExceptionInfo *exception)
+  Image *MorphologyImageChannel(const Image *image, const ChannelType
+    channel,MorphologyMethod method,const long iterations,
+    KernelInfo *kernel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>method</h5>
+<ol><p>the morphology method to be applied.</p></ol>
+
+<h5>iterations</h5>
+<ol><p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel type.</p></ol>
+
+<h5>kernel</h5>
+<ol><p>An array of double representing the morphology kernel. Warning: kernel may be normalized for the Convolve method.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+
+<p>TODO: bias and auto-scale handling of the kernel for convolution The given kernel is assumed to have been pre-scaled appropriatally, usally by the kernel generator.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
+_8c.html" target="source" name="ScaleKernelInfo">ScaleKernelInfo</a></h2>
+<div class="doc-section">
+
+<p>ScaleKernelInfo() scales the kernel by the given amount, with or without normalization of the sum of the kernel values.</p></ol>
+
+<p>By default (no flags given) the values within the kernel is scaled according the given scaling factor.</p></ol>
+
+<p>If any 'normalize_flags' are given the kernel will be normalized and then further scaled by the scaleing factor value given.  A 'PercentValue' flag will cause the given scaling factor to be divided by one hundred percent.</p></ol>
+
+<p>Kernel normalization ('normalize_flags' given) is designed to ensure that any use of the kernel scaling factor with 'Convolve' or 'Correlate' morphology methods will fall into -1.0 to +1.0 range.  Note however that for non-HDRI versions of IM this may cause images to have any negative results clipped, unless some 'clip' any negative output from 'Convolve' with the use of some kernels.</p></ol>
+
+<p>More specifically.  Kernels which only contain positive values (such as a 'Gaussian' kernel) will be scaled so that those values sum to +1.0, ensuring a 0.0 to +1.0 convolution output range for non-HDRI images.</p></ol>
+
+<p>For Kernels that contain some negative values, (such as 'Sharpen' kernels) the kernel will be scaled by the absolute of the sum of kernel values, so that it will generally fall within the +/- 1.0 range.</p></ol>
+
+<p>For kernels whose values sum to zero, (such as 'Laplician' kernels) kernel will be scaled by just the sum of the postive values, so that its output range will again fall into the  +/- 1.0 range.</p></ol>
+
+<p>For special kernels designed for locating shapes using 'Correlate', (often only containing +1 and -1 values, representing foreground/brackground matching) a special normalization method is provided to scale the positive values seperatally to those of the negative values, so the kernel will be forced to become a zero-sum kernel better suited to such searches.</p></ol>
+
+<p>WARNING: Correct normalization of the kernal assumes that the '*_range' attributes within the kernel structure have been correctly set during the kernels creation.</p></ol>
+
+<p>NOTE: The values used for 'normalize_flags' have been selected specifically to match the use of geometry options, so that '!' means NormalizeValue, '^' means CorrelateNormalizeValue, and '' means PercentValue.  All other GeometryFlags values are ignored.</p></ol>
+
+<p>The format of the ScaleKernelInfo method is:</p>
+
+<pre class="code">
+  void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
+           const MagickStatusType normalize_flags )
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>kernel</h5>
+<ol><p>the Morphology/Convolution kernel</p></ol>
+
+<p>o scaling_factor:</p>
+
+<pre class="text">
+         zero.  If the kernel is normalized regardless of any flags.
+</pre>
+
+<p>o normalize_flags:</p>
+
+<pre class="text">
+         specifically: NormalizeValue, CorrelateNormalizeValue,
+                       and/or PercentValue
+</pre>
+
+<p>This function is internal to this module only at this time, but can be exported to other modules if needed. </p>
+ </div>
+
+</div>
+
+<div id="linkbar">
+ <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2010 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+</body>
+</html>
