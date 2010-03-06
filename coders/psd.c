@@ -1549,6 +1549,22 @@ ModuleExport void UnregisterPSDImage(void)
 %
 */
 
+static inline ssize_t SetPSDOffset(PSDInfo *psd_info,Image *image,
+  const size_t offset)
+{
+  if (psd_info->version == 1)
+    return(WriteBlobMSBShort(image,offset));
+  return(WriteBlobMSBLong(image,offset));
+}
+
+static inline ssize_t SetPSDSize(PSDInfo *psd_info,Image *image,
+  const MagickSizeType size)
+{
+  if (psd_info->version == 1)
+    return(WriteBlobMSBLong(image,(unsigned long) size));
+  return(WriteBlobMSBLongLong(image,size));
+}
+
 static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
   const unsigned char *pixels,unsigned char *compressed_pixels)
 {
