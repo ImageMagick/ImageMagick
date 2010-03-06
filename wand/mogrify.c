@@ -1235,6 +1235,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             register long
               j;
 
+            (void) SyncImageSettings(image_info,*image);
             kernel=AcquireKernelInfo(argv[i+1]);
             if (kernel == (KernelInfo *) NULL)
               break;
