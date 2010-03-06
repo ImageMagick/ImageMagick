@@ -27,13 +27,13 @@ TESTS_TESTS = \
 	tests/validate-compare.sh \
 	tests/validate-composite.sh \
 	tests/validate-convert.sh \
-	tests/validate-formats-on-disk.sh \
-	tests/validate-formats-in-memory.sh \
 	tests/validate-identify.sh \
 	tests/validate-import.sh \
 	tests/validate-montage.sh \
 	tests/validate-pipe.sh \
-	tests/validate-stream.sh
+	tests/validate-stream.sh \
+	tests/validate-formats-in-memory.sh \
+	tests/validate-formats-on-disk.sh
 
 TESTS_EXTRA_DIST = \
 	tests/common.sh \
