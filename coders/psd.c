@@ -898,7 +898,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (j=0; j < (long) layer_info[i].channels; j++)
             {
               layer_info[i].channel_info[j].type=(short) ReadBlobMSBShort(image);
-              layer_info[i].channel_info[j].size=ReadBlobMSBLong(image);
+              layer_info[i].channel_info[j].size=GetPSDSize(&psd_info,image);
               if (image->debug != MagickFalse)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    channel[%ld]: type=%d, size=%ld",j,
