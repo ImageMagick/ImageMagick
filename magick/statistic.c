@@ -95,25 +95,38 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     A v e r a g e I m a g e s                                               %
+%     E v a l u a t e I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AverageImages() takes a set of images and averages them together.  Each
-%  image in the set must have the same width and height.  AverageImages()
-%  returns a single image with each corresponding pixel component of each
-%  image averaged.   On failure, a NULL image is returned and exception
-%  describes the reason for the failure.
+%  EvaluateImage() applies a value to the image with an arithmetic, relational,
+%  or logical operator to an image. Use these operations to lighten or darken
+%  an image, to increase or decrease contrast in an image, or to produce the
+%  "negative" of an image.
 %
-%  The format of the AverageImages method is:
+%  The format of the EvaluateImageChannel method is:
 %
-%      Image *AverageImages(Image *images,ExceptionInfo *exception)
+%      MagickBooleanType EvaluateImage(Image *image,
+%        const MagickEvaluateOperator op,const double value,
+%        ExceptionInfo *exception)
+%      MagickBooleanType EvaluateImages(Image *images,
+%        const MagickEvaluateOperator op,const double value,
+%        ExceptionInfo *exception)
+%      MagickBooleanType EvaluateImageChannel(Image *image,
+%        const ChannelType channel,const MagickEvaluateOperator op,
+%        const double value,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image sequence.
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o op: A channel op.
+%
+%    o value: A value value.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -162,230 +175,6 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
   return(pixels);
 }
 
-MagickExport Image *AverageImages(const Image *images,ExceptionInfo *exception)
-{
-#define AverageImageTag  "Average/Image"
-
-  CacheView
-    *average_view;
-
-  const Image
-    *next;
-
-  Image
-    *average_image;
-
-  long
-    progress,
-    y;
-
-  MagickBooleanType
-    status;
-
-  MagickPixelPacket
-    **restrict average_pixels,
-    zero;
-
-  unsigned long
-    number_images;
-
-  /*
-    Ensure the image are the same size.
-  */
-  assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
-    if ((next->columns != images->columns) || (next->rows != images->rows))
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
-        return((Image *) NULL);
-      }
-  /*
-    Initialize average next attributes.
-  */
-  average_image=CloneImage(images,images->columns,images->rows,MagickTrue,
-    exception);
-  if (average_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(average_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&average_image->exception);
-      average_image=DestroyImage(average_image);
-      return((Image *) NULL);
-    }
-  average_pixels=AcquirePixelThreadSet(images);
-  if (average_pixels == (MagickPixelPacket **) NULL)
-    {
-      average_image=DestroyImage(average_image);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Average image pixels.
-  */
-  status=MagickTrue;
-  progress=0;
-  GetMagickPixelPacket(images,&zero);
-  number_images=GetImageListLength(images);
-  average_view=AcquireCacheView(average_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
-#endif
-  for (y=0; y < (long) average_image->rows; y++)
-  {
-    CacheView
-      *image_view;
-
-    const Image
-      *next;
-
-    MagickPixelPacket
-      pixel;
-
-    register IndexPacket
-      *restrict average_indexes;
-
-    register long
-      i,
-      id,
-      x;
-
-    register MagickPixelPacket
-      *average_pixel;
-
-    register PixelPacket
-      *restrict q;
-
-    if (status == MagickFalse)
-      continue;
-    q=QueueCacheViewAuthenticPixels(average_view,0,y,average_image->columns,1,
-      exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    average_indexes=GetCacheViewAuthenticIndexQueue(average_view);
-    pixel=zero;
-    id=GetOpenMPThreadId();
-    average_pixel=average_pixels[id];
-    for (x=0; x < (long) average_image->columns; x++)
-      average_pixel[x]=zero;
-    next=images;
-    for (i=0; i < (long) number_images; i++)
-    {
-      register const IndexPacket
-        *indexes;
-
-      register const PixelPacket
-        *p;
-
-      image_view=AcquireCacheView(next);
-      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        {
-          image_view=DestroyCacheView(image_view);
-          break;
-        }
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (x=0; x < (long) next->columns; x++)
-      {
-        SetMagickPixelPacket(next,p,indexes+x,&pixel);
-        average_pixel[x].red+=QuantumScale*pixel.red;
-        average_pixel[x].green+=QuantumScale*pixel.green;
-        average_pixel[x].blue+=QuantumScale*pixel.blue;
-        average_pixel[x].opacity+=QuantumScale*pixel.opacity;
-        if (average_image->colorspace == CMYKColorspace)
-          average_pixel[x].index+=QuantumScale*pixel.index;
-        p++;
-      }
-      image_view=DestroyCacheView(image_view);
-      next=GetNextImageInList(next);
-    }
-    for (x=0; x < (long) average_image->columns; x++)
-    {
-      average_pixel[x].red=(MagickRealType) (QuantumRange*
-        average_pixel[x].red/number_images);
-      average_pixel[x].green=(MagickRealType) (QuantumRange*
-        average_pixel[x].green/number_images);
-      average_pixel[x].blue=(MagickRealType) (QuantumRange*
-        average_pixel[x].blue/number_images);
-      average_pixel[x].opacity=(MagickRealType) (QuantumRange*
-        average_pixel[x].opacity/number_images);
-      if (average_image->colorspace == CMYKColorspace)
-        average_pixel[x].index=(MagickRealType) (QuantumRange*
-          average_pixel[x].index/number_images);
-      SetPixelPacket(average_image,&average_pixel[x],q,average_indexes+x);
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(average_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (images->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_AverageImages)
-#endif
-        proceed=SetImageProgress(images,AverageImageTag,progress++,
-          average_image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  average_view=DestroyCacheView(average_view);
-  average_pixels=DestroyPixelThreadSet(average_pixels);
-  if (status == MagickFalse)
-    average_image=DestroyImage(average_image);
-  return(average_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     E v a l u a t e I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  EvaluateImage() applies a value to the image with an arithmetic, relational,
-%  or logical operator to an image. Use these operations to lighten or darken
-%  an image, to increase or decrease contrast in an image, or to produce the
-%  "negative" of an image.
-%
-%  The format of the EvaluateImageChannel method is:
-%
-%      MagickBooleanType EvaluateImage(Image *image,
-%        const MagickEvaluateOperator op,const double value,
-%        ExceptionInfo *exception)
-%      MagickBooleanType EvaluateImageChannel(Image *image,
-%        const ChannelType channel,const MagickEvaluateOperator op,
-%        const double value,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel: the channel.
-%
-%    o op: A channel op.
-%
-%    o value: A value value.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
 static inline double MagickMax(const double x,const double y)
 {
   if (x > y)
@@ -400,8 +189,8 @@ static inline double MagickMin(const double x,const double y)
   return(y);
 }
 
-static Quantum ApplyEvaluateOperator(RandomInfo *random_info,Quantum pixel,
-  const MagickEvaluateOperator op,const MagickRealType value)
+static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
+  Quantum pixel,const MagickEvaluateOperator op,const MagickRealType value)
 {
   MagickRealType
     result;
@@ -571,7 +360,7 @@ static Quantum ApplyEvaluateOperator(RandomInfo *random_info,Quantum pixel,
       break;
     }
   }
-  return(ClampToQuantum(result));
+  return(result);
 }
 
 MagickExport MagickBooleanType EvaluateImage(Image *image,
@@ -584,12 +373,199 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
   return(status);
 }
 
+MagickExport Image *EvaluateImages(const Image *images,
+  const MagickEvaluateOperator op,ExceptionInfo *exception)
+{
+#define EvaluateImageTag  "Evaluate/Image"
+
+  CacheView
+    *evaluate_view;
+
+  const Image
+    *next;
+
+  Image
+    *evaluate_image;
+
+  long
+    progress,
+    y;
+
+  MagickBooleanType
+    status;
+
+  MagickPixelPacket
+    **restrict evaluate_pixels,
+    zero;
+
+  RandomInfo
+    **restrict random_info;
+
+  unsigned long
+    number_images;
+
+  /*
+    Ensure the image are the same size.
+  */
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
+    if ((next->columns != images->columns) || (next->rows != images->rows))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
+        return((Image *) NULL);
+      }
+  /*
+    Initialize evaluate next attributes.
+  */
+  evaluate_image=CloneImage(images,images->columns,images->rows,MagickTrue,
+    exception);
+  if (evaluate_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(evaluate_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&evaluate_image->exception);
+      evaluate_image=DestroyImage(evaluate_image);
+      return((Image *) NULL);
+    }
+  evaluate_pixels=AcquirePixelThreadSet(images);
+  if (evaluate_pixels == (MagickPixelPacket **) NULL)
+    {
+      evaluate_image=DestroyImage(evaluate_image);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+      return((Image *) NULL);
+    }
+  /*
+    Evaluate image pixels.
+  */
+  status=MagickTrue;
+  progress=0;
+  GetMagickPixelPacket(images,&zero);
+  random_info=AcquireRandomInfoThreadSet();
+  number_images=GetImageListLength(images);
+  evaluate_view=AcquireCacheView(evaluate_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+#endif
+  for (y=0; y < (long) evaluate_image->rows; y++)
+  {
+    CacheView
+      *image_view;
+
+    const Image
+      *next;
+
+    MagickPixelPacket
+      pixel;
+
+    register IndexPacket
+      *restrict evaluate_indexes;
+
+    register long
+      i,
+      id,
+      x;
+
+    register MagickPixelPacket
+      *evaluate_pixel;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,evaluate_image->columns,1,
+      exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
+    pixel=zero;
+    id=GetOpenMPThreadId();
+    evaluate_pixel=evaluate_pixels[id];
+    for (x=0; x < (long) evaluate_image->columns; x++)
+      evaluate_pixel[x]=zero;
+    next=images;
+    for (i=0; i < (long) number_images; i++)
+    {
+      register const IndexPacket
+        *indexes;
+
+      register const PixelPacket
+        *p;
+
+      image_view=AcquireCacheView(next);
+      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          image_view=DestroyCacheView(image_view);
+          break;
+        }
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      for (x=0; x < (long) next->columns; x++)
+      {
+        evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],p->red,
+          op,evaluate_pixel[x].red);
+        evaluate_pixel[x].green=ApplyEvaluateOperator(random_info[id],p->green,
+          op,evaluate_pixel[x].green);
+        evaluate_pixel[x].blue=ApplyEvaluateOperator(random_info[id],p->blue,
+          op,evaluate_pixel[x].blue);
+        evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
+          p->opacity,op,evaluate_pixel[x].opacity);
+        if (evaluate_image->colorspace == CMYKColorspace)
+          evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
+            indexes[x],op,evaluate_pixel[x].index);
+        p++;
+      }
+      image_view=DestroyCacheView(image_view);
+      next=GetNextImageInList(next);
+    }
+    for (x=0; x < (long) evaluate_image->columns; x++)
+    {
+      q->red=ClampToQuantum(evaluate_pixel[x].red);
+      q->green=ClampToQuantum(evaluate_pixel[x].green);
+      q->blue=ClampToQuantum(evaluate_pixel[x].blue);
+      q->opacity=ClampToQuantum(evaluate_pixel[x].opacity);
+      if (evaluate_image->colorspace == CMYKColorspace)
+        evaluate_indexes[x]=ClampToQuantum(evaluate_pixel[x].index);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (images->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_EvaluateImages)
+#endif
+        proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+          evaluate_image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  evaluate_view=DestroyCacheView(evaluate_view);
+  evaluate_pixels=DestroyPixelThreadSet(evaluate_pixels);
+  random_info=DestroyRandomInfoThreadSet(random_info);
+  if (status == MagickFalse)
+    evaluate_image=DestroyImage(evaluate_image);
+  return(evaluate_image);
+}
+
 MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   const ChannelType channel,const MagickEvaluateOperator op,const double value,
   ExceptionInfo *exception)
 {
-#define EvaluateImageTag  "Evaluate/Image "
-
   CacheView
     *image_view;
 
@@ -646,23 +622,26 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=ApplyEvaluateOperator(random_info[id],q->red,op,value);
+        q->red=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q->red,op,
+          value));
       if ((channel & GreenChannel) != 0)
-        q->green=ApplyEvaluateOperator(random_info[id],q->green,op,value);
+        q->green=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q->green,
+          op,value));
       if ((channel & BlueChannel) != 0)
-        q->blue=ApplyEvaluateOperator(random_info[id],q->blue,op,value);
+        q->blue=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q->blue,op,
+          value));
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte == MagickFalse)
-            q->opacity=ApplyEvaluateOperator(random_info[id],q->opacity,op,
-              value);
+            q->opacity=ClampToQuantum(ApplyEvaluateOperator(random_info[id],
+              q->opacity,op,value));
           else
-            q->opacity=(Quantum) QuantumRange-ApplyEvaluateOperator(
-              random_info[id],(Quantum) GetAlphaPixelComponent(q),op,value);
+            q->opacity=ClampToQuantum(QuantumRange-ApplyEvaluateOperator(
+              random_info[id],(Quantum) GetAlphaPixelComponent(q),op,value));
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
-        indexes[x]=(IndexPacket) ApplyEvaluateOperator(random_info[id],
-          indexes[x],op,value);
+        indexes[x]=(IndexPacket) ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],indexes[x],op,value));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1682,202 +1661,4 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       }
   }
   return(channel_statistics);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     M a x i m u m I m a g e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MaximumImages() returns the maximum intensity of an image sequence.
-%
-%  The format of the MaxImages method is:
-%
-%      Image *MaximumImages(Image *images,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image sequence.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MaximumImages(const Image *images,ExceptionInfo *exception)
-{
-#define MaximumImageTag  "Maximum/Image"
-
-  const Image
-    *next;
-
-  Image
-    *maximum_image;
-
-  MagickBooleanType
-    status;
-
-  register long
-    i;
-
-  unsigned long
-    number_images;
-
-  /*
-    Ensure the image are the same size.
-  */
-  assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
-    if ((next->columns != images->columns) || (next->rows != images->rows))
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
-        return((Image *) NULL);
-      }
-  /*
-    Initialize maximum itensity image.
-  */
-  maximum_image=CloneImage(images,0,0,MagickTrue,exception);
-  if (maximum_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(maximum_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&maximum_image->exception);
-      maximum_image=DestroyImage(maximum_image);
-      return((Image *) NULL);
-    }
-  /*
-    Compute the maximum intensity of an image sequence.
-  */
-  i=0;
-  number_images=GetImageListLength(images);
-  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
-  {
-    status=CompositeImage(maximum_image,LightenCompositeOp,next,0,0);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&maximum_image->exception);
-        maximum_image=DestroyImage(maximum_image);
-        break;
-      }
-    if (images->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MaximumImages)
-#endif
-        proceed=SetImageProgress(images,MaximumImageTag,i++,number_images);
-      }
-  }
-  return(maximum_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     M i n i m u m I m a g e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MinimumImages() returns the minimum intensity of an image sequence.
-%
-%  The format of the MinimumImages method is:
-%
-%      Image *MinimumImages(Image *images,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image sequence.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MinimumImages(const Image *images,ExceptionInfo *exception)
-{
-#define MinimumImageTag  "Minimum/Image"
-
-  const Image
-    *next;
-
-  Image
-    *minimum_image;
-
-  MagickBooleanType
-    status;
-
-  register long
-    i;
-
-  unsigned long
-    number_images;
-
-  /*
-    Ensure the image are the same size.
-  */
-  assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
-    if ((next->columns != images->columns) || (next->rows != images->rows))
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
-        return((Image *) NULL);
-      }
-  /*
-    Initialize minimum intensity image.
-  */
-  minimum_image=CloneImage(images,0,0,MagickTrue,exception);
-  if (minimum_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(minimum_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&minimum_image->exception);
-      minimum_image=DestroyImage(minimum_image);
-      return((Image *) NULL);
-    }
-  /*
-    Compute the minimum intensity of an image sequence.
-  */
-  i=0;
-  number_images=GetImageListLength(images);
-  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
-  {
-    status=CompositeImage(minimum_image,DarkenCompositeOp,next,0,0);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&minimum_image->exception);
-        minimum_image=DestroyImage(minimum_image);
-        break;
-      }
-    if (images->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MaxImages)
-#endif
-        proceed=SetImageProgress(images,MinimumImageTag,i++,number_images);
-      }
-  }
-  return(minimum_image);
 }

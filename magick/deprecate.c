@@ -81,6 +81,7 @@
 #include "magick/semaphore.h"
 #include "magick/segment.h"
 #include "magick/splay-tree.h"
+#include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/threshold.h"
 #include "magick/transform.h"
@@ -166,8 +167,7 @@ MagickExport const PixelPacket *AcquireCacheViewPixels(
 %                                                                             %
 %                                                                             %
 %   A c q u i r e I m a g e P i x e l s                                        %
-%                                                                             %
-%                                                                             %
+%                                                                             % %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -182,9 +182,9 @@ MagickExport const PixelPacket *AcquireCacheViewPixels(
 %
 %  Pixels accessed via the returned pointer represent a simple array of type
 %  PixelPacket.  If the image type is CMYK or the storage class is PseudoClass,
-%  call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access the
-%  black color component or to obtain the colormap indexes (of type IndexPacket)
-%  corresponding to the region.
+%  call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access
+%  the black color component or to obtain the colormap indexes (of type
+%  IndexPacket) corresponding to the region.
 %
 %  If you plan to modify the pixels, use GetAuthenticPixels() instead.
 %
@@ -687,7 +687,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e S t r i n g                                                 %
+%   A l l o c a t e S t r i n g                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -723,6 +723,39 @@ MagickExport char *AllocateString(const char *source)
   if (source != (char *) NULL)
     (void) CopyMagickString(destination,source,length);
   return(destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     A v e r a g e I m a g e s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AverageImages() takes a set of images and averages them together.  Each
+%  image in the set must have the same width and height.  AverageImages()
+%  returns a single image with each corresponding pixel component of each
+%  image averaged.   On failure, a NULL image is returned and exception
+%  describes the reason for the failure.
+%
+%  The format of the AverageImages method is:
+%
+%      Image *AverageImages(Image *images,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image sequence.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *AverageImages(const Image *images,ExceptionInfo *exception)
+{
+  return(EvaluateImages(images,MeanEvaluateOperator,exception));
 }
 
 /*
@@ -4197,6 +4230,64 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
   floodplane_image=DestroyImage(floodplane_image);
   return(y == (long) image->rows ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M a x i m u m I m a g e s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MaximumImages() returns the maximum intensity of an image sequence.
+%
+%  The format of the MaxImages method is:
+%
+%      Image *MaximumImages(Image *images,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: the image sequence.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MaximumImages(const Image *images,ExceptionInfo *exception)
+{
+  return(EvaluateImages(images,MinEvaluateOperator,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M i n i m u m I m a g e s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MinimumImages() returns the minimum intensity of an image sequence.
+%
+%  The format of the MinimumImages method is:
+%
+%      Image *MinimumImages(Image *images,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: the image sequence.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MinimumImages(const Image *images,ExceptionInfo *exception)
+{
+  return(EvaluateImages(images,MinEvaluateOperator,exception));
 }
 
 /*

@@ -2636,7 +2636,7 @@ Average(ref)
           PackageName);
         goto PerlException;
       }
-    image=AverageImages(image,exception);
+    image=EvaluateImages(image,MeanEvaluateOperator,exception);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     /*
@@ -3512,6 +3512,163 @@ Display(ref,...)
   PerlException:
     if (package_info != (struct PackageInfo *) NULL)
       DestroyPackageInfo(package_info);
+    InheritPerlException(exception,perl_exception);
+    exception=DestroyExceptionInfo(exception);
+    sv_setiv(perl_exception,(IV) SvCUR(perl_exception) != 0);
+    SvPOK_on(perl_exception);
+    ST(0)=sv_2mortal(perl_exception);
+    XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   E v a l u a t e I m a g e s                                               #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+EvaluateImages(ref)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    EvaluateImages   = 1
+    evaluateimages   = 2
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *attribute,
+      *p;
+
+    ExceptionInfo
+      *exception;
+
+    HV
+      *hv;
+
+    Image
+      *image;
+
+    MagickEvaluateOperator
+      op;
+
+    register long
+      i;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *perl_exception,
+      *reference,
+      *rv,
+      *sv;
+
+    exception=AcquireExceptionInfo();
+    perl_exception=newSVpv("",0);
+    if (sv_isobject(ST(0)) == 0)
+      {
+        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
+          PackageName);
+        goto PerlException;
+      }
+    reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
+    op=MeanEvaluateOperator;
+    if (items == 2)
+      {
+        long
+          in;
+
+        in=ParseMagickOption(MagickEvaluateOptions,MagickFalse,(char *)
+          SvPV(ST(1),na));
+        if (in < 0)
+          {
+            ThrowPerlException(exception,OptionError,"UnrecognizedType",
+              SvPV(ST(i),na));
+            return;
+          }
+        op=(MagickEvaluateOperator) in;
+      }
+    else
+      for (i=2; i < items; i+=2)
+      {
+        attribute=(char *) SvPV(ST(i-1),na);
+        switch (*attribute)
+        {
+          case 'O':
+          case 'o':
+          {
+            if (LocaleCompare(attribute,"operator") == 0)
+              {
+                Image
+                  *next;
+
+                long
+                  in;
+
+                in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+                  MagickEvaluateOptions,MagickFalse,SvPV(ST(i),na));
+                if (in < 0)
+                  {
+                    ThrowPerlException(exception,OptionError,"UnrecognizedType",
+                      SvPV(ST(i),na));
+                    return;
+                  }
+                op=(MagickEvaluateOperator) in;
+                break;
+              }
+            ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+              attribute);
+            break;
+          }
+          default:
+          {
+            ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+              attribute);
+            break;
+          }
+        }
+      }
+    image=EvaluateImages(image,op,exception);
+    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+      goto PerlException;
+    /*
+      Create blessed Perl array for the returned image.
+    */
+    av=newAV();
+    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
+    AddImageToRegistry(image);
+    rv=newRV(sv);
+    av_push(av,sv_bless(rv,hv));
+    SvREFCNT_dec(sv);
+    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
+    (void) FormatMagickString(info->image_info->filename,MaxTextExtent,
+      "evaluate-%.*s",(int) (MaxTextExtent-9),
+      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
+    (void) CopyMagickString(image->filename,info->image_info->filename,
+      MaxTextExtent);
+    SetImageInfo(info->image_info,0,exception);
+    exception=DestroyExceptionInfo(exception);
+    SvREFCNT_dec(perl_exception);
+    XSRETURN(1);
+
+  PerlException:
     InheritPerlException(exception,perl_exception);
     exception=DestroyExceptionInfo(exception);
     sv_setiv(perl_exception,(IV) SvCUR(perl_exception) != 0);
@@ -6746,196 +6903,6 @@ MagickToMime(ref,name)
   }
   OUTPUT:
     RETVAL
-
-#
-###############################################################################
-#                                                                             #
-#                                                                             #
-#                                                                             #
-#   M a x i m u m                                                             #
-#                                                                             #
-#                                                                             #
-#                                                                             #
-###############################################################################
-#
-#
-void
-Maximum(ref)
-  Image::Magick ref=NO_INIT
-  ALIAS:
-    MaximumImage   = 1
-    maximum        = 2
-    maximumimage   = 3
-  PPCODE:
-  {
-    AV
-      *av;
-
-    char
-      *p;
-
-    ExceptionInfo
-      *exception;
-
-    HV
-      *hv;
-
-    Image
-      *image;
-
-    struct PackageInfo
-      *info;
-
-    SV
-      *perl_exception,
-      *reference,
-      *rv,
-      *sv;
-
-    exception=AcquireExceptionInfo();
-    perl_exception=newSVpv("",0);
-    if (sv_isobject(ST(0)) == 0)
-      {
-        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
-          PackageName);
-        goto PerlException;
-      }
-    reference=SvRV(ST(0));
-    hv=SvSTASH(reference);
-    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
-    if (image == (Image *) NULL)
-      {
-        ThrowPerlException(exception,OptionError,"NoImagesDefined",
-          PackageName);
-        goto PerlException;
-      }
-    image=MaximumImages(image,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
-      goto PerlException;
-    /*
-      Create blessed Perl array for the returned image.
-    */
-    av=newAV();
-    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
-    AddImageToRegistry(image);
-    rv=newRV(sv);
-    av_push(av,sv_bless(rv,hv));
-    SvREFCNT_dec(sv);
-    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    (void) FormatMagickString(info->image_info->filename,MaxTextExtent,
-      "max-%.*s",(int) (MaxTextExtent-9),
-      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
-    (void) CopyMagickString(image->filename,info->image_info->filename,
-      MaxTextExtent);
-    SetImageInfo(info->image_info,0,exception);
-    exception=DestroyExceptionInfo(exception);
-    SvREFCNT_dec(perl_exception);
-    XSRETURN(1);
-
-  PerlException:
-    InheritPerlException(exception,perl_exception);
-    exception=DestroyExceptionInfo(exception);
-    sv_setiv(perl_exception,(IV) SvCUR(perl_exception) != 0);
-    SvPOK_on(perl_exception);
-    ST(0)=sv_2mortal(perl_exception);
-    XSRETURN(1);
-  }
-
-#
-###############################################################################
-#                                                                             #
-#                                                                             #
-#                                                                             #
-#   M i n i m u m                                                             #
-#                                                                             #
-#                                                                             #
-#                                                                             #
-###############################################################################
-#
-#
-void
-Minimum(ref)
-  Image::Magick ref=NO_INIT
-  ALIAS:
-    MinimumImage   = 1
-    minimum        = 2
-    minimumimage   = 3
-  PPCODE:
-  {
-    AV
-      *av;
-
-    char
-      *p;
-
-    ExceptionInfo
-      *exception;
-
-    HV
-      *hv;
-
-    Image
-      *image;
-
-    struct PackageInfo
-      *info;
-
-    SV
-      *perl_exception,
-      *reference,
-      *rv,
-      *sv;
-
-    exception=AcquireExceptionInfo();
-    perl_exception=newSVpv("",0);
-    if (sv_isobject(ST(0)) == 0)
-      {
-        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
-          PackageName);
-        goto PerlException;
-      }
-    reference=SvRV(ST(0));
-    hv=SvSTASH(reference);
-    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
-    if (image == (Image *) NULL)
-      {
-        ThrowPerlException(exception,OptionError,"NoImagesDefined",
-          PackageName);
-        goto PerlException;
-      }
-    image=MinimumImages(image,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
-      goto PerlException;
-    /*
-      Create blessed Perl array for the returned image.
-    */
-    av=newAV();
-    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
-    AddImageToRegistry(image);
-    rv=newRV(sv);
-    av_push(av,sv_bless(rv,hv));
-    SvREFCNT_dec(sv);
-    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    (void) FormatMagickString(info->image_info->filename,MaxTextExtent,
-      "minimum-%.*s",(int) (MaxTextExtent-9),
-      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
-    (void) CopyMagickString(image->filename,info->image_info->filename,
-      MaxTextExtent);
-    SetImageInfo(info->image_info,0,exception);
-    exception=DestroyExceptionInfo(exception);
-    SvREFCNT_dec(perl_exception);
-    XSRETURN(1);
-
-  PerlException:
-    InheritPerlException(exception,perl_exception);
-    exception=DestroyExceptionInfo(exception);
-    sv_setiv(perl_exception,(IV) SvCUR(perl_exception) != 0);
-    SvPOK_on(perl_exception);
-    ST(0)=sv_2mortal(perl_exception);
-    XSRETURN(1);
-  }
 
 #
 ###############################################################################
