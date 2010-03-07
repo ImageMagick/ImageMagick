@@ -1728,7 +1728,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
     packet_size;
 
   if ((compression_flag != MagickFalse) &&
-      (image->compression == NoCompression))
+      (tmp_image->compression == NoCompression))
     (void) WriteBlobMSBShort(image,0);
   if (tmp_image->depth > 8)
     tmp_image->depth=16;
@@ -1741,7 +1741,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
       break;
     length=ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
-    if (image->compression == NoCompression)
+    if (tmp_image->compression == NoCompression)
       (void) WriteBlob(image,length,pixels);
     else
       {
@@ -1792,7 +1792,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   i=0;
   if (tmp_image->storage_class == PseudoClass)
     {
-      if (image->compression != NoCompression)
+      if (tmp_image->compression != NoCompression)
         {
           /*
             Packbits compression.
@@ -1819,7 +1819,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     {
       if (tmp_image->colorspace == CMYKColorspace)
         (void) NegateImage(image,MagickFalse);
-      if (image->compression != NoCompression)
+      if (tmp_image->compression != NoCompression)
         {
           /*
             Packbits compression.
@@ -2165,6 +2165,7 @@ compute_layer_info:
 
     layer_count = 1;
     tmp_image = base_image;
+    tmp_image->compression=NoCompression;
     while ( tmp_image != NULL ) {
       (void) WriteBlobMSBLong(image,0);
       (void) WriteBlobMSBLong(image,0);
