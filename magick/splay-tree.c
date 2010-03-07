@@ -325,9 +325,27 @@ static void BalanceSplayTree(SplayTreeInfo *splay_tree)
 %      whenever a value object is added to the splay-tree.
 %
 */
+
+static void *GetFirstSplayTreeNode(SplayTreeInfo *splay_tree)
+{
+  register NodeInfo
+    *node;
+
+  node=splay_tree->root;
+  if (splay_tree->root == (NodeInfo *) NULL)
+    return((NodeInfo *) NULL);
+  while (node->left != (NodeInfo *) NULL)
+    node=node->left;
+  return(node->key);
+}
+
 MagickExport SplayTreeInfo *CloneSplayTree(SplayTreeInfo *splay_tree,
   void *(*clone_key)(void *),void *(*clone_value)(void *))
 {
+  register NodeInfo
+    *next,
+    *node;
+
   SplayTreeInfo
     *clone_tree;
 
@@ -338,62 +356,26 @@ MagickExport SplayTreeInfo *CloneSplayTree(SplayTreeInfo *splay_tree,
   clone_tree=NewSplayTree(splay_tree->compare,splay_tree->relinquish_key,
     splay_tree->relinquish_value);
   LockSemaphoreInfo(splay_tree->semaphore);
-  if (splay_tree->root != (NodeInfo *) NULL)
+  if (splay_tree->root == (NodeInfo *) NULL)
     {
-      register NodeInfo
-        *active,
-        *next,
-        *node;
-
-      void
-        *key,
-        *value;
-
-      key=splay_tree->root->key;
-      if ((clone_key != (void *(*)(void *)) NULL) && (key != (void *) NULL))
-        key=clone_key(key);
-      value=splay_tree->root->value;
-      if ((clone_value != (void *(*)(void *)) NULL) && (value != (void *) NULL))
-        value=clone_value(value);
-      (void) AddValueToSplayTree(clone_tree,key,value);
-      for (node=splay_tree->root; node != (NodeInfo *) NULL; )
-      {
-        active=node;
-        for (node=(NodeInfo *) NULL; active != (NodeInfo *) NULL; )
-        {
-          next=(NodeInfo *) NULL;
-          if (active->left != (NodeInfo *) NULL)
-            {
-              next=node;
-              key=active->left->key;
-              if ((clone_key != (void *(*)(void *)) NULL) &&
-                  (key != (void *) NULL))
-                key=clone_key(key);
-              value=active->left->value;
-              if ((clone_value != (void *(*)(void *)) NULL) &&
-                  (value != (void *) NULL))
-                value=clone_value(value);
-              (void) AddValueToSplayTree(clone_tree,key,value);
-              node=active->left;
-            }
-          if (active->right != (NodeInfo *) NULL)
-            {
-              next=node;
-              key=active->right->key;
-              if ((clone_key != (void *(*)(void *)) NULL) &&
-                  (key != (void *) NULL))
-                key=clone_key(key);
-              value=active->right->value;
-              if ((clone_value != (void *(*)(void *)) NULL) &&
-                  (value != (void *) NULL))
-                value=clone_value(value);
-              (void) AddValueToSplayTree(clone_tree,key,value);
-              node=active->right;
-            }
-          active=next;
-        }
-      }
+      UnlockSemaphoreInfo(splay_tree->semaphore);
+      return(clone_tree);
     }
+  next=(NodeInfo *) GetFirstSplayTreeNode(splay_tree);
+  while (next != (NodeInfo *) NULL)
+  {
+    SplaySplayTree(splay_tree,next);
+    (void) AddValueToSplayTree(clone_tree,clone_key(splay_tree->root->key),
+      clone_value(splay_tree->root->value));
+    next=(NodeInfo *) NULL;
+    node=splay_tree->root->right;
+    if (node != (NodeInfo *) NULL)
+      {
+        while (node->left != (NodeInfo *) NULL)
+          node=node->left;
+        next=(NodeInfo *) node->key;
+      }
+  }
   UnlockSemaphoreInfo(splay_tree->semaphore);
   return(clone_tree);
 }
@@ -497,20 +479,6 @@ MagickExport int CompareSplayTreeStringInfo(const void *target,
 %    o value: the value.
 %
 */
-
-static void *GetFirstSplayTreeNode(SplayTreeInfo *splay_tree)
-{
-  register NodeInfo
-    *node;
-
-  node=splay_tree->root;
-  if (splay_tree->root == (NodeInfo *) NULL)
-    return((NodeInfo *) NULL);
-  while (node->left != (NodeInfo *) NULL)
-    node=node->left;
-  return(node->key);
-}
-
 MagickExport MagickBooleanType DeleteNodeByValueFromSplayTree(
   SplayTreeInfo *splay_tree,const void *value)
 {
