@@ -1575,10 +1575,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     dpx.orientation.timestamp);
   value=GetDPXProperty(image_info,image,"dpx:orientation.device");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.orientation.device,value,
-      sizeof(dpx.orientation.device));
+    (void) strncpy(dpx.orientation.device,value,sizeof(dpx.orientation.device));
   offset+=WriteBlob(image,sizeof(dpx.orientation.device),(unsigned char *)
     dpx.orientation.device);
+  value=GetDPXProperty(image_info,image,"dpx:orientation.serial");
+  if (value != (const char *) NULL)
+    (void) strncpy(dpx.orientation.serial,value,sizeof(dpx.orientation.serial));
   offset+=WriteBlob(image,sizeof(dpx.orientation.serial),(unsigned char *)
     dpx.orientation.serial);
   for (i=0; i < 4; i++)
