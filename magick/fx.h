@@ -26,46 +26,6 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedEvaluateOperator,
-  AddEvaluateOperator,
-  AndEvaluateOperator,
-  DivideEvaluateOperator,
-  LeftShiftEvaluateOperator,
-  MaxEvaluateOperator,
-  MinEvaluateOperator,
-  MultiplyEvaluateOperator,
-  OrEvaluateOperator,
-  RightShiftEvaluateOperator,
-  SetEvaluateOperator,
-  SubtractEvaluateOperator,
-  XorEvaluateOperator,
-  PowEvaluateOperator,
-  LogEvaluateOperator,
-  ThresholdEvaluateOperator,
-  ThresholdBlackEvaluateOperator,
-  ThresholdWhiteEvaluateOperator,
-  GaussianNoiseEvaluateOperator,
-  ImpulseNoiseEvaluateOperator,
-  LaplacianNoiseEvaluateOperator,
-  MultiplicativeNoiseEvaluateOperator,
-  PoissonNoiseEvaluateOperator,
-  UniformNoiseEvaluateOperator,
-  CosineEvaluateOperator,
-  SineEvaluateOperator,
-  AddModulusEvaluateOperator
-} MagickEvaluateOperator;
-
-typedef enum
-{
-  UndefinedFunction,
-  PolynomialFunction,
-  SinusoidFunction,
-  ArcsinFunction,
-  ArctanFunction
-} MagickFunction;
-
-typedef enum
-{
   UndefinedNoise,
   UniformNoise,
   GaussianNoise,
@@ -106,14 +66,6 @@ extern MagickExport Image
   *WaveImage(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  EvaluateImage(Image *,const MagickEvaluateOperator,const double,
-    ExceptionInfo *),
-  EvaluateImageChannel(Image *,const ChannelType,const MagickEvaluateOperator,
-    const double,ExceptionInfo *),
-  FunctionImage(Image *,const MagickFunction,const unsigned long,const double *,
-    ExceptionInfo *),
-  FunctionImageChannel(Image *,const ChannelType,const MagickFunction,
-    const unsigned long,const double *,ExceptionInfo *),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   SolarizeImage(Image *,const double);
 
