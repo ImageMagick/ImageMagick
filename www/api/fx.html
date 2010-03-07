@@ -155,7 +155,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AddNoiseImage">AddNoiseImage</a> &bull; <a href="#BlueShiftImage">BlueShiftImage</a> &bull; <a href="#CharcoalImage">CharcoalImage</a> &bull; <a href="#ColorizeImage">ColorizeImage</a> &bull; <a href="#EvaluateImage">EvaluateImage</a> &bull; <a href="#FunctionImage">FunctionImage</a> &bull; <a href="#FxImage">FxImage</a> &bull; <a href="#ImplodeImage">ImplodeImage</a> &bull; <a href="#The MorphImages">The MorphImages</a> &bull; <a href="#PlasmaImage">PlasmaImage</a> &bull; <a href="#PolaroidImage">PolaroidImage</a> &bull; <a href="#RecolorImage">RecolorImage</a> &bull; <a href="#MagickSepiaToneImage">MagickSepiaToneImage</a> &bull; <a href="#ShadowImage">ShadowImage</a> &bull; <a href="#SketchImage">SketchImage</a> &bull; <a href="#SolarizeImage">SolarizeImage</a> &bull; <a href="#SteganoImage">SteganoImage</a> &bull; <a href="#StereoAnaglyphImage">StereoAnaglyphImage</a> &bull; <a href="#SwirlImage">SwirlImage</a> &bull; <a href="#TintImage">TintImage</a> &bull; <a href="#VignetteImage">VignetteImage</a> &bull; <a href="#WaveImage">WaveImage</a>]</p>
+<p class="navigation-index">[<a href="#AddNoiseImage">AddNoiseImage</a> &bull; <a href="#BlueShiftImage">BlueShiftImage</a> &bull; <a href="#CharcoalImage">CharcoalImage</a> &bull; <a href="#ColorizeImage">ColorizeImage</a> &bull; <a href="#FxImage">FxImage</a> &bull; <a href="#ImplodeImage">ImplodeImage</a> &bull; <a href="#The MorphImages">The MorphImages</a> &bull; <a href="#PlasmaImage">PlasmaImage</a> &bull; <a href="#PolaroidImage">PolaroidImage</a> &bull; <a href="#RecolorImage">RecolorImage</a> &bull; <a href="#MagickSepiaToneImage">MagickSepiaToneImage</a> &bull; <a href="#ShadowImage">ShadowImage</a> &bull; <a href="#SketchImage">SketchImage</a> &bull; <a href="#SolarizeImage">SolarizeImage</a> &bull; <a href="#SteganoImage">SteganoImage</a> &bull; <a href="#StereoAnaglyphImage">StereoAnaglyphImage</a> &bull; <a href="#SwirlImage">SwirlImage</a> &bull; <a href="#TintImage">TintImage</a> &bull; <a href="#VignetteImage">VignetteImage</a> &bull; <a href="#WaveImage">WaveImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/fx
 _8c.html" target="source" name="AddNoiseImage">AddNoiseImage</a></h2>
@@ -263,77 +263,6 @@ _8c.html" target="source" name="ColorizeImage">ColorizeImage</a></h2>
 
 <h5>colorize</h5>
 <ol><p>A color value.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/fx
-_8c.html" target="source" name="EvaluateImage">EvaluateImage</a></h2>
-<div class="doc-section">
-
-<p>EvaluateImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p></ol>
-
-<p>The format of the EvaluateImageChannel method is:</p>
-
-<pre class="code">
-  MagickBooleanType EvaluateImage(Image *image,
-    const MagickEvaluateOperator op,const double value,
-    ExceptionInfo *exception)
-  MagickBooleanType EvaluateImageChannel(Image *image,
-    const ChannelType channel,const MagickEvaluateOperator op,
-    const double value,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>channel</h5>
-<ol><p>the channel.</p></ol>
-
-<h5>op</h5>
-<ol><p>A channel op.</p></ol>
-
-<h5>value</h5>
-<ol><p>A value value.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/fx
-_8c.html" target="source" name="FunctionImage">FunctionImage</a></h2>
-<div class="doc-section">
-
-<p>FunctionImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p></ol>
-
-<p>The format of the FunctionImageChannel method is:</p>
-
-<pre class="code">
-  MagickBooleanType FunctionImage(Image *image,
-    const MagickFunction function,const long number_parameters,
-    const double *parameters,ExceptionInfo *exception)
-  MagickBooleanType FunctionImageChannel(Image *image,
-    const ChannelType channel,const MagickFunction function,
-    const long number_parameters,const double *argument,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>channel</h5>
-<ol><p>the channel.</p></ol>
-
-<h5>function</h5>
-<ol><p>A channel function.</p></ol>
-
-<h5>parameters</h5>
-<ol><p>one or more parameters.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>

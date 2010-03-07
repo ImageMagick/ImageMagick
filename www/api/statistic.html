@@ -124,6 +124,9 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+</div>
+<div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
 </div>
 <div  class="sponsor">
@@ -152,24 +155,77 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AverageImages">AverageImages</a> &bull; <a href="#GetImageChannelMean">GetImageChannelMean</a> &bull; <a href="#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &bull; <a href="#GetImageChannelRange">GetImageChannelRange</a> &bull; <a href="#GetImageChannelStatistics">GetImageChannelStatistics</a> &bull; <a href="#MaximumImages">MaximumImages</a> &bull; <a href="#MinimumImages">MinimumImages</a>]</p>
+<p class="navigation-index">[<a href="#EvaluateImage">EvaluateImage</a> &bull; <a href="#FunctionImage">FunctionImage</a> &bull; <a href="#GetImageChannelMean">GetImageChannelMean</a> &bull; <a href="#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &bull; <a href="#GetImageChannelRange">GetImageChannelRange</a> &bull; <a href="#GetImageChannelStatistics">GetImageChannelStatistics</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/statistic
-_8c.html" target="source" name="AverageImages">AverageImages</a></h2>
+_8c.html" target="source" name="EvaluateImage">EvaluateImage</a></h2>
 <div class="doc-section">
 
-<p>AverageImages() takes a set of images and averages them together.  Each image in the set must have the same width and height.  AverageImages() returns a single image with each corresponding pixel component of each image averaged.   On failure, a NULL image is returned and exception describes the reason for the failure.</p></ol>
+<p>EvaluateImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p></ol>
 
-<p>The format of the AverageImages method is:</p>
+<p>The format of the EvaluateImageChannel method is:</p>
 
 <pre class="code">
-  Image *AverageImages(Image *images,ExceptionInfo *exception)
+  MagickBooleanType EvaluateImage(Image *image,
+    const MagickEvaluateOperator op,const double value,
+    ExceptionInfo *exception)
+  MagickBooleanType EvaluateImages(Image *images,
+    const MagickEvaluateOperator op,const double value,
+    ExceptionInfo *exception)
+  MagickBooleanType EvaluateImageChannel(Image *image,
+    const ChannelType channel,const MagickEvaluateOperator op,
+    const double value,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
 
 <h5>image</h5>
-<ol><p>the image sequence.</p></ol>
+<ol><p>the image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel.</p></ol>
+
+<h5>op</h5>
+<ol><p>A channel op.</p></ol>
+
+<h5>value</h5>
+<ol><p>A value value.</p></ol>
+
+<h5>exception</h5>
+<ol><p>return any errors or warnings in this structure.</p></ol>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic
+_8c.html" target="source" name="FunctionImage">FunctionImage</a></h2>
+<div class="doc-section">
+
+<p>FunctionImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p></ol>
+
+<p>The format of the FunctionImageChannel method is:</p>
+
+<pre class="code">
+  MagickBooleanType FunctionImage(Image *image,
+    const MagickFunction function,const long number_parameters,
+    const double *parameters,ExceptionInfo *exception)
+  MagickBooleanType FunctionImageChannel(Image *image,
+    const ChannelType channel,const MagickFunction function,
+    const long number_parameters,const double *argument,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p></ol>
+
+<h5>image</h5>
+<ol><p>the image.</p></ol>
+
+<h5>channel</h5>
+<ol><p>the channel.</p></ol>
+
+<h5>function</h5>
+<ol><p>A channel function.</p></ol>
+
+<h5>parameters</h5>
+<ol><p>one or more parameters.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
@@ -300,48 +356,6 @@ _8c.html" target="source" name="GetImageChannelStatistics">GetImageChannelStatis
 <ol><p>return any errors or warnings in this structure.</p></ol>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic
-_8c.html" target="source" name="MaximumImages">MaximumImages</a></h2>
-<div class="doc-section">
-
-<p>MaximumImages() returns the maximum intensity of an image sequence.</p></ol>
-
-<p>The format of the MaxImages method is:</p>
-
-<pre class="code">
-  Image *MaximumImages(Image *images,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>images</h5>
-<ol><p>the image sequence.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic
-_8c.html" target="source" name="MinimumImages">MinimumImages</a></h2>
-<div class="doc-section">
-
-<p>MinimumImages() returns the minimum intensity of an image sequence.</p></ol>
-
-<p>The format of the MinimumImages method is:</p>
-
-<pre class="code">
-  Image *MinimumImages(Image *images,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>images</h5>
-<ol><p>the image sequence.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
 
 </div>
 
@@ -349,7 +363,7 @@ _8c.html" target="source" name="MinimumImages">MinimumImages</a></h2>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
