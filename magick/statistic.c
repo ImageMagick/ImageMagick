@@ -79,6 +79,7 @@
 #include "magick/profile.h"
 #include "magick/quantize.h"
 #include "magick/random_.h"
+#include "magick/random-private.h"
 #include "magick/segment.h"
 #include "magick/semaphore.h"
 #include "magick/signature-private.h"
@@ -344,6 +345,577 @@ MagickExport Image *AverageImages(const Image *images,ExceptionInfo *exception)
   if (status == MagickFalse)
     average_image=DestroyImage(average_image);
   return(average_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     E v a l u a t e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  EvaluateImage() applies a value to the image with an arithmetic, relational,
+%  or logical operator to an image. Use these operations to lighten or darken
+%  an image, to increase or decrease contrast in an image, or to produce the
+%  "negative" of an image.
+%
+%  The format of the EvaluateImageChannel method is:
+%
+%      MagickBooleanType EvaluateImage(Image *image,
+%        const MagickEvaluateOperator op,const double value,
+%        ExceptionInfo *exception)
+%      MagickBooleanType EvaluateImageChannel(Image *image,
+%        const ChannelType channel,const MagickEvaluateOperator op,
+%        const double value,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o op: A channel op.
+%
+%    o value: A value value.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline double MagickMax(const double x,const double y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+static Quantum ApplyEvaluateOperator(RandomInfo *random_info,Quantum pixel,
+  const MagickEvaluateOperator op,const MagickRealType value)
+{
+  MagickRealType
+    result;
+
+  result=0.0;
+  switch (op)
+  {
+    case UndefinedEvaluateOperator:
+      break;
+    case AddEvaluateOperator:
+    {
+      result=(MagickRealType) (pixel+value);
+      break;
+    }
+    case AddModulusEvaluateOperator:
+    {
+      /*
+        This returns a 'floored modulus' of the addition which is a
+        positive result.  It differs from  % or fmod() which returns a
+        'truncated modulus' result, where floor() is replaced by trunc()
+        and could return a negative result (which is clipped).
+      */
+      result=pixel+value;
+      result-=(QuantumRange+1)*floor(result/(QuantumRange+1));
+      break;
+    }
+    case AndEvaluateOperator:
+    {
+      result=(MagickRealType) ((unsigned long) pixel & (unsigned long)
+        (value+0.5));
+      break;
+    }
+    case CosineEvaluateOperator:
+    {
+      result=(MagickRealType) (QuantumRange*(0.5*cos((double) (2.0*MagickPI*
+        QuantumScale*pixel*value))+0.5));
+      break;
+    }
+    case DivideEvaluateOperator:
+    {
+      result=pixel/(value == 0.0 ? 1.0 : value);
+      break;
+    }
+    case GaussianNoiseEvaluateOperator:
+    {
+      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+        GaussianNoise,value);
+      break;
+    }
+    case ImpulseNoiseEvaluateOperator:
+    {
+      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+        ImpulseNoise,value);
+      break;
+    }
+    case LaplacianNoiseEvaluateOperator:
+    {
+      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+        LaplacianNoise,value);
+      break;
+    }
+    case LeftShiftEvaluateOperator:
+    {
+      result=(MagickRealType) ((unsigned long) pixel << (unsigned long)
+        (value+0.5));
+      break;
+    }
+    case LogEvaluateOperator:
+    {
+      result=(MagickRealType) (QuantumRange*log((double) (QuantumScale*value*
+        pixel+1.0))/log((double) (value+1.0)));
+      break;
+    }
+    case MaxEvaluateOperator:
+    {
+      result=(MagickRealType) MagickMax((double) pixel,value);
+      break;
+    }
+    case MeanEvaluateOperator:
+    {
+      result=(MagickRealType) ((pixel+value)/2.0);
+      break;
+    }
+    case MinEvaluateOperator:
+    {
+      result=(MagickRealType) MagickMin((double) pixel,value);
+      break;
+    }
+    case MultiplicativeNoiseEvaluateOperator:
+    {
+      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+        MultiplicativeGaussianNoise,value);
+      break;
+    }
+    case MultiplyEvaluateOperator:
+    {
+      result=(MagickRealType) (value*pixel);
+      break;
+    }
+    case OrEvaluateOperator:
+    {
+      result=(MagickRealType) ((unsigned long) pixel | (unsigned long)
+        (value+0.5));
+      break;
+    }
+    case PoissonNoiseEvaluateOperator:
+    {
+      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+        PoissonNoise,value);
+      break;
+    }
+    case PowEvaluateOperator:
+    {
+      result=(MagickRealType) (QuantumRange*pow((double) (QuantumScale*pixel),
+        (double) value));
+      break;
+    }
+    case RightShiftEvaluateOperator:
+    {
+      result=(MagickRealType) ((unsigned long) pixel >> (unsigned long)
+        (value+0.5));
+      break;
+    }
+    case SetEvaluateOperator:
+    {
+      result=value;
+      break;
+    }
+    case SineEvaluateOperator:
+    {
+      result=(MagickRealType) (QuantumRange*(0.5*sin((double) (2.0*MagickPI*
+        QuantumScale*pixel*value))+0.5));
+      break;
+    }
+    case SubtractEvaluateOperator:
+    {
+      result=(MagickRealType) (pixel-value);
+      break;
+    }
+    case ThresholdEvaluateOperator:
+    {
+      result=(MagickRealType) (((MagickRealType) pixel <= value) ? 0 :
+        QuantumRange);
+      break;
+    }
+    case ThresholdBlackEvaluateOperator:
+    {
+      result=(MagickRealType) (((MagickRealType) pixel <= value) ? 0 : pixel);
+      break;
+    }
+    case ThresholdWhiteEvaluateOperator:
+    {
+      result=(MagickRealType) (((MagickRealType) pixel > value) ? QuantumRange :
+        pixel);
+      break;
+    }
+    case UniformNoiseEvaluateOperator:
+    {
+      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+        UniformNoise,value);
+      break;
+    }
+    case XorEvaluateOperator:
+    {
+      result=(MagickRealType) ((unsigned long) pixel ^ (unsigned long)
+        (value+0.5));
+      break;
+    }
+  }
+  return(ClampToQuantum(result));
+}
+
+MagickExport MagickBooleanType EvaluateImage(Image *image,
+  const MagickEvaluateOperator op,const double value,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  status=EvaluateImageChannel(image,AllChannels,op,value,exception);
+  return(status);
+}
+
+MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
+  const ChannelType channel,const MagickEvaluateOperator op,const double value,
+  ExceptionInfo *exception)
+{
+#define EvaluateImageTag  "Evaluate/Image "
+
+  CacheView
+    *image_view;
+
+  long
+    progress,
+    y;
+
+  MagickBooleanType
+    status;
+
+  RandomInfo
+    **restrict random_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(MagickFalse);
+    }
+  status=MagickTrue;
+  progress=0;
+  random_info=AcquireRandomInfoThreadSet();
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    register IndexPacket
+      *restrict indexes;
+
+    register long
+      id,
+      x;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    id=GetOpenMPThreadId();
+    for (x=0; x < (long) image->columns; x++)
+    {
+      if ((channel & RedChannel) != 0)
+        q->red=ApplyEvaluateOperator(random_info[id],q->red,op,value);
+      if ((channel & GreenChannel) != 0)
+        q->green=ApplyEvaluateOperator(random_info[id],q->green,op,value);
+      if ((channel & BlueChannel) != 0)
+        q->blue=ApplyEvaluateOperator(random_info[id],q->blue,op,value);
+      if ((channel & OpacityChannel) != 0)
+        {
+          if (image->matte == MagickFalse)
+            q->opacity=ApplyEvaluateOperator(random_info[id],q->opacity,op,
+              value);
+          else
+            q->opacity=(Quantum) QuantumRange-ApplyEvaluateOperator(
+              random_info[id],(Quantum) GetAlphaPixelComponent(q),op,value);
+        }
+      if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
+        indexes[x]=(IndexPacket) ApplyEvaluateOperator(random_info[id],
+          indexes[x],op,value);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_EvaluateImageChannel)
+#endif
+        proceed=SetImageProgress(image,EvaluateImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  random_info=DestroyRandomInfoThreadSet(random_info);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     F u n c t i o n I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FunctionImage() applies a value to the image with an arithmetic, relational,
+%  or logical operator to an image. Use these operations to lighten or darken
+%  an image, to increase or decrease contrast in an image, or to produce the
+%  "negative" of an image.
+%
+%  The format of the FunctionImageChannel method is:
+%
+%      MagickBooleanType FunctionImage(Image *image,
+%        const MagickFunction function,const long number_parameters,
+%        const double *parameters,ExceptionInfo *exception)
+%      MagickBooleanType FunctionImageChannel(Image *image,
+%        const ChannelType channel,const MagickFunction function,
+%        const long number_parameters,const double *argument,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o function: A channel function.
+%
+%    o parameters: one or more parameters.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
+  const unsigned long number_parameters,const double *parameters,
+  ExceptionInfo *exception)
+{
+  MagickRealType
+    result;
+
+  register long
+    i;
+
+  (void) exception;
+  result=0.0;
+  switch (function)
+  {
+    case PolynomialFunction:
+    {
+      /*
+       * Polynomial
+       * Parameters:   polynomial constants,  highest to lowest order
+       *   For example:      c0*x^3 + c1*x^2 + c2*x  + c3
+       */
+      result=0.0;
+      for (i=0; i < (long) number_parameters; i++)
+        result = result*QuantumScale*pixel + parameters[i];
+      result *= QuantumRange;
+      break;
+    }
+    case SinusoidFunction:
+    {
+      /* Sinusoid Function
+       * Parameters:   Freq, Phase, Ampl, bias
+       */
+      double  freq,phase,ampl,bias;
+      freq  = ( number_parameters >= 1 ) ? parameters[0] : 1.0;
+      phase = ( number_parameters >= 2 ) ? parameters[1] : 0.0;
+      ampl  = ( number_parameters >= 3 ) ? parameters[2] : 0.5;
+      bias  = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
+      result=(MagickRealType) (QuantumRange*(ampl*sin((double) (2.0*MagickPI*
+        (freq*QuantumScale*pixel + phase/360.0) )) + bias ) );
+      break;
+    }
+    case ArcsinFunction:
+    {
+      /* Arcsin Function  (peged at range limits for invalid results)
+       * Parameters:   Width, Center, Range, Bias
+       */
+      double  width,range,center,bias;
+      width  = ( number_parameters >= 1 ) ? parameters[0] : 1.0;
+      center = ( number_parameters >= 2 ) ? parameters[1] : 0.5;
+      range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0;
+      bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
+      result = 2.0/width*(QuantumScale*pixel - center);
+      if ( result <= -1.0 )
+        result = bias - range/2.0;
+      else if ( result >= 1.0 )
+        result = bias + range/2.0;
+      else
+        result=range/MagickPI*asin((double)result) + bias;
+      result *= QuantumRange;
+      break;
+    }
+    case ArctanFunction:
+    {
+      /* Arctan Function
+       * Parameters:   Slope, Center, Range, Bias
+       */
+      double  slope,range,center,bias;
+      slope  = ( number_parameters >= 1 ) ? parameters[0] : 1.0;
+      center = ( number_parameters >= 2 ) ? parameters[1] : 0.5;
+      range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0;
+      bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
+      result = MagickPI*slope*(QuantumScale*pixel - center);
+      result=(MagickRealType) (QuantumRange*(range/MagickPI*atan((double)
+                  result) + bias ) );
+      break;
+    }
+    case UndefinedFunction:
+      break;
+  }
+  return(ClampToQuantum(result));
+}
+
+MagickExport MagickBooleanType FunctionImage(Image *image,
+  const MagickFunction function,const unsigned long number_parameters,
+  const double *parameters,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  status=FunctionImageChannel(image,AllChannels,function,number_parameters,
+    parameters,exception);
+  return(status);
+}
+
+MagickExport MagickBooleanType FunctionImageChannel(Image *image,
+  const ChannelType channel,const MagickFunction function,
+  const unsigned long number_parameters,const double *parameters,
+  ExceptionInfo *exception)
+{
+#define FunctionImageTag  "Function/Image "
+
+  CacheView
+    *image_view;
+
+  long
+    progress,
+    y;
+
+  MagickBooleanType
+    status;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(MagickFalse);
+    }
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    register IndexPacket
+      *restrict indexes;
+
+    register long
+      x;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      if ((channel & RedChannel) != 0)
+        q->red=ApplyFunction(q->red,function,number_parameters,parameters,
+          exception);
+      if ((channel & GreenChannel) != 0)
+        q->green=ApplyFunction(q->green,function,number_parameters,parameters,
+          exception);
+      if ((channel & BlueChannel) != 0)
+        q->blue=ApplyFunction(q->blue,function,number_parameters,parameters,
+          exception);
+      if ((channel & OpacityChannel) != 0)
+        {
+          if (image->matte == MagickFalse)
+            q->opacity=ApplyFunction(q->opacity,function,number_parameters,
+              parameters,exception);
+          else
+            q->opacity=(Quantum) QuantumRange-ApplyFunction((Quantum)
+              GetAlphaPixelComponent(q),function,number_parameters,parameters,
+              exception);
+        }
+      if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
+        indexes[x]=(IndexPacket) ApplyFunction(indexes[x],function,
+          number_parameters,parameters,exception);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_FunctionImageChannel)
+#endif
+        proceed=SetImageProgress(image,FunctionImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
 }
 
 /*
@@ -840,21 +1412,6 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   ExceptionInfo *exception)
 {

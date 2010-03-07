@@ -35,6 +35,47 @@ typedef struct _ChannelStatistics
     skewness;
 } ChannelStatistics;
 
+typedef enum
+{
+  UndefinedEvaluateOperator,
+  AddEvaluateOperator,
+  AndEvaluateOperator,
+  DivideEvaluateOperator,
+  LeftShiftEvaluateOperator,
+  MaxEvaluateOperator,
+  MinEvaluateOperator,
+  MultiplyEvaluateOperator,
+  OrEvaluateOperator,
+  RightShiftEvaluateOperator,
+  SetEvaluateOperator,
+  SubtractEvaluateOperator,
+  XorEvaluateOperator,
+  PowEvaluateOperator,
+  LogEvaluateOperator,
+  ThresholdEvaluateOperator,
+  ThresholdBlackEvaluateOperator,
+  ThresholdWhiteEvaluateOperator,
+  GaussianNoiseEvaluateOperator,
+  ImpulseNoiseEvaluateOperator,
+  LaplacianNoiseEvaluateOperator,
+  MultiplicativeNoiseEvaluateOperator,
+  PoissonNoiseEvaluateOperator,
+  UniformNoiseEvaluateOperator,
+  CosineEvaluateOperator,
+  SineEvaluateOperator,
+  AddModulusEvaluateOperator,
+  MeanEvaluateOperator
+} MagickEvaluateOperator;
+
+typedef enum
+{
+  UndefinedFunction,
+  PolynomialFunction,
+  SinusoidFunction,
+  ArcsinFunction,
+  ArctanFunction
+} MagickFunction;
+
 extern MagickExport ChannelStatistics
   *GetImageChannelStatistics(const Image *,ExceptionInfo *);
 
@@ -44,6 +85,14 @@ extern MagickExport Image
   *MinimumImages(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  EvaluateImage(Image *,const MagickEvaluateOperator,const double,
+    ExceptionInfo *),
+  EvaluateImageChannel(Image *,const ChannelType,const MagickEvaluateOperator,
+    const double,ExceptionInfo *),
+  FunctionImage(Image *,const MagickFunction,const unsigned long,const double *,
+    ExceptionInfo *),
+  FunctionImageChannel(Image *,const ChannelType,const MagickFunction,
+    const unsigned long,const double *,ExceptionInfo *),
   GetImageChannelExtrema(const Image *,const ChannelType,unsigned long *,
     unsigned long *,ExceptionInfo *),
   GetImageChannelMean(const Image *,const ChannelType,double *,double *,
