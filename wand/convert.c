@@ -189,7 +189,7 @@ static MagickBooleanType ConvertUsage(void)
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-evaluate operator value",
-      "                     evaluate an expression over image values",
+      "                     evaluate an arithmetic, relational, or logical expression",
       "-extent geometry     set the image size",
       "-extract geometry    extract area from image",
       "-fft                 implements the discrete Fourier transform (DFT)",
@@ -292,18 +292,17 @@ static MagickBooleanType ConvertUsage(void)
     *sequence_operators[]=
     {
       "-append              append an image sequence",
-      "-average             average an image sequence",
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
+      "-evaluate-sequence operator",
+      "                     evaluate an arithmetic, relational, or logical expression",
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
-      "-max                 return the maximum intensity of an image sequence",
-      "-min                 return the minimum intensity of an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -1356,6 +1355,22 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("evaluate-sequence",option+1) == 0)
+          {
+            long
+              op;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            op=ParseMagickOption(MagickEvaluateOptions,MagickFalse,argv[i]);
+            if (op < 0)
+              ThrowConvertException(OptionError,"UnrecognizedEvaluateOperator",
+                argv[i]);
             break;
           }
         if (LocaleCompare("extent",option+1) == 0)

@@ -223,18 +223,17 @@ Image Operators:
 Image Sequence Operators:
   \-affinity filename   transform image colors to match this set of colors
   \-append              append an image sequence
-  \-average             average an image sequence
   \-clut                apply a color lookup table to the image
   \-coalesce            merge a sequence of images
   \-combine             combine a sequence of images
   \-composite           composite image
   \-crop geometry       cut out a rectangular region of the image
   \-deconstruct         break down an image sequence into constituent parts
+  \-evaluate-sequence operator
+                       evaluate an arithmetic, relational, or logical expression
   \-flatten             flatten a sequence of images
   \-fx expression       apply mathematical expression to an image channel(s)
   \-hald-clut           apply a Hald color lookup table to the image
-  \-maximum             the maximum intensity of an image sequence
-  \-minimum             the minimum intensity of an image sequence
   \-morph value         morph an image sequence
   \-mosaic              create a mosaic from an image sequence
   \-process arguments   process the image with a custom image filter

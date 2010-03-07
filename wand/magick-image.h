@@ -371,7 +371,6 @@ WandExport MagickProgressMonitor
 
 extern WandExport MagickWand
   *MagickAppendImages(MagickWand *,const MagickBooleanType),
-  *MagickAverageImages(MagickWand *),
   *MagickCoalesceImages(MagickWand *),
   *MagickCombineImages(MagickWand *,const ChannelType),
   *MagickCompareImageChannels(MagickWand *,const MagickWand *,const ChannelType,
@@ -380,14 +379,13 @@ extern WandExport MagickWand
     double *),
   *MagickCompareImageLayers(MagickWand *,const ImageLayerMethod),
   *MagickDeconstructImages(MagickWand *),
+  *MagickEvaluateImages(MagickWand *,const MagickEvaluateOperator),
   *MagickFxImage(MagickWand *,const char *),
   *MagickFxImageChannel(MagickWand *,const ChannelType,const char *),
   *MagickGetImage(MagickWand *),
   *MagickGetImageClipMask(MagickWand *),
   *MagickGetImageRegion(MagickWand *,const unsigned long,const unsigned long,
     const long,const long),
-  *MagickMaximumImages(MagickWand *),
-  *MagickMinimumImages(MagickWand *),
   *MagickMergeImageLayers(MagickWand *,const ImageLayerMethod),
   *MagickMorphImages(MagickWand *,const unsigned long),
   *MagickMontageImage(MagickWand *,const DrawingWand *,const char *,

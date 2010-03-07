@@ -62,6 +62,77 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k A v e r a g e I m a g e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickAverageImages() average a set of images.
+%
+%  The format of the MagickAverageImages method is:
+%
+%      MagickWand *MagickAverageImages(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+
+static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
+  Image *images)
+{
+  MagickWand
+    *clone_wand;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  clone_wand=(MagickWand *) AcquireAlignedMemory(1,sizeof(*clone_wand));
+  if (clone_wand == (MagickWand *) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      images->filename);
+  (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
+  clone_wand->id=AcquireWandId();
+  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%lu",
+    MagickWandId,clone_wand->id);
+  clone_wand->exception=AcquireExceptionInfo();
+  InheritException(clone_wand->exception,wand->exception);
+  clone_wand->image_info=CloneImageInfo(wand->image_info);
+  clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
+  clone_wand->images=images;
+  clone_wand->debug=IsEventLogging();
+  if (clone_wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_wand->name);
+  clone_wand->signature=WandSignature;
+  return(clone_wand);
+}
+
+WandExport MagickWand *MagickAverageImages(MagickWand *wand)
+{
+  Image
+    *average_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  average_image=EvaluateImages(wand->images,MeanEvaluateOperator,
+    wand->exception);
+  if (average_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,average_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C l i p P a t h I m a g e                                     %
 %                                                                             %
 %                                                                             %
@@ -419,37 +490,6 @@ WandExport char *MagickDescribeImage(MagickWand *wand)
 %    o wand: the magick wand.
 %
 */
-
-static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
-  Image *images)
-{
-  MagickWand
-    *clone_wand;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  clone_wand=(MagickWand *) AcquireAlignedMemory(1,sizeof(*clone_wand));
-  if (clone_wand == (MagickWand *) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      images->filename);
-  (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
-  clone_wand->id=AcquireWandId();
-  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%lu",
-    MagickWandId,clone_wand->id);
-  clone_wand->exception=AcquireExceptionInfo();
-  InheritException(clone_wand->exception,wand->exception);
-  clone_wand->image_info=CloneImageInfo(wand->image_info);
-  clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
-  clone_wand->images=images;
-  clone_wand->debug=IsEventLogging();
-  if (clone_wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_wand->name);
-  clone_wand->signature=WandSignature;
-  return(clone_wand);
-}
-
 WandExport MagickWand *MagickFlattenImages(MagickWand *wand)
 {
   Image
@@ -864,6 +904,86 @@ WandExport MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k M a x i m u m I m a g e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMaximumImages() returns the maximum intensity of an image sequence.
+%
+%  The format of the MagickMaximumImages method is:
+%
+%      MagickWand *MagickMaximumImages(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickWand *MagickMaximumImages(MagickWand *wand)
+{
+  Image
+    *maximum_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  maximum_image=EvaluateImages(wand->images,MaxEvaluateOperator,
+    wand->exception);
+  if (maximum_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,maximum_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k M i n i m u m I m a g e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMinimumImages() returns the minimum intensity of an image sequence.
+%
+%  The format of the MagickMinimumImages method is:
+%
+%      MagickWand *MagickMinimumImages(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickWand *MagickMinimumImages(MagickWand *wand)
+{
+  Image
+    *minimum_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  minimum_image=EvaluateImages(wand->images,MinEvaluateOperator,
+    wand->exception);
+  if (minimum_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,minimum_image));
 }
 
 /*

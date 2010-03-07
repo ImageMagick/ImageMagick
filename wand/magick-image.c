@@ -2994,6 +2994,8 @@ WandExport MagickBooleanType MagickEqualizeImageChannel(MagickWand *wand,
 %
 %      MagickBooleanType MagickEvaluateImage(MagickWand *wand,
 %        const MagickEvaluateOperator operator,const double value)
+%      MagickBooleanType MagickEvaluateImages(MagickWand *wand,
+%        const MagickEvaluateOperator operator)
 %      MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,
 %        const ChannelType channel,const MagickEvaluateOperator op,
 %        const double value)
@@ -3026,6 +3028,24 @@ WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
+}
+
+WandExport MagickWand *MagickEvaluateImages(MagickWand *wand,
+  const MagickEvaluateOperator op)
+{
+  Image
+    *evaluate_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  evaluate_image=EvaluateImages(wand->images,op,wand->exception);
+  if (evaluate_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,evaluate_image));
 }
 
 WandExport MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,

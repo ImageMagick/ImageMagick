@@ -93,6 +93,11 @@ extern MagickExport char
   *TranslateText(const ImageInfo *,Image *,const char *)
      magick_attribute((deprecated));
 
+extern MagickExport Image
+  *AverageImages(const Image *,ExceptionInfo *),
+  *MaximumImages(const Image *,ExceptionInfo *),
+  *MinimumImages(const Image *,ExceptionInfo *);
+
 extern MagickExport const ImageAttribute
   *GetImageAttribute(const Image *,const char *),
   *GetImageClippingPathAttribute(Image *) magick_attribute((deprecated)),

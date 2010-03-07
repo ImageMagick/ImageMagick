@@ -3696,7 +3696,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-evaluate operator value",
-      "                     evaluate an expression over image values",
+      "                     evaluate an arithmetic, relational, or logical expression",
       "-extent geometry     set the image size",
       "-extract geometry    extract area from image",
       "-fft                 implements the discrete Fourier transform (DFT)",
@@ -3799,18 +3799,17 @@ static MagickBooleanType MogrifyUsage(void)
     *sequence_operators[]=
     {
       "-append              append an image sequence",
-      "-average             average an image sequence",
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
+      "-evaluate-sequence operator",
+      "                     evaluate an arithmetic, relational, or logical expression",
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
-      "-maximum             return the maximum intensity of an image sequence",
-      "-minimum             return the minimum intensity of an image sequence",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-process arguments   process the image with a custom image filter",
@@ -4838,6 +4837,22 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("evaluate-sequence",option+1) == 0)
+          {
+            long
+              op;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            op=ParseMagickOption(MagickEvaluateOptions,MagickFalse,argv[i]);
+            if (op < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedEvaluateOperator",
+                argv[i]);
             break;
           }
         if (LocaleCompare("extent",option+1) == 0)
@@ -7582,8 +7597,12 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *average_image;
 
+            /*
+              Average an image sequence (deprecated).
+            */
             (void) SyncImagesSettings(image_info,*images);
-            average_image=AverageImages(*images,exception);
+            average_image=EvaluateImages(*images,MeanEvaluateOperator,
+              exception);
             if (average_image == (Image *) NULL)
               {
                 status=MagickFalse;
@@ -7771,6 +7790,31 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) ParseMagickOption(
               MagickDitherOptions,MagickFalse,argv[i+1]);
+            break;
+          }
+        break;
+      }
+      case 'e':
+      {
+        if (LocaleCompare("evaluate-sequence",option+1) == 0)
+          {
+            Image
+              *evaluate_image;
+
+            MagickEvaluateOperator
+              op;
+
+            (void) SyncImageSettings(image_info,*images);
+            op=(MagickEvaluateOperator) ParseMagickOption(MagickEvaluateOptions,
+              MagickFalse,argv[i+1]);
+            evaluate_image=EvaluateImages(*images,op,exception);
+            if (evaluate_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=evaluate_image;
             break;
           }
         break;
@@ -8111,8 +8155,11 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *maximum_image;
 
+            /*
+              Maximum image sequence (deprecated).
+            */
             (void) SyncImagesSettings(image_info,*images);
-            maximum_image=MaximumImages(*images,exception);
+            maximum_image=EvaluateImages(*images,MaxEvaluateOperator,exception);
             if (maximum_image == (Image *) NULL)
               {
                 status=MagickFalse;
@@ -8127,8 +8174,11 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *minimum_image;
 
+            /*
+              Minimum image sequence (deprecated).
+            */
             (void) SyncImagesSettings(image_info,*images);
-            minimum_image=MinimumImages(*images,exception);
+            minimum_image=EvaluateImages(*images,MinEvaluateOperator,exception);
             if (minimum_image == (Image *) NULL)
               {
                 status=MagickFalse;

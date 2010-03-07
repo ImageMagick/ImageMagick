@@ -90,7 +90,10 @@ extern WandExport MagickBooleanType
     const double) magick_attribute((deprecated));
 
 extern WandExport MagickWand
+  *MagickAverageImages(MagickWand *),
   *MagickFlattenImages(MagickWand *) magick_attribute((deprecated)),
+  *MagickMaximumImages(MagickWand *),
+  *MagickMinimumImages(MagickWand *),
   *MagickMosaicImages(MagickWand *) magick_attribute((deprecated)),
   *MagickRegionOfInterestImage(MagickWand *,const unsigned long,
     const unsigned long,const long,const long) magick_attribute((deprecated));
