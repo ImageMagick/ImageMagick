@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -2266,14 +2266,6 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
 <p>appends all the images associated with object <kbd>$image</kbd>. By default, images are stacked left-to-right. Set <kbd>stack</kbd> to True to stack them top-to-bottom.</p>
 
-<p>The Average() method averages a set of images. For example,</p>
-
-<pre class="code">
-  $p = $image-&gt;Average();
-</pre>
-
-<p>averages all the images associated with object <kbd>$image</kbd>.</p>
-
 <p>The Clone() method copies a set of images. For example,</p>
 
 <pre class="code">
@@ -2281,6 +2273,14 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 </pre>
 
 <p>copies all the images from object <kbd>$p</kbd> to <kbd>$q</kbd>. You can use this method for single or multi-image sequences.</p>
+
+<p>The EvaluateImages() method applies an arithemtic, logical or relational expression to a set of images. For example,</p>
+
+<pre class="code">
+  $p = $image-&gt;EvaluateImages('mean');
+</pre>
+
+<p>averages all the images associated with object <kbd>$image</kbd>.</p>
 
 <p>The Features() method returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second momentum, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance, difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  Values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
 
@@ -2311,18 +2311,6 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 <p>See <a href="../www/fx.html">FX, The Special Effects Image Operator</a> for a detailed discussion of this method.</p>
 
 <p>Histogram() returns the unique colors in the image and a count for each one. The returned values are an array of red, green, blue, opacity, and count values.</p>
-
-<p>The Maximum() method returns the maximum intensity of an image sequence:</p>
-
-<pre class="code">
-  $p = $image-&gt;Maximum();
-</pre>
-
-<p>The Minimum() method returns the minimum intensity of an image sequence:</p>
-
-<pre class="code">
-  $p = $image-&gt;Minimum();
-</pre>
 
 <p>The Morph() method morphs a set of images. Both the image pixels and size are linearly interpolated to give the appearance of a meta-morphosis from one image to the next:</p>
 
@@ -2470,7 +2458,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
   print $1;               # print the error number
 </pre>
 
-<p>Methods which return images (Average(), Montage(), Clone()) should be checked for errors this way:</p>
+<p>Methods which return images (EvaluateSequence(), Montage(), Clone()) should be checked for errors this way:</p>
 
 <pre class="code">
   $x = $image-&gt;Montage(...);
@@ -2561,7 +2549,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
