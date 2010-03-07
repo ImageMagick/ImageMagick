@@ -69,6 +69,7 @@
 #include "magick/quantum.h"
 #include "magick/resource_.h"
 #include "magick/splay-tree.h"
+#include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/token.h"
 #include "magick/utility.h"
