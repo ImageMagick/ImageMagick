@@ -3599,7 +3599,7 @@ EvaluateImages(ref)
         if (in < 0)
           {
             ThrowPerlException(exception,OptionError,"UnrecognizedType",
-              SvPV(ST(i),na));
+              SvPV(ST(1),na));
             return;
           }
         op=(MagickEvaluateOperator) in;
@@ -3615,9 +3615,6 @@ EvaluateImages(ref)
           {
             if (LocaleCompare(attribute,"operator") == 0)
               {
-                Image
-                  *next;
-
                 long
                   in;
 
