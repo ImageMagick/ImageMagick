@@ -533,7 +533,10 @@ MagickExport Image *EvaluateImages(const Image *images,
       q->red=ClampToQuantum(evaluate_pixel[x].red);
       q->green=ClampToQuantum(evaluate_pixel[x].green);
       q->blue=ClampToQuantum(evaluate_pixel[x].blue);
-      q->opacity=ClampToQuantum(evaluate_pixel[x].opacity);
+      if (evaluate_image->matte == MagickFalse)
+        q->opacity=ClampToQuantum(evaluate_pixel[x].opacity);
+      else
+        q->opacity=ClampToQuantum(QuantumRange-evaluate_pixel[x].opacity);
       if (evaluate_image->colorspace == CMYKColorspace)
         evaluate_indexes[x]=ClampToQuantum(evaluate_pixel[x].index);
       q++;
