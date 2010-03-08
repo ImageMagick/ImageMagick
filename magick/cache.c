@@ -133,7 +133,7 @@ static PixelPacket
   *QueueAuthenticPixelsCache(Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *),
   *SetPixelCacheNexusPixels(const Image *,const RectangleInfo *,NexusInfo *,
-     ExceptionInfo *);
+    ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
