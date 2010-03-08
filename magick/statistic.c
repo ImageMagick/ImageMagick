@@ -513,16 +513,18 @@ MagickExport Image *EvaluateImages(const Image *images,
       for (x=0; x < (long) next->columns; x++)
       {
         evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],p->red,
-          op,evaluate_pixel[x].red);
+          i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].red);
         evaluate_pixel[x].green=ApplyEvaluateOperator(random_info[id],p->green,
-          op,evaluate_pixel[x].green);
+          i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].green);
         evaluate_pixel[x].blue=ApplyEvaluateOperator(random_info[id],p->blue,
-          op,evaluate_pixel[x].blue);
+          i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].blue);
         evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
-          p->opacity,op,evaluate_pixel[x].opacity);
+          p->opacity,i == 0 ? AddEvaluateOperator : op,
+          evaluate_pixel[x].opacity);
         if (evaluate_image->colorspace == CMYKColorspace)
           evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
-            indexes[x],op,evaluate_pixel[x].index);
+            indexes[x],i == 0 ? AddEvaluateOperator : op,
+            evaluate_pixel[x].index);
         p++;
       }
       image_view=DestroyCacheView(image_view);
