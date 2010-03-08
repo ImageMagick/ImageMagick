@@ -1739,7 +1739,7 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,
   */
   if ((reference->columns > image->columns) || (reference->rows > image->rows))
     return((Image *) NULL);
-  similarity_threshold=image->columns*image->rows;
+  similarity_threshold=(double) image->columns*image->rows;
   SetGeometry(reference,&offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
@@ -1914,7 +1914,7 @@ MagickExport void FormatString(char *string,const char *format,...)
     operands;
 
   va_start(operands,format);
-  FormatMagickStringList(string,MaxTextExtent,format,operands);
+  (void) FormatMagickStringList(string,MaxTextExtent,format,operands);
   va_end(operands);
   return;
 }
