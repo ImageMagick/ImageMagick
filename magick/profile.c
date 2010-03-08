@@ -136,8 +136,7 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
 %    o name: the profile name.
 %
 */
-MagickExport MagickBooleanType DeleteImageProfile(Image *image,
-  const char *name)
+MagickExport MagickBooleanType DeleteImageProfile(Image *image,const char *name)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
