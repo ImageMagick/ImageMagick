@@ -392,8 +392,6 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
     return(MagickFalse);
   if (LocaleNCompare((const char *) magick,"8BPS",4) == 0)
     return(MagickTrue);
-  if (LocaleNCompare((const char *) magick,"8BPB",4) == 0)
-    return(MagickTrue);
   return(MagickFalse);
 }
 
@@ -674,8 +672,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,4,(unsigned char *) psd_info.signature);
   psd_info.version=ReadBlobMSBShort(image);
-  if ((count == 0) || ((LocaleNCompare(psd_info.signature,"8BPS",4) != 0) &&
-      (LocaleNCompare(psd_info.signature,"8BPB",4) != 0)) ||
+  if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       ((psd_info.version != 1) && (psd_info.version != 2)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,6,psd_info.reserved);
@@ -1549,7 +1546,7 @@ ModuleExport void UnregisterPSDImage(void)
 %
 */
 
-static inline ssize_t SetPSDOffset(PSDInfo *psd_info,Image *image,
+static inline ssize_t SetPSDOffset(const PSDInfo *psd_info,Image *image,
   const size_t offset)
 {
   if (psd_info->version == 1)
@@ -1557,7 +1554,7 @@ static inline ssize_t SetPSDOffset(PSDInfo *psd_info,Image *image,
   return(WriteBlobMSBLong(image,offset));
 }
 
-static inline ssize_t SetPSDSize(PSDInfo *psd_info,Image *image,
+static inline ssize_t SetPSDSize(const PSDInfo *psd_info,Image *image,
   const MagickSizeType size)
 {
   if (psd_info->version == 1)
@@ -1727,6 +1724,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
     length,
     packet_size;
 
+  (void) psd_info;
   if ((compression_flag != MagickFalse) &&
       (tmp_image->compression == NoCompression))
     (void) WriteBlobMSBShort(image,0);
@@ -2039,8 +2037,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   if ((LocaleCompare(image_info->magick,"PSB") == 0) ||
       (image->columns > 30000) || (image->rows > 30000))
     psd_info.version=2;
-  (void) WriteBlob(image,4,(const unsigned char *) (psd_info.version == 1 ?
-    "8BPS" : "8BPB"));
+  (void) WriteBlob(image,4,(const unsigned char *) "8BPS");
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
