@@ -3769,7 +3769,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
     recolor_indexes=GetCacheViewAuthenticIndexQueue(recolor_view);
     k=color_matrix;
     switch (order)
