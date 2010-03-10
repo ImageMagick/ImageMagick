@@ -177,14 +177,14 @@ static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
     0x3fffffffUL, 0x7fffffffUL
   };
 
-  (void) ResetMagickMemory(quantum_state,0,sizeof(&quantum_state));
   quantum_state->endian=endian;
   quantum_state->minimum=quantum_info->minimum;
   quantum_state->scale=quantum_info->scale;
-  quantum_state->inverse_scale=0.0;
+  quantum_state->inverse_scale=1.0;
   if (quantum_state->scale != 0.0)
     quantum_state->inverse_scale=1.0/quantum_state->scale;
-  quantum_state->bits=0;
+  quantum_state->pixel=0UL;
+  quantum_state->bits=0UL;
   quantum_state->mask=mask;
 }
 
