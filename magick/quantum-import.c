@@ -297,10 +297,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
     pixels=GetQuantumPixels(quantum_info);
   x=0;
   p=pixels;
-  number_pixels=GetImageExtent(image);
-  q=GetAuthenticPixelQueue(image);
-  indexes=GetAuthenticIndexQueue(image);
-  if (image_view != (CacheView *) NULL)
+  if (image_view == (CacheView *) NULL)
+    {
+      number_pixels=GetImageExtent(image);
+      q=GetAuthenticPixelQueue(image);
+      indexes=GetAuthenticIndexQueue(image);
+    }
+  else
     {
       number_pixels=GetCacheViewExtent(image_view);
       q=GetCacheViewAuthenticPixelQueue(image_view);

@@ -596,8 +596,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   progress=0;
   image_view=AcquireCacheView(image);
   crop_view=AcquireCacheView(crop_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) crop_image->rows; y++)
   {
@@ -638,7 +638,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
   #pragma omp critical (MagickCore_CropImage)
 #endif
         proceed=SetImageProgress(image,CropImageTag,progress++,image->rows);
@@ -903,8 +903,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   progress=0;
   image_view=AcquireCacheView(image);
   flip_view=AcquireCacheView(flip_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) flip_image->rows; y++)
   {
@@ -946,7 +946,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
   #pragma omp critical (MagickCore_FlipImage)
 #endif
         proceed=SetImageProgress(image,FlipImageTag,progress++,image->rows);
@@ -1021,8 +1021,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   progress=0;
   image_view=AcquireCacheView(image);
   flop_view=AcquireCacheView(flop_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) flop_image->rows; y++)
   {

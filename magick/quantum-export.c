@@ -278,10 +278,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   assert(quantum_info->signature == MagickSignature);
   if (pixels == (unsigned char *) NULL)
     pixels=GetQuantumPixels(quantum_info);
-  number_pixels=GetImageExtent(image);
-  p=GetVirtualPixelQueue(image);
-  indexes=GetVirtualIndexQueue(image);
-  if (image_view != (CacheView *) NULL)
+  if (image_view == (CacheView *) NULL)
+    {
+      number_pixels=GetImageExtent(image);
+      p=GetVirtualPixelQueue(image);
+      indexes=GetVirtualIndexQueue(image);
+    }
+  else
     {
       number_pixels=GetCacheViewExtent(image_view);
       p=GetCacheViewVirtualPixelQueue(image_view);

@@ -399,8 +399,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Draw sides of ornamental border.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) image->rows; y++)
   {
@@ -506,7 +506,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
   #pragma omp critical (MagickCore_FrameImage)
 #endif
         proceed=SetImageProgress(image,FrameImageTag,progress++,image->rows);
@@ -721,8 +721,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (long) raise_info->height; y++)
   {
@@ -844,7 +844,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
           status=MagickFalse;
       }
   }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=(long) (image->rows-raise_info->height); y < (long) image->rows; y++)
