@@ -182,7 +182,7 @@ static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
   quantum_state->scale=quantum_info->scale;
   quantum_state->inverse_scale=1.0;
   if (quantum_state->scale != 0.0)
-    quantum_state->inverse_scale=1.0/quantum_state->scale;
+    quantum_state->inverse_scale/=quantum_state->scale;
   quantum_state->pixel=0UL;
   quantum_state->bits=0UL;
   quantum_state->mask=mask;
