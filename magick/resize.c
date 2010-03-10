@@ -1153,7 +1153,7 @@ static MagickRealType BesselOrderOne(MagickRealType x)
 %
 %  DestroyResizeFilter() destroy the resize filter.
 %
-%  The format of the AcquireResizeFilter method is:
+%  The format of the DestroyResizeFilter method is:
 %
 %      ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
 %
