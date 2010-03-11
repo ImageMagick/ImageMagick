@@ -3296,9 +3296,10 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   pixels=SetPixelCacheNexusPixels(image,&region,nexus_info,exception);
   if (pixels == (PixelPacket *) NULL)
     return((const PixelPacket *) NULL);
-  offset=(MagickOffsetType) region.y*cache_info->columns+region.x;
-  length=(MagickSizeType) (region.height-1L)*cache_info->columns+
-    region.width-1L;
+  offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
+    nexus_info->region.x;
+  length=(MagickSizeType) (nexus_info->region.height-1L)*cache_info->columns+
+    nexus_info->region.width-1L;
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
   if ((offset >= 0) && (((MagickSizeType) offset+length) < number_pixels))
     if ((x >= 0) && ((long) (x+columns) <= (long) cache_info->columns) &&
