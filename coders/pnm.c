@@ -688,7 +688,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sync;
 
           register const unsigned char
-            *p;
+            *restrict p;
 
           register long
             x;
@@ -806,7 +806,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sync;
 
           register const unsigned char
-            *p;
+            *restrict p;
 
           register long
             x;
@@ -980,7 +980,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sync;
 
           register const unsigned char
-            *p;
+            *restrict p;
 
           register long
             x;
