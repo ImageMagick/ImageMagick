@@ -1165,7 +1165,7 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(source_view);
+    indexes=GetCacheViewVirtualIndexQueue(source_view);
     for (x=0; x < (long) columns; x++)
       *q++=(*p++);
     if (indexes != (IndexPacket *) NULL)
