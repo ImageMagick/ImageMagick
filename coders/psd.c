@@ -2130,8 +2130,16 @@ compute_layer_info:
     channelLength=(unsigned long) (tmp_image->columns * tmp_image->rows *
       packet_size + 2);
     layer_info_size += (unsigned long) (4*4 + 2 + num_channels * 6 +
-      (psd_info.version == 1 ? 8 : 16) + 4 * 1 + 4 + 12 + num_channels *
+      (psd_info.version == 1 ? 8 : 16) + 4 * 1 + 4 + num_channels *
       channelLength);
+    theAttr=(const char *) GetImageProperty(tmp_image,"label");
+    if (!theAttr) 
+      layer_info_size += 16;
+    else
+      {
+        size_t length=strlen(theAttr)+(4-(length % 4))+1;
+        layer_info_size += 8+length;
+      }
     layer_count++;
     tmp_image = GetNextImageInList(tmp_image);
   }
@@ -2223,22 +2231,21 @@ compute_layer_info:
       (void) WriteBlobByte(image, 1); /* BOGUS: layer attributes - visible, etc. */
       (void) WriteBlobByte(image, 0);
 
-      (void) WriteBlobMSBLong(image, 12);
-      (void) WriteBlobMSBLong(image, 0);
-      (void) WriteBlobMSBLong(image, 0);
 
       theAttr=(const char *) GetImageProperty(tmp_image,"label");
-      if (theAttr) {
-        WritePascalString( image, theAttr, 4 );
-        /*
-        sprintf((char *) &(layer_name[1]), "%4s", theAttr->value );
-        (void) WriteBlobByte(image, 3);
-        (void) WriteBlob(image, 3, &layer_name[1]);
-        */
-      } else {
-        (void) FormatMagickString((char *) layer_name,MaxTextExtent,"L%02ld",
+      if (!theAttr) {
+        (void) WriteBlobMSBLong(image, 16);
+        (void) WriteBlobMSBLong(image, 0);
+        (void) WriteBlobMSBLong(image, 0);
+        (void) FormatMagickString((char *) layer_name,MaxTextExtent,"L%06ld",
           layer_count++ );
         WritePascalString( image, (char*)layer_name, 4 );
+      } else {
+        size_t length=strlen(theAttr)+(4-(length % 4))+1;
+        (void) WriteBlobMSBLong(image, length+8);
+        (void) WriteBlobMSBLong(image, 0);
+        (void) WriteBlobMSBLong(image, 0);
+        WritePascalString( image, theAttr, 4 );
       }
       tmp_image = GetNextImageInList(tmp_image);
     };
