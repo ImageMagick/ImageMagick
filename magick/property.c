@@ -2348,7 +2348,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             format[MaxTextExtent];
 
           (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-          (void) FormatMagickString(value,MaxTextExtent,"%s",format);
+          (void) FormatMagickString(value,MaxTextExtent,"%sB",format);
           break;
         }
       if (LocaleNCompare("scenes",property,6) == 0)
@@ -2615,6 +2615,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         if (image->extent != (MagickSizeType) ((size_t) image->extent))
           (void) FormatMagickSize(image->extent,MagickFalse,format);
         q+=ConcatenateMagickString(q,format,extent);
+        q+=ConcatenateMagickString(q,"B",extent);
         break;
       }
       case 'c':

@@ -331,7 +331,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (GetBlobSize(image) != 0)
         {
           (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-          (void) fprintf(file,"%s ",format);
+          (void) fprintf(file,"%sB ",format);
         }
       (void) fprintf(file,"%0.3fu %ld:%02ld.%03ld",user_time,(long)
         (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
@@ -1028,7 +1028,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) fprintf(file,"  Tainted: %s\n",MagickOptionToMnemonic(
     MagickBooleanOptions,(long) image->taint));
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-  (void) fprintf(file,"  Filesize: %s\n",format);
+  (void) fprintf(file,"  Filesize: %sB\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
      MagickFalse,format);
   (void) fprintf(file,"  Number pixels: %s\n",format);

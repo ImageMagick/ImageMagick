@@ -656,7 +656,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"%9lu  ",log_info[i]->generations);
     (void) FormatMagickSize(MegabytesToBytes(log_info[i]->limit),MagickFalse,
       limit);
-    (void) fprintf(file,"%8s  ",limit);
+    (void) fprintf(file,"%8sB  ",limit);
     if (log_info[i]->format != (char *) NULL)
       (void) fprintf(file,"%s",log_info[i]->format);
     (void) fprintf(file,"\n");

@@ -3012,6 +3012,7 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
+  (void) ConcatenateMagickString(value,"B",MaxTextExtent);
   (void) SetImageProperty(thumbnail_image,"Thumb::Size",value);
   (void) FormatMagickString(value,MaxTextExtent,"image/%s",image->magick);
   LocaleLower(value);
