@@ -2280,7 +2280,9 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           if (alpha == 0.0)
             return((MagickRealType) (MagickPI/4.0));
-          return((MagickRealType) j1((double) (MagickPI*alpha))/(2.0*alpha));
+          gamma=(MagickRealType) (j1((double) (MagickPI*alpha))/
+            (MagickPI*alpha));
+          return(gamma);
         }
       break;
     }
