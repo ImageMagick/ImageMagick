@@ -1544,6 +1544,7 @@ MagickExport MagickBooleanType SetResampleFilterVirtualPixelMethod(
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       resample_filter->image->filename);
   resample_filter->virtual_pixel=method;
-  (void) SetCacheViewVirtualPixelMethod(resample_filter->view,method);
+  if (method != UndefinedVirtualPixelMethod)
+    (void) SetCacheViewVirtualPixelMethod(resample_filter->view,method);
   return(MagickTrue);
 }
