@@ -1108,7 +1108,7 @@ cube. </p>
 <p>This option can be thought of as the inverse to <a href="#separate">-separate</a>, so long as the channel settings are the same. Thus, in the following example, the final image should be a copy of the original.
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert original.png -channel RGB -separate sepimage.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB -combine imagecopy.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert original.png -channel RGB -separate sepimage.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB \ <br/> -combine imagecopy.png</span></p>
 <div style="margin: auto;">
   <h4><a name="comment" id="comment"></a>-comment <em class="arg">string</em></h4>
 </div>
@@ -2791,9 +2791,9 @@ multi-value version of evaluate. </P>
 
 <p>This option is most useful for extracting a subregion of a very large raw image.  Note that these two commands are equivalent:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ <br/> image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \ <br/> image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 image.rgb image.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 \ <br/> image.rgb image.png</span></p>
 <p>then the image will be <em>resized</em> to the specified dimensions instead,
 equivalent to:</p>
 
@@ -3304,7 +3304,7 @@ installation.</p>
 
 <p>If a <a href="#gravity">-gravity</a> setting occurs before another option or setting having a <em class="arg">geometry</em> argument that specifies an offset, the offset is usually applied to the point within the image suggested by the <a href="#gravity">-gravity</a> argument.  Thus, in the following command, for example, suppose the file <kbd>image.png</kbd> has dimensions 200x100. The offset specified by the argument to <a href="#region">-region</a> is (&minus;40,+20). The argument to <a href="#gravity">-gravity</a> is <kbd>Center</kbd>, which suggests the midpoint of the image, at the point (100,50). The offset (&minus;40,20) is applied to that point, giving (100&minus;40,50+20)=(60,70), so the specified 10x10&nbsp;region is located at that point. (In addition, the <a href="#gravity">-gravity</a> affects the region itself, which is <em>centered</em> at the pixel coordinate&nbsp;(60,70). (See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.)</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -gravity Center -region 10x10-40+20 -negate output.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -gravity Center -region 10x10-40+20 \ <br/> -negate output.png</span></p>
 <p>When used as an option to <a href="../www/composite.html">composite</a>, <a href="#gravity">-gravity</a> gives the direction that the image gravitates within the composite.</p>
 
 <p>When used as an option to <a href="../www/montage.html">montage</a>, <a href="#gravity">-gravity</a> gives the direction that an image gravitates within a tile. The default gravity is <kbd>Center</kbd> for this purpose.</p>
@@ -4155,7 +4155,7 @@ normalization of mathematical images. </p>
 <p>Choose from:</p>
 
 <pre class="text">
- AE    absolute number of differnet pixels
+ AE    absolute number of different pixels
  MAE   mean absolute error (normalized), average channel error distance
  MEPP  mean error per pixel (normalized mean error, normalized peak error)
  MSE   mean error squared, average of the channel error squared
@@ -4870,7 +4870,7 @@ directly assign virtual canvas meta-data. </p>
 
 <p>Many image processing algorithms assume your image is in a linear-light coding.  If your image is gamma-corrected, you can remove the nonlinear gamma correction, apply the transform, then restore it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2 -quality 92 passport.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \ <br/> -quality 92 passport.jpg</span></p>
 <div style="margin: auto;">
   <h4><a name="respect-parentheses" id="respect-parentheses"></a>-respect-parentheses</h4>
 </div>
@@ -5001,7 +5001,7 @@ of the color clusters is returned.</p>
 
 <p>Attributes of interest include <a href="#comment">-comment</a>, <a href="#delay">-delay</a>, <a href="#dispose">-dispose</a>, and <a href="#page">-page</a>.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format %c rose.png</span><span class='crtout'>Rose is a rose is a rose is a rose</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' \ <br/> rose.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format %c rose.png</span><span class='crtout'>Rose is a rose is a rose is a rose</span></p>
 <p>The <a href="#repage">-repage</a> operator will also set the
 '<kbd>page</kbd>' attribute of images already in memory, but allows you to
 separately set the virtual canvas's size and offset components, and also allows
@@ -5805,7 +5805,7 @@ percentage, which defaults to 100 percent (no color change). </p>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
