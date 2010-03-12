@@ -126,6 +126,8 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   unsigned long
     iterations;
 
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
   concurrent=MagickFalse;
   duration=(-1.0);
   iterations=1;
