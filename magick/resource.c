@@ -684,7 +684,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     "         Disk    Thread         Time\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
-  (void) fprintf(file,"%4lu  %11s  %11s  %11s  %11s    %6lu  %11s\n",
+  (void) fprintf(file,"%4lu  %11sB  %11sB  %11sB  %11sB    %6lu  %11s\n",
     (unsigned long) resource_info.file_limit,area_limit,memory_limit,map_limit,
     disk_limit,(unsigned long) resource_info.thread_limit,time_limit);
   (void) fflush(file);
