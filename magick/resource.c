@@ -968,7 +968,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
         resources;
 
       if (getrlimit(RLIMIT_NOFILE,&resources) != -1)
-        files=resources.rlim_cur;
+        files=(long) resources.rlim_cur;
   }
 #endif
 #if defined(MAGICKCORE_HAVE_GETDTABLESIZE) && defined(MAGICKCORE_POSIX_SUPPORT)
