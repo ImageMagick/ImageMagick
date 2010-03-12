@@ -4005,7 +4005,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
 
       (void) FormatMagickSize(length,MagickFalse,format);
       (void) FormatMagickString(message,MaxTextExtent,
-        "extend %s (%s[%d], disk, %s)",cache_info->filename,
+        "extend %s (%s[%d], disk, %sB)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
@@ -4090,7 +4090,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) FormatMagickSize(cache_info->length,MagickTrue,
                     format);
                   (void) FormatMagickString(message,MaxTextExtent,
-                    "open %s (%s memory, %lux%lu %s)",cache_info->filename,
+                    "open %s (%s memory, %lux%lu %sB)",cache_info->filename,
                     cache_info->mapped != MagickFalse ? "anonymous" : "heap",
                     cache_info->columns,cache_info->rows,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
@@ -4183,7 +4183,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) FormatMagickSize(cache_info->length,MagickTrue,
                     format);
                   (void) FormatMagickString(message,MaxTextExtent,
-                    "open %s (%s[%d], memory-mapped, %lux%lu %s)",
+                    "open %s (%s[%d], memory-mapped, %lux%lu %sB)",
                     cache_info->filename,cache_info->cache_filename,
                     cache_info->file,cache_info->columns,cache_info->rows,
                     format);
@@ -4204,7 +4204,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     {
       (void) FormatMagickSize(cache_info->length,MagickFalse,format);
       (void) FormatMagickString(message,MaxTextExtent,
-        "open %s (%s[%d], disk, %lux%lu %s)",cache_info->filename,
+        "open %s (%s[%d], disk, %lux%lu %sB)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,cache_info->columns,
         cache_info->rows,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
