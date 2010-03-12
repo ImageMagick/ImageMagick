@@ -1140,11 +1140,13 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
     MagickBooleanType
       sync;
 
+    register const IndexPacket
+      *restrict indexes;
+
     register const PixelPacket
       *restrict p;
 
     register IndexPacket
-      *restrict indexes,
       *restrict destination_indexes;
 
     register long
