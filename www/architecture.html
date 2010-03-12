@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -242,7 +242,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.0-4 2010-43-45 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.0-5 2010-53-55 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -519,16 +519,16 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 250000x250000 logo.miff</span></p>
 <p>For large images, ImageMagick will more than likely create a pixel cache on disk.  Make sure you have plenty of temporary disk space.  If your default temporary disk partition is too small, tell ImageMagick to use another partition with plenty of free space.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo:  \ <br/> -resize 250000x250000 logo.miff</span></p>
 <p>To ensure large images do not consume all the memory on your system, force the image pixels to memory-mapped disk with resource limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb  \ <br/> logo: -resize 250000x250000 logo.miff</span></p>
 <p>Here we force all image pixels to disk:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0 logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0  \ <br/> logo: -resize 250000x250000 logo.miff</span></p>
 <p>Caching pixels to disk is about 1000 times slower than memory.  Expect long run times when processing large images with ImageMagick.  You can monitor progress with this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0 logo: -resize 250000x250000 logo.miff</span></p></div>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0  \ <br/> logo: -resize 250000x250000 logo.miff</span></p></div>
 
 <h2><a name="threads"></a>Threads of Execution</h2>
 <div class="doc-section">
@@ -605,7 +605,7 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1' convolve.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
 <p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
 
 <p>Here is an example OpenCL kernel that convolves an image:</p>

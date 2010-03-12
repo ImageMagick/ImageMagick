@@ -298,12 +298,12 @@
 		<p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
 		</p>
 
-		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 6000x4000 -depth 8 'rgb:image[600x400+1900+2900]' image.jpg</span></p>
+		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> 'rgb:image[600x400+1900+2900]' image.jpg</span></p>
 		<p>
 		  You can get the same results with the <a href="../www/command-line-options.html#extract">&#x2011;extract</a> option:
 		</p>
 
-		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 6000x4000 -depth 8 -extract 600x400+1900+2900 rgb:image image.jpg</span></p>
+		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> -extract 600x400+1900+2900 rgb:image image.jpg</span></p>
 		</div>
 
 	<h3>Inline Image Resize</h3>
@@ -535,7 +535,7 @@
 
 	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -region '100x200+10+20' -negate wizNeg1.png</span></p>
 	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -region '100x200-10+20' -negate wizNeg2.png</span></p>
-	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</span></p>
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -gravity center -region '100x200-10+20' \ <br/> -negate wizNeg3.png</span></p>
 
 	<p>Note that offsets always require +/&minus; signs. The offset is not actually a true location within the image; its coordinates must be added to some other location. Let's refer to that as the <em>current location</em>. In the first two examples above, though, that location is the upper-left hand corner of the image, which has coordinates (0,0). (That is the default situation when there are no other directives given to change it.) The first example above puts the <kbd>100x200</kbd> rectangle's own upper-left corner at (10,20). </p>
 
@@ -618,7 +618,7 @@ above.</p>
 	<p>Or retrieve image properties to modify the image filename.  For example, the command
 	</p>
 
-	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:area '%wx%h' 'rose-%[filename:area].png'</span></p>
+	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:area '%wx%h' \ <br/> 'rose-%[filename:area].png'</span></p>
 	<p>writes an image with this filename:
 	</p>
 
