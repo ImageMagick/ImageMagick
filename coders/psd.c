@@ -2137,8 +2137,8 @@ compute_layer_info:
       layer_info_size += 16;
     else
       {
-        size_t length=strlen(theAttr)+(4-(length % 4))+1;
-        layer_info_size += 8+length;
+        size_t length=strlen(theAttr);
+        layer_info_size += 8+length+(4-(length % 4))+1;
       }
     layer_count++;
     tmp_image = GetNextImageInList(tmp_image);
@@ -2241,8 +2241,8 @@ compute_layer_info:
           layer_count++ );
         WritePascalString( image, (char*)layer_name, 4 );
       } else {
-        size_t length=strlen(theAttr)+(4-(length % 4))+1;
-        (void) WriteBlobMSBLong(image, length+8);
+        size_t length=strlen(theAttr);
+        (void) WriteBlobMSBLong(image, length+(4-(length % 4))+1+8);
         (void) WriteBlobMSBLong(image, 0);
         (void) WriteBlobMSBLong(image, 0);
         WritePascalString( image, theAttr, 4 );
