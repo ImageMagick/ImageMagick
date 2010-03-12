@@ -1149,9 +1149,6 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
     register IndexPacket
       *restrict destination_indexes;
 
-    register long
-      x;
-
     register PixelPacket
       *restrict q;
 
@@ -1168,13 +1165,13 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(source_view);
-    for (x=0; x < (long) columns; x++)
-      *q++=(*p++);
+    (void) CopyMagickMemory(q,p,(size_t) columns*sizeof(*p));
     if (indexes != (IndexPacket *) NULL)
       {
         destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
-        for (x=0; x < (long) columns; x++)
-          destination_indexes[x]=indexes[x];
+        if (destination_indexes != (IndexPacket *) NULL)
+          (void) CopyMagickMemory(destination_indexes,indexes,(size_t)
+            columns*sizeof(*indexes));
       }
     sync=SyncCacheViewAuthenticPixels(destination_view,exception);
     if (sync == MagickFalse)
