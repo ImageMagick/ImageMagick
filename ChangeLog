@@ -1,5 +1,6 @@
 2010-03-11  6.6.0-5 Cristy  <quetzlzacatenango@image...>
   * Permit user to get virtual pixels with a region width of 0.
+  * Reformulate the jinc() functio  so that the main peak is of amplitude of 1.
 
 2010-03-07  6.6.0-4 Cristy  <quetzlzacatenango@image...>
   * The -evaluate-sequence option behaves like -evaluate except it operates
