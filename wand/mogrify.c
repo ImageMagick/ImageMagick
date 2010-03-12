@@ -4534,6 +4534,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (i == (long) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
 #if 1
+            (void) token;
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
 #else
