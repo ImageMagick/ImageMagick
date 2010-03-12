@@ -1226,8 +1226,6 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Initialize the Magick environment.
   */
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
   (void) SemaphoreComponentGenesis();
   (void) LogComponentGenesis();
   (void) LocaleComponentGenesis();
