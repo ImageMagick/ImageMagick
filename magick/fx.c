@@ -2278,6 +2278,8 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
             exception);
+          if (alpha == 0.0)
+            return(1.0);
           gamma=(MagickRealType) (2.0*j1((double) (MagickPI*alpha))/
             (MagickPI*alpha));
           return(gamma);
