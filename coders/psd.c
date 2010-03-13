@@ -684,9 +684,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((psd_info.version == 1) && ((psd_info.rows > 30000) ||
       (psd_info.columns > 30000)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if ((psd_info.version == 1) && ((psd_info.rows > 300000) ||
-      (psd_info.columns > 300000)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   psd_info.depth=ReadBlobMSBShort(image);
   if ((psd_info.depth != 1) && (psd_info.depth != 8) && (psd_info.depth != 16))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
