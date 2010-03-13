@@ -1986,7 +1986,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     *profile;
 
   MagickBooleanType
-    force_white_background = image->matte,
     invert_layer_count = MagickFalse,
     status;
 
@@ -2013,7 +2012,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
 
   Image
     * tmp_image = (Image *) NULL,
-    * base_image = force_white_background ? image : GetNextImageInList(image);
+    * base_image = GetNextImageInList(image);
 
   /*
     Open output image file.
@@ -2038,20 +2037,15 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
-  if ( force_white_background )
-    num_channels = 3;
+  if (image->storage_class == PseudoClass)
+    num_channels=(image->matte ? 2UL : 1UL);
   else
-  {
-    if (image->storage_class == PseudoClass)
-     num_channels=(image->matte ? 2UL : 1UL);
-    else
     {
-    if (image->colorspace != CMYKColorspace)
-      num_channels=(image->matte ? 4UL : 3UL);
-    else
-      num_channels=(image->matte ? 5UL : 4UL);
+      if (image->colorspace != CMYKColorspace)
+        num_channels=(image->matte ? 4UL : 3UL);
+      else
+        num_channels=(image->matte ? 5UL : 4UL);
     }
-  }
   (void) WriteBlobMSBShort(image,(unsigned short) num_channels);
   (void) WriteBlobMSBLong(image,image->rows);
   (void) WriteBlobMSBLong(image,image->columns);
@@ -2264,11 +2258,8 @@ compute_layer_info:
 
   }
 
-   /* now the background image data! */
-   if (force_white_background != MagickFalse)
-     WriteWhiteBackground(&psd_info,image);
-   else
-     status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
+  /* now the background image data! */
+  status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
 
   (void) CloseBlob(image);
   return(status);
