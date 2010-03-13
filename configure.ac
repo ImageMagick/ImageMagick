@@ -548,7 +548,7 @@ AC_ARG_ENABLE([embeddable],
     [enable_embeddable='no'])
 
 if test "$enable_embeddable" = 'yes'; then
-    AC_DEFINE(EMBEDDABLE_SUPPORT,1,[Build self-contained, embeddable, zero-configuration ImageMagick (experimental)])
+    AC_DEFINE(EMBEDDABLE_SUPPORT,1,[Build self-contained, embeddable, zero-configuration ImageMagick])
 fi
 
 # Build a high dynamic range version of ImageMagick.
@@ -2148,7 +2148,7 @@ dnl ===========================================================================
 #
 AC_ARG_WITH([lqr],
     [AC_HELP_STRING([--without-lqr],
-                    [disable Liquid Rescale support (experimental)])],
+                    [disable Liquid Rescale support])],
     [with_lqr=$withval],
     [with_lqr='yes'])
 
