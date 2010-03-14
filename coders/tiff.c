@@ -1270,8 +1270,29 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
+          if (bits_per_sample != 8)
+            length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              quantum_type,pixels,exception);
+          else
+            {
+              register const unsigned char
+                *restrict p;
+
+              register long
+                x;
+
+              p=pixels;
+              for (x=0; x < (long) image->columns; x++)
+              {
+                q->red=ScaleCharToQuantum(TIFFGetR(*p));
+                q->green=ScaleCharToQuantum(TIFFGetG(*p));
+                q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+                if (image->matte != MagickFalse)
+                  q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
+                p++;
+                q++;
+              }
+            }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
