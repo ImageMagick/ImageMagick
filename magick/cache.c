@@ -3287,7 +3287,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   cache_info=(CacheInfo *) image->cache;
-  if ((cache_info->type == UndefinedCache) || (columns == 0) || (rows == 0))
+  if (cache_info->type == UndefinedCache)
     return((const PixelPacket *) NULL);
   region.x=x;
   region.y=y;
@@ -3311,7 +3311,6 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
         /*
           Pixel request is inside cache extents.
         */
-puts("a");
         if (IsNexusInCore(cache_info,nexus_info) != MagickFalse)
           return(pixels);
         status=ReadPixelCachePixels(cache_info,nexus_info,exception);
