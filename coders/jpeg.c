@@ -851,8 +851,8 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     }
   }
   (void) SetImageProperty(image,"jpeg:sampling-factor",sampling_factor);
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Sampling Factors: %s",sampling_factor);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Sampling Factors: %s",
+    sampling_factor);
 }
 
 static Image *ReadJPEGImage(const ImageInfo *image_info,
@@ -2157,116 +2157,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       return(MagickFalse);
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  if (jpeg_info.data_precision > 8)
+  if (jpeg_info.data_precision <= 8)
     {
-      if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-        for (y=0; y < (long) image->rows; y++)
-        {
-          register const PixelPacket
-            *p;
-
-          register long
-            x;
-
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          q=jpeg_pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p)) >>
-              4);
-            p++;
-          }
-          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
-            break;
-        }
-      else
-        if ((jpeg_info.in_color_space == JCS_RGB) ||
-            (jpeg_info.in_color_space == JCS_YCbCr))
-          for (y=0; y < (long) image->rows; y++)
-          {
-            register const PixelPacket
-              *p;
-
-            register long
-              x;
-
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            q=jpeg_pixels;
-            for (x=0; x < (long) image->columns; x++)
-            {
-              *q++=(JSAMPLE) (ScaleQuantumToShort(GetRedPixelComponent(p)) >> 4);
-              *q++=(JSAMPLE) (ScaleQuantumToShort(GetGreenPixelComponent(p)) >> 4);
-              *q++=(JSAMPLE) (ScaleQuantumToShort(GetBluePixelComponent(p)) >> 4);
-              p++;
-            }
-            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            status=SetImageProgress(image,SaveImageTag,y,image->rows);
-            if (status == MagickFalse)
-              break;
-          }
-        else
-          for (y=0; y < (long) image->rows; y++)
-          {
-            register const IndexPacket
-              *indexes;
-
-            register const PixelPacket
-              *p;
-
-            register long
-              x;
-
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            q=jpeg_pixels;
-            indexes=GetVirtualIndexQueue(image);
-            for (x=0; x < (long) image->columns; x++)
-            {
-              /*
-                Convert DirectClass packets to contiguous CMYK scanlines.
-              */
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetRedPixelComponent(p)) >> 4));
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetGreenPixelComponent(p)) >> 4));
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(GetBluePixelComponent(p)) >> 4));
-              *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(indexes[x]) >> 4));
-              p++;
-            }
-            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            status=SetImageProgress(image,SaveImageTag,y,image->rows);
-            if (status == MagickFalse)
-              break;
-          }
-    }
-  else
-    if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-      for (y=0; y < (long) image->rows; y++)
-      {
-        register const PixelPacket
-          *p;
-
-        register long
-          x;
-
-        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        q=jpeg_pixels;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
-          p++;
-        }
-        (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-        if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
-          break;
-      }
-    else
       if ((jpeg_info.in_color_space == JCS_RGB) ||
           (jpeg_info.in_color_space == JCS_YCbCr))
         for (y=0; y < (long) image->rows; y++)
@@ -2293,6 +2185,120 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             break;
         }
       else
+        if (jpeg_info.in_color_space == JCS_GRAYSCALE)
+          for (y=0; y < (long) image->rows; y++)
+          {
+            register const PixelPacket
+              *p;
+
+            register long
+              x;
+
+            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
+              break;
+            q=jpeg_pixels;
+            for (x=0; x < (long) image->columns; x++)
+            {
+              *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+              p++;
+            }
+            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+            if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+              break;
+          }
+        else
+          for (y=0; y < (long) image->rows; y++)
+          {
+            register const IndexPacket
+              *indexes;
+
+            register const PixelPacket
+              *p;
+
+            register long
+              x;
+
+            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
+              break;
+            q=jpeg_pixels;
+            indexes=GetVirtualIndexQueue(image);
+            for (x=0; x < (long) image->columns; x++)
+            {
+              /*
+                Convert DirectClass packets to contiguous CMYK scanlines.
+              */
+              *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
+                GetRedPixelComponent(p))));
+              *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
+                GetGreenPixelComponent(p))));
+              *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
+                GetBluePixelComponent(p))));
+              *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
+                indexes[x])));
+              p++;
+            }
+            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+            if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+              break;
+          }
+    }
+  else
+    if (jpeg_info.in_color_space == JCS_GRAYSCALE)
+      for (y=0; y < (long) image->rows; y++)
+      {
+        register const PixelPacket
+          *p;
+
+        register long
+          x;
+
+        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        q=jpeg_pixels;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p)) >>
+            4);
+          p++;
+        }
+        (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+        if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+          break;
+      }
+    else
+      if ((jpeg_info.in_color_space == JCS_RGB) ||
+          (jpeg_info.in_color_space == JCS_YCbCr))
+        for (y=0; y < (long) image->rows; y++)
+        {
+          register const PixelPacket
+            *p;
+
+          register long
+            x;
+
+          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          q=jpeg_pixels;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetRedPixelComponent(p)) >>
+              4);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetGreenPixelComponent(p)) >>
+              4);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetBluePixelComponent(p)) >>
+              4);
+            p++;
+          }
+          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+      else
         for (y=0; y < (long) image->rows; y++)
         {
           register const IndexPacket
@@ -2314,18 +2320,18 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetRedPixelComponent(p))));
-            *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetGreenPixelComponent(p))));
-            *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetBluePixelComponent(p))));
-            *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-              indexes[x])));
+            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
+              GetRedPixelComponent(p)) >> 4));
+            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
+              GetGreenPixelComponent(p)) >> 4));
+            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
+              GetBluePixelComponent(p)) >> 4));
+            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(indexes[x]) >> 4));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          if (status == MagickFalse)
             break;
         }
   if (y == (long) image->rows)

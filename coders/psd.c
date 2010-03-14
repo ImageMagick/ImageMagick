@@ -1864,63 +1864,6 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   return(MagickTrue);
 }
 
-/* Write white background, RLE-compressed */
-
-static void WriteWhiteBackground(const PSDInfo *psd_info,Image *image )
-{
-  long       w8, w;
-  char       *d, scanline[256];
-
-  int numChannels = 3, dim = (int) (image->rows*numChannels);
-
-  register long
-    i;
-
-  size_t
-    length;
-
-  unsigned short
-    bytecount;
-
-  (void) WriteBlobMSBShort(image,1); /* RLE compressed */
-  w8 = (long) image->columns;
-  d = scanline;
-  /* Set up scanline */
-  for (w=w8; w > 128; w-=128)
-  {
-    *d++=(-127);
-    *d++=(char) 255;
-  }
-  switch (w)
-  {
-    case 0:
-      break;
-    case 1:
-      *d++=0;
-      *d++=(char) 255;
-      break;
-    default:
-      *d++=(char) (1-w);
-      *d++=(char) 255;
-      break;
-  }
-  bytecount = d - scanline;
-
-  /* Scanline counts (rows*channels) */
-  for (i=0; i < dim; i++)
-  {
-    (void) SetPSDOffset(psd_info,image,bytecount);
-  }
-
-  /* RLE compressed data  */
-  length = bytecount;
-  for (i=0; i < dim; i++)
-  {
-    (void) WriteBlob( image, length, (unsigned char *) scanline );
-  }
-
-}
-
 static void WritePascalString(Image* inImage,const char *inString,int inPad)
 {
   size_t

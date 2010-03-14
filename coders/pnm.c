@@ -817,9 +817,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ssize_t
             count;
 
-          size_t
-            length;
-
           unsigned char
             *pixels;
 
@@ -853,66 +850,84 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               continue;
             }
           p=pixels;
-          if ((image->depth == 8) || (image->depth == 16))
+          if (image->depth == 8)
+            for (x=0; x < (long) image->columns; x++)
             {
-              length=ImportQuantumPixels(image,image_view,quantum_info,
-                quantum_type,pixels,exception);
-              if (length != extent)
-                status=MagickFalse;
+              q->red=ScaleCharToQuantum(*p++);
+              q->green=ScaleCharToQuantum(*p++);
+              q->blue=ScaleCharToQuantum(*p++);
+              q->opacity=OpaqueOpacity;
+              q++;
             }
           else
-            if (image->depth <= 8)
-              {
-                unsigned char
-                  pixel;
-
-                register PixelPacket
-                  *restrict r;
-
-                r=q;
-                for (x=0; x < (long) image->columns; x++)
-                {
-                  p=PushCharPixel(p,&pixel);
-                  r->red=ScaleAnyToQuantum(pixel,range);
-                  p=PushCharPixel(p,&pixel);
-                  r->green=ScaleAnyToQuantum(pixel,range);
-                  p=PushCharPixel(p,&pixel);
-                  r->blue=ScaleAnyToQuantum(pixel,range);
-                  r++;
-                }
-              }
-            else
+            if (image->depth == 16)
               {
                 unsigned short
                   pixel;
 
-                register PixelPacket
-                  *restrict r;
-
-                r=q;
                 for (x=0; x < (long) image->columns; x++)
                 {
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  r->red=ScaleAnyToQuantum(pixel,range);
+                  q->red=ScaleShortToQuantum(pixel);
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  r->green=ScaleAnyToQuantum(pixel,range);
+                  q->green=ScaleShortToQuantum(pixel);
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  r->blue=ScaleAnyToQuantum(pixel,range);
-                  r++;
+                  q->blue=ScaleShortToQuantum(pixel);
+                  q->opacity=OpaqueOpacity;
+                  q++;
                 }
               }
+            else
+              if (image->depth <= 8)
+                {
+                  unsigned char
+                    pixel;
+
+                  for (x=0; x < (long) image->columns; x++)
+                  {
+                    p=PushCharPixel(p,&pixel);
+                    q->red=ScaleAnyToQuantum(pixel,range);
+                    p=PushCharPixel(p,&pixel);
+                    q->green=ScaleAnyToQuantum(pixel,range);
+                    p=PushCharPixel(p,&pixel);
+                    q->blue=ScaleAnyToQuantum(pixel,range);
+                    q->opacity=OpaqueOpacity;
+                    q++;
+                  }
+                }
+              else
+                {
+                  unsigned short
+                    pixel;
+
+                  for (x=0; x < (long) image->columns; x++)
+                  {
+                    p=PushShortPixel(MSBEndian,p,&pixel);
+                    q->red=ScaleAnyToQuantum(pixel,range);
+                    p=PushShortPixel(MSBEndian,p,&pixel);
+                    q->green=ScaleAnyToQuantum(pixel,range);
+                    p=PushShortPixel(MSBEndian,p,&pixel);
+                    q->blue=ScaleAnyToQuantum(pixel,range);
+                    q->opacity=OpaqueOpacity;
+                    q++;
+                  }
+                }
           if ((type == BilevelType) || (type == GrayscaleType))
-            for (x=0; x < (long) image->columns; x++)
             {
-              if ((type == BilevelType) &&
-                  (IsMonochromePixel(q) == MagickFalse))
-                type=IsGrayPixel(q) == MagickFalse ? UndefinedType :
-                  GrayscaleType;
-              if ((type == GrayscaleType) && (IsGrayPixel(q) == MagickFalse))
-                type=UndefinedType;
-              if ((type != BilevelType) && (type != GrayscaleType))
-                break;
-              q++;
+              q=QueueCacheViewAuthenticPixels(image_view,0,offset,
+                image->columns,1,exception);
+              for (x=0; x < (long) image->columns; x++)
+              {
+                if ((type == BilevelType) &&
+                    (IsMonochromePixel(q) == MagickFalse))
+                  type=IsGrayPixel(q) == MagickFalse ? UndefinedType :
+                    GrayscaleType;
+                if ((type == GrayscaleType) && (IsGrayPixel(q) == MagickFalse))
+                  type=UndefinedType;
+                if ((type != BilevelType) && (type != GrayscaleType))
+                  break;
+                q++;
+              }
             }
           sync=SyncCacheViewAuthenticPixels(image_view,exception);
           if (sync == MagickFalse)
