@@ -111,7 +111,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((unsigned char) (((quantum+128UL)-((quantum+128UL) >> 8)) >> 8));
+  return((unsigned char) (quantum/257U));
 #else
   if (quantum <= 0.0)
     return(0);
