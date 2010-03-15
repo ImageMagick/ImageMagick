@@ -5423,25 +5423,18 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             op=ParseMagickOption(MagickMorphologyOptions,MagickFalse,token);
             if (op < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedMorphologyMethod",
-                   token);
+                token);
             i++;
             if (i == (long) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             GetMagickToken(argv[i],NULL,token);
-            if ( isalpha((int)token[0]) )
+            if (isalpha((int) ((unsigned char) *token)) != 0)
               {
                 op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
                 if (op < 0)
                   ThrowMogrifyException(OptionError,"UnrecognizedKernelType",
-                       token);
+                    token);
               }
-#if 0
-  /* DO NOT ENABLE, geometry can not handle user defined kernels
-   * which include 'nan' values, though '-' are acceptable.
-   */
-            else if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
-#endif
             break;
           }
         if (LocaleCompare("mosaic",option+1) == 0)
@@ -5715,6 +5708,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("remap",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("render",option+1) == 0)

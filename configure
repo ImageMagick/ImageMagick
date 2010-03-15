@@ -1992,7 +1992,7 @@ Optional Packages:
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG-2000 support
   --without-lcms          disable LCMS support
-  --without-lqr           disable Liquid Rescale support (experimental)
+  --without-lqr           disable Liquid Rescale support
   --without-openexr       disable OpenEXR support
   --without-png           disable PNG support
   --without-rsvg          disable RSVG support
