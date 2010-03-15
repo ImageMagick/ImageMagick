@@ -769,6 +769,9 @@
         <message name="UnrecognizedModeType">
           unrecognized mode type
         </message>
+        <message name="UnrecognizedMorphologyMethod">
+          unrecognized morphology method
+        </message>
         <message name="UnrecognizedOption">
           unrecognized option
         </message>

@@ -736,6 +736,9 @@
         <message name="UnrecognizedImageMode">
           mode d'image non reconnu
         </message>
+        <message name="UnrecognizedMorphologyMethod">
+          morphology method d'image non reconnu
+        </message>
         <message name="UnrecognizedImageOrientation">
           orientation d'image non reconnue
         </message>

@@ -33,8 +33,8 @@ extern "C" {
 #define MagickLibAddendum  "-6"
 #define MagickLibInterface  3
 #define MagickLibMinInterface  3
-#define MagickReleaseDate  "2010-03-12"
-#define MagickChangeDate   "20100311"
+#define MagickReleaseDate  "2010-03-15"
+#define MagickChangeDate   "20100313"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.6.0/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)

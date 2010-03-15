@@ -1,5 +1,6 @@
 2010-03-13  6.6.0-6 Cristy  <quetzlzacatenango@image...>
   * Add support for the Adobe Large Document format.
+  * Recognize -remap option for the mogrify utility.
 
 2010-03-11  6.6.0-5 Cristy  <quetzlzacatenango@image...>
   * Permit user to get virtual pixels with a region width of 0.
