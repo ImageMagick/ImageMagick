@@ -878,8 +878,8 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMagickConflict() returns MagickTrue if the image format is not a valid
-%  image format or conflicts with a logical drive (.e.g. X:).
+%  IsMagickConflict() returns MagickTrue if the image format conflicts with a
+%  logical drive (.e.g. X:).
 %
 %  The format of the IsMagickConflict method is:
 %
@@ -892,25 +892,7 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 */
 MagickExport MagickBooleanType IsMagickConflict(const char *magick)
 {
-  const DelegateInfo
-    *delegate_info;
-
-  const MagickInfo
-    *magick_info;
-
-  ExceptionInfo
-    *exception;
-
   assert(magick != (char *) NULL);
-  exception=AcquireExceptionInfo();
-  magick_info=GetMagickInfo(magick,exception);
-  delegate_info=GetDelegateInfo(magick,(char *) NULL,exception);
-  if (delegate_info == (const DelegateInfo *) NULL)
-    delegate_info=GetDelegateInfo((char *) NULL,magick,exception);
-  exception=DestroyExceptionInfo(exception);
-  if ((magick_info == (const MagickInfo *) NULL) &&
-      (delegate_info == (const DelegateInfo *) NULL))
-    return(MagickTrue);
 #if defined(macintosh)
   return(MACIsMagickConflict(magick));
 #elif defined(vms)
