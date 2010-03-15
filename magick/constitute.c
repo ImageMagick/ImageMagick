@@ -529,6 +529,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       delegate_info=GetDelegateInfo(read_info->magick,(char *) NULL,exception);
       if (delegate_info == (const DelegateInfo *) NULL)
         {
+read_info->affirm=0;
+  (void) SetImageInfo(read_info,1,exception);
+  magick_info=GetMagickInfo(read_info->magick,exception);
+printf("%p\n",magick_info);
           if (IsPathAccessible(read_info->filename) != MagickFalse)
             (void) ThrowMagickException(exception,GetMagickModule(),
               MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
@@ -1150,9 +1154,28 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
-            (void) ThrowMagickException(&image->exception,GetMagickModule(),
-              MissingDelegateError,"NoEncodeDelegateForThisImageFormat","`%s'",
-              image->filename);
+            { 
+              magick_info=GetMagickInfo(image->magick,&image->exception);
+              if ((magick_info == (const MagickInfo *) NULL) ||
+                  (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
+                (void) ThrowMagickException(&image->exception,GetMagickModule(),
+                  MissingDelegateError,"NoEncodeDelegateForThisImageFormat",
+                  "`%s'",image->filename);
+              else
+                {
+                  /*
+                    Call appropriate image writer based on image type.
+                  */
+                  (void) CopyMagickString(image->filename,filename,
+                    MaxTextExtent);
+                  thread_support=GetMagickThreadSupport(magick_info);
+                  if ((thread_support & EncoderThreadSupport) == 0)
+                    LockSemaphoreInfo(constitute_semaphore);
+                  status=GetImageEncoder(magick_info)(write_info,image);
+                  if ((thread_support & EncoderThreadSupport) == 0)
+                    UnlockSemaphoreInfo(constitute_semaphore);
+                }
+            }
           else
             {
               /*
