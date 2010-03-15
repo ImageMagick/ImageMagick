@@ -2005,12 +2005,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                   q=PopCharPixel((unsigned char) pixel,q);
                   pixel=ScaleQuantumToAny(p->blue,range);
                   q=PopCharPixel((unsigned char) pixel,q);
-                  if (image->matte != MagickFalse)
-                    {
-                      pixel=ScaleQuantumToAny((Quantum) (QuantumRange-
-                        GetOpacityPixelComponent(p)),range);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                    }
                   p++;
                 }
               else
@@ -2022,12 +2016,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                   q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                   pixel=ScaleQuantumToAny(p->blue,range);
                   q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                  if (image->matte != MagickFalse)
-                    {
-                      pixel=ScaleQuantumToAny((Quantum) (QuantumRange-
-                        GetOpacityPixelComponent(p)),range);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                    }
                   p++;
                 }
               extent=(size_t) (q-pixels);
