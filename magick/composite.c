@@ -1414,7 +1414,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp critical (MagickCore_TextureImage)
+#pragma omp critical (MagickCore_CompositeImage)
 #endif
             proceed=SetImageProgress(image,CompositeImageTag,y,image->rows);
             if (proceed == MagickFalse)
