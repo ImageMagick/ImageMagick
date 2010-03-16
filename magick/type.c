@@ -248,7 +248,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   register long
     i;
 
-  static Fontmap
+  static const Fontmap
     fontmap[] =
     {
       { "fixed", "courier" },
