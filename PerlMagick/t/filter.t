@@ -108,7 +108,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode'
 testFilterCompare('input.miff',  q//, 'reference/filter/Level.miff', 'Level', q/'20%'/, 0.2, 1.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Magnify.miff', 'Magnify', q//, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Magnify.miff', 'Magnify', q//, 0.05, 0.5);
 ++$test;
 
 testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/MatteFloodfill.miff', 'MatteFloodfill', q/geometry=>"+25+45"/, 0.002, 0.02);
@@ -117,7 +117,7 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/MatteFloodfill.
 testFilterCompare('input.miff',  q//, 'reference/filter/MedianFilter.miff', 'MedianFilter', q//, 0.006, 0.6);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Minify.miff', 'Minify', q//, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Minify.miff', 'Minify', q//, 0.05, 0.5);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulate', q/brightness=>110,saturation=>110,hue=>110/, 0.08, 1.08);
