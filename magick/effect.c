@@ -316,7 +316,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         v;
 
       gamma=0.0;
-      i=(long) (width*QuantumScale*PixelIntensity(r)+0.5);
+      i=(long) ceil(width*QuantumScale*PixelIntensity(r)-0.5);
       if (i < 0)
         i=0;
       else
@@ -631,7 +631,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         v;
 
       gamma=0.0;
-      i=(long) (width*(QuantumRange-QuantumScale*PixelIntensity(r))+0.5);
+      i=(long) ceil(width*(QuantumRange-QuantumScale*PixelIntensity(r))-0.5);
       if (i < 0)
         i=0;
       else
@@ -3167,8 +3167,8 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   point.y=(double) width*cos(DegreesToRadians(angle));
   for (i=0; i < (long) width; i++)
   {
-    offset[i].x=(long) ((i*point.y)/hypot(point.x,point.y)+0.5);
-    offset[i].y=(long) ((i*point.x)/hypot(point.x,point.y)+0.5);
+    offset[i].x=(long) ceil((i*point.y)/hypot(point.x,point.y)-0.5);
+    offset[i].y=(long) ceil((i*point.x)/hypot(point.x,point.y)-0.5);
   }
   /*
     Motion blur image.

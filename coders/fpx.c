@@ -282,7 +282,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       fpx_status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
       if (fpx_status != FPX_OK)
         ThrowReaderException(DelegateError,"UnableToReadAspectRatio");
-      if (width != (unsigned long) ((aspect_ratio*height)+0.5))
+      if (width != (unsigned long) floor((aspect_ratio*height)+0.5))
         Swap(width,height);
     }
   fpx_status=FPX_GetSummaryInformation(flashpix,&summary_info);

@@ -526,10 +526,11 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
           flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
-            image->columns=(unsigned long) ((image->columns*
+            image->columns=(unsigned long) floor((image->columns*
               image->x_resolution)+0.5);
           if (image->y_resolution != 0.0)
-            image->rows=(unsigned long) ((image->rows*image->y_resolution)+0.5);
+            image->rows=(unsigned long) floor((image->rows*image->y_resolution)+
+              0.5);
         }
       else
         {
@@ -537,11 +538,11 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
           flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
-            image->columns=(unsigned long) (((image->columns*
+            image->columns=(unsigned long) floor(((image->columns*
               image->x_resolution)/DefaultResolution)+0.5);
           if (image->y_resolution != 0.0)
-            image->rows=(unsigned long) (((image->rows*image->y_resolution)/
-              DefaultResolution)+0.5);
+            image->rows=(unsigned long) floor(((image->rows*
+              image->y_resolution)/DefaultResolution)+0.5);
         }
       geometry=DestroyString(geometry);
     }

@@ -949,8 +949,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     y_position=(float) image->page.y/y_resolution;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position);
-    image->page.x=(long) (x_position*x_resolution+0.5);
-    image->page.y=(long) (y_position*y_resolution+0.5);
+    image->page.x=(long) ceil(x_position*x_resolution-0.5);
+    image->page.y=(long) ceil(y_position*y_resolution-0.5);
     image->orientation=(OrientationType) orientation;
     chromaticity=(float *) NULL;
     (void) TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);

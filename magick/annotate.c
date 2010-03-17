@@ -503,7 +503,7 @@ MagickExport long FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status=GetTypeMetrics(image,draw_info,metrics);
     if (status == MagickFalse)
       break;
-    width=(unsigned long) (metrics->width+0.5);
+    width=(unsigned long) floor(metrics->width+0.5);
     if (GetUTFCode(p) != '\n')
       if (width <= image->columns)
         continue;
@@ -817,7 +817,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
           TypeWarning,"UnableToReadFont","`%s'",draw_info->family);
     }
   if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfoByFamily("Utopia",draw_info->style,
+    type_info=GetTypeInfoByFamily("Century Schoolbook",draw_info->style,
       draw_info->stretch,draw_info->weight,&image->exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Arial",draw_info->style,
@@ -1291,8 +1291,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
             if (status == MagickFalse)
               continue;
-            x_offset=(long) (point.x+0.5);
-            y_offset=(long) (point.y+y+0.5);
+            x_offset=(long) ceil(point.x-0.5);
+            y_offset=(long) ceil(point.y+y-0.5);
             if ((y_offset < 0) || (y_offset >= (long) image->rows))
               continue;
             q=(PixelPacket *) NULL;
@@ -1470,8 +1470,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
             if (status == MagickFalse)
               continue;
-            x_offset=(long) (point.x+0.5);
-            y_offset=(long) (point.y+y+0.5);
+            x_offset=(long) ceil(point.x-0.5);
+            y_offset=(long) ceil(point.y+y-0.5);
             if ((y_offset < 0) || (y_offset >= (long) image->rows))
               continue;
             q=(PixelPacket *) NULL;
@@ -1780,7 +1780,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   (void) FormatMagickString(geometry,MaxTextExtent,"%ldx%ld+0+0!",(long)
-    (extent.x+0.5),(long) (extent.y+0.5));
+    floor(extent.x+0.5),(long) floor(extent.y+0.5));
   annotate_info=AcquireImageInfo();
   (void) FormatMagickString(annotate_info->filename,MaxTextExtent,"ps:%s",
     filename);
@@ -1820,7 +1820,8 @@ static MagickBooleanType RenderPostscript(Image *image,
       crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
       crop_info.height=(unsigned long) ((resolution.y/DefaultResolution)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
-      crop_info.y=(long) ((resolution.y/DefaultResolution)*extent.y/8.0+0.5);
+      crop_info.y=(long) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
+        0.5);
       (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
         crop_info.width,crop_info.height,crop_info.x,crop_info.y);
       (void) TransformImage(&annotate_image,geometry,(char *) NULL);
@@ -1898,8 +1899,8 @@ static MagickBooleanType RenderPostscript(Image *image,
       }
       annotate_view=DestroyCacheView(annotate_view);
       (void) CompositeImage(image,OverCompositeOp,annotate_image,
-        (long) (offset->x+0.5),(long) (offset->y-(metrics->ascent+
-        metrics->descent)+0.5));
+        (long) ceil(offset->x-0.5),(long) ceil(offset->y-(metrics->ascent+
+        metrics->descent)-0.5));
     }
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);
@@ -2113,9 +2114,9 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
   (void) FormatMagickString(annotate_info.geometry,MaxTextExtent,
-    "%lux%lu+%ld+%ld",width,height,(long) (offset->x+0.5),
-    (long) (offset->y-metrics->ascent-metrics->descent+
-    draw_info->interline_spacing+0.5));
+    "%lux%lu+%ld+%ld",width,height,(long) ceil(offset->x-0.5),
+    (long) ceil(offset->y-metrics->ascent-metrics->descent+
+    draw_info->interline_spacing-0.5));
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
   pixel.pen_color.green=ScaleQuantumToShort(draw_info->fill.green);
   pixel.pen_color.blue=ScaleQuantumToShort(draw_info->fill.blue);

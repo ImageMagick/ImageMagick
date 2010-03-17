@@ -1014,8 +1014,10 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       scale.y=geometry_info.sigma;
       if ((status & SigmaValue) == 0)
         scale.y=scale.x;
-      region_info->width=(unsigned long) ((scale.x*image->columns/100.0)+0.5);
-      region_info->height=(unsigned long) ((scale.y*image->rows/100.0)+0.5);
+      region_info->width=(unsigned long) floor((scale.x*image->columns/100.0)+
+        0.5);
+      region_info->height=(unsigned long) floor((scale.y*image->rows/100.0)+
+        0.5);
     }
   /*
     Adjust offset according to gravity setting.
@@ -1119,10 +1121,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
       scale.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
         scale.y=scale.x;
-      *width=(unsigned long) (scale.x*former_width/100.0+0.5);
+      *width=(unsigned long) floor(scale.x*former_width/100.0-0.5);
       if (*width == 0)
         *width=1;
-      *height=(unsigned long) (scale.y*former_height/100.0+0.5);
+      *height=(unsigned long) floor(scale.y*former_height/100.0-0.5);
       if (*height == 0)
         *height=1;
       former_width=(*width);
@@ -1177,8 +1179,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
                 scale_factor=(MagickRealType) *height/(MagickRealType)
                   former_width;
             }
-      *width=MagickMax((unsigned long) (scale_factor*former_width+0.5),1UL);
-      *height=MagickMax((unsigned long) (scale_factor*former_height+0.5),1UL);
+      *width=MagickMax((unsigned long) floor(scale_factor*former_width+0.5),
+        1UL);
+      *height=MagickMax((unsigned long) floor(scale_factor*former_height+0.5),
+        1UL);
     }
   if ((flags & GreaterValue) != 0)
     {

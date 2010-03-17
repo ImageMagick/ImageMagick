@@ -138,8 +138,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       for ( ; status != MagickFalse; draw_info->pointsize*=2.0)
       {
-        width=(unsigned long) (metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) (metrics.height+draw_info->stroke_width+0.5);
+        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+          0.5);
         if (((image->columns != 0) && (width > (image->columns+1))) ||
             ((image->rows != 0) && (height > (image->rows+1))))
           break;
@@ -147,8 +148,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       }
       for ( ; status != MagickFalse; draw_info->pointsize--)
       {
-        width=(unsigned long) (metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) (metrics.height+draw_info->stroke_width+0.5);
+        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+          0.5);
         if ((image->columns != 0) && (width <= (image->columns+1)) &&
            ((image->rows == 0) || (height <= (image->rows+1))))
           break;
@@ -180,10 +182,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       draw_info->geometry=AcquireString(geometry);
     }
   if (image->rows == 0)
-    image->rows=(unsigned long) (metrics.height+draw_info->stroke_width+0.5);
-  if (image->rows == 0)
-    image->rows=(unsigned long) (draw_info->pointsize+draw_info->stroke_width+
+    image->rows=(unsigned long) floor(metrics.height+draw_info->stroke_width+
       0.5);
+  if (image->rows == 0)
+    image->rows=(unsigned long) floor(draw_info->pointsize+
+      draw_info->stroke_width+0.5);
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
       InheritException(exception,&image->exception);

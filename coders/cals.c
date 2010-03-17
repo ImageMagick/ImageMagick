@@ -542,7 +542,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
         geometry_info;
 
       (void) ParseGeometry(image_info->density,&geometry_info);
-      density=(unsigned long) (geometry_info.rho+0.5);
+      density=(unsigned long) floor(geometry_info.rho+0.5);
     }
   (void) FormatMagickString(header,MaxTextExtent,"rdensty: %04lu",density);
   count=WriteCALSRecord(image,header);

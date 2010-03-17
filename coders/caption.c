@@ -162,8 +162,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
         status=GetMultilineTypeMetrics(image,draw_info,&metrics);
-        width=(unsigned long) (metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) (metrics.height+draw_info->stroke_width+0.5);
+        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+          0.5);
         if ((width > (image->columns+1)) || (height > (image->rows+1)))
           break;
         draw_info->pointsize*=2.0;
@@ -180,8 +181,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
         status=GetMultilineTypeMetrics(image,draw_info,&metrics);
-        width=(unsigned long) (metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) (metrics.height+draw_info->stroke_width+0.5);
+        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+          0.5);
         if ((width > (image->columns+1)) || (height > (image->rows+1)))
           break;
         draw_info->pointsize++;

@@ -1,5 +1,6 @@
 2010-03-17  6.6.0-7 Cristy  <quetzlzacatenango@image...>
   * Detect CMYKProcessColor AI tag.
+  * Delete image from command line cache for -write option.
 
 2010-03-13  6.6.0-6 Cristy  <quetzlzacatenango@image...>
   * Add support for the Adobe Large Document format.

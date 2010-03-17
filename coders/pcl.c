@@ -290,8 +290,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set PCL render geometry.
     */
-    width=(unsigned long) (bounds.x2-bounds.x1+0.5);
-    height=(unsigned long) (bounds.y2-bounds.y1+0.5);
+    width=(unsigned long) floor(bounds.x2-bounds.x1+0.5);
+    height=(unsigned long) floor(bounds.y2-bounds.y1+0.5);
     if (width > page.width)
       page.width=width;
     if (height > page.height)
@@ -323,8 +323,9 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
-  page.width=(unsigned long) (page.width*image->x_resolution/delta.x+0.5);
-  page.height=(unsigned long) (page.height*image->y_resolution/delta.y+0.5);
+  page.width=(unsigned long) floor(page.width*image->x_resolution/delta.x+0.5);
+  page.height=(unsigned long) floor(page.height*image->y_resolution/delta.y+
+    0.5);
   (void) FormatMagickString(options,MaxTextExtent,"-g%lux%lu ",
     page.width,page.height);
   image=DestroyImage(image);
