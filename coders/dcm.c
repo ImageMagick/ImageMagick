@@ -3738,8 +3738,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       window_max,
                       window_min;
 
-                    window_min=(long) (window_center-(window_width-1)/2.0-0.5);
-                    window_max=(long) (window_center+(window_width-1)/2.0-0.5);
+                    window_min=(long) ceil(window_center-(window_width-1)/2.0-
+                      0.5);
+                    window_max=(long) floor(window_center+(window_width-1)/2.0+
+                      0.5);
                     if ((long) pixel_value <= window_min)
                       index=0;
                     else

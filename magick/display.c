@@ -8517,7 +8517,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & PsiValue) == 0)
         geometry_info.psi=0.1*(*image)->rows;
       vignette_image=VignetteImage(*image,geometry_info.rho,geometry_info.sigma,
-        (long) (geometry_info.xi+0.5),(long) (geometry_info.psi+0.5),
+        (long) floor(geometry_info.xi+0.5),(long) floor(geometry_info.psi+0.5),
         &(*image)->exception);
       if (vignette_image != (Image *) NULL)
         {

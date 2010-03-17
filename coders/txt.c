@@ -223,9 +223,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize Image structure.
   */
-  image->columns=(unsigned long) (((page.width*image->x_resolution)/
+  image->columns=(unsigned long) floor(((page.width*image->x_resolution)/
     delta.x)+0.5);
-  image->rows=(unsigned long) (((page.height*image->y_resolution)/delta.y)+0.5);
+  image->rows=(unsigned long) floor(((page.height*image->y_resolution)/
+    delta.y)+0.5);
   image->page.x=0;
   image->page.y=0;
   texture=(Image *) NULL;
@@ -252,7 +253,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
-  page.y=(long) (page.y+metrics.ascent+0.5);
+  page.y=(long) ceil(page.y+metrics.ascent-0.5);
   (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",page.x,page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   (void) CopyMagickString(filename,image_info->filename,MaxTextExtent);

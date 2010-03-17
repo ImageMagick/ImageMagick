@@ -957,8 +957,8 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=GetImageChannelRange(image,channel,&min,&max,exception);
-  *minima=(unsigned long) (min+0.5);
-  *maxima=(unsigned long) (max+0.5);
+  *minima=(unsigned long) ceil(min-0.5);
+  *maxima=(unsigned long) floor(max+0.5);
   return(status);
 }
 

@@ -3327,19 +3327,19 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           flags=ParseGeometry(value,&geometry_info);
           if ((flags & GreaterValue) != 0)
             {
-              if (image->delay > (unsigned long) (geometry_info.rho+0.5))
-                image->delay=(unsigned long) (geometry_info.rho+0.5);
+              if (image->delay > (unsigned long) floor(geometry_info.rho+0.5))
+                image->delay=(unsigned long) floor(geometry_info.rho+0.5);
             }
           else
             if ((flags & LessValue) != 0)
               {
-                if (image->delay < (unsigned long) (geometry_info.rho+0.5))
-                  image->ticks_per_second=(long) (geometry_info.sigma+0.5);
+                if (image->delay < (unsigned long) floor(geometry_info.rho+0.5))
+                  image->ticks_per_second=(long) floor(geometry_info.sigma+0.5);
               }
             else
-              image->delay=(unsigned long) (geometry_info.rho+0.5);
+              image->delay=(unsigned long) floor(geometry_info.rho+0.5);
           if ((flags & SigmaValue) != 0)
-            image->ticks_per_second=(long) (geometry_info.sigma+0.5);
+            image->ticks_per_second=(long) floor(geometry_info.sigma+0.5);
           break;
         }
       if (LocaleCompare(property,"depth") == 0)

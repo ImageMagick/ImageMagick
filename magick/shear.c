@@ -218,10 +218,10 @@ static MagickBooleanType CropToFitImage(Image **image,
     if (max.y < extent[i].y)
       max.y=extent[i].y;
   }
-  geometry.x=(long) (min.x+0.5);
-  geometry.y=(long) (min.y+0.5);
-  geometry.width=(unsigned long) ((long) (max.x+0.5)-(long) (min.x+0.5));
-  geometry.height=(unsigned long) ((long) (max.y+0.5)-(long) (min.y+0.5));
+  geometry.x=(long) ceil(min.x-0.5);
+  geometry.y=(long) ceil(min.y-0.5);
+  geometry.width=(unsigned long) floor(max.x-min.x+0.5);
+  geometry.height=(unsigned long) floor(max.y-min.y+0.5);
   page=(*image)->page;
   (void) ParseAbsoluteGeometry("0x0+0+0",&(*image)->page);
   crop_image=CropImage(*image,&geometry,exception);
@@ -1932,9 +1932,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       width=image->rows;
       height=image->columns;
     }
-  y_width=width+(long) (fabs(shear.x)*height+0.5);
-  x_offset=(long) (width+((fabs(shear.y)*height)-width)/2.0+0.5);
-  y_offset=(long) (height+((fabs(shear.y)*y_width)-height)/2.0+0.5);
+  y_width=width+(long) floor(fabs(shear.x)*height+0.5);
+  x_offset=(long) ceil(width+((fabs(shear.y)*height)-width)/2.0-0.5);
+  y_offset=(long) ceil(height+((fabs(shear.y)*y_width)-height)/2.0-0.5);
   /*
     Surround image with a border.
   */
@@ -2076,10 +2076,11 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  y_width=image->columns+(long) (fabs(shear.x)*image->rows+0.5);
-  x_offset=(long) (image->columns+((fabs(shear.x)*image->rows)-image->columns)/
-    2.0+0.5);
-  y_offset=(long) (image->rows+((fabs(shear.y)*y_width)-image->rows)/2.0+0.5);
+  y_width=image->columns+(long) floor(fabs(shear.x)*image->rows+0.5);
+  x_offset=(long) ceil(image->columns+((fabs(shear.x)*image->rows)-
+    image->columns)/2.0-0.5);
+  y_offset=(long) ceil(image->rows+((fabs(shear.y)*y_width)-image->rows)/2.0-
+    0.5);
   /*
     Surround image with border.
   */

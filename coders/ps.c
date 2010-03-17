@@ -669,8 +669,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
           bounds.x1,bounds.y1);
         (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry);
-        page.width=(unsigned long) (bounds.x2-bounds.x1+0.5);
-        page.height=(unsigned long) (bounds.y2-bounds.y1+0.5);
+        page.width=(unsigned long) floor(bounds.x2-bounds.x1+0.5);
+        page.height=(unsigned long) floor(bounds.y2-bounds.y1+0.5);
         hires_bounds=bounds;
       }
   }
@@ -722,8 +722,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
-  page.width=(unsigned long) (page.width*image->x_resolution/delta.x+0.5);
-  page.height=(unsigned long) (page.height*image->y_resolution/delta.y+0.5);
+  page.width=(unsigned long) floor(page.width*image->x_resolution/delta.x+0.5);
+  page.height=(unsigned long) floor(page.height*image->y_resolution/delta.y+
+    0.5);
   (void) FormatMagickString(options,MaxTextExtent,"-g%lux%lu ",
     page.width,page.height);
   read_info=CloneImageInfo(image_info);
@@ -1433,9 +1434,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=(double) (geometry.width*delta.x)/resolution.x;
-    geometry.width=(unsigned long) (scale.x+0.5);
+    geometry.width=(unsigned long) floor(scale.x+0.5);
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
-    geometry.height=(unsigned long) (scale.y+0.5);
+    geometry.height=(unsigned long) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,
       &image->exception);
@@ -1482,9 +1483,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
         else
           {
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "%%%%BoundingBox: %ld %ld %ld %ld\n",(long) (bounds.x1+0.5),
-              (long) (bounds.y1+0.5),(long) (bounds.x2+0.5),
-              (long) (bounds.y2+0.5));
+              "%%%%BoundingBox: %ld %ld %ld %ld\n",(long) ceil(bounds.x1-0.5),
+              (long) ceil(bounds.y1-0.5),(long) floor(bounds.x2+0.5),
+              (long) floor(bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatMagickString(buffer,MaxTextExtent,
               "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
@@ -2088,8 +2089,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
   if (page > 2)
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "%%%%BoundingBox: %ld %ld %ld %ld\n",(long) (bounds.x1+0.5),
-        (long) (bounds.y1+0.5),(long) (bounds.x2+0.5),(long) (bounds.y2+0.5));
+        "%%%%BoundingBox: %ld %ld %ld %ld\n",(long) ceil(bounds.x1-0.5),
+        (long) ceil(bounds.y1-0.5),(long) floor(bounds.x2+0.5),(long)
+        floor(bounds.y2+0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatMagickString(buffer,MaxTextExtent,
         "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,

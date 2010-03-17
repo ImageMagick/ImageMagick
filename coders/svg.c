@@ -2114,8 +2114,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
-          svg_info->width=(unsigned long) (svg_info->bounds.width+0.5);
-          svg_info->height=(unsigned long) (svg_info->bounds.height+0.5);
+          svg_info->width=(unsigned long) floor(svg_info->bounds.width+0.5);
+          svg_info->height=(unsigned long) floor(svg_info->bounds.height+0.5);
           MVGPrintf(svg_info->file,"viewbox 0 0 %lu %lu\n",svg_info->width,
             svg_info->height);
           sx=(double) svg_info->width/svg_info->view_box.width;

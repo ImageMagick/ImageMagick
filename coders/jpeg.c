@@ -1778,8 +1778,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   jpeg_info.density_unit=(UINT8) 1;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Image resolution: %ld,%ld",(long) (image->x_resolution+0.5),
-      (long) (image->y_resolution+0.5));
+      "Image resolution: %ld,%ld",(long) ceil(image->x_resolution-0.5),
+      (long) ceil(image->y_resolution-0.5));
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
       /*

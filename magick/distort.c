@@ -127,7 +127,9 @@ static void InvertPerspectiveCoefficients(const double *coeff,
 
 static inline double MagickRound(double x)
 {
-  /* round the fraction to nearest integer */
+  /*
+    Round the fraction to nearest integer.
+  */
   if (x >= 0.0)
     return((double) ((long) (x+0.5)));
   return((double) ((long) (x-0.5)));
@@ -1607,10 +1609,10 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
        Do not do this for DePolar which needs to be exact for tiling
     */
     if ( bestfit && method != DePolarDistortion ) {
-      geometry.x = (long) floor(min.x-0.5);
-      geometry.y = (long) floor(min.y-0.5);
-      geometry.width=(unsigned long) ceil(max.x-geometry.x+0.5);
-      geometry.height=(unsigned long) ceil(max.y-geometry.y+0.5);
+      geometry.x = (long) ceil(min.x-0.5);
+      geometry.y = (long) ceil(min.y-0.5);
+      geometry.width=(unsigned long) floor(max.x-geometry.x+0.5);
+      geometry.height=(unsigned long) floor(max.y-geometry.y+0.5);
     }
     /* now that we have a new size lets fit distortion to it exactly */
     if ( method == DePolarDistortion ) {

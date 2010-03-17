@@ -890,13 +890,13 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       return(clone_image);
     }
   scale=(MagickRealType) columns/(MagickRealType) image->columns;
-  clone_image->page.width=(unsigned long) (scale*image->page.width+0.5);
-  clone_image->page.x=(long) (scale*image->page.x+0.5);
-  clone_image->tile_offset.x=(long) (scale*image->tile_offset.x+0.5);
+  clone_image->page.width=(unsigned long) floor(scale*image->page.width+0.5);
+  clone_image->page.x=(long) ceil(scale*image->page.x-0.5);
+  clone_image->tile_offset.x=(long) ceil(scale*image->tile_offset.x-0.5);
   scale=(MagickRealType) rows/(MagickRealType) image->rows;
-  clone_image->page.height=(unsigned long) (scale*image->page.height+0.5);
-  clone_image->page.y=(long) (image->page.y*scale+0.5);
-  clone_image->tile_offset.y=(long) (scale*image->tile_offset.y+0.5);
+  clone_image->page.height=(unsigned long) floor(scale*image->page.height+0.5);
+  clone_image->page.y=(long) ceil(image->page.y*scale-0.5);
+  clone_image->tile_offset.y=(long) ceil(scale*image->tile_offset.y-0.5);
   clone_image->columns=columns;
   clone_image->rows=rows;
   clone_image->cache=ClonePixelCache(image->cache);
@@ -4015,19 +4015,19 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       flags=ParseGeometry(option,&geometry_info);
       if ((flags & GreaterValue) != 0)
         {
-          if (image->delay > (unsigned long) (geometry_info.rho+0.5))
-            image->delay=(unsigned long) (geometry_info.rho+0.5);
+          if (image->delay > (unsigned long) floor(geometry_info.rho+0.5))
+            image->delay=(unsigned long) floor(geometry_info.rho+0.5);
         }
       else
         if ((flags & LessValue) != 0)
           {
-            if (image->delay < (unsigned long) (geometry_info.rho+0.5))
-              image->ticks_per_second=(long) (geometry_info.sigma+0.5);
+            if (image->delay < (unsigned long) floor(geometry_info.rho+0.5))
+              image->ticks_per_second=(long) floor(geometry_info.sigma+0.5);
           }
         else
-          image->delay=(unsigned long) (geometry_info.rho+0.5);
+          image->delay=(unsigned long) floor(geometry_info.rho+0.5);
       if ((flags & SigmaValue) != 0)
-        image->ticks_per_second=(long) (geometry_info.sigma+0.5);
+        image->ticks_per_second=(long) floor(geometry_info.sigma+0.5);
     }
   option=GetImageOption(image_info,"density");
   if (option != (const char *) NULL)

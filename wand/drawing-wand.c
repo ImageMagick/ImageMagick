@@ -4175,8 +4175,8 @@ WandExport MagickBooleanType DrawPushPattern(DrawingWand *wand,
   wand->pattern_id=AcquireString(pattern_id);
   wand->pattern_bounds.x=(long) ceil(x-0.5);
   wand->pattern_bounds.y=(long) ceil(y-0.5);
-  wand->pattern_bounds.width=(unsigned long) (width+0.5);
-  wand->pattern_bounds.height=(unsigned long) (height+0.5);
+  wand->pattern_bounds.width=(unsigned long) floor(width+0.5);
+  wand->pattern_bounds.height=(unsigned long) floor(height+0.5);
   wand->pattern_offset=wand->mvg_length;
   return(MagickTrue);
 }

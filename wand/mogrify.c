@@ -2993,8 +2993,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & PsiValue) == 0)
               geometry_info.psi=4.0;
             shadow_image=ShadowImage(*image,geometry_info.rho,
-              geometry_info.sigma,(long) (geometry_info.xi+0.5),(long)
-              (geometry_info.psi+0.5),exception);
+              geometry_info.sigma,(long) floor(geometry_info.xi+0.5),(long)
+              floor(geometry_info.psi+0.5),exception);
             if (shadow_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -3499,8 +3499,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & PsiValue) == 0)
               geometry_info.psi=0.1*(*image)->rows;
             vignette_image=VignetteImage(*image,geometry_info.rho,
-              geometry_info.sigma,(long) (geometry_info.xi+0.5),(long)
-              (geometry_info.psi+0.5),exception);
+              geometry_info.sigma,(long) floor(geometry_info.xi+0.5),(long)
+              floor(geometry_info.psi+0.5),exception);
             if (vignette_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -8374,6 +8374,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       {
         if (LocaleCompare("write",option+1) == 0)
           {
+            char 
+              key[MaxTextExtent];
+
             Image
               *write_images;
 
@@ -8381,6 +8384,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *write_info;
 
             (void) SyncImagesSettings(image_info,*images);
+            (void) FormatMagickString(key,MaxTextExtent,"cache:%s",argv[i+1]);
+            (void) DeleteImageRegistry(key);
             write_images=(*images);
             if (*option == '+')
               write_images=CloneImageList(*images,exception);

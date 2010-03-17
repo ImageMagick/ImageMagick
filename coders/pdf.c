@@ -531,8 +531,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
            bounds.x1,bounds.y1);
         (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry);
-        page.width=(unsigned long) (bounds.x2-bounds.x1+0.5);
-        page.height=(unsigned long) (bounds.y2-bounds.y1+0.5);
+        page.width=(unsigned long) floor(bounds.x2-bounds.x1+0.5);
+        page.height=(unsigned long) floor(bounds.y2-bounds.y1+0.5);
         hires_bounds=bounds;
       }
   }
@@ -587,8 +587,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     {
       (void) ParseAbsoluteGeometry(image_info->page,&page);
-      page.width=(unsigned long) (page.width*image->x_resolution/delta.x+0.5);
-      page.height=(unsigned long) (page.height*image->y_resolution/delta.y+0.5);
+      page.width=(unsigned long) floor(page.width*image->x_resolution/delta.x+
+        0.5);
+      page.height=(unsigned long) floor(page.height*image->y_resolution/delta.y+
+        0.5);
       (void) FormatMagickString(options,MaxTextExtent,"-g%lux%lu ",page.width,
         page.height);
     }
@@ -1263,9 +1265,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=(double) (geometry.width*delta.x)/resolution.x;
-    geometry.width=(unsigned long) (scale.x+0.5);
+    geometry.width=(unsigned long) floor(scale.x+0.5);
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
-    geometry.height=(unsigned long) (scale.y+0.5);
+    geometry.height=(unsigned long) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,
       &image->exception);

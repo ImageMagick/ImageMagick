@@ -3273,8 +3273,8 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       */
       depth--;
       attenuate++;
-      x_mid=(long) (segment->x1+segment->x2+0.5)/2;
-      y_mid=(long) (segment->y1+segment->y2+0.5)/2;
+      x_mid=(long) ceil(segment->x1+segment->x2-0.5)/2;
+      y_mid=(long) ceil(segment->y1+segment->y2-0.5)/2;
       local_info=(*segment);
       local_info.x2=(double) x_mid;
       local_info.y2=(double) y_mid;
@@ -3294,8 +3294,8 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
     }
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  x_mid=(long) (segment->x1+segment->x2+0.5)/2;
-  y_mid=(long) (segment->y1+segment->y2+0.5)/2;
+  x_mid=(long) ceil(segment->x1+segment->x2-0.5)/2;
+  y_mid=(long) ceil(segment->y1+segment->y2-0.5)/2;
   if ((segment->x1 == (double) x_mid) && (segment->x2 == (double) x_mid) &&
       (segment->y1 == (double) y_mid) && (segment->y2 == (double) y_mid))
     return(MagickFalse);
@@ -3312,9 +3312,11 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       /*
         Left pixel.
       */
-      x=(long) (segment->x1+0.5);
-      (void) GetOneVirtualPixel(image,x,(long) (segment->y1+0.5),&u,exception);
-      (void) GetOneVirtualPixel(image,x,(long) (segment->y2+0.5),&v,exception);
+      x=(long) ceil(segment->x1-0.5);
+      (void) GetOneVirtualPixel(image,x,(long) ceil(segment->y1-0.5),&u,
+        exception);
+      (void) GetOneVirtualPixel(image,x,(long) ceil(segment->y2-0.5),&v,
+        exception);
       q=QueueAuthenticPixels(image,x,y_mid,1,1,exception);
       if (q == (PixelPacket *) NULL)
         return(MagickTrue);
@@ -3330,10 +3332,10 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
           /*
             Right pixel.
           */
-          x=(long) (segment->x2+0.5);
-          (void) GetOneVirtualPixel(image,x,(long) (segment->y1+0.5),&u,
+          x=(long) ceil(segment->x2-0.5);
+          (void) GetOneVirtualPixel(image,x,(long) ceil(segment->y1-0.5),&u,
             exception);
-          (void) GetOneVirtualPixel(image,x,(long) (segment->y2+0.5),&v,
+          (void) GetOneVirtualPixel(image,x,(long) ceil(segment->y2-0.5),&v,
             exception);
           q=QueueAuthenticPixels(image,x,y_mid,1,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -3357,10 +3359,10 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
           /*
             Bottom pixel.
           */
-          y=(long) (segment->y2+0.5);
-          (void) GetOneVirtualPixel(image,(long) (segment->x1+0.5),y,&u,
+          y=(long) ceil(segment->y2-0.5);
+          (void) GetOneVirtualPixel(image,(long) ceil(segment->x1-0.5),y,&u,
             exception);
-          (void) GetOneVirtualPixel(image,(long) (segment->x2+0.5),y,&v,
+          (void) GetOneVirtualPixel(image,(long) ceil(segment->x2-0.5),y,&v,
             exception);
           q=QueueAuthenticPixels(image,x_mid,y,1,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -3381,10 +3383,10 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
           /*
             Top pixel.
           */
-          y=(long) (segment->y1+0.5);
-          (void) GetOneVirtualPixel(image,(long) (segment->x1+0.5),y,&u,
+          y=(long) ceil(segment->y1-0.5);
+          (void) GetOneVirtualPixel(image,(long) ceil(segment->x1-0.5),y,&u,
             exception);
-          (void) GetOneVirtualPixel(image,(long) (segment->x2+0.5),y,&v,
+          (void) GetOneVirtualPixel(image,(long) ceil(segment->x2-0.5),y,&v,
             exception);
           q=QueueAuthenticPixels(image,x_mid,y,1,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -3406,11 +3408,11 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       /*
         Middle pixel.
       */
-      x=(long) (segment->x1+0.5);
-      y=(long) (segment->y1+0.5);
+      x=(long) ceil(segment->x1-0.5);
+      y=(long) ceil(segment->y1-0.5);
       (void) GetOneVirtualPixel(image,x,y,&u,exception);
-      x=(long) (segment->x2+0.5);
-      y=(long) (segment->y2+0.5);
+      x=(long) ceil(segment->x2-0.5);
+      y=(long) ceil(segment->y2-0.5);
       (void) GetOneVirtualPixel(image,x,y,&v,exception);
       q=QueueAuthenticPixels(image,x_mid,y_mid,1,1,exception);
       if (q == (PixelPacket *) NULL)
@@ -4109,8 +4111,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
     return((Image *) NULL);
   (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod);
   clone_image->compose=OverCompositeOp;
-  border_info.width=(unsigned long) (2.0*sigma+0.5);
-  border_info.height=(unsigned long) (2.0*sigma+0.5);
+  border_info.width=(unsigned long) floor(2.0*sigma+0.5);
+  border_info.height=(unsigned long) floor(2.0*sigma+0.5);
   border_info.x=0;
   border_info.y=0;
   (void) QueryColorDatabase("none",&clone_image->border_color,exception);
