@@ -318,6 +318,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define EndXMPPacket  "<?xpacket end="
 #define ICCProfile "BeginICCProfile:"
 #define CMYKCustomColor  "CMYKCustomColor:"
+#define CMYKProcessColor  "CMYKProcessColor:"
 #define DocumentMedia  "DocumentMedia:"
 #define DocumentCustomColors  "DocumentCustomColors:"
 #define DocumentProcessColors  "DocumentProcessColors:"
@@ -603,6 +604,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           cmyk=MagickTrue;
       }
     if (LocaleNCompare(CMYKCustomColor,command,strlen(CMYKCustomColor)) == 0)
+      cmyk=MagickTrue;
+    if (LocaleNCompare(CMYKProcessColor,command,strlen(CMYKProcessColor)) == 0)
       cmyk=MagickTrue;
     length=strlen(DocumentCustomColors);
     if ((LocaleNCompare(DocumentCustomColors,command,length) == 0) ||
