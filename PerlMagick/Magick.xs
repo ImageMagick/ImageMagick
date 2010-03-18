@@ -1311,9 +1311,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           flags=ParseGeometry(SvPV(sval,na),&geometry_info);
           for ( ; image; image=image->next)
           {
-            image->delay=(unsigned long) (geometry_info.rho+0.5);
+            image->delay=(unsigned long) floor(geometry_info.rho+0.5);
             if ((flags & SigmaValue) != 0)
-              image->ticks_per_second=(unsigned long) (geometry_info.sigma+0.5);
+              image->ticks_per_second=(unsigned long)
+                floor(geometry_info.sigma+0.5);
           }
           break;
         }
@@ -9618,8 +9619,8 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             geometry_info.psi=argument_list[4].long_reference;
           image=ShadowImage(image,geometry_info.rho,geometry_info.sigma,
-            (long) (geometry_info.xi+0.5),(long) (geometry_info.psi+0.5),
-            exception);
+            (long) ceil(geometry_info.xi-0.5),(long) ceil(geometry_info.psi-
+            0.5),exception);
           break;
         }
         case 90:  /* Identify */
@@ -9732,8 +9733,8 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[5].string_reference,
               &image->background_color,exception);
           image=VignetteImage(image,geometry_info.rho,geometry_info.sigma,
-            (long) (geometry_info.xi+0.5),(long) (geometry_info.psi+0.5),
-            exception);
+            (long) ceil(geometry_info.xi-0.5),(long) ceil(geometry_info.psi-
+            0.5),exception);
           break;
         }
         case 95:  /* ContrastStretch */
@@ -11514,13 +11515,13 @@ QueryColor(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      PUSHs(sv_2mortal(newSViv((unsigned long) (color.red+0.5))));
-      PUSHs(sv_2mortal(newSViv((unsigned long) (color.green+0.5))));
-      PUSHs(sv_2mortal(newSViv((unsigned long) (color.blue+0.5))));
+      PUSHs(sv_2mortal(newSViv((unsigned long) floor(color.red+0.5))));
+      PUSHs(sv_2mortal(newSViv((unsigned long) floor(color.green+0.5))));
+      PUSHs(sv_2mortal(newSViv((unsigned long) floor(color.blue+0.5))));
       if (color.matte != MagickFalse)
-        PUSHs(sv_2mortal(newSViv((unsigned long) (color.opacity+0.5))));
+        PUSHs(sv_2mortal(newSViv((unsigned long) floor(color.opacity+0.5))));
       if (color.colorspace == CMYKColorspace)
-        PUSHs(sv_2mortal(newSViv((unsigned long) (color.index+0.5))));
+        PUSHs(sv_2mortal(newSViv((unsigned long) floor(color.index+0.5))));
     }
 
   PerlException:
