@@ -125,7 +125,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -581,16 +581,16 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.mpeg.org/">MPEG</a></td>
+    <td valign="top"><a href="http://www.mpeg.org/">M2V</a></td>
     <td valign="top">RW</td>
-    <td valign="top">Motion Picture Experts Group file interchange format (version 1)</td>
+    <td valign="top">Motion Picture Experts Group file interchange format (version 2)</td>
     <td valign="top">Requires <a href="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</a>.</td>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.mpeg.org/">M2V</a></td>
+    <td valign="top"><a href="http://www.mpeg.org/">MPEG</a></td>
     <td valign="top">RW</td>
-    <td valign="top">Motion Picture Experts Group file interchange format (version 2)</td>
+    <td valign="top">Motion Picture Experts Group file interchange format (version 1)</td>
     <td valign="top">Requires <a href="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</a>.</td>
   </tr>
 
@@ -599,6 +599,18 @@ the supported image formats.</p>
     <td valign="top">RW</td>
     <td valign="top">Magick Persistent Cache image file format</td>
     <td valign="top"> The native <em>in-memory</em> ImageMagick uncompressed file format. This file format is identical to that used by ImageMagick to represent images in memory and is read by mapping the file directly into memory. The MPC format is not portable and is not suitable as an archive format. It is suitable as an intermediate format for high-performance image processing.  The MPC format requires two files to support one image. Image attributes are written to a file with the extension <kbd>.mpc</kbd>, whereas, image pixels are written to a file with the extension <kbd>.cache</kbd>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MPR</td>
+    <td valign="top">RW</td>
+    <td valign="top">Magick Persistent Registry</td>
+    <td valign="top">This format permits you to write to and read images from memory.  The image persists until the program exits.  For example, let's use the MPR to create a checkerboard:
+<pre class="text">
+convert \( -size 15x15 xc:black xc:white -append \) \
+  \( +clone -flip \) +append -write mpr:checkers +delete \
+  -size 240x240 tile:mpr:checkers board.png
+</pre></td>
   </tr>
 
   <tr>
@@ -1752,7 +1764,7 @@ the supported image formats.</p>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
