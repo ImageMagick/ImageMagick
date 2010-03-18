@@ -1179,8 +1179,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
                 scale_factor=(MagickRealType) *height/(MagickRealType)
                   former_width;
             }
-      *width=MagickMax((unsigned long) floor(scale_factor*former_width+0.5),1UL);
-      *height=MagickMax((unsigned long) floor(scale_factor*former_height+0.5),1UL);
+      *width=MagickMax((unsigned long) floor(scale_factor*former_width+0.5),
+        1UL);
+      *height=MagickMax((unsigned long) floor(scale_factor*former_height+0.5),
+        1UL);
     }
   if ((flags & GreaterValue) != 0)
     {

@@ -3273,8 +3273,8 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       */
       depth--;
       attenuate++;
-      x_mid=(long) ceil(segment->x1+segment->x2-0.5)/2;
-      y_mid=(long) ceil(segment->y1+segment->y2-0.5)/2;
+      x_mid=(long) ceil((segment->x1+segment->x2)/2-0.5);
+      y_mid=(long) ceil((segment->y1+segment->y2)/2-0.5);
       local_info=(*segment);
       local_info.x2=(double) x_mid;
       local_info.y2=(double) y_mid;
@@ -3294,8 +3294,8 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
     }
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  x_mid=(long) ceil(segment->x1+segment->x2-0.5)/2;
-  y_mid=(long) ceil(segment->y1+segment->y2-0.5)/2;
+  x_mid=(long) ceil((segment->x1+segment->x2)/2-0.5);
+  y_mid=(long) ceil((segment->y1+segment->y2)/2-0.5);
   if ((segment->x1 == (double) x_mid) && (segment->x2 == (double) x_mid) &&
       (segment->y1 == (double) y_mid) && (segment->y2 == (double) y_mid))
     return(MagickFalse);
