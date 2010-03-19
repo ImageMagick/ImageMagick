@@ -3353,7 +3353,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) SetImageProperty(image,attribute,(char *) data);
           }
         attribute=DestroyString(attribute);
-        data=(unsigned char *) RelinquishMagickMemory(data);
       }
     if (image_info->verbose != MagickFalse)
       {
@@ -3386,6 +3385,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) fprintf(stdout,"\n");
           }
       }
+    if (data != (unsigned char *) NULL)
+      data=(unsigned char *) RelinquishMagickMemory(data);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
