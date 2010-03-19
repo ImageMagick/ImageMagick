@@ -1867,9 +1867,6 @@ MagickExport Image *XAnimateImages(Display *display,
   if (display_image->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
       "Window id: 0x%lx (pop up)",windows->popup.id);
-  if ((windows->image.mapped == MagickFalse) ||
-      (windows->backdrop.id != (Window) NULL))
-    (void) XMapWindow(display,windows->image.id);
   /*
     Set out progress and warning handlers.
   */
@@ -1885,13 +1882,6 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   windows->image.x=0;
   windows->image.y=0;
-  status=XMakeImage(display,resource_info,&windows->image,display_image,
-    (unsigned int) display_image->columns,(unsigned int) display_image->rows);
-  if (status == MagickFalse)
-    ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
-      images->filename);
-  if (windows->image.mapped)
-    XRefreshWindow(display,&windows->image,(XEvent *) NULL);
   /*
     Initialize image pixmaps structure.
   */
@@ -1899,7 +1889,6 @@ MagickExport Image *XAnimateImages(Display *display,
   window_changes.height=(int) windows->image.height;
   (void) XReconfigureWMWindow(display,windows->image.id,windows->command.screen,
     (unsigned int) (CWWidth | CWHeight),&window_changes);
-  (void) XMapWindow(display,windows->image.id);
   windows->image.pixmaps=(Pixmap *) AcquireQuantumMemory(number_scenes,
     sizeof(*windows->image.pixmaps));
   windows->image.matte_pixmaps=(Pixmap *) AcquireQuantumMemory(number_scenes,
@@ -1908,9 +1897,11 @@ MagickExport Image *XAnimateImages(Display *display,
       (windows->image.matte_pixmaps == (Pixmap *) NULL))
     ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       images->filename);
-  windows->image.pixmaps[0]=windows->image.pixmap;
-  windows->image.matte_pixmaps[0]=windows->image.matte_pixmap;
-  for (scene=1; scene < (long) number_scenes; scene++)
+  if ((windows->image.mapped == MagickFalse) ||
+      (windows->backdrop.id != (Window) NULL))
+    (void) XMapWindow(display,windows->image.id);
+  XSetCursorState(display,windows,MagickTrue);
+  for (scene=0; scene < (long) number_scenes; scene++)
   {
     unsigned int
       columns,
@@ -1980,30 +1971,17 @@ MagickExport Image *XAnimateImages(Display *display,
       }
     windows->image.pixmaps[scene]=windows->image.pixmap;
     windows->image.matte_pixmaps[scene]=windows->image.matte_pixmap;
-    event.xexpose.x=0;
-    event.xexpose.y=0;
-    event.xexpose.width=(int) image_list[scene]->columns;
-    event.xexpose.height=(int) image_list[scene]->rows;
-    XRefreshWindow(display,&windows->image,&event);
-    (void) XSync(display,MagickFalse);
-    delay=1000*image_list[scene]->delay/MagickMax(images->ticks_per_second,1L);
-    XDelay(display,resource_info->delay*(delay == 0 ? 10 : delay));
-    if (XCheckTypedWindowEvent(display,windows->image.id,KeyPress,&event) != 0)
+    if (scene == 0)
       {
-        int
-          length;
-
-        length=XLookupString((XKeyEvent *) &event.xkey,command,(int)
-          sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-        *(command+length)='\0';
-        if ((key_symbol == XK_q) || (key_symbol == XK_Escape))
-          {
-            XClientMessage(display,windows->image.id,windows->im_protocols,
-              windows->im_exit,CurrentTime);
-            break;
-          }
-      }
+        event.xexpose.x=0;
+        event.xexpose.y=0;
+        event.xexpose.width=(int) image_list[scene]->columns;
+        event.xexpose.height=(int) image_list[scene]->rows;
+        XRefreshWindow(display,&windows->image,&event);
+        (void) XSync(display,MagickFalse);
+    }
   }
+  XSetCursorState(display,windows,MagickFalse);
   if (windows->command.mapped)
     (void) XMapRaised(display,windows->command.id);
   /*
@@ -2043,14 +2021,14 @@ MagickExport Image *XAnimateImages(Display *display,
                       iterations=0;
                       state|=ExitState;
                     }
-                  if (state & AutoReverseAnimationState)
+                  if ((state & AutoReverseAnimationState) != 0)
                     {
                       state&=(~ForwardAnimationState);
                       scene--;
                     }
                   else
                     {
-                      if ((state & RepeatAnimationState) == MagickFalse)
+                      if ((state & RepeatAnimationState) == 0)
                         state&=(~PlayAnimationState);
                       scene=first_scene;
                       pause=MagickTrue;
@@ -2134,8 +2112,11 @@ MagickExport Image *XAnimateImages(Display *display,
           event.xexpose.y=0;
           event.xexpose.width=(int) image->columns;
           event.xexpose.height=(int) image->rows;
-          XRefreshWindow(display,&windows->image,&event);
-          (void) XSync(display,MagickFalse);
+          if ((state & ExitState) == 0)
+            {
+              XRefreshWindow(display,&windows->image,&event);
+              (void) XSync(display,MagickFalse);
+            }
           state&=(~StepAnimationState);
           if (pause != MagickFalse)
             for (i=0; i < (long) resource_info->pause; i++)
@@ -2814,6 +2795,7 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XFreePixmap(display,windows->image.matte_pixmaps[scene]);
     windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
+  XSetCursorState(display,windows,MagickFalse);
   windows->image.pixmaps=(Pixmap *)
     RelinquishMagickMemory(windows->image.pixmaps);
   windows->image.matte_pixmaps=(Pixmap *)
