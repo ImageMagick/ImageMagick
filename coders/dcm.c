@@ -2795,8 +2795,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
+    *bluemap,
+    *greenmap,
     *graymap,
-    index;
+    index,
+    *redmap;
 
   long
     element,
@@ -2842,6 +2845,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned long
     bits_allocated,
     bytes_per_pixel,
+    colors,
     datum,
     height,
     high_bit,
@@ -2903,6 +2907,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   element=0;
   explicit_vr[2]='\0';
   explicit_file=MagickFalse;
+  colors=0;
+  redmap=(int *) NULL;
+  greenmap=(int *) NULL;
+  bluemap=(int *) NULL;
   graymap=(int *) NULL;
   height=0;
   max_value=255UL;
@@ -3258,11 +3266,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case 0x1200:
           case 0x3006:
           {
-            unsigned long
-              colors;
-
             /*
-              Populate image colormap.
+              Populate graymap.
             */
             if (data == (unsigned char *) NULL)
               break;
@@ -3280,42 +3285,85 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           case 0x1201:
-          case 0x1202:
-          case 0x1203:
           {
-            MagickBooleanType
-              status;
-
             unsigned short
               index;
 
             /*
-              Initialize colormap.
+              Populate redmap.
             */
-            if (image->colormap == (PixelPacket *) NULL)
-              {
-                status=AcquireImageColormap(image,(unsigned long) length/2);
-                if (status == MagickFalse)
-                  ThrowReaderException(ResourceLimitError,
-                    "UnableToCreateColormap");
-              }
-            else
-              if ((length/2) != image->colors)
-                ThrowReaderException(ResourceLimitError,
-                  "UnableToCreateColormap");
+            if (data == (unsigned char *) NULL)
+              break;
+            colors=(unsigned long) (length/2);
+            datum=colors;
+            redmap=(int *) AcquireQuantumMemory((size_t) colors,
+              sizeof(*redmap));
+            if (redmap == (int *) NULL)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             p=data;
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < (long) colors; i++)
             {
               if (image->endian != LSBEndian)
                 index=(unsigned short) ((*p << 8) | *(p+1));
               else
                 index=(unsigned short) (*p | (*(p+1) << 8));
-              if (element == 0x1201)
-                image->colormap[i].red=ScaleShortToQuantum(index);
-              if (element == 0x1202)
-                image->colormap[i].green=ScaleShortToQuantum(index);
-              if (element == 0x1203)
-                image->colormap[i].blue=ScaleShortToQuantum(index);
+              redmap[i]=(int) index;
+              p+=2;
+            }
+            break;
+          }
+          case 0x1202:
+          {
+            unsigned short
+              index;
+
+            /*
+              Populate greenmap.
+            */
+            if (data == (unsigned char *) NULL)
+              break;
+            colors=(unsigned long) (length/2);
+            datum=colors;
+            greenmap=(int *) AcquireQuantumMemory((size_t) colors,
+              sizeof(*greenmap));
+            if (greenmap == (int *) NULL)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            p=data;
+            for (i=0; i < (long) colors; i++)
+            {
+              if (image->endian != LSBEndian)
+                index=(unsigned short) ((*p << 8) | *(p+1));
+              else
+                index=(unsigned short) (*p | (*(p+1) << 8));
+              greenmap[i]=(int) index;
+              p+=2;
+            }
+            break;
+          }
+          case 0x1203:
+          {
+            unsigned short
+              index;
+
+            /*
+              Populate bluemap.
+            */
+            if (data == (unsigned char *) NULL)
+              break;
+            colors=(unsigned long) (length/2);
+            datum=colors;
+            bluemap=(int *) AcquireQuantumMemory((size_t) colors,
+              sizeof(*bluemap));
+            if (bluemap == (int *) NULL)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            p=data;
+            for (i=0; i < (long) colors; i++)
+            {
+              if (image->endian != LSBEndian)
+                index=(unsigned short) ((*p << 8) | *(p+1));
+              else
+                index=(unsigned short) (*p | (*(p+1) << 8));
+              bluemap[i]=(int) index;
               p+=2;
             }
             break;
@@ -3604,8 +3652,46 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(unsigned long) width;
     image->rows=(unsigned long) height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
-      if (AcquireImageColormap(image,MaxColormapSize) == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        if (colors == 0)
+          colors=MagickMin(1UL << image->depth,MaxColormapSize);
+        if (AcquireImageColormap(image,colors) == MagickFalse)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        if (redmap != (int *) NULL)
+          for (i=0; i < (long) colors; i++)
+          {
+            index=redmap[i];
+            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
+              index=(int) scale[index];
+            image->colormap[i].red=index;
+          }
+        if (greenmap != (int *) NULL)
+          for (i=0; i < (long) colors; i++)
+          {
+            index=greenmap[i];
+            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
+              index=(int) scale[index];
+            image->colormap[i].green=index;
+          }
+        if (bluemap != (int *) NULL)
+          for (i=0; i < (long) colors; i++)
+          {
+            index=bluemap[i];
+            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
+              index=(int) scale[index];
+            image->colormap[i].blue=index;
+          }
+        if (graymap != (int *) NULL)
+          for (i=0; i < (long) colors; i++)
+          {
+            index=graymap[i];
+            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
+              index=(int) scale[index];
+            image->colormap[i].red=index;
+            image->colormap[i].green=index;
+            image->colormap[i].blue=index;
+          }
+      }
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
         /*
@@ -3762,8 +3848,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           0.5)/(window_width-1))+0.5));
                   }
                 index&=mask;
-                if (graymap != (int *) NULL)
-                  index=graymap[index];
                 if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
                   index=(int) scale[index];
                 index=(int) ConstrainColormapIndex(image,(unsigned long) index);
@@ -3861,6 +3945,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scale=(Quantum *) RelinquishMagickMemory(scale);
   if (graymap != (int *) NULL)
     graymap=(int *) RelinquishMagickMemory(graymap);
+  if (bluemap != (int *) NULL)
+    bluemap=(int *) RelinquishMagickMemory(bluemap);
+  if (greenmap != (int *) NULL)
+    greenmap=(int *) RelinquishMagickMemory(greenmap);
+  if (redmap != (int *) NULL)
+    redmap=(int *) RelinquishMagickMemory(redmap);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
