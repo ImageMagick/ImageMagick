@@ -60,7 +60,7 @@ static inline long GetNextUTFCode(const char *text,size_t *octets)
     c,
     unicode;
 
-  *octets=0;
+  *octets=1;
   if (text == (const char *) NULL)
     {
       errno=EINVAL;

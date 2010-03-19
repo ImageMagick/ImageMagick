@@ -3654,7 +3654,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       {
         if (colors == 0)
-          colors=MagickMin(1UL << image->depth,MaxColormapSize);
+          colors=1UL << image->depth;
         if (AcquireImageColormap(image,colors) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)
@@ -3848,8 +3848,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           0.5)/(window_width-1))+0.5));
                   }
                 index&=mask;
-                if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
-                  index=(int) scale[index];
                 index=(int) ConstrainColormapIndex(image,(unsigned long) index);
                 indexes[x]=(IndexPacket) index;
                 pixel.red=1UL*image->colormap[index].red;
