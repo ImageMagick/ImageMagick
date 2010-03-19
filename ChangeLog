@@ -1,5 +1,6 @@
 2010-03-18  6.6.0-8 Cristy  <quetzlzacatenango@image...>
   * The animate program no longer loops twice when -loop 1 is specified.
+  * The caption format would sometimes hang when the text was not UTF-8.
 
 2010-03-17  6.6.0-7 Cristy  <quetzlzacatenango@image...>
   * Detect CMYKProcessColor AI tag.
