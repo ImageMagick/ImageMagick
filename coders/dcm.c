@@ -3292,15 +3292,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Initialize colormap.
             */
-            if (image->columns == 0)
-              break;
-            status=AcquireImageColormap(image,(unsigned long) (length+1)/2);
-            if (status == MagickFalse)
-              ThrowReaderException(ResourceLimitError,"UnableToCreateColormap");
+            if (image->colormap == (PixelPacket *) NULL)
+              {
+                status=AcquireImageColormap(image,(unsigned long) length/2);
+                if (status == MagickFalse)
+                  ThrowReaderException(ResourceLimitError,
+                    "UnableToCreateColormap");
+              }
+            else
+              if ((length/2) != image->colors)
+                ThrowReaderException(ResourceLimitError,
+                  "UnableToCreateColormap");
             p=data;
             for (i=0; i < (long) image->colors; i++)
             {
-              index=(unsigned short) ((*p) | (*(p+1)) << 8);
+              if (image->endian != LSBEndian)
+                index=(unsigned short) ((*p << 8) | *(p+1));
+              else
+                index=(unsigned short) (*p | (*(p+1) << 8));
               if (element == 0x1201)
                 image->colormap[i].red=ScaleShortToQuantum(index);
               if (element == 0x1202)
