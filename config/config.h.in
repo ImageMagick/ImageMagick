@@ -43,8 +43,7 @@
 /* Define if you have Display Postscript */
 #undef DPS_DELEGATE
 
-/* Build self-contained, embeddable, zero-configuration ImageMagick
-   (experimental) */
+/* Build self-contained, embeddable, zero-configuration ImageMagick */
 #undef EMBEDDABLE_SUPPORT
 
 /* exclude deprecated methods in MagickCore API */
@@ -238,6 +237,12 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `j0' function. */
+#undef HAVE_J0
+
+/* Define to 1 if you have the `j1' function. */
+#undef HAVE_J1
 
 /* Define if you have the <lcms.h> header file. */
 #undef HAVE_LCMS_H

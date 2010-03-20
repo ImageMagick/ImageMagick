@@ -2262,18 +2262,22 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (LocaleCompare(expression,"j") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+#if defined(MAGICKCORE_HAVE_J0)
       if (LocaleNCompare(expression,"j0",2) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+2,beta,
             exception);
           return((MagickRealType) j0((double) alpha));
         }
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
       if (LocaleNCompare(expression,"j1",2) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+2,beta,
             exception);
           return((MagickRealType) j1((double) alpha));
         }
+#endif
       if (LocaleNCompare(expression,"jinc",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,

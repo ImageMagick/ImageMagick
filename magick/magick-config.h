@@ -66,8 +66,7 @@
 /* Define if you have Display Postscript */
 /* #undef DPS_DELEGATE */
 
-/* Build self-contained, embeddable, zero-configuration ImageMagick
-   (experimental) */
+/* Build self-contained, embeddable, zero-configuration ImageMagick */
 /* #undef EMBEDDABLE_SUPPORT */
 
 /* exclude deprecated methods in MagickCore API */
@@ -281,7 +280,9 @@
 #endif
 
 /* Define to 1 if you have the `floor' function. */
-/* #undef HAVE_FLOOR */
+#ifndef MAGICKCORE_HAVE_FLOOR 
+#define MAGICKCORE_HAVE_FLOOR  1 
+#endif
 
 /* Define to 1 if you have the `fork' function. */
 #ifndef MAGICKCORE_HAVE_FORK 
@@ -354,6 +355,16 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #ifndef MAGICKCORE_HAVE_INTTYPES_H 
 #define MAGICKCORE_HAVE_INTTYPES_H  1 
+#endif
+
+/* Define to 1 if you have the `j0' function. */
+#ifndef MAGICKCORE_HAVE_J0 
+#define MAGICKCORE_HAVE_J0  1 
+#endif
+
+/* Define to 1 if you have the `j1' function. */
+#ifndef MAGICKCORE_HAVE_J1 
+#define MAGICKCORE_HAVE_J1  1 
 #endif
 
 /* Define if you have the <lcms.h> header file. */
@@ -514,7 +525,9 @@
 #endif
 
 /* Define to 1 if you have the `pow' function. */
-/* #undef HAVE_POW */
+#ifndef MAGICKCORE_HAVE_POW 
+#define MAGICKCORE_HAVE_POW  1 
+#endif
 
 /* Define to 1 if you have the `pread' function. */
 #ifndef MAGICKCORE_HAVE_PREAD 
@@ -616,7 +629,9 @@
 /* #undef HAVE_SPAWNVP */
 
 /* Define to 1 if you have the `sqrt' function. */
-/* #undef HAVE_SQRT */
+#ifndef MAGICKCORE_HAVE_SQRT 
+#define MAGICKCORE_HAVE_SQRT  1 
+#endif
 
 /* Define to 1 if you have the `stat' function. */
 #ifndef MAGICKCORE_HAVE_STAT 
