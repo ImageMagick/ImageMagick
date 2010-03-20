@@ -574,7 +574,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Transform RGB to Log colorspace.
       */
-      density=2.03728;
+      density=DisplayGamma;
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
@@ -1764,7 +1764,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       /*
         Transform Log to RGB colorspace.
       */
-      density=2.03728;
+      density=DisplayGamma;
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
