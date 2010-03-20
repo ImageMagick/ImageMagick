@@ -1904,7 +1904,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
-  if (ping_info->valid & PNG_INFO_iCCP)
+  if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
     {
       int
         compression;
@@ -1966,7 +1966,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   }
   if (mng_info->have_global_chrm != MagickFalse)
     image->chromaticity=mng_info->global_chrm;
-  if (ping_info->valid & PNG_INFO_cHRM)
+  if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
     {
       (void) png_get_cHRM(ping,ping_info,
         &image->chromaticity.white_point.x,
@@ -1998,7 +1998,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if ((mng_info->have_global_chrm != MagickFalse) || image->rendering_intent)
     ping_info->valid|=PNG_INFO_cHRM;
 #if defined(PNG_oFFs_SUPPORTED)
-  if (ping_info->valid & PNG_INFO_oFFs)
+  if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
       image->page.x=png_get_x_offset_pixels(ping, ping_info);
       image->page.y=png_get_y_offset_pixels(ping, ping_info);
@@ -2010,7 +2010,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 #endif
 #if defined(PNG_pHYs_SUPPORTED)
-  if (ping_info->valid & PNG_INFO_pHYs)
+  if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
     {
       int
         unit_type;
@@ -2055,7 +2055,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
     }
 #endif
-  if (ping_info->valid & PNG_INFO_PLTE)
+  if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
     {
       int
         number_colors;
@@ -2071,7 +2071,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             {
               png_set_PLTE(ping,ping_info,mng_info->global_plte,
                 (int) mng_info->global_plte_length);
-              if ((ping_info->valid & PNG_INFO_tRNS) == 0)
+              if (!png_get_valid(ping,ping_info,PNG_INFO_tRNS))
                 if (mng_info->global_trns_length)
                   {
                     if (mng_info->global_trns_length >
@@ -2088,7 +2088,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                    mng_info->have_saved_bkgd_index ||
 #endif
-                   ping_info->valid & PNG_INFO_bKGD)
+                   png_get_valid(ping,ping_info,PNG_INFO_bKGD))
                     {
                       png_color_16
                          background;
@@ -2117,9 +2117,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
 
 #if defined(PNG_READ_bKGD_SUPPORTED)
-  if (mng_info->have_global_bkgd && !(ping_info->valid & PNG_INFO_bKGD))
+  if (mng_info->have_global_bkgd &&
+          (!png_get_valid(ping,ping_info,PNG_INFO_bKGD)))
       image->background_color=mng_info->mng_global_bkgd;
-  if (ping_info->valid & PNG_INFO_bKGD)
+  if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
     {
       /*
         Set image background color.
@@ -2148,7 +2149,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.green=0;
   transparent_color.blue=0;
   transparent_color.opacity=0;
-  if (ping_info->valid & PNG_INFO_tRNS)
+  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
     {
       /*
         Image has a transparent background.
@@ -2203,7 +2204,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_READ_sBIT_SUPPORTED)
   if (mng_info->have_global_sbit)
     {
-      if (!(ping_info->valid & PNG_INFO_sBIT))
+      if (!png_get_valid(ping,ping_info,PNG_INFO_sBIT))
         png_set_sBIT(ping,ping_info,&mng_info->global_sbit);
     }
 #endif
@@ -2376,7 +2377,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
       image->matte=(((int) ping_info_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
           ((int) ping_info_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
-          (ping_info->valid & PNG_INFO_tRNS)) ? MagickTrue : MagickFalse;
+          (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
+          MagickTrue : MagickFalse;
 
       for (y=0; y < (long) image->rows; y++)
       {
@@ -2403,7 +2405,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   *r++=*p++;
                   p++;
-                  if ((ping_info->valid & PNG_INFO_tRNS) &&
+                  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS)) &&
                      (((*(p-2) << 8)|*(p-1)) == transparent_color.opacity))
                     {
                        /* Cheap transparency */
@@ -2415,7 +2417,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               }
             else if (ping_info_color_type == PNG_COLOR_TYPE_RGB)
               {
-              if (ping_info->valid & PNG_INFO_tRNS)
+              if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
                 for (x=(long) image->columns-1; x >= 0; x--)
                 {
                   *r++=*p++;
@@ -2717,7 +2719,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage() early.");
       return(image);
     }
-  if (ping_info->valid & PNG_INFO_tRNS)
+  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
     {
       ClassType
         storage_class;
@@ -2928,7 +2930,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           mng_info->ob[object_id]->compression_method=
              ping_info_compression_method;
           mng_info->ob[object_id]->filter_method=ping_info_filter_method;
-          if (ping_info->valid & PNG_INFO_PLTE)
+          if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
             {
               int
                 number_colors;
