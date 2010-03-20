@@ -6348,11 +6348,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     image_matte,
     num_passes,
     pass,
-    ping_info_bit_depth,
-    ping_info_color_type,
-    ping_info_interlace_method,
-    ping_info_compression_method,
-    ping_info_filter_method;
+    ping_info_bit_depth=0, 
+    ping_info_color_type=0,
+    ping_info_interlace_method=0,
+    ping_info_compression_method=0,
+    ping_info_filter_method=0;
 
   png_colorp
      palette;
