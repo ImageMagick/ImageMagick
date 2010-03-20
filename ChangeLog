@@ -1,6 +1,9 @@
 2010-03-18  6.6.0-8 Cristy  <quetzlzacatenango@image...>
   * The animate program no longer loops twice when -loop 1 is specified.
   * The caption format would sometimes hang when the text was not UTF-8.
+  * Don't gamma correct log to linear color conversion unless the -gamma is
+    specified (reference 
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=15799).
 
 2010-03-17  6.6.0-7 Cristy  <quetzlzacatenango@image...>
   * Detect CMYKProcessColor AI tag.
