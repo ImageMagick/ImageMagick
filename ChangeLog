@@ -1,3 +1,8 @@
+2010-01-20  6.6.0-8 Glenn Randers-Pehrson <glennrp@image...>
+  * Eliminated some of the deprecated direct references to members of
+    the png_info structure.  This must be finished before we can build
+    with libpng-1.5.
+
 2010-03-18  6.6.0-8 Cristy  <quetzlzacatenango@image...>
   * The animate program no longer loops twice when -loop 1 is specified.
   * The caption format would sometimes hang when the text was not UTF-8.
