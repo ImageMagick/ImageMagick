@@ -1954,8 +1954,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      double
         file_gamma;
 
-     if (mng_info->have_global_gama)
-       image->gamma=mng_info->global_gamma;
+     if (!png_get_gAMA(ping,ping_info,&file_gamma))
+       if (mng_info->have_global_gama)
+         png_set_gAMA(ping,ping_info,mng_info->global_gamma);
      if (png_get_gAMA(ping,ping_info,&file_gamma))
        {
          image->gamma=(float) file_gamma;
@@ -1964,8 +1965,21 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              "    Reading PNG gAMA chunk: gamma: %f",file_gamma);
        }
   }
-  if (mng_info->have_global_chrm != MagickFalse)
-    image->chromaticity=mng_info->global_chrm;
+  if (!png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+    {
+      if (mng_info->have_global_chrm != MagickFalse)
+        {
+          (void) png_set_cHRM(ping,ping_info,
+            mng_info->global_chrm.white_point.x,
+            mng_info->global_chrm.white_point.y,
+            mng_info->global_chrm.red_primary.x,
+            mng_info->global_chrm.red_primary.y,
+            mng_info->global_chrm.green_primary.x,
+            mng_info->global_chrm.green_primary.y,
+            mng_info->global_chrm.blue_primary.x,
+            mng_info->global_chrm.blue_primary.y);
+        }
+    }
   if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
     {
       (void) png_get_cHRM(ping,ping_info,
@@ -1983,20 +1997,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
   if (image->rendering_intent)
     {
-      image->gamma=0.45455f;
-      image->chromaticity.red_primary.x=0.6400f;
-      image->chromaticity.red_primary.y=0.3300f;
-      image->chromaticity.green_primary.x=0.3000f;
-      image->chromaticity.green_primary.y=0.6000f;
-      image->chromaticity.blue_primary.x=0.1500f;
-      image->chromaticity.blue_primary.y=0.0600f;
-      image->chromaticity.white_point.x=0.3127f;
-      image->chromaticity.white_point.y=0.3290f;
+      png_set_sRGB(ping,ping_info,image->rendering_intent-1);
+      png_set_gAMA(ping,ping_info,0.45455f);
+      png_set_cHRM(ping,ping_info,
+                  0.6400f, 0.3300f, 0.3000f, 0.6000f,
+                  0.1500f, 0.0600f, 0.3127f, 0.3290f);
     }
-  if ((mng_info->have_global_gama != MagickFalse) || image->rendering_intent)
-    ping_info->valid|=PNG_INFO_gAMA;
-  if ((mng_info->have_global_chrm != MagickFalse) || image->rendering_intent)
-    ping_info->valid|=PNG_INFO_cHRM;
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
@@ -2010,6 +2016,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 #endif
 #if defined(PNG_pHYs_SUPPORTED)
+  if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs))
+    {
+      if (mng_info->have_global_phys)
+        {
+          png_set_pHYs(ping,ping_info,
+                       mng_info->global_x_pixels_per_unit,
+                       mng_info->global_y_pixels_per_unit,
+                       mng_info->global_phys_unit_type);
+        }
+    }
+
   if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
     {
       int
@@ -2036,23 +2053,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG pHYs chunk: xres: %lu, yres: %lu, units: %d.",
           x_resolution, y_resolution, unit_type);
-    }
-  else
-    {
-      if (mng_info->have_global_phys)
-        {
-          image->x_resolution=(float) mng_info->global_x_pixels_per_unit;
-          image->y_resolution=(float) mng_info->global_y_pixels_per_unit;
-          if (mng_info->global_phys_unit_type == PNG_RESOLUTION_METER)
-            {
-              image->units=PixelsPerCentimeterResolution;
-              image->x_resolution=(double)
-                mng_info->global_x_pixels_per_unit/100.0;
-              image->y_resolution=(double)
-                mng_info->global_y_pixels_per_unit/100.0;
-            }
-          ping_info->valid|=PNG_INFO_pHYs;
-        }
     }
 #endif
   if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
