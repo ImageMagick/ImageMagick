@@ -224,7 +224,7 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (count=(-count+1); count > 0; count--)
+        for (i=(long) (-count+1); i > 0; i--)
         {
           switch (channel)
           {
@@ -274,13 +274,13 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
             default:
               break;
           }
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
           q++;
           indexes++;
           x++;
           number_pixels--;
         }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
         continue;
       }
     count++;
@@ -340,13 +340,13 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
         default:
           break;
       }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        break;
       q++;
       indexes++;
       x++;
       number_pixels--;
     }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
   }
   /*
     Guarentee the correct number of pixel packets.
