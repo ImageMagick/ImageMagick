@@ -541,11 +541,11 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   fftw_complex
     *fourier;
 
-  MagickBooleanType
-    status;
-
   FourierInfo
     fourier_info;
+
+  MagickBooleanType
+    status;
 
   size_t
     extent;
