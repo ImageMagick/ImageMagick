@@ -191,9 +191,6 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
   MagickOffsetType
     number_pixels;
 
-  Quantum
-    pixel;
-
   register IndexPacket
     *indexes;
 
@@ -207,6 +204,9 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
   ssize_t
     count;
 
+  unsigned char
+    pixel;
+
   exception=(&image->exception);
   number_pixels=(MagickOffsetType) image->columns*image->rows;
   for (x=0; number_pixels > 0; )
@@ -218,27 +218,27 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
       {
         if (count == -128)
           continue;
-        pixel=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+        pixel=(unsigned char) ReadBlobByte(image);
         q=GetAuthenticPixels(image,(long) (x % image->columns),
           (long) (x/image->columns),-count+1,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (i=(long) (-count+1); i > 0; i--)
+        for (count=(-count+1); count > 0; count--)
         {
           switch (channel)
           {
             case -1:
             {
-              q->opacity=(Quantum) (QuantumRange-pixel);
+              q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
               break;
             }
             case 0:
             {
-              q->red=pixel;
+              q->red=ScaleCharToQuantum(pixel);
               if (image->storage_class == PseudoClass)
                 {
-                  *indexes=(IndexPacket) ScaleQuantumToChar(pixel);
+                  *indexes=(IndexPacket) pixel;
                   q->red=image->colormap[(long) *indexes].red;
                   q->green=image->colormap[(long) *indexes].green;
                   q->blue=image->colormap[(long) *indexes].blue;
@@ -248,27 +248,27 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
             case 1:
             {
               if (image->storage_class == PseudoClass)
-                q->opacity=(Quantum) (QuantumRange-pixel);
+                q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
               else
-                q->green=pixel;
+                q->green=ScaleCharToQuantum(pixel);
               break;
             }
             case 2:
             {
-              q->blue=pixel;
+              q->blue=ScaleCharToQuantum(pixel);
               break;
             }
             case 3:
             {
               if (image->colorspace == CMYKColorspace)
-                *indexes=(IndexPacket) pixel;
+                *indexes=(IndexPacket) ScaleCharToQuantum(pixel);
               else
-                q->opacity=(Quantum) (QuantumRange-pixel);
+                q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
               break;
             }
             case 4:
             {
-              q->opacity=(Quantum) (QuantumRange-pixel);
+              q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
               break;
             }
             default:
@@ -291,20 +291,20 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
     indexes=GetAuthenticIndexQueue(image);
     for (i=(long) count; i > 0; i--)
     {
-      pixel=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+      pixel=(unsigned char) ReadBlobByte(image);
       switch (channel)
       {
         case -1:
         {
-          q->opacity=(Quantum) (QuantumRange-pixel);
+          q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
           break;
         }
         case 0:
         {
-          q->red=pixel;
+          q->red=ScaleCharToQuantum(pixel);
           if (image->storage_class == PseudoClass)
             {
-              *indexes=(IndexPacket) ScaleQuantumToChar(pixel);
+              *indexes=(IndexPacket) pixel;
               q->red=image->colormap[(long) *indexes].red;
               q->green=image->colormap[(long) *indexes].green;
               q->blue=image->colormap[(long) *indexes].blue;
@@ -314,27 +314,27 @@ static MagickBooleanType DecodeImage(Image *image,const long channel)
         case 1:
         {
           if (image->storage_class == PseudoClass)
-            q->opacity=(Quantum) (QuantumRange-pixel);
+            q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
           else
-            q->green=pixel;
+            q->green=ScaleCharToQuantum(pixel);
           break;
         }
         case 2:
         {
-          q->blue=pixel;
+          q->blue=ScaleCharToQuantum(pixel);
           break;
         }
         case 3:
         {
           if (image->colorspace == CMYKColorspace)
-            *indexes=(IndexPacket) pixel;
+            *indexes=(IndexPacket) ScaleCharToQuantum(pixel);
           else
-            q->opacity=(Quantum) (QuantumRange-pixel);
+            q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(pixel));
           break;
         }
         case 4:
         {
-          q->opacity=(Quantum) pixel;
+          q->opacity=(Quantum) ScaleCharToQuantum(pixel);
           break;
         }
         default:
