@@ -1,3 +1,6 @@
+2010-01-22  6.6.0-9 Glenn Randers-Pehrson <glennrp@image...>
+  * coders/png.c: Eliminated support of libpng versions older than 1.0.12.
+
 2010-03-21  6.6.0-9 Cristy  <quetzlzacatenango@image...>
   * Windows does not support complex.h (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=15808).

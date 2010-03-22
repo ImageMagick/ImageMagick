@@ -113,7 +113,7 @@
 #  endif
 #endif
 
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10011
 /*
   Optional declarations. Define or undefine them as you like.
 */
@@ -176,10 +176,6 @@ static SemaphoreInfo
   PNG_MNG_FEATURES_SUPPORTED is disabled by default in libpng-1.0.9 and
   will be enabled by default in libpng-1.2.0.
 */
-#if (PNG_LIBPNG_VER == 10009)  /* work around libpng-1.0.9 bug */
-#  undef PNG_READ_EMPTY_PLTE_SUPPORTED
-#  undef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-#endif
 #ifdef PNG_MNG_FEATURES_SUPPORTED
 #  ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
 #    define PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -497,7 +493,7 @@ static inline long MagickMin(const long x,const long y)
   return(y);
 }
 
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10111
 #if defined(PNG_SORT_PALETTE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -915,7 +911,7 @@ static MagickBooleanType ImageIsMonochrome(Image *image)
   }
   return(MagickTrue);
 }
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 #endif /* MAGICKCORE_PNG_DELEGATE */
 
 /*
@@ -1027,7 +1023,7 @@ static MagickBooleanType IsPNG(const unsigned char *magick,const size_t length)
 extern "C" {
 #endif
 
-#if (PNG_LIBPNG_VER > 95)
+#if (PNG_LIBPNG_VER > 10011)
 static size_t WriteBlobMSBULong(Image *image,const unsigned long value)
 {
   unsigned char
@@ -1076,13 +1072,13 @@ static void LogPNGChunk(int logging, png_bytep type, size_t length)
       "  Writing %c%c%c%c chunk, length: %lu",
       type[0],type[1],type[2],type[3],(unsigned long) length);
 }
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10011
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1699,7 +1695,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   png_uint_32
     ping_info_height,
-    ping_info_width;
+    ping_info_width,
+    ping_rowbytes;
 
   png_textp
     text;
@@ -1820,6 +1817,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Prepare PNG for reading.
   */
+
   mng_info->image_found++;
   png_set_sig_bytes(ping,8);
   if (LocaleCompare(image_info->magick,"MNG") == 0)
@@ -1878,6 +1876,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                &ping_info_bit_depth,&ping_info_color_type,
                &ping_info_interlace_method,&ping_info_compression_method,
                &ping_info_filter_method);
+
+  ping_rowbytes=png_get_rowbytes(ping,ping_info);
 
   if (ping_info_bit_depth < 8)
     {
@@ -2325,9 +2325,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       "    Reading PNG IDAT chunk(s)");
   if (num_passes > 1)
     png_pixels=(unsigned char *) AcquireQuantumMemory(image->rows,
-      ping_info->rowbytes*sizeof(*png_pixels));
+      ping_rowbytes*sizeof(*png_pixels));
   else
-    png_pixels=(unsigned char *) AcquireQuantumMemory(ping_info->rowbytes,
+    png_pixels=(unsigned char *) AcquireQuantumMemory(ping_rowbytes,
       sizeof(*png_pixels));
   if (png_pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2383,7 +2383,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       for (y=0; y < (long) image->rows; y++)
       {
         if (num_passes > 1)
-          row_offset=ping_info->rowbytes*y;
+          row_offset=ping_rowbytes*y;
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
@@ -2538,7 +2538,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       for (y=0; y < (long) image->rows; y++)
       {
         if (num_passes > 1)
-          row_offset=ping_info->rowbytes*y;
+          row_offset=ping_rowbytes*y;
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
@@ -7785,7 +7785,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     value=GetImageProperty(image,property);
     if (value != (const char *) NULL)
       {
-#if (PNG_LIBPNG_VER > 10005)
         text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
         text[0].key=(char *) property;
         text[0].text=(char *) value;
@@ -7802,38 +7801,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           }
         png_set_text(ping,ping_info,text,1);
         png_free(ping,text);
-#else
-/* Work directly with ping_info struct; png_set_text before libpng version
- * 1.0.5a is leaky */
-        if (ping_info->num_text == 0)
-          {
-            ping_info->text=(png_text *) AcquireQuantumMemory(256,
-              sizeof(*ping_info->text));
-            if (ping_info->text == (png_text *) NULL)
-              (void) ThrowMagickException(&image->exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                image->filename);
-          }
-        i=ping_info->num_text++;
-        if (i > 255)
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
-            ResourceLimitError,"Cannot write more than 256 PNG text chunks",
-            "`%s'",image->filename);
-        ping_info->text[i].key=(char *) property;
-        ping_info->text[i].text=(char *) value;
-        ping_info->text[i].text_length=strlen(value);
-        ping_info->text[i].compression=
-          image_info->compression == NoCompression ||
-          (image_info->compression == UndefinedCompression &&
-          ping_info->text[i].text_length < 128) ? -1 : 0;
-        if (logging != MagickFalse)
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Setting up text chunk");
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    keyword: %s",ping_info->text[i].key);
-          }
-#endif
       }
     property=GetNextImageProperty(image);
   }
@@ -7899,20 +7866,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Free PNG resources.
   */
-#if (PNG_LIBPNG_VER < 10007)
-  if (ping_info->valid & PNG_INFO_PLTE)
-    {
-      ping_info->palette=(png_colorp)
-        RelinquishMagickMemory(ping_info->palette);
-      ping_info->valid&=(~PNG_INFO_PLTE);
-    }
-  if (ping_info->valid & PNG_INFO_tRNS)
-    {
-      ping_info->trans_alpha=(unsigned char *) RelinquishMagickMemory(
-        ping_info->trans_alpha);
-      ping_info->valid&=(~PNG_INFO_tRNS);
-    }
-#endif
 
   png_destroy_write_struct(&ping,&ping_info);
 
@@ -8793,7 +8746,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
     final_delay=0,
     initial_delay;
 
-#if (PNG_LIBPNG_VER < 10007)
+#if (PNG_LIBPNG_VER < 10200)
     if (image_info->verbose)
       printf("Your PNG library (libpng-%s) is rather old.\n",
          PNG_LIBPNG_VER_STRING);
@@ -9593,7 +9546,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteMNGImage()");
   return(MagickTrue);
 }
-#else /* PNG_LIBPNG_VER > 95 */
+#else /* PNG_LIBPNG_VER > 10011 */
 static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   image=image;
@@ -9606,5 +9559,5 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
 {
   return(WritePNGImage(image_info,image));
 }
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 #endif
