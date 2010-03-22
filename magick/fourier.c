@@ -54,7 +54,14 @@
 #include "magick/property.h"
 #include "magick/thread-private.h"
 #if defined(MAGICKCORE_FFTW_DELEGATE)
+#if defined(MAGICKCORE_HAVE_COMPLEX_H)
 #include <complex.h>
+#else
+#define cabs(z)  (sqrt(z[0]*z[0]+z[1]*z[1]))
+#define carg(z)  (atan2(z[1],z[0]))
+#define creal(z)  (z[0])
+#define cimag(z)  (z[1])
+#endif
 #include <fftw3.h>
 #endif
 
@@ -505,7 +512,15 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   i=0L;
   for (y=0L; y < (long) fourier_info->height; y++)
     for (x=0L; x < (long) fourier_info->center; x++)
-      fourier[i++]/=n;
+    {
+#if defined(MAGICKCORE_HAVE_COMPLEX_H)
+      fourier[i]/=n;
+#else
+      fourier[i][0]/=n;
+      fourier[i][1]/=n;
+#endif
+      i++;
+    }
   /*
     Generate magnitude and phase (or real and imaginary).
   */
@@ -541,11 +556,11 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   fftw_complex
     *fourier;
 
-  FourierInfo
-    fourier_info;
-
   MagickBooleanType
     status;
+
+  FourierInfo
+    fourier_info;
 
   size_t
     extent;
@@ -977,14 +992,24 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     for (y=0L; y < (long) fourier_info->height; y++)
        for (x=0L; x < (long) fourier_info->center; x++)
        {
+#if defined(MAGICKCORE_HAVE_COMPLEX_H)
          fourier[i]=magnitude[i]*cos(phase[i])+I*magnitude[i]*sin(phase[i]);
+#else
+         fourier[i][0]=magnitude[i]*cos(phase[i]);
+         fourier[i][1]=magnitude[i]*sin(phase[i]);
+#endif
          i++;
       }
   else
     for (y=0L; y < (long) fourier_info->height; y++)
       for (x=0L; x < (long) fourier_info->center; x++)
       {
+#if defined(MAGICKCORE_HAVE_COMPLEX_H)
         fourier[i]=magnitude[i]+I*phase[i];
+#else
+        fourier[i][0]=magnitude[i];
+        fourier[i][1]=phase[i];
+#endif
         i++;
       }
   phase=(double *) RelinquishMagickMemory(phase);
