@@ -208,7 +208,7 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
 %
 %  The format of the ReadPSDImage method is:
 %
-%      image=ReadPSDImage(image_info)
+%      Image *ReadPSDImage(image_info)
 %
 %  A description of each parameter follows:
 %
@@ -217,6 +217,150 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static const char *CompositeOperatorToPSDBlendMode(CompositeOperator operator)
+{
+  const char
+    *blend_mode;
+
+  switch (operator)
+  {
+    case OverCompositeOp:    blend_mode = "norm";  break;
+    case MultiplyCompositeOp:  blend_mode = "mul ";  break;
+    case DissolveCompositeOp:  blend_mode = "diss";  break;
+    case DifferenceCompositeOp:  blend_mode = "diff";  break;
+    case DarkenCompositeOp:    blend_mode = "dark";  break;
+    case LightenCompositeOp:  blend_mode = "lite";  break;
+    case HueCompositeOp:    blend_mode = "hue ";  break;
+    case SaturateCompositeOp:  blend_mode = "sat ";  break;
+    case ColorizeCompositeOp:  blend_mode = "colr";  break;
+    case LuminizeCompositeOp:  blend_mode = "lum ";  break;
+    case ScreenCompositeOp:    blend_mode = "scrn";  break;
+    case OverlayCompositeOp:  blend_mode = "over";  break;
+    default:
+      blend_mode = "norm";
+  }
+  return(blend_mode);
+}
+
+static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
+  const unsigned char *compact_pixels,const long depth,
+  const size_t number_pixels,unsigned char *pixels)
+{
+  int
+    pixel;
+
+  register ssize_t
+    i,
+    j;
+
+  ssize_t
+    packets;
+
+  size_t
+    length;
+
+  packets=(ssize_t) number_compact_pixels;
+  for (i=0; (packets > 1) && (i < (ssize_t) number_pixels); )
+  {
+    length=(*compact_pixels++);
+    packets--;
+    if (length == 128)
+      continue;
+    if (length > 128)
+      {
+        length=256-length+1;
+        pixel=(*compact_pixels++);
+        packets--;
+        for (j=0; j < (long) length; j++)
+        {
+          switch (depth)
+          {
+            case 1:
+            {
+              *pixels++=(pixel >> 7) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 6) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 5) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 4) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 3) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 2) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 1) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 0) & 0x01 ? 0 : 255;
+              i+=8;
+              break;
+            }
+            case 4:
+            {
+              *pixels++=(pixel >> 4) & 0xff;
+              *pixels++=(pixel & 0x0f) & 0xff;
+              i+=2;
+              break;
+            }
+            case 2:
+            {
+              *pixels++=(pixel >> 6) & 0x03;
+              *pixels++=(pixel >> 4) & 0x03;
+              *pixels++=(pixel >> 2) & 0x03;
+              *pixels++=(pixel & 0x03) & 0x03;
+              i+=4;
+              break;
+            }
+            default:
+            {
+              *pixels++=pixel;
+              i++;
+              break;
+            }
+          }
+        }
+        continue;
+      }
+    length++;
+    for (j=0; j < (long) length; j++)
+    {
+      switch (depth)
+      {
+        case 1:
+        {
+          *pixels++=(*compact_pixels >> 7) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 6) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 5) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 4) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 3) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 2) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 1) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 0) & 0x01 ? 0 : 255;
+          i+=8;
+          break;
+        }
+        case 4:
+        {
+          *pixels++=(pixel >> 4) & 0xff;
+          *pixels++=(pixel & 0x0f) & 0xff;
+          i+=2;
+          break;
+        }
+        case 2:
+        {
+          *pixels++=(pixel >> 6) & 0x03;
+          *pixels++=(pixel >> 4) & 0x03;
+          *pixels++=(pixel >> 2) & 0x03;
+          *pixels++=(pixel & 0x03) & 0x03;
+          i+=4;
+          break;
+        }
+        default:
+        {
+          *pixels++=(*compact_pixels);
+          i++;
+          break;
+        }
+      }
+      compact_pixels++;
+    }
+  }
+  return(i);
+}
 
 static inline MagickOffsetType GetPSDOffset(PSDInfo *psd_info,Image *image)
 {
@@ -239,75 +383,9 @@ static inline long MagickAbsoluteValue(const long x)
   return(x);
 }
 
-static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
+static const char *ModeToString(PSDImageType type)
 {
-  if (mode == (const char *) NULL)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"norm",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"mul ",4) == 0)
-    return(MultiplyCompositeOp);
-  if (LocaleNCompare(mode,"diss",4) == 0)
-    return(DissolveCompositeOp);
-  if (LocaleNCompare(mode,"diff",4) == 0)
-    return(DifferenceCompositeOp);
-  if (LocaleNCompare(mode,"dark",4) == 0)
-    return(DarkenCompositeOp);
-  if (LocaleNCompare(mode,"lite",4) == 0)
-    return(LightenCompositeOp);
-  if (LocaleNCompare(mode,"hue ",4) == 0)
-    return(HueCompositeOp);
-  if (LocaleNCompare(mode,"sat ",4) == 0)
-    return(SaturateCompositeOp);
-  if (LocaleNCompare(mode,"colr",4) == 0)
-    return(ColorizeCompositeOp);
-  if (LocaleNCompare(mode,"lum ",4) == 0)
-    return(LuminizeCompositeOp);
-  if (LocaleNCompare(mode,"scrn",4) == 0)
-    return(ScreenCompositeOp);
-  if (LocaleNCompare(mode,"over",4) == 0)
-    return(OverlayCompositeOp);
-  if (LocaleNCompare(mode,"hLit",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"sLit",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"smud",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"div ",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"idiv",4) == 0)
-    return(OverCompositeOp);
-  return(OverCompositeOp);
-}
-
-static const char *CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
-{
-  const char
-    *outMode = "norm";
-
-  switch (inOp)
-  {
-    case OverCompositeOp:    outMode = "norm";  break;
-    case MultiplyCompositeOp:  outMode = "mul ";  break;
-    case DissolveCompositeOp:  outMode = "diss";  break;
-    case DifferenceCompositeOp:  outMode = "diff";  break;
-    case DarkenCompositeOp:    outMode = "dark";  break;
-    case LightenCompositeOp:  outMode = "lite";  break;
-    case HueCompositeOp:    outMode = "hue ";  break;
-    case SaturateCompositeOp:  outMode = "sat ";  break;
-    case ColorizeCompositeOp:  outMode = "colr";  break;
-    case LuminizeCompositeOp:  outMode = "lum ";  break;
-    case ScreenCompositeOp:    outMode = "scrn";  break;
-    case OverlayCompositeOp:  outMode = "over";  break;
-    default:
-      outMode = "norm";
-  }
-  return(outMode);
-}
-
-static const char *ModeToString( PSDImageType inType )
-{
-  switch ( inType )
+  switch (type)
   {
     case BitmapMode: return "Bitmap";
     case GrayscaleMode: return "Grayscale";
@@ -386,64 +464,45 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
   return(MagickTrue);
 }
 
-static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
-  const unsigned char *compact_pixels,const size_t number_pixels,
-  unsigned char *pixels)
+static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
 {
-  int
-    pixel;
-
-  register ssize_t
-    i;
-
-  ssize_t
-    packets;
-
-  size_t
-    length;
-
-  packets=(ssize_t) number_compact_pixels;
-  for (i=0; (packets > 1) && (i < (ssize_t) number_pixels); i+=length)
-  {
-    length=(*compact_pixels++);
-    packets--;
-    if (length == 128)
-      {
-        length=0;
-        continue;
-      }
-    if (length > 128)
-      {
-        length=256-length+1;
-        pixel=(*compact_pixels++);
-        packets--;
-        if ((i+length) <= (ssize_t) number_pixels)
-          (void) ResetMagickMemory(pixels,pixel,length);
-        else
-          {
-            (void) ResetMagickMemory(pixels,pixel,number_pixels-i);
-            length=0;
-          }
-        pixels+=length;
-        continue;
-      }
-    length++;
-    if ((i+length) > (ssize_t) number_pixels)
-      {
-        (void) CopyMagickMemory(pixels,compact_pixels,number_pixels-i);
-        length=0;
-      }
-    else
-      {
-        if ((ssize_t) length > packets)
-          break;
-        (void) CopyMagickMemory(pixels,compact_pixels,length);
-        compact_pixels+=length;
-        packets-=length;
-      }
-    pixels+=length;
-  }
-  return(i);
+  if (mode == (const char *) NULL)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"norm",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"mul ",4) == 0)
+    return(MultiplyCompositeOp);
+  if (LocaleNCompare(mode,"diss",4) == 0)
+    return(DissolveCompositeOp);
+  if (LocaleNCompare(mode,"diff",4) == 0)
+    return(DifferenceCompositeOp);
+  if (LocaleNCompare(mode,"dark",4) == 0)
+    return(DarkenCompositeOp);
+  if (LocaleNCompare(mode,"lite",4) == 0)
+    return(LightenCompositeOp);
+  if (LocaleNCompare(mode,"hue ",4) == 0)
+    return(HueCompositeOp);
+  if (LocaleNCompare(mode,"sat ",4) == 0)
+    return(SaturateCompositeOp);
+  if (LocaleNCompare(mode,"colr",4) == 0)
+    return(ColorizeCompositeOp);
+  if (LocaleNCompare(mode,"lum ",4) == 0)
+    return(LuminizeCompositeOp);
+  if (LocaleNCompare(mode,"scrn",4) == 0)
+    return(ScreenCompositeOp);
+  if (LocaleNCompare(mode,"over",4) == 0)
+    return(OverlayCompositeOp);
+  if (LocaleNCompare(mode,"hLit",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"sLit",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"smud",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"div ",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"idiv",4) == 0)
+    return(OverCompositeOp);
+  return(OverCompositeOp);
 }
 
 static MagickBooleanType ReadPSDLayer(Image *image,
@@ -493,18 +552,22 @@ static MagickBooleanType ReadPSDLayer(Image *image,
   else
     if (image->depth > 8)
       packet_size++;
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,packet_size*
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns+256,packet_size*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  (void) ResetMagickMemory(pixels,0,image->columns*packet_size*sizeof(*pixels));
+  compact_pixels=(unsigned char *) NULL;
   if (image->compression == RLECompression)
     {
-      compact_pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
+      compact_pixels=(unsigned char *) AcquireQuantumMemory(image->columns+256,
         packet_size*sizeof(*pixels));
       if (compact_pixels == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
+      (void) ResetMagickMemory(compact_pixels,0,image->columns*packet_size*
+        sizeof(*compact_pixels));
     }
   for (y=0; y < (long) image->rows; y++)
   {
@@ -516,9 +579,9 @@ static MagickBooleanType ReadPSDLayer(Image *image,
         if (count != (ssize_t) offsets[y])
           break;
         count=DecodePSDPixels((size_t) offsets[y],compact_pixels,
-          packet_size*image->columns,pixels);
+          image->depth,packet_size*image->columns,pixels);
       }
-    if (count != (ssize_t) (packet_size*image->columns))
+    if (count < (ssize_t) (packet_size*image->columns))
       break;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
