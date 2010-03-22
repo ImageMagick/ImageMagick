@@ -164,6 +164,11 @@
 #define MAGICKCORE_HAVE_BOOL  /**/ 
 #endif
 
+/* Define to 1 if you have the `cimag' function. */
+#ifndef MAGICKCORE_HAVE_CIMAG 
+#define MAGICKCORE_HAVE_CIMAG  1 
+#endif
+
 /* Define to 1 if you have the `clock' function. */
 #ifndef MAGICKCORE_HAVE_CLOCK 
 #define MAGICKCORE_HAVE_CLOCK  1 

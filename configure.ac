@@ -985,7 +985,7 @@ AC_CHECK_LIB(m,sqrt,MATH_LIBS="-lm",,)
 LIBS="$MATH_LIBS $LIBS"
 AC_SUBST(MATH_LIBS)
 
-AC_CHECK_FUNCS([_exit atexit clock directio execvp fchmod floor fork ftime ftruncate getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r j0 j1 localtime_r lstat memmove memset mkstemp munmap _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign pow pread pwrite raise rand_r readlink readdir_r realpath select seekdir setlocale sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times usleep utime vsprintf vsnprintf waitpid _wfopen _wstat])
+AC_CHECK_FUNCS([_exit atexit cimag clock directio execvp fchmod floor fork ftime ftruncate getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r j0 j1 localtime_r lstat memmove memset mkstemp munmap _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign pow pread pwrite raise rand_r readlink readdir_r realpath select seekdir setlocale sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times usleep utime vsprintf vsnprintf waitpid _wfopen _wstat])
 
 #
 # Check for clock_gettime().
