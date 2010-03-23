@@ -98,21 +98,6 @@
 /* ImageMagick differences */
 #define first_scene scene
 
-#if PNG_LIBPNG_VER < 10400
-#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
-#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
-#else
-   /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
-    * Just don't use libpng-1.4.0beta32-34 or beta67-73
-    */
-#  ifndef  PNG_USER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
-#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
-#  endif
-#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
-#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
-#  endif
-#endif
-
 #if PNG_LIBPNG_VER > 10011
 /*
   Optional declarations. Define or undefine them as you like.
@@ -2177,36 +2162,30 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       max_sample = (1 << ping_info_bit_depth) - 1;
 
       if ((ping_info_color_type == PNG_COLOR_TYPE_GRAY &&
-          (int)ping_info->trans_color.gray > max_sample) ||
+          (int)ping_trans_color->gray > max_sample) ||
           (ping_info_color_type == PNG_COLOR_TYPE_RGB &&
-          ((int)ping_info->trans_color.red > max_sample ||
-          (int)ping_info->trans_color.green > max_sample ||
-          (int)ping_info->trans_color.blue > max_sample)))
+          ((int)ping_trans_color->red > max_sample ||
+          (int)ping_trans_color->green > max_sample ||
+          (int)ping_trans_color->blue > max_sample)))
         {
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Ignoring PNG tRNS chunk with out-of-range sample.");
-#if (PNG_LIBPNG_VER < 10007)
-          ping_info->trans_alpha=(unsigned char *) RelinquishMagickMemory(
-            ping_info->trans_alpha);
-          ping_info->valid&=(~PNG_INFO_tRNS);
-#else
           png_free_data(ping, ping_info, PNG_FREE_TRNS, 0);
-#endif
           image->matte=MagickFalse;
         }
       else
         {
-          transparent_color.red= (Quantum)(ping_info->trans_color.red);
-          transparent_color.green= (Quantum) (ping_info->trans_color.green);
-          transparent_color.blue= (Quantum) (ping_info->trans_color.blue);
-          transparent_color.opacity= (Quantum) (ping_info->trans_color.gray);
+          transparent_color.red= (Quantum)(ping_trans_color->red);
+          transparent_color.green= (Quantum) (ping_trans_color->green);
+          transparent_color.blue= (Quantum) (ping_trans_color->blue);
+          transparent_color.opacity= (Quantum) (ping_trans_color->gray);
           if (ping_info_color_type == PNG_COLOR_TYPE_GRAY)
             {
               if (ping_info_bit_depth < 8)
                 {
                   transparent_color.opacity=(Quantum) (((
-                    ping_info->trans_color.gray)*255)/max_sample);
+                    ping_trans_color->gray)*255)/max_sample);
                 }
               transparent_color.red=transparent_color.opacity;
               transparent_color.green=transparent_color.opacity;
@@ -2752,7 +2731,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       {
          for (x=0; x < ping_info_num_trans; x++)
          {
-            image->colormap[x].opacity = ScaleCharToQuantum((unsigned char)(255-ping_info->trans_alpha[x]));
+            image->colormap[x].opacity = ScaleCharToQuantum((unsigned char)(255-ping_trans_alpha[x]));
          }
       }
       else if (ping_info_color_type == PNG_COLOR_TYPE_GRAY)
@@ -2814,7 +2793,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 indexpacket=indices[x];
                 if (indexpacket < ping_info_num_trans)
                   q->opacity=ScaleCharToQuantum((unsigned char)
-                    (255-ping_info->trans_alpha[(long) indexpacket]));
+                    (255-ping_trans_alpha[(long) indexpacket]));
                 else
                   SetOpacityPixelComponent(q,OpaqueOpacity);
                 q++;
@@ -6710,17 +6689,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               ExceptionInfo
                 *exception;
 
+              int
+                trans_alpha[256];
+
               /*
                 Identify which colormap entry is transparent.
               */
-              ping_info->trans_alpha=(unsigned char *) AcquireQuantumMemory(
-                number_colors,sizeof(*ping_info->trans_alpha));
-              if (ping_info->trans_alpha == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
               assert(number_colors <= 256);
               for (i=0; i < (long) number_colors; i++)
-                 ping_info->trans_alpha[i]=255;
+                 trans_alpha[i]=255;
               exception=(&image->exception);
               for (y=0; y < (long) image->rows; y++)
               {
@@ -6736,7 +6713,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   if (p->opacity != OpaqueOpacity)
                     {
                       indices[x]=(IndexPacket) (number_colors-1);
-                      ping_info->trans_alpha[(long) indices[x]]=(png_byte) (255-
+                      trans_alpha[(long) indices[x]]=(png_byte) (255-
                         ScaleQuantumToChar(GetOpacityPixelComponent(p)));
                     }
                   p++;
@@ -6745,15 +6722,23 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   break;
               }
               for (i=0; i < (long) number_colors; i++)
-                if (ping_info->trans_alpha[i] != 255)
+                if (trans_alpha[i] != 255)
                   ping_info_num_trans=(unsigned short) (i+1);
+
               if (ping_info_num_trans == 0)
-                ping_info->valid&=(~PNG_INFO_tRNS);
-              if (!(ping_info->valid & PNG_INFO_tRNS))
+                 png_set_invalid(ping, ping_info, PNG_INFO_tRNS);
+              if (!png_get_valid(ping, ping_info, PNG_INFO_tRNS))
                 ping_info_num_trans=0;
-              if (ping_info_num_trans == 0)
-                ping_info->trans_alpha=(unsigned char *)
-                  RelinquishMagickMemory(ping_info->trans_alpha);
+              if (ping_info_num_trans != 0)
+                {
+                  for (i=0; i<256; i++)
+                     ping_trans_alpha[i]=(png_byte) trans_alpha[i];
+                }
+
+              (void) png_set_tRNS(ping, ping_info,
+                                  ping_trans_alpha,
+                                  ping_info_num_trans,
+                                  &ping_trans_color);
             }
           /*
             Identify which colormap entry is the background color.
@@ -6953,15 +6938,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (ping_info_bit_depth == 1)
              mask=0x0001;
           ping_info->valid|=PNG_INFO_tRNS;
-          ping_info->trans_color.red=(png_uint_16)
+          ping_trans_color.red=(png_uint_16)
             (ScaleQuantumToShort(GetRedPixelComponent(p)) & mask);
-          ping_info->trans_color.green=(png_uint_16)
+          ping_trans_color.green=(png_uint_16)
             (ScaleQuantumToShort(GetGreenPixelComponent(p)) & mask);
-          ping_info->trans_color.blue=(png_uint_16)
+          ping_trans_color.blue=(png_uint_16)
             (ScaleQuantumToShort(GetBluePixelComponent(p)) & mask);
-          ping_info->trans_color.gray=(png_uint_16)
+          ping_trans_color.gray=(png_uint_16)
             (ScaleQuantumToShort(PixelIntensityToQuantum(p)) & mask);
-          ping_info->trans_color.index=(png_byte)
+          ping_trans_color.index=(png_byte)
             (ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p))));
         }
       if (ping_info->valid & PNG_INFO_tRNS)
@@ -6981,7 +6966,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               if (p->opacity != OpaqueOpacity)
                 {
-                  if (IsPNGColorEqual(ping_info->trans_color,*p) == 0)
+                  if (IsPNGColorEqual(ping_trans_color,*p) == 0)
                   {
                      break;  /* Can't use RGB + tRNS for multiple
                                 transparent colors.  */
@@ -6994,7 +6979,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 }
                else
                 {
-                  if (IsPNGColorEqual(ping_info->trans_color,*p))
+                  if (IsPNGColorEqual(ping_trans_color,*p))
                       break; /* Can't use RGB + tRNS when another pixel
                                 having the same RGB samples is
                                 transparent. */
@@ -7012,10 +6997,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           ping_info_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
           if (image_depth == 8)
             {
-              ping_info->trans_color.red&=0xff;
-              ping_info->trans_color.green&=0xff;
-              ping_info->trans_color.blue&=0xff;
-              ping_info->trans_color.gray&=0xff;
+              ping_trans_color.red&=0xff;
+              ping_trans_color.green&=0xff;
+              ping_trans_color.blue&=0xff;
+              ping_trans_color.gray&=0xff;
             }
         }
     }
@@ -7032,7 +7017,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           {
             ping_info_color_type=PNG_COLOR_TYPE_GRAY;
             if (save_image_depth == 16 && image_depth == 8)
-              ping_info->trans_color.gray*=0x0101;
+              ping_trans_color.gray*=0x0101;
           }
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
@@ -7235,13 +7220,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 ping_info_num_trans=0;
               if (ping_info_num_trans != 0)
               {
-                ping_info->trans_alpha=(unsigned char *) AcquireQuantumMemory(
-                  number_colors,sizeof(*ping_info->trans_alpha));
-                if (ping_info->trans_alpha == (unsigned char *) NULL)
+                ping_trans_alpha=(unsigned char *) AcquireQuantumMemory(
+                  number_colors,sizeof(*ping_trans_alpha));
+                if (ping_trans_alpha == (unsigned char *) NULL)
                   ThrowWriterException(ResourceLimitError,
                      "MemoryAllocationFailed");
                 for (i=0; i < (long) number_colors; i++)
-                    ping_info->trans_alpha[i]=(png_byte) trans[i];
+                    ping_trans_alpha[i]=(png_byte) trans[i];
               }
             }
 
@@ -7260,10 +7245,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           image_depth=8;
         if ((save_image_depth == 16) && (image_depth == 8))
           {
-            ping_info->trans_color.red*=0x0101;
-            ping_info->trans_color.green*=0x0101;
-            ping_info->trans_color.blue*=0x0101;
-            ping_info->trans_color.gray*=0x0101;
+            ping_trans_color.red*=0x0101;
+            ping_trans_color.green*=0x0101;
+            ping_trans_color.blue*=0x0101;
+            ping_trans_color.gray*=0x0101;
           }
       }
 
@@ -7290,8 +7275,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              "  Setting up bKGD chunk");
          png_set_bKGD(ping,ping_info,&background);
 
-         ping_info->trans_color.gray=(png_uint_16) (QuantumScale*(maxval*
-           ping_info->trans_color.gray));
+         ping_trans_color.gray=(png_uint_16) (QuantumScale*(maxval*
+           ping_trans_color.gray));
       }
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
