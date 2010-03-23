@@ -1436,8 +1436,7 @@ ModuleExport void UnregisterPSDImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WritePSDImage() writes an image in the Adobe Photoshop encoded image
-%  format.
+%  WritePSDImage() writes an image in the Adobe Photoshop encoded image format.
 %
 %  The format of the WritePSDImage method is:
 %
@@ -1469,7 +1468,7 @@ static inline ssize_t SetPSDSize(const PSDInfo *psd_info,Image *image,
 }
 
 static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
-  const unsigned char *pixels,unsigned char *compressed_pixels)
+  const unsigned char *pixels,unsigned char *compact_pixels)
 {
   int
     count;
@@ -1496,7 +1495,7 @@ static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  q=compressed_pixels;
+  q=compact_pixels;
   for (i=(long) length; i != 0; )
   {
     switch (i)
@@ -1574,12 +1573,12 @@ static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
   }
   *q++=(unsigned char) 128;  /* EOD marker */
   packbits=(unsigned char *) RelinquishMagickMemory(packbits);
-  return((size_t) (q-compressed_pixels));
+  return((size_t) (q-compact_pixels));
 }
 
 static void WritePackbitsLength(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *tmp_image,
-  unsigned char *pixels,unsigned char *compressed_pixels,
+  unsigned char *pixels,unsigned char *compact_pixels,
   const QuantumType quantum_type)
 {
   int
@@ -1597,6 +1596,8 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
 
   if (tmp_image->depth > 8)
     tmp_image->depth=16;
+  else
+    tmp_image->depth=8;
   packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
   quantum_info=AcquireQuantumInfo(image_info,image);
   for (y=0; y < (long) tmp_image->rows; y++)
@@ -1606,7 +1607,7 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
       break;
     length=ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
-    length=PSDPackbitsEncodeImage(image,length,pixels,compressed_pixels);
+    length=PSDPackbitsEncodeImage(image,length,pixels,compact_pixels);
     (void) SetPSDOffset(psd_info,image,length);
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
@@ -1614,7 +1615,7 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
 
 static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
   Image *image,Image *tmp_image,unsigned char *pixels,
-  unsigned char *compressed_pixels,const QuantumType quantum_type,
+  unsigned char *compact_pixels,const QuantumType quantum_type,
   const MagickBooleanType compression_flag)
 {
   int
@@ -1632,10 +1633,12 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
 
   (void) psd_info;
   if ((compression_flag != MagickFalse) &&
-      (tmp_image->compression == NoCompression))
+      (tmp_image->compression != RLECompression))
     (void) WriteBlobMSBShort(image,0);
   if (tmp_image->depth > 8)
     tmp_image->depth=16;
+  else
+    tmp_image->depth=8;
   packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
   quantum_info=AcquireQuantumInfo(image_info,image);
   for (y=0; y < (long) tmp_image->rows; y++)
@@ -1645,12 +1648,12 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
       break;
     length=ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
-    if (tmp_image->compression == NoCompression)
+    if (tmp_image->compression != RLECompression)
       (void) WriteBlob(image,length,pixels);
     else
       {
-        length=PSDPackbitsEncodeImage(image,length,pixels,compressed_pixels);
-        (void) WriteBlob(image,length,compressed_pixels);
+        length=PSDPackbitsEncodeImage(image,length,pixels,compact_pixels);
+        (void) WriteBlob(image,length,compact_pixels);
       }
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
@@ -1668,7 +1671,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     packet_size;
 
   unsigned char
-    *compressed_pixels,
+    *compact_pixels,
     *pixels;
 
   /*
@@ -1681,22 +1684,22 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
   pixels=(unsigned char *) AcquireQuantumMemory(channels*tmp_image->columns,
     packet_size*sizeof(*pixels));
-  compressed_pixels=(unsigned char *) AcquireQuantumMemory(2*channels*
+  compact_pixels=(unsigned char *) AcquireQuantumMemory(2*channels*
     tmp_image->columns,packet_size*sizeof(*pixels));
   if ((pixels == (unsigned char *) NULL) ||
-      (compressed_pixels == (unsigned char *) NULL))
+      (compact_pixels == (unsigned char *) NULL))
     {
       if (pixels != (unsigned char *) NULL)
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-      if (compressed_pixels != (unsigned char *) NULL)
-        compressed_pixels=(unsigned char *)
-          RelinquishMagickMemory(compressed_pixels);
+      if (compact_pixels != (unsigned char *) NULL)
+        compact_pixels=(unsigned char *)
+          RelinquishMagickMemory(compact_pixels);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   i=0;
   if (tmp_image->storage_class == PseudoClass)
     {
-      if (tmp_image->compression != NoCompression)
+      if (tmp_image->compression == RLECompression)
         {
           /*
             Packbits compression.
@@ -1704,18 +1707,18 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
           (void) WriteBlobMSBShort(image,1);
           if (tmp_image->matte == MagickFalse)
             WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-              compressed_pixels,IndexQuantum);
+              compact_pixels,IndexQuantum);
           else
             WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-              compressed_pixels,IndexAlphaQuantum);
+              compact_pixels,IndexAlphaQuantum);
         }
       if (tmp_image->matte == MagickFalse)
         WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-          compressed_pixels,IndexQuantum,(i++ == 0) ||
+          compact_pixels,IndexQuantum,(i++ == 0) ||
           (separate != MagickFalse) ? MagickTrue : MagickFalse);
       else
         WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-          compressed_pixels,IndexAlphaQuantum,(i++ == 0) ||
+          compact_pixels,IndexAlphaQuantum,(i++ == 0) ||
           (separate != MagickFalse) ?  MagickTrue : MagickFalse);
       (void) SetImageProgress(image,SaveImagesTag,0,1);
     }
@@ -1723,7 +1726,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     {
       if (tmp_image->colorspace == CMYKColorspace)
         (void) NegateImage(image,MagickFalse);
-      if (tmp_image->compression != NoCompression)
+      if (tmp_image->compression == RLECompression)
         {
           /*
             Packbits compression.
@@ -1731,39 +1734,39 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
           (void) WriteBlobMSBShort(image,1);
           if (tmp_image->matte != MagickFalse)
             WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-              compressed_pixels,AlphaQuantum);
+              compact_pixels,AlphaQuantum);
           WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-            compressed_pixels,RedQuantum);
+            compact_pixels,RedQuantum);
           WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-            compressed_pixels,GreenQuantum);
+            compact_pixels,GreenQuantum);
           WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-            compressed_pixels,BlueQuantum);
+            compact_pixels,BlueQuantum);
           if (tmp_image->colorspace == CMYKColorspace)
             WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-              compressed_pixels,BlackQuantum);
+              compact_pixels,BlackQuantum);
         }
       (void) SetImageProgress(image,SaveImagesTag,0,6);
       if (tmp_image->matte != MagickFalse)
         WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-          compressed_pixels,AlphaQuantum,(i++ == 0) ||
+          compact_pixels,AlphaQuantum,(i++ == 0) ||
           (separate != MagickFalse) ? MagickTrue : MagickFalse);
       (void) SetImageProgress(image,SaveImagesTag,1,6);
       WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-        compressed_pixels,RedQuantum,(i++ == 0) || (separate != MagickFalse) ?
+        compact_pixels,RedQuantum,(i++ == 0) || (separate != MagickFalse) ?
         MagickTrue : MagickFalse);
       (void) SetImageProgress(image,SaveImagesTag,2,6);
       WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-        compressed_pixels,GreenQuantum,(i++ == 0) || (separate != MagickFalse) ?
+        compact_pixels,GreenQuantum,(i++ == 0) || (separate != MagickFalse) ?
         MagickTrue : MagickFalse);
       (void) SetImageProgress(image,SaveImagesTag,3,6);
       WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-        compressed_pixels,BlueQuantum,(i++ == 0) || (separate != MagickFalse) ?
+        compact_pixels,BlueQuantum,(i++ == 0) || (separate != MagickFalse) ?
         MagickTrue : MagickFalse);
       (void) SetImageProgress(image,SaveImagesTag,4,6);
       if (tmp_image->colorspace == CMYKColorspace)
         {
           WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-            compressed_pixels,BlackQuantum,(i++ == 0) ||
+            compact_pixels,BlackQuantum,(i++ == 0) ||
             (separate != MagickFalse) ? MagickTrue : MagickFalse);
           (void) NegateImage(image,MagickFalse);
         }
