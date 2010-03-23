@@ -335,17 +335,17 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
         }
         case 4:
         {
-          *pixels++=(pixel >> 4) & 0xff;
-          *pixels++=(pixel & 0x0f) & 0xff;
+          *pixels++=(*compact_pixels >> 4) & 0xff;
+          *pixels++=(*compact_pixels & 0x0f) & 0xff;
           i+=2;
           break;
         }
         case 2:
         {
-          *pixels++=(pixel >> 6) & 0x03;
-          *pixels++=(pixel >> 4) & 0x03;
-          *pixels++=(pixel >> 2) & 0x03;
-          *pixels++=(pixel & 0x03) & 0x03;
+          *pixels++=(*compact_pixels >> 6) & 0x03;
+          *pixels++=(*compact_pixels >> 4) & 0x03;
+          *pixels++=(*compact_pixels >> 2) & 0x03;
+          *pixels++=(*compact_pixels & 0x03) & 0x03;
           i+=4;
           break;
         }
