@@ -1766,7 +1766,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Allocate primitive info memory.
   */
-  graphic_context=(DrawInfo **) AcquireAlignedMemory(1,sizeof(*graphic_context));
+  graphic_context=(DrawInfo **) AcquireAlignedMemory(1,
+    sizeof(*graphic_context));
   if (graphic_context == (DrawInfo **) NULL)
     {
       primitive=DestroyString(primitive);
@@ -5144,7 +5145,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     }
   delta=2.0/MagickMax(stop.x,stop.y);
   step=(MagickRealType) (MagickPI/8.0);
-  if (delta < (MagickPI/8.0))
+  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4*(MagickPI/delta/2+0.5));
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;

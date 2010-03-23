@@ -5,6 +5,8 @@
   * Windows does not support complex.h (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=15808).
   * Add support for monochrome PSD images.
+  * VignetteImage() no longer crashes when x and y arguments are both greater
+    than half the width (x) and height (y) of the image.
 
 2010-03-20  6.6.0-8 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminated some of the deprecated direct references to members of
