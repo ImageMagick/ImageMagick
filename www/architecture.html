@@ -242,7 +242,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.0-8 2010-83-85 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.0-9 2010-03-24 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -671,7 +671,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant double *fil
 </pre>
 </div>
 
-<p>See <a href="http://trac.imagemagick.org/browser/ImageMagick/trunk/filters/convolve.c">filters/convolve.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
+<p>See <a href="http://trac.imagemagick.org/browser/ImageMagick/trunk/magick/accelerate.c">magick/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
 
 </div>
 
@@ -1333,7 +1333,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -155,7 +155,17 @@
 
 <div class="main">
 
-<ul><dt>2010-03-18  6.6.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-03-23  6.6.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> coders/png.c: Reverted recent changes; they cause a segfault while  reading certain images.</li><br />
+<dt>2010-03-22  6.6.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> coders/png.c: Eliminated support of libpng versions older than 1.0.12.</li><br />
+<dt>2010-03-21  6.6.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Windows does not support complex.h (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=15808).</li>
+  <li> Add support for monochrome PSD images.</li>
+  <li> VignetteImage() no longer crashes when x and y arguments are both greater    than half the width (x) and height (y) of the image.</li><br />
+<dt>2010-03-20  6.6.0-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Eliminated some of the deprecated direct references to members of    the png_info structure.  This must be finished before we can build    with libpng-1.5.</li><br />
+<dt>2010-03-18  6.6.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The animate program no longer loops twice when -loop 1 is specified.</li>
   <li> The caption format would sometimes hang when the text was not UTF-8.</li>
   <li> Don't gamma correct log to linear color conversion unless the -gamma is    specified (reference     http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=15799).</li><br />
@@ -1414,7 +1424,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
