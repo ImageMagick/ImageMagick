@@ -267,6 +267,9 @@
           <message name="MaximumChannelsExceeded">
             maximum channels exceeded
           </message>
+          <message name="MissingImageChannel">
+            missing image channel
+          </message>
           <message name="NegativeOrZeroImageSize">
             negative or zero image size
           </message>

@@ -267,6 +267,9 @@
           <message name="MaximumChannelsExceeded">
             maximum de canals dépassent les
           </message>
+          <message name="MissingImageChannel">
+            absence l'image canel
+          </message>
           <message name="NegativeOrZeroImageSize">
             Taille d'image négative ou nulle
           </message>
