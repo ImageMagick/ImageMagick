@@ -103,8 +103,9 @@ static inline unsigned long GetOpenMPMaximumThreads(void)
       maximum_threads=omp_get_max_threads();
     return(maximum_threads);
   }
-#endif
+#else
   return(1UL);
+#endif
 }
 
 static inline long GetOpenMPThreadId(void)
