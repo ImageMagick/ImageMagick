@@ -1,3 +1,6 @@
+2010-03-21  6.6.0-9 Cristy  <quetzlzacatenango@image...>
+  * Respect the -density option when rendering a Postscript or PDF image.
+
 2010-03-24  6.6.0-9 Glenn Randers-Pehrson <glennrp@image...>
   * coders/png.c: Eliminated support of libpng versions older than 1.0.12.
   * Relocated the new, misplaced png_get_rowbytes() call.

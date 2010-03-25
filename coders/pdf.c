@@ -316,6 +316,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   double
     angle;
 
+  GeometryInfo
+    geometry_info;
+
   Image
     *image,
     *next,
@@ -332,6 +335,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     cropbox,
     trimbox,
     status;
+
+  MagickStatusType
+    flags;
 
   PointInfo
     delta;
@@ -389,12 +395,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   delta.y=DefaultResolution;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
-      GeometryInfo
-        geometry_info;
-
-      MagickStatusType
-        flags;
-
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
       image->x_resolution=geometry_info.rho;
       image->y_resolution=geometry_info.sigma;
@@ -582,6 +582,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   *options='\0';
+  if (image_info->density != (char *) NULL)
+    {
+      flags=ParseGeometry(image_info->density,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+    }
   (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
   if (image_info->page != (char *) NULL)
