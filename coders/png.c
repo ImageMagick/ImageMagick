@@ -83,7 +83,7 @@
 
 /* Suppress libpng pedantic warnings that were added in
  * libpng-1.2.41 and libpng-1.4.0.  If you are working on
- * migration to libpng-2.0, remove these defines and then
+ * migration to libpng-1.5, remove these defines and then
  * fix any code that generates warnings.
  */
 /* #define PNG_DEPRECATED   Use of this function is deprecated */
@@ -1435,7 +1435,11 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
       "  libpng-%s error: %s", PNG_LIBPNG_VER_STRING,message);
   (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
     message,"`%s'",image->filename);
+#if PNG_LIBPNG_VER < 10500
   longjmp(ping->jmpbuf,1);
+#else
+  png_longjmp(ping,1);
+#endif
 }
 
 static void PNGWarningHandler(png_struct *ping,png_const_charp message)
@@ -1788,7 +1792,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   png_pixels=(unsigned char *) NULL;
-  if (setjmp(ping->jmpbuf))
+  if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
@@ -2331,7 +2335,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-  if (setjmp(ping->jmpbuf))
+  if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
@@ -6434,7 +6438,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
 
-  if (setjmp(ping->jmpbuf))
+  if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG write failed.
@@ -6885,8 +6889,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if ((y == (long) image->rows) && (x == (long) image->columns))
         {
           /*
-            No transparent pixels are present.  Change 4 or 6 to 0 or 2,
-            and do not set the PNG_INFO_tRNS flag in ping_info->valid.
+            No transparent pixels are present.  Change 4 or 6 to 0 or 2.
           */
           image_matte=MagickFalse;
           ping_color_type&=0x03;
@@ -7539,7 +7542,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Initialize image scanlines.
   */
-  if (setjmp(ping->jmpbuf))
+  if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG write failed.
