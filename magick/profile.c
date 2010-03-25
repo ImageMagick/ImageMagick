@@ -61,10 +61,32 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
+#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
+#include <wchar.h>
+#include <lcms/lcms2.h>
+#elif defined(MAGICKCORE_HAVE_LCMS2_H)
+#include <wchar.h>
+#include "lcms2.h"
+#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
 #include <lcms/lcms.h>
 #else
 #include "lcms.h"
+#endif
+#endif
+
+/*
+ *   Define declarations.
+ *   */
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+#define cmsUInt32Number  DWORD
+#define cmsSigCmykData icSigCmykData 
+#define cmsSigGrayData icSigGrayData 
+#define cmsSigLabData icSigLabData 
+#define cmsSigLuvData icSigLuvData 
+#define cmsSigRgbData icSigRgbData 
+#define cmsSigXYZData icSigXYZData 
+#define cmsSigYCbCrData icSigYCbCrData 
 #endif
 #endif
 
@@ -367,9 +389,9 @@ static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
 }
 
 static cmsHTRANSFORM *AcquireTransformThreadSet(
-  const cmsHPROFILE source_profile,const DWORD source_type,
-  const cmsHPROFILE target_profile,const DWORD target_type,const int intent,
-  const DWORD flags)
+  const cmsHPROFILE source_profile,const cmsUInt32Number source_type,
+  const cmsHPROFILE target_profile,const cmsUInt32Number target_type,const int intent,
+  const cmsUInt32Number flags)
 {
   cmsHTRANSFORM
     *transform;
@@ -782,6 +804,7 @@ static MagickBooleanType SetsRGBImageProfile(Image *image)
   return(status);
 }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
 #if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
 static int LCMSErrorHandler(int severity,const char *message)
 {
@@ -789,6 +812,7 @@ static int LCMSErrorHandler(int severity,const char *message)
     severity,message != (char *) NULL ? message : "no message");
   return(1);
 }
+#endif
 #endif
 #endif
 
@@ -913,7 +937,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           cmsHTRANSFORM
             *restrict transform;
 
-          DWORD
+          cmsUInt32Number
             flags,
             source_type,
             target_type;
@@ -943,133 +967,135 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           /*
             Transform pixel colors as defined by the color profiles.
           */
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
 #if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
           cmsSetErrorHandler(LCMSErrorHandler);
 #else
           (void) cmsErrorAction(LCMS_ERROR_SHOW);
 #endif
+#endif
           source_profile=cmsOpenProfileFromMem(GetStringInfoDatum(icc_profile),
-            (DWORD) GetStringInfoLength(icc_profile));
+            (cmsUInt32Number) GetStringInfoLength(icc_profile));
           target_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-            (DWORD) GetStringInfoLength(profile));
+            (cmsUInt32Number) GetStringInfoLength(profile));
           if ((source_profile == (cmsHPROFILE) NULL) ||
               (target_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException(ResourceLimitError,
               "ColorspaceColorProfileMismatch",name);
           switch (cmsGetColorSpace(source_profile))
           {
-            case icSigCmykData:
+            case cmsSigCmykData:
             {
               source_colorspace=CMYKColorspace;
-              source_type=(DWORD) TYPE_CMYK_16;
+              source_type=(cmsUInt32Number) TYPE_CMYK_16;
               source_channels=4;
               break;
             }
-            case icSigGrayData:
+            case cmsSigGrayData:
             {
               source_colorspace=GRAYColorspace;
-              source_type=(DWORD) TYPE_GRAY_16;
+              source_type=(cmsUInt32Number) TYPE_GRAY_16;
               source_channels=1;
               break;
             }
-            case icSigLabData:
+            case cmsSigLabData:
             {
               source_colorspace=LabColorspace;
-              source_type=(DWORD) TYPE_Lab_16;
+              source_type=(cmsUInt32Number) TYPE_Lab_16;
               source_channels=3;
               break;
             }
-            case icSigLuvData:
+            case cmsSigLuvData:
             {
               source_colorspace=YUVColorspace;
-              source_type=(DWORD) TYPE_YUV_16;
+              source_type=(cmsUInt32Number) TYPE_YUV_16;
               source_channels=3;
               break;
             }
-            case icSigRgbData:
+            case cmsSigRgbData:
             {
               source_colorspace=RGBColorspace;
-              source_type=(DWORD) TYPE_RGB_16;
+              source_type=(cmsUInt32Number) TYPE_RGB_16;
               source_channels=3;
               break;
             }
-            case icSigXYZData:
+            case cmsSigXYZData:
             {
               source_colorspace=XYZColorspace;
-              source_type=(DWORD) TYPE_XYZ_16;
+              source_type=(cmsUInt32Number) TYPE_XYZ_16;
               source_channels=3;
               break;
             }
-            case icSigYCbCrData:
+            case cmsSigYCbCrData:
             {
               source_colorspace=YCbCrColorspace;
-              source_type=(DWORD) TYPE_YCbCr_16;
+              source_type=(cmsUInt32Number) TYPE_YCbCr_16;
               source_channels=3;
               break;
             }
             default:
             {
               source_colorspace=UndefinedColorspace;
-              source_type=(DWORD) TYPE_RGB_16;
+              source_type=(cmsUInt32Number) TYPE_RGB_16;
               source_channels=3;
               break;
             }
           }
           switch (cmsGetColorSpace(target_profile))
           {
-            case icSigCmykData:
+            case cmsSigCmykData:
             {
               target_colorspace=CMYKColorspace;
-              target_type=(DWORD) TYPE_CMYK_16;
+              target_type=(cmsUInt32Number) TYPE_CMYK_16;
               target_channels=4;
               break;
             }
-            case icSigLabData:
+            case cmsSigLabData:
             {
               target_colorspace=LabColorspace;
-              target_type=(DWORD) TYPE_Lab_16;
+              target_type=(cmsUInt32Number) TYPE_Lab_16;
               target_channels=3;
               break;
             }
-            case icSigGrayData:
+            case cmsSigGrayData:
             {
               target_colorspace=GRAYColorspace;
-              target_type=(DWORD) TYPE_GRAY_16;
+              target_type=(cmsUInt32Number) TYPE_GRAY_16;
               target_channels=1;
               break;
             }
-            case icSigLuvData:
+            case cmsSigLuvData:
             {
               target_colorspace=YUVColorspace;
-              target_type=(DWORD) TYPE_YUV_16;
+              target_type=(cmsUInt32Number) TYPE_YUV_16;
               target_channels=3;
               break;
             }
-            case icSigRgbData:
+            case cmsSigRgbData:
             {
               target_colorspace=RGBColorspace;
-              target_type=(DWORD) TYPE_RGB_16;
+              target_type=(cmsUInt32Number) TYPE_RGB_16;
               target_channels=3;
               break;
             }
-            case icSigXYZData:
+            case cmsSigXYZData:
             {
               target_colorspace=XYZColorspace;
-              target_type=(DWORD) TYPE_XYZ_16;
+              target_type=(cmsUInt32Number) TYPE_XYZ_16;
               target_channels=3;
               break;
             }
-            case icSigYCbCrData:
+            case cmsSigYCbCrData:
             {
               target_colorspace=YCbCrColorspace;
-              target_type=(DWORD) TYPE_YCbCr_16;
+              target_type=(cmsUInt32Number) TYPE_YCbCr_16;
               target_channels=3;
               break;
             }
             default:
             {
               target_colorspace=UndefinedColorspace;
-              target_type=(DWORD) TYPE_RGB_16;
+              target_type=(cmsUInt32Number) TYPE_RGB_16;
               target_channels=3;
               break;
             }
@@ -1239,19 +1265,19 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           (void) SetImageColorspace(image,target_colorspace);
           switch (cmsGetColorSpace(target_profile))
           {
-            case icSigRgbData:
+            case cmsSigRgbData:
             {
               image->type=image->matte == MagickFalse ? TrueColorType :
                 TrueColorMatteType;
               break;
             }
-            case icSigCmykData:
+            case cmsSigCmykData:
             {
               image->type=image->matte == MagickFalse ? ColorSeparationType :
                 ColorSeparationMatteType;
               break;
             }
-            case icSigGrayData:
+            case cmsSigGrayData:
             {
               image->type=image->matte == MagickFalse ? GrayscaleType :
                 GrayscaleMatteType;

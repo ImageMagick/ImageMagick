@@ -94,10 +94,23 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
+#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
+#include <lcms/lcms2.h>
+#elif defined(MAGICKCORE_HAVE_LCMS2_H)
+#include "lcms2.h"
+#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
 #include <lcms/lcms.h>
 #else
 #include "lcms.h"
+#endif
+#endif
+
+/*
+  Define declarations.
+*/
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+#define cmsUInt32Number  DWORD
 #endif
 #endif
 
@@ -850,15 +863,33 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               icc_profile;
 
             icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-              (DWORD) GetStringInfoLength(profile));
+              (cmsUInt32Number) GetStringInfoLength(profile));
             if (icc_profile != (cmsHPROFILE *) NULL)
               {
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
                 const char
                   *name;
 
                 name=cmsTakeProductName(icc_profile);
                 if (name != (const char *) NULL)
                   (void) fprintf(file,"      %s\n",name);
+#else
+                char
+                  info[MaxTextExtent];
+
+                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,
+                  "en","US",info,MaxTextExtent);
+                (void) fprintf(file,"      Description: %s\n",info);
+                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,
+                  "en","US",info,MaxTextExtent);
+                (void) fprintf(file,"      Manufacturer: %s\n",info);
+                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en",
+                  "US",info,MaxTextExtent);
+                (void) fprintf(file,"      Model: %s\n",info);
+                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,
+                  "en","US",info,MaxTextExtent);
+                (void) fprintf(file,"      Copyright: %s\n",info);
+#endif
                 (void) cmsCloseProfile(icc_profile);
               }
           }

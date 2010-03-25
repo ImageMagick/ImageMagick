@@ -372,10 +372,16 @@
 #define MAGICKCORE_HAVE_J1  1 
 #endif
 
+/* Define if you have the <lcms2.h> header file. */
+/* #undef HAVE_LCMS2_H */
+
 /* Define if you have the <lcms.h> header file. */
 #ifndef MAGICKCORE_HAVE_LCMS_H 
 #define MAGICKCORE_HAVE_LCMS_H  1 
 #endif
+
+/* Define if you have the <lcms/lcms2.h> header file. */
+/* #undef HAVE_LCMS_LCMS2_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
