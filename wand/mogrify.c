@@ -2191,6 +2191,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("monitor",option+1) == 0)
           {
+            if (*option == '+')
+              {
+                (void) SetImageProgressMonitor(*image,
+                  (MagickProgressMonitor) NULL,(void *) NULL);
+                break;
+              }
             (void) SetImageProgressMonitor(*image,MonitorProgress,
               (void *) NULL);
             break;

@@ -155,10 +155,9 @@
 
 <div class="main">
 
-<ul><dt>2010-03-23  6.6.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> coders/png.c: Reverted recent changes; they cause a segfault while  reading certain images.</li><br />
-<dt>2010-03-22  6.6.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> coders/png.c: Eliminated support of libpng versions older than 1.0.12.</li><br />
+<ul><dt>2010-03-24  6.6.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> coders/png.c: Eliminated support of libpng versions older than 1.0.12.</li>
+  <li> Relocated the new, misplaced png_get_rowbytes() call.</li><br />
 <dt>2010-03-21  6.6.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Windows does not support complex.h (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=15808).</li>
   <li> Add support for monochrome PSD images.</li>
@@ -1424,7 +1423,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
