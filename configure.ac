@@ -1719,10 +1719,10 @@ if test "x$with_fontconfig" = "xyes"; then
 fi
 
 if test "$have_fontconfig" = 'yes'; then
-    AC_DEFINE(FONTCONFIG_DELEGATE,1,Define if you have FONTCONFIG library)
-    if test "$with_modules" = 'no'; then
+  AC_DEFINE(FONTCONFIG_DELEGATE,1,Define if you have FONTCONFIG library)
+  if test "$with_modules" = 'no'; then
     CPPFLAGS="$FONTCONFIG_CFLAGS $CPPFLAGS"
-    fi
+  fi
 fi
 
 AM_CONDITIONAL(FONTCONFIG_DELEGATE,test "$have_fontconfig" = 'yes')
@@ -2108,6 +2108,45 @@ if test "$with_lcms" != 'no'; then
     failed=0
     passed=0
     have_lcms_header='no'
+    AC_CHECK_HEADER(lcms2.h,have_lcms_header='yes',,)
+    if test "$have_lcms_header" = 'yes'; then
+        passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS2_H,1,Define if you have the <lcms2.h> header file.)
+    else
+        AC_CHECK_HEADER(lcms/lcms2.h,have_lcms_header='yes',,)
+        if test "$have_lcms_header" = 'yes'; then
+            passed=`expr $passed + 1`
+            AC_DEFINE(HAVE_LCMS_LCMS2_H,1,Define if you have the <lcms/lcms2.h> header file.)
+        else
+            failed=`expr $failed + 1`
+        fi
+    fi
+    AC_CHECK_LIB(lcms2,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING([if LCMS2 package is complete])
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            AC_MSG_RESULT([no -- some components failed test])
+            have_lcms='no (failed tests)'
+        else
+            LCMS_LIBS='-llcms2'
+            LIBS="$LCMS_LIBS $LIBS"
+            AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
+            AC_MSG_RESULT([yes])
+            have_lcms='yes'
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+fi
+
+if test "$with_lcms" != 'no'; then
+if test "$have_lcms" == 'no'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    AC_MSG_CHECKING([for LCMS])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+    have_lcms_header='no'
     AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
     if test "$have_lcms_header" = 'yes'; then
         passed=`expr $passed + 1`
@@ -2137,6 +2176,7 @@ if test "$with_lcms" != 'no'; then
     else
         AC_MSG_RESULT([no])
     fi
+fi
 fi
 AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms" = 'yes')
 AC_SUBST(LCMS_LIBS)

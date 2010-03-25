@@ -26498,9 +26498,9 @@ if test "$have_fontconfig" = 'yes'; then
 
 $as_echo "#define FONTCONFIG_DELEGATE 1" >>confdefs.h
 
-    if test "$with_modules" = 'no'; then
+  if test "$with_modules" = 'no'; then
     CPPFLAGS="$FONTCONFIG_CFLAGS $CPPFLAGS"
-    fi
+  fi
 fi
 
  if test "$have_fontconfig" = 'yes'; then
@@ -27445,6 +27445,109 @@ $as_echo "" >&6; }
     failed=0
     passed=0
     have_lcms_header='no'
+    ac_fn_c_check_header_mongrel "$LINENO" "lcms2.h" "ac_cv_header_lcms2_h" "$ac_includes_default"
+if test "x$ac_cv_header_lcms2_h" = x""yes; then :
+  have_lcms_header='yes'
+fi
+
+
+    if test "$have_lcms_header" = 'yes'; then
+        passed=`expr $passed + 1`
+
+$as_echo "#define HAVE_LCMS2_H 1" >>confdefs.h
+
+    else
+        ac_fn_c_check_header_mongrel "$LINENO" "lcms/lcms2.h" "ac_cv_header_lcms_lcms2_h" "$ac_includes_default"
+if test "x$ac_cv_header_lcms_lcms2_h" = x""yes; then :
+  have_lcms_header='yes'
+fi
+
+
+        if test "$have_lcms_header" = 'yes'; then
+            passed=`expr $passed + 1`
+
+$as_echo "#define HAVE_LCMS_LCMS2_H 1" >>confdefs.h
+
+        else
+            failed=`expr $failed + 1`
+        fi
+    fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cmsOpenProfileFromMem in -llcms2" >&5
+$as_echo_n "checking for cmsOpenProfileFromMem in -llcms2... " >&6; }
+if test "${ac_cv_lib_lcms2_cmsOpenProfileFromMem+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-llcms2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char cmsOpenProfileFromMem ();
+int
+main ()
+{
+return cmsOpenProfileFromMem ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_lcms2_cmsOpenProfileFromMem=yes
+else
+  ac_cv_lib_lcms2_cmsOpenProfileFromMem=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lcms2_cmsOpenProfileFromMem" >&5
+$as_echo "$ac_cv_lib_lcms2_cmsOpenProfileFromMem" >&6; }
+if test "x$ac_cv_lib_lcms2_cmsOpenProfileFromMem" = x""yes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LCMS2 package is complete" >&5
+$as_echo_n "checking if LCMS2 package is complete... " >&6; }
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+            have_lcms='no (failed tests)'
+        else
+            LCMS_LIBS='-llcms2'
+            LIBS="$LCMS_LIBS $LIBS"
+
+$as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            have_lcms='yes'
+        fi
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+fi
+
+if test "$with_lcms" != 'no'; then
+if test "$have_lcms" == 'no'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
+$as_echo_n "checking for LCMS... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+    have_lcms_header='no'
     ac_fn_c_check_header_mongrel "$LINENO" "lcms.h" "ac_cv_header_lcms_h" "$ac_includes_default"
 if test "x$ac_cv_header_lcms_h" = x""yes; then :
   have_lcms_header='yes'
@@ -27535,6 +27638,7 @@ $as_echo "yes" >&6; }
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     fi
+fi
 fi
  if test "$have_lcms" = 'yes'; then
   LCMS_DELEGATE_TRUE=
