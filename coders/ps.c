@@ -718,10 +718,18 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *options='\0';
   if ((page.width == 0) || (page.height == 0))
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
-  if (image_info->page != (char *) NULL)
-    (void) ParseAbsoluteGeometry(image_info->page,&page);
+  if (image_info->density != (char *) NULL)
+    {
+      flags=ParseGeometry(image_info->density,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+    }
   (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
+  if (image_info->page != (char *) NULL)
+    (void) ParseAbsoluteGeometry(image_info->page,&page);
   page.width=(unsigned long) floor(page.width*image->x_resolution/delta.x+0.5);
   page.height=(unsigned long) floor(page.height*image->y_resolution/delta.y+
     0.5);
