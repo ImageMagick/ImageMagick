@@ -895,7 +895,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->tile_offset.x=(long) ceil(scale*image->tile_offset.x-0.5);
   scale=(MagickRealType) rows/(MagickRealType) image->rows;
   clone_image->page.height=(unsigned long) floor(scale*image->page.height+0.5);
-  clone_image->page.y=(long) ceil(image->page.y*scale-0.5);
+  clone_image->page.y=(long) ceil(scale*image->page.y-0.5);
   clone_image->tile_offset.y=(long) ceil(scale*image->tile_offset.y-0.5);
   clone_image->columns=columns;
   clone_image->rows=rows;
