@@ -1,4 +1,4 @@
-2010-03-21  6.6.0-9 Cristy  <quetzlzacatenango@image...>
+2010-03-21  6.6.0-10 Cristy  <quetzlzacatenango@image...>
   * Respect the -density option when rendering a Postscript or PDF image.
 
 2010-03-24  6.6.0-9 Glenn Randers-Pehrson <glennrp@image...>
