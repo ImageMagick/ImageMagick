@@ -290,10 +290,7 @@ MagickExport MagickBooleanType BrightnessContrastImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   alpha=contrast;
-  if ((100-contrast) <= 0.1)
-    alpha=99.999999;
-  slope=MagickPI*(((alpha*alpha)/20000.0)+(3.0*alpha/200.0))/4.0;
-  slope=sin(slope)/cos(slope)+1.0;
+  slope=tan(MagickPI*(alpha/100.0+1.0)/4.0);
   if (slope < 0.0)
     slope=0.0;
   intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
