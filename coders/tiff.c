@@ -2354,9 +2354,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
   const char
     *mode,
-    *option;
-
-  const char
+    *option,
     *value;
 
   CompressionType
@@ -2745,7 +2743,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     rows_per_strip=1;
     if (TIFFScanlineSize(tiff) != 0)
       rows_per_strip=(unsigned long) MagickMax((size_t)
-        TIFFDefaultStripSize(tiff,-1),1);
+        TIFFDefaultStripSize(tiff,0),1);
     option=GetImageOption(image_info,"tiff:rows-per-strip");
     if (option != (const char *) NULL)
       rows_per_strip=(unsigned long) strtol(option,(char **) NULL,10);
