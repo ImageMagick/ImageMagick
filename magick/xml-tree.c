@@ -56,6 +56,7 @@
 #include "magick/semaphore.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
+#include "magick/token-private.h"
 #include "magick/xml-tree.h"
 #include "magick/utility.h"
 
@@ -290,48 +291,6 @@ MagickExport XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
 %      entities.
 %
 */
-
-static unsigned char *ConvertLatin1ToUTF8(const unsigned char *content)
-{
-  register const unsigned char
-    *p;
-
-  register unsigned char
-    *q;
-
-  size_t
-    length;
-
-  unsigned char
-    *utf8;
-
-  unsigned int
-    c;
-
-  length=0;
-  for (p=content; *p != '\0'; p++)
-    length+=(*p & 0x80) != 0 ? 2 : 1;
-  utf8=(unsigned char *) NULL;
-  if (~length >= 1)
-    utf8=(unsigned char *) AcquireQuantumMemory(length+1UL,sizeof(*utf8));
-  if (utf8 == (unsigned char *) NULL)
-    return((unsigned char *) NULL);
-  q=utf8;
-  for (p=content; *p != '\0'; p++)
-  {
-    c=(*p);
-    if ((c & 0x80) == 0)
-      *q++=c;
-    else
-      {
-        *q++=0xc0 | ((c >> 6) & 0x3f);
-        *q++=0x80 | (c & 0x3f);
-      }
-  }
-  *q='\0';
-  return(utf8);
-}
-
 MagickExport char *CanonicalXMLContent(const char *content,
   const MagickBooleanType pedantic)
 {

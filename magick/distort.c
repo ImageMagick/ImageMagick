@@ -352,7 +352,7 @@ static double *GenerateCoefficients(const Image *image,
   /* If not enough control point pairs are found for specific distortions
     fall back to Affine distortion (allowing 0 to 3 point pairs)
   */
-  if ( number_arguments < 4*cp_size && 
+  if ( number_arguments < 4*cp_size &&
        (  *method == BilinearForwardDistortion
        || *method == BilinearReverseDistortion
        || *method == PerspectiveDistortion
@@ -1234,22 +1234,25 @@ static double *GenerateCoefficients(const Image *image,
       double
         rscale = 2.0/MagickMin((double) image->columns,(double) image->rows);
 
-      if ( number_arguments != 4 && number_arguments != 6 &&
-           number_arguments != 8 && number_arguments != 10 ) {
-        coeff=(double *) RelinquishMagickMemory(coeff);
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-               "InvalidArgument", "%s : '%s'", "Barrel(Inv)",
-               "number of arguments" );
-        return((double *) NULL);
-      }
       /* A,B,C,D coefficients */
       coeff[0] = arguments[0];
       coeff[1] = arguments[1];
       coeff[2] = arguments[2];
-      if ( number_arguments == 3 || number_arguments == 5 )
+      if ((number_arguments == 3) || (number_arguments == 5))
         coeff[3] = 1 - arguments[0] - arguments[1] - arguments[2];
       else
-         coeff[3] = arguments[3];
+        {
+          if ((number_arguments != 4) && (number_arguments != 6) &&
+              (number_arguments != 8) && (number_arguments != 10))
+            {
+              coeff=(double *) RelinquishMagickMemory(coeff);
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"InvalidArgument", "%s : '%s'", "Barrel(Inv)",
+                "number of arguments" );
+              return((double *) NULL);
+            }
+          coeff[3] = arguments[3];
+        }
       /* de-normalize the X coefficients */
       coeff[0] *= pow(rscale,3.0);
       coeff[1] *= rscale*rscale;
