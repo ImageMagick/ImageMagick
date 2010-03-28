@@ -1186,7 +1186,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
     }
   direction=1.0;
-  if (draw_info->direction == LeftToRightDirection)
+  if (draw_info->direction == RightToLeftDirection)
     direction=(-1.0);
   point.x=0.0;
   point.y=0.0;
