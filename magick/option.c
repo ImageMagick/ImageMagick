@@ -286,6 +286,8 @@ static const OptionInfo
     { "-deskew", 1L, MagickFalse },
     { "+despeckle", 0L, MagickFalse },
     { "-despeckle", 0L, MagickFalse },
+    { "+direction", 0L, MagickFalse },
+    { "-direction", 1L, MagickFalse },
     { "+displace", 0L, MagickFalse },
     { "-displace", 1L, MagickFalse },
     { "+display", 0L, MagickFalse },
@@ -826,12 +828,14 @@ static const OptionInfo
   },
   DirectionOptions[] =
   {
+    { "Undefined", (long) UndefinedDirection, MagickTrue },
     { "right-to-left", (long) RightToLeftDirection, MagickFalse },
     { "left-to-right", (long) LeftToRightDirection, MagickFalse },
     { (char *) NULL, (long) UndefinedDirection, MagickFalse }
   },
   DisposeOptions[] =
   {
+    { "Undefined", (long) UndefinedDispose, MagickTrue },
     { "Background", (long) BackgroundDispose, MagickFalse },
     { "None", (long) NoneDispose, MagickFalse },
     { "Previous", (long) PreviousDispose, MagickFalse },
