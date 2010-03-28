@@ -709,6 +709,9 @@
         <message name="UnrecognizedCompressType">
           unrecognized compress type
         </message>
+        <message name="UnrecognizedDirectionType">
+          unrecognized direction type
+        </message>
         <message name="UnrecognizedDisposeMethod">
           unrecognized dispose method
         </message>

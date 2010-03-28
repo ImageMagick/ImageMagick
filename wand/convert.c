@@ -338,6 +338,7 @@ static MagickBooleanType ConvertUsage(void)
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
+      "-direction type      render text right-to-left or left-to-right",
       "-display server      get image or font from this X server",
       "-dispose method      layer disposal method",
       "-dither method       apply error diffusion to image",
@@ -1194,6 +1195,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("despeckle",option+1) == 0)
           break;
+        if (LocaleCompare("direction",option+1) == 0)
+          {
+            long
+              direction;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            direction=ParseMagickOption(MagickDirectionOptions,MagickFalse,
+              argv[i]);
+            if (direction < 0)
+              ThrowConvertException(OptionError,"UnrecognizedDirectionType",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("display",option+1) == 0)
           {
             if (*option == '+')

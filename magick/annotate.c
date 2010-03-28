@@ -968,6 +968,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char
     *value;
 
+  double
+    direction;
+
   DrawInfo
     *annotate_info;
 
@@ -1182,6 +1185,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
     }
+  direction=1.0;
+  if (draw_info->direction == LeftToRightDirection)
+    direction=(-1.0);
   point.x=0.0;
   point.y=0.0;
   for (p=draw_info->text; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -1194,7 +1200,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       utf8=ConvertLatin1ToUTF8((unsigned char *) draw_info->text);
       if (utf8 != (unsigned char *) NULL)
-        p=utf8;
+        p=(char *) utf8;
     }
   for (code=0; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
@@ -1207,7 +1213,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if ((glyph.id != 0) && (last_glyph.id != 0))
       {
         if (draw_info->kerning != 0.0)
-          origin.x+=64.0*draw_info->kerning;
+          origin.x+=64.0*direction*draw_info->kerning;
         else
           if (FT_HAS_KERNING(face))
             {
@@ -1217,7 +1223,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
               status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
                 ft_kerning_default,&kerning);
               if (status == 0)
-                origin.x+=kerning.x;
+                origin.x+=direction*kerning.x;
             }
         }
     glyph.origin=origin;
@@ -1364,9 +1370,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if ((draw_info->interword_spacing != 0.0) &&
         (IsUTFSpace(GetUTFCode(p)) != MagickFalse) &&
         (IsUTFSpace(code) == MagickFalse))
-      origin.x+=64.0*draw_info->interword_spacing;
+      origin.x+=64.0*direction*draw_info->interword_spacing;
     else
-      origin.x+=face->glyph->advance.x;
+      origin.x+=direction*face->glyph->advance.x;
     metrics->origin.x=origin.x;
     metrics->origin.y=origin.y;
     if (last_glyph.id != 0)

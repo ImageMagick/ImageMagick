@@ -3853,6 +3853,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
+      "-direction type      render text right-to-left or left-to-right",
       "-display server      get image or font from this X server",
       "-dispose method      layer disposal method",
       "-dither method       apply error diffusion to image",
@@ -4685,6 +4686,23 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("dft",option+1) == 0)
           break;
+        if (LocaleCompare("direction",option+1) == 0)
+          {
+            long
+              direction;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            direction=ParseMagickOption(MagickDirectionOptions,MagickFalse,
+              argv[i]);
+            if (direction < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedDirectionType",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("display",option+1) == 0)
           {
             if (*option == '+')
@@ -6695,6 +6713,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 break;
               }
             image_info->depth=StringToUnsignedLong(argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("direction",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageOption(image_info,option+1,"undefined");
+                break;
+              }
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("display",option+1) == 0)
