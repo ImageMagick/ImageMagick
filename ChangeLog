@@ -2,6 +2,7 @@
   * Respect the -density option when rendering a Postscript or PDF image.
   * Distort barrel no longer complains when 3 arguments are given (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15883).
+  * Support -direction left-to-right option.
 
 2010-03-24  6.6.0-9 Glenn Randers-Pehrson <glennrp@image...>
   * coders/png.c: Eliminated support of libpng versions older than 1.0.12.

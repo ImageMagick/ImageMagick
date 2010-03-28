@@ -34,6 +34,7 @@ Image Settings:
   \-delay value         display the next image after pausing
   \-density geometry    horizontal and vertical density of the image
   \-depth value         image depth
+  \-direction type      render text right-to-left or left-to-right
   \-display server      get image or font from this X server
   \-dispose method      layer disposal method
   \-dither method       apply error diffusion to image

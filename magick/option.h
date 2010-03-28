@@ -42,6 +42,7 @@ typedef enum
   MagickDebugOptions,
   MagickDecorateOptions,
   MagickDelegateOptions,
+  MagickDirectionOptions,
   MagickDisposeOptions,
   MagickDistortOptions,
   MagickDitherOptions,

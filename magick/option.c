@@ -824,6 +824,12 @@ static const OptionInfo
     { "Underline", (long) UnderlineDecoration, MagickFalse },
     { (char *) NULL, (long) UndefinedDecoration, MagickFalse }
   },
+  DirectionOptions[] =
+  {
+    { "right-to-left", (long) RightToLeftDirection, MagickFalse },
+    { "left-to-right", (long) LeftToRightDirection, MagickFalse },
+    { (char *) NULL, (long) UndefinedDirection, MagickFalse }
+  },
   DisposeOptions[] =
   {
     { "Background", (long) BackgroundDispose, MagickFalse },
@@ -1706,6 +1712,7 @@ static const OptionInfo *GetOptionInfo(const MagickOption option)
     case MagickDataTypeOptions: return(DataTypeOptions);
     case MagickDebugOptions: return(LogEventOptions);
     case MagickDecorateOptions: return(DecorateOptions);
+    case MagickDirectionOptions: return(DirectionOptions);
     case MagickDisposeOptions: return(DisposeOptions);
     case MagickDistortOptions: return(DistortOptions);
     case MagickDitherOptions: return(DitherOptions);

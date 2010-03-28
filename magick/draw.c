@@ -290,6 +290,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->kerning=draw_info->kerning;
   clone_info->interline_spacing=draw_info->interline_spacing;
   clone_info->interword_spacing=draw_info->interword_spacing;
+  clone_info->direction=draw_info->direction;
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->align=draw_info->align;
@@ -4774,9 +4775,14 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   option=GetImageOption(clone_info,"interline-spacing");
   if (option != (const char *) NULL)
     draw_info->interline_spacing=StringToDouble(option);
+  draw_info->direction=1.0;
   option=GetImageOption(clone_info,"interword-spacing");
   if (option != (const char *) NULL)
     draw_info->interword_spacing=StringToDouble(option);
+  option=GetImageOption(clone_info,"direction");
+  if (option != (const char *) NULL)
+    draw_info->direction=(DirectionType) ParseMagickOption(
+      MagickDirectionOptions,MagickFalse,option);
   option=GetImageOption(clone_info,"fill");
   if (option != (const char *) NULL)
     (void) QueryColorDatabase(option,&draw_info->fill,exception);
