@@ -2079,14 +2079,17 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) acos((double) alpha));
         }
+#if defined(MAGICKCORE_HAVE_J1)
       if (LocaleNCompare(expression,"airy",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
             exception);
           if (alpha == 0.0)
-            return(0.5);
-          return((MagickRealType) (j0((double) alpha)/alpha));
+            return(0.25);
+          gamma=j1((double) alpha )/alpha;
+          return(gamma*gamma);
         }
+#endif
       if (LocaleNCompare(expression,"asin",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
