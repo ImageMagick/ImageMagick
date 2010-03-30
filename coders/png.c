@@ -83,35 +83,20 @@
 
 /* Suppress libpng pedantic warnings that were added in
  * libpng-1.2.41 and libpng-1.4.0.  If you are working on
- * migration to libpng-2.0, remove these defines and then
+ * migration to libpng-1.5, remove these defines and then
  * fix any code that generates warnings.
  */
 /* #define PNG_DEPRECATED   Use of this function is deprecated */
-#define PNG_USE_RESULT  /* The result of this function must be checked */
-#define PNG_NORETURN    /* This function does not return */
-#define PNG_ALLOCATED   /* The result of the function is new memory */
-#define PNG_DEPSTRUCT   /* Access to this struct member is deprecated */
+/* #define PNG_USE_RESULT   The result of this function must be checked */
+/* #define PNG_NORETURN     This function does not return */
+/* #define PNG_ALLOCATED    The result of the function is new memory */
+/* #define PNG_DEPSTRUCT    Access to this struct member is deprecated */
 
 #include "png.h"
 #include "zlib.h"
 
 /* ImageMagick differences */
 #define first_scene scene
-
-#if PNG_LIBPNG_VER < 10400
-#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
-#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
-#else
-   /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
-    * Just don't use libpng-1.4.0beta32-34 or beta67-73
-    */
-#  ifndef  PNG_USER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
-#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
-#  endif
-#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
-#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
-#  endif
-#endif
 
 #if PNG_LIBPNG_VER > 10011
 /*
@@ -1450,7 +1435,11 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
       "  libpng-%s error: %s", PNG_LIBPNG_VER_STRING,message);
   (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
     message,"`%s'",image->filename);
+#if PNG_LIBPNG_VER < 10500
   longjmp(ping->jmpbuf,1);
+#else
+  png_longjmp(ping,1);
+#endif
 }
 
 static void PNGWarningHandler(png_struct *ping,png_const_charp message)
@@ -1673,13 +1662,26 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     logging,
     num_text,
     num_passes,
-    pass;
+    pass,
+    ping_bit_depth,
+    ping_color_type,
+    ping_interlace_method,
+    ping_compression_method,
+    ping_filter_method,
+    ping_num_trans;
 
   MagickBooleanType
     status;
 
   PixelPacket
     transparent_color;
+
+  png_bytep
+     ping_trans_alpha;
+
+  png_color_16p
+     ping_background,
+     ping_trans_color;
 
   png_info
     *end_info,
@@ -1690,6 +1692,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   png_textp
     text;
+
+  png_uint_32
+    ping_height,
+    ping_width,
+    ping_rowbytes;
 
   QuantumInfo
     *quantum_info;
@@ -1785,7 +1792,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   png_pixels=(unsigned char *) NULL;
-  if (setjmp(ping->jmpbuf))
+  if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
@@ -1807,6 +1814,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Prepare PNG for reading.
   */
+
   mng_info->image_found++;
   png_set_sig_bytes(ping,8);
   if (LocaleCompare(image_info->magick,"MNG") == 0)
@@ -1860,32 +1868,47 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
   png_read_info(ping,ping_info);
-  if (ping_info->bit_depth < 8)
+
+  png_get_IHDR(ping,ping_info,&ping_width,&ping_height,
+               &ping_bit_depth,&ping_color_type,
+               &ping_interlace_method,&ping_compression_method,
+               &ping_filter_method);
+
+  (void) png_get_tRNS(ping, ping_info, &ping_trans_alpha, &ping_num_trans,
+                      &ping_trans_color);
+
+  (void) png_get_bKGD(ping, ping_info, &ping_background);
+
+  if (ping_bit_depth < 8)
     {
-      if (((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE))
-        png_set_packing(ping);
+      if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE))
+        {
+          png_set_packing(ping);
+          ping_bit_depth = 8;
+        }
     }
-  image->depth=ping_info->bit_depth;
+
+  image->depth=ping_bit_depth;
   image->depth=GetImageQuantumDepth(image,MagickFalse);
-  image->interlace=ping_info->interlace_type != 0 ? PNGInterlace : NoInterlace;
+  image->interlace=ping_interlace_method != 0 ? PNGInterlace : NoInterlace;
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG width: %lu, height: %lu",
-        ping_info->width, ping_info->height);
+        ping_width, ping_height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG color_type: %d, bit_depth: %d",
-        ping_info->color_type, ping_info->bit_depth);
+        ping_color_type, ping_bit_depth);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG compression_method: %d",
-        ping_info->compression_type);
+        ping_compression_method);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG interlace_method: %d, filter_method: %d",
-        ping_info->interlace_type,ping_info->filter_type);
+        ping_interlace_method,ping_filter_method);
     }
 
-#if defined(PNG_READ_iCCP_SUPPORTED)
-  if (ping_info->valid & PNG_INFO_iCCP)
+#ifdef PNG_READ_iCCP_SUPPORTED
+  if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
     {
       int
         compression;
@@ -1935,8 +1958,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      double
         file_gamma;
 
-     if (mng_info->have_global_gama)
-       image->gamma=mng_info->global_gamma;
+     if (!png_get_gAMA(ping,ping_info,&file_gamma))
+       if (mng_info->have_global_gama)
+         png_set_gAMA(ping,ping_info,mng_info->global_gamma);
      if (png_get_gAMA(ping,ping_info,&file_gamma))
        {
          image->gamma=(float) file_gamma;
@@ -1945,9 +1969,22 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              "    Reading PNG gAMA chunk: gamma: %f",file_gamma);
        }
   }
-  if (mng_info->have_global_chrm != MagickFalse)
-    image->chromaticity=mng_info->global_chrm;
-  if (ping_info->valid & PNG_INFO_cHRM)
+  if (!png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+    {
+      if (mng_info->have_global_chrm != MagickFalse)
+        {
+          (void) png_set_cHRM(ping,ping_info,
+            mng_info->global_chrm.white_point.x,
+            mng_info->global_chrm.white_point.y,
+            mng_info->global_chrm.red_primary.x,
+            mng_info->global_chrm.red_primary.y,
+            mng_info->global_chrm.green_primary.x,
+            mng_info->global_chrm.green_primary.y,
+            mng_info->global_chrm.blue_primary.x,
+            mng_info->global_chrm.blue_primary.y);
+        }
+    }
+  if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
     {
       (void) png_get_cHRM(ping,ping_info,
         &image->chromaticity.white_point.x,
@@ -1964,22 +2001,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
   if (image->rendering_intent)
     {
-      image->gamma=0.45455f;
-      image->chromaticity.red_primary.x=0.6400f;
-      image->chromaticity.red_primary.y=0.3300f;
-      image->chromaticity.green_primary.x=0.3000f;
-      image->chromaticity.green_primary.y=0.6000f;
-      image->chromaticity.blue_primary.x=0.1500f;
-      image->chromaticity.blue_primary.y=0.0600f;
-      image->chromaticity.white_point.x=0.3127f;
-      image->chromaticity.white_point.y=0.3290f;
+      png_set_sRGB(ping,ping_info,image->rendering_intent-1);
+      png_set_gAMA(ping,ping_info,0.45455f);
+      png_set_cHRM(ping,ping_info,
+                  0.6400f, 0.3300f, 0.3000f, 0.6000f,
+                  0.1500f, 0.0600f, 0.3127f, 0.3290f);
     }
-  if ((mng_info->have_global_gama != MagickFalse) || image->rendering_intent)
-    ping_info->valid|=PNG_INFO_gAMA;
-  if ((mng_info->have_global_chrm != MagickFalse) || image->rendering_intent)
-    ping_info->valid|=PNG_INFO_cHRM;
 #if defined(PNG_oFFs_SUPPORTED)
-  if (ping_info->valid & PNG_INFO_oFFs)
+  if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
       image->page.x=png_get_x_offset_pixels(ping, ping_info);
       image->page.y=png_get_y_offset_pixels(ping, ping_info);
@@ -1991,7 +2020,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 #endif
 #if defined(PNG_pHYs_SUPPORTED)
-  if (ping_info->valid & PNG_INFO_pHYs)
+  if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs))
+    {
+      if (mng_info->have_global_phys)
+        {
+          png_set_pHYs(ping,ping_info,
+                       mng_info->global_x_pixels_per_unit,
+                       mng_info->global_y_pixels_per_unit,
+                       mng_info->global_phys_unit_type);
+        }
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
     {
       int
         unit_type;
@@ -2018,25 +2058,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "    Reading PNG pHYs chunk: xres: %lu, yres: %lu, units: %d.",
           x_resolution, y_resolution, unit_type);
     }
-  else
-    {
-      if (mng_info->have_global_phys)
-        {
-          image->x_resolution=(float) mng_info->global_x_pixels_per_unit;
-          image->y_resolution=(float) mng_info->global_y_pixels_per_unit;
-          if (mng_info->global_phys_unit_type == PNG_RESOLUTION_METER)
-            {
-              image->units=PixelsPerCentimeterResolution;
-              image->x_resolution=(double)
-                mng_info->global_x_pixels_per_unit/100.0;
-              image->y_resolution=(double)
-                mng_info->global_y_pixels_per_unit/100.0;
-            }
-          ping_info->valid|=PNG_INFO_pHYs;
-        }
-    }
 #endif
-  if (ping_info->valid & PNG_INFO_PLTE)
+  if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
     {
       int
         number_colors;
@@ -2046,13 +2069,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
       if ((number_colors == 0) &&
-          ((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE))
+          ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE))
         {
           if (mng_info->global_plte_length)
             {
               png_set_PLTE(ping,ping_info,mng_info->global_plte,
                 (int) mng_info->global_plte_length);
-              if ((ping_info->valid & PNG_INFO_tRNS) == 0)
+              if (!png_get_valid(ping,ping_info,PNG_INFO_tRNS))
                 if (mng_info->global_trns_length)
                   {
                     if (mng_info->global_trns_length >
@@ -2069,7 +2092,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                    mng_info->have_saved_bkgd_index ||
 #endif
-                   ping_info->valid & PNG_INFO_bKGD)
+                   png_get_valid(ping,ping_info,PNG_INFO_bKGD))
                     {
                       png_color_16
                          background;
@@ -2077,9 +2100,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                       if (mng_info->have_saved_bkgd_index)
                         background.index=mng_info->saved_bkgd_index;
-                      else
 #endif
-                        background.index=ping_info->background.index;
+                      if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
+                        background.index=ping_background->index;
                       background.red=(png_uint_16)
                         mng_info->global_plte[background.index].red;
                       background.green=(png_uint_16)
@@ -2098,9 +2121,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
 
 #if defined(PNG_READ_bKGD_SUPPORTED)
-  if (mng_info->have_global_bkgd && !(ping_info->valid & PNG_INFO_bKGD))
+  if (mng_info->have_global_bkgd &&
+          (!png_get_valid(ping,ping_info,PNG_INFO_bKGD)))
       image->background_color=mng_info->mng_global_bkgd;
-  if (ping_info->valid & PNG_INFO_bKGD)
+  if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
     {
       /*
         Set image background color.
@@ -2108,20 +2132,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG bKGD chunk.");
-      if (ping_info->bit_depth <= MAGICKCORE_QUANTUM_DEPTH)
+      if (ping_bit_depth <= MAGICKCORE_QUANTUM_DEPTH)
         {
-          image->background_color.red=ping_info->background.red;
-          image->background_color.green=ping_info->background.green;
-          image->background_color.blue=ping_info->background.blue;
+          image->background_color.red=ping_background->red;
+          image->background_color.green=ping_background->green;
+          image->background_color.blue=ping_background->blue;
         }
       else
         {
           image->background_color.red=
-            ScaleShortToQuantum(ping_info->background.red);
+            ScaleShortToQuantum(ping_background->red);
           image->background_color.green=
-            ScaleShortToQuantum(ping_info->background.green);
+            ScaleShortToQuantum(ping_background->green);
           image->background_color.blue=
-            ScaleShortToQuantum(ping_info->background.blue);
+            ScaleShortToQuantum(ping_background->blue);
         }
     }
 #endif
@@ -2129,7 +2153,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.green=0;
   transparent_color.blue=0;
   transparent_color.opacity=0;
-  if (ping_info->valid & PNG_INFO_tRNS)
+  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
     {
       /*
         Image has a transparent background.
@@ -2141,33 +2165,34 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG tRNS chunk.");
 
-      max_sample = (1 << ping_info->bit_depth) - 1;
+      max_sample = (1 << ping_bit_depth) - 1;
 
-      if ((ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
-          (int)ping_info->trans_color.gray > max_sample) ||
-          (ping_info->color_type == PNG_COLOR_TYPE_RGB &&
-          ((int)ping_info->trans_color.red > max_sample ||
-          (int)ping_info->trans_color.green > max_sample ||
-          (int)ping_info->trans_color.blue > max_sample)))
+      if ((ping_color_type == PNG_COLOR_TYPE_GRAY &&
+          (int)ping_trans_color->gray > max_sample) ||
+          (ping_color_type == PNG_COLOR_TYPE_RGB &&
+          ((int)ping_trans_color->red > max_sample ||
+          (int)ping_trans_color->green > max_sample ||
+          (int)ping_trans_color->blue > max_sample)))
         {
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Ignoring PNG tRNS chunk with out-of-range sample.");
           png_free_data(ping, ping_info, PNG_FREE_TRNS, 0);
+          png_set_invalid(ping,ping_info,PNG_INFO_tRNS);
           image->matte=MagickFalse;
         }
       else
         {
-          transparent_color.red= (Quantum)(ping_info->trans_color.red);
-          transparent_color.green= (Quantum) (ping_info->trans_color.green);
-          transparent_color.blue= (Quantum) (ping_info->trans_color.blue);
-          transparent_color.opacity= (Quantum) (ping_info->trans_color.gray);
-          if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+          transparent_color.red= (Quantum)(ping_trans_color->red);
+          transparent_color.green= (Quantum) (ping_trans_color->green);
+          transparent_color.blue= (Quantum) (ping_trans_color->blue);
+          transparent_color.opacity= (Quantum) (ping_trans_color->gray);
+          if (ping_color_type == PNG_COLOR_TYPE_GRAY)
             {
-              if (ping_info->bit_depth < 8)
+              if (ping_bit_depth < 8)
                 {
                   transparent_color.opacity=(Quantum) (((
-                    ping_info->trans_color.gray)*255)/max_sample);
+                    ping_trans_color->gray)*255)/max_sample);
                 }
               transparent_color.red=transparent_color.opacity;
               transparent_color.green=transparent_color.opacity;
@@ -2178,23 +2203,27 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_READ_sBIT_SUPPORTED)
   if (mng_info->have_global_sbit)
     {
-      if (!(ping_info->valid & PNG_INFO_sBIT))
+      if (!png_get_valid(ping,ping_info,PNG_INFO_sBIT))
         png_set_sBIT(ping,ping_info,&mng_info->global_sbit);
     }
 #endif
   num_passes=png_set_interlace_handling(ping);
+
   png_read_update_info(ping,ping_info);
+
+  ping_rowbytes=png_get_rowbytes(ping,ping_info);
+
   /*
     Initialize image structure.
   */
   mng_info->image_box.left=0;
-  mng_info->image_box.right=(long) ping_info->width;
+  mng_info->image_box.right=(long) ping_width;
   mng_info->image_box.top=0;
-  mng_info->image_box.bottom=(long) ping_info->height;
+  mng_info->image_box.bottom=(long) ping_height;
   if (mng_info->mng_type == 0)
     {
-      mng_info->mng_width=ping_info->width;
-      mng_info->mng_height=ping_info->height;
+      mng_info->mng_width=ping_width;
+      mng_info->mng_height=ping_height;
       mng_info->frame=mng_info->image_box;
       mng_info->clip=mng_info->image_box;
     }
@@ -2203,14 +2232,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->page.y=mng_info->y_off[mng_info->object_id];
     }
   image->compression=ZipCompression;
-  image->columns=ping_info->width;
-  image->rows=ping_info->height;
-  if (((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
-      ((int) ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
-      ((int) ping_info->color_type == PNG_COLOR_TYPE_GRAY))
+  image->columns=ping_width;
+  image->rows=ping_height;
+  if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
+      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY))
     {
       image->storage_class=PseudoClass;
-      image->colors=1UL << ping_info->bit_depth;
+      image->colors=1UL << ping_bit_depth;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
       if (image->colors > 256)
         image->colors=256;
@@ -2218,7 +2247,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (image->colors > 65536L)
         image->colors=65536L;
 #endif
-      if ((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+      if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
           int
             number_colors;
@@ -2241,7 +2270,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       if (AcquireImageColormap(image,image->colors) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      if ((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+      if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
           int
             number_colors;
@@ -2262,7 +2291,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           unsigned long
             scale;
 
-          scale=(QuantumRange/((1UL << ping_info->bit_depth)-1));
+          scale=(QuantumRange/((1UL << ping_bit_depth)-1));
           if (scale < 1)
              scale=1;
           for (i=0; i < (long) image->colors; i++)
@@ -2299,9 +2328,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       "    Reading PNG IDAT chunk(s)");
   if (num_passes > 1)
     png_pixels=(unsigned char *) AcquireQuantumMemory(image->rows,
-      ping_info->rowbytes*sizeof(*png_pixels));
+      ping_rowbytes*sizeof(*png_pixels));
   else
-    png_pixels=(unsigned char *) AcquireQuantumMemory(ping_info->rowbytes,
+    png_pixels=(unsigned char *) AcquireQuantumMemory(ping_rowbytes,
       sizeof(*png_pixels));
   if (png_pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2311,7 +2340,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-  if (setjmp(ping->jmpbuf))
+  if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
@@ -2347,16 +2376,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       int
         depth;
 
-      depth=(long) ping_info->bit_depth;
+      depth=(long) ping_bit_depth;
 #endif
-      image->matte=(((int) ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
-          ((int) ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
-          (ping_info->valid & PNG_INFO_tRNS)) ? MagickTrue : MagickFalse;
+      image->matte=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+          ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+          (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
+          MagickTrue : MagickFalse;
 
       for (y=0; y < (long) image->rows; y++)
       {
         if (num_passes > 1)
-          row_offset=ping_info->rowbytes*y;
+          row_offset=ping_rowbytes*y;
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
@@ -2372,13 +2402,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
             r=png_pixels+row_offset;
             p=r;
-            if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+            if (ping_color_type == PNG_COLOR_TYPE_GRAY)
               {
                 for (x=(long) image->columns-1; x >= 0; x--)
                 {
                   *r++=*p++;
                   p++;
-                  if ((ping_info->valid & PNG_INFO_tRNS) &&
+                  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS)) &&
                      (((*(p-2) << 8)|*(p-1)) == transparent_color.opacity))
                     {
                        /* Cheap transparency */
@@ -2388,9 +2418,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                        *r++=OpaqueOpacity;
                 }
               }
-            else if (ping_info->color_type == PNG_COLOR_TYPE_RGB)
+            else if (ping_color_type == PNG_COLOR_TYPE_RGB)
               {
-              if (ping_info->valid & PNG_INFO_tRNS)
+              if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
                 for (x=(long) image->columns-1; x >= 0; x--)
                 {
                   *r++=*p++;
@@ -2421,53 +2451,53 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   *r++=OpaqueOpacity;
                 }
               }
-            else if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            else if (ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
               for (x=(long) (4*image->columns); x != 0; x--)
               {
                 *r++=*p++;
                 p++;
               }
-            else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+            else if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
               for (x=(long) (2*image->columns); x != 0; x--)
               {
                 *r++=*p++;
                 p++;
               }
           }
-        if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+        if (depth == 8 && ping_color_type == PNG_COLOR_TYPE_GRAY)
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             GrayQuantum,png_pixels+row_offset);
-        if (ping_info->color_type == PNG_COLOR_TYPE_GRAY ||
-            ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+        if (ping_color_type == PNG_COLOR_TYPE_GRAY ||
+            ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
           {
             quantum_info->depth=8;
             (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
               GrayAlphaQuantum,png_pixels+row_offset);
           }
-        else if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_RGB)
+        else if (depth == 8 && ping_color_type == PNG_COLOR_TYPE_RGB)
            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
              RGBQuantum,png_pixels+row_offset);
-        else if (ping_info->color_type == PNG_COLOR_TYPE_RGB ||
-              ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+        else if (ping_color_type == PNG_COLOR_TYPE_RGB ||
+              ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
           {
             quantum_info->depth=8;
             (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
               RGBAQuantum,png_pixels+row_offset);
           }
-        else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+        else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
             (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
               IndexQuantum,png_pixels+row_offset);
 #else /* (MAGICKCORE_QUANTUM_DEPTH != 8) */
-        if ((int) ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+        if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             GrayQuantum,png_pixels+row_offset,exception);
-        else if ((int) ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+        else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             GrayAlphaQuantum,png_pixels+row_offset,exception);
-        else if ((int) ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+        else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             RGBAQuantum,png_pixels+row_offset,exception);
-        else if ((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+        else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             IndexQuantum,png_pixels+row_offset,exception);
         else
@@ -2502,7 +2532,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         Convert grayscale image to PseudoClass pixel packets.
       */
-      image->matte=ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA ?
+      image->matte=ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ?
         MagickTrue : MagickFalse;
       quantum_scanline=(Quantum *) AcquireQuantumMemory(image->columns,
         (image->matte ?  2 : 1)*sizeof(*quantum_scanline));
@@ -2511,7 +2541,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       for (y=0; y < (long) image->rows; y++)
       {
         if (num_passes > 1)
-          row_offset=ping_info->rowbytes*y;
+          row_offset=ping_rowbytes*y;
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
@@ -2521,7 +2551,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         indices=GetAuthenticIndexQueue(image);
         p=png_pixels+row_offset;
         r=quantum_scanline;
-        switch (ping_info->bit_depth)
+        switch (ping_bit_depth)
         {
           case 1:
           {
@@ -2570,7 +2600,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
           case 8:
           {
-            if (ping_info->color_type == 4)
+            if (ping_color_type == 4)
               for (x=(long) image->columns-1; x >= 0; x--)
               {
                 *r++=*p++;
@@ -2603,7 +2633,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               quantum|=(*p++);
               *r=(Quantum) quantum;
               r++;
-              if (ping_info->color_type == 4)
+              if (ping_color_type == 4)
                 {
                   quantum=((*p++) << 8);
                   quantum|=(*p++);
@@ -2623,7 +2653,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               quantum|=(*p++);
               *r=quantum;
               r++;
-              if (ping_info->color_type == 4)
+              if (ping_color_type == 4)
                 {
                   q->opacity=(*p << 8) | *(p+1);
                   q->opacity*=65537L;
@@ -2634,7 +2664,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #else /* MAGICKCORE_QUANTUM_DEPTH == 8 */
               *r++=(*p++);
               p++; /* strip low byte */
-              if (ping_info->color_type == 4)
+              if (ping_color_type == 4)
                 {
                   q->opacity=(Quantum) (QuantumRange-(*p++));
                   p++;
@@ -2692,7 +2722,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage() early.");
       return(image);
     }
-  if (ping_info->valid & PNG_INFO_tRNS)
+  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
     {
       ClassType
         storage_class;
@@ -2708,14 +2738,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
     if (storage_class == PseudoClass)
    {
-      if ((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+      if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
       {
-         for (x=0; x < ping_info->num_trans; x++)
+         for (x=0; x < ping_num_trans; x++)
          {
-            image->colormap[x].opacity = ScaleCharToQuantum((unsigned char)(255-ping_info->trans_alpha[x]));
+            image->colormap[x].opacity = ScaleCharToQuantum((unsigned char)(255-ping_trans_alpha[x]));
          }
       }
-      else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+      else if (ping_color_type == PNG_COLOR_TYPE_GRAY)
       {
          for (x=0; x < (int) image->colors; x++)
          {
@@ -2768,18 +2798,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             IndexPacket
               indexpacket;
 
-            if ((int) ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+            if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
               for (x=0; x < (long) image->columns; x++)
               {
                 indexpacket=indices[x];
-                if (indexpacket < ping_info->num_trans)
+                if (indexpacket < ping_num_trans)
                   q->opacity=ScaleCharToQuantum((unsigned char)
-                    (255-ping_info->trans_alpha[(long) indexpacket]));
+                    (255-ping_trans_alpha[(long) indexpacket]));
                 else
                   SetOpacityPixelComponent(q,OpaqueOpacity);
                 q++;
               }
-            else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+            else if (ping_color_type == PNG_COLOR_TYPE_GRAY)
               for (x=0; x < (long) image->columns; x++)
               {
                 indexpacket=indices[x];
@@ -2881,16 +2911,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
       else
         {
-          png_uint_32
-            width,
-            height;
-
-          int
-            bit_depth,
-            color_type,
-            interlace_method,
-            compression_method,
-            filter_method;
 
           if (mng_info->ob[object_id]->image != (Image *) NULL)
             mng_info->ob[object_id]->image=DestroyImage
@@ -2903,18 +2923,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (void) ThrowMagickException(&image->exception,GetMagickModule(),
               ResourceLimitError,"Cloning image for object buffer failed",
               "`%s'",image->filename);
-          png_get_IHDR(ping,ping_info,&width,&height,&bit_depth,&color_type,
-            &interlace_method,&compression_method,&filter_method);
-          if (width > 250000L || height > 250000L)
+          if (ping_width > 250000L || ping_height > 250000L)
              png_error(ping,"PNG Image dimensions are too large.");
-          mng_info->ob[object_id]->width=width;
-          mng_info->ob[object_id]->height=height;
-          mng_info->ob[object_id]->color_type=color_type;
-          mng_info->ob[object_id]->sample_depth=bit_depth;
-          mng_info->ob[object_id]->interlace_method=interlace_method;
-          mng_info->ob[object_id]->compression_method=compression_method;
-          mng_info->ob[object_id]->filter_method=filter_method;
-          if (ping_info->valid & PNG_INFO_PLTE)
+          mng_info->ob[object_id]->width=ping_width;
+          mng_info->ob[object_id]->height=ping_height;
+          mng_info->ob[object_id]->color_type=ping_color_type;
+          mng_info->ob[object_id]->sample_depth=ping_bit_depth;
+          mng_info->ob[object_id]->interlace_method=ping_interlace_method;
+          mng_info->ob[object_id]->compression_method=
+             ping_compression_method;
+          mng_info->ob[object_id]->filter_method=ping_filter_method;
+          if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
             {
               int
                 number_colors;

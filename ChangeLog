@@ -1,6 +1,7 @@
 2010-03-30  6.6.1-0 Glenn Randers-Pehrson <glennrp@image...>
-  * Temporarily reverted recent changes to decoder portion of coders/png.c.
-    It failed to read a 1-bit paletted image properly.
+  * The new coders/png.c was failing to read a 1-bit paletted image properly.
+  * Finished eliminating the deprecated direct references to members of
+    the png_info structure. ImageMagick can now be built with libpng-1.5.
 
 2010-03-21  6.6.0-10 Cristy  <quetzlzacatenango@image...>
   * Respect the -density option when rendering a Postscript or PDF image.
