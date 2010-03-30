@@ -1121,7 +1121,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=MagickFalse;
         continue;
       }
-    length=ImportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+    length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);
     sync=SyncAuthenticPixels(image,exception);
     if (sync == MagickFalse)
