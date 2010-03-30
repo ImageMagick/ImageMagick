@@ -102,9 +102,6 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
     cube_size,
     level;
 
-  CacheView
-    *image_view;
-
   /*
     Create HALD color lookup table image.
   */
@@ -125,10 +122,6 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   cube_size=level*level;
   image->columns=(unsigned long) (level*cube_size);
   image->rows=(unsigned long) (level*cube_size);
-  image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for shared(status)
-#endif
   for (y=0; y < (long) image->rows; y+=(long) level)
   {
     long
@@ -141,8 +134,8 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
 
     if (status == MagickFalse)
       continue;
-    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,
-      (unsigned long) level,exception);
+    q=QueueAuthenticPixels(image,0,y,image->columns,(unsigned long) level,
+      exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
@@ -160,10 +153,9 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
         q++;
       }
     }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
   }
-  image_view=DestroyCacheView(image_view);
   return(GetFirstImageInList(image));
 }
 

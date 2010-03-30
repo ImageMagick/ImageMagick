@@ -265,9 +265,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     depth,
     max_value;
 
-  CacheView
-    *image_view;
-
   /*
     Open image file.
   */
@@ -593,10 +590,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         SetQuantumMinIsWhite(quantum_info,MagickTrue);
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
-        image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
-#endif
         for (y=0; y < (long) image->rows; y++)
         {
           long
@@ -620,9 +613,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp critical (MagickCore_ReadPNMImage)
-#endif
           {
             count=ReadBlob(image,extent,pixels);
             if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -639,22 +629,20 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (count != (ssize_t) extent)
             status=MagickFalse;
-          q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
-            exception);
+          q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             {
               status=MagickFalse;
               continue;
             }
-          length=ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
-            pixels,exception);
+          length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            quantum_type,pixels,exception);
           if (length != extent)
             status=MagickFalse;
-          sync=SyncCacheViewAuthenticPixels(image_view,exception);
+          sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
         }
-        image_view=DestroyCacheView(image_view);
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -675,10 +663,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
-#endif
         for (y=0; y < (long) image->rows; y++)
         {
           long
@@ -705,9 +689,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp critical (MagickCore_ReadPNMImage)
-#endif
           {
             count=ReadBlob(image,extent,pixels);
             if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -724,8 +705,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (count != (ssize_t) extent)
             status=MagickFalse;
-          q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
-            exception);
+          q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             {
               status=MagickFalse;
@@ -733,7 +713,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           p=pixels;
           if ((image->depth == 8) || (image->depth == 16))
-            (void) ImportQuantumPixels(image,image_view,quantum_info,
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
               quantum_type,pixels,exception);
           else
             if (image->depth <= 8)
@@ -764,11 +744,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q++;
                 }
               }
-          sync=SyncCacheViewAuthenticPixels(image_view,exception);
+          sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
         }
-        image_view=DestroyCacheView(image_view);
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -793,10 +772,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for schedule(static,1) shared(row,status,type)
-#endif
         for (y=0; y < (long) image->rows; y++)
         {
           long
@@ -823,9 +798,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp critical (MagickCore_ReadPNMImage)
-#endif
           {
             count=ReadBlob(image,extent,pixels);
             if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -842,8 +814,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (count != (ssize_t) extent)
             status=MagickFalse;
-          q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
-            exception);
+          q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             {
               status=MagickFalse;
@@ -914,8 +885,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
           if ((type == BilevelType) || (type == GrayscaleType))
             {
-              q=QueueCacheViewAuthenticPixels(image_view,0,offset,
-                image->columns,1,exception);
+              q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
               for (x=0; x < (long) image->columns; x++)
               {
                 if ((type == BilevelType) &&
@@ -929,11 +899,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q++;
               }
             }
-          sync=SyncCacheViewAuthenticPixels(image_view,exception);
+          sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
         }
-        image_view=DestroyCacheView(image_view);
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -982,10 +951,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
-#endif
         for (y=0; y < (long) image->rows; y++)
         {
           long
@@ -1012,9 +977,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp critical (MagickCore_ReadPNMImage)
-#endif
           {
             count=ReadBlob(image,extent,pixels);
             if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -1031,17 +993,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (count != (ssize_t) extent)
             status=MagickFalse;
-          q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
-            exception);
+          q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             {
               status=MagickFalse;
               continue;
             }
-          indexes=GetCacheViewAuthenticIndexQueue(image_view);
+          indexes=GetAuthenticIndexQueue(image);
           p=pixels;
           if ((image->depth == 8) || (image->depth == 16))
-            (void) ImportQuantumPixels(image,image_view,quantum_info,
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
               quantum_type,pixels,exception);
           else
             switch (quantum_type)
@@ -1193,11 +1154,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
-          sync=SyncCacheViewAuthenticPixels(image_view,exception);
+          sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
         }
-        image_view=DestroyCacheView(image_view);
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -1225,10 +1185,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetQuantumScale(quantum_info,(MagickRealType) QuantumRange*
           fabs(quantum_scale));
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
-        image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
-#endif
         for (y=0; y < (long) image->rows; y++)
         {
           long
@@ -1252,9 +1208,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             continue;
           pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp critical (MagickCore_ReadPNMImage)
-#endif
           {
             count=ReadBlob(image,extent,pixels);
             if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -1271,22 +1224,21 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if ((size_t) count != extent)
             status=MagickFalse;
-          q=QueueCacheViewAuthenticPixels(image_view,0,(long) (image->rows-
-            offset-1),image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,(long) (image->rows-offset-1),
+            image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             {
               status=MagickFalse;
               continue;
             }
-          length=ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
-            pixels,exception);
+          length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            quantum_type,pixels,exception);
           if (length != extent)
             status=MagickFalse;
-          sync=SyncCacheViewAuthenticPixels(image_view,exception);
+          sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
         }
-        image_view=DestroyCacheView(image_view);
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");

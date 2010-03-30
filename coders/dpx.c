@@ -539,9 +539,6 @@ static void TimeCodeToString(const unsigned long timestamp,char *code)
 
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  CacheView
-    *image_view;
-
   char
     magick[4],
     value[MaxTextExtent];
@@ -1079,10 +1076,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetQuantumQuantum(quantum_info,32);
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
-  image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp parallel for schedule(static,1) shared(row,status,quantum_type)
-#endif
   for (y=0; y < (long) image->rows; y++)
   {
     long
@@ -1106,9 +1099,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       continue;
     pixels=GetQuantumPixels(quantum_info);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP > 202001)
-  #pragma omp critical (MagickCore_ReadDPXImage)
-#endif
     {
       count=ReadBlob(image,extent,pixels);
       if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -1125,20 +1115,18 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (count != (ssize_t) extent)
       status=MagickFalse;
-    q=QueueCacheViewAuthenticPixels(image_view,0,offset,image->columns,1,
-      exception);
+    q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    length=ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
-      pixels,exception);
-    sync=SyncCacheViewAuthenticPixels(image_view,exception);
+    length=ImportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+      quantum_type,pixels,exception);
+    sync=SyncAuthenticPixels(image,exception);
     if (sync == MagickFalse)
       status=MagickFalse;
   }
-  image_view=DestroyCacheView(image_view);
   quantum_info=DestroyQuantumInfo(quantum_info);
   if (status == MagickFalse)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");

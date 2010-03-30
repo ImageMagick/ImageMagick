@@ -134,7 +134,7 @@ static inline long GetNextUTFCode(const char *text,size_t *octets)
   return(-1);
 }
 
-static long GetUTFCode(const char *text)
+static inline long GetUTFCode(const char *text)
 {
   size_t
     octets;
@@ -142,7 +142,7 @@ static long GetUTFCode(const char *text)
   return(GetNextUTFCode(text,&octets));
 }
 
-static size_t GetUTFOctets(const char *text)
+static inline size_t GetUTFOctets(const char *text)
 {
   size_t
     octets;
