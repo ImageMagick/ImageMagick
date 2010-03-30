@@ -2085,8 +2085,8 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
             exception);
           if (alpha == 0.0)
-            return(0.25);
-          gamma=j1((double) alpha )/alpha;
+            return(1.0);
+          gamma=2.0*j1((double) (MagickPI*alpha))/(MagickPI*alpha);
           return(gamma*gamma);
         }
 #endif
@@ -3812,9 +3812,12 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       {
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=ClampToQuantum(k[0]*p->red+k[1]*p->green+k[2]*GetBluePixelComponent(p));
-          q->green=ClampToQuantum(k[3]*p->red+k[4]*p->green+k[5]*GetBluePixelComponent(p));
-          q->blue=ClampToQuantum(k[6]*p->red+k[7]*p->green+k[8]*GetBluePixelComponent(p));
+          q->red=ClampToQuantum(k[0]*p->red+k[1]*p->green+k[2]*
+            GetBluePixelComponent(p));
+          q->green=ClampToQuantum(k[3]*p->red+k[4]*p->green+k[5]*
+            GetBluePixelComponent(p));
+          q->blue=ClampToQuantum(k[6]*p->red+k[7]*p->green+k[8]*
+            GetBluePixelComponent(p));
           p++;
           q++;
         }
