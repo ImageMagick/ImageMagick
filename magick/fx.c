@@ -3651,10 +3651,13 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RecolorImage() translate, scale, shear, or rotate image colors.  Although
-%  you can use variable sized matrices, typically you use a 5 x 5 for an RGBA
-%  image and a 6x6 for CMYKA.  Populate the last row with normalized values to
-%  translate.
+%  RecolorImage() apply color transformation to an image. The method permits
+%  saturation changes, hue rotation, luminance to alpha, and various other
+%  effects.  Although variable-sized transformation matrices can be used,
+%  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
+%  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
+%  except offsets are in column 6 rather than 5 (in support of CMYKA images)
+%  and offsets are normalized (divide Flash offset by 255).
 %
 %  The format of the RecolorImage method is:
 %
@@ -3716,12 +3719,14 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((order < 1) || (order > 6))
-    return(CloneImage(image,0,0,MagickTrue,exception));
   i=0;
   for (v=0; v < (long) order; v++)
     for (u=0; u < (long) order; u++)
-      recolor_matrix[v][u]=color_matrix[i++];
+    {
+      if ((v < 6) && (u < 6))
+        recolor_matrix[v][u]=color_matrix[i];
+      i++;
+    }
   /*
     Initialize recolor image.
   */
@@ -3805,7 +3810,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
       register long
         v;
 
-      for (v=0; v < (long) order; v++)
+      for (v=0; v < (long) (order > 6 ? 6 : order); v++)
       {
         pixel=recolor_matrix[v][0]*p->red+recolor_matrix[v][1]*p->green+
           recolor_matrix[v][2]*p->blue;
