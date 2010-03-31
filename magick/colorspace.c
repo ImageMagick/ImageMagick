@@ -554,9 +554,10 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     }
     case LogColorspace:
     {
+#define DisplayGamma  (1.0/1.7)
+#define FilmGamma  0.6
 #define ReferenceBlack  95.0
 #define ReferenceWhite  685.0
-#define DisplayGamma  (1.0/1.7)
 
       const char
         *value;
@@ -564,6 +565,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       double
         black,
         density,
+        film_gamma,
         gamma,
         reference_black,
         reference_white;
@@ -579,6 +581,10 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
         gamma=1.0/StringToDouble(value) != 0.0 ? StringToDouble(value) : 1.0;
+      film_gamma=FilmGamma;
+      value=GetImageProperty(image,"film-gamma");
+      if (value != (const char *) NULL)
+        film_gamma=StringToDouble(value);
       reference_black=ReferenceBlack;
       value=GetImageProperty(image,"reference-black");
       if (value != (const char *) NULL)
@@ -593,14 +599,14 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       black=pow(10.0,(reference_black-reference_white)*(gamma/density)*
-        0.002/0.6);
+        0.002/film_gamma);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
 #endif
       for (i=0; i <= (long) MaxMap; i++)
         logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
           log10(black+((MagickRealType) i/MaxMap)*(1.0-black))/((gamma/density)*
-          0.002/0.6))/1024.0+0.5));
+          0.002/film_gamma))/1024.0+0.5));
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
