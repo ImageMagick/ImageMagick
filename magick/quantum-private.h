@@ -433,13 +433,13 @@ static inline unsigned long ScaleQuantumToLong(const Quantum quantum)
 
 static inline unsigned long ScaleQuantumToMap(const Quantum quantum)
 {
-  if (quantum < 0.0)
-    return(0UL);
   if (quantum >= (Quantum) MaxMap)
     return((unsigned long) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned long) quantum);
 #else
+  if (quantum < 0.0)
+    return(0UL);
   return((unsigned long) (quantum+0.5));
 #endif
 }

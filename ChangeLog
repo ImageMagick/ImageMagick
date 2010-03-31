@@ -1,3 +1,7 @@
+2010-03-31  6.6.1-0 Cristy  <quetzlzacatenango@image...>
+  * The -recolor 4x4 matrix is now interpretted properly (previously it
+    summed rather attenuating the alpha channel).
+
 2010-03-30  6.6.1-0 Glenn Randers-Pehrson <glennrp@image...>
   * The new coders/png.c was failing to read a 1-bit paletted image properly.
   * Finished eliminating the deprecated direct references to members of
