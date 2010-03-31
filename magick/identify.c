@@ -217,12 +217,13 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
   int
     status;
 
-  status=fprintf(file,StatisticsFormat,name,(Quantum) (scale*
-    channel_statistics[channel].minima+0.5),channel_statistics[channel].minima/
-    (double) QuantumRange,(Quantum) (scale*channel_statistics[channel].maxima+
-    0.5),channel_statistics[channel].maxima/(double) QuantumRange,scale*
-    channel_statistics[channel].mean,channel_statistics[channel].mean/
-    (double) QuantumRange,scale*channel_statistics[channel].standard_deviation,
+  status=fprintf(file,StatisticsFormat,name,ClampToQuantum(scale*
+    channel_statistics[channel].minima),channel_statistics[channel].minima/
+    (double) QuantumRange,ClampToQuantum(scale*
+    channel_statistics[channel].maxima),channel_statistics[channel].maxima/
+    (double) QuantumRange,scale*channel_statistics[channel].mean,
+    channel_statistics[channel].mean/(double) QuantumRange,scale*
+    channel_statistics[channel].standard_deviation,
     channel_statistics[channel].standard_deviation/(double) QuantumRange,
     channel_statistics[channel].kurtosis,channel_statistics[channel].skewness);
   return(status);

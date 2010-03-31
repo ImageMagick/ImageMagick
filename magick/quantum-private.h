@@ -323,11 +323,13 @@ static inline Quantum ScaleLongToQuantum(const unsigned long value)
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
+  if (value <= 0.0)
+    return((Quantum) 0);
 #if defined(MAGICKCORE_HDRI_SUPPORT)
+  if (value >= MaxMap)
+    return((Quantum) QuantumRange);
   return((Quantum) value);
 #else
-  if (value <= 0.0)
-    return(0);
   if ((value+0.5) >= MaxMap)
     return((Quantum) QuantumRange);
   return((Quantum) (value+0.5));
@@ -349,13 +351,13 @@ static inline unsigned long ScaleQuantumToLong(const Quantum quantum)
 
 static inline unsigned long ScaleQuantumToMap(const Quantum quantum)
 {
+  if (quantum < 0.0)
+    return(0UL);
   if (quantum >= (Quantum) MaxMap)
     return((unsigned long) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned long) quantum);
 #else
-  if (quantum < 0.0)
-    return(0UL);
   return((unsigned long) (quantum+0.5));
 #endif
 }
@@ -403,11 +405,13 @@ static inline Quantum ScaleLongToQuantum(const unsigned long value)
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
+  if (value <= 0.0)
+    return((Quantum) 0);
 #if defined(MAGICKCORE_HDRI_SUPPORT)
+  if (value >= MaxMap)
+    return((Quantum) QuantumRange);
   return((Quantum) value);
 #else
-  if (value <= 0.0)
-    return(0);
   if ((value+0.5) >= MaxMap)
     return((Quantum) QuantumRange);
   return((Quantum) (value+0.5));
@@ -429,13 +433,13 @@ static inline unsigned long ScaleQuantumToLong(const Quantum quantum)
 
 static inline unsigned long ScaleQuantumToMap(const Quantum quantum)
 {
+  if (quantum < 0.0)
+    return(0UL);
   if (quantum >= (Quantum) MaxMap)
     return((unsigned long) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned long) quantum);
 #else
-  if (quantum < 0.0)
-    return(0UL);
   return((unsigned long) (quantum+0.5));
 #endif
 }
@@ -474,11 +478,13 @@ static inline Quantum ScaleLongToQuantum(const unsigned long value)
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
+  if (value <= 0.0)
+    return((Quantum) 0);
 #if defined(MAGICKCORE_HDRI_SUPPORT)
+  if (value >= MaxMap)
+    return(QuantumRange);
   return((Quantum) (65537.0*value));
 #else
-  if (value <= 0.0)
-    return(0);
   if ((value+0.5) >= MaxMap)
     return(QuantumRange);
   return((Quantum) (65537UL*value));
@@ -492,14 +498,14 @@ static inline unsigned long ScaleQuantumToLong(const Quantum quantum)
 
 static inline unsigned long ScaleQuantumToMap(const Quantum quantum)
 {
+  if (quantum < 0.0)
+    return(0UL);
   if ((quantum/65537) >= MaxMap)
     return((unsigned long) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned long) ((quantum+MagickULLConstant(32768))/
     MagickULLConstant(65537)));
 #else
-  if (quantum < 0.0)
-    return(0UL);
   return((unsigned long) (quantum/65537.0)+0.5);
 #endif
 }
@@ -547,11 +553,13 @@ static inline Quantum ScaleLongToQuantum(const unsigned long value)
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
+  if (value <= 0.0)
+    return((Quantum) 0);
 #if defined(MAGICKCORE_HDRI_SUPPORT)
+  if (value >= MaxMap)
+    return(QuantumRange);
   return((Quantum) (281479271612415.0*value));
 #else
-  if (value <= 0.0)
-    return(0);
   if ((value+0.5) >= MaxMap)
     return(QuantumRange);
   return((Quantum) (MagickULLConstant(281479271612415)*value));
@@ -569,13 +577,13 @@ static inline unsigned long ScaleQuantumToLong(const Quantum quantum)
 
 static inline unsigned long ScaleQuantumToMap(const Quantum quantum)
 {
+  if (quantum < 0.0)
+    return(0UL);
   if ((quantum/281479271612415.0) >= MaxMap)
     return((unsigned long) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned long) ((quantum+2147450879.0)/281479271612415.0));
 #else
-  if (quantum < 0.0)
-    return(0UL);
   return((unsigned long) (quantum/281479271612415.0)+0.5);
 #endif
 }
