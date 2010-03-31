@@ -2796,6 +2796,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     *bluemap,
+    datum,
     *greenmap,
     *graymap,
     index,
@@ -2846,7 +2847,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_allocated,
     bytes_per_pixel,
     colors,
-    datum,
     height,
     high_bit,
     mask,
@@ -2977,10 +2977,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     datum=0;
     if (quantum == 4)
-      datum=(unsigned long) ReadBlobLSBLong(image);
+      datum=(int) ReadBlobLSBLong(image);
     else
       if (quantum == 2)
-        datum=(unsigned long) ReadBlobLSBShort(image);
+        datum=(int) ReadBlobLSBShort(image);
     quantum=0;
     length=1;
     if (datum != 0)
@@ -3038,13 +3038,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     data=(unsigned char *) NULL;
     if ((length == 1) && (quantum == 1))
-      datum=(unsigned long) ReadBlobByte(image);
+      datum=(int) ReadBlobByte(image);
     else
       if ((length == 1) && (quantum == 2))
-        datum=(unsigned long) ReadBlobLSBShort(image);
+        datum=(int) ReadBlobLSBShort(image);
       else
         if ((length == 1) && (quantum == 4))
-          datum=(unsigned long) ReadBlobLSBLong(image);
+          datum=(int) ReadBlobLSBLong(image);
         else
           if ((quantum != 0) && (length != 0))
             {
@@ -3058,7 +3058,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               count=ReadBlob(image,(size_t) quantum*length,data);
               if (count != (ssize_t) (quantum*length))
                 {
-                  (void) fprintf(stderr,"count=%d quantum=%d length=%d "
+                  (void) fprintf(stdout,"count=%d quantum=%d length=%d "
                     "group=%d\n",(int) count,(int) quantum,(int) length,(int)
                     group);
                    ThrowReaderException(CorruptImageError,
@@ -3087,7 +3087,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 group=0;
                 element=0;
                 if (image_info->verbose != MagickFalse)
-                  (void) fprintf(stderr,
+                  (void) fprintf(stdout,
                     "Corrupted image - trying explicit format\n");
                 break;
               }
@@ -3096,7 +3096,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) CopyMagickString(transfer_syntax,(char *) data,
                 MaxTextExtent);
             if (image_info->verbose != MagickFalse)
-              (void) fprintf(stderr,"transfer_syntax=%s\n",(const char*)
+              (void) fprintf(stdout,"transfer_syntax=%s\n",(const char*)
                 transfer_syntax);
             if (strncmp(transfer_syntax,"1.2.840.10008.1.2",17) == 0)
               {
@@ -3414,7 +3414,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->verbose != MagickFalse)
       {
         if (data == (unsigned char *) NULL)
-          (void) fprintf(stdout,"%lu\n",datum);
+          (void) fprintf(stdout,"%d\n",datum);
         else
           {
             /*
@@ -3431,7 +3431,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 datum=0;
                 for (j=(long) length-1; j >= 0; j--)
                   datum=(256*datum+data[j]);
-                (void) fprintf(stdout,"%lu",datum);
+                (void) fprintf(stdout,"%d",datum);
               }
             else
               for (i=0; i < (long) length; i++)
