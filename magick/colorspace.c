@@ -606,7 +606,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       for (i=0; i <= (long) MaxMap; i++)
         logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
           log10(black+((MagickRealType) i/MaxMap)*(1.0-black))/((gamma/density)*
-          0.002/film_gamma))/1024.0+0.5));
+          0.002/film_gamma))/1024.0));
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -1760,6 +1760,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       double
         black,
         density,
+        film_gamma,
         gamma,
         reference_black,
         reference_white;
@@ -1775,6 +1776,10 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
         gamma=1.0/StringToDouble(value) != 0.0 ? StringToDouble(value) : 1.0;
+      film_gamma=FilmGamma;
+      value=GetImageProperty(image,"film-gamma");
+      if (value != (const char *) NULL)
+        film_gamma=StringToDouble(value);
       reference_black=ReferenceBlack;
       value=GetImageProperty(image,"reference-black");
       if (value != (const char *) NULL)
@@ -1789,13 +1794,13 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       black=pow(10.0,(reference_black-reference_white)*(gamma/density)*
-        0.002/0.6);
+        0.002/film_gamma);
       for (i=0; i <= (long) (reference_black*MaxMap/1024.0); i++)
         logmap[i]=(Quantum) 0;
       for ( ; i < (long) (reference_white*MaxMap/1024.0); i++)
         logmap[i]=ClampToQuantum((MagickRealType) QuantumRange/(1.0-black)*
           (pow(10.0,(1024.0*i/MaxMap-reference_white)*
-          (gamma/density)*0.002/0.6)-black));
+          (gamma/density)*0.002/film_gamma)-black));
       for ( ; i <= (long) MaxMap; i++)
         logmap[i]=(Quantum) QuantumRange;
       if (SetImageStorageClass(image,DirectClass) == MagickFalse)
