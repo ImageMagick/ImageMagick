@@ -8557,7 +8557,7 @@ WandExport MagickBooleanType MagickReadImageFile(MagickWand *wand,FILE *file)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickRecolorImage() translate, scale, shear, or rotate image colors.
+%  MagickRecolorImage() apply color correction to the image.
 %  Although you can use variable sized matrices, typically you use a 5 x 5 for
 %  an RGBA image and a 6x6 for CMYKA.  Populate the last row with normalized
 %  values to translate.

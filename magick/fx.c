@@ -3681,20 +3681,16 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
     *image_view,
     *recolor_view;
 
-  const double
-    *recolor_matrix[6];
-
   double
-    RecolorMatrix[] =
+    recolor_matrix[6][6] =
     {
-      1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 1.0
-    },
-    *m;
+      { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+      { 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },
+      { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
+      { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },
+      { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 },
+      { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 }
+    };
 
   Image
     *recolor_image;
@@ -3707,9 +3703,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
 
   MagickBooleanType
     status;
-
-  register const double
-    *k;
 
   register long
     i;
@@ -3725,24 +3718,12 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   assert(exception->signature == MagickSignature);
   if ((order < 1) || (order > 6))
     return(CloneImage(image,0,0,MagickTrue,exception));
-  for (i=0; i < 6; i++)
-    recolor_matrix[i]=(double *) NULL;
-  k=color_matrix;
+  i=0;
   for (v=0; v < (long) order; v++)
-  {
-    m=(&RecolorMatrix[6*v]);
     for (u=0; u < (long) order; u++)
-    {
-      if (*k != m[u])
-        {
-          m[u]=(*k);
-          recolor_matrix[v]=m;
-        }
-      k++;
-    }
-  }
+      recolor_matrix[v][u]=color_matrix[i++];
   /*
-    Recolor image.
+    Initialize recolor image.
   */
   recolor_image=CloneImage(image,0,0,MagickTrue,exception);
   if (recolor_image == (Image *) NULL)
@@ -3761,7 +3742,6 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
         "  Recolor image with color matrix:");
-      m=RecolorMatrix;
       message=AcquireString("");
       for (v=0; v < 6; v++)
       {
@@ -3770,7 +3750,8 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
         (void) ConcatenateString(&message,format);
         for (u=0; u < 6; u++)
         {
-          (void) FormatMagickString(format,MaxTextExtent,"%+f ",*m++);
+          (void) FormatMagickString(format,MaxTextExtent,"%+f ",
+            recolor_matrix[v][u]);
           (void) ConcatenateString(&message,format);
         }
         (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
@@ -3790,7 +3771,7 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   for (y=0; y < (long) image->rows; y++)
   {
     MagickRealType
-      pixels[6];
+      pixel;
 
     register const IndexPacket
       *restrict indexes;
@@ -3826,31 +3807,33 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
 
       for (v=0; v < (long) order; v++)
       {
-        pixels[v]=recolor_matrix[v][0]*q->red+recolor_matrix[v][1]*q->green+
-          recolor_matrix[v][2]*q->blue;
+        pixel=recolor_matrix[v][0]*p->red+recolor_matrix[v][1]*p->green+
+          recolor_matrix[v][2]*p->blue;
         if (image->matte != MagickFalse)
-          pixels[v]+=recolor_matrix[v][3]*(QuantumRange-q->opacity);
+          pixel+=recolor_matrix[v][3]*(QuantumRange-p->opacity);
         if (image->colorspace == CMYKColorspace)
-          pixels[v]+=recolor_matrix[v][4]*indexes[x];
+          pixel+=recolor_matrix[v][4]*indexes[x];
+        pixel+=QuantumRange*recolor_matrix[v][5];
         switch (v)
         {
-          case 0: q->red=ClampToQuantum(pixels[v]); break;
-          case 1: q->green=ClampToQuantum(pixels[v]); break;
-          case 2: q->blue=ClampToQuantum(pixels[v]); break;
+          case 0: q->red=ClampToQuantum(pixel); break;
+          case 1: q->green=ClampToQuantum(pixel); break;
+          case 2: q->blue=ClampToQuantum(pixel); break;
           case 3:
           {
             if (image->matte != MagickFalse)
-              q->opacity=ClampToQuantum(QuantumRange-pixels[v]);
+              q->opacity=ClampToQuantum(QuantumRange-pixel);
             break;
           }
           case 4:
           {
             if (image->colorspace == CMYKColorspace)
-              recolor_indexes[x]=ClampToQuantum(pixels[v]);
+              recolor_indexes[x]=ClampToQuantum(pixel);
             break;
           }
         }
       }
+      p++;
       q++;
     }
     if (SyncCacheViewAuthenticPixels(recolor_view,exception) == MagickFalse)
