@@ -8557,10 +8557,13 @@ WandExport MagickBooleanType MagickReadImageFile(MagickWand *wand,FILE *file)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickRecolorImage() apply color correction to the image.
-%  Although you can use variable sized matrices, typically you use a 5 x 5 for
-%  an RGBA image and a 6x6 for CMYKA.  Populate the last row with normalized
-%  values to translate.
+%  MagickRecolorImage() apply color transformation to an image. The method
+%  permits saturation changes, hue rotation, luminance to alpha, and various
+%  other effects.  Although variable-sized transformation matrices can be used,
+%  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
+%  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
+%  except offsets are in column 6 rather than 5 (in support of CMYKA images)
+%  and offsets are normalized (divide Flash offset by 255).
 %
 %  The format of the MagickRecolorImage method is:
 %
