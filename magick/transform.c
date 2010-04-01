@@ -1737,7 +1737,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
                   (offset.y+(geometry.y < 0 ? geometry.y : 0)));
               }
             crop.height-=crop.y;
-            crop.y += transform_image->page.y;
+            crop.y+=transform_image->page.y;
             for (offset.x=0; offset.x < (double) width; )
             {
               if ((flags & AspectValue) == 0)
@@ -1757,7 +1757,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
                     (offset.x+(geometry.x < 0 ? geometry.x : 0)));
                 }
               crop.width-=crop.x;
-              crop.x += transform_image->page.x;
+              crop.x+=transform_image->page.x;
               next=CropImage(transform_image,&crop,&(*image)->exception);
               if (next == (Image *) NULL)
                 break;
