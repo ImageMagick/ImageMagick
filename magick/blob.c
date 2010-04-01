@@ -2445,8 +2445,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
         ExceptionInfo
           *sans_exception;
 
-       struct stat
-         *properties;
+        struct stat
+          *properties;
 
         sans_exception=AcquireExceptionInfo();
         magick_info=GetMagickInfo(image_info->magick,sans_exception);
