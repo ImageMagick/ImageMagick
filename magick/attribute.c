@@ -584,11 +584,20 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 MagickExport MagickBooleanType IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   ImageType
     type;
 
+  long
+    y;
+
   register const PixelPacket
     *p;
+
+  register long
+    x;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -600,63 +609,27 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
   if (image->colorspace == CMYKColorspace)
     return(MagickFalse);
   type=BilevelType;
-  switch (image->storage_class)
+  image_view=AcquireCacheView(image);
+  for (y=0; y < (long) image->rows; y++)
   {
-    case DirectClass:
-    case UndefinedClass:
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
     {
-      long
-        y;
-
-      register long
-        x;
-
-      CacheView
-        *image_view;
-
-      image_view=AcquireCacheView(image);
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
+      if (IsGrayPixel(p) == MagickFalse)
         {
-          if (IsGrayPixel(p) == MagickFalse)
-            {
-              type=UndefinedType;
-              break;
-            }
-          if ((type == BilevelType) && (IsMonochromePixel(p) == MagickFalse))
-            type=GrayscaleType;
-          p++;
-        }
-        if (type == UndefinedType)
+          type=UndefinedType;
           break;
-      }
-      image_view=DestroyCacheView(image_view);
-      break;
+        }
+      if ((type == BilevelType) && (IsMonochromePixel(p) == MagickFalse))
+        type=GrayscaleType;
+      p++;
     }
-    case PseudoClass:
-    {
-      register long
-        i;
-
-      p=image->colormap;
-      for (i=0; i < (long) image->colors; i++)
-      {
-        if (IsGrayPixel(p) == MagickFalse)
-          {
-            type=UndefinedType;
-            break;
-          }
-        if ((type == BilevelType) && (IsMonochromePixel(p) == MagickFalse))
-          type=GrayscaleType;
-        p++;
-      }
+    if (type == UndefinedType)
       break;
-    }
   }
+  image_view=DestroyCacheView(image_view);
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->type=type;
@@ -695,8 +668,17 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
 MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   ImageType
     type;
+
+  long
+    y;
+
+  register long
+    x;
 
   register const PixelPacket
     *p;
@@ -710,59 +692,25 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   if (image->colorspace == CMYKColorspace)
     return(MagickFalse);
   type=BilevelType;
-  switch (image->storage_class)
+  image_view=AcquireCacheView(image);
+  for (y=0; y < (long) image->rows; y++)
   {
-    case DirectClass:
-    case UndefinedClass:
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
     {
-      long
-        y;
-
-      register long
-        x;
-
-      CacheView
-        *image_view;
-
-      image_view=AcquireCacheView(image);
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
+      if (IsMonochromePixel(p) == MagickFalse)
         {
-          if (IsMonochromePixel(p) == MagickFalse)
-            {
-              type=UndefinedType;
-              break;
-            }
-          p++;
-        }
-        if (type == UndefinedType)
+          type=UndefinedType;
           break;
-      }
-      image_view=DestroyCacheView(image_view);
-      break;
+        }
+      p++;
     }
-    case PseudoClass:
-    {
-      register long
-        i;
-
-      p=image->colormap;
-      for (i=0; i < (long) image->colors; i++)
-      {
-        if (IsMonochromePixel(p) == MagickFalse)
-          {
-            type=UndefinedType;
-            break;
-          }
-        p++;
-      }
+    if (type == UndefinedType)
       break;
-    }
   }
+  image_view=DestroyCacheView(image_view);
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->type=type;
