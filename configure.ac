@@ -2433,7 +2433,7 @@ if test "$with_wmf" != 'no'; then
     failed=0
     passed=0
     AC_CHECK_HEADER(libwmf/eps.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(wmf,wmf_eps_function,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(wmf,wmf_eps_function,passed=`expr $passed + 1`,failed=`expr $failed + 1`,"-lwmflite")
     AC_MSG_CHECKING([if WMF package is complete])
     if test $passed -gt 0; then
         if test $failed -gt 0; then
