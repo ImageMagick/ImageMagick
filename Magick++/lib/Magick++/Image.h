@@ -861,6 +861,11 @@ namespace Magick
     void            colorMapSize ( const unsigned int entries_ );
     unsigned int    colorMapSize ( void );
 
+    // Apply a color matrix to the image channels.  The user supplied
+    // matrix may be of order 1 to 5 (1x1 through 5x5).
+    void            colorMatrix (const unsigned int order_,
+         const double *color_matrix_);
+
     // Image Color Space
     void            colorSpace ( const ColorspaceType colorSpace_ );
     ColorspaceType  colorSpace ( void ) const;
@@ -1116,11 +1121,6 @@ typedef struct _ImageStatistics
     // Quantization tree-depth
     void            quantizeTreeDepth ( const unsigned int treeDepth_ );
     unsigned int    quantizeTreeDepth ( void ) const;
-
-    // Apply a color matrix to the image channels.  The user supplied
-    // matrix may be of order 1 to 5 (1x1 through 5x5).
-    void            recolor (const unsigned int order_,
-         const double *color_matrix_);
 
     // The type of rendering intent
     void            renderingIntent ( const RenderingIntent renderingIntent_ );
