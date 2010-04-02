@@ -193,6 +193,17 @@ void Magick::colorizeImage::operator()( Magick::Image &image_ ) const
   image_.colorize( _opacityRed, _opacityGreen, _opacityBlue, _penColor );
 }
 
+// Apply a color matrix to the image channels.  The user supplied
+// matrix may be of order 1 to 6 (1x1 through 6x6).
+Magick::colorMatrixImage::colorMatrixImage( const KernelInfo *color_matrix_ )
+  : _color_matrix( color_matrix_ )
+{
+}
+void Magick::colorMatrixImage::operator()( Image &image_ ) const
+{
+  image_.colorMatrix( _color_matrix );
+}
+
 // Convert the image colorspace representation
 Magick::colorSpaceImage::colorSpaceImage( Magick::ColorspaceType colorSpace_ )
   : _colorSpace( colorSpace_ )
@@ -793,19 +804,6 @@ Magick::raiseImage::raiseImage( const Magick::Geometry &geometry_ ,
 void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 {
   image_.raise( _geometry, _raisedFlag );
-}
-
-// Apply a color matrix to the image channels.  The user supplied
-// matrix may be of order 1 to 5 (1x1 through 5x5).
-Magick::recolorImage::recolorImage( const unsigned int order_,
-              const double *color_matrix_ )
-  : _order( order_ ),
-    _color_matrix( color_matrix_ )
-{
-}
-void Magick::recolorImage::operator()( Image &image_ ) const
-{
-  image_.recolor( _order, _color_matrix );
 }
 
 // Reduce noise in image using a noise peak elimination filter

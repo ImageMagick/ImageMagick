@@ -234,6 +234,19 @@ namespace Magick
     Color _penColor;
   };
 
+  // Apply a color matrix to the image channels.  The user supplied
+  // matrix may be of order 1 to 5 (1x1 through 5x5).
+  class MagickDLLDecl colorMatrixImage : public std::unary_function<Image&,void>
+  {
+  public:
+    colorMatrixImage( const KernelInfo *color_matrix_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    const KernelInfo *_color_matrix;
+  };
+
   // Convert the image colorspace representation
   class MagickDLLDecl colorSpaceImage : public std::unary_function<Image&,void>
   {
@@ -849,21 +862,6 @@ namespace Magick
   private:
     Geometry   _geometry;
     bool       _raisedFlag;
-  };
-
-  // Apply a color matrix to the image channels.  The user supplied
-  // matrix may be of order 1 to 5 (1x1 through 5x5).
-  class MagickDLLDecl recolorImage : public std::unary_function<Image&,void>
-  {
-  public:
-    recolorImage( const unsigned int order_,
-          const double *color_matrix_ );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    unsigned int  _order;
-    const double *_color_matrix;
   };
 
   // Reduce noise in image using a noise peak elimination filter
