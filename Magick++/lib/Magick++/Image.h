@@ -863,8 +863,7 @@ namespace Magick
 
     // Apply a color matrix to the image channels.  The user supplied
     // matrix may be of order 1 to 5 (1x1 through 5x5).
-    void            colorMatrix (const unsigned int order_,
-         const double *color_matrix_);
+    void            colorMatrix (const KernelInfo *color_matrix_);
 
     // Image Color Space
     void            colorSpace ( const ColorspaceType colorSpace_ );
