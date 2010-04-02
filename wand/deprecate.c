@@ -1231,6 +1231,61 @@ WandExport MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k R e c o l o r I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickRecolorImage() apply color transformation to an image. The method
+%  permits saturation changes, hue rotation, luminance to alpha, and various
+%  other effects.  Although variable-sized transformation matrices can be used,
+%  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
+%  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
+%  except offsets are in column 6 rather than 5 (in support of CMYKA images)
+%  and offsets are normalized (divide Flash offset by 255).
+%
+%  The format of the MagickRecolorImage method is:
+%
+%      MagickBooleanType MagickRecolorImage(MagickWand *wand,
+%        const unsigned long order,const double *color_matrix)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o order: the number of columns and rows in the color matrix.
+%
+%    o color_matrix: An array of doubles representing the color matrix.
+%
+*/
+WandExport MagickBooleanType MagickRecolorImage(MagickWand *wand,
+  const unsigned long order,const double *color_matrix)
+{
+  Image
+    *transform_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (color_matrix == (const double *) NULL)
+    return(MagickFalse);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  transform_image=RecolorImage(wand->images,order,color_matrix,
+    wand->exception);
+  if (transform_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,transform_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e A t t r i b u t e                             %
 %                                                                             %
 %                                                                             %

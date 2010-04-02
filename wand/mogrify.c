@@ -1151,6 +1151,26 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             *image=colorize_image;
             break;
           }
+        if (LocaleCompare("color-matrix",option+1) == 0)
+          {
+            Image
+              *color_image;
+
+            KernelInfo
+              *kernel;
+
+            (void) SyncImageSettings(image_info,*image);
+            kernel=AcquireKernelInfo(argv[i+1]);
+            if (kernel == (KernelInfo *) NULL)
+              break;
+            color_image=ColorMatrixImage(*image,kernel,exception);
+            kernel=DestroyKernelInfo(kernel);
+            if (color_image == (Image *) NULL)
+              break;
+            *image=DestroyImage(*image);
+            *image=color_image;
+            break;
+          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             /*
@@ -3686,6 +3706,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-clip-mask filename  associate a clip mask with the image",
       "-clip-path id        clip along a named path from the 8BIM profile",
       "-colorize value      colorize the image with the fill color",
+      "-color-matrix matrix apply color correction to the image",
       "-contrast            enhance or reduce the image contrast",
       "-contrast-stretch geometry",
       "                     improve contrast by `stretching' the intensity range",
@@ -3755,7 +3776,6 @@ static MagickBooleanType MogrifyUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold low,high",
       "                     random threshold the image",
-      "-recolor matrix      apply color correction to the image",
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-repage geometry     size and location of an image canvas",
@@ -4456,6 +4476,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (long) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("color-matrix",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5708,6 +5739,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (long) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("recolor",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);

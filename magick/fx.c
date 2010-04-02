@@ -807,6 +807,232 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     C o l o r M a t r i x I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ColorMatrixImage() applies color transformation to an image. This method
+%  permits saturation changes, hue rotation, luminance to alpha, and various
+%  other effects.  Although variable-sized transformation matrices can be used,
+%  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
+%  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
+%  except offsets are in column 6 rather than 5 (in support of CMYKA images)
+%  and offsets are normalized (divide Flash offset by 255).
+%
+%  The format of the ColorMatrixImage method is:
+%
+%      Image *ColorMatrixImage(const Image *image,
+%        const KernelInfo *color_matrix,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o color_matrix:  the color matrix.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ColorMatrixImage(const Image *image,
+  const KernelInfo *color_matrix,ExceptionInfo *exception)
+{
+#define ColorMatrixImageTag  "ColorMatrix/Image"
+
+  CacheView
+    *color_view,
+    *image_view;
+
+  double
+    ColorMatrix[6][6] =
+    {
+      { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+      { 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },
+      { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
+      { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },
+      { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 },
+      { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 }
+    };
+
+  Image
+    *color_image;
+
+  long
+    progress,
+    u,
+    v,
+    y;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  /*
+    Create color matrix.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  i=0;
+  for (v=0; v < (long) color_matrix->height; v++)
+    for (u=0; u < (long) color_matrix->width; u++)
+    {
+      if ((v < 6) && (u < 6))
+        ColorMatrix[v][u]=color_matrix->values[i];
+      i++;
+    }
+  /*
+    Initialize color image.
+  */
+  color_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (color_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(color_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&color_image->exception);
+      color_image=DestroyImage(color_image);
+      return((Image *) NULL);
+    }
+  if (image->debug != MagickFalse)
+    {
+      char
+        format[MaxTextExtent],
+        *message;
+
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+        "  ColorMatrix image with color matrix:");
+      message=AcquireString("");
+      for (v=0; v < 6; v++)
+      {
+        *message='\0';
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
+        (void) ConcatenateString(&message,format);
+        for (u=0; u < 6; u++)
+        {
+          (void) FormatMagickString(format,MaxTextExtent,"%+f ",
+            ColorMatrix[v][u]);
+          (void) ConcatenateString(&message,format);
+        }
+        (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
+      }
+      message=DestroyString(message);
+    }
+  /*
+    ColorMatrix image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireCacheView(image);
+  color_view=AcquireCacheView(color_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    MagickRealType
+      pixel;
+
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict p;
+
+    register long
+      x;
+
+    register IndexPacket
+      *restrict color_indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(color_view,0,y,color_image->columns,1,
+      exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
+    color_indexes=GetCacheViewAuthenticIndexQueue(color_view);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      register long
+        v;
+
+      unsigned long
+        height;
+
+      height=color_matrix->height > 6 ? 6UL : color_matrix->height;
+      for (v=0; v < (long) height; v++)
+      {
+        pixel=ColorMatrix[v][0]*p->red+ColorMatrix[v][1]*p->green+
+          ColorMatrix[v][2]*p->blue;
+        if (image->matte != MagickFalse)
+          pixel+=ColorMatrix[v][3]*(QuantumRange-p->opacity);
+        if (image->colorspace == CMYKColorspace)
+          pixel+=ColorMatrix[v][4]*indexes[x];
+        pixel+=QuantumRange*ColorMatrix[v][5];
+        switch (v)
+        {
+          case 0: q->red=ClampToQuantum(pixel); break;
+          case 1: q->green=ClampToQuantum(pixel); break;
+          case 2: q->blue=ClampToQuantum(pixel); break;
+          case 3:
+          {
+            if (image->matte != MagickFalse)
+              q->opacity=ClampToQuantum(QuantumRange-pixel);
+            break;
+          }
+          case 4:
+          {
+            if (image->colorspace == CMYKColorspace)
+              color_indexes[x]=ClampToQuantum(pixel);
+            break;
+          }
+        }
+      }
+      p++;
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(color_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_ColorMatrixImage)
+#endif
+        proceed=SetImageProgress(image,ColorMatrixImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  color_view=DestroyCacheView(color_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    color_image=DestroyImage(color_image);
+  return(color_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y F x I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -3638,229 +3864,6 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     return((Image *) NULL);
   polaroid_image=trim_image;
   return(polaroid_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     R e c o l o r I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RecolorImage() apply color transformation to an image. The method permits
-%  saturation changes, hue rotation, luminance to alpha, and various other
-%  effects.  Although variable-sized transformation matrices can be used,
-%  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
-%  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
-%  except offsets are in column 6 rather than 5 (in support of CMYKA images)
-%  and offsets are normalized (divide Flash offset by 255).
-%
-%  The format of the RecolorImage method is:
-%
-%      Image *RecolorImage(const Image *image,const unsigned long order,
-%        const double *color_matrix,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o order: the number of columns and rows in the recolor matrix.
-%
-%    o color_matrix: An array of double representing the recolor matrix.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
-  const double *color_matrix,ExceptionInfo *exception)
-{
-#define RecolorImageTag  "Recolor/Image"
-
-  CacheView
-    *image_view,
-    *recolor_view;
-
-  double
-    recolor_matrix[6][6] =
-    {
-      { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-      { 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },
-      { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
-      { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },
-      { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 },
-      { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 }
-    };
-
-  Image
-    *recolor_image;
-
-  long
-    progress,
-    u,
-    v,
-    y;
-
-  MagickBooleanType
-    status;
-
-  register long
-    i;
-
-  /*
-    Create recolor matrix.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  i=0;
-  for (v=0; v < (long) order; v++)
-    for (u=0; u < (long) order; u++)
-    {
-      if ((v < 6) && (u < 6))
-        recolor_matrix[v][u]=color_matrix[i];
-      i++;
-    }
-  /*
-    Initialize recolor image.
-  */
-  recolor_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (recolor_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(recolor_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&recolor_image->exception);
-      recolor_image=DestroyImage(recolor_image);
-      return((Image *) NULL);
-    }
-  if (image->debug != MagickFalse)
-    {
-      char
-        format[MaxTextExtent],
-        *message;
-
-      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  Recolor image with color matrix:");
-      message=AcquireString("");
-      for (v=0; v < 6; v++)
-      {
-        *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
-        (void) ConcatenateString(&message,format);
-        for (u=0; u < 6; u++)
-        {
-          (void) FormatMagickString(format,MaxTextExtent,"%+f ",
-            recolor_matrix[v][u]);
-          (void) ConcatenateString(&message,format);
-        }
-        (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
-      }
-      message=DestroyString(message);
-    }
-  /*
-    Recolor image.
-  */
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireCacheView(image);
-  recolor_view=AcquireCacheView(recolor_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (long) image->rows; y++)
-  {
-    MagickRealType
-      pixel;
-
-    register const IndexPacket
-      *restrict indexes;
-
-    register const PixelPacket
-      *restrict p;
-
-    register long
-      x;
-
-    register IndexPacket
-      *restrict recolor_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(recolor_view,0,y,recolor_image->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    recolor_indexes=GetCacheViewAuthenticIndexQueue(recolor_view);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      register long
-        v;
-
-      for (v=0; v < (long) (order > 6 ? 6 : order); v++)
-      {
-        pixel=recolor_matrix[v][0]*p->red+recolor_matrix[v][1]*p->green+
-          recolor_matrix[v][2]*p->blue;
-        if (image->matte != MagickFalse)
-          pixel+=recolor_matrix[v][3]*(QuantumRange-p->opacity);
-        if (image->colorspace == CMYKColorspace)
-          pixel+=recolor_matrix[v][4]*indexes[x];
-        pixel+=QuantumRange*recolor_matrix[v][5];
-        switch (v)
-        {
-          case 0: q->red=ClampToQuantum(pixel); break;
-          case 1: q->green=ClampToQuantum(pixel); break;
-          case 2: q->blue=ClampToQuantum(pixel); break;
-          case 3:
-          {
-            if (image->matte != MagickFalse)
-              q->opacity=ClampToQuantum(QuantumRange-pixel);
-            break;
-          }
-          case 4:
-          {
-            if (image->colorspace == CMYKColorspace)
-              recolor_indexes[x]=ClampToQuantum(pixel);
-            break;
-          }
-        }
-      }
-      p++;
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(recolor_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_RecolorImage)
-#endif
-        proceed=SetImageProgress(image,RecolorImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  recolor_view=DestroyCacheView(recolor_view);
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    recolor_image=DestroyImage(recolor_image);
-  return(recolor_image);
 }
 
 /*

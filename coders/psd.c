@@ -68,6 +68,7 @@
   Define declaractions.
 */
 #define MaxPSDChannels  56
+#define PSDQuantum(x) (((long) (x)+1) & -2)
 
 /*
   Enumerated declaractions.
@@ -1987,14 +1988,34 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   */
   res_extra = 28; /* 0x03EB */
   profile=GetImageProfile(image,"8bim");
-  if (profile == (StringInfo *) NULL)
-    (void) WriteBlobMSBLong(image,(unsigned int) res_extra);
-  else
+  if (profile != (StringInfo *) NULL)
     {
       (void) WriteBlobMSBLong(image,(unsigned int) (res_extra+
         GetStringInfoLength(profile)));
       (void) WriteBlob(image,GetStringInfoLength(profile),GetStringInfoDatum(
         profile));
+    }
+  else
+    {
+      profile=GetImageProfile(image,"icc");
+      if (profile == (StringInfo *) NULL)
+        (void) WriteBlobMSBLong(image,(unsigned int) res_extra);
+      else
+        {
+          size_t
+            length;
+
+          length=PSDQuantum(GetStringInfoLength(profile));
+          (void) WriteBlobMSBLong(image,(unsigned int) (res_extra+length+12));
+          (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
+          (void) WriteBlobMSBShort(image,0x040F);
+          (void) WriteBlobMSBShort(image,0);
+          (void) WriteBlobMSBLong(image,GetStringInfoLength(profile));
+          (void) WriteBlob(image,GetStringInfoLength(profile),
+            GetStringInfoDatum(profile));
+          if (length != GetStringInfoLength(profile))
+            (void) WriteBlobByte(image,0);
+        }
     }
   WriteResolutionResourceBlock(image);
 
