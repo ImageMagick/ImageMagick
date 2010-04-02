@@ -931,7 +931,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %  be modified without effecting the original.  The cloned kernel should be
 %  destroyed using DestoryKernelInfo() when no longer needed.
 %
-%  The format of the DestroyKernelInfo method is:
+%  The format of the CloneKernelInfo method is:
 %
 %      KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 %

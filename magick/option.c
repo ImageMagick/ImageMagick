@@ -238,6 +238,8 @@ static const OptionInfo
     { "-colorize", 1L, MagickFalse },
     { "+colormap", 0L, MagickFalse },
     { "-colormap", 1L, MagickFalse },
+    { "+color-matrix", 0L, MagickFalse },
+    { "-color-matrix", 1L, MagickFalse },
     { "+colors", 0L, MagickFalse },
     { "-colors", 1L, MagickFalse },
     { "+colorspace", 0L, MagickFalse },

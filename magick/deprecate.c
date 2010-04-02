@@ -62,6 +62,7 @@
 #include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/fx.h"
 #include "magick/geometry.h"
 #include "magick/identify.h"
 #include "magick/image.h"
@@ -72,6 +73,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/morphology.h"
 #include "magick/paint.h"
 #include "magick/pixel.h"
 #include "magick/pixel-private.h"
@@ -5190,6 +5192,64 @@ MagickExport void ReacquireMemory(void **memory,const size_t size)
   if (allocation == (void *) NULL)
     *memory=RelinquishMagickMemory(*memory);
   *memory=allocation;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     R e c o l o r I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RecolorImage() apply color transformation to an image. The method permits
+%  saturation changes, hue rotation, luminance to alpha, and various other
+%  effects.  Although variable-sized transformation matrices can be used,
+%  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
+%  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
+%  except offsets are in column 6 rather than 5 (in support of CMYKA images)
+%  and offsets are normalized (divide Flash offset by 255).
+%
+%  The format of the RecolorImage method is:
+%
+%      Image *RecolorImage(const Image *image,const unsigned long order,
+%        const double *color_matrix,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o order: the number of columns and rows in the recolor matrix.
+%
+%    o color_matrix: An array of double representing the recolor matrix.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
+  const double *color_matrix,ExceptionInfo *exception)
+{
+  double
+    *values;
+
+  KernelInfo
+    *kernel_info;
+
+  Image
+    *recolor_image;
+
+  kernel_info=AcquireKernelInfo("1");
+  kernel_info->width=order;
+  kernel_info->height=order;
+  values=kernel_info->values;
+  kernel_info->values=(double *) color_matrix;
+  recolor_image=ColorMatrixImage(image,kernel_info,exception);
+  kernel_info->values=values;
+  kernel_info=DestroyKernelInfo(kernel_info);
+  return(recolor_image);
 }
 
 /*

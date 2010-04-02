@@ -171,6 +171,7 @@ static MagickBooleanType ConvertUsage(void)
       "-clip-mask filename  associate a clip mask with the image",
       "-clip-path id        clip along a named path from the 8BIM profile",
       "-colorize value      colorize the image with the fill color",
+      "-color-matrix matrix apply color correction to the image",
       "-contrast            enhance or reduce the image contrast",
       "-contrast-stretch geometry",
       "                     improve contrast by `stretching' the intensity range",
@@ -240,7 +241,6 @@ static MagickBooleanType ConvertUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold low,high",
       "                     random threshold the image",
-      "-recolor matrix      apply color correction to the image",
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-repage geometry     size and location of an image canvas",
@@ -945,6 +945,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("color-matrix",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             if (*option == '+')
@@ -1051,7 +1062,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
              * These may not work for kernels with 'nan' values, like 'diamond'
              */
             GetMagickToken(argv[i],NULL,token);
-            if ( isalpha((int)token[0]) )
+            if (isalpha((int) (unsigned char) *token) != 0)
               {
                 long
                 op;
@@ -1061,9 +1072,9 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                   ThrowConvertException(OptionError,"UnrecognizedKernelType",
                        token);
               }
-            /* geometry is currently invalid if a 'nan' value is included */
-            else if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
+            else
+              if (IsGeometry(argv[i]) == MagickFalse)
+                ThrowConvertInvalidArgumentException(option,argv[i]);
 #endif
             break;
           }
@@ -1960,11 +1971,11 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("morphology",option+1) == 0)
           {
-            long
-              op;
-
             char
               token[MaxTextExtent];
+
+            long
+              op;
 
             i++;
             if (i == (long) argc)
@@ -1973,17 +1984,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             op=ParseMagickOption(MagickMorphologyOptions,MagickFalse,token);
             if (op < 0)
               ThrowConvertException(OptionError,"UnrecognizedMorphologyMethod",
-                  token);
+                token);
             i++;
             if (i == (long) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             GetMagickToken(argv[i],NULL,token);
-            if ( isalpha((int)token[0]) )
+            if (isalpha((int) ((unsigned char) *token)) != 0)
               {
                 op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
                 if (op < 0)
                   ThrowConvertException(OptionError,"UnrecognizedKernelType",
-                       token);
+                    token);
               }
 #if 0
   /* DO NOT ENABLE, geometry can not handle user defined kernels

@@ -128,6 +128,8 @@ extern MagickExport Image
   *FlattenImages(Image *,ExceptionInfo *) magick_attribute((deprecated)),
   *MosaicImages(Image *,ExceptionInfo *) magick_attribute((deprecated)),
   *PopImageList(Image **) magick_attribute((deprecated)),
+  *RecolorImage(const Image *,const unsigned long,const double *,
+    ExceptionInfo *) magick_attribute((deprecated)),
   *ShiftImageList(Image **) magick_attribute((deprecated)),
   *SpliceImageList(Image *,const long,const unsigned long,const Image *,
     ExceptionInfo *) magick_attribute((deprecated));

@@ -528,6 +528,7 @@ static struct
     { "Morphology", { {"kernel", StringReference},
       {"channel", MagickChannelOptions}, {"method", MagickMorphologyOptions},
       {"iterations", IntegerReference} } },
+    { "ColorMatrix", { {"matrix", StringReference} } },
   };
 
 static SplayTreeInfo
@@ -7182,6 +7183,8 @@ Mogrify(ref,...)
     BrightnessContrastImage = 264
     Morphology         = 265
     MorphologyImage    = 266
+    ColorMatrix        = 267
+    ColorMatrixImage   = 268
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10479,6 +10482,20 @@ Mogrify(ref,...)
             iterations=argument_list[4].long_reference;
           image=MorphologyImageChannel(image,channel,method,iterations,kernel,
             exception);
+          kernel=DestroyKernelInfo(kernel);
+          break;
+        }
+        case 134:  /* ColorMatrix */
+        {
+          KernelInfo
+            *color_matrix;
+
+          if (attribute_flag[0] == 0)
+            break;
+          color_matrix=AcquireKernelInfo(argument_list[0].string_reference);
+          if (color_matrix == (KernelInfo *) NULL)
+            break;
+          image=ColorMatrixImage(image,color_matrix,exception);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
