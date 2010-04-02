@@ -610,6 +610,19 @@ void Magick::Image::colorize ( const unsigned int opacity_,
   colorize( opacity_, opacity_, opacity_, penColor_ );
 }
 
+// Apply a color matrix to the image channels.  The user supplied
+// matrix may be of order 1 to 6 (1x1 through 6x6).
+void Magick::Image::colorMatrix (const KernelInfo *color_matrix_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    ColorMatrixImage( image(), color_matrix_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Compare current image with another image
 // Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
 // in the current image. False is returned if the images are identical.
@@ -1698,20 +1711,6 @@ void Magick::Image::read ( const unsigned int width_,
   throwException( exceptionInfo );
   if ( image )
     throwException( image->exception );
-  (void) DestroyExceptionInfo( &exceptionInfo );
-}
-
-// Apply a color matrix to the image channels.  The user supplied
-// matrix may be of order 1 to 5 (1x1 through 5x5).
-void Magick::Image::recolor (const unsigned int order_,
-         const double *color_matrix_)
-{
-  ExceptionInfo exceptionInfo;
-  GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage =
-    RecolorImage( image(), order_, color_matrix_, &exceptionInfo );
-  replaceImage( newImage );
-  throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 

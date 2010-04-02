@@ -766,6 +766,7 @@ namespace Magick
   using MagickCore::IsEventLogging;
   using MagickCore::IsGeometry;
   using MagickCore::IsImagesEqual;
+  using MagickCore::KernelInfo;
   using MagickCore::LessValue;
   using MagickCore::LevelImage;
   using MagickCore::LevelImageChannel;

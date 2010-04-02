@@ -9961,37 +9961,6 @@ Mogrify(ref,...)
           (void) LinearStretchImage(image,black_point,white_point);
           break;
         }
-        case 108:  /* Recolor */
-        {
-          AV
-            *av;
-
-          double
-            *color_matrix;
-
-          unsigned long
-            order;
-
-          if (attribute_flag[0] == 0)
-            break;
-          av=(AV *) argument_list[0].array_reference;
-          order=(unsigned long) sqrt(av_len(av)+1);
-          color_matrix=(double *) AcquireQuantumMemory(order,order*
-            sizeof(*color_matrix));
-          if (color_matrix == (double *) NULL)
-            {
-              ThrowPerlException(exception,ResourceLimitFatalError,
-                "MemoryAllocationFailed",PackageName);
-              goto PerlException;
-            }
-          for (j=0; (j < (long) (order*order)) && (j < (av_len(av)+1)); j++)
-            color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
-          for ( ; j < (long) (order*order); j++)
-            color_matrix[j]=0.0;
-          image=RecolorImage(image,order,color_matrix,exception);
-          color_matrix=(double *) RelinquishMagickMemory(color_matrix);
-          break;
-        }
         case 109:  /* Mask */
         {
           if (attribute_flag[0] == 0)
@@ -10485,6 +10454,7 @@ Mogrify(ref,...)
           kernel=DestroyKernelInfo(kernel);
           break;
         }
+        case 108:  /* Recolor */
         case 134:  /* ColorMatrix */
         {
           KernelInfo
@@ -10496,7 +10466,7 @@ Mogrify(ref,...)
           if (color_matrix == (KernelInfo *) NULL)
             break;
           image=ColorMatrixImage(image,color_matrix,exception);
-          kernel=DestroyKernelInfo(kernel);
+          color_matrix=DestroyKernelInfo(color_matrix);
           break;
         }
       }

@@ -34,6 +34,7 @@ Image Settings:
   \-delay value         display the next image after pausing
   \-density geometry    horizontal and vertical density of the image
   \-depth value         image depth
+  \-direction type      render text right-to-left or left-to-right
   \-display server      get image or font from this X server
   \-dispose method      layer disposal method
   \-dither method       apply error diffusion to image
@@ -114,6 +115,7 @@ Image Operators:
   \-clip-mask filename  associate a clip mask with the image
   \-clip-path id        clip along a named path from the 8BIM profile
   \-colorize value      colorize the image with the fill color
+  \-color-matrix matrix apply color correction to the image
   \-contrast            enhance or reduce the image contrast
   \-contrast-stretch geometry
                        improve contrast by `stretching' the intensity range
@@ -172,7 +174,6 @@ Image Operators:
   \-raise value         lighten/darken image edges to create a 3-D effect
   \-random-threshold low,high
                        random threshold the image
-  \-recolor matrix      apply color correction to the image
   \-region geometry     apply options to a portion of the image
   \-render              render vector graphics
   \-repage geometry     size and location of an image canvas
