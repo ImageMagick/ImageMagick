@@ -243,7 +243,7 @@ hardcode_into_libs=yes
 sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.4.3 /usr/lib64 /lib64"
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/alliance/lib /usr/lib64/atlas /usr/lib64/kicad /usr/lib64/mysql /usr/lib64/octave-3.2.4 /usr/lib64/openmotif /usr/lib64/qt-3.3/lib /usr/lib64/tcl8.5/tclx8.4 /usr/lib64/tcl8.5 /usr/lib64/wine/ /usr/lib64/xulrunner-1.9.2 "
+sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/alliance/lib /usr/lib64/atlas /usr/lib64/kicad /usr/lib64/llvm /usr/lib64/mysql /usr/lib64/octave-3.2.4 /usr/lib64/openmotif /usr/lib64/qt-3.3/lib /usr/lib64/tcl8.5/tclx8.4 /usr/lib64/tcl8.5 /usr/lib64/wine/ /usr/lib64/xulrunner-1.9.2 "
 
 # Whether dlopen is supported.
 dlopen_support=yes

@@ -1043,7 +1043,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH 
-#define MAGICKCORE_LT_DLSEARCH_PATH  "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/alliance/lib:/usr/lib64/atlas:/usr/lib64/kicad:/usr/lib64/mysql:/usr/lib64/octave-3.2.4:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2" 
+#define MAGICKCORE_LT_DLSEARCH_PATH  "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/alliance/lib:/usr/lib64/atlas:/usr/lib64/kicad:/usr/lib64/llvm:/usr/lib64/mysql:/usr/lib64/octave-3.2.4:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2" 
 #endif
 
 /* The archive extension */
@@ -1278,13 +1278,10 @@
 /* Define if using the dmalloc debugging malloc package */
 /* #undef WITH_DMALLOC */
 
-/* Define if you have wmflite library */
-#ifndef MAGICKCORE_WMFLITE_DELEGATE 
-#define MAGICKCORE_WMFLITE_DELEGATE  1 
+/* Define if you have WMF library */
+#ifndef MAGICKCORE_WMF_DELEGATE 
+#define MAGICKCORE_WMF_DELEGATE  1 
 #endif
-
-/* Define if you have wmf library */
-/* #undef WMF_DELEGATE */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

@@ -1150,8 +1150,7 @@ coders_wbmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @WITH_MODULES_TRUE@am_coders_wbmp_la_rpath = -rpath $(codersdir)
 coders_wmf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_wmf_la_OBJECTS = coders/coders_wmf_la-wmf.lo
 coders_wmf_la_OBJECTS = $(am_coders_wmf_la_OBJECTS)
 coders_wmf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2449,7 +2448,6 @@ UMEM_LIBS = @UMEM_LIBS@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WMF_LIBS = @WMF_LIBS@
-WMF_LIBS_DEPS = @WMF_LIBS_DEPS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 WinPathScript = @WinPathScript@
 X11_LIBS = @X11_LIBS@

@@ -2998,7 +2998,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               quantum=1;
             else
               quantum=8;
-        if (datum != ~0U)
+        if (datum != ~0)
           length=(size_t) datum/quantum;
         else
           {

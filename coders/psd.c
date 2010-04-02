@@ -1653,7 +1653,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
     length=ExportQuantumPixels(tmp_image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
     if (monochrome != MagickFalse)
-      for (i=0; i < length; i++)
+      for (i=0; i < (long) length; i++)
         pixels[i]=(~pixels[i]);
     if (tmp_image->compression != RLECompression)
       (void) WriteBlob(image,length,pixels);

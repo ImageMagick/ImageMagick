@@ -863,7 +863,6 @@ XML_LIBS
 XML_DELEGATE_FALSE
 XML_DELEGATE_TRUE
 xml2_config
-WMF_LIBS_DEPS
 WMF_LIBS
 WMF_DELEGATE_FALSE
 WMF_DELEGATE_TRUE
@@ -9192,13 +9191,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:9195: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:9194: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:9198: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:9197: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:9201: output\"" >&5)
+  (eval echo "\"\$as_me:9200: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -10389,7 +10388,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 10392 "configure"' > conftest.$ac_ext
+  echo '#line 10391 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -12474,11 +12473,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12477: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12476: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12481: \$? = $ac_status" >&5
+   echo "$as_me:12480: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12813,11 +12812,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12816: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12815: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12820: \$? = $ac_status" >&5
+   echo "$as_me:12819: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12918,11 +12917,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12921: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12920: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12925: \$? = $ac_status" >&5
+   echo "$as_me:12924: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12973,11 +12972,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12976: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12975: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12980: \$? = $ac_status" >&5
+   echo "$as_me:12979: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15343,7 +15342,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 15346 "configure"
+#line 15345 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15439,7 +15438,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 15442 "configure"
+#line 15441 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17395,11 +17394,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17398: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17397: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17402: \$? = $ac_status" >&5
+   echo "$as_me:17401: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17494,11 +17493,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17497: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17496: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17501: \$? = $ac_status" >&5
+   echo "$as_me:17500: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17546,11 +17545,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17549: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17548: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17553: \$? = $ac_status" >&5
+   echo "$as_me:17552: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18958,7 +18957,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18961 "configure"
+#line 18960 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28538,8 +28537,6 @@ fi
 
 have_wmf='no'
 WMF_LIBS=''
-WMF_LIBS_DEPS=''
-OLIBS="$LIBS"
 if test "$with_wmf" != 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
@@ -28547,25 +28544,23 @@ $as_echo "-------------------------------------------------------------" >&6; }
 $as_echo_n "checking for WMF... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    have_libwmf='no'
-    have_libwmflite='no'
-    have_libwmf_ipa_h='no'
-
-    ac_fn_c_check_header_compile "$LINENO" "libwmf/ipa.h" "ac_cv_header_libwmf_ipa_h" "$FT2BUILD_H
-"
-if test "x$ac_cv_header_libwmf_ipa_h" = x""yes; then :
-  have_libwmf_ipa_h='yes'
+    failed=0
+    passed=0
+    ac_fn_c_check_header_mongrel "$LINENO" "libwmf/eps.h" "ac_cv_header_libwmf_eps_h" "$ac_includes_default"
+if test "x$ac_cv_header_libwmf_eps_h" = x""yes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
 fi
 
 
-    if test "$have_libwmf_ipa_h" = 'yes'; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_lite_create in -lwmflite" >&5
-$as_echo_n "checking for wmf_lite_create in -lwmflite... " >&6; }
-if test "${ac_cv_lib_wmflite_wmf_lite_create+set}" = set; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_eps_function in -lwmf" >&5
+$as_echo_n "checking for wmf_eps_function in -lwmf... " >&6; }
+if test "${ac_cv_lib_wmf_wmf_eps_function+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwmflite  $LIBS"
+LIBS="-lwmf  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -28575,106 +28570,49 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char wmf_lite_create ();
+char wmf_eps_function ();
 int
 main ()
 {
-return wmf_lite_create ();
+return wmf_eps_function ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_wmflite_wmf_lite_create=yes
+  ac_cv_lib_wmf_wmf_eps_function=yes
 else
-  ac_cv_lib_wmflite_wmf_lite_create=no
+  ac_cv_lib_wmf_wmf_eps_function=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmflite_wmf_lite_create" >&5
-$as_echo "$ac_cv_lib_wmflite_wmf_lite_create" >&6; }
-if test "x$ac_cv_lib_wmflite_wmf_lite_create" = x""yes; then :
-  have_libwmflite='yes'
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmf_wmf_eps_function" >&5
+$as_echo "$ac_cv_lib_wmf_wmf_eps_function" >&6; }
+if test "x$ac_cv_lib_wmf_wmf_eps_function" = x""yes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
 fi
 
-        if test "$have_libwmflite" = 'yes'; then
-
-$as_echo "#define WMFLITE_DELEGATE 1" >>confdefs.h
-
-            WMF_LIBS='-lwmflite'
-            LIBS="$WMF_LIBS $LIBS"
-            have_wmf='yes'
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete" >&5
+$as_echo_n "checking if WMF package is complete... " >&6; }
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+            have_wmf='no (failed tests)'
         else
-            WMF_LIBS_DEPS=''
-            WMF_CONFIG_LIBS=`libwmf-config --libs`
-            for lib in xml2 expat freetype jpeg png z; do
-                testlib="-l${lib}"
-                echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && WMF_LIBS_DEPS="$WMF_LIBS_DEPS $testlib"
-            done
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_api_create in -lwmf" >&5
-$as_echo_n "checking for wmf_api_create in -lwmf... " >&6; }
-if test "${ac_cv_lib_wmf_wmf_api_create+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwmf $WMF_LIBS_DEPS $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char wmf_api_create ();
-int
-main ()
-{
-return wmf_api_create ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_wmf_wmf_api_create=yes
-else
-  ac_cv_lib_wmf_wmf_api_create=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmf_wmf_api_create" >&5
-$as_echo "$ac_cv_lib_wmf_wmf_api_create" >&6; }
-if test "x$ac_cv_lib_wmf_wmf_api_create" = x""yes; then :
-  have_libwmf='yes'
-fi
-
-            if test "$have_libwmf" = 'yes'; then
+            WMF_LIBS='-lwmf -lwmflite'
+            LIBS="$WMF_LIBS $LIBS"
 
 $as_echo "#define WMF_DELEGATE 1" >>confdefs.h
 
-                WMF_LIBS='-lwmf'
-                LIBS="$WMF_LIBS $LIBS"
-                have_wmf='yes'
-            else
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-                have_wmf='no (failed tests)'
-                have_wmflite='no (failed tests)'
-                LIBS="$OLIBS"
-                WMF_LIBS=''
-            fi
-        fi
-    fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete" >&5
-$as_echo_n "checking if WMF package is complete... " >&6; }
-    if test "$have_wmf" = 'yes'; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+            have_wmf='yes'
+        fi
     else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -28687,6 +28625,7 @@ else
   WMF_DELEGATE_TRUE='#'
   WMF_DELEGATE_FALSE=
 fi
+
 
 
 

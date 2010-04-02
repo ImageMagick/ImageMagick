@@ -6,6 +6,7 @@
     summed rather attenuating the alpha channel).
   * Support writing 1-bit PSD images.
   * Support LCMS 2.0.
+  * Improved WMF support under Windows.
 
 2010-03-30  6.6.1-0 Glenn Randers-Pehrson <glennrp@image...>
   * The new coders/png.c was failing to read a 1-bit paletted image properly.
