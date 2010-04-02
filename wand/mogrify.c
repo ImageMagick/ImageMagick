@@ -2618,57 +2618,22 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("recolor",option+1) == 0)
           {
-            char
-              token[MaxTextExtent];
-
-            const char
-              *p;
-
-            double
-              *color_matrix;
-
             Image
-              *recolor_image;
+              *color_image;
 
-            register long
-              x;
+            KernelInfo
+              *kernel;
 
-            unsigned long
-              order;
-
-            /*
-              Transform color image.
-            */
             (void) SyncImageSettings(image_info,*image);
-            p=argv[i+1];
-            for (x=0; *p != '\0'; x++)
-            {
-              GetMagickToken(p,&p,token);
-              if (*token == ',')
-                GetMagickToken(p,&p,token);
-            }
-            order=(unsigned long) sqrt((double) x+1.0);
-            color_matrix=(double *) AcquireQuantumMemory(order,order*
-              sizeof(*color_matrix));
-            if (color_matrix == (double *) NULL)
-              ThrowWandFatalException(ResourceLimitFatalError,
-                "MemoryAllocationFailed",(*image)->filename);
-            p=argv[i+1];
-            for (x=0; (x < (long) (order*order)) && (*p != '\0'); x++)
-            {
-              GetMagickToken(p,&p,token);
-              if (*token == ',')
-                GetMagickToken(p,&p,token);
-              color_matrix[x]=StringToDouble(token);
-            }
-            for ( ; x < (long) (order*order); x++)
-              color_matrix[x]=0.0;
-            recolor_image=RecolorImage(*image,order,color_matrix,exception);
-            color_matrix=(double *) RelinquishMagickMemory(color_matrix);
-            if (recolor_image == (Image *) NULL)
+            kernel=AcquireKernelInfo(argv[i+1]);
+            if (kernel == (KernelInfo *) NULL)
+              break;
+            color_image=ColorMatrixImage(*image,kernel,exception);
+            kernel=DestroyKernelInfo(kernel);
+            if (color_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
-            *image=recolor_image;
+            *image=color_image;
             break;
           }
         if (LocaleCompare("region",option+1) == 0)
