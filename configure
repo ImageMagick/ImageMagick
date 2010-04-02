@@ -28560,7 +28560,7 @@ if test "${ac_cv_lib_wmf_wmf_eps_function+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwmf  $LIBS"
+LIBS="-lwmf "-lwmflite" $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
