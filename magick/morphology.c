@@ -202,12 +202,21 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   double
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
 
-  assert(kernel_string != (const char *) NULL);
+  if (kernel_string == (const char *) NULL)
+    {
+      kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+      if (kernel == (KernelInfo *)NULL)
+        return(kernel);
+      (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
+      kernel->type=UserDefinedKernel;
+      kernel->signature=MagickSignature;
+      return(kernel);
+    }
   SetGeometryInfo(&args);
 
   /* does it start with an alpha - Return a builtin kernel */
   GetMagickToken(kernel_string,&p,token);
-  if ( isalpha((int)token[0]) )
+  if (isalpha((int) ((unsigned char) *token)) != 0)
   {
     long
       type;

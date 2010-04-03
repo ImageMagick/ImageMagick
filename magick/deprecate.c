@@ -5232,22 +5232,18 @@ MagickExport void ReacquireMemory(void **memory,const size_t size)
 MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   const double *color_matrix,ExceptionInfo *exception)
 {
-  double
-    *values;
-
   KernelInfo
     *kernel_info;
 
   Image
     *recolor_image;
 
-  kernel_info=AcquireKernelInfo("1");
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   kernel_info->width=order;
   kernel_info->height=order;
-  values=kernel_info->values;
   kernel_info->values=(double *) color_matrix;
   recolor_image=ColorMatrixImage(image,kernel_info,exception);
-  kernel_info->values=values;
+  kernel_info->values=(double *) NULL;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(recolor_image);
 }
