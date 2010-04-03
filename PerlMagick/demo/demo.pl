@@ -103,6 +103,12 @@ $example->Label('Charcoal');
 $example->Charcoal('0x1');
 push(@$images,$example);
 
+print "ColorMatrix...\n";
+$example=$model->Clone();
+$example->Label('ColorMatrix');
+$example->ColorMatrix([1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1]);
+push(@$images,$example);
+
 print "Composite...\n";
 $example=$model->Clone();
 $example->Label('Composite');
@@ -317,12 +323,6 @@ print "Raise...\n";
 $example=$model->Clone();
 $example->Label('Raise');
 $example->Raise('10x10');
-push(@$images,$example);
-
-print "Recolor...\n";
-$example=$model->Clone();
-$example->Label('Recolor');
-$example->Recolor([1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1]);
 push(@$images,$example);
 
 print "Reduce Noise...\n";
