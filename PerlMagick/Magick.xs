@@ -528,7 +528,7 @@ static struct
     { "Morphology", { {"kernel", StringReference},
       {"channel", MagickChannelOptions}, {"method", MagickMorphologyOptions},
       {"iterations", IntegerReference} } },
-    { "ColorMatrix", { {"matrix", StringReference} } },
+    { "ColorMatrix", { {"matrix", ArrayReference} } },
   };
 
 static SplayTreeInfo
@@ -10457,16 +10457,42 @@ Mogrify(ref,...)
         case 108:  /* Recolor */
         case 134:  /* ColorMatrix */
         {
-          KernelInfo
+          AV
+            *av;
+
+          double
             *color_matrix;
+
+          KernelInfo
+            *kernel_info;
+
+          unsigned long
+            order;
 
           if (attribute_flag[0] == 0)
             break;
-          color_matrix=AcquireKernelInfo(argument_list[0].string_reference);
-          if (color_matrix == (KernelInfo *) NULL)
-            break;
-          image=ColorMatrixImage(image,color_matrix,exception);
-          color_matrix=DestroyKernelInfo(color_matrix);
+          av=(AV *) argument_list[0].array_reference;
+          order=(unsigned long) sqrt(av_len(av)+1);
+          color_matrix=(double *) AcquireQuantumMemory(order,order*
+            sizeof(*color_matrix));
+          if (color_matrix == (double *) NULL)
+            {
+              ThrowPerlException(exception,ResourceLimitFatalError,
+                "MemoryAllocationFailed",PackageName);
+              goto PerlException;
+           }
+          for (j=0; (j < (long) (order*order)) && (j < (av_len(av)+1)); j++)
+            color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
+          for ( ; j < (long) (order*order); j++)
+            color_matrix[j]=0.0;
+          kernel_info=AcquireKernelInfo((const char *) NULL);
+          kernel_info->width=order;
+          kernel_info->height=order;
+          kernel_info->values=color_matrix;
+          image=ColorMatrixImage(image,kernel_info,exception);
+          kernel_info->values=(double *) NULL;
+          kernel_info=DestroyKernelInfo(kernel_info);
+          color_matrix=(double *) RelinquishMagickMemory(color_matrix);
           break;
         }
       }

@@ -615,9 +615,6 @@ void Magick::Image::colorize ( const unsigned int opacity_,
 void Magick::Image::colorMatrix (const unsigned int order_,
          const double *color_matrix_)
 {
-  double
-    *values;
-
   KernelInfo
     *kernel_info;
 
@@ -626,11 +623,10 @@ void Magick::Image::colorMatrix (const unsigned int order_,
     kernel_info=AcquireKernelInfo("1");
   kernel_info->width=order_;
   kernel_info->height=order_;
-  values=kernel_info->values;
   kernel_info->values=(double *) color_matrix_;
   MagickCore::Image* newImage =
     ColorMatrixImage( image(), kernel_info, &exceptionInfo );
-  kernel_info->values=values;
+  kernel_info->values=(double *) NULL;
   kernel_info=DestroyKernelInfo(kernel_info);
   replaceImage( newImage );
   throwException( exceptionInfo );
