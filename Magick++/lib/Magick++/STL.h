@@ -16,6 +16,7 @@
 #include <map>
 #include <utility>
 
+#include "Magick++/Image.h"
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
