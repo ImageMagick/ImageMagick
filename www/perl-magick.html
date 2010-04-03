@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 <head>
-  <meta http-equiv="Content-Type" value="application/xhtml+xml" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
   <style type="text/css" media="screen,projection"><!--
@@ -140,9 +140,6 @@
 </div>
 <div  class="sponsor">
   <a href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
-</div>
-<div  class="sponsor">
-   <a href="http://www.goyax.de">Börse</a><!-- 201004010240 Gewiese digital-finance.de -->
 </div>
 <div  class="sponsor">
    <a href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
@@ -601,6 +598,12 @@ ImageMagick 6.6.0) and unpack it as shown below:</p>
   </tr>
 
   <tr>
+    <td valign="top">ColorMatrix</td>
+    <td valign="top">matrix=&gt;<i>array of float values</i></td>
+    <td valign="top">apply color correction to the image.  Although you can use variable sized matrices, typically you use a 5 x 5 for an RGBA image and a 6x6 for CMYKA.  A 6x6 matrix is required for offsets (populate the last column with normalized values).</td>
+  </tr>
+
+  <tr>
     <td valign="top">Comment</td>
     <td valign="top">string</td>
     <td valign="top">add a comment to your image</td>
@@ -971,12 +974,6 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
     <td valign="top">Raise</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, raise=&gt;{True, False}</td>
     <td valign="top">lighten or darken image edges to create a 3-D effect</td>
-  </tr>
-
-  <tr>
-    <td valign="top">Recolor</td>
-    <td valign="top">matrix=&gt;<i>array of float values</i></td>
-    <td valign="top">translate, scale, shear, or rotate image colors.  Although you can use variable sized matrices, typically you use a 5 x 5 for an RGBA image and a 6x6 for CMYKA.  Populate the last row with normalized values to translate.</td>
   </tr>
 
   <tr>
