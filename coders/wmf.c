@@ -66,6 +66,48 @@
 #if defined(MAGICKCORE_WMF_DELEGATE)
 #include "libwmf/api.h"
 #include "libwmf/eps.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d W M F I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadWMFImage() reads an Windows Metafile image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadWMFImage method is:
+%
+%      Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static int WMFReadBlob(void *image)
+{
+  return(ReadBlobByte((Image *) image));
+}
+
+static int WMFSeekBlob(void *image,long offset)
+{
+  return((int) SeekBlob((Image *) image,(MagickOffsetType) offset,SEEK_SET));
+}
+
+static long WMFTellBlob(void *image)
+{
+  return((long) TellBlob((Image*) image));
+}
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -102,6 +144,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_error_t
     status;
 
+  /*
+    Read WMF image.
+  */
   image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -121,20 +166,20 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary");
     }
-  status=wmf_file_open(wmf_info,image->filename);
+  status=wmf_bbuf_input(wmf_info,WMFReadBlob,WMFSeekBlob,WMFTellBlob,
+    (void *) image);
   if (status != wmf_E_None)
     {
-      if (wmf_info != (wmfAPI *) NULL)
-        wmf_api_destroy(wmf_info);
+      wmf_api_destroy(wmf_info);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image->filename);
-      return(DestroyImageList(image));
+      image=DestroyImageList(image);
+      return((Image *) NULL);
     }
   status=wmf_scan(wmf_info,0,&bounding_box);
   if (status != wmf_E_None)
     {
-      if (wmf_info != (wmfAPI *) NULL)
-        wmf_api_destroy(wmf_info);
+      wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToScanFile");
     }
   eps_info=WMF_EPS_GetData(wmf_info);
@@ -144,21 +189,19 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
-      if (wmf_info != (wmfAPI *) NULL)
-        wmf_api_destroy(wmf_info);
-      ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+      wmf_api_destroy(wmf_info);
+      ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
     }
   eps_info->out=wmf_stream_create(wmf_info,file);
   eps_info->bbox=bounding_box;
   status=wmf_play(wmf_info,0,&bounding_box);
   if (status != wmf_E_None)
     {
-      if (wmf_info != (wmfAPI *) NULL)
-        wmf_api_destroy(wmf_info);
+      wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToRenderFile");
     }
-  wmf_api_destroy(wmf_info);
   (void) fclose(file);
+  wmf_api_destroy(wmf_info);
   (void) CloseBlob(image);
   image=DestroyImage(image);
   /*
@@ -215,7 +258,6 @@ ModuleExport unsigned long RegisterWMFImage(void)
   entry->decoder=ReadWMFImage;
 #endif
   entry->description=ConstantString("Compressed Windows Meta File");
-  entry->blob_support=MagickFalse;
   entry->module=ConstantString("WMZ");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("WMF");
@@ -223,7 +265,6 @@ ModuleExport unsigned long RegisterWMFImage(void)
   entry->decoder=ReadWMFImage;
 #endif
   entry->description=ConstantString("Windows Meta File");
-  entry->blob_support=MagickFalse;
   entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
