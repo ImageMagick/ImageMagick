@@ -194,14 +194,16 @@ void Magick::colorizeImage::operator()( Magick::Image &image_ ) const
 }
 
 // Apply a color matrix to the image channels.  The user supplied
-// matrix may be of order 1 to 6 (1x1 through 6x6).
-Magick::colorMatrixImage::colorMatrixImage( const KernelInfo *color_matrix_ )
-  : _color_matrix( color_matrix_ )
+// matrix may be of order 1 to 5 (1x1 through 5x5).
+Magick::colorMatrixImage::colorMatrixImage( const unsigned int order_,
+              const double *color_matrix_ )
+  : _order( order_ ),
+    _color_matrix( color_matrix_ )
 {
 }
 void Magick::colorMatrixImage::operator()( Image &image_ ) const
 {
-  image_.colorMatrix( _color_matrix );
+  image_.colorMatrix( _order, _color_matrix );
 }
 
 // Convert the image colorspace representation

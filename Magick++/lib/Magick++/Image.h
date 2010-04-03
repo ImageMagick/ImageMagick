@@ -213,6 +213,11 @@ namespace Magick
     void            colorize ( const unsigned int opacity_,
              const Color &penColor_ );
     
+    // Apply a color matrix to the image channels.  The user supplied
+    // matrix may be of order 1 to 5 (1x1 through 5x5).
+    void            colorMatrix (const unsigned int order_,
+         const double *color_matrix_);
+
     // Comment image (add comment string to image)
     void            comment ( const std::string &comment_ );
 
@@ -860,10 +865,6 @@ namespace Magick
     // Colormap size (number of colormap entries)
     void            colorMapSize ( const unsigned int entries_ );
     unsigned int    colorMapSize ( void );
-
-    // Apply a color matrix to the image channels.  The user supplied
-    // matrix may be of order 1 to 5 (1x1 through 5x5).
-    void            colorMatrix (const KernelInfo *color_matrix_);
 
     // Image Color Space
     void            colorSpace ( const ColorspaceType colorSpace_ );
