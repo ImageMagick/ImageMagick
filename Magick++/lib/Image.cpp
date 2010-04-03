@@ -612,12 +612,26 @@ void Magick::Image::colorize ( const unsigned int opacity_,
 
 // Apply a color matrix to the image channels.  The user supplied
 // matrix may be of order 1 to 6 (1x1 through 6x6).
-void Magick::Image::colorMatrix (const KernelInfo *color_matrix_)
+void Magick::Image::colorMatrix (const unsigned int order_,
+         const double *color_matrix_)
 {
+  double
+    *values;
+
+  KernelInfo
+    *kernel_info;
+
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+    kernel_info=AcquireKernelInfo("1");
+  kernel_info->width=order_;
+  kernel_info->height=order_;
+  values=kernel_info->values;
+  kernel_info->values=(double *) color_matrix_;
   MagickCore::Image* newImage =
-    ColorMatrixImage( image(), color_matrix_, &exceptionInfo );
+    ColorMatrixImage( image(), kernel_info, &exceptionInfo );
+  kernel_info->values=values;
+  kernel_info=DestroyKernelInfo(kernel_info);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

@@ -529,6 +529,7 @@ namespace Magick
   using MagickCore::AcquireImage;
   using MagickCore::GetVirtualPixels;
   using MagickCore::AcquireIndexes;
+  using MagickCore::AcquireKernelInfo;
   using MagickCore::AcquireMagickMemory;
   using MagickCore::AcquireQuantumInfo;
   using MagickCore::AcquireString;
@@ -594,6 +595,7 @@ namespace Magick
   using MagickCore::DestroyExceptionInfo;
   using MagickCore::DestroyImageInfo;
   using MagickCore::DestroyImageList;
+  using MagickCore::DestroyKernelInfo;
   using MagickCore::DestroyMagickWand;
   using MagickCore::DestroyPixelWand;
   using MagickCore::DestroyQuantizeInfo;

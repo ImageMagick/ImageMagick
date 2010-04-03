@@ -16,7 +16,6 @@
 #include <map>
 #include <utility>
 
-#include "Magick++/Image.h"
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
@@ -240,12 +239,14 @@ namespace Magick
   class MagickDLLDecl colorMatrixImage : public std::unary_function<Image&,void>
   {
   public:
-    colorMatrixImage( const KernelInfo *color_matrix_ );
+    colorMatrixImage( const unsigned int order_,
+          const double *color_matrix_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    const KernelInfo *_color_matrix;
+    unsigned int  _order;
+    const double *_color_matrix;
   };
 
   // Convert the image colorspace representation
