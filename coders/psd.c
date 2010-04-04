@@ -1012,9 +1012,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     */
                     layer_info[i].mask.y=(long) ReadBlobMSBLong(image);
                     layer_info[i].mask.x=(long) ReadBlobMSBLong(image);
-                    layer_info[i].mask.height=(unsigned long) 
+                    layer_info[i].mask.height=(unsigned long)
                       (ReadBlobMSBLong(image)-layer_info[i].mask.y);
-                    layer_info[i].mask.width=(unsigned long) 
+                    layer_info[i].mask.width=(unsigned long)
                       (ReadBlobMSBLong(image)-layer_info[i].mask.x);
                     if (image->debug != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1865,7 +1865,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     *theAttr;
 
   const StringInfo
-    *profile;
+    *bim_profile,
+    *icc_profile;
 
   MagickBooleanType
     invert_layer_count = MagickFalse,
@@ -1878,6 +1879,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     i;
 
   size_t
+    length,
     num_channels,
     packet_size;
 
@@ -1889,8 +1891,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     channelLength,
     layer_count,
     layer_info_size,
-    rounded_layer_info_size,
-    res_extra;
+    rounded_layer_info_size;
 
   Image
     * tmp_image = (Image *) NULL,
@@ -1986,36 +1987,27 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   /*
     Image resource block.
   */
-  res_extra = 28; /* 0x03EB */
-  profile=GetImageProfile(image,"8bim");
-  if (profile != (StringInfo *) NULL)
+  length=28; /* 0x03EB */
+  bim_profile=GetImageProfile(image,"8bim");
+  if (bim_profile != (StringInfo *) NULL)
+    length+=GetStringInfoLength(bim_profile);
+  icc_profile=GetImageProfile(image,"icc");
+  if (icc_profile != (StringInfo *) NULL)
+    length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
+  (void) WriteBlobMSBLong(image,length);
+  if (bim_profile != (StringInfo *) NULL)
+    (void) WriteBlob(image,GetStringInfoLength(bim_profile),GetStringInfoDatum(
+      bim_profile));
+  if (icc_profile != (StringInfo *) NULL)
     {
-      (void) WriteBlobMSBLong(image,(unsigned int) (res_extra+
-        GetStringInfoLength(profile)));
-      (void) WriteBlob(image,GetStringInfoLength(profile),GetStringInfoDatum(
-        profile));
-    }
-  else
-    {
-      profile=GetImageProfile(image,"icc");
-      if (profile == (StringInfo *) NULL)
-        (void) WriteBlobMSBLong(image,(unsigned int) res_extra);
-      else
-        {
-          size_t
-            length;
-
-          length=PSDQuantum(GetStringInfoLength(profile));
-          (void) WriteBlobMSBLong(image,(unsigned int) (res_extra+length+12));
-          (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
-          (void) WriteBlobMSBShort(image,0x040F);
-          (void) WriteBlobMSBShort(image,0);
-          (void) WriteBlobMSBLong(image,GetStringInfoLength(profile));
-          (void) WriteBlob(image,GetStringInfoLength(profile),
-            GetStringInfoDatum(profile));
-          if (length != GetStringInfoLength(profile))
-            (void) WriteBlobByte(image,0);
-        }
+      (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
+      (void) WriteBlobMSBShort(image,0x040F);
+      (void) WriteBlobMSBShort(image,0);
+      (void) WriteBlobMSBLong(image,GetStringInfoLength(icc_profile));
+      (void) WriteBlob(image,GetStringInfoLength(icc_profile),
+        GetStringInfoDatum(icc_profile));
+      if (length != GetStringInfoLength(icc_profile))
+        (void) WriteBlobByte(image,0);
     }
   WriteResolutionResourceBlock(image);
 
