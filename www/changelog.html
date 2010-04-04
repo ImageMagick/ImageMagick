@@ -152,8 +152,20 @@
 
 <div class="main">
 
-<ul><dt>2010-03-21  6.6.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Respect the -density option when rendering a Postscript or PDF image.</li><br />
+<ul><dt>2010-03-31  6.6.1-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Fixed bug in equal-size tile cropping, when image has a page offset.</li><br />
+<dt>2010-03-31  6.6.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> The -recolor 4x4 matrix is now interpretted properly (previously it    summed rather attenuating the alpha channel).</li>
+  <li> Support writing 1-bit PSD images.</li>
+  <li> Support LCMS 2.0.</li>
+  <li> Improved WMF support under Windows.</li><br />
+<dt>2010-03-30  6.6.1-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> The new coders/png.c was failing to read a 1-bit paletted image properly.</li>
+  <li> Finished eliminating the deprecated direct references to members of    the png_info structure. ImageMagick can now be built with libpng-1.5.</li><br />
+<dt>2010-03-21  6.6.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Respect the -density option when rendering a Postscript or PDF image.</li>
+  <li> Distort barrel no longer complains when 3 arguments are given (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=15883).</li>
+  <li> Support -direction left-to-right option for rendering text</li><br />
 <dt>2010-03-24  6.6.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> coders/png.c: Eliminated support of libpng versions older than 1.0.12.</li>
   <li> Relocated the new, misplaced png_get_rowbytes() call.</li>
@@ -1417,14 +1429,13 @@
   <li> The -crop with negative offsets do not modify the virtual canvas.</li>
   <li> Caption: Given both the width and height ("-size") of the area to fill,    adjust the fonts "-pointsize" until the text just filles the whole space    without overflowing.</li>
   <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</ul>
-
 </div>
 
 <div id="linkbar">
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
