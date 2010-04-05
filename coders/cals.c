@@ -66,11 +66,13 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 
+#if defined(MAGICKCORE_TIFF_DELEGATE)
 /*
  Forward declarations.
 */
 static MagickBooleanType
   WriteCALSImage(const ImageInfo *,Image *);
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
