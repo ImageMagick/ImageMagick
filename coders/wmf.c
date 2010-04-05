@@ -65,7 +65,7 @@
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
 #include "libwmf/api.h"
-#include "libwmf/eps.h"
+#include "libwmf/gd.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,8 +138,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmfD_Rect
     bounding_box;
 
-  wmf_eps_t
-   *eps_info;
+  wmf_gd_t
+   *gd_info;
 
   wmf_error_t
     status;
@@ -158,7 +158,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   flags=0;
   flags|=WMF_OPT_IGNORE_NONFATAL;
   flags|=WMF_OPT_FUNCTION;
-  options.function=wmf_eps_function;
+  options.function=wmf_gd_function;
   status=wmf_api_create(&wmf_info,flags,&options);
   if (status != wmf_E_None)
     {
@@ -182,7 +182,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToScanFile");
     }
-  eps_info=WMF_EPS_GetData(wmf_info);
+  gd_info=WMF_GD_GetData(wmf_info);
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
   if (unique_file != -1)
@@ -192,8 +192,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       wmf_api_destroy(wmf_info);
       ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
     }
-  eps_info->out=wmf_stream_create(wmf_info,file);
-  eps_info->bbox=bounding_box;
+  gd_info->flags|=WMF_GD_OUTPUT_FILE;
+  gd_info->file=file;
+  gd_info->bbox=bounding_box;
+  wmf_display_size(wmf_info,&gd_info->width,&gd_info->height,
+    ceil(image->x_resolution-0.5),ceil(image->y_resolution-0.5));
   status=wmf_play(wmf_info,0,&bounding_box);
   if (status != wmf_E_None)
     {
@@ -205,10 +208,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloseBlob(image);
   image=DestroyImage(image);
   /*
-    Read EPS image.
+    Read GD image.
   */
   read_info=CloneImageInfo(image_info);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"eps:%.1024s",
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"png:%.1024s",
     filename);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
