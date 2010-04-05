@@ -80,13 +80,13 @@
 #if defined(MAGICKCORE_LCMS_DELEGATE)
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
 #define cmsUInt32Number  DWORD
-#define cmsSigCmykData icSigCmykData 
-#define cmsSigGrayData icSigGrayData 
-#define cmsSigLabData icSigLabData 
-#define cmsSigLuvData icSigLuvData 
-#define cmsSigRgbData icSigRgbData 
-#define cmsSigXYZData icSigXYZData 
-#define cmsSigYCbCrData icSigYCbCrData 
+#define cmsSigCmykData icSigCmykData
+#define cmsSigGrayData icSigGrayData
+#define cmsSigLabData icSigLabData
+#define cmsSigLuvData icSigLuvData
+#define cmsSigRgbData icSigRgbData
+#define cmsSigXYZData icSigXYZData
+#define cmsSigYCbCrData icSigYCbCrData
 #endif
 #endif
 
@@ -390,8 +390,8 @@ static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
 
 static cmsHTRANSFORM *AcquireTransformThreadSet(
   const cmsHPROFILE source_profile,const cmsUInt32Number source_type,
-  const cmsHPROFILE target_profile,const cmsUInt32Number target_type,const int intent,
-  const cmsUInt32Number flags)
+  const cmsHPROFILE target_profile,const cmsUInt32Number target_type,
+  const int intent,const cmsUInt32Number flags)
 {
   cmsHTRANSFORM
     *transform;
@@ -804,6 +804,14 @@ static MagickBooleanType SetsRGBImageProfile(Image *image)
   return(status);
 }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
+static void LCMSErrorHandler(cmsContext context,int severity,
+  const char *message)
+{
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
+    severity,message != (char *) NULL ? message : "no message");
+}
+#endif
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
 #if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
 static int LCMSErrorHandler(int severity,const char *message)
@@ -967,6 +975,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           /*
             Transform pixel colors as defined by the color profiles.
           */
+#if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
+          cmsSetLogErrorHandler(LCMSErrorHandler);
+#endif
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
 #if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
           cmsSetErrorHandler(LCMSErrorHandler);
