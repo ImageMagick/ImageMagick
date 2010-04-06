@@ -1,5 +1,11 @@
+2010-04-06  6.6.1-1 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fixed bug in -auto-level for special case when only one value is present
+    in some channel of the image. In this case no 'stretch is performed, just
+    as -normalize does.
+
 2010-04-05  6.6.1-1 Cristy  <quetzlzacatenango@image...>
-  * WMF support under Windows does not produce the same results as under Linux.
+  * WMF support under Windows does not produce the same results as under
+  Linux.
 
 2010-03-31  6.6.1-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Fixed bug in equal-size tile cropping, when image has a page offset.

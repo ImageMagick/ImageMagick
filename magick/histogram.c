@@ -959,6 +959,9 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %  will be extracted from all the given channels, and those channels will be
 %  stretched by exactly the same amount (preventing color distortion).
 %
+%  In the special case that only ONE value is found in a channel of the image
+%  that value is not stretched, that value is left as is.
+%
 %  The 'SyncChannels' is turned on in the 'DefaultChannels' setting by
 %  default.
 %
@@ -979,6 +982,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %      from the minimum and maximum points by this color value.
 %
 */
+
 MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   const ChannelType channel,const double black_value,const double white_value)
 {
@@ -988,6 +992,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   MagickStatusType
     status;
 
+  status=MagickTrue;
   if ((channel & SyncChannels) != 0)
     {
       /*
@@ -996,18 +1001,20 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       (void) GetImageChannelRange(image,channel,&min,&max,&image->exception);
       min+=black_value;
       max-=white_value;
-      return(LevelImageChannel(image,channel,min,max,1.0));
+      if ( fabs(min-max) >= MagickEpsilon )
+        status = LevelImageChannel(image,channel,min,max,1.0);
+      return(status);
     }
   /*
     Auto-level each channel separately.
   */
-  status=MagickTrue;
   if ((channel & RedChannel) != 0)
     {
       (void) GetImageChannelRange(image,RedChannel,&min,&max,&image->exception);
       min+=black_value;
       max-=white_value;
-      status&=LevelImageChannel(image,RedChannel,min,max,1.0);
+      if ( fabs(min-max) >= MagickEpsilon )
+        status&=LevelImageChannel(image,RedChannel,min,max,1.0);
     }
   if ((channel & GreenChannel) != 0)
     {
@@ -1015,7 +1022,8 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      status&=LevelImageChannel(image,GreenChannel,min,max,1.0);
+      if ( fabs(min-max) >= MagickEpsilon )
+        status&=LevelImageChannel(image,GreenChannel,min,max,1.0);
     }
   if ((channel & BlueChannel) != 0)
     {
@@ -1023,7 +1031,8 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      status&=LevelImageChannel(image,BlueChannel,min,max,1.0);
+      if ( fabs(min-max) >= MagickEpsilon )
+        status&=LevelImageChannel(image,BlueChannel,min,max,1.0);
     }
   if (((channel & OpacityChannel) != 0) &&
        (image->matte == MagickTrue))
@@ -1032,7 +1041,8 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      status&=LevelImageChannel(image,OpacityChannel,min,max,1.0);
+      if ( fabs(min-max) >= MagickEpsilon )
+        status&=LevelImageChannel(image,OpacityChannel,min,max,1.0);
     }
   if (((channel & IndexChannel) != 0) &&
        (image->colorspace == CMYKColorspace))
@@ -1041,9 +1051,10 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      status&=LevelImageChannel(image,IndexChannel,min,max,1.0);
+      if ( fabs(min-max) >= MagickEpsilon )
+        status&=LevelImageChannel(image,IndexChannel,min,max,1.0);
     }
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*

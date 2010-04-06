@@ -2545,7 +2545,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
 {
 #define LevelImageTag  "Level/Image"
 #define LevelValue(x) (ClampToQuantum((MagickRealType) QuantumRange* \
-  pow(((double) (x)-black_point)/(white_point-black_point),1.0/gamma)))
+  pow(scale*((double)(x)-black_point),1.0/gamma)))
 
   CacheView
     *image_view;
@@ -2563,6 +2563,9 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   register long
     i;
 
+  register double
+    scale;
+
   /*
     Allocate and initialize levels map.
   */
@@ -2570,6 +2573,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  scale = (white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2628,7 +2632,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         q->blue=LevelValue(q->blue);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        q->opacity=LevelValue(q->opacity);
+        q->opacity=QuantumRange-LevelValue(QuantumRange-q->opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         indexes[x]=LevelValue(indexes[x]);
