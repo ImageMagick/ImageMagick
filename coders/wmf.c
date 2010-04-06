@@ -139,7 +139,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bounding_box;
 
   wmf_eps_t
-   *eps_info;
+    *eps_info;
 
   wmf_error_t
     status;
