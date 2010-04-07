@@ -87,6 +87,7 @@
 #define cmsSigRgbData icSigRgbData
 #define cmsSigXYZData icSigXYZData
 #define cmsSigYCbCrData icSigYCbCrData
+#define cmsSigLinkClass icSigLinkClass
 #endif
 #endif
 
@@ -893,9 +894,12 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   /*
     Add a ICC, IPTC, or generic profile to the image.
   */
+  status=MagickTrue;
   profile=AcquireStringInfo((size_t) length);
   SetStringInfoDatum(profile,(unsigned char *) datum);
-  if ((LocaleCompare(name,"icc") == 0) || (LocaleCompare(name,"icm") == 0))
+  if ((LocaleCompare(name,"icc") != 0) && (LocaleCompare(name,"icm") != 0))
+    status=SetImageProfile(image,name,profile);
+  else
     {
       const StringInfo
         *icc_profile;
@@ -1324,9 +1328,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           transform=DestroyTransformThreadSet(transform);
           (void) cmsCloseProfile(target_profile);
         }
+      if (cmsGetDeviceClass(profile) != cmsSigLinkClass)
+        status=SetImageProfile(image,name,profile);
 #endif
     }
-  status=SetImageProfile(image,name,profile);
   profile=DestroyStringInfo(profile);
   return(status);
 }
