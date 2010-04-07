@@ -1995,6 +1995,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   if (icc_profile != (StringInfo *) NULL)
     length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
   (void) WriteBlobMSBLong(image,length);
+  WriteResolutionResourceBlock(image);
   if (bim_profile != (StringInfo *) NULL)
     (void) WriteBlob(image,GetStringInfoLength(bim_profile),GetStringInfoDatum(
       bim_profile));
@@ -2009,7 +2010,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       if (length != GetStringInfoLength(icc_profile))
         (void) WriteBlobByte(image,0);
     }
-  WriteResolutionResourceBlock(image);
 
 compute_layer_info:
   layer_count = 0;
