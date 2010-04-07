@@ -140,6 +140,9 @@ typedef struct _CacheInfo
   VirtualPixelMethod
     virtual_pixel_method;
 
+  MagickPixelPacket
+    virtual_pixel_color;
+
   unsigned long
     number_threads;
 

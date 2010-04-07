@@ -182,7 +182,7 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
   "      Information Measure of Correlation 2:\n" \
   "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Maximum Correlation Coefficient:\n" \
-  "        %.*g, %.*g, %.*g, %.*g, %.*g\n" 
+  "        %.*g, %.*g, %.*g, %.*g, %.*g\n"
 
   int
     status;
@@ -217,6 +217,20 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
   int
     status;
 
+  if (channel == AlphaChannel)
+    {
+      status=fprintf(file,StatisticsFormat,name,ClampToQuantum(scale*
+        (QuantumRange-channel_statistics[channel].minima)),
+        (QuantumRange-channel_statistics[channel].minima)/(double) QuantumRange,
+        ClampToQuantum(scale*(QuantumRange-channel_statistics[channel].maxima)),
+        (QuantumRange-channel_statistics[channel].maxima)/(double) QuantumRange,        scale*(QuantumRange-channel_statistics[channel].mean),
+        (QuantumRange-channel_statistics[channel].mean)/(double) QuantumRange,
+        scale*channel_statistics[channel].standard_deviation,
+        channel_statistics[channel].standard_deviation/(double) QuantumRange,
+        channel_statistics[channel].kurtosis,
+        channel_statistics[channel].skewness);
+      return(status);
+    }
   status=fprintf(file,StatisticsFormat,name,ClampToQuantum(scale*
     channel_statistics[channel].minima),channel_statistics[channel].minima/
     (double) QuantumRange,ClampToQuantum(scale*
@@ -658,7 +672,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             if (pixel.matte != MagickFalse)
               {
                 (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-                ConcatenateColorComponent(&pixel,OpacityChannel,X11Compliance,
+                ConcatenateColorComponent(&pixel,AlphaChannel,X11Compliance,
                   tuple);
               }
             (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
