@@ -932,408 +932,402 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           return(MagickTrue);
         }
 #if !defined(MAGICKCORE_LCMS_DELEGATE)
+      status=SetImageProfile(image,name,profile);
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
         MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (LCMS)",
         image->filename);
 #else
-      if ((icc_profile != (StringInfo *) NULL) ||
-          (cmsGetDeviceClass(profile) == cmsSigLinkClass))
-        {
-          CacheView
-            *image_view;
+      {
+        CacheView
+          *image_view;
 
-          ColorspaceType
-            source_colorspace,
-            target_colorspace;
+        ColorspaceType
+          source_colorspace,
+          target_colorspace;
 
-          cmsColorSpaceSignature
-            signature;
+        cmsColorSpaceSignature
+          signature;
 
-          cmsHPROFILE
-            source_profile,
-            target_profile;
+        cmsHPROFILE
+          source_profile,
+          target_profile;
 
-          cmsHTRANSFORM
-            *restrict transform;
+        cmsHTRANSFORM
+          *restrict transform;
 
-          cmsUInt32Number
-            flags,
-            source_type,
-            target_type;
+        cmsUInt32Number
+          flags,
+          source_type,
+          target_type;
 
-          ExceptionInfo
-            *exception;
+        ExceptionInfo
+          *exception;
 
-          int
-            intent;
+        int
+          intent;
 
-          long
-            progress,
-            y;
+        long
+          progress,
+          y;
 
-          MagickBooleanType
-            status;
+        MagickBooleanType
+          status;
 
-          size_t
-            length,
-            source_channels,
-            target_channels;
+        size_t
+          length,
+          source_channels,
+          target_channels;
 
-          unsigned short
-            **restrict source_pixels,
-            **restrict target_pixels;
+        unsigned short
+          **restrict source_pixels,
+          **restrict target_pixels;
 
-          /*
-            Transform pixel colors as defined by the color profiles.
-          */
-          exception=(&image->exception);
+        /*
+          Transform pixel colors as defined by the color profiles.
+        */
+        exception=(&image->exception);
 #if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
-          cmsSetLogErrorHandler(LCMSErrorHandler);
+        cmsSetLogErrorHandler(LCMSErrorHandler);
 #endif
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
 #if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
-          cmsSetErrorHandler(LCMSErrorHandler);
+        cmsSetErrorHandler(LCMSErrorHandler);
 #else
-          (void) cmsErrorAction(LCMS_ERROR_SHOW);
+        (void) cmsErrorAction(LCMS_ERROR_SHOW);
 #endif
 #endif
-          if (icc_profile == (StringInfo *) NULL)
-            {
-              /*
-                Device link profile, embeds source and target transforms.
-              */
-              source_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-                (cmsUInt32Number) GetStringInfoLength(profile));
-              if (source_profile == (cmsHPROFILE) NULL)
-                ThrowBinaryException(ResourceLimitError,
-                  "ColorspaceColorProfileMismatch",name);
-              target_profile=(cmsHPROFILE) NULL;
-            }
-          else
-            {
-              source_profile=cmsOpenProfileFromMem(
-                GetStringInfoDatum(icc_profile),(cmsUInt32Number)
-                GetStringInfoLength(icc_profile));
-              target_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-                (cmsUInt32Number) GetStringInfoLength(profile));
-              if ((source_profile == (cmsHPROFILE) NULL) ||
-                  (target_profile == (cmsHPROFILE) NULL))
-                ThrowBinaryException(ResourceLimitError,
-                  "ColorspaceColorProfileMismatch",name);
-            }
-          switch (cmsGetColorSpace(source_profile))
+        source_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
+          (cmsUInt32Number) GetStringInfoLength(profile));
+        if (source_profile == (cmsHPROFILE) NULL)
+          ThrowBinaryException(ResourceLimitError,
+            "ColorspaceColorProfileMismatch",name);
+        target_profile=(cmsHPROFILE) NULL;
+        if (cmsGetDeviceClass(source_profile) != cmsSigLinkClass)
           {
-            case cmsSigCmykData:
-            {
-              source_colorspace=CMYKColorspace;
-              source_type=(cmsUInt32Number) TYPE_CMYK_16;
-              source_channels=4;
-              break;
-            }
-            case cmsSigGrayData:
-            {
-              source_colorspace=GRAYColorspace;
-              source_type=(cmsUInt32Number) TYPE_GRAY_16;
-              source_channels=1;
-              break;
-            }
-            case cmsSigLabData:
-            {
-              source_colorspace=LabColorspace;
-              source_type=(cmsUInt32Number) TYPE_Lab_16;
-              source_channels=3;
-              break;
-            }
-            case cmsSigLuvData:
-            {
-              source_colorspace=YUVColorspace;
-              source_type=(cmsUInt32Number) TYPE_YUV_16;
-              source_channels=3;
-              break;
-            }
-            case cmsSigRgbData:
-            {
-              source_colorspace=RGBColorspace;
-              source_type=(cmsUInt32Number) TYPE_RGB_16;
-              source_channels=3;
-              break;
-            }
-            case cmsSigXYZData:
-            {
-              source_colorspace=XYZColorspace;
-              source_type=(cmsUInt32Number) TYPE_XYZ_16;
-              source_channels=3;
-              break;
-            }
-            case cmsSigYCbCrData:
-            {
-              source_colorspace=YCbCrColorspace;
-              source_type=(cmsUInt32Number) TYPE_YCbCr_16;
-              source_channels=3;
-              break;
-            }
-            default:
-            {
-              source_colorspace=UndefinedColorspace;
-              source_type=(cmsUInt32Number) TYPE_RGB_16;
-              source_channels=3;
-              break;
-            }
-          }
-          signature=cmsGetPCS(source_profile);
-          if (target_profile != (cmsHPROFILE) NULL)
-            signature=cmsGetColorSpace(target_profile);
-          switch (cmsGetColorSpace(target_profile))
-          {
-            case cmsSigCmykData:
-            {
-              target_colorspace=CMYKColorspace;
-              target_type=(cmsUInt32Number) TYPE_CMYK_16;
-              target_channels=4;
-              break;
-            }
-            case cmsSigLabData:
-            {
-              target_colorspace=LabColorspace;
-              target_type=(cmsUInt32Number) TYPE_Lab_16;
-              target_channels=3;
-              break;
-            }
-            case cmsSigGrayData:
-            {
-              target_colorspace=GRAYColorspace;
-              target_type=(cmsUInt32Number) TYPE_GRAY_16;
-              target_channels=1;
-              break;
-            }
-            case cmsSigLuvData:
-            {
-              target_colorspace=YUVColorspace;
-              target_type=(cmsUInt32Number) TYPE_YUV_16;
-              target_channels=3;
-              break;
-            }
-            case cmsSigRgbData:
-            {
-              target_colorspace=RGBColorspace;
-              target_type=(cmsUInt32Number) TYPE_RGB_16;
-              target_channels=3;
-              break;
-            }
-            case cmsSigXYZData:
-            {
-              target_colorspace=XYZColorspace;
-              target_type=(cmsUInt32Number) TYPE_XYZ_16;
-              target_channels=3;
-              break;
-            }
-            case cmsSigYCbCrData:
-            {
-              target_colorspace=YCbCrColorspace;
-              target_type=(cmsUInt32Number) TYPE_YCbCr_16;
-              target_channels=3;
-              break;
-            }
-            default:
-            {
-              target_colorspace=UndefinedColorspace;
-              target_type=(cmsUInt32Number) TYPE_RGB_16;
-              target_channels=3;
-              break;
-            }
-          }
-          if ((source_colorspace == UndefinedColorspace) ||
-              (target_colorspace == UndefinedColorspace))
-            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-              name);
-           if ((source_colorspace == GRAYColorspace) &&
-               (IsGrayImage(image,exception) == MagickFalse))
-            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-              name);
-           if ((source_colorspace == CMYKColorspace) &&
-               (image->colorspace != CMYKColorspace))
-            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-              name);
-           if ((source_colorspace == XYZColorspace) &&
-               (image->colorspace != XYZColorspace))
-            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-              name);
-           if ((source_colorspace == YCbCrColorspace) &&
-               (image->colorspace != YCbCrColorspace))
-            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-              name);
-           if ((source_colorspace != CMYKColorspace) &&
-               (source_colorspace != GRAYColorspace) &&
-               (source_colorspace != LabColorspace) &&
-               (source_colorspace != XYZColorspace) &&
-               (source_colorspace != YCbCrColorspace) &&
-               (image->colorspace != RGBColorspace))
-            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-              name);
-          switch (image->rendering_intent)
-          {
-            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
-            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
-            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
-            case SaturationIntent: intent=INTENT_SATURATION; break;
-            default: intent=INTENT_PERCEPTUAL; break;
-          }
-          flags=cmsFLAGS_HIGHRESPRECALC;
-#if defined(cmsFLAGS_BLACKPOINTCOMPENSATION)
-          if (image->black_point_compensation != MagickFalse)
-            flags|=cmsFLAGS_BLACKPOINTCOMPENSATION;
-#endif
-          transform=AcquireTransformThreadSet(source_profile,source_type,
-            target_profile,target_type,intent,flags);
-          (void) cmsCloseProfile(source_profile);
-          if (transform == (cmsHTRANSFORM *) NULL)
-            ThrowBinaryException(ImageError,"UnableToCreateColorTransform",
-              name);
-          /*
-            Transform image as dictated by the source and target image profiles.
-          */
-          length=(size_t) image->columns;
-          source_pixels=AcquirePixelThreadSet(image->columns,source_channels);
-          target_pixels=AcquirePixelThreadSet(image->columns,target_channels);
-          if ((source_pixels == (unsigned short **) NULL) ||
-              (target_pixels == (unsigned short **) NULL))
-            {
-              transform=DestroyTransformThreadSet(transform);
-              (void) cmsCloseProfile(target_profile);
-              ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-                image->filename);
-            }
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-            {
-              target_pixels=DestroyPixelThreadSet(target_pixels);
-              source_pixels=DestroyPixelThreadSet(source_pixels);
-              transform=DestroyTransformThreadSet(transform);
-              (void) cmsCloseProfile(target_profile);
-              return(MagickFalse);
-            }
-          if (target_colorspace == CMYKColorspace)
-            (void) SetImageColorspace(image,target_colorspace);
-          status=MagickTrue;
-          progress=0;
-          image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp parallel for schedule(dynamic,4) shared(status)
-#endif
-          for (y=0; y < (long) image->rows; y++)
-          {
-            MagickBooleanType
-              sync;
-
-            register IndexPacket
-              *restrict indexes;
-
-            register long
-              id,
-              x;
-
-            register PixelPacket
-              *restrict q;
-
-            register unsigned short
-              *p;
-
-            if (status == MagickFalse)
-              continue;
-            q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-              exception);
-            if (q == (PixelPacket *) NULL)
+            status=SetImageProfile(image,name,profile);
+            if (icc_profile != (StringInfo *) NULL)
               {
-                status=MagickFalse;
-                continue;
-              }
-            indexes=GetCacheViewAuthenticIndexQueue(image_view);
-            id=GetOpenMPThreadId();
-            p=source_pixels[id];
-            for (x=0; x < (long) image->columns; x++)
-            {
-              *p++=ScaleQuantumToShort(q->red);
-              if (source_channels > 1)
-                {
-                  *p++=ScaleQuantumToShort(q->green);
-                  *p++=ScaleQuantumToShort(q->blue);
-                }
-              if (source_channels > 3)
-                *p++=ScaleQuantumToShort(indexes[x]);
-              q++;
-            }
-            cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
-              (unsigned int) image->columns);
-            p=target_pixels[id];
-            q-=image->columns;
-            for (x=0; x < (long) image->columns; x++)
-            {
-              q->red=ScaleShortToQuantum(*p);
-              q->green=q->red;
-              q->blue=q->red;
-              p++;
-              if (target_channels > 1)
-                {
-                  q->green=ScaleShortToQuantum(*p);
-                  p++;
-                  q->blue=ScaleShortToQuantum(*p);
-                  p++;
-                }
-              if (target_channels > 3)
-                {
-                  indexes[x]=ScaleShortToQuantum(*p);
-                  p++;
-                }
-              q++;
-            }
-            sync=SyncCacheViewAuthenticPixels(image_view,exception);
-            if (sync == MagickFalse)
-              status=MagickFalse;
-            if (image->progress_monitor != (MagickProgressMonitor) NULL)
-              {
-                MagickBooleanType
-                  proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ProfileImage)
-#endif
-                proceed=SetImageProgress(image,ProfileImageTag,progress++,
-                  image->rows);
-                if (proceed == MagickFalse)
-                  status=MagickFalse;
+                target_profile=source_profile;
+                source_profile=cmsOpenProfileFromMem(
+                  GetStringInfoDatum(icc_profile),(cmsUInt32Number)
+                  GetStringInfoLength(icc_profile));
+                if (source_profile == (cmsHPROFILE) NULL)
+                  ThrowBinaryException(ResourceLimitError,
+                    "ColorspaceColorProfileMismatch",name);
               }
           }
-          image_view=DestroyCacheView(image_view);
-          (void) SetImageColorspace(image,target_colorspace);
-          switch (cmsGetColorSpace(target_profile))
+        switch (cmsGetColorSpace(source_profile))
+        {
+          case cmsSigCmykData:
           {
-            case cmsSigRgbData:
-            {
-              image->type=image->matte == MagickFalse ? TrueColorType :
-                TrueColorMatteType;
-              break;
-            }
-            case cmsSigCmykData:
-            {
-              image->type=image->matte == MagickFalse ? ColorSeparationType :
-                ColorSeparationMatteType;
-              break;
-            }
-            case cmsSigGrayData:
-            {
-              image->type=image->matte == MagickFalse ? GrayscaleType :
-                GrayscaleMatteType;
-              break;
-            }
-            default:
-              break;
+            source_colorspace=CMYKColorspace;
+            source_type=(cmsUInt32Number) TYPE_CMYK_16;
+            source_channels=4;
+            break;
           }
-          target_pixels=DestroyPixelThreadSet(target_pixels);
-          source_pixels=DestroyPixelThreadSet(source_pixels);
-          transform=DestroyTransformThreadSet(transform);
-          (void) cmsCloseProfile(target_profile);
+          case cmsSigGrayData:
+          {
+            source_colorspace=GRAYColorspace;
+            source_type=(cmsUInt32Number) TYPE_GRAY_16;
+            source_channels=1;
+            break;
+          }
+          case cmsSigLabData:
+          {
+            source_colorspace=LabColorspace;
+            source_type=(cmsUInt32Number) TYPE_Lab_16;
+            source_channels=3;
+            break;
+          }
+          case cmsSigLuvData:
+          {
+            source_colorspace=YUVColorspace;
+            source_type=(cmsUInt32Number) TYPE_YUV_16;
+            source_channels=3;
+            break;
+          }
+          case cmsSigRgbData:
+          {
+            source_colorspace=RGBColorspace;
+            source_type=(cmsUInt32Number) TYPE_RGB_16;
+            source_channels=3;
+            break;
+          }
+          case cmsSigXYZData:
+          {
+            source_colorspace=XYZColorspace;
+            source_type=(cmsUInt32Number) TYPE_XYZ_16;
+            source_channels=3;
+            break;
+          }
+          case cmsSigYCbCrData:
+          {
+            source_colorspace=YCbCrColorspace;
+            source_type=(cmsUInt32Number) TYPE_YCbCr_16;
+            source_channels=3;
+            break;
+          }
+          default:
+          {
+            source_colorspace=UndefinedColorspace;
+            source_type=(cmsUInt32Number) TYPE_RGB_16;
+            source_channels=3;
+            break;
+          }
         }
-      if (cmsGetDeviceClass(profile) != cmsSigLinkClass)
-        status=SetImageProfile(image,name,profile);
+        signature=cmsGetPCS(source_profile);
+        if (target_profile != (cmsHPROFILE) NULL)
+          signature=cmsGetColorSpace(target_profile);
+        switch (signature)
+        {
+          case cmsSigCmykData:
+          {
+            target_colorspace=CMYKColorspace;
+            target_type=(cmsUInt32Number) TYPE_CMYK_16;
+            target_channels=4;
+            break;
+          }
+          case cmsSigLabData:
+          {
+            target_colorspace=LabColorspace;
+            target_type=(cmsUInt32Number) TYPE_Lab_16;
+            target_channels=3;
+            break;
+          }
+          case cmsSigGrayData:
+          {
+            target_colorspace=GRAYColorspace;
+            target_type=(cmsUInt32Number) TYPE_GRAY_16;
+            target_channels=1;
+            break;
+          }
+          case cmsSigLuvData:
+          {
+            target_colorspace=YUVColorspace;
+            target_type=(cmsUInt32Number) TYPE_YUV_16;
+            target_channels=3;
+            break;
+          }
+          case cmsSigRgbData:
+          {
+            target_colorspace=RGBColorspace;
+            target_type=(cmsUInt32Number) TYPE_RGB_16;
+            target_channels=3;
+            break;
+          }
+          case cmsSigXYZData:
+          {
+            target_colorspace=XYZColorspace;
+            target_type=(cmsUInt32Number) TYPE_XYZ_16;
+            target_channels=3;
+            break;
+          }
+          case cmsSigYCbCrData:
+          {
+            target_colorspace=YCbCrColorspace;
+            target_type=(cmsUInt32Number) TYPE_YCbCr_16;
+            target_channels=3;
+            break;
+          }
+          default:
+          {
+            target_colorspace=UndefinedColorspace;
+            target_type=(cmsUInt32Number) TYPE_RGB_16;
+            target_channels=3;
+            break;
+          }
+        }
+        if ((source_colorspace == UndefinedColorspace) ||
+            (target_colorspace == UndefinedColorspace))
+          ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+            name);
+         if ((source_colorspace == GRAYColorspace) &&
+             (IsGrayImage(image,exception) == MagickFalse))
+          ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+            name);
+         if ((source_colorspace == CMYKColorspace) &&
+             (image->colorspace != CMYKColorspace))
+          ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+            name);
+         if ((source_colorspace == XYZColorspace) &&
+             (image->colorspace != XYZColorspace))
+          ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+            name);
+         if ((source_colorspace == YCbCrColorspace) &&
+             (image->colorspace != YCbCrColorspace))
+          ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+            name);
+         if ((source_colorspace != CMYKColorspace) &&
+             (source_colorspace != GRAYColorspace) &&
+             (source_colorspace != LabColorspace) &&
+             (source_colorspace != XYZColorspace) &&
+             (source_colorspace != YCbCrColorspace) &&
+             (image->colorspace != RGBColorspace))
+          ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+            name);
+        switch (image->rendering_intent)
+        {
+          case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
+          case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
+          case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
+          case SaturationIntent: intent=INTENT_SATURATION; break;
+          default: intent=INTENT_PERCEPTUAL; break;
+        }
+        flags=cmsFLAGS_HIGHRESPRECALC;
+#if defined(cmsFLAGS_BLACKPOINTCOMPENSATION)
+        if (image->black_point_compensation != MagickFalse)
+          flags|=cmsFLAGS_BLACKPOINTCOMPENSATION;
+#endif
+        transform=AcquireTransformThreadSet(source_profile,source_type,
+          target_profile,target_type,intent,flags);
+        (void) cmsCloseProfile(source_profile);
+        if (transform == (cmsHTRANSFORM *) NULL)
+          ThrowBinaryException(ImageError,"UnableToCreateColorTransform",
+            name);
+        /*
+          Transform image as dictated by the source and target image profiles.
+        */
+        length=(size_t) image->columns;
+        source_pixels=AcquirePixelThreadSet(image->columns,source_channels);
+        target_pixels=AcquirePixelThreadSet(image->columns,target_channels);
+        if ((source_pixels == (unsigned short **) NULL) ||
+            (target_pixels == (unsigned short **) NULL))
+          {
+            transform=DestroyTransformThreadSet(transform);
+            (void) cmsCloseProfile(target_profile);
+            ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+              image->filename);
+          }
+        if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          {
+            target_pixels=DestroyPixelThreadSet(target_pixels);
+            source_pixels=DestroyPixelThreadSet(source_pixels);
+            transform=DestroyTransformThreadSet(transform);
+            (void) cmsCloseProfile(target_profile);
+            return(MagickFalse);
+          }
+        if (target_colorspace == CMYKColorspace)
+          (void) SetImageColorspace(image,target_colorspace);
+        status=MagickTrue;
+        progress=0;
+        image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+        for (y=0; y < (long) image->rows; y++)
+        {
+          MagickBooleanType
+            sync;
+
+          register IndexPacket
+            *restrict indexes;
+
+          register long
+            id,
+            x;
+
+          register PixelPacket
+            *restrict q;
+
+          register unsigned short
+            *p;
+
+          if (status == MagickFalse)
+            continue;
+          q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+            exception);
+          if (q == (PixelPacket *) NULL)
+            {
+              status=MagickFalse;
+              continue;
+            }
+          indexes=GetCacheViewAuthenticIndexQueue(image_view);
+          id=GetOpenMPThreadId();
+          p=source_pixels[id];
+          for (x=0; x < (long) image->columns; x++)
+          {
+            *p++=ScaleQuantumToShort(q->red);
+            if (source_channels > 1)
+              {
+                *p++=ScaleQuantumToShort(q->green);
+                *p++=ScaleQuantumToShort(q->blue);
+              }
+            if (source_channels > 3)
+              *p++=ScaleQuantumToShort(indexes[x]);
+            q++;
+          }
+          cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
+            (unsigned int) image->columns);
+          p=target_pixels[id];
+          q-=image->columns;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            q->red=ScaleShortToQuantum(*p);
+            q->green=q->red;
+            q->blue=q->red;
+            p++;
+            if (target_channels > 1)
+              {
+                q->green=ScaleShortToQuantum(*p);
+                p++;
+                q->blue=ScaleShortToQuantum(*p);
+                p++;
+              }
+            if (target_channels > 3)
+              {
+                indexes[x]=ScaleShortToQuantum(*p);
+                p++;
+              }
+            q++;
+          }
+          sync=SyncCacheViewAuthenticPixels(image_view,exception);
+          if (sync == MagickFalse)
+            status=MagickFalse;
+          if (image->progress_monitor != (MagickProgressMonitor) NULL)
+            {
+              MagickBooleanType
+                proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp critical (MagickCore_ProfileImage)
+#endif
+              proceed=SetImageProgress(image,ProfileImageTag,progress++,
+                image->rows);
+              if (proceed == MagickFalse)
+                status=MagickFalse;
+            }
+        }
+        image_view=DestroyCacheView(image_view);
+        (void) SetImageColorspace(image,target_colorspace);
+        switch (signature)
+        {
+          case cmsSigRgbData:
+          {
+            image->type=image->matte == MagickFalse ? TrueColorType :
+              TrueColorMatteType;
+            break;
+          }
+          case cmsSigCmykData:
+          {
+            image->type=image->matte == MagickFalse ? ColorSeparationType :
+              ColorSeparationMatteType;
+            break;
+          }
+          case cmsSigGrayData:
+          {
+            image->type=image->matte == MagickFalse ? GrayscaleType :
+              GrayscaleMatteType;
+            break;
+          }
+          default:
+            break;
+        }
+        target_pixels=DestroyPixelThreadSet(target_pixels);
+        source_pixels=DestroyPixelThreadSet(source_pixels);
+        transform=DestroyTransformThreadSet(transform);
+        if (target_profile != (cmsHPROFILE) NULL)
+          (void) cmsCloseProfile(target_profile);
+      }
 #endif
     }
   profile=DestroyStringInfo(profile);
