@@ -932,7 +932,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           return(MagickTrue);
         }
 #if !defined(MAGICKCORE_LCMS_DELEGATE)
-      status=SetImageProfile(image,name,profile);
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
         MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (LCMS)",
         image->filename);
@@ -1002,19 +1001,16 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           ThrowBinaryException(ResourceLimitError,
             "ColorspaceColorProfileMismatch",name);
         target_profile=(cmsHPROFILE) NULL;
-        if (cmsGetDeviceClass(source_profile) != cmsSigLinkClass)
+        if ((cmsGetDeviceClass(source_profile) != cmsSigLinkClass) &&
+            (icc_profile != (StringInfo *) NULL))
           {
-            status=SetImageProfile(image,name,profile);
-            if (icc_profile != (StringInfo *) NULL)
-              {
-                target_profile=source_profile;
-                source_profile=cmsOpenProfileFromMem(
-                  GetStringInfoDatum(icc_profile),(cmsUInt32Number)
-                  GetStringInfoLength(icc_profile));
-                if (source_profile == (cmsHPROFILE) NULL)
-                  ThrowBinaryException(ResourceLimitError,
-                    "ColorspaceColorProfileMismatch",name);
-              }
+            target_profile=source_profile;
+            source_profile=cmsOpenProfileFromMem(
+              GetStringInfoDatum(icc_profile),(cmsUInt32Number)
+              GetStringInfoLength(icc_profile));
+            if (source_profile == (cmsHPROFILE) NULL)
+              ThrowBinaryException(ResourceLimitError,
+                "ColorspaceColorProfileMismatch",name);
           }
         switch (cmsGetColorSpace(source_profile))
         {
@@ -1180,7 +1176,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #endif
         transform=AcquireTransformThreadSet(source_profile,source_type,
           target_profile,target_type,intent,flags);
-        (void) cmsCloseProfile(source_profile);
         if (transform == (cmsHTRANSFORM *) NULL)
           ThrowBinaryException(ImageError,"UnableToCreateColorTransform",
             name);
@@ -1327,8 +1322,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         target_pixels=DestroyPixelThreadSet(target_pixels);
         source_pixels=DestroyPixelThreadSet(source_pixels);
         transform=DestroyTransformThreadSet(transform);
+        if (cmsGetDeviceClass(source_profile) != cmsSigLinkClass)
+          status=SetImageProfile(image,name,profile);
         if (target_profile != (cmsHPROFILE) NULL)
           (void) cmsCloseProfile(target_profile);
+        (void) cmsCloseProfile(source_profile);
       }
 #endif
     }
