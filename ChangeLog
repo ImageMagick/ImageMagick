@@ -1,3 +1,6 @@
+2010-04-8  6.6.1-2 Cristy  <quetzlzacatenango@image...>
+  * Improve support for device link profiles.
+
 2010-04-06  6.6.1-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Fixed bug in -auto-level for special case when only one value is present
     in some channel of the image. In this case no 'stretch is performed, just
