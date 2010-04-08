@@ -833,7 +833,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #define ThrowProfileException(severity,tag,context) \
 { \
   (void) cmsCloseProfile(source_profile); \
-  (void) cmsCloseProfile(target_profile); \
+  if (target_profile != (cmsHPROFILE) NULL) \
+    (void) cmsCloseProfile(target_profile); \
   ThrowBinaryException(severity,tag,context); \
 }
 
