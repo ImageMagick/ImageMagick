@@ -1177,8 +1177,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         transform=AcquireTransformThreadSet(source_profile,source_type,
           target_profile,target_type,intent,flags);
         if (transform == (cmsHTRANSFORM *) NULL)
-          ThrowBinaryException(ImageError,"UnableToCreateColorTransform",
-            name);
+          ThrowBinaryException(ImageError,"UnableToCreateColorTransform",name);
         /*
           Transform image as dictated by the source and target image profiles.
         */
