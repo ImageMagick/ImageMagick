@@ -233,6 +233,8 @@ _8c.html" target="source" name="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 
 <p>Each channel is stretched independantally of each other (producing color distortion) unless the special 'SyncChannels' flag is also provided in the channels setting. If this flag is present the minimum and maximum point will be extracted from all the given channels, and those channels will be stretched by exactly the same amount (preventing color distortion).</p></ol>
 
+<p>In the special case that only ONE value is found in a channel of the image that value is not stretched, that value is left as is.</p></ol>
+
 <p>The 'SyncChannels' is turned on in the 'DefaultChannels' setting by default.</p></ol>
 
 <p>The format of the MinMaxStretchImage method is:</p>

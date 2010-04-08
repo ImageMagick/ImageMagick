@@ -152,7 +152,11 @@
 
 <div class="main">
 
-<ul><dt>2010-03-31  6.6.1-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<ul><dt>2010-04-06  6.6.1-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Fixed bug in -auto-level for special case when only one value is present    in some channel of the image. In this case no 'stretch is performed, just    as -normalize does.</li><br />
+<dt>2010-04-05  6.6.1-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> WMF support under Windows does not produce the same results as under    Linux.</li><br />
+<dt>2010-03-31  6.6.1-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Fixed bug in equal-size tile cropping, when image has a page offset.</li><br />
 <dt>2010-03-31  6.6.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The -recolor 4x4 matrix is now interpretted properly (previously it    summed rather attenuating the alpha channel).</li>
@@ -189,7 +193,7 @@
   <li> The default Helvetica font is not always available, check for    Century Schoolbook too (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=15780).</li><br />
 <dt>2010-03-11  6.6.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Permit user to get virtual pixels with a region width of 0.</li>
-  <li> Reformulate the jinc() functio  so that the main peak is of amplitude of 1.</li>
+  <li> Reformulate the jinc() function so that the main peak is of amplitude of 1.</li>
   <li> Resampling filter must respect the image virtual pixel method.</li><br />
 <dt>2010-03-07  6.6.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The -evaluate-sequence option behaves like -evaluate except it operates    on a sequence of images.</li><br />
@@ -1435,7 +1439,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
