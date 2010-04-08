@@ -1194,7 +1194,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             (target_pixels == (unsigned short **) NULL))
           {
             transform=DestroyTransformThreadSet(transform);
-            (void) cmsCloseProfile(target_profile);
+            if (target_profile != (cmsHPROFILE) NULL)
+              (void) cmsCloseProfile(target_profile);
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
               image->filename);
           }
@@ -1203,7 +1204,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             target_pixels=DestroyPixelThreadSet(target_pixels);
             source_pixels=DestroyPixelThreadSet(source_pixels);
             transform=DestroyTransformThreadSet(transform);
-            (void) cmsCloseProfile(target_profile);
+            if (target_profile != (cmsHPROFILE) NULL)
+              (void) cmsCloseProfile(target_profile);
             return(MagickFalse);
           }
         if (target_colorspace == CMYKColorspace)
