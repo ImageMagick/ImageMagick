@@ -1001,6 +1001,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               if (source_profile == (cmsHPROFILE) NULL)
                 ThrowBinaryException(ResourceLimitError,
                   "ColorspaceColorProfileMismatch",name);
+              target_profile=(cmsHPROFILE) NULL;
             }
           else
             {
