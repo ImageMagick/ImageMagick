@@ -2507,6 +2507,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           return((MagickRealType) j1((double) alpha));
         }
 #endif
+#if defined(MAGICKCORE_HAVE_J1)
       if (LocaleNCompare(expression,"jinc",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
@@ -2517,6 +2518,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             (MagickPI*alpha));
           return(gamma);
         }
+#endif
       break;
     }
     case 'L':
