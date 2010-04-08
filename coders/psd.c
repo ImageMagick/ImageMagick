@@ -1752,7 +1752,10 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     else
       {
         if (tmp_image->colorspace == CMYKColorspace)
-          (void) NegateImage(image,MagickFalse);
+          {
+            tmp_image->compression=NoCompression;
+            (void) NegateImage(tmp_image,MagickFalse);
+          }
         if (tmp_image->compression == RLECompression)
           {
             /*
@@ -1795,7 +1798,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
               compact_pixels,BlackQuantum,(i++ == 0) ||
               (separate != MagickFalse) ? MagickTrue : MagickFalse);
-            (void) NegateImage(image,MagickFalse);
+            (void) NegateImage(tmp_image,MagickFalse);
           }
         (void) SetImageProgress(image,SaveImagesTag,5,6);
       }
