@@ -88,6 +88,7 @@
 #define cmsSigXYZData icSigXYZData
 #define cmsSigYCbCrData icSigYCbCrData
 #define cmsSigLinkClass icSigLinkClass
+#define cmsColorSpaceSignature icColorSpaceSignature
 #endif
 #endif
 
@@ -806,9 +807,10 @@ static MagickBooleanType SetsRGBImageProfile(Image *image)
 }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
 #if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
-static void LCMSErrorHandler(cmsContext context,int severity,
+static void LCMSErrorHandler(cmsContext context,cmsUInt32Number severity,
   const char *message)
 {
+  (void) context;
   (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
     severity,message != (char *) NULL ? message : "no message");
 }
@@ -944,6 +946,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             source_colorspace,
             target_colorspace;
 
+          cmsColorSpaceSignature
+            signature;
+
           cmsHPROFILE
             source_profile,
             target_profile;
@@ -1075,99 +1080,96 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               break;
             }
           }
-          target_colorspace=source_colorspace;
-          target_type=source_type;
-          target_channels=source_channels;
+          signature=cmsGetPCS(source_profile);
           if (target_profile != (cmsHPROFILE) NULL)
+            signature=cmsGetColorSpace(target_profile);
+          switch (cmsGetColorSpace(target_profile))
+          {
+            case cmsSigCmykData:
             {
-              switch (cmsGetColorSpace(target_profile))
-              {
-                case cmsSigCmykData:
-                {
-                  target_colorspace=CMYKColorspace;
-                  target_type=(cmsUInt32Number) TYPE_CMYK_16;
-                  target_channels=4;
-                  break;
-                }
-                case cmsSigLabData:
-                {
-                  target_colorspace=LabColorspace;
-                  target_type=(cmsUInt32Number) TYPE_Lab_16;
-                  target_channels=3;
-                  break;
-                }
-                case cmsSigGrayData:
-                {
-                  target_colorspace=GRAYColorspace;
-                  target_type=(cmsUInt32Number) TYPE_GRAY_16;
-                  target_channels=1;
-                  break;
-                }
-                case cmsSigLuvData:
-                {
-                  target_colorspace=YUVColorspace;
-                  target_type=(cmsUInt32Number) TYPE_YUV_16;
-                  target_channels=3;
-                  break;
-                }
-                case cmsSigRgbData:
-                {
-                  target_colorspace=RGBColorspace;
-                  target_type=(cmsUInt32Number) TYPE_RGB_16;
-                  target_channels=3;
-                  break;
-                }
-                case cmsSigXYZData:
-                {
-                  target_colorspace=XYZColorspace;
-                  target_type=(cmsUInt32Number) TYPE_XYZ_16;
-                  target_channels=3;
-                  break;
-                }
-                case cmsSigYCbCrData:
-                {
-                  target_colorspace=YCbCrColorspace;
-                  target_type=(cmsUInt32Number) TYPE_YCbCr_16;
-                  target_channels=3;
-                  break;
-                }
-                default:
-                {
-                  target_colorspace=UndefinedColorspace;
-                  target_type=(cmsUInt32Number) TYPE_RGB_16;
-                  target_channels=3;
-                  break;
-                }
-              }
-              if ((source_colorspace == UndefinedColorspace) ||
-                  (target_colorspace == UndefinedColorspace))
-                ThrowProfileException(ImageError,
-                  "ColorspaceColorProfileMismatch",name);
-               if ((source_colorspace == GRAYColorspace) &&
-                   (IsGrayImage(image,exception) == MagickFalse))
-                ThrowProfileException(ImageError,
-                  "ColorspaceColorProfileMismatch",name);
-               if ((source_colorspace == CMYKColorspace) &&
-                   (image->colorspace != CMYKColorspace))
-                ThrowProfileException(ImageError,
-                  "ColorspaceColorProfileMismatch",name);
-               if ((source_colorspace == XYZColorspace) &&
-                   (image->colorspace != XYZColorspace))
-                ThrowProfileException(ImageError,
-                  "ColorspaceColorProfileMismatch",name);
-               if ((source_colorspace == YCbCrColorspace) &&
-                   (image->colorspace != YCbCrColorspace))
-                ThrowProfileException(ImageError,
-                  "ColorspaceColorProfileMismatch",name);
-               if ((source_colorspace != CMYKColorspace) &&
-                   (source_colorspace != GRAYColorspace) &&
-                   (source_colorspace != LabColorspace) &&
-                   (source_colorspace != XYZColorspace) &&
-                   (source_colorspace != YCbCrColorspace) &&
-                   (image->colorspace != RGBColorspace))
-                ThrowProfileException(ImageError,
-                  "ColorspaceColorProfileMismatch",name);
+              target_colorspace=CMYKColorspace;
+              target_type=(cmsUInt32Number) TYPE_CMYK_16;
+              target_channels=4;
+              break;
             }
+            case cmsSigLabData:
+            {
+              target_colorspace=LabColorspace;
+              target_type=(cmsUInt32Number) TYPE_Lab_16;
+              target_channels=3;
+              break;
+            }
+            case cmsSigGrayData:
+            {
+              target_colorspace=GRAYColorspace;
+              target_type=(cmsUInt32Number) TYPE_GRAY_16;
+              target_channels=1;
+              break;
+            }
+            case cmsSigLuvData:
+            {
+              target_colorspace=YUVColorspace;
+              target_type=(cmsUInt32Number) TYPE_YUV_16;
+              target_channels=3;
+              break;
+            }
+            case cmsSigRgbData:
+            {
+              target_colorspace=RGBColorspace;
+              target_type=(cmsUInt32Number) TYPE_RGB_16;
+              target_channels=3;
+              break;
+            }
+            case cmsSigXYZData:
+            {
+              target_colorspace=XYZColorspace;
+              target_type=(cmsUInt32Number) TYPE_XYZ_16;
+              target_channels=3;
+              break;
+            }
+            case cmsSigYCbCrData:
+            {
+              target_colorspace=YCbCrColorspace;
+              target_type=(cmsUInt32Number) TYPE_YCbCr_16;
+              target_channels=3;
+              break;
+            }
+            default:
+            {
+              target_colorspace=UndefinedColorspace;
+              target_type=(cmsUInt32Number) TYPE_RGB_16;
+              target_channels=3;
+              break;
+            }
+          }
+          if ((source_colorspace == UndefinedColorspace) ||
+              (target_colorspace == UndefinedColorspace))
+            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+              name);
+           if ((source_colorspace == GRAYColorspace) &&
+               (IsGrayImage(image,exception) == MagickFalse))
+            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+              name);
+           if ((source_colorspace == CMYKColorspace) &&
+               (image->colorspace != CMYKColorspace))
+            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+              name);
+           if ((source_colorspace == XYZColorspace) &&
+               (image->colorspace != XYZColorspace))
+            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+              name);
+           if ((source_colorspace == YCbCrColorspace) &&
+               (image->colorspace != YCbCrColorspace))
+            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+              name);
+           if ((source_colorspace != CMYKColorspace) &&
+               (source_colorspace != GRAYColorspace) &&
+               (source_colorspace != LabColorspace) &&
+               (source_colorspace != XYZColorspace) &&
+               (source_colorspace != YCbCrColorspace) &&
+               (image->colorspace != RGBColorspace))
+            ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
+              name);
           switch (image->rendering_intent)
           {
             case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
