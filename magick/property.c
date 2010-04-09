@@ -3436,6 +3436,23 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           geometry=DestroyString(geometry);
           break;
         }
+      if (LocaleCompare(property,"profile") == 0)
+        {
+          ImageInfo
+            *image_info;
+
+          StringInfo
+            *profile;
+
+          image_info=AcquireImageInfo();
+          (void) CopyMagickString(image_info->filename,value,MaxTextExtent);
+          (void) SetImageInfo(image_info,1,&image->exception);
+          profile=FileToStringInfo(image_info->filename,~0UL,&image->exception);
+          if (profile != (StringInfo *) NULL)
+            status=SetImageProfile(image,image_info->magick,profile);
+          image_info=DestroyImageInfo(image_info);
+          break;
+        }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
         ConstantString(property),ConstantString(value));
       break;

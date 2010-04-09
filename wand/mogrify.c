@@ -294,24 +294,6 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   return(image);
 }
 
-static int IsPathDirectory(const char *path)
-{
-  MagickBooleanType
-    status;
-
-  struct stat
-    attributes;
-
-  if ((path == (const char *) NULL) || (*path == '\0'))
-    return(MagickFalse);
-  status=GetPathAttributes(path,&attributes);
-  if (status == MagickFalse)
-    return(-1);
-  if (S_ISDIR(attributes.st_mode) == 0)
-    return(0);
-  return(1);
-}
-
 static MagickBooleanType IsPathWritable(const char *path)
 {
   if (IsPathAccessible(path) == MagickFalse)
@@ -2507,41 +2489,21 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             profile_info=DestroyImageInfo(profile_info);
             if (profile_image == (Image *) NULL)
               {
-                char
-                  name[MaxTextExtent],
-                  filename[MaxTextExtent];
-
-                register char
-                  *p;
-
                 StringInfo
                   *profile;
 
-                (void) CopyMagickString(filename,argv[i+1],MaxTextExtent);
-                (void) CopyMagickString(name,argv[i+1],MaxTextExtent);
-                for (p=filename; *p != '\0'; p++)
-                  if ((*p == ':') && (IsPathDirectory(argv[i+1]) < 0) &&
-                      (IsPathAccessible(argv[i+1]) == MagickFalse))
-                    {
-                      register char
-                        *q;
-
-                      /*
-                        Look for profile name (e.g. name:profile).
-                      */
-                      (void) CopyMagickString(name,filename,(size_t)
-                        (p-filename+1));
-                      for (q=filename; *q != '\0'; q++)
-                        *q=(*++p);
-                      break;
-                    }
-                profile=FileToStringInfo(filename,~0UL,exception);
+                profile_info=CloneImageInfo(image_info);
+                (void) CopyMagickString(profile_info->filename,argv[i+1],
+                  MaxTextExtent);
+                profile=FileToStringInfo(profile_info->filename,~0UL,exception);
                 if (profile != (StringInfo *) NULL)
                   {
-                    (void) ProfileImage(*image,name,GetStringInfoDatum(profile),
-                      (unsigned long) GetStringInfoLength(profile),MagickFalse);
+                    (void) ProfileImage(*image,profile_info->magick,
+                      GetStringInfoDatum(profile),(unsigned long)
+                      GetStringInfoLength(profile),MagickFalse);
                     profile=DestroyStringInfo(profile);
                   }
+                profile_info=DestroyImageInfo(profile_info);
                 break;
               }
             ResetImageProfileIterator(profile_image);
@@ -8415,7 +8377,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       {
         if (LocaleCompare("write",option+1) == 0)
           {
-            char 
+            char
               key[MaxTextExtent];
 
             Image
