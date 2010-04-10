@@ -5045,6 +5045,8 @@ relative offset changes, and automatic canvas size re-calculating.  The above
 <a href="#set">-set</a> option is purely a direct, unmodified assignment of the
 virtual canvas (page) meta-data. </p>
 
+<p>Use this option to associate a colorspace or profile with your image.  For example,</p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
 <p>Set image options by prefixing the value with <kbd>option:</kbd>.  Set attributes of the image registry by prefixing the value with <kbd>registry:</kbd>.</p>
 
 <div style="margin: auto;">
@@ -5845,7 +5847,7 @@ percentage, which defaults to 100 percent (no color change). </p>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
