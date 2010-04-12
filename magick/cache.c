@@ -1808,6 +1808,8 @@ static inline MagickBooleanType IsNexusInCore(const CacheInfo *cache_info,
   MagickOffsetType
     offset;
 
+  if (cache_info->type == PingCache)
+    return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
   if (nexus_info->pixels != (cache_info->pixels+offset))
@@ -4081,6 +4083,16 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->columns=image->columns;
   cache_info->active_index_channel=((image->storage_class == PseudoClass) ||
     (image->colorspace == CMYKColorspace)) ? MagickTrue : MagickFalse;
+  if (image->ping != MagickFalse)
+    {
+      cache_info->storage_class=image->storage_class;
+      cache_info->colorspace=image->colorspace;
+      cache_info->type=PingCache;
+      cache_info->pixels=(PixelPacket *) NULL;
+      cache_info->indexes=(IndexPacket *) NULL;
+      cache_info->length=0;
+      return(MagickTrue);
+    }
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
   packet_size=sizeof(PixelPacket);
   if (cache_info->active_index_channel != MagickFalse)
@@ -5036,8 +5048,8 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
   if (cache_info->type == UndefinedCache)
     return((PixelPacket *) NULL);
   nexus_info->region=(*region);
-  if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL) &&
-      (image->mask == (Image *) NULL))
+  if ((cache_info->type != DiskCache) && (cache_info->type != PingCache) &&
+      (image->clip_mask == (Image *) NULL) && (image->mask == (Image *) NULL))
     {
       long
         x,

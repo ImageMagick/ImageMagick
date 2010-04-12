@@ -180,6 +180,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   image->y_resolution=DefaultResolution;
   image->units=PixelsPerInchResolution;
   GetTimerInfo(&image->timer);
+  image->ping=MagickFalse;
   image->cache=AcquirePixelCache(0);
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
   image->debug=IsEventLogging();
@@ -252,6 +253,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   image->border_color=image_info->border_color;
   image->matte_color=image_info->matte_color;
   image->transparent_color=image_info->transparent_color;
+  image->ping=image_info->ping;
   image->progress_monitor=image_info->progress_monitor;
   image->client_data=image_info->client_data;
   if (image_info->cache != (void *) NULL)
@@ -344,8 +346,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     image->colormap[i].blue=(Quantum) pixel;
     image->colormap[i].opacity=OpaqueOpacity;
   }
-  image->storage_class=PseudoClass;
-  return(MagickTrue);
+  return(SetImageStorageClass(image,PseudoClass));
 }
 
 /*
@@ -874,6 +875,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     clone_image->blob=ReferenceBlob(image->blob);
   else
     clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  clone_image->ping=image->ping;
   clone_image->debug=IsEventLogging();
   clone_image->semaphore=AllocateSemaphoreInfo();
   if ((columns == 0) && (rows == 0))

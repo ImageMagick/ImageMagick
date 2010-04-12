@@ -333,6 +333,9 @@ struct _Image
 
   MagickSizeType
     extent;
+
+  MagickBooleanType
+    ping;
 };
 
 struct _ImageInfo
