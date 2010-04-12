@@ -189,17 +189,23 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
 static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
   MagickRealType m2,MagickRealType hue)
 {
+  MagickRealType
+    alpha;
+
   if (hue < 0.0)
     hue+=1.0;
   if (hue > 1.0)
     hue-=1.0;
+  alpha=m1;
   if ((6.0*hue) < 1.0)
-    return(m1+6.0*(m2-m1)*hue);
-  if ((2.0*hue) < 1.0)
-    return(m2);
-  if ((3.0*hue) < 2.0)
-    return(m1+6.0*(m2-m1)*(2.0/3.0-hue));
-  return(m1);
+    alpha=m1+6.0*(m2-m1)*hue;
+  else
+    if ((2.0*hue) < 1.0)
+      alpha=m2;
+    else
+      if ((3.0*hue) < 2.0)
+        alpha=m1+6.0*(m2-m1)*(2.0/3.0-hue);
+  return(alpha < 0.0 ? 0.0 : alpha);
 }
 
 MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
