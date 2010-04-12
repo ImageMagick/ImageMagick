@@ -32,7 +32,8 @@ typedef enum
   UndefinedCache,
   MemoryCache,
   MapCache,
-  DiskCache
+  DiskCache,
+  PingCache
 } CacheType;
 
 typedef void
