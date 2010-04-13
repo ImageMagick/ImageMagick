@@ -1,4 +1,7 @@
-2010-04-8  6.6.1-2 Cristy  <quetzlzacatenango@image...>
+2010-04-12  6.6.1-3 Cristy  <quetzlzacatenango@image...>
+  * For HSL to RGB, if color temperature is less than 0, set RGB to lightness.
+
+2010-04-08  6.6.1-2 Cristy  <quetzlzacatenango@image...>
   * Improve support for device link profiles.
 
 2010-04-06  6.6.1-1 Anthony Thyssen <A.Thyssen@griffith...>
