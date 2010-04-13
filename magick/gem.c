@@ -110,6 +110,8 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
   p=brightness*(1.0-saturation);
   q=brightness*(1.0-saturation*f);
   t=brightness*(1.0-(saturation*(1.0-f)));
+  if (p < 0.0)
+    return;
   switch ((int) h)
   {
     case 0:
@@ -189,23 +191,17 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
 static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
   MagickRealType m2,MagickRealType hue)
 {
-  MagickRealType
-    alpha;
-
   if (hue < 0.0)
     hue+=1.0;
   if (hue > 1.0)
     hue-=1.0;
-  alpha=m1;
   if ((6.0*hue) < 1.0)
-    alpha=m1+6.0*(m2-m1)*hue;
-  else
-    if ((2.0*hue) < 1.0)
-      alpha=m2;
-    else
-      if ((3.0*hue) < 2.0)
-        alpha=m1+6.0*(m2-m1)*(2.0/3.0-hue);
-  return(alpha < 0.0 ? 0.0 : alpha);
+    return(m1+6.0*(m2-m1)*hue);
+  if ((2.0*hue) < 1.0)
+    return(m2);
+  if ((3.0*hue) < 2.0)
+    return(m1+6.0*(m2-m1)*(2.0/3.0-hue));
+  return(m1);
 }
 
 MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
@@ -231,11 +227,13 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
       *blue=(*red);
       return;
     }
-  if (lightness <= 0.5)
+  if (lightness < 0.5)
     m2=lightness*(saturation+1.0);
   else
     m2=(lightness+saturation)-(lightness*saturation);
   m1=2.0*lightness-m2;
+  if (m1 <= 0.0)
+    return;
   r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
   g=ConvertHueToRGB(m1,m2,hue);
   b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
@@ -388,6 +386,8 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *hue/=6.0;
   if (*hue < 0.0)
     *hue+=1.0;
+  if (*hue > 1.0)
+    *hue-=1.0;
 }
 
 /*
