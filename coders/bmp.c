@@ -1267,14 +1267,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Correct image orientation.
         */
         flipped_image=FlipImage(image,exception);
-        if (flipped_image == (Image *) NULL)
+        if (flipped_image != (Image *) NULL)
           {
-            image=DestroyImageList(image);
-            return((Image *) NULL);
+            DuplicateBlob(flipped_image,image);
+            image=DestroyImage(image);
+            image=flipped_image;
           }
-        DuplicateBlob(flipped_image,image);
-        image=DestroyImage(image);
-        image=flipped_image;
       }
     /*
       Proceed to next image.
