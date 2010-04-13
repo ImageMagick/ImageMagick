@@ -1,5 +1,6 @@
 2010-04-12  6.6.1-3 Cristy  <quetzlzacatenango@image...>
   * For HSL to RGB, if color temperature is less than 0, set RGB to lightness.
+  * Do not flip BMP image with negative height when pinging.
 
 2010-04-08  6.6.1-2 Cristy  <quetzlzacatenango@image...>
   * Improve support for device link profiles.
