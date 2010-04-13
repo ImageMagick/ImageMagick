@@ -346,11 +346,13 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Correct image orientation.
   */
   flipped_image=FlipImage(image,exception);
-  if (flipped_image == (Image *) NULL)
-    return(GetFirstImageInList(image));
-  DuplicateBlob(flipped_image,image);
-  image=DestroyImage(image);
-  return(flipped_image);
+  if (flipped_image != (Image *) NULL)
+    {
+      DuplicateBlob(flipped_image,image);
+      image=DestroyImage(image);
+      image=flipped_image;
+    }
+  return(GetFirstImageInList(image));
 }
 
 /*
