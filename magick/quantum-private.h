@@ -90,7 +90,7 @@ static inline MagickSizeType GetQuantumRange(const unsigned long depth)
 
 static inline float HalfToSinglePrecision(const unsigned short half)
 {
-#define ExponentBias  (127-15) 
+#define ExponentBias  (127-15)
 #define ExponentMask  0x7c00
 #define ExponentShift  23
 #define SignBitShift  31
@@ -186,6 +186,19 @@ static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
   quantum_state->pixel=0UL;
   quantum_state->bits=0UL;
   quantum_state->mask=mask;
+}
+
+static inline Quantum KlampToQuantum(const MagickRealType value)
+{
+  if (value <= 0.0)
+    return((Quantum) 0);
+  if (value >= (MagickRealType) QuantumRange)
+    return((Quantum) QuantumRange);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) value);
+#else
+  return((Quantum) (value+0.5));
+#endif
 }
 
 static inline unsigned char *PopCharPixel(const unsigned char pixel,
