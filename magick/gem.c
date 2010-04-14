@@ -98,18 +98,18 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  h=6.0*(hue-floor(hue));
-  f=h-floor((double) h);
-  p=brightness*(1.0-saturation);
-  q=brightness*(1.0-saturation*f);
-  t=brightness*(1.0-(saturation*(1.0-f)));
-  if ((saturation == 0.0) || (p < 0.0))
+  if (saturation == 0.0)
     {
       *red=ClampToQuantum((MagickRealType) QuantumRange*brightness);
       *green=(*red);
       *blue=(*red);
       return;
     }
+  h=6.0*(hue-floor(hue));
+  f=h-floor((double) h);
+  p=brightness*(1.0-saturation);
+  q=brightness*(1.0-saturation*f);
+  t=brightness*(1.0-(saturation*(1.0-f)));
   switch ((int) h)
   {
     case 0:
@@ -218,18 +218,18 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  if (lightness < 0.5)
-    m2=lightness*(saturation+1.0);
-  else
-    m2=(lightness+saturation)-(lightness*saturation);
-  m1=2.0*lightness-m2;
-  if ((saturation == 0.0) || (m1 < 0.0))
+  if (saturation == 0)
     {
       *red=ClampToQuantum((MagickRealType) QuantumRange*lightness);
       *green=(*red);
       *blue=(*red);
       return;
     }
+  if (lightness <= 0.5)
+    m2=lightness*(saturation+1.0);
+  else
+    m2=(lightness+saturation)-(lightness*saturation);
+  m1=2.0*lightness-m2;
   r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
   g=ConvertHueToRGB(m1,m2,hue);
   b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
@@ -382,8 +382,6 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *hue/=6.0;
   if (*hue < 0.0)
     *hue+=1.0;
-  if (*hue > 1.0)
-    *hue-=1.0;
 }
 
 /*
