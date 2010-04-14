@@ -225,7 +225,7 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
       *blue=(*red);
       return;
     }
-  if (lightness <= 0.5)
+  if (lightness < 0.5)
     m2=lightness*(saturation+1.0);
   else
     m2=(lightness+saturation)-(lightness*saturation);
