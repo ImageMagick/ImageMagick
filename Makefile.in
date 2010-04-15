@@ -4579,7 +4579,9 @@ doc_DATA = \
 	NEWS.txt
 
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
-@MAINTAINER_MODE_TRUE@	magick-version
+@MAINTAINER_MODE_TRUE@	magick-version \
+@MAINTAINER_MODE_TRUE@  ImageMagick.spec \
+@MAINTAINER_MODE_TRUE@  $(PERLMAGICK_MAINTAINER_TARGETS)
 
 
 # Non-Automake subdirectories to distribute
