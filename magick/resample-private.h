@@ -62,7 +62,8 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
     filter[i]=AcquireResampleFilter(image,exception);
     if (filter[i] == (ResampleFilter *) NULL)
       return(DestroyResampleFilterThreadSet(filter));
-    (void) SetResampleFilterVirtualPixelMethod(filter[i],method);
+    if (method != UndefinedVirtualPixelMethod)
+      (void) SetResampleFilterVirtualPixelMethod(filter[i],method);
     if (interpolate != MagickFalse)
       SetResampleFilter(filter[i],PointFilter,1.0);
   }

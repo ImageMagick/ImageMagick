@@ -1935,6 +1935,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   { /* ----- MAIN CODE -----
        Sample the source image to each pixel in the distort image.
      */
+    CacheView
+      *distort_view;
+
     long
       j,
       progress,
@@ -1945,9 +1948,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
     ResampleFilter
       **restrict resample_filter;
-
-    CacheView
-      *distort_view;
 
     status=MagickTrue;
     progress=0;
