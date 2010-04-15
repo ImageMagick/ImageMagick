@@ -180,7 +180,9 @@ doc_DATA = \
 
 if MAINTAINER_MODE
 MAINTAINER_TARGETS = \
-	magick-version
+	magick-version \
+  ImageMagick.spec \
+  $(PERLMAGICK_MAINTAINER_TARGETS)
 endif
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
