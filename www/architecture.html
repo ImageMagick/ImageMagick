@@ -124,7 +124,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.abi-stoff.de/abizeitung/" title="Abibuch">Abizeitung</a><!-- 20101101000200 -->
+   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -197,7 +197,7 @@
 
 <p>Given the varied image formats and image processing requirements, we implemented the ImageMagick <a href="#cache">pixel cache</a> to provide convenient sequential or parallel access to any pixel on demand anywhere inside the image region (we call these <a href="#authentic-pixels">authentic pixels</a>)  and from any image in a sequence.  In addition, the pixel cache permits access to pixels outside the boundaries defined by the image (we call these <a href="#virtual-pixels">virtual pixels</a>).</p>
 
-<p>In addition to pixels, images have a plethora of <a href="#properties">image properties and profiles</a>.  Properties include the well known items such as width, height, depth, and colorspace.  An image may have optional properties which might include the image author, a comment, a create date, and others.  Some images also include profiles for color management, or EXIF, IPTC, 8BIM, or XMP informational profiles.  ImageMagick provides command line options and programming methods to get, set, or view image properties or profiles or apply profiles.</p>
+<p>In addition to pixels, images have a plethora of <a href="#properties">image properties and profiles</a>.  Properties include the well known attributes such as width, height, depth, and colorspace.  An image may have optional properties which might include the image author, a comment, a create date, and others.  Some images also include profiles for color management, or EXIF, IPTC, 8BIM, or XMP informational profiles.  ImageMagick provides command line options and programming methods to get, set, or view image properties or profiles or apply profiles.</p>
 
 <p>ImageMagick consists of more than 400,000 lines of C code and optionally depends on several million lines of code in dependent libraries (e.g. JPEG, PNG, TIFF libraries).  Given that, one might expect a huge architecture document.  However, a great majority of image processing is simply accessing pixels and its metadata and our simple and elegant implementation makes this easy for the ImageMagick developer.  We discuss the implementation of the pixel cache and getting and setting image properties and profiles in the next few sections. Next, we discuss using ImageMagick within a <a href="#threads">thread</a> of execution.  In the final sections, we discuss <a href="#coders">image coders</a> to read or write a particular image format followed by a few words on creating a <a href="#filters">filter</a> to access or update pixels based on your custom requirements.</p>
 
@@ -239,7 +239,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.1-3 2010-33-34 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.1-4 2010-04-15 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
