@@ -574,8 +574,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,
       if (compact_pixels == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
-      (void) ResetMagickMemory(compact_pixels,0,length*
-        sizeof(*compact_pixels));
+      (void) ResetMagickMemory(compact_pixels,0,length*sizeof(*compact_pixels));
     }
   for (y=0; y < (long) image->rows; y++)
   {
@@ -800,6 +799,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  ImageColorMap allocated");
+      image->colorspace=GRAYColorspace;
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1141,7 +1141,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (layer_info[i].visible == MagickFalse)
               layer_info[i].image->compose=NoCompositeOp;
             if (psd_info.mode == CMYKMode)
-              image->colorspace=CMYKColorspace;
+              layer_info[i].image->colorspace=CMYKColorspace;
+            if ((psd_info.mode == BitmapMode) ||
+                (psd_info.mode == GrayscaleMode) ||
+                (psd_info.mode == DuotoneMode))
+              layer_info[i].image->colorspace=GRAYColorspace;
             for (j=0; j < (long) layer_info[i].channels; j++)
               if (layer_info[i].channel_info[j].type == -1)
                 layer_info[i].image->matte=MagickTrue;
