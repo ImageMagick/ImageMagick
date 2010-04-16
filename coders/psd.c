@@ -562,12 +562,19 @@ static MagickBooleanType ReadPSDLayer(Image *image,
   compact_pixels=(unsigned char *) NULL;
   if (image->compression == RLECompression)
     {
-      compact_pixels=(unsigned char *) AcquireQuantumMemory(image->columns+256,
-        packet_size*sizeof(*pixels));
+      size_t
+        length;
+
+      length=0;
+      for (y=0; y < (long) image->rows; y++)
+        if ((MagickOffsetType) length < offsets[y])
+          length=offsets[y];
+      compact_pixels=(unsigned char *) AcquireQuantumMemory(length,
+        sizeof(*pixels));
       if (compact_pixels == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
-      (void) ResetMagickMemory(compact_pixels,0,image->columns*packet_size*
+      (void) ResetMagickMemory(compact_pixels,0,length*
         sizeof(*compact_pixels));
     }
   for (y=0; y < (long) image->rows; y++)
@@ -2017,7 +2024,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobMSBLong(image,GetStringInfoLength(icc_profile));
       (void) WriteBlob(image,GetStringInfoLength(icc_profile),
         GetStringInfoDatum(icc_profile));
-      if (GetStringInfoLength(icc_profile) !=
+      if ((MagickOffsetType) GetStringInfoLength(icc_profile) !=
           PSDQuantum(GetStringInfoLength(icc_profile)))
         (void) WriteBlobByte(image,0);
     }
