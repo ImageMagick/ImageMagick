@@ -1246,6 +1246,7 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   double *X,double *Y,double *Z)
 {
   double
+    cube,
     x,
     y,
     z;
