@@ -854,7 +854,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError,"UnableToManageJP2Stream");
   number_components=image->matte ? 4UL : 3UL;
   if ((image_info->type != TrueColorType) &&
-      IsGrayImage(image,&image->exception))
+      (IsGrayImage(image,&image->exception) != MagickFalse))
     number_components=1;
   if ((image->columns != (unsigned int) image->columns) ||
       (image->rows != (unsigned int) image->rows))
