@@ -1,6 +1,8 @@
 2010-04-15  6.6.1-4 Cristy  <quetzlzacatenango@image...>
   * Do not set the resample virtual pixel method when undefined.
   * Support writing grayscale PSD images.
+  * Revert Lab-to-XYZ colorspace transform patch.
+  * Clamp HDRI values for LevelImageChannel() method.
 
 2010-04-12  6.6.1-3 Cristy  <quetzlzacatenango@image...>
   * For HSL to RGB, if color temperature is less than 0, set RGB to lightness.
