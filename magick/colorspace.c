@@ -1300,9 +1300,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  r=3.2407100*x-1.5372600*y-0.4985710*z;
-  g=(-0.9692580*x+1.8759900*y+0.0415557*z);
-  b=0.0556352*x-0.2039960*y+1.0570700*z;
+  r=3.2404542*x-1.5371385*y-0.4985314*z;
+  g=(-0.9692660*x+1.8760108*y+0.0415560*z);
+  b=0.0556434*x-0.2040259*y+1.0572252*z;
   if (r > 0.0031308)
     r=1.055*pow(r,1.0/2.4)-0.055;
   else
@@ -1315,9 +1315,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     b=1.055*pow(b,1.0/2.4)-0.055;
   else
     b*=12.92;
-  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
-  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
-  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
+  *red=RoundToQuantum((MagickRealType) QuantumRange*r);
+  *green=RoundToQuantum((MagickRealType) QuantumRange*g);
+  *blue=RoundToQuantum((MagickRealType) QuantumRange*b);
 }
 
 static inline void ConvertCMYKToRGB(MagickPixelPacket *pixel)
