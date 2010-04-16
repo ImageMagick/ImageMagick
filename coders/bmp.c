@@ -1342,7 +1342,7 @@ ModuleExport unsigned long RegisterBMPImage(void)
   entry->decoder=(DecodeImageHandler *) ReadBMPImage;
   entry->encoder=(EncodeImageHandler *) WriteBMPImage;
   entry->magick=(IsImageFormatHandler *) IsBMP;
-  entry->description=ConstantString("Microsoft Windows bitmap image (V5)");
+  entry->description=ConstantString("Microsoft Windows bitmap image");
   entry->module=ConstantString("BMP");
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
