@@ -1972,7 +1972,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobMSBShort(image,CMYKMode);
         }
     }
-  if ((image->storage_class == DirectClass) || (image->colors > 256))
+  if ((IsGrayImage(image,&image->exception) != MagickFalse) ||
+      (image->storage_class == DirectClass) || (image->colors > 256))
     (void) WriteBlobMSBLong(image,0);
   else
     {
