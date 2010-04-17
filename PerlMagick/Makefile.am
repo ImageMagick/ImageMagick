@@ -50,8 +50,7 @@ $(PERLMAKEFILE): perl-sources $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(PERLMAKEMA
 
 install-exec-perl: $(PERLMAKEFILE)
 	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
-	$(MAKE) CC='@CC@' install && \
-	$(MAKE) clean && rm -f  Makefile.old )
+	$(MAKE) CC='@CC@' install )
 
 all-perl: perl-sources
 

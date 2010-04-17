@@ -324,8 +324,8 @@ $(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
 	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
 	@echo ==============================================================
 
-RPMDIR=redhat
-RPMARCH=i386
+RPMDIR=rpmbuild
+RPMARCH=$(MAGICK_TARGET_CPU)
 
 DIST_ARCHIVE_RPM= \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \

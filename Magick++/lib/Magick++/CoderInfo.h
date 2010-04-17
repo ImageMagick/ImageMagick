@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 2001, 2002
 //
 // CoderInfo Definition
 //
@@ -8,7 +8,7 @@
 //
 
 #if !defined (Magick_CoderInfo_header)
-#define Magick_CoderInfo_header
+#define Magick_CoderInfo_header  1
 
 #include "Magick++/Include.h"
 #include <string>
@@ -25,7 +25,16 @@ namespace Magick
       FalseMatch	// match coder if false
     };
 
+    // Default constructor
+    CoderInfo ( void );
+
+    // Copy constructor
+    CoderInfo ( const CoderInfo &coder_ );
+
+    // Construct with coder name
     CoderInfo ( const std::string &name_ );
+
+    // Destructor
     ~CoderInfo ( void );
 
     // Format name
@@ -43,21 +52,15 @@ namespace Magick
     // Format supports multiple frames
     bool isMultiFrame( void ) const;
 
+    // Assignment operator
+    CoderInfo& operator= (const CoderInfo &coder_ );
+
     //
     // Implemementation methods
     //
     CoderInfo ( const MagickCore::MagickInfo *magickInfo_ );
 
   private:
-
-    // Default constructor (not supported)
-    CoderInfo ( void );
-
-    // Copy constructor (not supported)
-    //    CoderInfo ( const CoderInfo &coder_ );
-
-    // Assignment operator (not supported)
-    CoderInfo& operator= (const CoderInfo &coder_ );
 
     std::string		_name;
     std::string		_description;
