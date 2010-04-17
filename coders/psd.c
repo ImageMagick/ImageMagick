@@ -2009,12 +2009,16 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     Image resource block.
   */
   length=28; /* 0x03EB */
-  bim_profile=GetImageProfile(image,"8bim");
-  if (bim_profile != (StringInfo *) NULL)
-    length+=GetStringInfoLength(bim_profile);
+  bim_profile=(StringInfo *) NULL;
   icc_profile=GetImageProfile(image,"icc");
   if (icc_profile != (StringInfo *) NULL)
     length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
+  else
+    {
+      bim_profile=GetImageProfile(image,"8bim");
+      if (bim_profile != (StringInfo *) NULL)
+        length+=GetStringInfoLength(bim_profile);
+    }
   (void) WriteBlobMSBLong(image,length);
   WriteResolutionResourceBlock(image);
   if (bim_profile != (StringInfo *) NULL)
