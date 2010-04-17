@@ -4613,7 +4613,7 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 #
 # RPM build support
 #
-@RPM_DELEGATE_TRUE@DIST_ARCHIVE_SRPM = $(distdir).src.rpm
+@RPM_DELEGATE_TRUE@DIST_ARCHIVE_SRPM = $(distdir)-1.src.rpm
 @RPM_DELEGATE_TRUE@RPMDIR = rpmbuild
 @RPM_DELEGATE_TRUE@RPMARCH = $(MAGICK_TARGET_CPU)
 @RPM_DELEGATE_FALSE@DIST_ARCHIVE_RPM = 
@@ -11117,17 +11117,23 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
+# drd: valgrind's newer thread error detector
 drd:
-	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
+    --quiet $(VALGRIND_EXTRA_OPTS)' check
 
+# helgrind: valgrind's older thread error detector
 helgrind:
-	$(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
 
+# memcheck: valgrind's memory access checker
 memcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
+    --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
 
+# ptrcheck: valgrind's experimental pointer checking tool.
 ptrcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
@@ -11190,7 +11196,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @P7ZIP_DELEGATE_TRUE@	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)
 	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @RPM_DELEGATE_TRUE@.PHONY: srpm
-@RPM_DELEGATE_TRUE@$(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
+@RPM_DELEGATE_TRUE@$(DIST_ARCHIVE_SRPM) srpm: dist
 @RPM_DELEGATE_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)
 @RPM_DELEGATE_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps --bs ImageMagick.spec
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
@@ -11198,13 +11204,12 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 
 @RPM_DELEGATE_TRUE@.PHONY: rpm
-@RPM_DELEGATE_TRUE@rpm:
+@RPM_DELEGATE_TRUE@rpm:	dist
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/BUILD
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/RPMS
 @RPM_DELEGATE_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb ImageMagick.spec
-@RPM_DELEGATE_TRUE@	rm -rf rpmbuild
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 @RPM_DELEGATE_TRUE@	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
