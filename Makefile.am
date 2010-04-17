@@ -201,17 +201,23 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
+# drd: valgrind's newer thread error detector
 drd:
-	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
+    --quiet $(VALGRIND_EXTRA_OPTS)' check
 
+# helgrind: valgrind's older thread error detector
 helgrind:
-	$(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
 
+# memcheck: valgrind's memory access checker
 memcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
+    --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
 
+# ptrcheck: valgrind's experimental pointer checking tool.
 ptrcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
+  $(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images scenes scripts www PerlMagick
@@ -315,9 +321,9 @@ endif # P7ZIP_DELEGATE
 #
 if RPM_DELEGATE
 
-DIST_ARCHIVE_SRPM=$(distdir).src.rpm
+DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
 .PHONY: srpm
-$(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
+$(DIST_ARCHIVE_SRPM) srpm: dist
 	rm -f $(DIST_ARCHIVE_SRPM)
 	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps --bs ImageMagick.spec
 	@echo ==============================================================
@@ -335,13 +341,12 @@ DIST_ARCHIVE_RPM= \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm
 
 .PHONY: rpm
-rpm:
+rpm:	dist
 	rm -rf $(RPMDIR)
 	$(MKDIR_P) $(RPMDIR)
 	$(MKDIR_P) $(RPMDIR)/BUILD
 	$(MKDIR_P) $(RPMDIR)/RPMS
 	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb ImageMagick.spec
-	rm -rf rpmbuild
 	@echo ==============================================================
 	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
 	@echo ==============================================================
