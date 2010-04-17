@@ -11039,8 +11039,7 @@ perl-sources:
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@install-exec-perl: $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
-@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) CC='@CC@' install && \
-@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) CC='@CC@' install )
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@all-perl: perl-sources
 
@@ -11201,10 +11200,9 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@.PHONY: rpm
 @RPM_DELEGATE_TRUE@rpm:
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
-@RPM_DELEGATE_TRUE@	mkdir $(RPMDIR)
-@RPM_DELEGATE_TRUE@	mkdir $(RPMDIR)/BUILD
-@RPM_DELEGATE_TRUE@	mkdir $(RPMDIR)/RPMS
-@RPM_DELEGATE_TRUE@	$(MAKE) distcheck
+@RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)
+@RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/BUILD
+@RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/RPMS
 @RPM_DELEGATE_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb ImageMagick.spec
 @RPM_DELEGATE_TRUE@	rm -rf rpmbuild
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
