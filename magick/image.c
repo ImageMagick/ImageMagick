@@ -604,7 +604,7 @@ MagickExport Image *AppendImages(const Image *image,
       }
       sync=SyncCacheViewAuthenticPixels(append_view,exception);
       if (sync == MagickFalse)
-        continue;
+        status=MagickFalse;
     }
     image_view=DestroyCacheView(image_view);
     proceed=SetImageProgress(image,AppendImageTag,n,number_images);
