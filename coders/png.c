@@ -2755,6 +2755,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
          }
       }
+      (void) SyncImage(image);
    }
    else
    {

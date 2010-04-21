@@ -3887,6 +3887,8 @@ MagickExport MagickBooleanType SyncImage(Image *image)
       q->red=pixel.red;
       q->green=pixel.green;
       q->blue=pixel.blue;
+      if (image->matte != MagickFalse)
+        q->opacity=pixel.opacity;
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
