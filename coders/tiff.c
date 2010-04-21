@@ -1030,7 +1030,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        TIFFClose(tiff);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
@@ -1038,7 +1041,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (sample_format == SAMPLEFORMAT_IEEEFP)
       status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
     if (status == MagickFalse)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        TIFFClose(tiff);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     status=MagickTrue;
     switch (photometric)
     {
@@ -1201,7 +1207,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
         status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
         if (status == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            TIFFClose(tiff);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1254,7 +1263,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
         if (status == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            TIFFClose(tiff);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (long) image->rows; y++)
         {
