@@ -2733,7 +2733,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       storage_class=image->storage_class;
       image->matte=MagickTrue;
 
-#if 0  /* balfour fix */
+#if 1  /* balfour fix */
 /* From imagemagick discourse server, 5 Feb 2010 */
 
     if (storage_class == PseudoClass)

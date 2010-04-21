@@ -1,5 +1,4 @@
 2010-04-17  6.6.1-5 Cristy  <quetzlzacatenango@image...>
-  * Revert Balfour patch in coders/png.c until Glenn comes up with robust patch.
   * Only write one ICC profile to PSD image.
 
 2010-04-15  6.6.1-4 Cristy  <quetzlzacatenango@image...>
