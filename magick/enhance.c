@@ -2544,8 +2544,8 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   const double gamma)
 {
 #define LevelImageTag  "Level/Image"
-#define LevelValue(x) (KlampToQuantum((MagickRealType) QuantumRange* \
-  pow(scale*((double)(x)-black_point),1.0/gamma)))
+#define LevelQuantum(x) (KlampToQuantum((MagickRealType) QuantumRange* \
+  pow(scale*((double) (x)-black_point),1.0/gamma)))
 
   CacheView
     *image_view;
@@ -2584,13 +2584,13 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         Level colormap.
       */
       if ((channel & RedChannel) != 0)
-        image->colormap[i].red=LevelValue(image->colormap[i].red);
+        image->colormap[i].red=LevelQuantum(image->colormap[i].red);
       if ((channel & GreenChannel) != 0)
-        image->colormap[i].green=LevelValue(image->colormap[i].green);
+        image->colormap[i].green=LevelQuantum(image->colormap[i].green);
       if ((channel & BlueChannel) != 0)
-        image->colormap[i].blue=LevelValue(image->colormap[i].blue);
+        image->colormap[i].blue=LevelQuantum(image->colormap[i].blue);
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=LevelValue(image->colormap[i].opacity);
+        image->colormap[i].opacity=LevelQuantum(image->colormap[i].opacity);
       }
   /*
     Level image.
@@ -2625,17 +2625,17 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=LevelValue(q->red);
+        q->red=LevelQuantum(q->red);
       if ((channel & GreenChannel) != 0)
-        q->green=LevelValue(q->green);
+        q->green=LevelQuantum(q->green);
       if ((channel & BlueChannel) != 0)
-        q->blue=LevelValue(q->blue);
+        q->blue=LevelQuantum(q->blue);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        q->opacity=QuantumRange-LevelValue(QuantumRange-q->opacity);
+        q->opacity=QuantumRange-LevelQuantum(QuantumRange-q->opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        indexes[x]=LevelValue(indexes[x]);
+        indexes[x]=LevelQuantum(indexes[x]);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
