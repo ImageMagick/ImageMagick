@@ -1,6 +1,10 @@
 2010-04-17  6.6.1-5 Cristy  <quetzlzacatenango@image...>
   * Only write one ICC profile to PSD image.
   * Sync image colormap for PNG tRNS chunks.
+  * The -direction option now works with the -annotate and -draw options.
+  * For the histogram: format, if you have no need for the unique color list,
+    use <kbd>-define histogram:unique-colors=false</kbd> to forego this
+    expensive operation.
 
 2010-04-15  6.6.1-4 Cristy  <quetzlzacatenango@image...>
   * Do not set the resample virtual pixel method when undefined.
