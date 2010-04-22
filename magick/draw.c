@@ -4775,7 +4775,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   option=GetImageOption(clone_info,"interline-spacing");
   if (option != (const char *) NULL)
     draw_info->interline_spacing=StringToDouble(option);
-  draw_info->direction=1.0;
+  draw_info->direction=UndefinedDirection;
   option=GetImageOption(clone_info,"interword-spacing");
   if (option != (const char *) NULL)
     draw_info->interword_spacing=StringToDouble(option);

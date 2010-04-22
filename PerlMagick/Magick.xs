@@ -285,7 +285,8 @@ static struct
       {"fill-pattern", ImageReference}, {"stroke-pattern", ImageReference},
       {"tile", ImageReference}, {"kerning", RealReference},
       {"interline-spacing", RealReference},
-      {"interword-spacing", RealReference} } },
+      {"interword-spacing", RealReference},
+      {"direction", MagickDirectionOptions} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -8077,6 +8078,9 @@ Mogrify(ref,...)
             draw_info->interline_spacing=argument_list[30].real_reference;
           if (attribute_flag[31] != 0)
             draw_info->interword_spacing=argument_list[31].real_reference;
+          if (attribute_flag[32] != 0)
+            draw_info->direction=(DirectionType)
+              argument_list[32].long_reference;
           (void) AnnotateImage(image,draw_info);
           draw_info=DestroyDrawInfo(draw_info);
           break;
