@@ -5692,6 +5692,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
           }
+        if (LocaleCompare("regard-warnings",option+1) == 0)
+          break;
         if (LocaleCompare("region",option+1) == 0)
           {
             if (*option == '+')
