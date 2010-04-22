@@ -611,7 +611,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               (void) fprintf(file,"  %s\n",tuple);
             }
         }
-      artifact=GetImageArtifact(image,"identify:unique");
+      artifact=GetImageArtifact(image,"identify:unique-colors");
       if ((artifact != (const char *) NULL) &&
           (IsMagickTrue(artifact) != MagickFalse))
         (void) fprintf(file,"  Colors: %lu\n",GetNumberColors(image,
