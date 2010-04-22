@@ -79,7 +79,7 @@ extern "C" {
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define EndOf(array)  (&array[NumberOf(array)])
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
-#define MaxArguments  32
+#define MaxArguments  33
 #ifndef na
 #define na  PL_na
 #endif
@@ -320,7 +320,8 @@ static struct
       {"fill-pattern", ImageReference}, {"stroke-pattern", ImageReference},
       {"vector-graphics", StringReference}, {"kerning", RealReference},
       {"interline-spacing", RealReference},
-      {"interword-spacing", RealReference} } },
+      {"interword-spacing", RealReference},
+      {"direction", MagickDirectionOptions} } },
     { "Equalize", { {"channel", MagickChannelOptions} } },
     { "Gamma", { {"gamma", StringReference}, {"channel", MagickChannelOptions},
       {"red", RealReference}, {"green", RealReference},
@@ -8581,6 +8582,9 @@ Mogrify(ref,...)
             draw_info->interline_spacing=argument_list[30].real_reference;
           if (attribute_flag[31] != 0)
             draw_info->interword_spacing=argument_list[31].real_reference;
+          if (attribute_flag[32] != 0)
+            draw_info->direction=(DirectionType)
+              argument_list[32].long_reference;
           DrawImage(image,draw_info);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -11857,6 +11861,12 @@ QueryFontMetrics(ref,...)
           if (LocaleCompare(attribute,"density") == 0)
             {
               CloneString(&draw_info->density,SvPV(ST(i),na));
+              break;
+            }
+          if (LocaleCompare(attribute,"direction") == 0)
+            {
+              draw_info->direction=(DirectionType) ParseMagickOption(
+                MagickDirectionOptions,MagickFalse,SvPV(ST(i),na));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
