@@ -3629,7 +3629,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
 
 static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   const MagickRealType mid,const MagickBooleanType fill,
-  const FillRule fill_rule,const long x,const long y,
+  const FillRule fill_rule,const double x,const double y,
   MagickRealType *stroke_opacity)
 {
   int
@@ -3668,12 +3668,13 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
       break;
     if (y > (p->bounds.y2+mid+0.5))
       {
-        (void) DestroyEdge(polygon_info,j);
+        (void) DestroyEdge(polygon_info,(unsigned long) j);
         continue;
       }
     if ((x <= (p->bounds.x1-mid-0.5)) || (x > (p->bounds.x2+mid+0.5)))
       continue;
-    for (i=MagickMax(p->highwater,1); i < (long) p->number_points; i++)
+    i=(long) MagickMax((double) p->highwater,1.0);
+    for ( ; i < (long) p->number_points; i++)
     {
       if (y <= (p->points[i-1].y-mid-0.5))
         break;
@@ -3682,7 +3683,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
       if (p->scanline != y)
         {
           p->scanline=y;
-          p->highwater=i;
+          p->highwater=(unsigned long) i;
         }
       /*
         Compute distance between a point and an edge.
@@ -3780,7 +3781,8 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
         winding_number+=p->direction ? 1 : -1;
         continue;
       }
-    for (i=MagickMax(p->highwater,1); i < (long) p->number_points; i++)
+    i=(long) MagickMax((double) p->highwater,1.0);
+    for ( ; i < (long) p->number_points; i++)
       if (y <= p->points[i].y)
         break;
     q=p->points+i-1;
@@ -3971,7 +3973,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         Fill and/or stroke.
       */
       fill_opacity=GetPixelOpacity(polygon_info[id],mid,fill,
-        draw_info->fill_rule,x,y,&stroke_opacity);
+        draw_info->fill_rule,(double) x,(double) y,&stroke_opacity);
       if (draw_info->stroke_antialias == MagickFalse)
         {
           fill_opacity=fill_opacity > 0.25 ? 1.0 : 0.0;
