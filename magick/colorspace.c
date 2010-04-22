@@ -148,9 +148,9 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
     z=pow(z,1.0/3.0);
   else
     z=(7.787037*z)+(16.0/116.0);
-  *L=0.5*((1.160*y)-0.160+1.0);
-  *a=0.5*(5.000*(x-y)+1.0);
-  *b=0.5*(2.000*(y-z)+1.0);
+  *L=((116.0*y)-16.0)/100.0;
+  *a=0.5*(500.0*(x-y))/100.0+1.0;
+  *b=0.5*(200.0*(y-z))/100.0+1.0;
 }
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
