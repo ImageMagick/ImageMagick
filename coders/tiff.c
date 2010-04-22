@@ -2184,10 +2184,11 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,long row,
         for (l=0; l < bytes_per_pixel; l++)
           *q++=(*p++);
       }
-    status=TIFFWriteTile(tiff,tiff_info->pixels,(uint32) (i*
-      tiff_info->tile_geometry.width),(uint32) ((row/
-      tiff_info->tile_geometry.height)*tiff_info->tile_geometry.height),0,
-      sample);
+    if ((i*tiff_info->tile_geometry.width) != image->columns)
+      status=TIFFWriteTile(tiff,tiff_info->pixels,(uint32) (i*
+        tiff_info->tile_geometry.width),(uint32) ((row/
+        tiff_info->tile_geometry.height)*tiff_info->tile_geometry.height),0,
+        sample);
     if (status < 0)
       break;
   }
@@ -2680,22 +2681,19 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     image->endian=MSBEndian;
     if ((int) (*(char *) &lsb_first) != 0)
       image->endian=LSBEndian;
-    if ((compress_tag == COMPRESSION_JPEG) && (photometric != PHOTOMETRIC_RGB))
-      compress_tag=COMPRESSION_NONE;
+    if ((compress_tag == COMPRESSION_CCITTFAX3) &&
+        (photometric != PHOTOMETRIC_MINISWHITE))
+      {
+        compress_tag=COMPRESSION_NONE;
+        endian=FILLORDER_MSB2LSB;
+      }
     else
-      if ((compress_tag == COMPRESSION_CCITTFAX3) &&
-          (photometric != PHOTOMETRIC_MINISWHITE))
-        {
-          compress_tag=COMPRESSION_NONE;
-          endian=FILLORDER_MSB2LSB;
-        }
-      else
-        if ((compress_tag == COMPRESSION_CCITTFAX4) &&
-           (photometric != PHOTOMETRIC_MINISWHITE))
-         {
-           compress_tag=COMPRESSION_NONE;
-           endian=FILLORDER_MSB2LSB;
-         }
+      if ((compress_tag == COMPRESSION_CCITTFAX4) &&
+         (photometric != PHOTOMETRIC_MINISWHITE))
+       {
+         compress_tag=COMPRESSION_NONE;
+         endian=FILLORDER_MSB2LSB;
+       }
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
     (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,endian);
     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,quantum_info->depth);
