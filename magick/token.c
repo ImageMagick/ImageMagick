@@ -364,13 +364,6 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
         break;
     switch (GetUTFCode(pattern))
     {
-      case '\\':
-      {
-        pattern+=GetUTFOctets(pattern);
-        if (GetUTFCode(pattern) != 0)
-          pattern+=GetUTFOctets(pattern);
-        break;
-      }
       case '*':
       {
         MagickBooleanType
@@ -532,6 +525,12 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
               pattern+=GetUTFOctets(pattern);
           }
         break;
+      }
+      case '\\':
+      {
+        pattern+=GetUTFOctets(pattern);
+        if (GetUTFCode(pattern) != 0)
+          pattern+=GetUTFOctets(pattern);
       }
       default:
       {
