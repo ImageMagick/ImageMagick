@@ -134,20 +134,20 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   assert(a != (double *) NULL);
   assert(b != (double *) NULL);
   x=X/0.9504559271;
-  if (x > (216/24389.0))
+  if (x > 0.008856)
     x=pow(x,1.0/3.0);
   else
-    x=(7.787*x)+(16.0/116.0);
-  y=Y/1.00000;
-  if (y > (216/24389.0))
+    x=(7.787037*x)+(16.0/116.0);
+  y=Y/1.0000000000;
+  if (y > 0.008856)
     y=pow(y,1.0/3.0);
   else
-    y=(7.787*y)+(16.0/116.0);
+    y=(7.787037*y)+(16.0/116.0);
   z=Z/1.0890577508;
-  if (z > (216/24389.0))
+  if (z > 0.008856)
     z=pow(z,1.0/3.0);
   else
-    z=(7.787*z)+(16.0/116.0);
+    z=(7.787037*z)+(16.0/116.0);
   *L=0.5*((1.160*y)-0.160+1.0);
   *a=0.5*(5.000*(x-y)+1.0);
   *b=0.5*(2.000*(y-z)+1.0);
@@ -1255,23 +1255,23 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
   y=(100.0*L+16.0)/116.0;
-  x=255.0*(a > 0.5 ? a-1.0 : a)/500.0+y;
+  x=y+255.0*(a > 0.5 ? a-1.0 : a)/500.0;
   z=y-255.0*(b > 0.5 ? b-1.0 : b)/200.0;
   cube=y*y*y;
   if (cube > 0.008856)
     y=cube;
   else
-    y=(y-16.0/116.0)/7.787;
+    y=(y-16.0/116.0)/7.787037;
   cube=x*x*x;
   if (cube > 0.008856)
     x=cube;
   else
-    x=(x-16.0/116.0)/7.787;
+    x=(x-16.0/116.0)/7.787037;
   cube=z*z*z;
   if (cube > 0.008856)
     z=cube;
   else
-    z=(z-16.0/116.0)/7.787;
+    z=(z-16.0/116.0)/7.787037;
   *X=0.9504559271*x;
   *Y=1.0000000000*y;
   *Z=1.0890577508*z;
