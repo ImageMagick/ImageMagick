@@ -5,6 +5,8 @@
   * For the histogram: format, if you have no need for the unique color list,
     use <kbd>-define histogram:unique-colors=false</kbd> to forego this
     expensive operation.
+  * Match on literal after backslash in glob expression (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16068).
 
 2010-04-15  6.6.1-4 Cristy  <quetzlzacatenango@image...>
   * Do not set the resample virtual pixel method when undefined.
