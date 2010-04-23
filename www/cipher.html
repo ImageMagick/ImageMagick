@@ -125,7 +125,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
 </div>
 <div  class="sponsor">
   <a href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
@@ -158,7 +158,7 @@
 <h2><a name="intro"></a>Introduction to Enciphering and Deciphering Images</h2>
 <div class="doc-section">
 
-<p>Most images, by design, are made to be viewed often and by many people.  Web images, for example, may be viewed hundreds of times a day by a multitude of web vistors.  However, in some cases, you may want to keep a particular image private so that only you or perhaps a select group of your friends or web visitors can view it.  ImageMagick permits you to scramble your images such that unless someone knows your secret key, they will be unable to view the original content.</p>
+<p>Most images, by design, are made to be viewed often and by many people.  Web images, for example, may be viewed hundreds of times a day by a multitude of web vistors.  However, in some cases, you may want to keep a particular image private so that only you or perhaps a select group of your friends or web visitors can view it.  ImageMagick permits you to scramble your images such that unless someone knows your passphrase, they will be unable to view the original content.</p>
 
 <p>You could use an <a href="http://www.wizards-toolkit.org/www/encipher.html">enciphering</a> utility to scramble your image but they typically scramble the entire file making it unrecognizable as an image format.  With ImageMagick, only the pixels are scrambled.  The scrambled image continues to be recognized as an image and will even display in your web page.  However, the content appears as gibberish, nothing like the original content.</p>
 
@@ -167,10 +167,10 @@
 <h2><a name="encipher"></a>Encipher an Image</h2>
 <div class="doc-section">
 
-<p>Use the <a href="../www/command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your secret key.  In this example we scramble an image and save it in the PNG format:</p>
+<p>Use the <a href="../www/command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your passphrase.  In this example we scramble an image and save it in the PNG format:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose.jpg -encipher passkey.txt rose.png</span></p>
-<p>Here we encipher an image using another image as the passkey:</p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose.jpg -encipher passphrase.txt rose.png</span></p>
+<p>Here we encipher an image using another image as the passphrase:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose.jpg -encipher smiley.gif rose.png</span></p>
 </div>
@@ -178,9 +178,9 @@
 <h2><a name="decipher"></a>Decipher an Image</h2>
 <div class="doc-section">
 
-<p>Use the <a href="../www/command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your secret key.  In this example we unscramble an image and save it in the JPEG format:</p>
+<p>Use the <a href="../www/command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your passphrase.  In this example we unscramble an image and save it in the JPEG format:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose.png -decipher passkey.txt rose.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose.png -decipher passphrase.txt rose.jpg</span></p>
 </div>
 
 <h2><a name="caveats"></a>Encipher and Decipher Caveats</h2>
@@ -188,17 +188,18 @@
 
 <p>Some formats do not support enciphered pixels-- the JPEG or GIF format, for example.  To ensure your image format is supported, encipher a test image and verify you can restore its original content <em>before</em> you encipher any additional images in that format.</p>
 
-<p>The passkey can be any combinations of letters and symbols.  It should be a minimum of 12 character combinations to ensure your image remains private.  Also make sure your passkey file permissions prevent others from reading it otherwise unintended users may be able to view the original image content.</p>
+<p>The passphrase can be any combinations of letters and symbols.  It should be a minimum of 12 character combinations to help ensure your image remains private.  Also make sure your passphrase file permissions prevent others from reading it otherwise unintended users may be able to view the original image content.</p>
 
-<p>You can only restore the original image content if you know your passkey.  If you lose or forget it, your original image content is lost forever.</p>
+<p>You can only restore the original image content if you know your passphrase.  If you lose or forget it, your original image content is lost forever.</p>
 
 <p>ImageMagick only scrambles the image pixels.  The image metadata remains untouched and readable by anyone with access to the image file.</p>
 
-<p>ImageMagick uses the <a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a> cipher in cipher feedback mode.  We use the passkey to derive the cipher key and the required nonce.</p>
+<p>ImageMagick uses the <a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a> cipher in cipher feedback mode.  We use the passphrase to derive the cipher key and the required nonce.</p>
 
 <p>Currently only ImageMagick can restore your enciphered image content.  We use a standard cipher and mode so other vendors are encouraged to support enciphered image content.</p>
 
 </div>
+
 </div>
 
 <div id="linkbar">
