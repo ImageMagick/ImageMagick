@@ -59,6 +59,7 @@
 #include "magick/semaphore.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(__WINDOWS__)
 # include <sys/mman.h>
