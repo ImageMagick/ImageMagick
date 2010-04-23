@@ -529,8 +529,8 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       case '\\':
       {
         pattern+=GetUTFOctets(pattern);
-        if (GetUTFCode(pattern) != 0)
-          pattern+=GetUTFOctets(pattern);
+        if (GetUTFCode(pattern) == 0)
+          break;
       }
       default:
       {
