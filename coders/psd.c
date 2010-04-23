@@ -1717,7 +1717,6 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   i=0;
   if (IsGrayImage(tmp_image,&tmp_image->exception) != MagickFalse)
     {
-      tmp_image->compression=RLECompression;
       if (tmp_image->compression == RLECompression)
         {
           /*
