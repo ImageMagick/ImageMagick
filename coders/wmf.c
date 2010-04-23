@@ -126,6 +126,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *read_info;
 
+  MagickBooleanType
+    status;
+
   unsigned long
     flags;
 
@@ -142,7 +145,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *eps_info;
 
   wmf_error_t
-    status;
+    wmf_status;
 
   /*
     Read WMF image.
@@ -159,16 +162,16 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   flags|=WMF_OPT_IGNORE_NONFATAL;
   flags|=WMF_OPT_FUNCTION;
   options.function=wmf_eps_function;
-  status=wmf_api_create(&wmf_info,flags,&options);
-  if (status != wmf_E_None)
+  wmf_status=wmf_api_create(&wmf_info,flags,&options);
+  if (wmf_status != wmf_E_None)
     {
       if (wmf_info != (wmfAPI *) NULL)
         wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary");
     }
-  status=wmf_bbuf_input(wmf_info,WMFReadBlob,WMFSeekBlob,WMFTellBlob,
+  wmf_status=wmf_bbuf_input(wmf_info,WMFReadBlob,WMFSeekBlob,WMFTellBlob,
     (void *) image);
-  if (status != wmf_E_None)
+  if (wmf_status != wmf_E_None)
     {
       wmf_api_destroy(wmf_info);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -176,8 +179,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  status=wmf_scan(wmf_info,0,&bounding_box);
-  if (status != wmf_E_None)
+  wmf_status=wmf_scan(wmf_info,0,&bounding_box);
+  if (wmf_status != wmf_E_None)
     {
       wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToScanFile");
@@ -194,8 +197,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   eps_info->out=wmf_stream_create(wmf_info,file);
   eps_info->bbox=bounding_box;
-  status=wmf_play(wmf_info,0,&bounding_box);
-  if (status != wmf_E_None)
+  wmf_status=wmf_play(wmf_info,0,&bounding_box);
+  if (wmf_status != wmf_E_None)
     {
       wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToRenderFile");

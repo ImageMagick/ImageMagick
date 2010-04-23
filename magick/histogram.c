@@ -987,7 +987,8 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   const ChannelType channel,const double black_value,const double white_value)
 {
   double
-    min,max;
+    min,
+    max;
 
   MagickStatusType
     status;
@@ -1001,9 +1002,9 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       (void) GetImageChannelRange(image,channel,&min,&max,&image->exception);
       min+=black_value;
       max-=white_value;
-      if ( fabs(min-max) >= MagickEpsilon )
-        status = LevelImageChannel(image,channel,min,max,1.0);
-      return(status);
+      if (fabs(min-max) >= MagickEpsilon)
+        status&=LevelImageChannel(image,channel,min,max,1.0);
+      return(status != 0 ? MagickTrue : MagickFalse);
     }
   /*
     Auto-level each channel separately.
@@ -1013,7 +1014,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       (void) GetImageChannelRange(image,RedChannel,&min,&max,&image->exception);
       min+=black_value;
       max-=white_value;
-      if ( fabs(min-max) >= MagickEpsilon )
+      if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,RedChannel,min,max,1.0);
     }
   if ((channel & GreenChannel) != 0)
@@ -1022,7 +1023,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      if ( fabs(min-max) >= MagickEpsilon )
+      if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,GreenChannel,min,max,1.0);
     }
   if ((channel & BlueChannel) != 0)
@@ -1031,7 +1032,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      if ( fabs(min-max) >= MagickEpsilon )
+      if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,BlueChannel,min,max,1.0);
     }
   if (((channel & OpacityChannel) != 0) &&
@@ -1041,7 +1042,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      if ( fabs(min-max) >= MagickEpsilon )
+      if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,OpacityChannel,min,max,1.0);
     }
   if (((channel & IndexChannel) != 0) &&
@@ -1051,10 +1052,10 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         &image->exception);
       min+=black_value;
       max-=white_value;
-      if ( fabs(min-max) >= MagickEpsilon )
+      if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,IndexChannel,min,max,1.0);
     }
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

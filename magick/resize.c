@@ -697,10 +697,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
               option=cylindrical != MagickFalse ? BesselFilter : SincFilter;
-              if (option != LanczosFilter)
-                window_type=(FilterTypes) option;
-              else
-                window_type=option;
+              window_type=(FilterTypes) option;
             }
         }
     }
