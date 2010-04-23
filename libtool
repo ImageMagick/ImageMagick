@@ -67,7 +67,7 @@ DLLTOOL=dlltool
 OBJDUMP=objdump
 
 # Whether or not to build shared libraries.
-build_libtool_libs=yes
+build_libtool_libs=no
 
 # Whether or not to build static libraries.
 build_old_libs=yes
@@ -76,7 +76,7 @@ build_old_libs=yes
 pic_mode=default
 
 # Whether or not to optimize for fast installation.
-fast_install=yes
+fast_install=needless
 
 # The host system.
 host_alias=
@@ -95,7 +95,7 @@ NM="/usr/bin/nm -B"
 LN_S="ln -s"
 
 # What is the maximum length of a command?
-max_cmd_len=1572864
+max_cmd_len=1966080
 
 # Object file suffix (normally "o").
 objext=o
@@ -135,7 +135,7 @@ old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
 old_postuninstall_cmds=""
 
 # A C compiler.
-LTCC="gcc -std=gnu99 -std=gnu99"
+LTCC="g++"
 
 # LTCC compiler flags.
 LTCFLAGS="-fopenmp -g -O2 -Wall -W -pthread"
@@ -249,10 +249,10 @@ sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/alliance/
 dlopen_support=yes
 
 # Whether dlopen of programs is supported.
-dlopen_self=yes
+dlopen_self=no
 
 # Whether dlopen of statically linked programs is supported.
-dlopen_self_static=yes
+dlopen_self_static=unknown
 
 # Commands to strip libraries.
 old_striplib="strip --strip-debug"
@@ -266,13 +266,13 @@ LD="/usr/bin/ld -m elf_x86_64"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
 
 # A language specific compiler.
-CC="gcc -std=gnu99 -std=gnu99"
+CC="g++"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin"
+no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
 
 # How to pass a linker flag through the compiler.
 wl="-Wl,"
@@ -287,7 +287,7 @@ link_static_flag=""
 compiler_c_o="yes"
 
 # Whether or not to add -lc for building shared libraries.
-build_libtool_need_lc=no
+build_libtool_need_lc=yes
 
 # Whether or not to disallow shared libs when runtime libs are static.
 allow_libtool_libs_with_static_runtimes=no

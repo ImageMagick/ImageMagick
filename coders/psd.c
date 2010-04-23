@@ -219,12 +219,12 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
 %
 */
 
-static const char *CompositeOperatorToPSDBlendMode(CompositeOperator operator)
+static const char *CompositeOperatorToPSDBlendMode(CompositeOperator op)
 {
   const char
     *blend_mode;
 
-  switch (operator)
+  switch (op)
   {
     case OverCompositeOp:    blend_mode = "norm";  break;
     case MultiplyCompositeOp:  blend_mode = "mul ";  break;

@@ -954,25 +954,21 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
   register long
     i;
 
-  KernelInfo *
-    new;
+  KernelInfo
+    *kernel_info;
 
   assert(kernel != (KernelInfo *) NULL);
-
-  new=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
-  if (new == (KernelInfo *) NULL)
-    return(new);
-  *new = *kernel; /* copy values in structure */
-
-  new->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-  if (new->values == (double *) NULL)
-    return(DestroyKernelInfo(new));
-
+  kernel_info=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+  if (kernel_info == (KernelInfo *) NULL)
+    return(kernel_info);
+  *kernel_info=(*kernel); /* copy values in structure */
+  kernel_info->values=(double *) AcquireQuantumMemory(kernel->width,
+    kernel->height*sizeof(double));
+  if (kernel_info->values == (double *) NULL)
+    return(DestroyKernelInfo(kernel_info));
   for (i=0; i < (long) (kernel->width*kernel->height); i++)
-    new->values[i] = kernel->values[i];
-
-  return(new);
+    kernel_info->values[i]=kernel->values[i];
+  return(kernel_info);
 }
 
 /*
@@ -1678,7 +1674,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       */
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (char *)NULL ) {
-        MagickStatusType
+        GeometryFlags
           flags;
         GeometryInfo
           args;
@@ -1687,7 +1683,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
           curr_kernel = CloneKernelInfo(kernel);
 
         args.rho = 1.0;
-        flags = ParseGeometry(artifact, &args);
+        flags = (GeometryFlags) ParseGeometry(artifact, &args);
         ScaleKernelInfo(curr_kernel, args.rho, flags);
       }
       /* FALL-THRU to do the first, and typically the only iteration */
