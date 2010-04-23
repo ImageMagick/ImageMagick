@@ -1123,6 +1123,7 @@ static const OptionInfo
     { "Debug", (long) MagickDebugOptions, MagickFalse },
     { "Decoration", (long) MagickDecorateOptions, MagickFalse },
     { "Delegate", (long) MagickDelegateOptions, MagickFalse },
+    { "Direction", (long) MagickDirectionOptions, MagickFalse },
     { "Dispose", (long) MagickDisposeOptions, MagickFalse },
     { "Distort", (long) MagickDistortOptions, MagickFalse },
     { "Dither", (long) MagickDitherOptions, MagickFalse },
