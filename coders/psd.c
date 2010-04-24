@@ -273,42 +273,42 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
         length=256-length+1;
         pixel=(*compact_pixels++);
         packets--;
-        for (j=0; j < (long) length; j++)
+        for (j=0; j < (ssize_t) length; j++)
         {
           switch (depth)
           {
             case 1:
             {
-              *pixels++=(pixel >> 7) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 6) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 5) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 4) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 3) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 2) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 1) & 0x01 ? 0 : 255;
-              *pixels++=(pixel >> 0) & 0x01 ? 0 : 255;
+              *pixels++=(pixel >> 7) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 6) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 5) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 4) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 3) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 2) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 1) & 0x01 ? 0U : 255U;
+              *pixels++=(pixel >> 0) & 0x01 ? 0U : 255U;
               i+=8;
               break;
             }
             case 4:
             {
-              *pixels++=(pixel >> 4) & 0xff;
-              *pixels++=(pixel & 0x0f) & 0xff;
+              *pixels++=(unsigned char) ((pixel >> 4) & 0xff);
+              *pixels++=(unsigned char) ((pixel & 0x0f) & 0xff);
               i+=2;
               break;
             }
             case 2:
             {
-              *pixels++=(pixel >> 6) & 0x03;
-              *pixels++=(pixel >> 4) & 0x03;
-              *pixels++=(pixel >> 2) & 0x03;
-              *pixels++=(pixel & 0x03) & 0x03;
+              *pixels++=(unsigned char) ((pixel >> 6) & 0x03);
+              *pixels++=(unsigned char) ((pixel >> 4) & 0x03);
+              *pixels++=(unsigned char) ((pixel >> 2) & 0x03);
+              *pixels++=(unsigned char) ((pixel & 0x03) & 0x03);
               i+=4;
               break;
             }
             default:
             {
-              *pixels++=pixel;
+              *pixels++=(unsigned char) pixel;
               i++;
               break;
             }
@@ -317,20 +317,20 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
         continue;
       }
     length++;
-    for (j=0; j < (long) length; j++)
+    for (j=0; j < (ssize_t) length; j++)
     {
       switch (depth)
       {
         case 1:
         {
-          *pixels++=(*compact_pixels >> 7) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 6) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 5) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 4) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 3) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 2) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 1) & 0x01 ? 0 : 255;
-          *pixels++=(*compact_pixels >> 0) & 0x01 ? 0 : 255;
+          *pixels++=(*compact_pixels >> 7) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 6) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 5) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 4) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 3) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 2) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 1) & 0x01 ? 0U : 255U;
+          *pixels++=(*compact_pixels >> 0) & 0x01 ? 0U : 255U;
           i+=8;
           break;
         }
@@ -568,7 +568,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,
       length=0;
       for (y=0; y < (long) image->rows; y++)
         if ((MagickOffsetType) length < offsets[y])
-          length=offsets[y];
+          length=(size_t) offsets[y];
       compact_pixels=(unsigned char *) AcquireQuantumMemory(length,
         sizeof(*pixels));
       if (compact_pixels == (unsigned char *) NULL)
@@ -586,7 +586,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,
         if (count != (ssize_t) offsets[y])
           break;
         count=DecodePSDPixels((size_t) offsets[y],compact_pixels,
-          image->depth,packet_size*image->columns,pixels);
+          (long) image->depth,packet_size*image->columns,pixels);
       }
     if (count < (ssize_t) (packet_size*image->columns))
       break;
@@ -1957,8 +1957,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         Write depth & mode.
       */
       monochrome=IsMonochromeImage(image,&image->exception);
-      (void) WriteBlobMSBShort(image,monochrome != MagickFalse ? 1 :
-        image->depth > 8 ? 16 : 8);
+      (void) WriteBlobMSBShort(image,(unsigned short)
+        (monochrome != MagickFalse ? 1 : image->depth > 8 ? 16 : 8));
       (void) WriteBlobMSBShort(image,monochrome != MagickFalse ?
         BitmapMode : GrayscaleMode);
     }
@@ -2018,7 +2018,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       if (bim_profile != (StringInfo *) NULL)
         length+=GetStringInfoLength(bim_profile);
     }
-  (void) WriteBlobMSBLong(image,length);
+  (void) WriteBlobMSBLong(image,(unsigned int) length);
   WriteResolutionResourceBlock(image);
   if (bim_profile != (StringInfo *) NULL)
     (void) WriteBlob(image,GetStringInfoLength(bim_profile),GetStringInfoDatum(
@@ -2028,7 +2028,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
       (void) WriteBlobMSBShort(image,0x040F);
       (void) WriteBlobMSBShort(image,0);
-      (void) WriteBlobMSBLong(image,GetStringInfoLength(icc_profile));
+      (void) WriteBlobMSBLong(image,(unsigned int) GetStringInfoLength(
+        icc_profile));
       (void) WriteBlob(image,GetStringInfoLength(icc_profile),
         GetStringInfoDatum(icc_profile));
       if ((MagickOffsetType) GetStringInfoLength(icc_profile) !=
