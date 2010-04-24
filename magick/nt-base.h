@@ -288,12 +288,14 @@ typedef struct _NTMEMORYSTATUSEX
     ullAvailExtendedVirtual;
 } NTMEMORYSTATUSEX;
 
+#if !defined(__MINGW32__)
 struct timezone
 {
   int
     tz_minuteswest,
     tz_dsttime;
 };
+#endif
 
 typedef UINT
   (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
