@@ -524,8 +524,8 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
           }
         if (image->units == PixelsPerCentimeterResolution)
           {
-            x_resolution*=2.54;
-            y_resolution*=2.54;
+            x_resolution=(unsigned long) (100.0*2.54*x_resolution+0.5)/100.0;
+            y_resolution=(unsigned long) (100.0*2.54*y_resolution+0.5)/100.0;
           }
         (void) jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
       }

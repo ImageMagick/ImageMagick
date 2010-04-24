@@ -2044,9 +2044,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         Set image resolution.
       */
       (void) png_get_pHYs(ping,ping_info,&x_resolution,&y_resolution,
-          &unit_type);
-      image->x_resolution=(float) x_resolution;
-      image->y_resolution=(float) y_resolution;
+        &unit_type);
+      image->x_resolution=(double) x_resolution;
+      image->y_resolution=(double) y_resolution;
       if (unit_type == PNG_RESOLUTION_METER)
         {
           image->units=PixelsPerCentimeterResolution;
@@ -2056,8 +2056,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG pHYs chunk: xres: %lu, yres: %lu, units: %d.",
-          (unsigned long) x_resolution, (unsigned long) y_resolution,
-          unit_type);
+          (unsigned long) x_resolution,(unsigned long) y_resolution,unit_type);
     }
 #endif
   if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
@@ -9178,7 +9177,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
            {
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "     TERM delay: %lu",
-               (png_uint_32) (mng_info->ticks_per_second*
+               (unsigned long) (mng_info->ticks_per_second*
                   final_delay/MagickMax(image->ticks_per_second,1)));
              if (image->iterations == 0)
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
