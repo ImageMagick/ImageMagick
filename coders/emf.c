@@ -263,7 +263,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
       /*
         Not UTF-8, just copy.
       */
-      length=strlen(source);
+      length=strlen((char *) source);
       utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
       if (utf16 == (wchar_t *) NULL)
         return((wchar_t *) NULL);
@@ -333,7 +333,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *path,long *width,
       wchar_t
         *unicode_path;
 
-      unicode_path=ConvertUTF8ToUTF16(path);
+      unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
       if (unicode_path != (wchar_t *) NULL)
         {
           hTemp=GetEnhMetaFileW(unicode_path);

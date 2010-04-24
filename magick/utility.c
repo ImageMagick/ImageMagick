@@ -1202,7 +1202,7 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
     wchar_t
       *unicode_path;
 
-    unicode_path=ConvertUTF8ToUTF16(path);
+    unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
     if (unicode_path == (wchar_t *) NULL)
       return(MagickFalse);
     status=wstat(unicode_path,(struct stat *) attributes) == 0 ? MagickTrue :
@@ -1816,7 +1816,7 @@ MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
       *unicode_mode,
       *unicode_path;
 
-    unicode_path=ConvertUTF8ToUTF16(path);
+    unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
     if (unicode_path == (wchar_t *) NULL)
       return((FILE *) NULL);
     unicode_mode=ConvertUTF8ToUTF16(mode);
@@ -1969,7 +1969,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
     mode=_P_WAIT;
     if (asynchronous != MagickFalse)
       mode=_P_NOWAIT;
-    status=spawnvp(mode,arguments[1],arguments+1);
+    status=spawnvp(mode,arguments[1],(const char **) (arguments+1));
   }
 #elif defined(macintosh)
   status=MACSystemCommand(shell_command);
