@@ -260,6 +260,7 @@ MagickExport int Exit(int status)
 %    o time_zone: the time zone.
 %
 */
+#if !defined(__MINGW32__)
 MagickExport int gettimeofday (struct timeval *time_value,
   struct timezone *time_zone)
 {
@@ -300,6 +301,7 @@ MagickExport int gettimeofday (struct timeval *time_value,
     }
   return(0);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
