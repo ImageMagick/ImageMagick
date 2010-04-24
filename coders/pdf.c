@@ -1253,8 +1253,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        resolution.x*=2.54;
-        resolution.y*=2.54;
+        resolution.x=(unsigned long) (100.0*2.54*resolution.x+0.5)/100.0;
+        resolution.y=(unsigned long) (100.0*2.54*resolution.y+0.5)/100.0;
       }
     SetGeometry(image,&geometry);
     (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu",
