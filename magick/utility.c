@@ -1819,7 +1819,7 @@ MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
     unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
     if (unicode_path == (wchar_t *) NULL)
       return((FILE *) NULL);
-    unicode_mode=ConvertUTF8ToUTF16(mode);
+    unicode_mode=ConvertUTF8ToUTF16((const unsigned char *) mode);
     if (unicode_mode == (wchar_t *) NULL)
       {
         unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);

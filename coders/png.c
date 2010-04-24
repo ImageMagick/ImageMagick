@@ -6234,7 +6234,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    dp+=description_length;
    *dp++='\n';
    (void) FormatMagickString(dp,allocated_length-
-     (png_size_t) (dp-text[0].text),"%8lu ",length);
+     (png_size_t) (dp-text[0].text),"%8lu ",(unsigned long) length);
    dp+=8;
    for (i=0; i < (long) length; i++)
    {
@@ -6488,9 +6488,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
     {
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    width=%lu",ping_width);
+        "    width=%lu",(unsigned long) ping_width);
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    height=%lu",ping_height);
+        "    height=%lu",(unsigned long) ping_height);
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    image_matte=%u",image->matte);
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7747,9 +7747,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Writing PNG image data");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Width: %lu",ping_width);
+        "    Width: %lu",(unsigned long) ping_width);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Height: %lu",ping_height);
+        "    Height: %lu",(unsigned long) ping_height);
       if (mng_info->write_png_depth)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -9181,7 +9181,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
                   final_delay/MagickMax(image->ticks_per_second,1)));
              if (image->iterations == 0)
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "     TERM iterations: %lu",PNG_UINT_31_MAX);
+                 "     TERM iterations: %lu",(unsigned long) PNG_UINT_31_MAX);
              else
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "     Image iterations: %lu",image->iterations);
