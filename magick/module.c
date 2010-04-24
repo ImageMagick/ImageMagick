@@ -628,7 +628,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       return(MagickTrue);
     }
 #else
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
     {
       const char
         *registery_key;
@@ -673,8 +673,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     }
 #endif
 #endif
-#if !defined(MAGICKCORE_CODER_PATH) && !defined(__WINDOWS__)
-# error MAGICKCORE_CODER_PATH or __WINDOWS__ must be defined when MAGICKCORE_INSTALLED_SUPPORT is defined
+#if !defined(MAGICKCORE_CODER_PATH) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+# error MAGICKCORE_CODER_PATH or MAGICKCORE_WINDOWS_SUPPORT must be defined when MAGICKCORE_INSTALLED_SUPPORT is defined
 #endif
 #else
   {
@@ -754,7 +754,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       if (IsPathAccessible(path) != MagickFalse)
         return(MagickTrue);
     }
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     /*
       Search module path.
@@ -1408,7 +1408,7 @@ static void TagToCoderModuleName(const char *tag,char *name)
   (void) FormatMagickString(name,MaxTextExtent,"%s.la",tag);
   (void) LocaleLower(name);
 #else
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   if (LocaleNCompare("IM_MOD_",tag,7) == 0)
     (void) CopyMagickString(name,tag,MaxTextExtent);
   else

@@ -59,7 +59,7 @@
 #include "magick/memory_.h"
 #include "magick/mime.h"
 #include "magick/module.h"
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include "magick/nt-feature.h"
 #endif
 #include "magick/random_.h"
@@ -897,7 +897,7 @@ MagickExport MagickBooleanType IsMagickConflict(const char *magick)
   return(MACIsMagickConflict(magick));
 #elif defined(vms)
   return(VMSIsMagickConflict(magick));
-#elif defined(__WINDOWS__)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTIsMagickConflict(magick));
 #else
   return(MagickFalse);
@@ -1169,7 +1169,7 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGHUP)
     exit(signal_number);
 #endif
-#if defined(SIGINT) && !defined(__WINDOWS__)
+#if defined(SIGINT) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
   if (signal_number == SIGINT)
     exit(signal_number);
 #endif
@@ -1218,7 +1218,7 @@ MagickExport void MagickCoreGenesis(const char *path,
       (void) SetLogEventMask(events);
       events=DestroyString(events);
     }
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__)
   if (IsEventLogging() != MagickFalse)
     {
@@ -1263,7 +1263,7 @@ MagickExport void MagickCoreGenesis(const char *path,
       if (signal_handlers[SIGHUP] == (SignalHandler *) NULL)
         signal_handlers[SIGHUP]=RegisterMagickSignalHandler(SIGHUP);
 #endif
-#if defined(SIGINT) && !defined(__WINDOWS__)
+#if defined(SIGINT) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
       if (signal_handlers[SIGINT] == (SignalHandler *) NULL)
         signal_handlers[SIGINT]=RegisterMagickSignalHandler(SIGINT);
 #endif
@@ -1303,7 +1303,9 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) TypeComponentGenesis();
   (void) MimeComponentGenesis();
   (void) ConstituteComponentGenesis();
+#if defined(MAGICKCORE_X11_DELEGATE)
   (void) XComponentGenesis();
+#endif
 }
 
 /*
@@ -1333,7 +1335,7 @@ MagickExport void MagickCoreTerminus(void)
   MimeComponentTerminus();
   TypeComponentTerminus();
   ColorComponentTerminus();
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTGhostscriptUnLoadDLL();
 #endif
   MagicComponentTerminus();

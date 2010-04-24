@@ -61,7 +61,7 @@
 #include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(__WINDOWS__)
+#if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include <sys/mman.h>
 #endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2263,7 +2263,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       ((*filename == '\0') && (image_info->file == (FILE *) NULL)))
     {
       image->blob->file=(*type == 'r') ? stdin : stdout;
-#if defined(__WINDOWS__) || defined(__OS2__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
         setmode(_fileno(image->blob->file),_O_BINARY);
 #endif
@@ -2279,7 +2279,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       *mode=(*type);
       mode[1]='\0';
       image->blob->file=fdopen(StringToLong(filename+3),mode);
-#if defined(__WINDOWS__) || defined(__OS2__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
         setmode(_fileno(image->blob->file),_O_BINARY);
 #endif

@@ -2106,7 +2106,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         blob=FileToBlob(path,~0,length,exception);
     }
 #endif
-#if defined(__WINDOWS__) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_CONFIGURE_PATH))
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_CONFIGURE_PATH))
   if (blob == (void *) NULL)
     {
       char
@@ -2189,7 +2189,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   */
   if ((blob == (void *) NULL) && (IsPathAccessible(path) != MagickFalse))
     blob=FileToBlob(path,~0,length,exception);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   /*
     Search Windows registry.
   */

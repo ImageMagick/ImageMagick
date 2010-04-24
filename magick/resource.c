@@ -365,7 +365,7 @@ static MagickBooleanType GetPathTemplate(char *path)
     directory=GetPolicyValue("temporary-path");
   if (directory == (char *) NULL)
     directory=GetEnvironmentValue("TMPDIR");
-#if defined(__WINDOWS__) || defined(__OS2__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
   if (directory == (char *) NULL)
     directory=GetEnvironmentValue("TMP");
   if (directory == (char *) NULL)

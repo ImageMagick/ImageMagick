@@ -963,7 +963,7 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
       }
   }
 #endif
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTGetExecutionPath(path,extent);
 #endif
 #if defined(__GNU__)
@@ -1168,7 +1168,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
       /*
         Not UTF-8, just copy.
       */
-      length=strlen(source);
+      length=strlen((const char *) source);
       utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
       if (utf16 == (wchar_t *) NULL)
         return((wchar_t *) NULL);
@@ -1685,7 +1685,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
     if (*entry->d_name == '.')
       continue;
     if ((IsPathDirectory(entry->d_name) > 0) ||
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
         (GlobExpression(entry->d_name,pattern,MagickTrue) != MagickFalse))
 #else
         (GlobExpression(entry->d_name,pattern,MagickFalse) != MagickFalse))
@@ -1961,7 +1961,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
           }
     }
 #endif
-#elif defined(__WINDOWS__)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     int
       mode;

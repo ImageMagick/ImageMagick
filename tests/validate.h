@@ -351,7 +351,7 @@ static const struct ReferenceFormats
     { "XPM", UndefinedCompression, 0.0 },
     { "XPS", UndefinedCompression, 0.0 },
     { "XV", UndefinedCompression, 0.0 },
-#if !defined(__WINDOWS__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
     { "XWD", UndefinedCompression, 0.0 },
 #endif
     { "YUV", UndefinedCompression, 0.0 },

@@ -1785,7 +1785,7 @@ static void formatString(Image *ofile, const char *s, int len)
       break;
     }
   }
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   (void) WriteBlobString(ofile,"\"\r\n");
 #else
 #if defined(macintosh)

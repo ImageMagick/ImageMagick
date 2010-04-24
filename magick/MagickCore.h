@@ -46,37 +46,13 @@ extern "C" {
 #include <stdlib.h>
 #include <sys/types.h>
 
-#if defined(__CYGWIN32__)
-#  if !defined(__CYGWIN__)
-#    define __CYGWIN__ __CYGWIN32__
-#  endif
-#endif
+#if defined(WIN32) || defined(WIN64)
+#  define MAGICKCORE_WINDOWS_SUPPORT
+#else
+#  define MAGICKCORE_POSIX_SUPPORT
+#endif 
 
-#if defined(_WIN32) || defined(WIN32)
-#  if !defined(__WINDOWS__)
-#    if defined(_WIN32)
-#      define __WINDOWS__ _WIN32
-#    else
-#      if defined(WIN32)
-#        define __WINDOWS__ WIN32
-#      endif
-#    endif
-#  endif
-#endif
-
-#if defined(_WIN64) || defined(WIN64)
-#  if !defined(__WINDOWS__)
-#    if defined(_WIN64)
-#      define __WINDOWS__ _WIN64
-#    else
-#      if !defined(WIN64)
-#        define __WINDOWS__ WIN64
-#      endif
-#    endif
-#  endif
-#endif
-
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB) && !defined(MAGICK_STATIC_LINK)
 #  define _MAGICKDLL_
 # endif

@@ -116,7 +116,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   int
     status;
 
-#if defined(MAGICKCORE_GS_DELEGATE) || defined(__WINDOWS__)
+#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
   char
     **argv;
 
@@ -133,7 +133,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   register long
     i;
 
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   ghost_info=NTGhostscriptDLLVectors();
 #else
   GhostInfo
@@ -174,7 +174,7 @@ static MagickBooleanType InvokePostscriptDelegate(
       0,&code);
   (ghost_info->exit)(interpreter);
   (ghost_info->delete_instance)(interpreter);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTGhostscriptUnLoadDLL();
 #endif
   for (i=0; i < (long) argc; i++)

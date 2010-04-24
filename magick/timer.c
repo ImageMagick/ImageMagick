@@ -196,7 +196,7 @@ static double ElapsedTime(void)
 
   return((double) times(&timer)/CLK_TCK);
 #else
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTElapsedTime());
 #else
   return((double) clock()/CLK_TCK);
@@ -451,7 +451,7 @@ static double UserTime(void)
   (void) times(&timer);
   return((double) (timer.tms_utime+timer.tms_stime)/CLK_TCK);
 #else
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTUserTime());
 #else
   return((double) clock()/CLK_TCK);

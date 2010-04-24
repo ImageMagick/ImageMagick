@@ -570,7 +570,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
       }
       paths=DestroyLinkedList(paths,RelinquishMagickMemory);
     }
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     char
       *blob;
@@ -678,7 +678,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #if defined(MAGICKCORE_SHARE_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(MAGICKCORE_SHARE_PATH));
 #endif
-#if defined(__WINDOWS__) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_CONFIGURE_PATH))
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_CONFIGURE_PATH))
   {
     char
       *registry_key;
@@ -768,7 +768,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         home=DestroyString(home);
       }
   }
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     char
       module_path[MaxTextExtent];
