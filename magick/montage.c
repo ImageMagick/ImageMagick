@@ -820,7 +820,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
                   image=shadow_image;
                 }
           }
-          (void) CompositeImage(montage,OverCompositeOp,image,x_offset+x,
+          (void) CompositeImage(montage,image->compose,image,x_offset+x,
             y_offset+y);
           value=GetImageProperty(image,"label");
           if (value != (const char *) NULL)
