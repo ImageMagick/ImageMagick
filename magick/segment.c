@@ -85,6 +85,7 @@
 #include "magick/studio.h"
 #include "magick/cache.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/colorspace.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"

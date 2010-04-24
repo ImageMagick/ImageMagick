@@ -53,6 +53,7 @@
 #include "magick/cache.h"
 #include "magick/colormap-private.h"
 #include "magick/color-private.h"
+#include "magick/colormap.h"
 #include "magick/colorspace.h"
 #include "magick/constitute.h"
 #include "magick/exception.h"

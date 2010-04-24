@@ -178,6 +178,7 @@
 #include "magick/cache-view.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
+#include "magick/colormap.h"
 #include "magick/colorspace.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
