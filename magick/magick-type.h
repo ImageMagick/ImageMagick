@@ -28,7 +28,7 @@ extern "C" {
 #define MAGICKCORE_QUANTUM_DEPTH  16
 #endif
 
-#if defined(__WINDOWS__) && !defined(__MINGW32__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #  define MagickLLConstant(c)  (MagickOffsetType) (c ## i64)
 #  define MagickULLConstant(c)  (MagickSizeType) (c ## ui64)
 #else
@@ -111,7 +111,7 @@ typedef unsigned long long Quantum;
   Typedef declarations.
 */
 typedef unsigned int MagickStatusType;
-#if !defined(__WINDOWS__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #if (MAGICKCORE_SIZEOF_UNSIGNED_LONG_LONG == 8)
 typedef long long MagickOffsetType;
 typedef unsigned long long MagickSizeType;

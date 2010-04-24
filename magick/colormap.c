@@ -73,6 +73,92 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A c q u i r e I m a g e C o l o r m a p                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireImageColormap() allocates an image colormap and initializes
+%  it to a linear gray colorspace.  If the image already has a colormap,
+%  it is replaced.  AcquireImageColormap() returns MagickTrue if successful,
+%  otherwise MagickFalse if there is not enough memory.
+%
+%  The format of the AcquireImageColormap method is:
+%
+%      MagickBooleanType AcquireImageColormap(Image *image,
+%        const unsigned long colors)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o colors: the number of colors in the image colormap.
+%
+*/
+
+static inline unsigned long MagickMax(const unsigned long x,
+  const unsigned long y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline unsigned long MagickMin(const unsigned long x,
+  const unsigned long y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+MagickExport MagickBooleanType AcquireImageColormap(Image *image,
+  const unsigned long colors)
+{
+  register long
+    i;
+
+  size_t
+    length;
+
+  /*
+    Allocate image colormap.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  image->colors=colors;
+  length=(size_t) colors;
+  if (image->colormap == (PixelPacket *) NULL)
+    image->colormap=(PixelPacket *) AcquireQuantumMemory(length,
+      sizeof(*image->colormap));
+  else
+    image->colormap=(PixelPacket *) ResizeQuantumMemory(image->colormap,length,
+      sizeof(*image->colormap));
+  if (image->colormap == (PixelPacket *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  for (i=0; i < (long) image->colors; i++)
+  {
+    unsigned long
+      pixel;
+
+    pixel=(unsigned long) (i*(QuantumRange/MagickMax(colors-1,1)));
+    image->colormap[i].red=(Quantum) pixel;
+    image->colormap[i].green=(Quantum) pixel;
+    image->colormap[i].blue=(Quantum) pixel;
+    image->colormap[i].opacity=OpaqueOpacity;
+  }
+  return(SetImageStorageClass(image,PseudoClass));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     C y c l e C o l o r m a p I m a g e                                     %
 %                                                                             %
 %                                                                             %

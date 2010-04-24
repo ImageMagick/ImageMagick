@@ -510,7 +510,6 @@ extern MagickExport long
   GetImageReferenceCount(Image *);
 
 extern MagickExport MagickBooleanType
-  AcquireImageColormap(Image *,const unsigned long),
   ClipImage(Image *),
   ClipImagePath(Image *,const char *,const MagickBooleanType),
   GetImageAlphaChannel(const Image *),

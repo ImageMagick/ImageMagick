@@ -474,7 +474,7 @@ MagickExport LinkedListInfo *GetLocaleOptions(const char *filename,
       }
       paths=DestroyLinkedList(paths,RelinquishMagickMemory);
     }
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     char
       *blob;

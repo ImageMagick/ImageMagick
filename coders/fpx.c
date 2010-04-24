@@ -64,7 +64,7 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 #if defined(MAGICKCORE_FPX_DELEGATE)
-#if !defined(vms) && !defined(macintosh) && !defined(__WINDOWS__)
+#if !defined(vms) && !defined(macintosh) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <fpxlib.h>
 #else
 #include "Fpxlib.h"

@@ -2440,6 +2440,49 @@ static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
 %    o image: the image.
 %
 */
+static MagickBooleanType DirectToColormapImage(Image *image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  long
+    y;
+
+  MagickBooleanType
+    status;
+
+  register long
+    i;
+
+  unsigned long
+    number_colors;
+
+  status=MagickTrue;
+  number_colors=(unsigned long) (image->columns*image->rows);
+  if (AcquireImageColormap(image,number_colors) == MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  i=0;
+  image_view=AcquireCacheView(image);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register long
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
+      image->colormap[i++]=(*p++);
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
 MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   Image *image)
 {
@@ -2470,6 +2513,8 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   if ((image->storage_class == PseudoClass) &&
       (image->colors <= maximum_colors))
     return(MagickTrue);
+  if ((image->columns*image->rows) <= maximum_colors)
+    return(DirectToColormapImage(image,&image->exception));
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {

@@ -72,7 +72,7 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(__WINDOWS__)
+#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    if defined(__MINGW32__)
 #      define _MSC_VER
 #    else

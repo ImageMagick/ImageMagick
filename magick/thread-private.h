@@ -33,7 +33,7 @@ extern "C" {
 
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   typedef pthread_mutex_t MagickMutexType;
-#elif defined(__WINDOWS__)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   typedef CRITICAL_SECTION MagickMutexType;
 #else
   typedef unsigned long MagickMutexType;
@@ -43,7 +43,7 @@ static inline MagickThreadType GetMagickThreadId(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   return(pthread_self());
-#elif defined(__WINDOWS__)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(GetCurrentThreadId());
 #else
   return(getpid());
@@ -67,7 +67,7 @@ static inline unsigned long GetMagickThreadSignature(void)
     magick_thread.id=pthread_self();
     return(magick_thread.signature);
   }
-#elif defined(__WINDOWS__)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return((unsigned long) GetCurrentThreadId());
 #else
   return((unsigned long) getpid());
@@ -79,7 +79,7 @@ static inline MagickBooleanType IsMagickThreadEqual(const MagickThreadType id)
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   if (pthread_equal(id,pthread_self()) != 0)
     return(MagickTrue);
-#elif defined(__WINDOWS__)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   if (id == GetCurrentThreadId())
     return(MagickTrue);
 #else

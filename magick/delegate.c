@@ -1347,7 +1347,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
               *commands;
 
             commands=AcquireString(token);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
             if (strchr(commands,'@') != (char *) NULL)
               {
                 char

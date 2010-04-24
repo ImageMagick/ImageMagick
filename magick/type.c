@@ -90,7 +90,7 @@
 #define FC_WEIGHT_HEAVY            FC_WEIGHT_BLACK
 #endif
 #endif
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include "magick/nt-feature.h"
 #endif
 
@@ -779,7 +779,7 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
           (instantiate_type == MagickFalse))
         {
           (void) LoadTypeLists(MagickTypeFilename,exception);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
           (void) NTLoadTypeLists(type_list,exception);
 #endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
@@ -975,7 +975,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
   status=MagickTrue;
   type_info=(TypeInfo *) NULL;
   token=AcquireString(xml);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   /*
     Determine the Ghostscript font path.
   */
@@ -1137,7 +1137,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
               *path;
 
             path=ConstantString(token);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
             if (strchr(path,'@') != (char *) NULL)
               SubstituteString(&path,"@ghostscript_font_path@",font_path);
 #endif
@@ -1167,7 +1167,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
               *path;
 
             path=ConstantString(token);
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
             if (strchr(path,'@') != (char *) NULL)
               SubstituteString(&path,"@ghostscript_font_path@",font_path);
 #endif

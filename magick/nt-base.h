@@ -96,7 +96,7 @@ extern "C" {
 #  define fseeko  _fseeki64
 #endif
 #if !defined(fstat) && !defined(__BORLANDC__)
-#if defined(__WINDOWS__) && !defined(Windows95) && \
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)
 #  define fstat  _fstati64
 #else
@@ -191,7 +191,7 @@ extern "C" {
 #  define spawnvp  _spawnvp
 #endif
 #if !defined(stat) && !defined(__BORLANDC__)
-#if defined(__WINDOWS__) && !defined(Windows95) && \
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)
 #  define stat  _stati64
 #else
@@ -222,7 +222,7 @@ extern "C" {
 #  define write  _write
 #endif
 #if !defined(wstat) && !defined(__BORLANDC__)
-#if defined(__WINDOWS__) && !defined(Windows95) && \
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)
 #  define wstat  _wstati64
 #else
@@ -230,7 +230,7 @@ extern "C" {
 #endif
 #endif
 
-#if defined(_MT) && defined(__WINDOWS__)
+#if defined(_MT) && defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  define SAFE_GLOBAL  __declspec(thread)
 #else
 #  define SAFE_GLOBAL

@@ -315,7 +315,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
 %
 */
 
-#if !defined(__WINDOWS__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
 {
   register unsigned char
@@ -461,7 +461,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     filename=DestroyString(filename);
   }
 #endif
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     double
       seconds;

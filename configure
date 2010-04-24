@@ -21024,7 +21024,6 @@ _ACEOF
 
 fi
 
-AC_TYPE_BOOLEAN
 
 # Define off_t to a suitable type, if standard headers do not define it.
 ac_fn_c_check_type "$LINENO" "off_t" "ac_cv_type_off_t" "$ac_includes_default"

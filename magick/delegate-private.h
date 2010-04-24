@@ -34,7 +34,7 @@ typedef struct gs_main_instance_s
 #endif
 
 #if !defined(MagickDLLCall)
-#  if defined(__WINDOWS__)
+#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    define MagickDLLCall __stdcall
 #  else
 #    define MagickDLLCall

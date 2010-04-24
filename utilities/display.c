@@ -72,7 +72,7 @@
 %
 */
 
-#if defined(__WINDOWS__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 int WINAPI WinMain(HINSTANCE instance,HINSTANCE last,LPSTR command,int state)
 {
   char

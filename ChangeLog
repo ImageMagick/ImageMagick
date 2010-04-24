@@ -1,5 +1,6 @@
 2010-04-24.6.1-6 Cristy  <quetzlzacatenango@image...>
   * Do not declare timestruct under MinGW.
+  * Respect -compose option for the montag utility (bug report by Anthony).
 
 2010-04-17  6.6.1-5 Cristy  <quetzlzacatenango@image...>
   * Only write one ICC profile to PSD image.
