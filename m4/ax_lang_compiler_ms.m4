@@ -1,33 +1,29 @@
-# -*- mode: autoconf -*-
+# ===========================================================================
+#    http://www.gnu.org/software/autoconf-archive/ax_lang_compiler_ms.html
+# ===========================================================================
 #
-# Check whether the compiler for the current language is Microsoft.
+# SYNOPSIS
 #
-# This macro is modeled after _AC_LANG_COMPILER_GNU in the GNU Autoconf
-# implementation.
+#   AX_LANG_COMPILER_MS
 #
-# version: 1.0
-# author: Braden McDaniel <braden@endoframe.com>
+# DESCRIPTION
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+#   Check whether the compiler for the current language is Microsoft.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#   This macro is modeled after _AC_LANG_COMPILER_GNU in the GNU Autoconf
+#   implementation.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
+# LICENSE
 #
-# As a special exception, the you may copy, distribute and modify the
-# configure scripts that are the output of Autoconf when processing
-# the Macro.  You need not follow the terms of the GNU General Public
-# License when using or distributing such scripts.
+#   Copyright (c) 2009 Braden McDaniel <braden@endoframe.com>
 #
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved. This file is offered as-is, without any
+#   warranty.
+
+#serial 8
+
 AC_DEFUN([AX_LANG_COMPILER_MS],
 [AC_CACHE_CHECK([whether we are using the Microsoft _AC_LANG compiler],
                 [ax_cv_[]_AC_LANG_ABBREV[]_compiler_ms],

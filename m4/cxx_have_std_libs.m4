@@ -13,7 +13,7 @@ dnl @license AllPermissive
 AC_DEFUN([AC_CXX_HAVE_STD_LIBS],
 [AC_CACHE_CHECK(whether the compiler supports ISO C++ standard library,
 ac_cv_cxx_have_std_libs,
-[AC_REQUIRE([AC_CXX_HAVE_NAMESPACES])
+[AC_REQUIRE([AX_CXX_NAMESPACES])
  AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_COMPILE([#include <iostream>

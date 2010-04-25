@@ -276,17 +276,18 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_warnings.m4 \
-	$(top_srcdir)/m4/ac_func_fseeko.m4 \
-	$(top_srcdir)/m4/ac_prog_perl_version.m4 \
-	$(top_srcdir)/m4/acx_pthread.m4 $(top_srcdir)/m4/argz.m4 \
+	$(top_srcdir)/m4/ac_func_fseeko.m4 $(top_srcdir)/m4/argz.m4 \
+	$(top_srcdir)/m4/ax_compare_version.m4 \
+	$(top_srcdir)/m4/ax_cxx_bool.m4 \
+	$(top_srcdir)/m4/ax_cxx_namespace_std.m4 \
+	$(top_srcdir)/m4/ax_cxx_namespaces.m4 \
 	$(top_srcdir)/m4/ax_lang_compiler_ms.m4 \
 	$(top_srcdir)/m4/ax_opencl.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
-	$(top_srcdir)/m4/cxx_have_bool.m4 \
+	$(top_srcdir)/m4/ax_prog_perl_version.m4 \
+	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/cxx_have_lstring.m4 \
-	$(top_srcdir)/m4/cxx_have_namespaces.m4 \
 	$(top_srcdir)/m4/cxx_have_std_libs.m4 \
-	$(top_srcdir)/m4/cxx_have_std_namespace.m4 \
 	$(top_srcdir)/m4/framework.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltdl.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
@@ -2406,6 +2407,7 @@ PERL = @PERL@
 PERLMAINCC = @PERLMAINCC@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PERL_SUPPORTS_DESTDIR = @PERL_SUPPORTS_DESTDIR@
+PERL_VERSION = @PERL_VERSION@
 PERSISTINCLUDE_DIR = @PERSISTINCLUDE_DIR@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 PKG_CONFIG = @PKG_CONFIG@
@@ -2476,12 +2478,12 @@ abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
-acx_pthread_config = @acx_pthread_config@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+ax_pthread_config = @ax_pthread_config@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@

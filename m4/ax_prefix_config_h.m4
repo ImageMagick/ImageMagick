@@ -1,5 +1,5 @@
 # ===========================================================================
-#       http://www.nongnu.org/autoconf-archive/ax_prefix_config_h.html
+#    http://www.gnu.org/software/autoconf-archive/ax_prefix_config_h.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -68,10 +68,10 @@
 #   it by itself". You might want to clean up about these - consider an
 #   extra mylib/conf.h that reads something like:
 #
-#      #include <mylib/_config.h>
-#      #ifndef _testpkg_const
-#      #define _testpkg_const const
-#      #endif
+#     #include <mylib/_config.h>
+#     #ifndef _testpkg_const
+#     #define _testpkg_const const
+#     #endif
 #
 #   and then start using _testpkg_const in the header files. That is also a
 #   good thing to differentiate whether some library-user has starting to
@@ -119,6 +119,8 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
+#serial 9
+
 AC_DEFUN([AX_PREFIX_CONFIG_H],[dnl
 AC_BEFORE([AC_CONFIG_HEADERS],[$0])dnl
 AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
@@ -165,11 +167,11 @@ else
   if test -f $_INP ; then
     echo "s/^@%:@undef  *\\(@<:@m4_cr_LETTERS[]_@:>@\\)/@%:@undef $_UPP""_\\1/" > _script
     echo "s/^@%:@undef  *\\(@<:@m4_cr_letters@:>@\\)/@%:@undef $_LOW""_\\1/" >> _script
-    echo "s/^@%:@def[]ine  *\\(@<:@m4_cr_LETTERS[]_@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1 \\" >> _script
-    echo "@%:@def[]ine $_UPP""_\\1 \\2 \\" >> _script
+    echo "s/^@%:@def[]ine  *\\(@<:@m4_cr_LETTERS[]_@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1\\" >> _script
+    echo "@%:@def[]ine $_UPP""_\\1\\2\\" >> _script
     echo "@%:@endif/" >>_script
-    echo "s/^@%:@def[]ine  *\\(@<:@m4_cr_letters@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1 \\" >> _script
-    echo "@%:@define $_LOW""_\\1 \\2 \\" >> _script
+    echo "s/^@%:@def[]ine  *\\(@<:@m4_cr_letters@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1\\" >> _script
+    echo "@%:@define $_LOW""_\\1\\2\\" >> _script
     echo "@%:@endif/" >> _script
     # now executing _script on _DEF input to create _OUT output file
     echo "@%:@ifndef $_DEF"      >$tmp/pconfig.h
