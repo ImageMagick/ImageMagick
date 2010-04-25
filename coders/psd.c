@@ -1873,6 +1873,49 @@ static void WriteResolutionResourceBlock(Image *image)
   (void) WriteBlobMSBShort(image,units); /* height unit */
 }
 
+static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
+{
+  register unsigned char
+    *p;
+
+  size_t
+    length;
+
+  unsigned char
+    *datum;
+
+  unsigned long
+    count,
+    long_sans;
+
+  unsigned short
+    id,
+    short_sans;
+
+  length=GetStringInfoLength(bim_profile);
+  if (length < 16)
+    return(MagickFalse);
+  datum=GetStringInfoDatum(bim_profile);
+  for (p=datum; (p >= datum) && (p < (datum+length-16)); )
+  {
+    if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
+      break;
+    p=PushLongPixel(MSBEndian,p,&long_sans);
+    p=PushShortPixel(MSBEndian,p,&id);
+    p=PushShortPixel(MSBEndian,p,&short_sans);
+    p=PushLongPixel(MSBEndian,p,&count);
+    if (id == 0x0000040f)
+      {
+        (void) CopyMagickMemory(p-16,p+count-16,length-count-(p-datum));
+        SetStringInfoLength(bim_profile,PSDQuantum(length-count-16));
+        break;
+      }
+    p+=count;
+    if ((count & 0x01) != 0)
+      p++;
+  }
+}
+
 static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   const char
@@ -2009,21 +2052,18 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     Image resource block.
   */
   length=28; /* 0x03EB */
-  bim_profile=(StringInfo *) NULL;
+  bim_profile=GetImageProfile(image,"8bim");
   icc_profile=GetImageProfile(image,"icc");
+  if (bim_profile != (StringInfo *) NULL)
+    {
+      if (icc_profile != (StringInfo *) NULL)
+        RemoveICCProfileFromResourceBlock(bim_profile);
+      length+=PSDQuantum(GetStringInfoLength(bim_profile));
+    }
   if (icc_profile != (StringInfo *) NULL)
     length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
-  else
-    {
-      bim_profile=GetImageProfile(image,"8bim");
-      if (bim_profile != (StringInfo *) NULL)
-        length+=GetStringInfoLength(bim_profile);
-    }
   (void) WriteBlobMSBLong(image,(unsigned int) length);
   WriteResolutionResourceBlock(image);
-  if (bim_profile != (StringInfo *) NULL)
-    (void) WriteBlob(image,GetStringInfoLength(bim_profile),GetStringInfoDatum(
-      bim_profile));
   if (icc_profile != (StringInfo *) NULL)
     {
       (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
@@ -2037,6 +2077,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
           PSDQuantum(GetStringInfoLength(icc_profile)))
         (void) WriteBlobByte(image,0);
     }
+  if (bim_profile != (StringInfo *) NULL)
+    (void) WriteBlob(image,GetStringInfoLength(bim_profile),GetStringInfoDatum(
+      bim_profile));
 
 compute_layer_info:
   layer_count = 0;
