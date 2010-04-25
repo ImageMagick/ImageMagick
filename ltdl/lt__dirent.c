@@ -35,7 +35,7 @@ or obtained by writing to the Free Software Foundation, Inc.,
 
 #include "lt__dirent.h"
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(__WINDOWS__)
 
 void
 closedir (DIR *entry)
@@ -104,4 +104,4 @@ readdir (DIR *entry)
   return &entry->file_info;
 }
 
-#endif /*defined(MAGICKCORE_WINDOWS_SUPPORT)*/
+#endif /*defined(__WINDOWS__)*/

@@ -19933,7 +19933,7 @@ fi
 if test "${with_perl+set}" = set; then :
   withval=$with_perl; with_perl=$withval
 else
-  with_perl=$libtool_build_shared_libs
+  with_perl='no'
 fi
 
 
