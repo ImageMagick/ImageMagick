@@ -698,7 +698,7 @@ AC_ARG_WITH([perl],
     [AC_HELP_STRING([--with-perl],
                     [enable build/install of PerlMagick])],
     [with_perl=$withval],
-    [with_perl=$libtool_build_shared_libs])
+    [with_perl='no'])
 
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH([perl-options],
