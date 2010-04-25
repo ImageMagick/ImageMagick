@@ -2468,17 +2468,32 @@ static MagickBooleanType DirectToColormapImage(Image *image,
   image_view=AcquireCacheView(image);
   for (y=0; y < (long) image->rows; y++)
   {
-    register const PixelPacket
-      *restrict p;
+    MagickBooleanType
+      proceed;
+
+    register IndexPacket
+      *restrict indexes;
+
+    register PixelPacket
+      *restrict q;
 
     register long
       x;
 
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (const PixelPacket *) NULL)
       break;
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (long) image->columns; x++)
-      image->colormap[i++]=(*p++);
+    {
+      indexes[x]=i;
+      image->colormap[i++]=(*q++);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      break;
+    proceed=SetImageProgress(image,AssignImageTag,y,image->rows);
+    if (proceed == MagickFalse)
+      status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
   return(status);
