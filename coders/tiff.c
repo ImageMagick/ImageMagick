@@ -46,6 +46,7 @@
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
+#include "magick/colormap.h"
 #include "magick/colorspace.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
