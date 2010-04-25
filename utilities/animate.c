@@ -77,6 +77,9 @@ int WINAPI WinMain(HINSTANCE instance,HINSTANCE last,LPSTR command,int state)
     argc,
     main(int,char **);
 
+  (void) instance;
+  (void) last;
+  (void) state;
   argv=StringToArgv(command,&argc);
   return(main(argc,argv));
 }
