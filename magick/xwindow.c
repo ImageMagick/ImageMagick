@@ -47,6 +47,7 @@
 #include "magick/client.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
+#include "magick/colormap.h"
 #include "magick/composite.h"
 #include "magick/display.h"
 #include "magick/exception.h"
