@@ -323,6 +323,9 @@
 /* define if the compiler implements namespaces */
 #undef HAVE_NAMESPACES
 
+/* Define if g++ supports namespace std. */
+#undef HAVE_NAMESPACE_STD
+
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
 
@@ -442,9 +445,6 @@
 
 /* define if the compiler supports ISO C++ standard library */
 #undef HAVE_STD_LIBS
-
-/* define if the compiler supports the std namespace */
-#undef HAVE_STD_NAMESPACE
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #undef HAVE_STRCASECMP
