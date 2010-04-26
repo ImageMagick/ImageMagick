@@ -234,22 +234,12 @@ extern size_t strlcpy(char *,const char *,size_t);
 extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
-#if !defined(wand_attribute)
-#  if (defined(__GNUC__) && (__GNUC__ >= 3))
-#    define wand_attribute  __attribute__
-#  else
-#    define wand_attribute(x)  /* nothing */
-#  endif
-#endif
-
-#if !defined(wand_unused)
-#  if (defined(__GNUC__) && (__GNUC__ >= 3))
-#    define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
-#  elif defined(__LCLINT__)
-#    define wand_unused(x) /*@unused@*/ x
-#  else
-#    define wand_unused(x) x
-#  endif
+#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#  define wand_attribute  __attribute__
+#  define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
+#else
+#  define wand_attribute(x)  /* nothing */
+#  define wand_unused(x) x
 #endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)

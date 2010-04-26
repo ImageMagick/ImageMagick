@@ -219,6 +219,10 @@
 #define MAGICKCORE_HAVE_DECL_STRLCPY 0
 #endif
 
+/* Define to 1 if you have the declaration of `tzname', and to 0 if you don't.
+   */
+/* #undef HAVE_DECL_TZNAME */
+
 /* Define to 1 if you have the declaration of `vsnprintf', and to 0 if you
    don't. */
 #ifndef MAGICKCORE_HAVE_DECL_VSNPRINTF
@@ -765,6 +769,11 @@
 #define MAGICKCORE_HAVE_STRTOUL 1
 #endif
 
+/* Define to 1 if `tm_zone' is a member of `struct tm'. */
+#ifndef MAGICKCORE_HAVE_STRUCT_TM_TM_ZONE
+#define MAGICKCORE_HAVE_STRUCT_TM_TM_ZONE 1
+#endif
+
 /* Define to 1 if you have the `symlink' function. */
 #ifndef MAGICKCORE_HAVE_SYMLINK
 #define MAGICKCORE_HAVE_SYMLINK 1
@@ -899,6 +908,16 @@
 #define MAGICKCORE_HAVE_TIMES 1
 #endif
 
+/* Define to 1 if your `struct tm' has `tm_zone'. Deprecated, use
+   `HAVE_STRUCT_TM_TM_ZONE' instead. */
+#ifndef MAGICKCORE_HAVE_TM_ZONE
+#define MAGICKCORE_HAVE_TM_ZONE 1
+#endif
+
+/* Define to 1 if you don't have `tm_zone' but do have the external array
+   `tzname'. */
+/* #undef HAVE_TZNAME */
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #ifndef MAGICKCORE_HAVE_UNISTD_H
 #define MAGICKCORE_HAVE_UNISTD_H 1
@@ -989,6 +1008,11 @@
 
 /* Define to 1 if you have the `_wstat' function. */
 /* #undef HAVE__WSTAT */
+
+/* define if your compiler has __attribute__ */
+#ifndef MAGICKCORE_HAVE___ATTRIBUTE__
+#define MAGICKCORE_HAVE___ATTRIBUTE__ 1
+#endif
 
 /* accurately represent the wide range of intensity levels in real scenes */
 /* #undef HDRI_SUPPORT */

@@ -43,7 +43,7 @@ while test $# -gt 0; do
       echo "-I${includedir} -fopenmp"
       ;;
     --cxxflags)
-      echo '-g -O2 -Wall -W -pthread'
+      echo '-g -O2 -pthread'
       ;;
     --cppflags)
       echo '-I/usr/local/include/ImageMagick'
