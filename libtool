@@ -138,7 +138,7 @@ old_postuninstall_cmds=""
 LTCC="gcc -std=gnu99 -std=gnu99"
 
 # LTCC compiler flags.
-LTCFLAGS="-fopenmp -g -O2 -Wall -W -pthread"
+LTCFLAGS="-fopenmp -g -O2 -Wall -pthread"
 
 # Take the output of nm and produce a listing of raw symbols and C names.
 global_symbol_pipe="sed -n -e 's/^.*[	 ]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[	 ][	 ]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p'"

@@ -275,8 +275,10 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 @CONVENIENCE_LTDL_TRUE@am__append_3 = ltdl/libltdlc.la
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_warnings.m4 \
-	$(top_srcdir)/m4/ac_func_fseeko.m4 $(top_srcdir)/m4/argz.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
+	$(top_srcdir)/m4/argz.m4 \
+	$(top_srcdir)/m4/ax_c___attribute__.m4 \
+	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_compare_version.m4 \
 	$(top_srcdir)/m4/ax_cxx_bool.m4 \
 	$(top_srcdir)/m4/ax_cxx_namespace_std.m4 \
