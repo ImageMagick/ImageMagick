@@ -323,7 +323,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define DocumentCustomColors  "DocumentCustomColors:"
 #define DocumentProcessColors  "DocumentProcessColors:"
 #define EndDocument  "EndDocument:"
-#define ICCBased  "ICCBased"
 #define HiResBoundingBox  "HiResBoundingBox:"
 #define ImageData  "ImageData:"
 #define PageBoundingBox  "PageBoundingBox:"
@@ -607,8 +606,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleNCompare(CMYKCustomColor,command,strlen(CMYKCustomColor)) == 0)
       cmyk=MagickTrue;
     if (LocaleNCompare(CMYKProcessColor,command,strlen(CMYKProcessColor)) == 0)
-      cmyk=MagickTrue;
-    if (LocaleNCompare(ICCBased,command,strlen(ICCBased)) == 0)
       cmyk=MagickTrue;
     length=strlen(DocumentCustomColors);
     if ((LocaleNCompare(DocumentCustomColors,command,length) == 0) ||

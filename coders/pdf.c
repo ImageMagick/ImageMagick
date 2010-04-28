@@ -290,7 +290,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define CropBox  "CropBox"
 #define DeviceCMYK  "DeviceCMYK"
-#define ICCBased  "ICCBased"
 #define MediaBox  "MediaBox"
 #define RenderPostscriptText  "Rendering Postscript...  "
 #define PDFRotate  "Rotate"
@@ -443,8 +442,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Is this a CMYK document?
     */
     if (LocaleNCompare(DeviceCMYK,command,strlen(DeviceCMYK)) == 0)
-      cmyk=MagickTrue;
-    if (LocaleNCompare(ICCBased,command,strlen(ICCBased)) == 0)
       cmyk=MagickTrue;
     if (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0)
       {
