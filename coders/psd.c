@@ -1906,7 +1906,7 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
     p=PushLongPixel(MSBEndian,p,&count);
     if (id == 0x0000040f)
       {
-        (void) CopyMagickMemory(p-16,p+count-16,length-count-(p-datum));
+        (void) CopyMagickMemory(p-16,p+count+12,length-count-(p-datum));
         SetStringInfoLength(bim_profile,PSDQuantum(length-count-16));
         break;
       }
