@@ -4094,10 +4094,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
           {
             if (units == PixelsPerInchResolution)
               {
-                image->x_resolution=(unsigned long) (100.0*2.54*
-                  image->x_resolution+0.5)/100.0;
-                image->y_resolution=(unsigned long) (100.0*2.54*
-                  image->y_resolution+0.5)/100.0;
+                image->x_resolution=(double) ((unsigned long) (100.0*2.54*
+                  image->x_resolution+0.5))/100.0;
+                image->y_resolution=(double) ((unsigned long) (100.0*2.54*
+                  image->y_resolution+0.5))/100.0;
               }
             break;
           }

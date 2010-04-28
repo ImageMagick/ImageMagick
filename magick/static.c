@@ -167,6 +167,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterARTImage();
   (void) RegisterAVSImage();
   (void) RegisterBMPImage();
+  (void) RegisterCALSImage();
   (void) RegisterCAPTIONImage();
   (void) RegisterCINImage();
   (void) RegisterCIPImage();
@@ -333,6 +334,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterAVSImage();
   UnregisterBMPImage();
   UnregisterBRAILLEImage();
+  UnregisterCALSImage();
   UnregisterCAPTIONImage();
   UnregisterCINImage();
   UnregisterCIPImage();

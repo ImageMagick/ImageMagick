@@ -3,6 +3,8 @@
   * Respect -compose option for the montage utility (bug report by Anthony).
   * A 256 column gradient produces a 256 color GIF image (bug report by
     Anthony).
+  * Register / unregister CALS format in static.c (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=16103).
 
 2010-04-17  6.6.1-5 Cristy  <quetzlzacatenango@image...>
   * Only write one ICC profile to PSD image.
