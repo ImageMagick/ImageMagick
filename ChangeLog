@@ -1,4 +1,10 @@
-2010-04-24.6.1-6 Cristy  <quetzlzacatenango@image...>
+
+2010-04-28  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
+  * Special case handling in Barrel distortion (pixel at image center)
+  * Calculation of image for Barrel distortion (pixel vs image coords)
+  * Argument input (handling optional 'd' argument) for Barrel distortion
+
+2010-04-24  6.6.1-6 Cristy  <quetzlzacatenango@image...>
   * Do not declare timestruct under MinGW.
   * Respect -compose option for the montage utility (bug report by Anthony).
   * A 256 column gradient produces a 256 color GIF image (bug report by

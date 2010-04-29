@@ -1217,13 +1217,13 @@ static double *GenerateCoefficients(const Image *image,
            Rs=Rd/(A*Rd^3 + B*Rd^2 + C*Rd + D)
 
         Where Rd is the normalized radius from corner to middle of image
-        Input Arguments are one of the following forms...
-             A,B,C
-             A,B,C,D
-             A,B,C    X,Y
-             A,B,C,D  X,Y
-             Ax,Bx,Cx,Dx  Ay,By,Cy,Dy
-             Ax,Bx,Cx,Dx  Ay,By,Cy,Dy   X,Y
+        Input Arguments are one of the following forms (number of arguments)...
+            3:  A,B,C
+            4:  A,B,C,D
+            5:  A,B,C    X,Y
+            6:  A,B,C,D  X,Y
+            8:  Ax,Bx,Cx,Dx  Ay,By,Cy,Dy
+           10:  Ax,Bx,Cx,Dx  Ay,By,Cy,Dy   X,Y
 
         Returns 10 coefficent values, which are de-normalized (pixel scale)
           Ax, Bx, Cx, Dx,   Ay, By, Cy, Dy,    Xc, Yc
@@ -1232,17 +1232,9 @@ static double *GenerateCoefficients(const Image *image,
       double
         rscale = 2.0/MagickMin((double) image->columns,(double) image->rows);
 
-      /* A,B,C,D coefficients */
-      coeff[0] = arguments[0];
-      coeff[1] = arguments[1];
-      coeff[2] = arguments[2];
-      if ((number_arguments == 3) || (number_arguments == 5))
-        coeff[3] = 1.0 - arguments[0] - arguments[1] - arguments[2];
-      else
-        coeff[3] = arguments[3];
-      /* sanity check */
-      if ((number_arguments != 4) && (number_arguments != 6) &&
-          (number_arguments != 8) && (number_arguments != 10))
+      /* sanity check  number of args must = 3,4,5,6,8,10 or error */
+      if ((number_arguments < 3) || (number_arguments == 7)
+          (number_arguments == 9) || (number_arguments > 10) )
         {
           coeff=(double *) RelinquishMagickMemory(coeff);
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1250,11 +1242,19 @@ static double *GenerateCoefficients(const Image *image,
             MagickOptionToMnemonic(MagickDistortOptions, *method) );
           return((double *) NULL);
         }
-      /* de-normalize the X coefficients */
+      /* A,B,C,D coefficients */
+      coeff[0] = arguments[0];
+      coeff[1] = arguments[1];
+      coeff[2] = arguments[2];
+      if ((number_arguments == 3) || (number_arguments == 5) )
+        coeff[3] = 1.0 - coeff[0] - coeff[1] - coeff[2];
+      else
+        coeff[3] = arguments[3];
+      /* de-normalize the coefficients */
       coeff[0] *= pow(rscale,3.0);
       coeff[1] *= rscale*rscale;
       coeff[2] *= rscale;
-      /* Y coefficients: as given OR as X coefficients */
+      /* Y coefficients: as given OR same as X coefficients */
       if ( number_arguments >= 8 ) {
         coeff[4] = arguments[4] * pow(rscale,3.0);
         coeff[5] = arguments[5] * rscale*rscale;
@@ -1267,7 +1267,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff[6] = coeff[2];
         coeff[7] = coeff[3];
       }
-      /* X,Y Center of Distortion */
+      /* X,Y Center of Distortion (image coodinates) */
       if ( number_arguments == 5 )  {
         coeff[8] = arguments[3];
         coeff[9] = arguments[4];
@@ -1281,9 +1281,9 @@ static double *GenerateCoefficients(const Image *image,
         coeff[9] = arguments[9];
       }
       else {
-        /* center of image provided */
-        coeff[8] = ((double)image->columns-1)/2.0 + image->page.x;
-        coeff[9] = ((double)image->rows-1)/2.0    + image->page.y;
+        /* center of the image provided (image coodinates) */
+        coeff[8] = (double)image->columns/2.0 + image->page.x;
+        coeff[9] = (double)image->rows/2.0    + image->page.y;
       }
       return(coeff);
     }
@@ -1861,16 +1861,20 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       case BarrelDistortion:
       case BarrelInverseDistortion:
       { double xc,yc;
+        /* NOTE: This does the barrel roll in pixel coords not image coords
+        ** The internal distortion must do it in image coordinates,
+        ** so that is what the center coeff (8,9) is given in.
+        */
         xc = ((double)image->columns-1.0)/2.0 + image->page.x;
         yc = ((double)image->rows-1.0)/2.0    + image->page.y;
         fprintf(stderr, "Barrel%s Distort, FX Equivelent:\n",
              method == BarrelDistortion ? "" : "Inv");
         fprintf(stderr, "%s", image_gen);
-        if ( fabs(coeff[8]-xc) < 0.1 && fabs(coeff[9]-yc) < 0.1 )
+        if ( fabs(coeff[8]-xc-0.5) < 0.1 && fabs(coeff[9]-yc-0.5) < 0.1 )
           fprintf(stderr, "  -fx 'xc=(w-1)/2;  yc=(h-1)/2;\n");
         else
           fprintf(stderr, "  -fx 'xc=%lf;  yc=%lf;\n",
-               coeff[8], coeff[9]);
+               coeff[8]-0.5, coeff[9]-0.5);
         fprintf(stderr,
              "       ii=i-xc;  jj=j-yc;  rr=hypot(ii,jj);\n");
         fprintf(stderr, "       ii=ii%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
@@ -2223,15 +2227,20 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
                 fx = 1/fx;  fy = 1/fy;
                 gx *= -fx*fx;  gy *= -fy*fy;
               }
-              /* Set source pixel and EWA derivative vectors */
+              /* Set the source pixel to lookup and EWA derivative vectors */
               s.x = d.x*fx + coeff[8];
               s.y = d.y*fy + coeff[9];
               ScaleFilter( resample_filter[id],
                   gx*d.x*d.x + fx, gx*d.x*d.y,
                   gy*d.x*d.y,      gy*d.y*d.y + fy );
             }
-            else { /* Special handling to avoid divide by zero when r=0 */
-              s.x=s.y=0.0;
+            else {
+              /* Special handling to avoid divide by zero when r==0
+              **
+              ** The source and destination pixels match in this case
+              ** which was set at the top of the loop using  s = d;
+              ** otherwise...   s.x=coeff[8]; s.y=coeff[9];
+              */
               if ( method == BarrelDistortion )
                 ScaleFilter( resample_filter[id],
                      coeff[3], 0, 0, coeff[7] );
