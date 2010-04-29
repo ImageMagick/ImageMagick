@@ -1233,8 +1233,8 @@ static double *GenerateCoefficients(const Image *image,
         rscale = 2.0/MagickMin((double) image->columns,(double) image->rows);
 
       /* sanity check  number of args must = 3,4,5,6,8,10 or error */
-      if ((number_arguments < 3) || (number_arguments == 7)
-          (number_arguments == 9) || (number_arguments > 10) )
+      if ( (number_arguments  < 3) || (number_arguments == 7) ||
+           (number_arguments == 9) || (number_arguments > 10) )
         {
           coeff=(double *) RelinquishMagickMemory(coeff);
           (void) ThrowMagickException(exception,GetMagickModule(),
