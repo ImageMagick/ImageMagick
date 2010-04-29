@@ -1875,7 +1875,7 @@ static void WriteResolutionResourceBlock(Image *image)
 
 static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
 {
-  register unsigned char
+  register const unsigned char
     *p;
 
   size_t
@@ -1894,7 +1894,7 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
 
   length=GetStringInfoLength(bim_profile);
   if (length < 16)
-    return(MagickFalse);
+    return;
   datum=GetStringInfoDatum(bim_profile);
   for (p=datum; (p >= datum) && (p < (datum+length-16)); )
   {
@@ -1906,7 +1906,8 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
     p=PushLongPixel(MSBEndian,p,&count);
     if (id == 0x0000040f)
       {
-        (void) CopyMagickMemory(p-16,p+count+12,length-count-(p-datum));
+        (void) CopyMagickMemory((unsigned char *) p-16,p+count+12,length-count-
+          (p-datum));
         SetStringInfoLength(bim_profile,PSDQuantum(length-count-16));
         break;
       }
@@ -1922,7 +1923,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     *theAttr;
 
   const StringInfo
-    *bim_profile,
     *icc_profile;
 
   MagickBooleanType
@@ -1940,6 +1940,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     num_channels,
     packet_size;
 
+  StringInfo
+    *bim_profile;
+
   unsigned char
     layer_name[4];
 
@@ -1951,8 +1954,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     rounded_layer_info_size;
 
   Image
-    * tmp_image = (Image *) NULL,
-    * base_image = GetNextImageInList(image);
+    *tmp_image = (Image *) NULL,
+    *base_image = GetNextImageInList(image);
 
   /*
     Open image file.
@@ -2052,15 +2055,16 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     Image resource block.
   */
   length=28; /* 0x03EB */
-  bim_profile=GetImageProfile(image,"8bim");
+  bim_profile=(StringInfo *) GetImageProfile(image,"8bim");
   icc_profile=GetImageProfile(image,"icc");
   if (bim_profile != (StringInfo *) NULL)
     {
+      bim_profile=CloneStringInfo(bim_profile);
       if (icc_profile != (StringInfo *) NULL)
         RemoveICCProfileFromResourceBlock(bim_profile);
       length+=PSDQuantum(GetStringInfoLength(bim_profile));
     }
-  if (icc_profile != (StringInfo *) NULL)
+  if (icc_profile != (const StringInfo *) NULL)
     length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
   (void) WriteBlobMSBLong(image,(unsigned int) length);
   WriteResolutionResourceBlock(image);
@@ -2078,8 +2082,11 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,0);
     }
   if (bim_profile != (StringInfo *) NULL)
-    (void) WriteBlob(image,GetStringInfoLength(bim_profile),GetStringInfoDatum(
-      bim_profile));
+    {
+      (void) WriteBlob(image,GetStringInfoLength(bim_profile),
+        GetStringInfoDatum(bim_profile));
+      bim_profile=DestroyStringInfo(bim_profile);
+    }
 
 compute_layer_info:
   layer_count = 0;
