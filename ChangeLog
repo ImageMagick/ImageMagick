@@ -1,4 +1,3 @@
-
 2010-04-28  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Special case handling in Barrel distortion (pixel at image center)
   * Calculation of image for Barrel distortion (pixel vs image coords)

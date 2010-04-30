@@ -2654,7 +2654,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image->matte=MagickFalse;
       break;
     }
-    case ResetAlphaChannel: /* depreciated */
+    case ResetAlphaChannel: /* deprecated */
     case OpaqueAlphaChannel:
     {
       status=SetImageOpacity(image,OpaqueOpacity);
