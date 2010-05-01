@@ -1898,6 +1898,10 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
   datum=GetStringInfoDatum(bim_profile);
   for (p=datum; (p >= datum) && (p < (datum+length-16)); )
   {
+    register unsigned char
+      *q;
+
+    q=(unsigned char *) p;
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
     p=PushLongPixel(MSBEndian,p,&long_sans);
@@ -1906,9 +1910,9 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
     p=PushLongPixel(MSBEndian,p,&count);
     if (id == 0x0000040f)
       {
-        (void) CopyMagickMemory((unsigned char *) p-16,p+count+12,length-count-
-          (p-datum));
-        SetStringInfoLength(bim_profile,PSDQuantum(length-count-16));
+        (void) CopyMagickMemory(q,q+PSDQuantum(count)+12,length-
+          (PSDQuantum(count)+12)-(q-datum));
+        SetStringInfoLength(bim_profile,length-(PSDQuantum(count)+12));
         break;
       }
     p+=count;
@@ -2067,11 +2071,17 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   if (icc_profile != (const StringInfo *) NULL)
     length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
   (void) WriteBlobMSBLong(image,(unsigned int) length);
+  if (bim_profile != (StringInfo *) NULL)
+    {
+      (void) WriteBlob(image,GetStringInfoLength(bim_profile),
+        GetStringInfoDatum(bim_profile));
+      bim_profile=DestroyStringInfo(bim_profile);
+    }
   WriteResolutionResourceBlock(image);
   if (icc_profile != (StringInfo *) NULL)
     {
       (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
-      (void) WriteBlobMSBShort(image,0x040F);
+      (void) WriteBlobMSBShort(image,0x0000040F);
       (void) WriteBlobMSBShort(image,0);
       (void) WriteBlobMSBLong(image,(unsigned int) GetStringInfoLength(
         icc_profile));
@@ -2080,12 +2090,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       if ((MagickOffsetType) GetStringInfoLength(icc_profile) !=
           PSDQuantum(GetStringInfoLength(icc_profile)))
         (void) WriteBlobByte(image,0);
-    }
-  if (bim_profile != (StringInfo *) NULL)
-    {
-      (void) WriteBlob(image,GetStringInfoLength(bim_profile),
-        GetStringInfoDatum(bim_profile));
-      bim_profile=DestroyStringInfo(bim_profile);
     }
 
 compute_layer_info:
