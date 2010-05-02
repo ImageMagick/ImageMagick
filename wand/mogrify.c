@@ -8309,6 +8309,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 token=DestroyString(token);
                 break;
               }
+            (void) SubstituteString(&arguments[1],"-","");
             (void) InvokeDynamicImageFilter(arguments[1],&(*images),
               number_arguments-2,(const char **) arguments+2,exception);
             for (j=0; j < number_arguments; j++)
