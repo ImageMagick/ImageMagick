@@ -26,7 +26,7 @@ typedef enum
 {
   UndefinedCompositeOp,
   NoCompositeOp,
-  AddCompositeOp,
+  ModulusAddCompositeOp,
   AtopCompositeOp,
   BlendCompositeOp,
   BumpmapCompositeOp,
@@ -76,7 +76,7 @@ typedef enum
   SrcInCompositeOp,
   SrcOutCompositeOp,
   SrcOverCompositeOp,
-  SubtractCompositeOp,
+  ModulusSubtractCompositeOp,
   ThresholdCompositeOp,
   XorCompositeOp,
   DivideCompositeOp,
@@ -89,6 +89,10 @@ typedef enum
   LinearBurnCompositeOp,
   MathematicsCompositeOp
 } CompositeOperator;
+
+/* Depreciated Method Names for backward compatibility */
+#define AddCompositeOp       ModulusAddCompositeOp
+#define SubtractCompositeOp  ModulusSubtractCompositeOp
 
 extern MagickExport MagickBooleanType
   CompositeImage(Image *,const CompositeOperator,const Image *,const long,
