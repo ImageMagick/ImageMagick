@@ -822,7 +822,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           MaxTextExtent);
       (void) ConcatenateMagickString(filename,filelist[j],MaxTextExtent);
       filelist[j]=DestroyString(filelist[j]);
-      if (strlen(filename) >= MaxTextExtent)
+      if (strlen(filename) >= (MaxTextExtent-1))
         ThrowFatalException(OptionFatalError,"FilenameTruncated");
       if (IsPathDirectory(filename) <= 0)
         {

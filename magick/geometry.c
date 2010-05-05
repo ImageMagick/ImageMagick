@@ -112,7 +112,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
         (void) CopyMagickString(p,p+1,MaxTextExtent);
         continue;
       }
-    switch (*p)
+    switch ((int) *p)
     {
       case '%':
       {
@@ -191,7 +191,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
   value=strtod(p,&q);
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
-  if (((int) *q == -41) || (*q == 'x') || (*q == 'X') || (*q == '\0'))
+  if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == '\0'))
     {
       /*
         Parse width.
@@ -204,7 +204,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
       if (p != q)
         flags|=WidthValue;
     }
-  if (((int) *p == -41) || (*p == 'x') || (*p == 'X'))
+  if ((((int) *p) == -41) || (*p == 'x') || (*p == 'X'))
     {
       p++;
       if ((*p != '+') && (*p != '-'))
@@ -732,7 +732,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         (void) CopyMagickString(p,p+1,MaxTextExtent);
         continue;
       }
-    switch (*p)
+    switch ((int) *p)
     {
       case '%':
       {
@@ -818,7 +818,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   value=strtod(p,&q);
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
-  if (((int) *q == -41) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
+  if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
       (*q == '/') || (*q == ':') || (*q =='\0'))
     {
       /*
@@ -836,7 +836,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         }
     }
   q=p;
-  if (((int) *p == -41) || (*p == 'x') || (*p == 'X') || (*p == ',') ||
+  if ((((int) *p) == -41) || (*p == 'x') || (*p == 'X') || (*p == ',') ||
       (*p == '/') || (*p == ':'))
     {
       /*
@@ -845,7 +845,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       p++;
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
-      if ((((int) *q != -41) && (*q != 'x') && (*q != 'X')) ||
+      if (((((int) *q) != -41) && (*q != 'x') && (*q != 'X')) ||
           ((*p != '+') && (*p != '-')))
         {
           q=p;
