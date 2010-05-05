@@ -7741,7 +7741,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 quantum_info,GrayQuantum,png_pixels,&image->exception);
             else if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
               {
-                if (y == 0)
+                if (logging && y == 0)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "  Writing GRAY_ALPHA PNG pixels (4)");
                 (void) ExportQuantumPixels(image,(const CacheView *) NULL,
@@ -7750,7 +7750,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             else
               (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,IndexQuantum,png_pixels,&image->exception);
-            if (y == 0)
+            if (logging && y == 0)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Writing row of pixels (4)");
             png_write_row(ping,png_pixels);
