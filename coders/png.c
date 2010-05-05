@@ -522,7 +522,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     *colormap;
 
   register const IndexPacket
-    *indices;
+    *indexes;
 
   register const PixelPacket
     *p;
@@ -590,22 +590,22 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indices=GetVirtualIndexQueue(image);
+    indexes=GetVirtualIndexQueue(image);
     if (image->matte != MagickFalse)
       for (x=0; x < (long) image->columns; x++)
       {
-        marker[(int) indices[x]]=MagickTrue;
-        opacity[(int) indices[x]]=GetOpacityPixelComponent(p);
-        if (indices[x] > top_used)
-           top_used=indices[x];
+        marker[(int) indexes[x]]=MagickTrue;
+        opacity[(int) indexes[x]]=GetOpacityPixelComponent(p);
+        if (indexes[x] > top_used)
+           top_used=indexes[x];
         p++;
       }
     else
       for (x=0; x < (long) image->columns; x++)
       {
-        marker[(int) indices[x]]=MagickTrue;
-        if (indices[x] > top_used)
-           top_used=indices[x];
+        marker[(int) indexes[x]]=MagickTrue;
+        if (indexes[x] > top_used)
+           top_used=indexes[x];
       }
   }
 
@@ -1712,7 +1712,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *p;
 
   register IndexPacket
-    *indices;
+    *indexes;
 
   register long
     i,
@@ -2525,7 +2525,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     for (pass=0; pass < num_passes; pass++)
     {
       IndexPacket
-        index;
+        indice;
 
       Quantum
         *quantum_scanline;
@@ -2552,7 +2552,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        indices=GetAuthenticIndexQueue(image);
+        indexes=GetAuthenticIndexQueue(image);
         p=png_pixels+row_offset;
         r=quantum_scanline;
         switch (ping_bit_depth)
@@ -2688,11 +2688,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         r=quantum_scanline;
         for (x=0; x < (long) image->columns; x++)
         {
-          index=(IndexPacket) (*r++);
-          indices[x]=index;
-          q->red=image->colormap[index].red;
-          q->green=image->colormap[index].green;
-          q->blue=image->colormap[index].blue;
+          indice=(IndexPacket) (*r++);
+          indexes[x]=indice;
+          q->red=image->colormap[indice].red;
+          q->green=image->colormap[indice].green;
+          q->blue=image->colormap[indice].blue;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -2713,6 +2713,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
   if (quantum_info != (QuantumInfo *) NULL)
     quantum_info=DestroyQuantumInfo(quantum_info);
+  if (image->storage_class == PseudoClass)
+    {
+      unsigned long
+        matte;
+
+      matte=image->matte;
+      image->matte=MagickFalse;
+      (void) SyncImage(image);
+      image->matte=matte;;
+    }
   png_read_end(ping,ping_info);
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
@@ -2774,7 +2784,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        indices=GetAuthenticIndexQueue(image);
+        indexes=GetAuthenticIndexQueue(image);
 
           for (x=(long) image->columns-1; x >= 0; x--)
           {
@@ -2800,7 +2810,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        indices=GetAuthenticIndexQueue(image);
+        indexes=GetAuthenticIndexQueue(image);
 
         if (storage_class == PseudoClass)
           {
@@ -2810,7 +2820,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
               for (x=0; x < (long) image->columns; x++)
               {
-                indexpacket=indices[x];
+                indexpacket=indexes[x];
                 if (indexpacket < ping_num_trans)
                   q->opacity=ScaleCharToQuantum((unsigned char)
                     (255-ping_trans_alpha[(long) indexpacket]));
@@ -2821,7 +2831,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             else if (ping_color_type == PNG_COLOR_TYPE_GRAY)
               for (x=0; x < (long) image->columns; x++)
               {
-                indexpacket=indices[x];
+                indexpacket=indexes[x];
                 q->red=image->colormap[(long) indexpacket].red;
                 q->green=q->red;
                 q->blue=q->red;
@@ -5346,7 +5356,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q+=(large_image->columns-image->columns);
                     for (x=(long) image->columns-1; x >= 0; x--)
                     {
-                      /* TO DO: get color as function of indices[x] */
+                      /* TO DO: get color as function of indexes[x] */
                       /*
                       if (image->storage_class == PseudoClass)
                         {
@@ -6360,7 +6370,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     *quantum_info;
 
   register IndexPacket
-    *indices;
+    *indexes;
 
   register long
     i,
@@ -6693,13 +6703,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
                 if (p == (PixelPacket *) NULL)
                   break;
-                indices=GetAuthenticIndexQueue(image);
+                indexes=GetAuthenticIndexQueue(image);
                 for (x=0; x < (long) image->columns; x++)
                 {
                   if (p->opacity != OpaqueOpacity)
                     {
-                      indices[x]=(IndexPacket) (number_colors-1);
-                      trans_alpha[(long) indices[x]]=(png_byte) (255-
+                      indexes[x]=(IndexPacket) (number_colors-1);
+                      trans_alpha[(long) indexes[x]]=(png_byte) (255-
                         ScaleQuantumToChar(GetOpacityPixelComponent(p)));
                     }
                   p++;
@@ -7133,7 +7143,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 trans[256];
 
               register const IndexPacket
-                *packet_indices;
+                *packet_indexes;
 
               /*
                 Identify which colormap entry is transparent.
@@ -7147,7 +7157,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                packet_indices=GetVirtualIndexQueue(image);
+                packet_indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (long) image->columns; x++)
                 {
                   if (p->opacity != OpaqueOpacity)
@@ -7155,7 +7165,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       IndexPacket
                         packet_index;
 
-                      packet_index=packet_indices[x];
+                      packet_index=packet_indexes[x];
                       assert((unsigned long) packet_index < number_colors);
                       if (trans[(long) packet_index] != 256)
                         {
