@@ -2,12 +2,22 @@
   * Rename of "Add" and "Subtract" compositions to "ModulusAdd" and
     "ModulusSubtract" for more clarity of there functions. Old names
     will continue to work as expected.
-  * Fix "Plus", "Minus", "ModulusAdd", and "ModulusSubtract" to follow
+  * Fix "Minus", "ModulusAdd", and "ModulusSubtract" to follow
     normal SVG 'Over' blending specifications, (see next for override)
-  * Allow the "-channel sync" flag to allow mathematical compositions to work
-    for SVG specified handling, or if turned off, to perform image mathematics
-    on specific individual channels.  You can now use math compose methods
-    with the alpha channels of images, or with just one channel of an image.
+    Note that this does NOT include the "Plus" composition method which has
+    SVG defintion for it to use a 'Plus' blending rather than 'Over' blending.
+
+  * By default mathematical compositions work as per SVG definition. That is
+    the results are syncronized with 'Over' alpha-blending (except "Plus"
+    which uses 'plus' alpha-blending).
+
+    By removing the default 'sync' flag from the -channel setting however
+    Break this inter-channel syncronization and do the mathematical operations
+    only on the individual channels as specified by the -channel setting.
+    That is do 'channel' math rather than 'SVG' composition.
+
+    With this change you can then use mathematical composition methods on
+    individual channels or even with the alpha channel of images.
 
 2010-04-28  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Special case handling in Barrel distortion (pixel at image center)
