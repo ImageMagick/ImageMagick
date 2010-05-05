@@ -691,7 +691,6 @@ static const OptionInfo
   ComposeOptions[] =
   {
     { "Undefined", (long) UndefinedCompositeOp, MagickTrue },
-    { "Add", (long) AddCompositeOp, MagickFalse },
     { "Atop", (long) AtopCompositeOp, MagickFalse },
     { "Blend", (long) BlendCompositeOp, MagickFalse },
     { "Blur", (long) BlurCompositeOp, MagickFalse },
@@ -734,6 +733,8 @@ static const OptionInfo
     { "Mathematics", (long) MathematicsCompositeOp, MagickFalse },
     { "Minus", (long) MinusCompositeOp, MagickFalse },
     { "Modulate", (long) ModulateCompositeOp, MagickFalse },
+    { "ModulusAdd", (long) ModulusAddCompositeOp, MagickFalse },
+    { "ModulusSubtract", (long) ModulusSubtractCompositeOp, MagickFalse },
     { "Multiply", (long) MultiplyCompositeOp, MagickFalse },
     { "None", (long) NoCompositeOp, MagickFalse },
     { "Out", (long) OutCompositeOp, MagickFalse },
@@ -752,10 +753,11 @@ static const OptionInfo
     { "SrcOut", (long) SrcOutCompositeOp, MagickFalse },
     { "SrcOver", (long) SrcOverCompositeOp, MagickFalse },
     { "Src", (long) SrcCompositeOp, MagickFalse },
-    { "Subtract", (long) SubtractCompositeOp, MagickFalse },
-    { "Threshold", (long) ThresholdCompositeOp, MagickTrue }, /* depreciate */
     { "VividLight", (long) VividLightCompositeOp, MagickFalse },
     { "Xor", (long) XorCompositeOp, MagickFalse },
+    { "Add", (long) AddCompositeOp, MagickTrue }, /* depreciate */
+    { "Subtract", (long) SubtractCompositeOp, MagickTrue }, /* depreciate */
+    { "Threshold", (long) ThresholdCompositeOp, MagickTrue }, /* depreciate */
     { (char *) NULL, (long) UndefinedCompositeOp, MagickFalse }
   },
   CompressOptions[] =
