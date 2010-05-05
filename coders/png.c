@@ -7517,7 +7517,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   rowbytes=image->columns;
   if (image_depth > 8)
     rowbytes*=2;
-  switch (mng_info->write_png_colortype-1)
+  switch (ping_color_type)
     {
       case PNG_COLOR_TYPE_RGB:
         rowbytes*=3;

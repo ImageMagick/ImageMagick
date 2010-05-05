@@ -822,7 +822,7 @@
         <message name="MissingAnImageFilename">
           nom de fichier d'image absent
         </message>
-        <message name="TruncatedFilename">
+        <message name="FilenameTruncated">
           image filename truncated
         </message>
         <message name="UnrecognizedColormapType">
