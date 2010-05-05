@@ -631,15 +631,15 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       */
       cin.film.id=ReadBlobByte(image);
       offset++;
-      if ((unsigned long) cin.film.id != ~0UL)
+      if (((unsigned long) cin.film.id) != ~0UL)
         (void) FormatImageProperty(image,"cin:film.id","%d",cin.film.id);
       cin.film.type=ReadBlobByte(image);
       offset++;
-      if ((unsigned long) cin.film.type != ~0UL)
+      if (((unsigned long) cin.film.type) != ~0UL)
         (void) FormatImageProperty(image,"cin:film.type","%d",cin.film.type);
       cin.film.offset=ReadBlobByte(image);
       offset++;
-      if ((unsigned long) cin.film.offset != ~0UL)
+      if (((unsigned long) cin.film.offset) != ~0UL)
         (void) FormatImageProperty(image,"cin:film.offset","%d",
           cin.film.offset);
       cin.film.reserve1=ReadBlobByte(image);

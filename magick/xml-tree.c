@@ -1767,7 +1767,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
     attributes=(char **) sentinel;
     tag=p;
     if ((isalpha((int) ((unsigned char) *p)) !=0) || (*p == '_') ||
-        (*p == ':') || (*p < '\0'))
+        (*p == ':') || (((int) *p) < '\0'))
       {
         /*
           Tag.
