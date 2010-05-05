@@ -1,3 +1,7 @@
+2010-05-05  6.6.1-6 Cristy and Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed bugs with losing the opacity channel while writing some PNG images.
+    (bug reported by Anthony T.)
+
 2010-05-05  6.6.1-6 Glenn Randers-Pehrson <glennrp@image...>
   * Simplified and corrected rowbytes calculation in coders/png.c and
     added more logging.
