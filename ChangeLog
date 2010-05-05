@@ -1,3 +1,7 @@
+2010-05-05  6.6.1-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Simplified and corrected rowbytes calculation in coders/png.c and
+    added more logging.
+
 2010-05-05  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Rename of "Add" and "Subtract" compositions to "ModulusAdd" and
     "ModulusSubtract" for more clarity of there functions. Old names
