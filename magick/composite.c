@@ -891,27 +891,22 @@ static inline void CompositePlus(const MagickPixelPacket *p,
   MagickPixelPacket *composite)
 {
   if ( (channel & SyncChannels) != 0 ) {
-#if 0
-    MagickRealType
-      Sa,
-      Da,
-      gamma;
+    /*
+      NOTE: "Plus" does not use 'over' alpha-blending but uses a
+      special 'plus' form of alph-blending. It is the ONLY mathematical
+      operator to do this. this is what makes it different to the
+      otherwise equivelent "LinearDodge" composition method.
 
-    Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
-    Da=1.0-QuantumScale*q->opacity;
-    /* gamma=RoundToUnity(Sa+Da);  ** is this correct?  - I do not think so! */
-    gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
-    composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-    gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*(p->red*Sa+q->red*Da);
-    composite->green=gamma*(p->green*Sa+q->green*Da);
-    composite->blue=gamma*(p->blue*Sa+q->blue*Da);
-    if (q->colorspace == CMYKColorspace)
-      composite->index=gamma*(p->index*Sa+q->index*Da);
-#else
-    /* Actually this is just LinearDodge! */
-    CompositeLinearDodge(p,q,composite);
-#endif
+      Note however that color channels are still effected by the alpha channel
+      as a result of the blending, making it just as useless for independant
+      channel maths, just like all other mathematical composition methods.
+
+      As such the removal of the 'sync' flag, is still a usful convention.
+
+      The MagickPixelCompositePlus() function is defined in
+      "composite-private.h" so it can also be used for Image Blending.
+    */
+    MagickPixelCompositePlus(p,p->opacity,q,q->opacity,composite);
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel | AlphaChannel) != 0 )

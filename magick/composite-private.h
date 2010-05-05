@@ -105,15 +105,14 @@ static inline void MagickPixelCompositeOver(const MagickPixelPacket *p,
     composite->index=gamma*MagickOver_(p->index,alpha,q->index,beta);
 }
 
-#if 0
 static inline void MagickPixelCompositePlus(const MagickPixelPacket *p,
   const MagickRealType alpha,const MagickPixelPacket *q,
   const MagickRealType beta,MagickPixelPacket *composite)
 {
   MagickRealType
-    Sa,
     Da,
-    gamma;
+    gamma,
+    Sa;
 
   /*
     Add two pixels with the given opacities.
@@ -129,7 +128,6 @@ static inline void MagickPixelCompositePlus(const MagickPixelPacket *p,
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*(Sa*p->index+Da*q->index);
 }
-#endif
 
 /*
   Blend pixel colors p and q by the amount given.
@@ -138,27 +136,9 @@ static inline void MagickPixelCompositeBlend(const MagickPixelPacket *p,
   const MagickRealType alpha,const MagickPixelPacket *q,
   const MagickRealType beta,MagickPixelPacket *composite)
 {
-#if 0
   MagickPixelCompositePlus(p,(MagickRealType) (QuantumRange-alpha*
     (QuantumRange-p->opacity)),q,(MagickRealType) (QuantumRange-beta*
     GetAlphaPixelComponent(q)),composite);
-#else
-  MagickRealType
-    Sa,
-    Da,
-    gamma;
-
-  Sa=alpha*(1.0-QuantumScale*p->opacity);
-  Da=beta*(1.0-QuantumScale*q->opacity);
-  gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
-  composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*(Sa*p->red+Da*q->red);
-  composite->green=gamma*(Sa*p->green+Da*q->green);
-  composite->blue=gamma*(Sa*p->blue+Da*q->blue);
-  if (q->colorspace == CMYKColorspace)
-    composite->index=gamma*(Sa*p->index+Da*q->index);
-#endif
 }
 
 /*
@@ -169,28 +149,9 @@ static inline void MagickPixelCompositeAreaBlend(const MagickPixelPacket *p,
   const MagickRealType beta,const MagickRealType area,
   MagickPixelPacket *composite)
 {
-#if 0
   MagickPixelCompositePlus(p,(MagickRealType) QuantumRange-(1.0-area)*
     (QuantumRange-alpha),q,(MagickRealType) (QuantumRange-area*(QuantumRange-
     beta)),composite);
-#else
-  MagickRealType
-    Sa,
-    Da,
-    gamma;
-
-  Sa=(1.0-area)*(1.0-QuantumScale*alpha);
-  Da=area*(1.0-QuantumScale*beta);
-  gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
-  composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*(Sa*p->red+Da*q->red);
-  composite->green=gamma*(Sa*p->green+Da*q->green);
-  composite->blue=gamma*(Sa*p->blue+Da*q->blue);
-  if (q->colorspace == CMYKColorspace)
-    composite->index=gamma*(Sa*p->index+Da*q->index);
-#endif
-
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
