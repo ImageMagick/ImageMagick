@@ -831,11 +831,11 @@
         </message>
       </error>
       <fatalerror>
+        <message name="FilenameTruncated">
+          image filename truncated
+        </message>
         <message name="MissingAnImageFilename">
           missing an image filename
-        </message>
-        <message name="TruncatedFilename">
-          image filename truncated
         </message>
         <message name="UnrecognizedColormapType">
           unrecognized colormap type
