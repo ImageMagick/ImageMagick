@@ -117,6 +117,19 @@ typedef struct _FourierInfo
 
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 
+static inline Quantum FourierClampToQuantum(const MagickRealType value)
+{
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) value);
+#else
+  if (value <= 0.0)
+    return((Quantum) 0);
+  if (value >= (MagickRealType) QuantumRange)
+    return((Quantum) QuantumRange);
+  return((Quantum) (value+0.5));
+#endif
+}
+
 static MagickBooleanType RollFourier(const unsigned long width,
   const unsigned long height,const long x_offset,const long y_offset,
   double *fourier)
@@ -298,32 +311,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->red=FourierClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->green=FourierClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->blue=FourierClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->opacity=FourierClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          indexes[x]=FourierClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->red=FourierClampToQuantum(QuantumRange*magnitude_source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
@@ -351,32 +364,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
+          q->red=FourierClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=ClampToQuantum(QuantumRange*phase_source[i]);
+          q->green=FourierClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=ClampToQuantum(QuantumRange*phase_source[i]);
+          q->blue=FourierClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=ClampToQuantum(QuantumRange*phase_source[i]);
+          q->opacity=FourierClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=ClampToQuantum(QuantumRange*phase_source[i]);
+          indexes[x]=FourierClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
+          q->red=FourierClampToQuantum(QuantumRange*phase_source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
@@ -1073,32 +1086,32 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=ClampToQuantum(QuantumRange*source[i]);
+          q->red=FourierClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=ClampToQuantum(QuantumRange*source[i]);
+          q->green=FourierClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=ClampToQuantum(QuantumRange*source[i]);
+          q->blue=FourierClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=ClampToQuantum(QuantumRange*source[i]);
+          q->opacity=FourierClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=ClampToQuantum(QuantumRange*source[i]);
+          indexes[x]=FourierClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=ClampToQuantum(QuantumRange*source[i]);
+          q->red=FourierClampToQuantum(QuantumRange*source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;

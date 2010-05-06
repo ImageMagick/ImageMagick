@@ -2544,7 +2544,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   const double gamma)
 {
 #define LevelImageTag  "Level/Image"
-#define LevelQuantum(x) (KlampToQuantum((MagickRealType) QuantumRange* \
+#define LevelQuantum(x) (ClampToQuantum((MagickRealType) QuantumRange* \
   pow(scale*((double) (x)-black_point),1.0/gamma)))
 
   CacheView
