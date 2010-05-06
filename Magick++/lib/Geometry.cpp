@@ -11,7 +11,7 @@
 #include "Magick++/Include.h"
 #include <string>
 #include <ctype.h> // for isdigit
-#if !defined(__WINDOWS__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <strings.h>
 #endif
 

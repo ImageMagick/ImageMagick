@@ -14,7 +14,7 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
-#if !defined(__WINDOWS__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <strings.h>
 #endif
 
