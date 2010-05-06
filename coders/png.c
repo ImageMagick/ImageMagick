@@ -2690,9 +2690,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         {
           indice=(IndexPacket) (*r++);
           indexes[x]=indice;
-          q->red=image->colormap[indice].red;
-          q->green=image->colormap[indice].green;
-          q->blue=image->colormap[indice].blue;
+          q->red=image->colormap[(int) indice].red;
+          q->green=image->colormap[(int) indice].green;
+          q->blue=image->colormap[(int) indice].blue;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
