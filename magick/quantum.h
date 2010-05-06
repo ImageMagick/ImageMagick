@@ -83,13 +83,13 @@ typedef struct _QuantumInfo
 
 static inline Quantum ClampToQuantum(const MagickRealType value)
 {
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) value);
-#else
   if (value <= 0.0)
     return((Quantum) 0);
   if (value >= (MagickRealType) QuantumRange)
     return((Quantum) QuantumRange);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) value);
+#else
   return((Quantum) (value+0.5));
 #endif
 }
@@ -115,9 +115,9 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #else
   if (quantum <= 0.0)
     return(0);
-  if ((quantum/257.0) >= 255.0)
+  if ((quantum/256.0) >= 255.0)
     return(255);
-  return((unsigned char) (quantum/257.0+0.5));
+  return((unsigned char) (quantum/256.0+0.5));
 #endif
 }
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
@@ -129,9 +129,9 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #else
   if (quantum <= 0.0)
     return(0);
-  if ((quantum/16843009.0) >= 255.0)
+  if ((quantum/16843008.0) >= 255.0)
     return(255);
-  return((unsigned char) (quantum/16843009.0+0.5));
+  return((unsigned char) (quantum/16843008.0+0.5));
 #endif
 }
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
@@ -140,7 +140,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned char) ((quantum+2155839615.0)/71777214294589695.0));
 #else
-  return((unsigned char) (quantum/71777214294589695.0+0.5));
+  return((unsigned char) (quantum/71777214294589694.0+0.5));
 #endif
 }
 #endif
