@@ -1,9 +1,12 @@
+2010-05-06  6.6.1-6 Cristy  <quetzlzacatenango@image...>
+  * Do not claim gray colorspace if gray image includes a non-gray pixel.
+
 2010-05-06  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Made use of new no-'sync' channel enabled mathematical compose methods
     for the difference morphology methods.  These should now work correctly
     for specific channels, and more importantally for alpha shaped morphology.
 
-2010-05-05  6.6.1-6 Cristy and Glenn Randers-Pehrson <glennrp@image...>
+2010-05-05  6.6.1-6 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bugs with losing the opacity channel while writing some PNG images.
     (bug reported by Anthony T.)
 
