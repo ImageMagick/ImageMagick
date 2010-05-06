@@ -2231,6 +2231,8 @@ MagickExport Cache GetImagePixelCache(Image *image,
       */
       image->taint=MagickTrue;
       image->type=UndefinedType;
+      if (image->colorspace == GRAYColorspace)
+        image->colorspace=RGBColorspace;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         status=OpenPixelCache(image,IOMode,exception);
     }
