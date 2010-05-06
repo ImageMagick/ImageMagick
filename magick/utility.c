@@ -794,6 +794,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
             for (j=0; j < (long) number_files; j++)
               filelist[j]=filelist[j+1];
           }
+        count--;
       }
     if (filelist == (char **) NULL)
       continue;
@@ -816,6 +817,27 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
       return(MagickFalse);
     for (j=0; j < (long) number_files; j++)
     {
+      option=filelist[j];
+      parameters=ParseMagickOption(MagickCommandOptions,MagickFalse,option);
+      if (parameters > 0)
+        {
+          long
+            k;
+
+          /*
+            Do not expand command option parameters.
+          */
+          vector[count++]=ConstantString(option);
+          for (k=0; k < parameters; k++)
+          {
+            j++;
+            if (j == (long) number_files)
+              break;
+            option=filelist[j];
+            vector[count++]=ConstantString(option);
+          }
+          continue;
+        }
       (void) CopyMagickString(filename,path,MaxTextExtent);
       if (*path != '\0')
         (void) ConcatenateMagickString(filename,DirectorySeparator,
