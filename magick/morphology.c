@@ -1752,19 +1752,29 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
 
-  /* Third-level Subtractive methods post-processing */
+  /* Third-level Subtractive methods post-processing
+  **
+  ** The removal of any 'Sync' channel flag in the Image Compositon below
+  ** ensures the compose method is applied in a purely mathematical way, only
+  ** the selected channels, without any normal 'alpha blending' normally
+  ** associated with the compose method.
+  **
+  ** Note "method" here is the 'original' morphological method, and not the
+  ** 'current' morphological method used above to generate "new_image".
+  */
   switch( method ) {
     case EdgeOutMorphology:
     case EdgeInMorphology:
     case TopHatMorphology:
     case BottomHatMorphology:
       /* Get Difference relative to the original image */
-      (void) CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
-          image, 0, 0);
+      (void) CompositeImageChannel(new_image, (channel & ~SyncChannels),
+           DifferenceCompositeOp, image, 0, 0);
       break;
-    case EdgeMorphology:  /* subtract the Erode from a Dilate */
-      (void) CompositeImageChannel(new_image, channel, DifferenceCompositeOp,
-          grad_image, 0, 0);
+    case EdgeMorphology:
+      /* Difference the Eroded image from the saved Dilated image */
+      (void) CompositeImageChannel(new_image, (channel & ~SyncChannels),
+           DifferenceCompositeOp, grad_image, 0, 0);
       grad_image=DestroyImage(grad_image);
       break;
     default:
