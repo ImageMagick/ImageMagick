@@ -271,7 +271,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case MeanEvaluateOperator:
     {
-      result=(MagickRealType) ((pixel+value)/2.0);
+      result=(MagickRealType) (pixel+value);
       break;
     }
     case MinEvaluateOperator:
@@ -530,6 +530,15 @@ MagickExport Image *EvaluateImages(const Image *images,
       image_view=DestroyCacheView(image_view);
       next=GetNextImageInList(next);
     }
+    if (op == MeanEvaluateOperator)
+      for (x=0; x < (long) evaluate_image->columns; x++)
+      {
+        evaluate_pixel[x].red/=number_images;
+        evaluate_pixel[x].green/=number_images;
+        evaluate_pixel[x].blue/=number_images;
+        evaluate_pixel[x].opacity/=number_images;
+        evaluate_pixel[x].index/=number_images;
+      }
     for (x=0; x < (long) evaluate_image->columns; x++)
     {
       q->red=ClampToQuantum(evaluate_pixel[x].red);
