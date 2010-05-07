@@ -1178,6 +1178,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=ScaleCharToQuantum(*p++);
             q->green=ScaleCharToQuantum(*p++);
             q->red=ScaleCharToQuantum(*p++);
+            SetOpacityPixelComponent(q,OpaqueOpacity);
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
