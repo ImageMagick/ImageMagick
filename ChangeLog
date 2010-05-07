@@ -55,6 +55,7 @@
     Anthony).
   * Register / unregister CALS format in static.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=16103).
+  * Add SetImageColor() method.
 
 2010-04-17  6.6.1-5 Cristy  <quetzlzacatenango@image...>
   * Only write one ICC profile to PSD image.

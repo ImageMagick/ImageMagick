@@ -288,6 +288,7 @@ extern WandExport MagickBooleanType
   MagickSetImageChannelDepth(MagickWand *,const ChannelType,
     const unsigned long),
   MagickSetImageClipMask(MagickWand *,const MagickWand *),
+  MagickSetImageColor(MagickWand *,const PixelWand *),
   MagickSetImageColormapColor(MagickWand *,const unsigned long,
     const PixelWand *),
   MagickSetImageColorspace(MagickWand *,const ColorspaceType),

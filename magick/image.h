@@ -524,6 +524,7 @@ extern MagickExport MagickBooleanType
   SetImageAlphaChannel(Image *,const AlphaChannelType),
   SetImageBackgroundColor(Image *),
   SetImageClipMask(Image *,const Image *),
+  SetImageColor(Image *,const MagickPixelPacket *),
   SetImageExtent(Image *,const unsigned long,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SetImageMask(Image *,const Image *),
