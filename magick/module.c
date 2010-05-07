@@ -988,6 +988,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   /*
     Execute the module.
   */
+  ClearMagickException(exception);
   image_filter=(ImageFilterHandler *) lt_dlsym(handle,name);
   if (image_filter == (ImageFilterHandler *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
@@ -1005,23 +1006,17 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
         (void) LogMagickEvent(ModuleEvent,GetMagickModule(),"\"%s\" completes",
           tag);
       if (signature != MagickImageFilterSignature)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-            "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,signature,
-            MagickImageFilterSignature);
-          return(MagickFalse);
-        }
+        (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+          "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,signature,
+          MagickImageFilterSignature);
     }
   /*
     Close the module.
   */
   if (lt_dlclose(handle) != 0)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),ModuleWarning,
-        "UnableToCloseModule","`%s': %s",name,lt_dlerror());
-      return(MagickFalse);
-    }
-  return(MagickTrue);
+    (void) ThrowMagickException(exception,GetMagickModule(),ModuleWarning,
+      "UnableToCloseModule","`%s': %s",name,lt_dlerror());
+  return(exception->severity < ErrorException ? MagickTrue : MagickFalse);
 }
 
 /*
