@@ -2792,6 +2792,93 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t I m a g e C o l o r                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageColor() set the entire image canvas to the specified color.
+%
+%  The format of the SetImageColor method is:
+%
+%      MagickBooleanType SetImageColor(Image *image,
+%        const MagickPixelPacket *color)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o background: the image color.
+%
+*/
+MagickExport MagickBooleanType SetImageColor(Image *image,
+  const MagickPixelPacket *color)
+{
+  CacheView
+    *image_view;
+
+  ExceptionInfo
+    *exception;
+
+  long
+    y;
+
+  MagickBooleanType
+    status;
+
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(image->signature == MagickSignature);
+  assert(color != (const MagickPixelPacket *) NULL);
+  image->colorspace=color->colorspace;
+  image->matte=color->matte;
+  image->fuzz=color->fuzz;
+  image->depth=color->depth;
+  status=MagickTrue;
+  exception=(&image->exception);
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+  {
+    register IndexPacket
+      *restrict indexes;
+
+    register long
+      x;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      SetPixelPacket(image,color,q,indexes+x);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e S t o r a g e C l a s s                                   %
 %                                                                             %
 %                                                                             %

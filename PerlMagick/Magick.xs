@@ -531,6 +531,7 @@ static struct
       {"channel", MagickChannelOptions}, {"method", MagickMorphologyOptions},
       {"iterations", IntegerReference} } },
     { "ColorMatrix", { {"matrix", ArrayReference} } },
+    { "Color", { {"color", StringReference} } }
   };
 
 static SplayTreeInfo
@@ -7187,6 +7188,8 @@ Mogrify(ref,...)
     MorphologyImage    = 266
     ColorMatrix        = 267
     ColorMatrixImage   = 268
+    Color              = 269
+    ColorImage         = 270
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10501,6 +10504,18 @@ Mogrify(ref,...)
           kernel_info->values=(double *) NULL;
           kernel_info=DestroyKernelInfo(kernel_info);
           color_matrix=(double *) RelinquishMagickMemory(color_matrix);
+          break;
+        }
+        case 135:  /* Color */
+        {
+          MagickPixelPacket
+            color;
+
+          (void) QueryMagickColor("none",&color,exception);
+          if (attribute_flag[0] != 0)
+            (void) QueryMagickColor(argument_list[0].string_reference,
+              &color,exception);
+          (void) SetImageColor(image,&color);
           break;
         }
       }

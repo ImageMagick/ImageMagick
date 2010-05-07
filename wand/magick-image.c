@@ -9651,6 +9651,51 @@ WandExport MagickBooleanType MagickSetImageClipMask(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t I m a g e C o l o r                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageColor() set the entire wand canvas to the specified color.
+%
+%  The format of the MagickSetImageColor method is:
+%
+%      MagickBooleanType MagickSetImageColor(MagickWand *wand,
+%        const PixelWand *color)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o background: the image color.
+%
+*/
+WandExport MagickBooleanType MagickSetImageColor(MagickWand *wand,
+  const PixelWand *color)
+{
+  MagickBooleanType
+    status;
+
+  MagickPixelPacket
+    pixel;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  PixelGetMagickColor(color,&pixel);
+  status=SetImageColor(wand->images,&pixel);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e C o l o r m a p C o l o r                     %
 %                                                                             %
 %                                                                             %
