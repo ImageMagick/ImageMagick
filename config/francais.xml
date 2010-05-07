@@ -328,6 +328,9 @@
           </message>
         </fatalerror>
         <warning>
+          <message name="InsufficientImageDataInFile">
+            Pas assez de données d'image dans le fichier
+          </message>
           <message name="SkipToSyncByte">
             Image PCD corrompue, saut à l'octet de synchronisation
           </message>
