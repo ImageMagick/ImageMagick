@@ -389,15 +389,15 @@ static inline void CompositeDarken(const MagickPixelPacket *p,
       composite->index=gamma*Darken(p->index,p->opacity,q->index,q->opacity);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=MagickMax(p->opacity,q->opacity);
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=MagickMin(p->red,q->red);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=MagickMin(p->green,q->green);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=MagickMin(p->blue,q->blue);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=MagickMin(p->index,q->index);
   }
 }
@@ -432,15 +432,15 @@ static inline void CompositeDifference(const MagickPixelPacket *p,
       composite->index=gamma*Difference(p->index,Sa,q->index,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
-      composite->opacity=fabs(p->opacity - q->opacity);
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
+      composite->opacity=QuantumRange-fabs(p->opacity - q->opacity);
+    if ( (channel & RedChannel) != 0 )
       composite->red=fabs(p->red - q->red);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=fabs(p->green - q->green);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=fabs(p->blue - q->blue);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=fabs(p->index - q->index);
   }
 }
@@ -491,18 +491,18 @@ static inline void CompositeDivide(const MagickPixelPacket *p,
         q->index*Da,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Divide(Sa,1.0,Da,1.0));
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*
           Divide(QuantumScale*p->red,1.0,QuantumScale*q->red,1.0);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*
           Divide(QuantumScale*p->green,1.0,QuantumScale*q->green,1.0);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*
           Divide(QuantumScale*p->blue,1.0,QuantumScale*q->blue,1.0);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*
           Divide(QuantumScale*p->index,1.0,QuantumScale*q->index,1.0);
   }
@@ -540,18 +540,18 @@ static inline void CompositeExclusion(const MagickPixelPacket *p,
         q->index*Da,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Exclusion(Sa,1.0,Da,1.0));
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*
           Exclusion(QuantumScale*p->red,1.0,QuantumScale*q->red,1.0);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*
           Exclusion(QuantumScale*p->green,1.0,QuantumScale*q->green,1.0);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*
           Exclusion(QuantumScale*p->blue,1.0,QuantumScale*q->blue,1.0);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*
           Exclusion(QuantumScale*p->index,1.0,QuantumScale*q->index,1.0);
   }
@@ -689,15 +689,15 @@ static inline void CompositeLighten(const MagickPixelPacket *p,
       composite->index=gamma*Lighten(p->index,p->opacity,q->index,q->opacity);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=MagickMin(p->opacity,q->opacity);
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=MagickMax(p->red,q->red);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=MagickMax(p->green,q->green);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=MagickMax(p->blue,q->blue);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=MagickMax(p->index,q->index);
   }
 }
@@ -868,18 +868,18 @@ static inline void CompositeMathematics(const MagickPixelPacket *p,
         q->index*Da,Da,args);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Mathematics(Sa,1.0,Da,1.0,args));
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*
           Mathematics(QuantumScale*p->red,1.0,QuantumScale*q->red,1.0,args);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*
           Mathematics(QuantumScale*p->green,1.0,QuantumScale*q->green,1.0,args);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*
           Mathematics(QuantumScale*p->blue,1.0,QuantumScale*q->blue,1.0,args);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*
           Mathematics(QuantumScale*p->index,1.0,QuantumScale*q->index,1.0,args);
   }
@@ -909,21 +909,22 @@ static inline void CompositePlus(const MagickPixelPacket *p,
     MagickPixelCompositePlus(p,p->opacity,q,q->opacity,composite);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=p->opacity+q->opacity-QuantumRange;
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=p->red+q->red;
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=p->green+q->green;
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=p->blue+q->blue;
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=p->index+q->index;
   }
 }
 
 static inline MagickRealType Minus(const MagickRealType Sca,
-  const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
+  const MagickRealType Sa,const MagickRealType Dca,
+  const MagickRealType magick_unused(Da))
 {
   return(Sca + Dca - 2*Dca*Sa);
 }
@@ -950,15 +951,15 @@ static inline void CompositeMinus(const MagickPixelPacket *p,
       composite->index=gamma*Minus(p->index*Sa,Sa,q->index*Da,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-(Sa-Da));
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=p->red-q->red;
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=p->green-q->green;
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=p->blue-q->blue;
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=p->index-q->index;
   }
 }
@@ -997,16 +998,16 @@ static inline void CompositeModulusAdd(const MagickPixelPacket *p,
       composite->index=ModulusAdd(p->index,Sa,q->index,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange-ModulusAdd(QuantumRange-p->opacity,
            1.0,QuantumRange-q->opacity,1.0);
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=ModulusAdd(p->red,1.0,q->red,1.0);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=ModulusAdd(p->green,1.0,q->green,1.0);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=ModulusAdd(p->blue,1.0,q->blue,1.0);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=ModulusAdd(p->index,1.0,q->index,1.0);
   }
 }
@@ -1045,16 +1046,16 @@ static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
       composite->index=ModulusSubtract(p->index,Sa,q->index,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange-ModulusSubtract(QuantumRange-p->opacity,
            1.0,QuantumRange-q->opacity,1.0);
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=ModulusSubtract(p->red,1.0,q->red,1.0);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=ModulusSubtract(p->green,1.0,q->green,1.0);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=ModulusSubtract(p->blue,1.0,q->blue,1.0);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=ModulusSubtract(p->index,1.0,q->index,1.0);
   }
 }
@@ -1091,15 +1092,15 @@ static inline void CompositeMultiply(const MagickPixelPacket *p,
         q->index*Da,Da);
   }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Sa*Da);
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=QuantumScale*p->red*q->red;
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumScale*p->green*q->green;
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumScale*p->blue*q->blue;
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumScale*p->index*q->index;
   }
 }
@@ -1243,18 +1244,18 @@ static inline void CompositeScreen(const MagickPixelPacket *p,
       composite->index=gamma*Screen(p->index*Sa,q->index*Da);
     }
   else { /* handle channels as separate grayscale channels */
-    if ( (channel | AlphaChannel) != 0 )
+    if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Screen(Sa,Da));
-    if ( (channel | RedChannel) != 0 )
+    if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*Screen(QuantumScale*p->red,
            QuantumScale*q->red);
-    if ( (channel | GreenChannel) != 0 )
+    if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*Screen(QuantumScale*p->green,
            QuantumScale*q->green);
-    if ( (channel | BlueChannel) != 0 )
+    if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*Screen(QuantumScale*p->blue,
            QuantumScale*q->blue);
-    if ( (channel | IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*Screen(QuantumScale*p->index,
            QuantumScale*q->index);
   }
@@ -1905,7 +1906,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
            Displace offset relative to a fixed absolute point
            Select that point according to +X+Y user inputs.
            default = center of overlay image
-           flag '!' = locations/percentage relative to background image
+           arg flag '!' = locations/percentage relative to background image
       */
       center.x=(MagickRealType) x_offset;
       center.y=(MagickRealType) y_offset;

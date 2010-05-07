@@ -1341,7 +1341,8 @@ static unsigned long MorphologyApply(const Image *image, Image
                 Minimize(result.red,     (double) k_pixels[u].red);
                 Minimize(result.green,   (double) k_pixels[u].green);
                 Minimize(result.blue,    (double) k_pixels[u].blue);
-                Minimize(result.opacity, QuantumRange-(double) k_pixels[u].opacity);
+                Minimize(result.opacity,
+                            QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.index,   (double) k_indexes[u]);
               }
@@ -1371,7 +1372,8 @@ static unsigned long MorphologyApply(const Image *image, Image
                 Maximize(result.red,     (double) k_pixels[u].red);
                 Maximize(result.green,   (double) k_pixels[u].green);
                 Maximize(result.blue,    (double) k_pixels[u].blue);
-                Maximize(result.opacity, QuantumRange-(double) k_pixels[u].opacity);
+                Maximize(result.opacity,
+                            QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
                   Maximize(result.index,   (double) k_indexes[u]);
               }
