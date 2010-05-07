@@ -1785,12 +1785,12 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     case TopHatMorphology:
     case BottomHatMorphology:
       /* Get Difference relative to the original image */
-      (void) CompositeImageChannel(new_image, (channel & ~SyncChannels),
+      (void) CompositeImageChannel(new_image, (ChannelType) (channel & ~SyncChannels),
            DifferenceCompositeOp, image, 0, 0);
       break;
     case EdgeMorphology:
       /* Difference the Eroded image from the saved Dilated image */
-      (void) CompositeImageChannel(new_image, (channel & ~SyncChannels),
+      (void) CompositeImageChannel(new_image, (ChannelType) (channel & ~SyncChannels),
            DifferenceCompositeOp, grad_image, 0, 0);
       grad_image=DestroyImage(grad_image);
       break;

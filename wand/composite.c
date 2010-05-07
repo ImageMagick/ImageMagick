@@ -1146,10 +1146,10 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             if (list < 0)
               ThrowCompositeException(OptionError,"UnrecognizedListType",
                 argv[i]);
-            (void) MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
+            status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
               argv+j,exception);
             DestroyComposite();
-            return(MagickTrue);
+            return(status != 0 ? MagickFalse : MagickTrue);
           }
         if (LocaleCompare("log",option+1) == 0)
           {

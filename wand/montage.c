@@ -1109,10 +1109,10 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
               ThrowMontageException(OptionError,"UnrecognizedListType",argv[i]);
-            (void) MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
+            status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
               argv+j,exception);
             DestroyMontage();
-            return(MagickTrue);
+            return(status != 0 ? MagickFalse : MagickTrue);
           }
         if (LocaleCompare("log",option+1) == 0)
           {

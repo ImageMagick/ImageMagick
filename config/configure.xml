@@ -9,7 +9,7 @@
   <configure name="NAME" value="ImageMagick"/>
   <configure name="LIB_VERSION" value="0x661"/>
   <configure name="LIB_VERSION_NUMBER" value="6,6,1,6"/>
-  <configure name="RELEASE_DATE" value="2010-04-25"/>
+  <configure name="RELEASE_DATE" value="2010-05-07"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
@@ -20,7 +20,7 @@
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib "/>
-  <configure name="LIBS" value="-lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -ldjvulibre -lfftw3 -lfontconfig -lwmf -lwmflite -lXext -lXt -lSM -lICE -lX11 -lbz2 -pthread -lrsvg-2 -lgdk_pixbuf-2.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lz -lm -lgomp -lpthread -lltdl"/>
+  <configure name="LIBS" value="-lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -ldjvulibre -lfftw3 -lfontconfig -lwmf -lwmflite -lXext -lXt -lSM -lICE -lX11 -lbz2 -pthread -lrsvg-2 -lm -lgdk_pixbuf-2.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>

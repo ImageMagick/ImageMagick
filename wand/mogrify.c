@@ -5290,9 +5290,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedListType",argv[i]);
-            (void) MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
+            status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
               argv+j,exception);
-            return(MagickTrue);
+            return(status != 0 ? MagickFalse : MagickTrue);
           }
         if (LocaleCompare("log",option+1) == 0)
           {
@@ -7045,6 +7045,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 break;
               }
             }
+            break;
           }
         if (LocaleCompare("log",option+1) == 0)
           {
