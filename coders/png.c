@@ -2715,13 +2715,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     quantum_info=DestroyQuantumInfo(quantum_info);
   if (image->storage_class == PseudoClass)
     {
-      unsigned long
+      MagickBooleanType
         matte;
 
       matte=image->matte;
       image->matte=MagickFalse;
       (void) SyncImage(image);
-      image->matte=matte;;
+      image->matte=matte;
     }
   png_read_end(ping,ping_info);
 
