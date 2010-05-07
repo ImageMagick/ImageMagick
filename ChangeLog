@@ -1,5 +1,6 @@
 2010-05-06  6.6.1-6 Cristy  <quetzlzacatenango@image...>
   * Do not claim gray colorspace if gray image includes a non-gray pixel.
+  * Initialize BMP alpha channel to opaque for RGB images.
 
 2010-05-06  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Made use of new no-'sync' channel enabled mathematical compose methods
