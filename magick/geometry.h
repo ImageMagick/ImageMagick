@@ -46,15 +46,15 @@ typedef enum
 #undef YNegative
   YNegative = 0x0040,
   ChiNegative = 0x0080,
-  PercentValue = 0x1000,
-  AspectValue = 0x2000,
-  NormalizeValue = 0x2000, /* see ScaleKernelValue() in morphology.c */
-  LessValue = 0x4000,
-  GreaterValue = 0x8000,
-  MinimumValue = 0x10000,
-  CorrelateNormalizeValue = 0x10000, /* see ScaleKernelValue() */
-  AreaValue = 0x20000,
-  DecimalValue = 0x40000,
+  PercentValue = 0x1000,   /* '%'  percentage of something */
+  AspectValue = 0x2000,    /* '!'  resize no-aspect - special use flag */
+  NormalizeValue = 0x2000, /* '!'  ScaleKernelValue() in morphology.c */
+  LessValue = 0x4000,      /* '<'  resize smaller - special use flag */
+  GreaterValue = 0x8000,   /* '>'  resize larger - spacial use flag */
+  MinimumValue = 0x10000,  /* '^'  special handling needed */
+  CorrelateNormalizeValue = 0x10000, /* '^' see ScaleKernelValue() */
+  AreaValue = 0x20000,     /* '@'  resize to area - special use flag */
+  DecimalValue = 0x40000,  /* '.'  floating point numbers found */
 #undef AllValues
   AllValues = 0x7fffffff
 } GeometryFlags;
