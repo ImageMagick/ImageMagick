@@ -179,7 +179,10 @@ static void
 %
 */
 
-MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
+/* This was separated so that it could be used as a separate
+** array input handling function.
+*/
+static KernelInfo *ParseArray(const char *kernel_string)
 {
   KernelInfo
     *kernel;
@@ -187,76 +190,14 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   char
     token[MaxTextExtent];
 
-  register long
-    i;
-
   const char
     *p;
 
-  MagickStatusType
-    flags;
-
-  GeometryInfo
-    args;
+  register long
+    i;
 
   double
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
-
-  if (kernel_string == (const char *) NULL)
-    {
-      kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
-      if (kernel == (KernelInfo *)NULL)
-        return(kernel);
-      (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
-      kernel->type=UserDefinedKernel;
-      kernel->signature=MagickSignature;
-      return(kernel);
-    }
-  SetGeometryInfo(&args);
-
-  /* does it start with an alpha - Return a builtin kernel */
-  GetMagickToken(kernel_string,&p,token);
-  if (isalpha((int) ((unsigned char) *token)) != 0)
-  {
-    long
-      type;
-
-    type=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
-    if ( type < 0 || type == UserDefinedKernel )
-      return((KernelInfo *)NULL);
-
-    while (((isspace((int) ((unsigned char) *p)) != 0) ||
-           (*p == ',') || (*p == ':' )) && (*p != '\0'))
-      p++;
-    flags = ParseGeometry(p, &args);
-
-    /* special handling of missing values in input string */
-    switch( type ) {
-    case RectangleKernel:
-      if ( (flags & WidthValue) == 0 ) /* if no width then */
-        args.rho = args.sigma;         /* then  width = height */
-      if ( args.rho < 1.0 )            /* if width too small */
-         args.rho = 3;                 /* then  width = 3 */
-      if ( args.sigma < 1.0 )          /* if height too small */
-        args.sigma = args.rho;         /* then  height = width */
-      if ( (flags & XValue) == 0 )     /* center offset if not defined */
-        args.xi = (double)(((long)args.rho-1)/2);
-      if ( (flags & YValue) == 0 )
-        args.psi = (double)(((long)args.sigma-1)/2);
-      break;
-    case SquareKernel:
-    case DiamondKernel:
-    case DiskKernel:
-    case PlusKernel:
-      if ( (flags & HeightValue) == 0 ) /* if no scale */
-        args.sigma = 1.0;               /* then  scale = 1.0 */
-      break;
-    default:
-      break;
-    }
-
-    return(AcquireKernelBuiltIn((KernelInfoType)type, &args));
-  }
 
   kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
   if (kernel == (KernelInfo *)NULL)
@@ -269,9 +210,16 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   p = strchr(kernel_string, ':');
   if ( p != (char *) NULL)
     {
+      MagickStatusType
+        flags;
+
+      GeometryInfo
+        args;
+
       /* ParseGeometry() needs the geometry separated! -- Arrgghh */
       memcpy(token, kernel_string, (size_t) (p-kernel_string));
       token[p-kernel_string] = '\0';
+      SetGeometryInfo(&args);
       flags = ParseGeometry(token, &args);
 
       /* Size handling and checks of geometry settings */
@@ -298,7 +246,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       p++; /* advance beyond the ':' */
     }
   else
-    { /* ELSE - Old old kernel specification, forming odd-square kernel */
+    { /* ELSE - Old old specification, forming odd-square kernel */
       /* count up number of values given */
       p=(const char *) kernel_string;
       while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '\''))
@@ -326,13 +274,14 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   kernel->minimum = +MagickHuge;
   kernel->maximum = -MagickHuge;
   kernel->negative_range = kernel->positive_range = 0.0;
+
   for (i=0; (i < (long) (kernel->width*kernel->height)) && (*p != '\0'); i++)
   {
     GetMagickToken(p,&p,token);
     if (*token == ',')
       GetMagickToken(p,&p,token);
     if (    LocaleCompare("nan",token) == 0
-         || LocaleCompare("-",token) == 0 ) {
+        || LocaleCompare("-",token) == 0 ) {
       kernel->values[i] = nan; /* do not include this value in kernel */
     }
     else {
@@ -344,23 +293,101 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       Maximize(kernel->maximum, kernel->values[i]);
     }
   }
-  /* check that we recieved at least one real (non-nan) value! */
-  if ( kernel->minimum == MagickHuge )
-    return(DestroyKernelInfo(kernel));
 
-  /* This should not be needed for a fully defined kernel
-   * Perhaps an error should be reported instead!
-   * Kept for backward compatibility.
-   */
+#if 0
+  /* this was the old method of handling a incomplete kernel */
   if ( i < (long) (kernel->width*kernel->height) ) {
     Minimize(kernel->minimum, kernel->values[i]);
     Maximize(kernel->maximum, kernel->values[i]);
     for ( ; i < (long) (kernel->width*kernel->height); i++)
       kernel->values[i]=0.0;
   }
+#else
+  /* Number of values for kernel was not enough - Report Error */
+  if ( i < (long) (kernel->width*kernel->height) )
+    return(DestroyKernelInfo(kernel));
+#endif
+
+  /* check that we recieved at least one real (non-nan) value! */
+  if ( kernel->minimum == MagickHuge )
+    return(DestroyKernelInfo(kernel));
 
   return(kernel);
 }
+
+
+MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
+{
+  char
+    token[MaxTextExtent];
+
+  const char
+    *p;
+
+  MagickStatusType
+    flags;
+
+  GeometryInfo
+    args;
+
+  long
+    type;
+
+  /* If it does not start with an alpha - user defined kernel */
+  GetMagickToken(kernel_string,&p,token);
+  if (isalpha((int) ((unsigned char) *token)) == 0)
+    return(ParseArray(kernel_string));
+
+  /* Parse special 'named' kernel */
+  type=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+  if ( type < 0 || type == UserDefinedKernel )
+    return((KernelInfo *)NULL);
+
+  while (((isspace((int) ((unsigned char) *p)) != 0) ||
+          (*p == ',') || (*p == ':' )) && (*p != '\0'))
+    p++;
+  SetGeometryInfo(&args);
+  flags = ParseGeometry(p, &args);
+
+  /* special handling of missing values in input string */
+  switch( type ) {
+  case RectangleKernel:
+    if ( (flags & WidthValue) == 0 ) /* if no width then */
+      args.rho = args.sigma;         /* then  width = height */
+    if ( args.rho < 1.0 )            /* if width too small */
+        args.rho = 3;                 /* then  width = 3 */
+    if ( args.sigma < 1.0 )          /* if height too small */
+      args.sigma = args.rho;         /* then  height = width */
+    if ( (flags & XValue) == 0 )     /* center offset if not defined */
+      args.xi = (double)(((long)args.rho-1)/2);
+    if ( (flags & YValue) == 0 )
+      args.psi = (double)(((long)args.sigma-1)/2);
+    break;
+  case SquareKernel:
+  case DiamondKernel:
+  case DiskKernel:
+  case PlusKernel:
+    /* If no scale given (a 0 scale is valid! - set it to 1.0 */
+    if ( (flags & HeightValue) == 0 )
+      args.sigma = 1.0;
+    break;
+  case ChebyshevKernel:
+  case ManhattenKernel:
+  case EuclideanKernel:
+    if ( (flags & HeightValue) == 0 )
+      args.sigma = 100.0;                    /* default distance scaling */
+    else if ( (flags & AspectValue ) != 0 )  /* '!' flag */
+      args.sigma = QuantumRange/args.sigma;  /* maximum pixel distance */
+    else if ( (flags & PercentValue ) != 0 ) /* '%' flag */
+      args.sigma *= QuantumRange/100.0;      /* percentage of color range */
+    break;
+  default:
+    break;
+  }
+
+  return(AcquireKernelBuiltIn((KernelInfoType)type, &args));
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -497,9 +524,9 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  Distance Measuring Kernels
 %
-%    Chebyshev "[{radius}][x{scale}]"   largest x or y distance (default r=1)
-%    Manhatten "[{radius}][x{scale}]"   square grid distance    (default r=1)
-%    Euclidean "[{radius}][x{scale}]"   direct distance         (default r=1)
+%    Chebyshev "[{radius}][x{scale}[%!]]"
+%    Manhatten "[{radius}][x{scale}[%!]]"
+%    Euclidean "[{radius}][x{scale}[%!]]"
 %
 %       Different types of distance measuring methods, which are used with the
 %       a 'Distance' morphology method for generating a gradient based on
@@ -832,9 +859,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     /* Distance Measuring Kernels */
     case ChebyshevKernel:
       {
-        double
-          scale;
-
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
@@ -846,19 +870,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        scale = (args->sigma < 1.0) ? 100.0 : args->sigma;
         for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-                 scale*((labs(u)>labs(v)) ? labs(u) : labs(v)) );
+                 args->sigma*((labs(u)>labs(v)) ? labs(u) : labs(v)) );
         kernel->maximum = kernel->values[0];
         break;
       }
     case ManhattenKernel:
       {
-        double
-          scale;
-
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
@@ -870,19 +890,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        scale = (args->sigma < 1.0) ? 100.0 : args->sigma;
         for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-                 scale*(labs(u)+labs(v)) );
+                 args->sigma*(labs(u)+labs(v)) );
         kernel->maximum = kernel->values[0];
         break;
       }
     case EuclideanKernel:
       {
-        double
-          scale;
-
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
@@ -894,11 +910,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        scale = (args->sigma < 1.0) ? 100.0 : args->sigma;
         for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-                 scale*sqrt((double)(u*u+v*v)) );
+                 args->sigma*sqrt((double)(u*u+v*v)) );
         kernel->maximum = kernel->values[0];
         break;
       }
