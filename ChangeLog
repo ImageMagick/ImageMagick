@@ -1,6 +1,7 @@
 2010-05-07  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Added % and ! modification flags to morphology distance kernel
     scaling factor.
+  * Bug fix for compose math channel handling and morphology diff usage
 
 2010-05-06  6.6.1-6 Cristy  <quetzlzacatenango@image...>
   * Do not claim gray colorspace if gray image includes a non-gray pixel.
