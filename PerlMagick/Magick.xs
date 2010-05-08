@@ -10497,7 +10497,7 @@ Mogrify(ref,...)
           for ( ; j < (long) (order*order); j++)
             color_matrix[j]=0.0;
           kernel_info=AcquireKernelInfo("1");
-          if (kernel == (KernelInfo *) NULL)
+          if (kernel_info == (KernelInfo *) NULL)
             break;
           kernel_info->width=order;
           kernel_info->height=order;
