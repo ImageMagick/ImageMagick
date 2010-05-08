@@ -1788,8 +1788,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         Set image resolution.
       */
       jpeg_info.write_JFIF_header=MagickTrue;
-      jpeg_info.X_density=(UINT16) image->x_resolution;
-      jpeg_info.Y_density=(UINT16) image->y_resolution;
+      jpeg_info.X_density=(UINT16) floor(image->x_resolution+0.5);
+      jpeg_info.Y_density=(UINT16) floor(image->y_resolution+0.5);
       if (image->units == PixelsPerInchResolution)
         jpeg_info.density_unit=(UINT8) 1;
       if (image->units == PixelsPerCentimeterResolution)
