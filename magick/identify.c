@@ -220,10 +220,10 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
   if (channel == AlphaChannel)
     {
       status=fprintf(file,StatisticsFormat,name,ClampToQuantum(scale*
-        (QuantumRange-channel_statistics[channel].minima)),
-        (QuantumRange-channel_statistics[channel].minima)/(double) QuantumRange,
-        ClampToQuantum(scale*(QuantumRange-channel_statistics[channel].maxima)),
+        (QuantumRange-channel_statistics[channel].maxima)),
         (QuantumRange-channel_statistics[channel].maxima)/(double) QuantumRange,
+        ClampToQuantum(scale*(QuantumRange-channel_statistics[channel].minima)),
+        (QuantumRange-channel_statistics[channel].minima)/(double) QuantumRange,
         scale*(QuantumRange-channel_statistics[channel].mean),(QuantumRange-
         channel_statistics[channel].mean)/(double) QuantumRange,scale*
         channel_statistics[channel].standard_deviation,
