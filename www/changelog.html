@@ -152,14 +152,16 @@
 
 <div class="main">
 
-<ul><dt>2010-05-07  6.6.1-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Added % and ! modification flags to morphology distance kernel    scaling factor.</li>
-  <li> Bug fix for compose math channel handling and morphology diff usage</li>
-  <li> The -list option returns a 0 status as expected.</li><br />
+<ul><dt>2010-05-08  6.6.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix improper 'invalid colormap index' PNG bug.</li><br />
+<dt>2010-05-07  6.6.1-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added % and ! modification flags to morphology distance kernel    scaling factor, for easier usage.</li>
+  <li> Bug fix for compose math channel handling and morphology diff usage</li><br />
 <dt>2010-05-06  6.6.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Do not claim gray colorspace if gray image includes a non-gray pixel.</li>
   <li> Initialize BMP alpha channel to opaque for RGB images.</li>
-  <li> Fixed under allocation for reound rectangles.</li><br />
+  <li> Fixed under allocation for reound rectangles.</li>
+  <li> The -list option returns a 0 status as expected.</li><br />
 <dt>2010-05-06  6.6.1-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Made use of new no-'sync' channel enabled mathematical compose methods    for the difference morphology methods.  These should now work correctly    for specific channels, and more importantally for alpha shaped morphology.</li><br />
 <dt>2010-05-05  6.6.1-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -1490,7 +1492,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
