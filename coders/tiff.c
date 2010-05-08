@@ -2368,8 +2368,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
   const char
     *mode,
-    *option,
-    *value;
+    *option;
 
   CompressionType
     compression;
@@ -2780,6 +2779,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
         if (image->colorspace == RGBColorspace)
           {
+            const char
+              *value;
+
             (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
             sampling_factor=(const char *) NULL;
             value=GetImageProperty(image,"jpeg:sampling-factor");
