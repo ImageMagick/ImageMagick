@@ -2524,9 +2524,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else /* image->storage_class != DirectClass */
     for (pass=0; pass < num_passes; pass++)
     {
-      IndexPacket
-        indice;
-
       Quantum
         *quantum_scanline;
 
@@ -2687,13 +2684,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         */
         r=quantum_scanline;
         for (x=0; x < (long) image->columns; x++)
-        {
-          indice=(IndexPacket) (*r++);
-          indexes[x]=indice;
-          q->red=image->colormap[(int) indice].red;
-          q->green=image->colormap[(int) indice].green;
-          q->blue=image->colormap[(int) indice].blue;
-        }
+          indexes[x]=(IndexPacket) (*r++);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         if ((image->previous == (Image *) NULL) && (num_passes == 1))
