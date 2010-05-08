@@ -43,6 +43,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/client.h"
+#include "magick/colormap.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
