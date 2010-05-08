@@ -10496,7 +10496,9 @@ Mogrify(ref,...)
             color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (long) (order*order); j++)
             color_matrix[j]=0.0;
-          kernel_info=AcquireKernelInfo((const char *) NULL);
+          kernel_info=AcquireKernelInfo("1");
+          if (kernel == (KernelInfo *) NULL)
+            break;
           kernel_info->width=order;
           kernel_info->height=order;
           kernel_info->values=color_matrix;

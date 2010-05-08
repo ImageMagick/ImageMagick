@@ -2236,7 +2236,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             p=argv[i+1];
             GetMagickToken(p,&p,token);
             method=(MorphologyMethod) ParseMagickOption(MagickMorphologyOptions,
-                      MagickFalse,token);
+              MagickFalse,token);
             iterations=1L;
             GetMagickToken(p,&p,token);
             if ((*p == ':') || (*p == ','))
@@ -2245,8 +2245,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               iterations=StringToLong(p);
             kernel=AcquireKernelInfo(argv[i+2]);
             if (kernel == (KernelInfo *) NULL)
-              ThrowWandFatalException(ResourceLimitFatalError,
-                "MemoryAllocationFailed",(*image)->filename);
+              break;
             if ( GetImageArtifact(*image,"showkernel") != (const char *) NULL)
               ShowKernelInfo(kernel);  /* display the kernel to stderr */
             morphology_image=MorphologyImageChannel(*image,channel,method,

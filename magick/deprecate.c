@@ -5238,7 +5238,9 @@ MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
   Image
     *recolor_image;
 
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info=AcquireKernelInfo("1");
+  if (kernel_info == (KernelInfo *) NULL)
+    return((Image *) NULL);
   kernel_info->width=order;
   kernel_info->height=order;
   kernel_info->values=(double *) color_matrix;
