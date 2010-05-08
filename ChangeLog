@@ -1,13 +1,13 @@
 2010-05-07  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Added % and ! modification flags to morphology distance kernel
-    scaling factor.
+    scaling factor, for easier usage.
   * Bug fix for compose math channel handling and morphology diff usage
-  * The -list option returns a 0 status as expected.
 
 2010-05-06  6.6.1-6 Cristy  <quetzlzacatenango@image...>
   * Do not claim gray colorspace if gray image includes a non-gray pixel.
   * Initialize BMP alpha channel to opaque for RGB images.
   * Fixed under allocation for reound rectangles.
+  * The -list option returns a 0 status as expected.
 
 2010-05-06  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Made use of new no-'sync' channel enabled mathematical compose methods
