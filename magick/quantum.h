@@ -87,10 +87,10 @@ static inline Quantum ClampToQuantum(const MagickRealType value)
     return((Quantum) 0);
   if (value >= (MagickRealType) QuantumRange)
     return((Quantum) QuantumRange);
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) value);
-#else
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (value+0.5));
+#else
+  return((Quantum) value);
 #endif
 }
 
