@@ -1,5 +1,6 @@
 2010-05-08  6.6.1-7 Cristy  <quetzlzacatenango@image...>
   * Fix improper 'invalid colormap index' PNG bug.
+  * Fix PerlMagick compile exception.
 
 2010-05-07  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Added % and ! modification flags to morphology distance kernel
