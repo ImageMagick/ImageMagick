@@ -1,3 +1,7 @@
+2010-05-08  6.6.1-8 Glenn Randers-Pehrson <glennrp@image...>
+  * Use proper background.index when writing indexed PNG, if the background
+    color is in the palette.
+
 2010-05-08  6.6.1-7 Cristy  <quetzlzacatenango@image...>
   * Fix improper 'invalid colormap index' PNG bug.
   * Fix PerlMagick compile exception.
