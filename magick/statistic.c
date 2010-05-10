@@ -214,7 +214,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
         and could return a negative result (which is clipped).
       */
       result=pixel+value;
-      result-=(QuantumRange+1)*floor(result/(QuantumRange+1));
+      result-=(QuantumRange+1.0)*floor((double) result/(QuantumRange+1.0));
       break;
     }
     case AndEvaluateOperator:
