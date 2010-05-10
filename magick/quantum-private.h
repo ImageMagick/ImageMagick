@@ -292,7 +292,7 @@ static inline Quantum ScaleAnyToQuantum(const QuantumAny quantum,
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (((MagickRealType) QuantumRange*quantum)/range+0.5));
 #else
-  return((Quantum) (((MagickRealType) QuantumRange*quantum)/range+0.5));
+  return((Quantum) (((MagickRealType) QuantumRange*quantum)/range+0.0));
 #endif
 }
 
@@ -332,7 +332,7 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #else
   if ((value+0.5) >= MaxMap)
     return((Quantum) QuantumRange);
-  return((Quantum) (value+0.5));
+  return((Quantum) (value+0.0));
 #endif
 }
 
@@ -380,7 +380,7 @@ static inline Quantum ScaleShortToQuantum(const unsigned short value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) ((value+128U)/257U));
 #else
-  return((Quantum) (value/257.0+0.5));
+  return((Quantum) (value/257.0+0.0));
 #endif
 }
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
@@ -389,7 +389,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (257U*value));
 #else
-  return((Quantum) (257.0*value+0.5));
+  return((Quantum) (257.0*value+0.0));
 #endif
 }
 
@@ -399,7 +399,7 @@ static inline Quantum ScaleLongToQuantum(const unsigned long value)
   return((Quantum) ((value+MagickULLConstant(32768))/
     MagickULLConstant(65537)));
 #else
-  return((Quantum) (value/65537.0+0.5));
+  return((Quantum) (value/65537.0+0.0));
 #endif
 }
 
@@ -414,7 +414,7 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #else
   if ((value+0.5) >= MaxMap)
     return((Quantum) QuantumRange);
-  return((Quantum) (value+0.5));
+  return((Quantum) (value+0.0));
 #endif
 }
 
@@ -467,7 +467,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (16843009UL*value));
 #else
-  return((Quantum) (16843009.0*value+0.5));
+  return((Quantum) (16843009.0*value+0.0));
 #endif
 }
 
@@ -487,7 +487,7 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #else
   if (value >= MaxMap)
     return(QuantumRange);
-  return((Quantum) (65537UL*value+0.5));
+  return((Quantum) (65537UL*value+0.0));
 #endif
 }
 
@@ -529,7 +529,7 @@ static inline Quantum ScaleShortToQuantum(const unsigned short value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (65537UL*value));
 #else
-  return((Quantum) (65537.0*value+0.5));
+  return((Quantum) (65537.0*value+0.0));
 #endif
 }
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
@@ -538,7 +538,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (MagickULLConstant(72340172838076673)*value));
 #else
-  return((Quantum) (72340172838076673.0*value+0.5));
+  return((Quantum) (72340172838076673.0*value+0.0));
 #endif
 }
 
@@ -547,7 +547,7 @@ static inline Quantum ScaleLongToQuantum(const unsigned long value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) (4294967295UL*value));
 #else
-  return((Quantum) (4294967295.0*value+0.5));
+  return((Quantum) (4294967295.0*value+0.0));
 #endif
 }
 
@@ -562,7 +562,7 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #else
   if (value >= MaxMap)
     return(QuantumRange);
-  return((Quantum) (MagickULLConstant(281479271743489)*value+0.5));
+  return((Quantum) (MagickULLConstant(281479271743489)*value+0.0));
 #endif
 }
 
