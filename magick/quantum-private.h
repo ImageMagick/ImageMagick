@@ -129,21 +129,21 @@ static inline float HalfToSinglePrecision(const unsigned short half)
   significand=(unsigned int) (half & 0x000003ff);
   if (exponent == 0)
     {
-    	if (significand == 0)
+      if (significand == 0)
         value=sign_bit << SignBitShift;
-	    else
-	      {
+      else
+        {
           while ((significand & SignificandMask) == 0)
           {
             significand<<=1;
             exponent--;
           }
-	        exponent++;
+          exponent++;
           significand&=(~SignificandMask);
           exponent+=ExponentBias;
           value=(sign_bit << SignBitShift) | (exponent << ExponentShift) |
             (significand << SignificandShift);
-       	}
+        }
     }
   else
     if (exponent == SignBitShift)
