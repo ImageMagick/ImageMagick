@@ -87,10 +87,10 @@ static inline Quantum ClampToQuantum(const MagickRealType value)
     return((Quantum) 0);
   if (value >= (MagickRealType) QuantumRange)
     return((Quantum) QuantumRange);
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (value+0.5));
-#else
+#if defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) value);
+#else
+  return((Quantum) (value+0.5));
 #endif
 }
 
@@ -138,7 +138,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((unsigned char) ((quantum+2155839615.0)/72340172838076673.0));
+  return((unsigned char) ((quantum+36170086419038336.0)/72340172838076673.0));
 #else
   return((unsigned char) (quantum/72340172838076673.0+0.5));
 #endif
