@@ -101,10 +101,12 @@ namespace Magick
       }
 
     // Scale a value expressed as a Quantum (0-MaxRGB) to double range (0-1)
+#if (MAGICKCORE_QUANTUM_DEPTH < 64)
     static double scaleQuantumToDouble( const Quantum quantum_ )
       {
         return (static_cast<double>(quantum_)/MaxRGB);
       }
+#endif
     static double scaleQuantumToDouble( const double quantum_ )
       {
         return (quantum_/MaxRGB);
