@@ -535,7 +535,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 static inline Quantum ScaleLongToQuantum(const unsigned long value)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (4294967295UL*value));
+  return((Quantum) (MagickULLConstant(4294967295)*value));
 #else
   return((Quantum) (4294967295.0*value));
 #endif
@@ -580,7 +580,7 @@ static inline unsigned short ScaleQuantumToShort(const Quantum quantum)
 static inline Quantum ScaleShortToQuantum(const unsigned short value)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (281479271743489.0*value+0.5));
+  return((Quantum) (MagickULLConstant(281479271743489)*value));
 #else
   return((Quantum) (281479271743489.0*value));
 #endif
