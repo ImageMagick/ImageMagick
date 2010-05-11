@@ -97,7 +97,7 @@ typedef double Quantum;
 #define QuantumFormat  "%g"
 #else
 #if !defined(_CH_)
-# error "Specified value of MAGICKCORE_QUANTUM_DEPTH is not supported"
+# error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
 #endif
 #define MaxRGB  QuantumRange  /* deprecated */
