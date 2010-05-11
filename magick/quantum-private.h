@@ -551,14 +551,14 @@ static inline unsigned long ScaleQuantumToMap(const Quantum quantum)
 {
   if (quantum <= 0.0)
     return(0UL);
-  if ((quantum/281479271743489.0) >= MaxMap)
+  if ((quantum/281479271743491.0) >= MaxMap)
     return((unsigned long) MaxMap);
-  return((unsigned long) (quantum/281479271743489.0+0.5));
+  return((unsigned long) (quantum/281479271743491.0+0.5));
 }
 
 static inline unsigned short ScaleQuantumToShort(const Quantum quantum)
 {
-  return((unsigned short) (quantum/281479271743489.0+0.5));
+  return((unsigned short) (quantum/281479271743491.0+0.5));
 }
 
 static inline Quantum ScaleShortToQuantum(const unsigned short value)
