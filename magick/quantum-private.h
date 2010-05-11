@@ -534,7 +534,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 
 static inline Quantum ScaleLongToQuantum(const unsigned long value)
 {
-  return((Quantum) (4294967295.0*value));
+  return((Quantum) (4294967297.0*value));
 }
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
