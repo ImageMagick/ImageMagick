@@ -794,6 +794,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       case 'X':
       case '/':
       case ':':
+      case ';':
       {
         p++;
         break;
@@ -819,7 +820,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
   if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
-      (*q == '/') || (*q == ':') || (*q =='\0'))
+      (*q == '/') || (*q == ':') || (*q == ';') || (*q =='\0'))
     {
       /*
         Parse rho.
@@ -837,7 +838,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     }
   q=p;
   if ((((int) *p) == -41) || (*p == 'x') || (*p == 'X') || (*p == ',') ||
-      (*p == '/') || (*p == ':'))
+      (*p == '/') || (*p == ':') || (*p == ';'))
     {
       /*
         Parse sigma.
@@ -859,12 +860,13 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     }
   while (isspace((int) ((unsigned char) *p)) != 0)
     p++;
-  if ((*p == '+') || (*p == '-') || (*p == ',') || (*p == '/') || (*p == ':'))
+  if ((*p == '+') || (*p == '-') || (*p == ',') || (*p == '/') ||
+       (*p == ':') || (*p == ';'))
     {
       /*
         Parse xi value.
       */
-      if ((*p == ',') || (*p == '/') || (*p == ':'))
+      if ((*p == ',') || (*p == '/') || (*p == ':') || (*p == ';'))
         p++;
       q=p;
       value=strtod(p,&p);
@@ -878,12 +880,12 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
       if ((*p == '+') || (*p == '-') || (*p == ',') || (*p == '/') ||
-          (*p == ':'))
+          (*p == ':') || (*p == ';'))
         {
           /*
             Parse psi value.
           */
-          if ((*p == ',') || (*p == '/') || (*p == ':'))
+          if ((*p == ',') || (*p == '/') || (*p == ':') || (*p == ';'))
             p++;
           q=p;
           value=strtod(p,&p);
@@ -898,7 +900,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
       if ((*p == '+') || (*p == '-') || (*p == ',') || (*p == '/') ||
-          (*p == ':'))
+          (*p == ':') || (*p == ';'))
         {
           /*
             Parse chi value.
