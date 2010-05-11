@@ -142,8 +142,8 @@ static void
 %  shape.  However at least one non-nan value must be provided for correct
 %  working of a kernel.
 %
-%  The returned kernel should be free using the DestroyKernelInfo() when you
-%  are finished with it.
+%  The returned kernel should be freed using the DestroyKernelInfo() when you
+%  are finished with it.  Do not free this memory yourself.
 %
 %  Input kernel defintion strings can consist of any of three types.
 %
@@ -168,6 +168,12 @@ static void
 %  new kernel specification has a ':' character in its specification string.
 %  If neither is the case, it is assumed an old style of a simple list of
 %  numbers generating a odd-sized square kernel has been given.
+%
+%  You can define a 'list of kernels' which can be used by some morphology
+%  operators A list is defined as a semi-colon seperated list kernels.
+%
+%     " kernel ; kernel ; kernel "
+%
 %
 %  The format of the AcquireKernal method is:
 %
@@ -204,7 +210,10 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if (kernel == (KernelInfo *)NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
+  kernel->minimum = kernel->maximum = 0.0;
+  kernel->negative_range = kernel->positive_range = 0.0;
   kernel->type = UserDefinedKernel;
+  kernel->next = (KernelInfo *) NULL;
   kernel->signature = MagickSignature;
 
   /* find end of this specific kernel definition string */
@@ -335,7 +344,8 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
     type;
 
   const char
-    *p;
+    *p,
+    *end;
 
   MagickStatusType
     flags;
@@ -352,8 +362,16 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
   while (((isspace((int) ((unsigned char) *p)) != 0) ||
           (*p == ',') || (*p == ':' )) && (*p != '\0') && (*p != ';'))
     p++;
+
+  end = strchr(p, ';'); /* end of this kernel defintion */
+  if ( end == (char *) NULL )
+    end = strchr(p, '\0');
+
+  /* ParseGeometry() needs the geometry separated! -- Arrgghh */
+  memcpy(token, p, (size_t) (end-p));
+  token[end-p] = '\0';
   SetGeometryInfo(&args);
-  flags = ParseGeometry(p, &args);
+  flags = ParseGeometry(token, &args);
 
   /* special handling of missing values in input string */
   switch( type ) {
@@ -396,15 +414,36 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
 
 MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 {
+
+  KernelInfo
+    *kernel;
+
   char
     token[MaxTextExtent];
+
+  const char
+    *next;
 
   /* If it does not start with an alpha - Its is a user defined kernel array */
   GetMagickToken(kernel_string,NULL,token);
   if (isalpha((int) ((unsigned char) *token)) == 0)
-    return(ParseKernelArray(kernel_string));
+    kernel = ParseKernelArray(kernel_string);
+  else
+    kernel = ParseNamedKernel(kernel_string);
 
-  return(ParseNamedKernel(kernel_string));
+  /* was this the last (or only) kernel in the string */
+  next = strchr(kernel_string, ';');
+  if ( next == (char *) NULL )
+    return(kernel);
+
+  /* Add the next kernel to the list */
+  kernel->next = AcquireKernelInfo( next+1 );
+
+  /* failed for some reason? */
+  if ( kernel->next == (KernelInfo *) NULL )
+    return(DestroyKernelInfo(kernel));
+
+  return(kernel);
 }
 
 
@@ -617,6 +656,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   kernel->minimum = kernel->maximum = 0.0;
   kernel->negative_range = kernel->positive_range = 0.0;
   kernel->type = type;
+  kernel->next = (KernelInfo *) NULL;
   kernel->signature = MagickSignature;
 
   switch(type) {
@@ -974,6 +1014,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %  be modified without effecting the original.  The cloned kernel should be
 %  destroyed using DestoryKernelInfo() when no longer needed.
 %
+%  Note that only the kernel pointed to is cloned, any attached list of
+%  kernels is not touched.
+%
 %  The format of the CloneKernelInfo method is:
 %
 %      KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
@@ -989,20 +1032,23 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
     i;
 
   KernelInfo
-    *kernel_info;
+    *new_kernel;
 
   assert(kernel != (KernelInfo *) NULL);
-  kernel_info=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
-  if (kernel_info == (KernelInfo *) NULL)
-    return(kernel_info);
-  *kernel_info=(*kernel); /* copy values in structure */
-  kernel_info->values=(double *) AcquireQuantumMemory(kernel->width,
+  new_kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+  if (new_kernel == (KernelInfo *) NULL)
+    return(new_kernel);
+  *new_kernel=(*kernel); /* copy values in structure */
+  new_kernel->next = (KernelInfo *) NULL; /* but not the 'next' */
+
+  /* replace the values with a copy of the values */
+  new_kernel->values=(double *) AcquireQuantumMemory(kernel->width,
     kernel->height*sizeof(double));
-  if (kernel_info->values == (double *) NULL)
-    return(DestroyKernelInfo(kernel_info));
+  if (new_kernel->values == (double *) NULL)
+    return(DestroyKernelInfo(new_kernel));
   for (i=0; i < (long) (kernel->width*kernel->height); i++)
-    kernel_info->values[i]=kernel->values[i];
-  return(kernel_info);
+    new_kernel->values[i]=kernel->values[i];
+  return(new_kernel);
 }
 
 /*
@@ -1033,10 +1079,11 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 {
   assert(kernel != (KernelInfo *) NULL);
 
-  kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-  kernel->values=(double *)RelinquishMagickMemory(kernel->values);
-  kernel=(KernelInfo *) RelinquishMagickMemory(kernel);
+  if ( kernel->next != (KernelInfo *) NULL )
+    kernel->next = DestroyKernelInfo(kernel->next);
+
+  kernel->values = (double *)RelinquishMagickMemory(kernel->values);
+  kernel = (KernelInfo *) RelinquishMagickMemory(kernel);
   return(kernel);
 }
 
@@ -1092,11 +1139,11 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 
 
 /* Internal function
- * Apply the Low-Level Morphology Method using the given Kernel
+ * Apply the low-level Morphology Method Primatives using the given Kernel
  * Returning the number of pixels that changed.
  * Two pre-created images must be provided, no image is created.
  */
-static unsigned long MorphologyApply(const Image *image, Image
+static unsigned long MorphologyPrimative(const Image *image, Image
      *result_image, const MorphologyMethod method, const ChannelType channel,
      const KernelInfo *kernel, ExceptionInfo *exception)
 {
@@ -1677,7 +1724,6 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   Image
     *new_image,
-    *old_image,
     *grad_image;
 
   const char
@@ -1826,7 +1872,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       ** the creation of 'old_image' if no more iterations are needed.
       **
       ** The "curr_method" should also be set to a low-level method that is
-      ** understood by the MorphologyApply() internal function.
+      ** understood by the MorphologyPrimative() internal function.
       */
       new_image=CloneImage(image,0,0,MagickTrue,exception);
       if (new_image == (Image *) NULL)
@@ -1837,14 +1883,50 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
           new_image=DestroyImage(new_image);
           return((Image *) NULL);
         }
-      changed = MorphologyApply(image,new_image,curr_method,channel,curr_kernel,
-            exception);
+      changed = MorphologyPrimative(image,new_image,curr_method,channel,
+           curr_kernel, exception);
       count++;
       if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
         fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
               MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
               count, changed);
       break;
+  }
+
+  /* The Hit-And-Miss Morphology must apply a list of kernels to the image
+  ** provided, and then create a union (maximimum or lighten) of the results.
+  ** Iterations are not permitted for this process.
+  **
+  ** The first kernal has now been done, so lets continue the process.
+  */
+  if ( method == HitAndMissMorphology &&
+       curr_kernel->next != (KernelInfo *) NULL )
+  {
+    Image
+      *next_image;
+
+    next_image = CloneImage(new_image,0,0,MagickTrue,exception);
+    if (next_image == (Image *) NULL)
+        return(DestroyImage(new_image));
+    while( curr_kernel->next != (KernelInfo *) NULL )
+      {
+        curr_kernel = curr_kernel->next;
+        changed = MorphologyPrimative(image,next_image,curr_method,channel,
+             curr_kernel,exception);
+        count++;
+        if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+          fprintf(stderr, "    kernel %s:%ld => Changed %lu\n",
+                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
+                count, changed);
+        (void) CompositeImageChannel(new_image,
+           (ChannelType) (channel & ~SyncChannels), LightenCompositeOp,
+           next_image, 0, 0);
+      }
+    next_image=DestroyImage(next_image);
+
+    /* we should not have made a clone of the kernel info - no need to free */
+
+    return(new_image);
   }
 
   /* At this point the "curr_method" should not only be set to a low-level
@@ -1855,6 +1937,9 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   /* Repeat the low-level morphology until count or no change reached */
   if ( count < (long) limit && changed > 0 ) {
+    Image
+      *old_image;
+
     old_image = CloneImage(new_image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
         return(DestroyImage(new_image));
@@ -1869,8 +1954,8 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         Image *tmp = old_image;
         old_image = new_image;
         new_image = tmp;
-        changed = MorphologyApply(old_image,new_image,curr_method,channel,
-             curr_kernel, exception);
+        changed = MorphologyPrimative(old_image,new_image,curr_method,channel,
+             curr_kernel,exception);
         count++;
         if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
           fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
@@ -2221,29 +2306,39 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 */
 MagickExport void ShowKernelInfo(KernelInfo *kernel)
 {
-  long
-    i, u, v;
+  KernelInfo
+    *k;
 
-  fprintf(stderr,
-        "Kernel \"%s\" of size %lux%lu%+ld%+ld with values from %.*lg to %.*lg\n",
-        MagickOptionToMnemonic(MagickKernelOptions, kernel->type),
-        kernel->width, kernel->height,
-        kernel->x, kernel->y,
-        GetMagickPrecision(), kernel->minimum,
-        GetMagickPrecision(), kernel->maximum);
-  fprintf(stderr, "Forming convolution output range from %.*lg to %.*lg%s\n",
-        GetMagickPrecision(), kernel->negative_range,
-        GetMagickPrecision(), kernel->positive_range,
-        /*kernel->normalized == MagickTrue ? " (normalized)" : */ "" );
-  for (i=v=0; v < (long) kernel->height; v++) {
-    fprintf(stderr,"%2ld:",v);
-    for (u=0; u < (long) kernel->width; u++, i++)
-      if ( IsNan(kernel->values[i]) )
-        fprintf(stderr," %*s", GetMagickPrecision()+2, "nan");
-      else
-        fprintf(stderr," %*.*lg", GetMagickPrecision()+2,
-             GetMagickPrecision(), kernel->values[i]);
-    fprintf(stderr,"\n");
+  long
+    c, i, u, v;
+
+  for (c=0, k=kernel;  k != (KernelInfo *) NULL;  c++, k=k->next ) {
+
+    fprintf(stderr, "Kernel ");
+    if ( kernel->next != (KernelInfo *) NULL )
+      fprintf(stderr, " #%ld", c );
+    fprintf(stderr, " \"%s\" of size %lux%lu%+ld%+ld ",
+          MagickOptionToMnemonic(MagickKernelOptions, k->type),
+          kernel->width, k->height,
+          kernel->x, kernel->y );
+    fprintf(stderr,
+          " with values from %.*lg to %.*lg\n",
+          GetMagickPrecision(), k->minimum,
+          GetMagickPrecision(), k->maximum);
+    fprintf(stderr, "Forming convolution output range from %.*lg to %.*lg%s\n",
+          GetMagickPrecision(), k->negative_range,
+          GetMagickPrecision(), k->positive_range,
+          /*kernel->normalized == MagickTrue ? " (normalized)" : */ "" );
+    for (i=v=0; v < (long) k->height; v++) {
+      fprintf(stderr,"%2ld:",v);
+      for (u=0; u < (long) k->width; u++, i++)
+        if ( IsNan(k->values[i]) )
+          fprintf(stderr," %*s", GetMagickPrecision()+2, "nan");
+        else
+          fprintf(stderr," %*.*lg", GetMagickPrecision()+2,
+              GetMagickPrecision(), k->values[i]);
+      fprintf(stderr,"\n");
+    }
   }
 }
 

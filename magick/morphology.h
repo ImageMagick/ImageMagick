@@ -73,7 +73,7 @@ typedef enum
   ThickenMorphology            /* Add matching pixels from image */
 } MorphologyMethod;
 
-typedef struct
+typedef struct KernelInfo
 {
   KernelInfoType
     type;
@@ -92,6 +92,9 @@ typedef struct
     maximum,
     negative_range,
     positive_range;
+
+  struct KernelInfo
+    *next;
 
   unsigned long
     signature;

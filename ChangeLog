@@ -1,7 +1,9 @@
 2010-05-11  6.6.1-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Implementation of Pattern Matching Morphology methods
     HitAndMiss, Thicken, Thinning
-  * Minimal Error reporting of badly defined Kernel Strings
+  * Reporting of Kernel Strinsg that fail to parse (though not why)
+  * Parsing of Multiple Kernel Strings, generating a list of kernels
+  * Use of Multiple Kernels for HitAndMiss Morphology
 
 2010-05-08  6.6.1-8 Glenn Randers-Pehrson <glennrp@image...>
   * Use proper background.index when writing indexed PNG, if the background
