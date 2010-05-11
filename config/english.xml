@@ -691,6 +691,9 @@
         <message name="UnableToParseExpression">
           unable to parse expression
         </message>
+        <message name="UnableToParseKernel">
+          unable to parse kernel string
+        </message>
         <message name="UnbalancedParenthesis">
           unbalanced parenthesis
         </message>
@@ -768,6 +771,9 @@
         </message>
         <message name="UnrecognizedInterpolateMethod">
           unrecognized interpolate method
+        </message>
+        <message name="UnrecognizedKernelType">
+          unrecognized kernel type
         </message>
         <message name="UnrecognizedListType">
           unrecognized list type

@@ -2245,7 +2245,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               iterations=StringToLong(p);
             kernel=AcquireKernelInfo(argv[i+2]);
             if (kernel == (KernelInfo *) NULL)
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnabletoParseKernel","morphology");
+              status=MagickFalse;
               break;
+            }
             if ( GetImageArtifact(*image,"showkernel") != (const char *) NULL)
               ShowKernelInfo(kernel);  /* display the kernel to stderr */
             morphology_image=MorphologyImageChannel(*image,channel,method,
