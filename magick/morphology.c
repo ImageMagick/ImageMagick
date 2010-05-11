@@ -180,9 +180,9 @@ static void
 */
 
 /* This was separated so that it could be used as a separate
-** array input handling function.
+** array input handling function, such as for -color-matrix
 */
-static KernelInfo *ParseArray(const char *kernel_string)
+static KernelInfo *ParseKernelArray(const char *kernel_string)
 {
   KernelInfo
     *kernel;
@@ -191,7 +191,8 @@ static KernelInfo *ParseArray(const char *kernel_string)
     token[MaxTextExtent];
 
   const char
-    *p;
+    *p,
+    *end;
 
   register long
     i;
@@ -206,9 +207,14 @@ static KernelInfo *ParseArray(const char *kernel_string)
   kernel->type = UserDefinedKernel;
   kernel->signature = MagickSignature;
 
+  /* find end of this specific kernel definition string */
+  end = strchr(kernel_string, ';');
+  if ( end == (char *) NULL )
+    end = strchr(kernel_string, '\0');
+
   /* Has a ':' in argument - New user kernel specification */
   p = strchr(kernel_string, ':');
-  if ( p != (char *) NULL)
+  if ( p != (char *) NULL && p < end)
     {
       MagickStatusType
         flags;
@@ -251,7 +257,7 @@ static KernelInfo *ParseArray(const char *kernel_string)
       p=(const char *) kernel_string;
       while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '\''))
         p++;  /* ignore "'" chars for convolve filter usage - Cristy */
-      for (i=0; *p != '\0'; i++)
+      for (i=0; p < end; i++)
       {
         GetMagickToken(p,&p,token);
         if (*token == ',')
@@ -275,7 +281,7 @@ static KernelInfo *ParseArray(const char *kernel_string)
   kernel->maximum = -MagickHuge;
   kernel->negative_range = kernel->positive_range = 0.0;
 
-  for (i=0; (i < (long) (kernel->width*kernel->height)) && (*p != '\0'); i++)
+  for (i=0; (i < (long) (kernel->width*kernel->height)) && (p < end); i++)
   {
     GetMagickToken(p,&p,token);
     if (*token == ',')
@@ -293,6 +299,11 @@ static KernelInfo *ParseArray(const char *kernel_string)
       Maximize(kernel->maximum, kernel->values[i]);
     }
   }
+
+  /* sanity check -- no more values in kernel definition */
+  GetMagickToken(p,&p,token);
+  if ( *token != '\0' && *token != ';' && *token != '\'' )
+    return(DestroyKernelInfo(kernel));
 
 #if 0
   /* this was the old method of handling a incomplete kernel */
@@ -315,11 +326,13 @@ static KernelInfo *ParseArray(const char *kernel_string)
   return(kernel);
 }
 
-
-MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
+static KernelInfo *ParseNamedKernel(const char *kernel_string)
 {
   char
     token[MaxTextExtent];
+
+  long
+    type;
 
   const char
     *p;
@@ -330,62 +343,68 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   GeometryInfo
     args;
 
-  long
-    type;
-
-  /* If it does not start with an alpha - user defined kernel */
-  GetMagickToken(kernel_string,&p,token);
-  if (isalpha((int) ((unsigned char) *token)) == 0)
-    return(ParseArray(kernel_string));
-
   /* Parse special 'named' kernel */
+  GetMagickToken(kernel_string,&p,token);
   type=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
   if ( type < 0 || type == UserDefinedKernel )
-    return((KernelInfo *)NULL);
+    return((KernelInfo *)NULL);  /* not a valid named kernel */
 
   while (((isspace((int) ((unsigned char) *p)) != 0) ||
-          (*p == ',') || (*p == ':' )) && (*p != '\0'))
+          (*p == ',') || (*p == ':' )) && (*p != '\0') && (*p != ';'))
     p++;
   SetGeometryInfo(&args);
   flags = ParseGeometry(p, &args);
 
   /* special handling of missing values in input string */
   switch( type ) {
-  case RectangleKernel:
-    if ( (flags & WidthValue) == 0 ) /* if no width then */
-      args.rho = args.sigma;         /* then  width = height */
-    if ( args.rho < 1.0 )            /* if width too small */
-        args.rho = 3;                 /* then  width = 3 */
-    if ( args.sigma < 1.0 )          /* if height too small */
-      args.sigma = args.rho;         /* then  height = width */
-    if ( (flags & XValue) == 0 )     /* center offset if not defined */
-      args.xi = (double)(((long)args.rho-1)/2);
-    if ( (flags & YValue) == 0 )
-      args.psi = (double)(((long)args.sigma-1)/2);
-    break;
-  case SquareKernel:
-  case DiamondKernel:
-  case DiskKernel:
-  case PlusKernel:
-    /* If no scale given (a 0 scale is valid! - set it to 1.0 */
-    if ( (flags & HeightValue) == 0 )
-      args.sigma = 1.0;
-    break;
-  case ChebyshevKernel:
-  case ManhattenKernel:
-  case EuclideanKernel:
-    if ( (flags & HeightValue) == 0 )
-      args.sigma = 100.0;                    /* default distance scaling */
-    else if ( (flags & AspectValue ) != 0 )  /* '!' flag */
-      args.sigma = QuantumRange/args.sigma;  /* maximum pixel distance */
-    else if ( (flags & PercentValue ) != 0 ) /* '%' flag */
-      args.sigma *= QuantumRange/100.0;      /* percentage of color range */
-    break;
-  default:
-    break;
+    case RectangleKernel:
+      if ( (flags & WidthValue) == 0 ) /* if no width then */
+        args.rho = args.sigma;         /* then  width = height */
+      if ( args.rho < 1.0 )            /* if width too small */
+          args.rho = 3;                 /* then  width = 3 */
+      if ( args.sigma < 1.0 )          /* if height too small */
+        args.sigma = args.rho;         /* then  height = width */
+      if ( (flags & XValue) == 0 )     /* center offset if not defined */
+        args.xi = (double)(((long)args.rho-1)/2);
+      if ( (flags & YValue) == 0 )
+        args.psi = (double)(((long)args.sigma-1)/2);
+      break;
+    case SquareKernel:
+    case DiamondKernel:
+    case DiskKernel:
+    case PlusKernel:
+      /* If no scale given (a 0 scale is valid! - set it to 1.0 */
+      if ( (flags & HeightValue) == 0 )
+        args.sigma = 1.0;
+      break;
+    case ChebyshevKernel:
+    case ManhattenKernel:
+    case EuclideanKernel:
+      if ( (flags & HeightValue) == 0 )
+        args.sigma = 100.0;                    /* default distance scaling */
+      else if ( (flags & AspectValue ) != 0 )  /* '!' flag */
+        args.sigma = QuantumRange/args.sigma;  /* maximum pixel distance */
+      else if ( (flags & PercentValue ) != 0 ) /* '%' flag */
+        args.sigma *= QuantumRange/100.0;      /* percentage of color range */
+      break;
+    default:
+      break;
   }
 
   return(AcquireKernelBuiltIn((KernelInfoType)type, &args));
+}
+
+MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
+{
+  char
+    token[MaxTextExtent];
+
+  /* If it does not start with an alpha - Its is a user defined kernel array */
+  GetMagickToken(kernel_string,NULL,token);
+  if (isalpha((int) ((unsigned char) *token)) == 0)
+    return(ParseKernelArray(kernel_string));
+
+  return(ParseNamedKernel(kernel_string));
 }
 
 
@@ -1120,20 +1139,23 @@ static unsigned long MorphologyApply(const Image *image, Image
   offx = kernel->x;
   offy = kernel->y;
   switch(method) {
-    case ErodeMorphology:
-    case ErodeIntensityMorphology:
-      /* kernel is user as is, without reflection */
-      break;
     case ConvolveMorphology:
     case DilateMorphology:
     case DilateIntensityMorphology:
     case DistanceMorphology:
-      /* kernel needs to used with reflection */
+      /* kernel needs to used with reflection about origin */
       offx = (long) kernel->width-offx-1;
       offy = (long) kernel->height-offy-1;
       break;
+    case ErodeMorphology:
+    case ErodeIntensityMorphology:
+    case HitAndMissMorphology:
+    case ThinningMorphology:
+    case ThickenMorphology:
+      /* kernel is user as is, without reflection */
+      break;
     default:
-      perror("Not a low level Morpholgy Method");
+      perror("Not a low level Morphology Method");
       break;
   }
 
@@ -1196,7 +1218,9 @@ static unsigned long MorphologyApply(const Image *image, Image
         *restrict k_indexes;
 
       MagickPixelPacket
-        result;
+        result,
+        min,
+        max;
 
       /* Copy input to ouput image for unused channels
        * This removes need for 'cloning' a new image every iteration
@@ -1205,45 +1229,39 @@ static unsigned long MorphologyApply(const Image *image, Image
       if (image->colorspace == CMYKColorspace)
         q_indexes[x] = p_indexes[r];
 
-      result.green=(MagickRealType) 0;
-      result.blue=(MagickRealType) 0;
-      result.opacity=(MagickRealType) 0;
-      result.index=(MagickRealType) 0;
+      /* Defaults */
+      min.red     =
+      min.green   =
+      min.blue    =
+      min.opacity =
+      min.index   = (MagickRealType) QuantumRange;
+      max.red     =
+      max.green   =
+      max.blue    =
+      max.opacity =
+      max.index   = (MagickRealType) 0;
+      /* original pixel value */
+      result.red     = (MagickRealType) p[r].red;
+      result.green   = (MagickRealType) p[r].green;
+      result.blue    = (MagickRealType) p[r].blue;
+      result.opacity = QuantumRange - (MagickRealType) p[r].opacity;
+      if ( image->colorspace == CMYKColorspace)
+         result.index   = (MagickRealType) p_indexes[r];
+
       switch (method) {
         case ConvolveMorphology:
           /* Set the user defined bias of the weighted average output
           **
           ** FUTURE: provide some way for internal functions to disable
-          ** user defined bias and scaling effects.
+          ** user provided bias and scaling effects.
           */
           result=bias;
           break;
-        case DilateMorphology:
-          result.red     =
-          result.green   =
-          result.blue    =
-          result.opacity =
-          result.index   = -MagickHuge;
-          break;
-        case ErodeMorphology:
-          result.red     =
-          result.green   =
-          result.blue    =
-          result.opacity =
-          result.index   = +MagickHuge;
-          break;
         case DilateIntensityMorphology:
         case ErodeIntensityMorphology:
-          result.red = 0.0;  /* flag indicating first match found */
+          result.red = 0.0;  /* flag indicating when first match found */
           break;
         default:
-          /* Otherwise just start with the original pixel value */
-          result.red     = (MagickRealType) p[r].red;
-          result.green   = (MagickRealType) p[r].green;
-          result.blue    = (MagickRealType) p[r].blue;
-          result.opacity = QuantumRange - (MagickRealType) p[r].opacity;
-          if ( image->colorspace == CMYKColorspace)
-             result.index   = (MagickRealType) p_indexes[r];
           break;
       }
 
@@ -1259,7 +1277,7 @@ static unsigned long MorphologyApply(const Image *image, Image
             ** the kernel, and thus 'lower-level' that Convolution.  However
             ** as Convolution is the more common method used, and it does not
             ** really cost us much in terms of processing to use a reflected
-            ** kernel it is Convolution that is implemented.
+            ** kernel, so it is Convolution that is implemented.
             **
             ** Correlation will have its kernel reflected before calling
             ** this function to do a Convolve.
@@ -1267,32 +1285,15 @@ static unsigned long MorphologyApply(const Image *image, Image
             ** For more details of Correlation vs Convolution see
             **   http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
-            if (((channel & OpacityChannel) == 0) ||
-                      (image->matte == MagickFalse))
-              {
-                /* Convolution without transparency effects */
-                k = &kernel->values[ kernel->width*kernel->height-1 ];
-                k_pixels = p;
-                k_indexes = p_indexes;
-                for (v=0; v < (long) kernel->height; v++) {
-                  for (u=0; u < (long) kernel->width; u++, k--) {
-                    if ( IsNan(*k) ) continue;
-                    result.red     += (*k)*k_pixels[u].red;
-                    result.green   += (*k)*k_pixels[u].green;
-                    result.blue    += (*k)*k_pixels[u].blue;
-                    /* result.opacity += not involved here */
-                    if ( image->colorspace == CMYKColorspace)
-                      result.index   += (*k)*k_indexes[u];
-                  }
-                  k_pixels += image->columns+kernel->width;
-                  k_indexes += image->columns+kernel->width;
-                }
-              }
-            else
-              { /* Kernel & Alpha weighted Convolution */
+            if (((channel & SyncChannels) != 0 ) &&
+                      (image->matte == MagickTrue))
+              { /* Channel has a 'Sync' Flag, and Alpha Channel enabled.
+                ** Weight the color channels with Alpha Channel so that
+                ** transparent pixels are not part of the results.
+                */
                 MagickRealType
-                  alpha,  /* alpha value * kernel weighting */
-                  gamma;  /* weighting divisor */
+                  alpha,  /* color channel weighting : kernel*alpha  */
+                  gamma;  /* divisor, sum of weighting values */
 
                 gamma=0.0;
                 k = &kernel->values[ kernel->width*kernel->height-1 ];
@@ -1321,10 +1322,32 @@ static unsigned long MorphologyApply(const Image *image, Image
                 result.opacity *= gamma;
                 result.index *= gamma;
               }
+            else
+              {
+                /* No 'Sync' flag, or no Alpha involved.
+                ** Convolution is simple individual channel weigthed sum.
+                */
+                k = &kernel->values[ kernel->width*kernel->height-1 ];
+                k_pixels = p;
+                k_indexes = p_indexes;
+                for (v=0; v < (long) kernel->height; v++) {
+                  for (u=0; u < (long) kernel->width; u++, k--) {
+                    if ( IsNan(*k) ) continue;
+                    result.red     += (*k)*k_pixels[u].red;
+                    result.green   += (*k)*k_pixels[u].green;
+                    result.blue    += (*k)*k_pixels[u].blue;
+                    result.opacity += (*k)*(QuantumRange-k_pixels[u].opacity);
+                    if ( image->colorspace == CMYKColorspace)
+                      result.index   += (*k)*k_indexes[u];
+                  }
+                  k_pixels += image->columns+kernel->width;
+                  k_indexes += image->columns+kernel->width;
+                }
+              }
             break;
 
         case ErodeMorphology:
-            /* Minimize Value within kernel neighbourhood
+            /* Minimum Value within kernel neighbourhood
             **
             ** NOTE that the kernel is not reflected for this operation!
             **
@@ -1338,21 +1361,22 @@ static unsigned long MorphologyApply(const Image *image, Image
             for (v=0; v < (long) kernel->height; v++) {
               for (u=0; u < (long) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
-                Minimize(result.red,     (double) k_pixels[u].red);
-                Minimize(result.green,   (double) k_pixels[u].green);
-                Minimize(result.blue,    (double) k_pixels[u].blue);
-                Minimize(result.opacity,
+                Minimize(min.red,     (double) k_pixels[u].red);
+                Minimize(min.green,   (double) k_pixels[u].green);
+                Minimize(min.blue,    (double) k_pixels[u].blue);
+                Minimize(min.opacity,
                             QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
-                  Minimize(result.index,   (double) k_indexes[u]);
+                  Minimize(min.index,   (double) k_indexes[u]);
               }
               k_pixels += image->columns+kernel->width;
               k_indexes += image->columns+kernel->width;
             }
             break;
 
+
         case DilateMorphology:
-            /* Maximize Value within kernel neighbourhood
+            /* Maximum Value within kernel neighbourhood
             **
             ** NOTE for correct working of this operation for asymetrical
             ** kernels, the kernel needs to be applied in its reflected form.
@@ -1369,17 +1393,68 @@ static unsigned long MorphologyApply(const Image *image, Image
             for (v=0; v < (long) kernel->height; v++) {
               for (u=0; u < (long) kernel->width; u++, k--) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
-                Maximize(result.red,     (double) k_pixels[u].red);
-                Maximize(result.green,   (double) k_pixels[u].green);
-                Maximize(result.blue,    (double) k_pixels[u].blue);
-                Maximize(result.opacity,
+                Maximize(max.red,     (double) k_pixels[u].red);
+                Maximize(max.green,   (double) k_pixels[u].green);
+                Maximize(max.blue,    (double) k_pixels[u].blue);
+                Maximize(max.opacity,
                             QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
-                  Maximize(result.index,   (double) k_indexes[u]);
+                  Maximize(max.index,   (double) k_indexes[u]);
               }
               k_pixels += image->columns+kernel->width;
               k_indexes += image->columns+kernel->width;
             }
+            break;
+
+        case HitAndMissMorphology:
+        case ThinningMorphology:
+        case ThickenMorphology:
+            /* Minimum of Foreground Pixel minus Maxumum of Background Pixels
+            **
+            ** NOTE that the kernel is not reflected for this operation,
+            ** and consists of both foreground and background pixel
+            ** neighbourhoods, 0.0 for background, and 1.0 for foreground
+            ** with either Nan or 0.5 values for don't care.
+            **
+            ** Note that this can produce negative results, though really
+            ** only a positive match has any real value.
+            */
+            k = kernel->values;
+            k_pixels = p;
+            k_indexes = p_indexes;
+            for (v=0; v < (long) kernel->height; v++) {
+              for (u=0; u < (long) kernel->width; u++, k++) {
+                if ( IsNan(*k) ) continue;
+                if ( (*k) > 0.7 )
+                { /* minimim of foreground pixels */
+                  Minimize(min.red,     (double) k_pixels[u].red);
+                  Minimize(min.green,   (double) k_pixels[u].green);
+                  Minimize(min.blue,    (double) k_pixels[u].blue);
+                  Minimize(min.opacity,
+                              QuantumRange-(double) k_pixels[u].opacity);
+                  if ( image->colorspace == CMYKColorspace)
+                    Minimize(min.index,   (double) k_indexes[u]);
+                }
+                else if ( (*k) < 0.3 )
+                { /* maximum of background pixels */
+                  Maximize(max.red,     (double) k_pixels[u].red);
+                  Maximize(max.green,   (double) k_pixels[u].green);
+                  Maximize(max.blue,    (double) k_pixels[u].blue);
+                  Maximize(max.opacity,
+                              QuantumRange-(double) k_pixels[u].opacity);
+                  if ( image->colorspace == CMYKColorspace)
+                    Maximize(max.index,   (double) k_indexes[u]);
+                }
+              }
+              k_pixels += image->columns+kernel->width;
+              k_indexes += image->columns+kernel->width;
+            }
+            /* Pattern Match  only if min fg larger than min bg pixels */
+            min.red     -= max.red;     Maximize( min.red,     0.0 );
+            min.green   -= max.green;   Maximize( min.green,   0.0 );
+            min.blue    -= max.blue;    Maximize( min.blue,    0.0 );
+            min.opacity -= max.opacity; Maximize( min.opacity, 0.0 );
+            min.index   -= max.index;   Maximize( min.index,   0.0 );
             break;
 
         case ErodeIntensityMorphology:
@@ -1440,6 +1515,7 @@ static unsigned long MorphologyApply(const Image *image, Image
             }
             break;
 
+
         case DistanceMorphology:
             /* Add kernel Value and select the minimum value found.
             ** The result is a iterative distance from edge of image shape.
@@ -1448,6 +1524,9 @@ static unsigned long MorphologyApply(const Image *image, Image
             ** be the case. For example how about a distance from left edges?
             ** To work correctly with asymetrical kernels the reflected kernel
             ** needs to be applied.
+            **
+            ** Actually this is really a GreyErode with a negative kernel!
+            **
             */
 #if 0
             /* No need to do distance morphology if original value is zero
@@ -1486,13 +1565,48 @@ static unsigned long MorphologyApply(const Image *image, Image
         default:
             break; /* Do nothing */
       }
+      /* Final mathematics of results (combine with original image?)
+      **
+      ** NOTE: Difference Morphology operators Edge* and *Hat could also
+      ** be done here but works better with iteration as a image difference
+      ** in the controling function (below).  Thicken and Thinning however
+      ** should be done here so thay can be iterated correctly.
+      */
+      switch ( method ) {
+        case HitAndMissMorphology:
+        case ErodeMorphology:
+          result = min;    /* minimum of neighbourhood */
+          break;
+        case DilateMorphology:
+          result = max;    /* maximum of neighbourhood */
+          break;
+        case ThinningMorphology:
+          /* subtract pattern match from original */
+          result.red     -= min.red;
+          result.green   -= min.green;
+          result.blue    -= min.blue;
+          result.opacity -= min.opacity;
+          result.index   -= min.index;
+          break;
+        case ThickenMorphology:
+          /* Union with original image (maximize) - or should this be + */
+          Maximize( result.red,     min.red );
+          Maximize( result.green,   min.green );
+          Maximize( result.blue,    min.blue );
+          Maximize( result.opacity, min.opacity );
+          Maximize( result.index,   min.index );
+          break;
+        default:
+          /* result directly calculated or assigned */
+          break;
+      }
+      /* Assign the resulting pixel values - Clamping Result */
       switch ( method ) {
         case UndefinedMorphology:
         case DilateIntensityMorphology:
         case ErodeIntensityMorphology:
           break;  /* full pixel was directly assigned - not a channel method */
         default:
-          /* Assign the results */
           if ((channel & RedChannel) != 0)
             q->red = ClampToQuantum(result.red);
           if ((channel & GreenChannel) != 0)
@@ -1507,6 +1621,7 @@ static unsigned long MorphologyApply(const Image *image, Image
             q_indexes[x] = ClampToQuantum(result.index);
           break;
       }
+      /* Count up changed pixels */
       if (   ( p[r].red != q->red )
           || ( p[r].green != q->green )
           || ( p[r].blue != q->blue )

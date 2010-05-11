@@ -1254,6 +1254,9 @@ static const OptionInfo
     { "TopHat", (long) TopHatMorphology, MagickFalse },
     { "BottomHat", (long) BottomHatMorphology, MagickFalse },
     { "Distance", (long) DistanceMorphology, MagickFalse },
+    { "HitAndMiss", (long) HitAndMissMorphology, MagickFalse },
+    { "Thinning", (long) ThinningMorphology, MagickFalse },
+    { "Thicken", (long) ThickenMorphology, MagickFalse },
     { (char *) NULL, (long) UndefinedMorphology, MagickFalse }
   },
   NoiseOptions[] =

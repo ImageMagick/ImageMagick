@@ -61,12 +61,16 @@ typedef enum
   CloseMorphology,             /* Erode then Dilate */
   OpenIntensityMorphology,     /* Pixel Pick using GreyScale Open */
   CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
-/* Third-level Morphology methods */
+/* Difference Morphology methods */
   EdgeInMorphology,            /* Dilate difference from Original */
   EdgeOutMorphology,           /* Erode difference from Original */
   EdgeMorphology,              /* Dilate difference with Erode */
   TopHatMorphology,            /* Close difference from Original */
-  BottomHatMorphology          /* Open difference from Original */
+  BottomHatMorphology,         /* Open difference from Original */
+/* Recursive Morphology methods */
+  HitAndMissMorphology,        /* Foreground/Background pattern matching */
+  ThinningMorphology,          /* Remove matching pixels from image */
+  ThickenMorphology            /* Add matching pixels from image */
 } MorphologyMethod;
 
 typedef struct
