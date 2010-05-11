@@ -491,10 +491,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             intensity=PNMInteger(image,10);
-            if (scale != (Quantum *) NULL)
-              intensity=(unsigned long) scale[ConstrainPixel(image,(long)
-                intensity,max_value)];
             q->red=(Quantum) intensity;
+            if (scale != (Quantum *) NULL)
+              q->red=scale[ConstrainPixel(image,(long) intensity,max_value)];
             q->green=q->red;
             q->blue=q->red;
             q++;
