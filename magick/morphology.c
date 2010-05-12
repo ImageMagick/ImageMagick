@@ -33,7 +33,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Morpology is the the application of various kernals, of any size and even
+% Morpology is the the application of various kernels, of any size and even
 % shape, to a image in various ways (typically binary, but not always).
 %
 % Convolution (weighted sum or average) is just one specific type of
@@ -82,7 +82,7 @@
   a number), that may be used within a Kernel Definition.  NaN's are defined
   as part of the IEEE standard for floating point number representation.
 
-  These are used a Kernel value of NaN means that that kernal position is not
+  These are used a Kernel value of NaN means that that kernel position is not
   part of the normal convolution or morphology process, and thus allowing the
   use of 'shaped' kernels.
 
@@ -152,7 +152,7 @@ static void
 %         geometry arguments supplied.  See AcquireKernelBuiltIn()
 %
 %    "WxH[+X+Y]:num, num, num ..."
-%         a kernal of size W by H, with W*H floating point numbers following.
+%         a kernel of size W by H, with W*H floating point numbers following.
 %         the 'center' can be optionally be defined at +X+Y (such that +0+0
 %         is top left corner). If not defined the pixel in the center, for
 %         odd sizes, or to the immediate top or left of center for even sizes
@@ -537,7 +537,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Properly centered and odd sized rectangles work the best.
 %
 %    Diamond  "[{radius}[,{scale}]]"
-%       Generate a diamond shaped kernal with given radius to the points.
+%       Generate a diamond shaped kernel with given radius to the points.
 %       Kernel size will again be radius*2+1 square and defaults to radius 1,
 %       generating a 3x3 kernel that is slightly larger than a square.
 %
@@ -1010,12 +1010,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneKernelInfo() creates a new clone of the given Kernel so that its can
-%  be modified without effecting the original.  The cloned kernel should be
-%  destroyed using DestoryKernelInfo() when no longer needed.
-%
-%  Note that only the kernel pointed to is cloned, any attached list of
-%  kernels is not touched.
+%  CloneKernelInfo() creates a new clone of the given Kernel List so that its
+%  can be modified without effecting the original.  The cloned kernel should
+%  be destroyed using DestoryKernelInfo() when no longer needed.
 %
 %  The format of the CloneKernelInfo method is:
 %
@@ -1039,7 +1036,6 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
   if (new_kernel == (KernelInfo *) NULL)
     return(new_kernel);
   *new_kernel=(*kernel); /* copy values in structure */
-  new_kernel->next = (KernelInfo *) NULL; /* but not the 'next' */
 
   /* replace the values with a copy of the values */
   new_kernel->values=(double *) AcquireQuantumMemory(kernel->width,
@@ -1048,6 +1044,14 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
     return(DestroyKernelInfo(new_kernel));
   for (i=0; i < (long) (kernel->width*kernel->height); i++)
     new_kernel->values[i]=kernel->values[i];
+
+  /* Also clone the next kernel in the kernel list */
+  if ( kernel->next != (KernelInfo *) NULL ) {
+    new_kernel->next = CloneKernelInfo(kernel->next);
+    if ( new_kernel->next == (KernelInfo *) NULL )
+      return(DestroyKernelInfo(new_kernel));
+  }
+
   return(new_kernel);
 }
 
@@ -1575,21 +1579,6 @@ static unsigned long MorphologyPrimative(const Image *image, Image
             ** Actually this is really a GreyErode with a negative kernel!
             **
             */
-#if 0
-            /* No need to do distance morphology if original value is zero
-            ** Unfortunatally I have not been able to get this right
-            ** when channel selection also becomes involved. -- Arrgghhh
-            */
-            if (   ((channel & RedChannel) == 0 && p[r].red == 0)
-                || ((channel & GreenChannel) == 0 && p[r].green == 0)
-                || ((channel & BlueChannel) == 0 && p[r].blue == 0)
-                || ((channel & OpacityChannel) == 0 && p[r].opacity == 0)
-                || (( (channel & IndexChannel) == 0
-                    || image->colorspace != CMYKColorspace
-                                                ) && p_indexes[x] ==0 )
-              )
-              break;
-#endif
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
@@ -1719,25 +1708,24 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   const ChannelType channel,const MorphologyMethod method,
   const long iterations,const KernelInfo *kernel,ExceptionInfo *exception)
 {
-  long
-    count;
-
   Image
     *new_image,
+    *old_image,
     *grad_image;
 
-  const char
-    *artifact;
-
-  unsigned long
-    changed,
-    limit;
-
   KernelInfo
-    *curr_kernel;
+    *curr_kernel,
+    *this_kernel;
 
   MorphologyMethod
     curr_method;
+
+  unsigned long
+    count,
+    limit,
+    changed,
+    total_changed,
+    kernel_number;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1754,8 +1742,12 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
    */
   assert(kernel != (KernelInfo *)NULL);
 
-  count = 0;      /* interation count */
-  changed = 1;    /* if compound method assume image was changed */
+  new_image  = (Image *) NULL;          /* for cleanup */
+  old_image  = (Image *) NULL;
+  grad_image = (Image *) NULL;
+  curr_kernel = (KernelInfo *) NULL;
+  count = 0;                           /* interation count */
+  changed = 1;                         /* was last run succesfull */
   curr_kernel = (KernelInfo *)kernel;  /* allow kernel and method */
   curr_method = method;                /* to be changed as nessary */
 
@@ -1764,11 +1756,12 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     limit = image->columns > image->rows ? image->columns : image->rows;
 
   /* Third-level morphology methods */
-  grad_image=(Image *) NULL;
   switch( curr_method ) {
     case EdgeMorphology:
       grad_image = MorphologyImageChannel(image, channel,
             DilateMorphology, iterations, curr_kernel, exception);
+      if ( grad_image == (Image *) NULL )
+        goto error_cleanup;
       /* FALL-THRU */
     case EdgeInMorphology:
       curr_method = ErodeMorphology;
@@ -1793,14 +1786,14 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       new_image = MorphologyImageChannel(image, channel,
             ErodeMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
-        return((Image *) NULL);
+        goto error_cleanup;
       curr_method = DilateMorphology;
       break;
     case OpenIntensityMorphology:
       new_image = MorphologyImageChannel(image, channel,
             ErodeIntensityMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
-        return((Image *) NULL);
+        goto error_cleanup;
       curr_method = DilateIntensityMorphology;
       break;
 
@@ -1809,22 +1802,26 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       /* A reflected kernel is needed for a Close */
       if ( curr_kernel == kernel )
         curr_kernel = CloneKernelInfo(kernel);
+      if (curr_kernel == (KernelInfo *) NULL)
+        goto error_cleanup;
       RotateKernelInfo(curr_kernel,180);
       new_image = MorphologyImageChannel(image, channel,
             DilateMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
-        return((Image *) NULL);
+        goto error_cleanup;
       curr_method = ErodeMorphology;
       break;
     case CloseIntensityMorphology:
       /* A reflected kernel is needed for a Close */
       if ( curr_kernel == kernel )
         curr_kernel = CloneKernelInfo(kernel);
+      if (curr_kernel == (KernelInfo *) NULL)
+        goto error_cleanup;
       RotateKernelInfo(curr_kernel,180);
       new_image = MorphologyImageChannel(image, channel,
             DilateIntensityMorphology, iterations, curr_kernel, exception);
       if (new_image == (Image *) NULL)
-        return((Image *) NULL);
+        goto error_cleanup;
       curr_method = ErodeIntensityMorphology;
       break;
 
@@ -1839,30 +1836,35 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       */
       if ( curr_kernel == kernel )
         curr_kernel = CloneKernelInfo(kernel);
+      if (curr_kernel == (KernelInfo *) NULL)
+        goto error_cleanup;
       RotateKernelInfo(curr_kernel,180);
       curr_method = ConvolveMorphology;
       /* FALL-THRU into Correlate (weigthed sum without reflection) */
 
     case ConvolveMorphology:
-      /* Scale or Normalize kernel, according to user wishes
-      ** before using it for the Convolve/Correlate method.
-      **
-      ** FUTURE: provide some way for internal functions to disable
-      ** user bias and scaling effects.
-      */
-      artifact = GetImageArtifact(image,"convolve:scale");
-      if ( artifact != (char *)NULL ) {
-        GeometryFlags
-          flags;
-        GeometryInfo
-          args;
+      { /* Scale or Normalize kernel, according to user wishes
+        ** before using it for the Convolve/Correlate method.
+        **
+        ** FUTURE: provide some way for internal functions to disable
+        ** user bias and scaling effects.
+        */
+        const char
+          *artifact = GetImageArtifact(image,"convolve:scale");
+        if ( artifact != (char *)NULL ) {
+          GeometryFlags
+            flags;
+          GeometryInfo
+            args;
 
-        if ( curr_kernel == kernel )
-          curr_kernel = CloneKernelInfo(kernel);
-
-        args.rho = 1.0;
-        flags = (GeometryFlags) ParseGeometry(artifact, &args);
-        ScaleKernelInfo(curr_kernel, args.rho, flags);
+          if ( curr_kernel == kernel )
+            curr_kernel = CloneKernelInfo(kernel);
+          if (curr_kernel == (KernelInfo *) NULL)
+            goto error_cleanup;
+          args.rho = 1.0;
+          flags = (GeometryFlags) ParseGeometry(artifact, &args);
+          ScaleKernelInfo(curr_kernel, args.rho, flags);
+        }
       }
       /* FALL-THRU to do the first, and typically the only iteration */
 
@@ -1876,96 +1878,124 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       */
       new_image=CloneImage(image,0,0,MagickTrue,exception);
       if (new_image == (Image *) NULL)
-        return((Image *) NULL);
+        goto error_cleanup;
       if (SetImageStorageClass(new_image,DirectClass) == MagickFalse)
         {
           InheritException(exception,&new_image->exception);
-          new_image=DestroyImage(new_image);
-          return((Image *) NULL);
+          goto exit_cleanup;
         }
+      count++;  /* iteration count */
       changed = MorphologyPrimative(image,new_image,curr_method,channel,
            curr_kernel, exception);
-      count++;
       if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-        fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
+        fprintf(stderr, "Morphology %s:%lu.%lu => Changed %lu\n",
               MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-              count, changed);
+              count, 0L, changed);
       break;
   }
+  /* At this point
+   *   + "curr_method" should be set to a low-level morphology method
+   *   + "count=1" if the first iteration of the first kernel has been done.
+   *   + "new_image" is defined and contains the current resulting image
+   */
 
-  /* The Hit-And-Miss Morphology must apply a list of kernels to the image
-  ** provided, and then create a union (maximimum or lighten) of the results.
-  ** Iterations are not permitted for this process.
+  /* The Hit-And-Miss Morphology is not 'iterated' against the resulting
+  ** image from the previous morphology step.  It must always be applied
+  ** to the original image, with the results collected into a union (maximimum
+  ** or lighten) of all the results.  Multiple kernels may be applied but
+  ** an iteration of the morphology does nothing, so is ignored.
   **
-  ** The first kernal has now been done, so lets continue the process.
+  ** The first kernel is guranteed to have been done, so lets continue the
+  ** process, with the other kernels in the kernel list.
   */
-  if ( method == HitAndMissMorphology &&
-       curr_kernel->next != (KernelInfo *) NULL )
+  if ( method == HitAndMissMorphology )
   {
-    Image
-      *next_image;
+    if ( curr_kernel->next != (KernelInfo *) NULL ) {
+      /* create a second working image */
+      old_image = CloneImage(image,0,0,MagickTrue,exception);
+      if (old_image == (Image *) NULL)
+        goto error_cleanup;
+      if (SetImageStorageClass(old_image,DirectClass) == MagickFalse)
+        {
+          InheritException(exception,&old_image->exception);
+          goto exit_cleanup;
+        }
 
-    next_image = CloneImage(new_image,0,0,MagickTrue,exception);
-    if (next_image == (Image *) NULL)
-        return(DestroyImage(new_image));
-    while( curr_kernel->next != (KernelInfo *) NULL )
-      {
-        curr_kernel = curr_kernel->next;
-        changed = MorphologyPrimative(image,next_image,curr_method,channel,
-             curr_kernel,exception);
-        count++;
-        if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-          fprintf(stderr, "    kernel %s:%ld => Changed %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                count, changed);
-        (void) CompositeImageChannel(new_image,
-           (ChannelType) (channel & ~SyncChannels), LightenCompositeOp,
-           next_image, 0, 0);
-      }
-    next_image=DestroyImage(next_image);
-
-    /* we should not have made a clone of the kernel info - no need to free */
-
-    return(new_image);
+      /* loop through rest of the kernels */
+      this_kernel=curr_kernel->next;
+      kernel_number=1;
+      while( this_kernel != (KernelInfo *) NULL )
+        {
+          changed = MorphologyPrimative(image,old_image,curr_method,channel,
+              this_kernel,exception);
+          (void) CompositeImageChannel(new_image,
+            (ChannelType) (channel & ~SyncChannels), LightenCompositeOp,
+            old_image, 0, 0);
+          if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+            fprintf(stderr, "Morphology %s:%lu.%lu => Changed %lu\n",
+                  MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
+                  count, kernel_number, changed);
+          this_kernel = this_kernel->next;
+          kernel_number++;
+        }
+      old_image=DestroyImage(old_image);
+    }
+    goto exit_cleanup;
   }
 
-  /* At this point the "curr_method" should not only be set to a low-level
-  ** method that is understood by the MorphologyApply() internal function,
-  ** but "new_image" should now be defined, as the image to apply the
-  ** "curr_method" to.
-  */
+  /* Repeat the low-level morphology over all kernels
+     until iteration count limit or no change from any kernel is found */
+  if ( ( count < limit && changed > 0 ) ||
+       curr_kernel->next != (KernelInfo *) NULL ) {
 
-  /* Repeat the low-level morphology until count or no change reached */
-  if ( count < (long) limit && changed > 0 ) {
-    Image
-      *old_image;
-
-    old_image = CloneImage(new_image,0,0,MagickTrue,exception);
+    /* create a second working image */
+    old_image = CloneImage(image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
-        return(DestroyImage(new_image));
+      goto error_cleanup;
     if (SetImageStorageClass(old_image,DirectClass) == MagickFalse)
       {
         InheritException(exception,&old_image->exception);
-        old_image=DestroyImage(old_image);
-        return(DestroyImage(new_image));
+        goto exit_cleanup;
       }
-    while( count < (long) limit && changed != 0 )
-      {
+
+    /* reset variables for the first/next iteration, or next kernel) */
+    kernel_number = 0;
+    this_kernel = curr_kernel;
+    total_changed = count != 0 ? changed : 0;
+    if ( count != 0 && this_kernel != (KernelInfo *) NULL ) {
+      count = 0;  /* first iteration is not yet finished! */
+      this_kernel = curr_kernel->next;
+      kernel_number = 1;
+      total_changed = changed;
+    }
+
+    while ( count < limit ) {
+      count++;
+      while ( this_kernel != (KernelInfo *) NULL ) {
         Image *tmp = old_image;
         old_image = new_image;
         new_image = tmp;
         changed = MorphologyPrimative(old_image,new_image,curr_method,channel,
-             curr_kernel,exception);
-        count++;
+                          this_kernel,exception);
         if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-          fprintf(stderr, "Morphology %s:%ld => Changed %lu\n",
+          fprintf(stderr, "Morphology %s:%lu.%lu => Changed %lu\n",
                 MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                count, changed);
+                count, kernel_number, changed);
+        total_changed += changed;
+        this_kernel = this_kernel->next;
+        kernel_number++;
       }
+      if ( total_changed == 0 )
+        break;  /* no changes after processing all kernels - ABORT */
+      /* prepare for next loop */
+      total_changed = 0;
+      kernel_number = 0;
+      this_kernel = curr_kernel;
+    }
     old_image=DestroyImage(old_image);
   }
 
-  /* We are finished with kernel - destroy it if we made a clone */
+  /* finished with kernel - destary any copy that was made */
   if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
 
@@ -1999,6 +2029,17 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   }
 
   return(new_image);
+
+  /* Yes goto's are bad, but in this case it makes cleanup lot more efficient */
+error_cleanup:
+  if ( new_image != (Image *) NULL )
+    DestroyImage(new_image);
+exit_cleanup:
+  if ( old_image != (Image *) NULL )
+    DestroyImage(old_image);
+  if ( curr_kernel != (KernelInfo *) NULL &&  curr_kernel != kernel )
+    curr_kernel=DestroyKernelInfo(curr_kernel);
+  return(new_image);
 }
 
 /*
@@ -2031,6 +2072,10 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 */
 static void RotateKernelInfo(KernelInfo *kernel, double angle)
 {
+  /* angle the lower kernels first */
+  if ( kernel->next != (KernelInfo *) NULL)
+    RotateKernelInfo(kernel->next, angle);
+
   /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
   **
   ** TODO: expand beyond simple 90 degree rotates, flips and flops
@@ -2153,26 +2198,26 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ScaleKernelInfo() scales the kernel by the given amount, with or without
-%  normalization of the sum of the kernel values.
+%  ScaleKernelInfo() scales the given kernel list by the given amount, with or
+%  without normalization of the sum of the kernel values (as per given flags).
 %
 %  By default (no flags given) the values within the kernel is scaled
-%  according the given scaling factor.
+%  directly using given scaling factor without change.
 %
-%  If any 'normalize_flags' are given the kernel will be normalized and then
-%  further scaled by the scaleing factor value given.  A 'PercentValue' flag
-%  will cause the given scaling factor to be divided by one hundred percent.
+%  If any 'normalize_flags' are given the kernel will first be normalized and
+%  then further scaled by the scaling factor value given.  A 'PercentValue'
+%  flag will cause the given scaling factor to be divided by one hundred
+%  percent.
 %
 %  Kernel normalization ('normalize_flags' given) is designed to ensure that
 %  any use of the kernel scaling factor with 'Convolve' or 'Correlate'
-%  morphology methods will fall into -1.0 to +1.0 range.  Note however that
-%  for non-HDRI versions of IM this may cause images to have any negative
-%  results clipped, unless some 'clip' any negative output from 'Convolve'
-%  with the use of some kernels.
+%  morphology methods will fall into -1.0 to +1.0 range.  Note that for
+%  non-HDRI versions of IM this may cause images to have any negative results
+%  clipped, unless some 'bias' is used.
 %
 %  More specifically.  Kernels which only contain positive values (such as a
 %  'Gaussian' kernel) will be scaled so that those values sum to +1.0,
-%  ensuring a 0.0 to +1.0 convolution output range for non-HDRI images.
+%  ensuring a 0.0 to +1.0 output range for non-HDRI images.
 %
 %  For Kernels that contain some negative values, (such as 'Sharpen' kernels)
 %  the kernel will be scaled by the absolute of the sum of kernel values, so
@@ -2188,13 +2233,13 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %  values seperatally to those of the negative values, so the kernel will be
 %  forced to become a zero-sum kernel better suited to such searches.
 %
-%  WARNING: Correct normalization of the kernal assumes that the '*_range'
+%  WARNING: Correct normalization of the kernel assumes that the '*_range'
 %  attributes within the kernel structure have been correctly set during the
 %  kernels creation.
 %
 %  NOTE: The values used for 'normalize_flags' have been selected specifically
-%  to match the use of geometry options, so that '!' means NormalizeValue, '^'
-%  means CorrelateNormalizeValue, and '%' means PercentValue.  All other
+%  to match the use of geometry options, so that '!' means NormalizeValue,
+%  '^' means CorrelateNormalizeValue, and '%' means PercentValue.  All other
 %  GeometryFlags values are ignored.
 %
 %  The format of the ScaleKernelInfo method is:
@@ -2227,6 +2272,10 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   register double
     pos_scale,
     neg_scale;
+
+  /* scale the lower kernels first */
+  if ( kernel->next != (KernelInfo *) NULL)
+    ScaleKernelInfo(kernel->next, scaling_factor, normalize_flags);
 
   pos_scale = 1.0;
   if ( (normalize_flags&NormalizeValue) != 0 ) {
@@ -2372,6 +2421,10 @@ MagickExport void ZeroKernelNans(KernelInfo *kernel)
 {
   register long
     i;
+
+  /* scale the lower kernels first */
+  if ( kernel->next != (KernelInfo *) NULL)
+    ZeroKernelNans(kernel->next);
 
   for (i=0; i < (long) (kernel->width*kernel->height); i++)
     if ( IsNan(kernel->values[i]) )
