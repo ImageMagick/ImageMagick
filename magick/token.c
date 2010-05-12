@@ -148,7 +148,8 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %  GetMagickToken() gets a token from the token stream.  A token is defined as a
 %  sequence of characters delimited by whitespace (e.g. clip-path), a sequence
 %  delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
-%  parenthesis (e.g. rgb(0,0,0)).
+%  parenthesis (e.g. rgb(0,0,0)).  GetMagickToken() also recognizes these
+%  separator characters: ':', '=', ',', and ';'.
 %
 %  The format of the GetMagickToken method is:
 %
@@ -243,7 +244,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
         for ( ; *p != '\0'; p++)
         {
           if (((isspace((int) ((unsigned char) *p)) != 0) || (*p == '=') ||
-              (*p == ',') || (*p == ':')) && (*(p-1) != '\\'))
+              (*p == ',') || (*p == ':') || (*p == ';')) && (*(p-1) != '\\'))
             break;
           if ((i > 0) && (*p == '<'))
             break;
