@@ -2886,7 +2886,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             }
           length++;
         }
-        length=6*(3*length/2+BezierQuantum)+360+1;
+        length=k*BezierQuantum;
         break;
       }
       case CirclePrimitive:
@@ -2912,8 +2912,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         /*
           Resize based on speculative points required by primitive.
         */
-        while ((unsigned long) (i+length) >= number_points)
-          number_points<<=1;
+        number_points+=length+1;
         primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
           (size_t) number_points,sizeof(*primitive_info));
         if (primitive_info == (PrimitiveInfo *) NULL)
@@ -3111,9 +3110,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         graphic_context[n]->bounds.y2=point.y;
       if (primitive_info[i].primitive == ImagePrimitive)
         break;
+      if (i >= (long) number_points)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     }
-    if (i >= (long) number_points)
-      ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     if (graphic_context[n]->render != MagickFalse)
       {
         if ((n != 0) && (graphic_context[n]->clip_mask != (char *) NULL) &&

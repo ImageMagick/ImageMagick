@@ -2396,8 +2396,6 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("unique",property,6) == 0)
         {
-          if (*image_info->unique == '\0')
-            (void) AcquireUniqueFilename(image_info->unique);
           (void) CopyMagickString(filename,image_info->unique,MaxTextExtent);
           (void) CopyMagickString(value,filename,MaxTextExtent);
           break;
