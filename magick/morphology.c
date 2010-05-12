@@ -172,8 +172,9 @@ static void
 %  You can define a 'list of kernels' which can be used by some morphology
 %  operators A list is defined as a semi-colon seperated list kernels.
 %
-%     " kernel ; kernel ; kernel "
+%     " kernel ; kernel ; kernel ; "
 %
+%  Extra ';' characters are simply ignored.
 %
 %  The format of the AcquireKernal method is:
 %
@@ -416,33 +417,52 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 {
 
   KernelInfo
-    *kernel;
+    *kernel,
+    *new_kernel,
+    *last_kernel;
 
   char
     token[MaxTextExtent];
 
   const char
-    *next;
+    *p;
 
-  /* If it does not start with an alpha - Its is a user defined kernel array */
-  GetMagickToken(kernel_string,NULL,token);
-  if (isalpha((int) ((unsigned char) *token)) == 0)
-    kernel = ParseKernelArray(kernel_string);
-  else
-    kernel = ParseNamedKernel(kernel_string);
+  p = kernel_string;
+  kernel = last_kernel = NULL;
 
-  /* was this the last (or only) kernel in the string */
-  next = strchr(kernel_string, ';');
-  if ( next == (char *) NULL )
-    return(kernel);
+  while ( GetMagickToken(p,NULL,token),  *token != '\0' ) {
 
-  /* Add the next kernel to the list */
-  kernel->next = AcquireKernelInfo( next+1 );
+    /* ignore multiple ';' following each other */
+    if ( *token != ';' ) {
 
-  /* failed for some reason? */
-  if ( kernel->next == (KernelInfo *) NULL )
-    return(DestroyKernelInfo(kernel));
+      /* tokens starting with alpha is a Named kernel */
+      if (isalpha((int) *token) == 0)
+        new_kernel = ParseKernelArray(p);
+      else /* otherwise a user defined kernel array */
+        new_kernel = ParseNamedKernel(p);
 
+      if ( last_kernel == (KernelInfo *) NULL ) {
+        /* first kernel: initialize the kernel list */
+        if ( new_kernel == (KernelInfo *) NULL )
+          return((KernelInfo *) NULL);
+        kernel = last_kernel = new_kernel;
+      }
+      else {
+        /* append kernel to end of the list */
+        if ( new_kernel == (KernelInfo *) NULL )
+          return(DestroyKernelInfo(kernel));
+        last_kernel->next = new_kernel;
+        last_kernel = new_kernel;
+      }
+    }
+
+    /* look for the next kernel in list */
+    p = strchr(p, ';');
+    if ( p == (char *) NULL )
+      break;
+    p++;
+
+  }
   return(kernel);
 }
 
