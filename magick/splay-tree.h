@@ -31,6 +31,8 @@ extern MagickExport MagickBooleanType
   DeleteNodeFromSplayTree(SplayTreeInfo *,const void *);
 
 extern MagickExport const void
+  *GetNextKeyInSplayTree(SplayTreeInfo *),
+  *GetNextValueInSplayTree(SplayTreeInfo *),
   *GetValueFromSplayTree(SplayTreeInfo *,const void *);
 
 extern MagickExport int
@@ -47,8 +49,6 @@ extern MagickExport unsigned long
   GetNumberOfNodesInSplayTree(const SplayTreeInfo *);
 
 extern MagickExport void
-  *GetNextKeyInSplayTree(SplayTreeInfo *),
-  *GetNextValueInSplayTree(SplayTreeInfo *),
   *RemoveNodeByValueFromSplayTree(SplayTreeInfo *,const void *),
   *RemoveNodeFromSplayTree(SplayTreeInfo *,const void *),
   ResetSplayTree(SplayTreeInfo *),
