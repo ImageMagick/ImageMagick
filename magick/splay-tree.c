@@ -857,6 +857,9 @@ MagickExport void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
 %
 %  GetValueFromSplayTree() gets a value from the splay-tree by its key.
 %
+%  WARNING: The pointer returned points directly into the values stored in
+%  tree. Do not free the memory pointed to.
+%
 %  The format of the GetValueFromSplayTree method is:
 %
 %      void *GetValueFromSplayTree(SplayTreeInfo *splay_tree,const void *key)
