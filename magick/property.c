@@ -3068,6 +3068,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
               }
             (void) CopyMagickString(q,value,extent);
             q+=length;
+            break;
           }
         if (image_info == (ImageInfo *) NULL)
           break;
@@ -3086,6 +3087,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
               }
             (void) CopyMagickString(q,value,extent);
             q+=length;
+            break;
           }
         break;
       }
