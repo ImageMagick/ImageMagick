@@ -2552,7 +2552,7 @@ void Magick::Image::classType ( const ClassType class_ )
     {
       // Quantize to create PseudoClass color map
       modifyImage();
-      quantizeColors((unsigned long) QuantumRange + 1);
+      quantizeColors(MaxColormapSize);
       quantize();
       image()->storage_class = static_cast<MagickCore::ClassType>(PseudoClass);
     }
