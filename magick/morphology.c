@@ -1322,6 +1322,7 @@ static unsigned long MorphologyPrimative(const Image *image, Image
       result.green   = (MagickRealType) p[r].green;
       result.blue    = (MagickRealType) p[r].blue;
       result.opacity = QuantumRange - (MagickRealType) p[r].opacity;
+      result.index   = 0;
       if ( image->colorspace == CMYKColorspace)
          result.index   = (MagickRealType) p_indexes[r];
 

@@ -751,7 +751,7 @@ MagickExport SplayTreeInfo *DestroySplayTree(SplayTreeInfo *splay_tree)
 %
 %  The format of the GetNextKeyInSplayTree method is:
 %
-%      void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
+%      const void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
 %
 %  A description of each parameter follows:
 %
@@ -760,7 +760,7 @@ MagickExport SplayTreeInfo *DestroySplayTree(SplayTreeInfo *splay_tree)
 %    o key: the key.
 %
 */
-MagickExport void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
+MagickExport const void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
 {
   register NodeInfo
     *node;
@@ -805,7 +805,7 @@ MagickExport void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
 %
 %  The format of the GetNextValueInSplayTree method is:
 %
-%      void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
+%      const void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
 %
 %  A description of each parameter follows:
 %
@@ -814,7 +814,7 @@ MagickExport void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
 %    o key: the key.
 %
 */
-MagickExport void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
+MagickExport const void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
 {
   register NodeInfo
     *node;
@@ -857,12 +857,12 @@ MagickExport void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
 %
 %  GetValueFromSplayTree() gets a value from the splay-tree by its key.
 %
-%  WARNING: The pointer returned points directly into the values stored in
-%  tree. Do not free the memory pointed to.
+%  Note, the value is a constant.  Do not attempt to free it.
 %
 %  The format of the GetValueFromSplayTree method is:
 %
-%      void *GetValueFromSplayTree(SplayTreeInfo *splay_tree,const void *key)
+%      const void *GetValueFromSplayTree(SplayTreeInfo *splay_tree,
+%        const void *key)
 %
 %  A description of each parameter follows:
 %
@@ -871,7 +871,7 @@ MagickExport void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
 %    o key: the key.
 %
 */
-MagickExport void *GetValueFromSplayTree(SplayTreeInfo *splay_tree,
+MagickExport const void *GetValueFromSplayTree(SplayTreeInfo *splay_tree,
   const void *key)
 {
   int
