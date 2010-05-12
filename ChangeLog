@@ -1,9 +1,10 @@
-2010-05-11  6.6.1-8 Anthony Thyssen <A.Thyssen@griffith...>
+2010-05-12  6.6.1-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Implementation of Pattern Matching Morphology methods
     HitAndMiss, Thicken, Thinning
   * Reporting of Kernel Strinsg that fail to parse (though not why)
   * Parsing of Multiple Kernel Strings, generating a list of kernels
-  * Use of Multiple Kernels for HitAndMiss Morphology
+  * Union of results from Multiple Kernels for HitAndMiss method
+  * Interated Multiple Kernels for all other morphology methods
 
 2010-05-08  6.6.1-8 Glenn Randers-Pehrson <glennrp@image...>
   * Use proper background.index when writing indexed PNG, if the background
