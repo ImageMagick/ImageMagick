@@ -427,8 +427,12 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   const char
     *p;
 
+  unsigned long
+    kernel_number;
+
   p = kernel_string;
   kernel = last_kernel = NULL;
+  kernel_number = 0;
 
   while ( GetMagickToken(p,NULL,token),  *token != '\0' ) {
 
@@ -441,16 +445,18 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       else /* otherwise a user defined kernel array */
         new_kernel = ParseNamedKernel(p);
 
-      if ( last_kernel == (KernelInfo *) NULL ) {
-        /* first kernel: initialize the kernel list */
-        if ( new_kernel == (KernelInfo *) NULL )
-          return((KernelInfo *) NULL);
-        kernel = last_kernel = new_kernel;
+      /* Error handling -- this is not proper error handling! */
+      if ( new_kernel == (KernelInfo *) NULL ) {
+        fprintf(stderr, "Failed to parse kernel number #%lu\n", kernel_number);
+        if ( kernel != (KernelInfo *) NULL )
+          kernel=DestroyKernelInfo(kernel);
+        return((KernelInfo *) NULL);
       }
+
+      /* initialise or append the kernel list */
+      if ( last_kernel == (KernelInfo *) NULL )
+        kernel = last_kernel = new_kernel;
       else {
-        /* append kernel to end of the list */
-        if ( new_kernel == (KernelInfo *) NULL )
-          return(DestroyKernelInfo(kernel));
         last_kernel->next = new_kernel;
         last_kernel = new_kernel;
       }
