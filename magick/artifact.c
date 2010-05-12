@@ -248,6 +248,9 @@ MagickExport void DestroyImageArtifacts(Image *image)
 %
 %  GetImageArtifact() gets a value associated with an image artifact.
 %
+%  WARNING: The pointer returned points directly to stored values.
+%  Do not free the memory they pointed to.
+%
 %  The format of the GetImageArtifact method is:
 %
 %      const char *GetImageArtifact(const Image *image,const char *key)
