@@ -890,7 +890,9 @@ void Magick::Image::extent ( const Geometry &geometry_ )
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  ExtentImage ( image(), &extentInfo, &exceptionInfo );
+  MagickCore::Image* newImage =
+    ExtentImage ( image(), &extentInfo, &exceptionInfo );
+  replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
