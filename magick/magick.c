@@ -67,6 +67,7 @@
 #include "magick/resource_.h"
 #include "magick/policy.h"
 #include "magick/semaphore.h"
+#include "magick/semaphore-private.h"
 #include "magick/signature-private.h"
 #include "magick/splay-tree.h"
 #include "magick/string_.h"
@@ -112,7 +113,8 @@ static SplayTreeInfo
   *magick_list = (SplayTreeInfo *) NULL;
 
 static volatile MagickBooleanType
-  instantiate_magick = MagickFalse;  /* double-checked locking pattern */
+  instantiate_magick = MagickFalse,
+  instantiate_magickcore = MagickFalse;
 
 /*
   Forward declarations.
@@ -1208,6 +1210,12 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Initialize the Magick environment.
   */
+  LockMagickMutex();
+  if (instantiate_magickcore != MagickFalse)
+    {
+      UnlockMagickMutex();
+      return;
+    }
   (void) SemaphoreComponentGenesis();
   (void) LogComponentGenesis();
   (void) LocaleComponentGenesis();
@@ -1306,6 +1314,8 @@ MagickExport void MagickCoreGenesis(const char *path,
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) XComponentGenesis();
 #endif
+  instantiate_magickcore=MagickTrue;
+  UnlockMagickMutex();
 }
 
 /*
@@ -1328,6 +1338,12 @@ MagickExport void MagickCoreGenesis(const char *path,
 */
 MagickExport void MagickCoreTerminus(void)
 {
+  LockMagickMutex();
+  if (instantiate_magickcore == MagickFalse)
+    {
+      UnlockMagickMutex();
+      return;
+    }
 #if defined(MAGICKCORE_X11_DELEGATE)
   XComponentTerminus();
 #endif
@@ -1357,7 +1373,8 @@ MagickExport void MagickCoreTerminus(void)
   LocaleComponentTerminus();
   LogComponentTerminus();
   SemaphoreComponentTerminus();
-  instantiate_magick=MagickFalse;
+  instantiate_magickcore=MagickFalse;
+  UnlockMagickMutex();
 }
 
 /*
