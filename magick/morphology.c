@@ -897,7 +897,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel=ParseKernelArray("3x3:  0,-1,0  -1,4,-1  0,-1,0");
             break;
           case 2:
-            kernel=ParseKernelArray("3x3: -2,1,-2  1,4,1  -2,1,-2");
+            kernel=ParseKernelArray("3x3: 1,-2,1  -2,4,-2  1,-2,1");
             break;
           case 3:   /* a 5x5 laplacian */
             kernel=ParseKernelArray(
