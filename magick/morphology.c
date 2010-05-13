@@ -107,6 +107,7 @@ static inline double MagickMax(const double x,const double y)
 
 /* Currently these are only internal to this module */
 static void
+  ExpandKernelInfo(KernelInfo *, double),
   RotateKernelInfo(KernelInfo *, double);
 
 /*
@@ -374,6 +375,12 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
   SetGeometryInfo(&args);
   flags = ParseGeometry(token, &args);
 
+#if 0
+  /* For Debugging Geometry Input */
+  fprintf(stderr, "Geometry = %04x : %lf x %lf %+lf %+lf\n",
+       flags, args.rho, args.sigma, args.xi, args.psi );
+#endif
+
   /* special handling of missing values in input string */
   switch( type ) {
     case RectangleKernel:
@@ -505,9 +512,9 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  Convolution Kernels
 %
-%    Gaussian  "{radius},{sigma}"
-%       Generate a two-dimentional gaussian kernel, as used by -gaussian
-%       A sigma is required, (with the 'x'), due to historical reasons.
+%    Gaussian:{radius},{sigma}
+%       Generate a two-dimentional gaussian kernel, as used by -gaussian.
+%       A sigma is required.
 %
 %       NOTE: that the 'radius' is optional, but if provided can limit (clip)
 %       the final size of the resulting kernel to a square 2*radius+1 in size.
@@ -516,35 +523,35 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       radius will be determined so as to produce the best minimal error
 %       result, which is usally much larger than is normally needed.
 %
-%    Blur  "{radius},{sigma},{angle}"
+%    Blur:{radius},{sigma},{angle}
 %       As per Gaussian, but generates a 1 dimensional or linear gaussian
 %       blur, at the angle given (current restricted to orthogonal angles).
 %       If a 'radius' is given the kernel is clipped to a width of 2*radius+1.
+%       Angle can be rotated in multiples of 90 degrees.
 %
-%       NOTE that two such blurs perpendicular to each other is equivelent to
-%       -blur and the previous gaussian, but is often 10 or more times faster.
+%       Note that two such blurs perpendicular to each other is equivelent to
+%       the far large "Gaussian" kernel, but much faster to apply. This is how
+%       the -blur operator works.
 %
-%    Comet  "{width},{sigma},{angle}"
-%       Blur in one direction only, mush like how a bright object leaves
+%    Comet:{width},{sigma},{angle}
+%       Blur in one direction only, much like how a bright object leaves
 %       a comet like trail.  The Kernel is actually half a gaussian curve,
-%       Adding two such blurs in oppiste directions produces a Linear Blur.
+%       Adding two such blurs in opposite directions produces a Blur Kernel.
+%       Angle can be rotated in multiples of 90 degrees.
 %
-%       NOTE: that the first argument is the width of the kernel and not the
+%       Note that the first argument is the width of the kernel and not the
 %       radius of the kernel.
 %
 %    # Still to be implemented...
 %    #
-%    # Sharpen "{radius},{sigma}
+%    # Sharpen:{radius},{sigma}
 %    #    Negated Gaussian (center zeroed and re-normalized),
 %    #    with a 2 unit positive peak.   -- Check On line documentation
 %    #
-%    # Laplacian  "{radius},{sigma}"
-%    #    Laplacian (a mexican hat like) Function
-%    #
-%    # LOG  "{radius},{sigma1},{sigma2}
+%    # LOG:{radius},{sigma1},{sigma2}
 %    #    Laplacian of Gaussian
 %    #
-%    # DOG  "{radius},{sigma1},{sigma2}
+%    # DOG:{radius},{sigma1},{sigma2}
 %    #    Difference of two Gaussians
 %    #
 %    # Filter2D
@@ -553,21 +560,39 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %    #    Cylindrical or Linear.   Is this posible with an image?
 %    #
 %
+%  Named Constant Convolution Kernels
+%
+%    Sobel:[angle]
+%      The 3x3 sobel convolution kernel. Angle may be given in multiples
+%      of 45 degrees.  Kernel is unscaled by default so some normalization
+%      may be required to ensure results are not clipped.
+%      Default kernel is   -1,0,1
+%                          -2,0,2
+%                          -1,0,1
+%
+%    Laplacian:{type}
+%      Generate Lapacian kernel of the type specified. (1 is the default)
+%        Type 0 default square laplacian  3x3: all -1's with central 8
+%        Type 1            3x3: central 4 edge -1 corner 0
+%        Type 2            3x3: central 4 edge 1 corner -2
+%        Type 3   a  5x5 laplacian
+%        Type 5   a  7x7 laplacian
+%
 %  Boolean Kernels
 %
-%    Rectangle "{geometry}"
+%    Rectangle:{geometry}
 %       Simply generate a rectangle of 1's with the size given. You can also
 %       specify the location of the 'control point', otherwise the closest
 %       pixel to the center of the rectangle is selected.
 %
 %       Properly centered and odd sized rectangles work the best.
 %
-%    Diamond  "[{radius}[,{scale}]]"
+%    Diamond:[{radius}[,{scale}]]
 %       Generate a diamond shaped kernel with given radius to the points.
 %       Kernel size will again be radius*2+1 square and defaults to radius 1,
 %       generating a 3x3 kernel that is slightly larger than a square.
 %
-%    Square  "[{radius}[,{scale}]]"
+%    Square:[{radius}[,{scale}]]
 %       Generate a square shaped kernel of size radius*2+1, and defaulting
 %       to a 3x3 (radius 1).
 %
@@ -576,7 +601,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       that many times. However However iterating with the smaller radius 1
 %       default is actually faster than using a larger kernel radius.
 %
-%    Disk   "[{radius}[,{scale}]]
+%    Disk:[{radius}[,{scale}]]
 %       Generate a binary disk of the radius given, radius may be a float.
 %       Kernel size will be ceil(radius)*2+1 square.
 %       NOTE: Here are some disk shapes of specific interest
@@ -593,7 +618,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Because a "disk" is more circular when using a larger radius, using a
 %       larger radius is preferred over iterating the morphological operation.
 %
-%    Plus  "[{radius}[,{scale}]]"
+%    Plus:[{radius}[,{scale}]]
 %       Generate a kernel in the shape of a 'plus' sign. The length of each
 %       arm is also the radius, which defaults to 2.
 %
@@ -830,6 +855,43 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         RotateKernelInfo(kernel, args->xi); /* Rotate by angle */
         break;
       }
+    /* Convolution Kernels - Well Known Constants */
+    case SobelKernel:
+      { kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        kernel=ParseKernelArray("3x3:-1,0,1 -2,0,2 -1,0,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        break;
+      }
+    case LaplacianKernel:
+      { kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        switch ( (int) args->rho ) {
+          case 1:
+            kernel=ParseKernelArray("3x3:  0,-1,0  -1,4,-1  0,-1,0");
+            break;
+          case 2:
+            kernel=ParseKernelArray("3x3: -2,1,-2  1,4,1  -2,1,-2");
+            break;
+          case 3:
+          default: /* default laplacian 'edge' filter */
+            kernel=ParseKernelArray("3x3: -1,-1,-1  -1,8,-1  -1,-1,-1");
+            break;
+          case 4:   /* a 5x5 laplacian */
+            kernel=ParseKernelArray(
+              "5x5: -4,-1,0,-1,-4 -1,2,3,2,-1  0,3,4,3,0 -1,2,3,2,-1  -4,-1,0,-1,-4");
+            break;
+          case 5:   /* a 7x7 laplacian */
+            kernel=ParseKernelArray(
+              "7x7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
+            break;
+        }
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        break;
+      }
     /* Boolean Kernels */
     case RectangleKernel:
     case SquareKernel:
@@ -1003,10 +1065,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     /* Undefined Kernels */
-    case LaplacianKernel:
     case LOGKernel:
     case DOGKernel:
-      perror("Kernel Type has not been defined yet");
+      perror("Kernel Type has not been defined yet\n");
       /* FALL THRU */
     default:
       /* Generate a No-Op minimal kernel - 1x1 pixel */
@@ -1115,6 +1176,54 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
   kernel->values = (double *)RelinquishMagickMemory(kernel->values);
   kernel = (KernelInfo *) RelinquishMagickMemory(kernel);
   return(kernel);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     E x p a n d K e r n e l I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ExpandKernelInfo() takes a single kernel, and expands it into a list
+%  of kernels each incrementally rotated the angle given.
+%
+%  WARNING: 45 degree rotations only works for 3x3 kernels.
+%  While 90 degree roatations only works for linear and square kernels
+%
+%  The format of the RotateKernelInfo method is:
+%
+%      void ExpandKernelInfo(KernelInfo *kernel, double angle)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+%    o angle: angle to rotate in degrees
+%
+% This function is only internel to this module, as it is not finalized,
+% especially with regard to non-orthogonal angles, and rotation of larger
+% 2D kernels.
+*/
+static void ExpandKernelInfo(KernelInfo *kernel, double angle)
+{
+  KernelInfo
+    *new,
+    *last;
+  double
+    a;
+
+  last = kernel;
+  for (a=angle; a<355.0; a+=angle) {
+    new = CloneKernelInfo(last);
+    RotateKernelInfo(new, angle);
+    last->next = new;
+    last = new;
+  }
 }
 
 /*
@@ -1322,7 +1431,6 @@ static unsigned long MorphologyPrimative(const Image *image, Image
       result.green   = (MagickRealType) p[r].green;
       result.blue    = (MagickRealType) p[r].blue;
       result.opacity = QuantumRange - (MagickRealType) p[r].opacity;
-      result.index   = 0;
       if ( image->colorspace == CMYKColorspace)
          result.index   = (MagickRealType) p_indexes[r];
 
@@ -2113,7 +2221,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   if ( angle < 0 )
     angle += 360.0;
 
-  if ( 315.0 < angle || angle <= 45.0 )
+  if ( 337.5 < angle || angle <= 22.5 )
     return;   /* no change! - At least at this time */
 
   switch (kernel->type) {
@@ -2146,11 +2254,70 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       break;
 
     /* these are freely rotatable in 90 degree units */
+    case SobelKernel:
     case CometKernel:
     case UndefinedKernel:
     case UserDefinedKernel:
       break;
   }
+  /* Attempt rotations by 45 degrees */
+  if ( 22.5 < fmod(angle,90.0) && fmod(angle,90.0) <= 67.5 )
+    {
+      if ( kernel->width == 3 && kernel->height == 3 )
+        { /* Rotate a 3x3 square by 45 degree angle */
+          MagickRealType t  = kernel->values[0];
+          kernel->values[0] = kernel->values[1];
+          kernel->values[1] = kernel->values[2];
+          kernel->values[2] = kernel->values[5];
+          kernel->values[5] = kernel->values[8];
+          kernel->values[8] = kernel->values[7];
+          kernel->values[7] = kernel->values[6];
+          kernel->values[6] = kernel->values[3];
+          kernel->values[3] = t;
+          angle = fmod(angle+45.0, 360.0);
+        }
+      else
+        perror("Unable to rotate non-3x3 kernel by 45 degrees");
+    }
+  if ( 45.0 < fmod(angle, 180.0)  && fmod(angle,180.0) <= 135.0 )
+    {
+      if ( kernel->width == 1 || kernel->height == 1 )
+        { /* Do a transpose of the image, which results in a 90
+          ** degree rotation of a 1 dimentional kernel
+          */
+          long
+            t;
+          t = (long) kernel->width;
+          kernel->width = kernel->height;
+          kernel->height = (unsigned long) t;
+          t = kernel->x;
+          kernel->x = kernel->y;
+          kernel->y = t;
+          if ( kernel->width == 1 )
+            angle = fmod(angle+270.0, 360.0);  /* angle -90 degrees */
+          else
+            angle = fmod(angle+90.0, 360.0);   /* angle +90 degrees */
+        }
+      else if ( kernel->width == kernel->height )
+        { /* Rotate a square array of values by 90 degrees */
+          register unsigned long
+            i,j,x,y;
+          register MagickRealType
+            *k,t;
+          k=kernel->values;
+          for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
+            for( j=0, y=kernel->height-1;  j<y;   j++, y--)
+              { t                    = k[i+j*kernel->width];
+                k[i+j*kernel->width] = k[y+i*kernel->width];
+                k[y+i*kernel->width] = k[x+y*kernel->width];
+                k[x+y*kernel->width] = k[j+x*kernel->width];
+                k[j+x*kernel->width] = t;
+              }
+          angle = fmod(angle+90.0, 360.0);  /* angle +90 degrees */
+        }
+      else
+        perror("Unable to rotate a non-square, non-linear kernel 90 degrees");
+    }
   if ( 135.0 < angle && angle <= 225.0 )
     {
       /* For a 180 degree rotation - also know as a reflection */
@@ -2167,34 +2334,15 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 
       kernel->x = (long) kernel->width  - kernel->x - 1;
       kernel->y = (long) kernel->height - kernel->y - 1;
-      angle = fmod(angle+180.0, 360.0);
+      angle = fmod(angle+180.0, 360.0);   /* angle+180 degrees */
     }
-  if ( 45.0 < angle && angle <= 135.0 )
-    { /* Do a transpose and a flop, of the image, which results in a 90
-       * degree rotation using two mirror operations.
-       *
-       * WARNING: this assumes the original image was a 1 dimentional image
-       * but currently that is the only built-ins it is applied to.
-       */
-      long
-        t;
-      t = (long) kernel->width;
-      kernel->width = kernel->height;
-      kernel->height = (unsigned long) t;
-      t = kernel->x;
-      kernel->x = kernel->y;
-      kernel->y = t;
-      angle = fmod(450.0 - angle, 360.0);
-    }
-  /* At this point angle should be between -45 (315) and +45 degrees
+  /* At this point angle should at least between -45 (315) and +45 degrees
    * In the future some form of non-orthogonal angled rotates could be
    * performed here, posibily with a linear kernel restriction.
    */
 
 #if 0
-    Not currently in use!
-    { /* Do a flop, this assumes kernel is horizontally symetrical.
-       * Each row of the kernel needs to be reversed!
+    { /* Do a Flop by reversing each row.
        */
       unsigned long
         y;
