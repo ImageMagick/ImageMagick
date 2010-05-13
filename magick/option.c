@@ -1055,14 +1055,21 @@ static const OptionInfo
     { "Gaussian", (long) GaussianKernel, MagickFalse },
     { "Blur", (long) BlurKernel, MagickFalse },
     { "Comet", (long) CometKernel, MagickFalse },
-    { "Laplacian", (long) LaplacianKernel, MagickTrue }, /* not implemented */
     { "DOG", (long) DOGKernel, MagickTrue },             /* not implemented */
-    { "LOG", (long) LOGKernel, MagickTrue },             /* not implemented */
+    { "Sobel", (long) SobelKernel, MagickFalse },
+    { "Laplacian", (long) LaplacianKernel, MagickFalse },
     { "Rectangle", (long) RectangleKernel, MagickFalse },
     { "Square", (long) SquareKernel, MagickFalse },
     { "Diamond", (long) DiamondKernel, MagickFalse },
     { "Disk", (long) DiskKernel, MagickFalse },
     { "Plus", (long) PlusKernel, MagickFalse },
+    { "Cross", (long) CrossKernel, MagickFalse },
+    { "Peaks", (long) PeaksKernel,MagickFalse },
+    { "Corners", (long) CornersKernel,MagickFalse },
+    { "LineEnds", (long) LineEndsKernel,MagickFalse },
+    { "LineJunctions", (long) LineJunctionsKernel,MagickFalse },
+    { "ConvexHull", (long) ConvexHullKernel,MagickFalse },
+    { "Skeleton", (long) SkeletonKernel,MagickFalse },
     { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
     { "Manhatten", (long) ManhattenKernel, MagickFalse },
     { "Euclidean", (long) EuclideanKernel, MagickFalse },

@@ -30,19 +30,25 @@ typedef enum
   GaussianKernel,     /* Convolution Kernels */
   BlurKernel,
   CometKernel,
-  LaplacianKernel,
-  LOGKernel,
   DOGKernel,
+  SobelKernel,        /* Named Constant Convolution Kernels */
+  LaplacianKernel,
   RectangleKernel,    /* Shape Kernels */
   SquareKernel,
   DiamondKernel,
   DiskKernel,
   PlusKernel,
+  CrossKernel,
+  PeaksKernel,         /* Hit And Miss Kernels */
+  CornersKernel,
+  LineEndsKernel,
+  LineJunctionsKernel,
+  ConvexHullKernel,
+  SkeletonKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */
   ManhattenKernel,
   EuclideanKernel,
-  SobelKernel,
-  UserDefinedKernel   /* user specified kernel values */
+  UserDefinedKernel   /* User Specified Kernel Array */
 } KernelInfoType;
 
 typedef enum

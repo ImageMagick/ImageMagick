@@ -110,6 +110,16 @@ static void
   ExpandKernelInfo(KernelInfo *, double),
   RotateKernelInfo(KernelInfo *, double);
 
+
+/* Quick function to find last kernel in a kernel list */
+static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
+{
+  while (kernel->next != (KernelInfo *) NULL)
+    kernel = kernel->next;
+  return(kernel);
+}
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -399,6 +409,7 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
     case DiamondKernel:
     case DiskKernel:
     case PlusKernel:
+    case CrossKernel:
       /* If no scale given (a 0 scale is valid! - set it to 1.0 */
       if ( (flags & HeightValue) == 0 )
         args.sigma = 1.0;
@@ -461,12 +472,11 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       }
 
       /* initialise or append the kernel list */
-      if ( last_kernel == (KernelInfo *) NULL )
-        kernel = last_kernel = new_kernel;
-      else {
+      if ( kernel == (KernelInfo *) NULL )
+        kernel = new_kernel;
+      else
         last_kernel->next = new_kernel;
-        last_kernel = new_kernel;
-      }
+      last_kernel = LastKernelInfo(new_kernel);
     }
 
     /* look for the next kernel in list */
@@ -544,13 +554,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %    # Still to be implemented...
 %    #
-%    # Sharpen:{radius},{sigma}
-%    #    Negated Gaussian (center zeroed and re-normalized),
-%    #    with a 2 unit positive peak.   -- Check On line documentation
-%    #
-%    # LOG:{radius},{sigma1},{sigma2}
-%    #    Laplacian of Gaussian
-%    #
 %    # DOG:{radius},{sigma1},{sigma2}
 %    #    Difference of two Gaussians
 %    #
@@ -576,7 +579,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %        Type 1            3x3: central 4 edge -1 corner 0
 %        Type 2            3x3: central 4 edge 1 corner -2
 %        Type 3   a  5x5 laplacian
-%        Type 5   a  7x7 laplacian
+%        Type 4   a  7x7 laplacian
 %
 %  Boolean Kernels
 %
@@ -619,23 +622,39 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       larger radius is preferred over iterating the morphological operation.
 %
 %    Plus:[{radius}[,{scale}]]
-%       Generate a kernel in the shape of a 'plus' sign. The length of each
-%       arm is also the radius, which defaults to 2.
+%    Cross:[{radius}[,{scale}]]
+%       Generate a kernel in the shape of a 'plus' or a cross. The length of
+%       each arm is also the radius, which defaults to 2.
+%
+%       NOTE: "plus:1" is equivelent to a "Diamond" kernel.
 %
 %       This kernel is not a good general morphological kernel, but is used
 %       more for highlighting and marking any single pixels in an image using,
 %       a "Dilate" or "Erode" method as appropriate.
 %
-%       NOTE: "plus:1" is equivelent to a "Diamond" kernel.
+%       For the same reasons iterating these kernels does not produce the
+%       same result as using a larger radius for the symbol.
 %
-%       Note that unlike other kernels iterating a plus does not produce the
-%       same result as using a larger radius for the cross.
+%  Hit and Miss Kernels
+%
+%    Peak:radius1,radius2
+%       Find a foreground inside a background ring of the given radii.
+%    Corners
+%       Find corners of a binary shape
+%    LineEnds
+%       Find end points of lines (for pruning a skeletion)
+%    LineJunctions
+%       Find three line junctions (in a skeletion)
+%    ConvexHull
+%       Octagonal thicken kernel, to generate convex hulls of 45 degrees
+%    Skeleton
+%       Thinning kernel, which leaves behind a skeletion of a shape
 %
 %  Distance Measuring Kernels
 %
-%    Chebyshev "[{radius}][x{scale}[%!]]"
-%    Manhatten "[{radius}][x{scale}[%!]]"
-%    Euclidean "[{radius}][x{scale}[%!]]"
+%    Chebyshev:[{radius}][x{scale}[%!]]
+%    Manhatten:[{radius}][x{scale}[%!]]
+%    Euclidean:[{radius}][x{scale}[%!]]
 %
 %       Different types of distance measuring methods, which are used with the
 %       a 'Distance' morphology method for generating a gradient based on
@@ -678,10 +697,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       See the 'Distance' Morphological Method, for information of how it is
 %       applied.
 %
-%  # Hit-n-Miss Kernel-Lists -- Still to be implemented
-%  #
-%  # specifically for   Pruning,  Thinning,  Thickening
-%  #
 */
 
 MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
@@ -738,6 +753,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->maximum = kernel->values[
                          kernel->y*kernel->width+kernel->x ];
 
+        /* Normalize the 2D Gaussian Kernel
+        **
+        ** As it is normalized the divisor in the above kernel generator is
+        ** not needed, so is not done above.
+        */
         ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
 
         break;
@@ -797,7 +817,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         /* Normalize the 1D Gaussian Kernel
         **
-        ** Because of this the divisor in the above kernel generator is
+        ** As it is normalized the divisor in the above kernel generator is
         ** not needed, so is not done above.
         */
         ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
@@ -826,7 +846,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         /* A comet blur is half a gaussian curve, so that the object is
         ** blurred in one direction only.  This may not be quite the right
-        ** curve so may change in the future. The function must be normalised.
+        ** curve to use so may change in the future. The function must be
+        ** normalised after generation, which also resolves any clipping.
         */
 #if 1
 #define KernelRank 3
@@ -868,21 +889,21 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case LaplacianKernel:
       { kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
         switch ( (int) args->rho ) {
+          case 0:
+          default: /* default laplacian 'edge' filter */
+            kernel=ParseKernelArray("3x3: -1,-1,-1  -1,8,-1  -1,-1,-1");
+            break;
           case 1:
             kernel=ParseKernelArray("3x3:  0,-1,0  -1,4,-1  0,-1,0");
             break;
           case 2:
             kernel=ParseKernelArray("3x3: -2,1,-2  1,4,1  -2,1,-2");
             break;
-          case 3:
-          default: /* default laplacian 'edge' filter */
-            kernel=ParseKernelArray("3x3: -1,-1,-1  -1,8,-1  -1,-1,-1");
-            break;
-          case 4:   /* a 5x5 laplacian */
+          case 3:   /* a 5x5 laplacian */
             kernel=ParseKernelArray(
               "5x5: -4,-1,0,-1,-4 -1,2,3,2,-1  0,3,4,3,0 -1,2,3,2,-1  -4,-1,0,-1,-4");
             break;
-          case 5:   /* a 7x7 laplacian */
+          case 4:   /* a 7x7 laplacian */
             kernel=ParseKernelArray(
               "7x7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
             break;
@@ -924,7 +945,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set all kernel values to 1.0 */
+        /* set all kernel values to scale given */
         u=(long) kernel->width*kernel->height;
         for ( i=0; i < u; i++)
             kernel->values[i] = scale;
@@ -972,8 +993,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set all kernel values within disk area to 1.0 */
-        for ( i=0, v= -kernel->y; v <= (long)kernel->y; v++)
+        /* set all kernel values within disk area to scale given */
+        for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             if ((u*u+v*v) <= limit)
               kernel->positive_range += kernel->values[i] = args->sigma;
@@ -995,12 +1016,163 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set all kernel values along axises to 1.0 */
+        /* set all kernel values along axises to given scale */
         for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             kernel->values[i] = (u == 0 || v == 0) ? args->sigma : nan;
         kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
         kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
+        break;
+      }
+    case CrossKernel:
+      {
+        if (args->rho < 1.0)
+          kernel->width = kernel->height = 5;  /* default radius 2 */
+        else
+           kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
+        kernel->x = kernel->y = (long) (kernel->width-1)/2;
+
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                              kernel->height*sizeof(double));
+        if (kernel->values == (double *) NULL)
+          return(DestroyKernelInfo(kernel));
+
+        /* set all kernel values along axises to given scale */
+        for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
+          for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+            kernel->values[i] = (u == v || u == -v) ? args->sigma : nan;
+        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+        kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
+        break;
+      }
+    /* HitAndMiss Kernels */
+    case PeaksKernel:
+      {
+        long
+          limit1,
+          limit2;
+
+        if (args->rho < args->sigma)
+          {
+            kernel->width = ((unsigned long)args->sigma)*2+1;
+            limit1 = (long)args->rho*args->rho;
+            limit2 = (long)args->sigma*args->sigma;
+          }
+        else
+          {
+            kernel->width = ((unsigned long)args->rho)*2+1;
+            limit1 = (long)args->sigma*args->sigma;
+            limit2 = (long)args->rho*args->rho;
+          }
+        if ( limit2 <= 0 )       /* default outer radius approx 3.5 */
+          kernel->width = 7L, limit2 = 11L;
+        kernel->height = kernel->width;
+        kernel->x = kernel->y = (long) (kernel->width-1)/2;
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                              kernel->height*sizeof(double));
+        if (kernel->values == (double *) NULL)
+          return(DestroyKernelInfo(kernel));
+
+        /* set a ring of background points */
+        for ( i=0, v= -kernel->y; v <= (long)kernel->y; v++)
+          for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+            { long radius=u*u+v*v;
+              if ( limit1 <= radius && radius <= limit2)
+                kernel->values[i] = 0.0;
+              else
+                kernel->values[i] = nan;
+            }
+        /* central point is always foreground */
+        kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+        kernel->positive_range = 1.0;
+        kernel->maximum = 1.0;
+        break;
+      }
+    case CornersKernel:
+      {
+        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        kernel=ParseKernelArray("3x3: 0,0,-  0,1,1  -,1,-");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90.0); /* Create a list of 4 rotated kernels */
+        break;
+      }
+    case LineEndsKernel:
+      {
+        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        kernel=ParseKernelArray("3x3: 0,-,-  0,1,0  0,0,0");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 45.0); /* Create a list of 8 rotated kernels */
+        break;
+      }
+    case LineJunctionsKernel:
+      {
+        KernelInfo
+          *new_kernel;
+        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        /* first set of 4 kernels */
+        kernel=ParseKernelArray("3x3: -,1,-  -,1,-  1,-,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90.0);
+        /* append second set of 4 kernels */
+        new_kernel=ParseKernelArray("3x3: 1,-,-  -,1,-  1,-,1");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90.0);
+        LastKernelInfo(kernel)->next = new_kernel;
+        /* append Thrid set of 4 kernels */
+        new_kernel=ParseKernelArray("3x3: -,1,-  -,1,1  1,-,-");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90.0);
+        LastKernelInfo(kernel)->next = new_kernel;
+        break;
+      }
+    case ConvexHullKernel:
+      {
+        KernelInfo
+          *new_kernel;
+        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        /* first set of 4 kernels */
+        kernel=ParseKernelArray("3x3: 1,1,-  1,0,-  1,-,0");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90.0);
+        /* append second set of 4 kernels */
+        new_kernel=ParseKernelArray("3x3: -,1,1  -,0,1  0,-,1");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90.0);
+        LastKernelInfo(kernel)->next = new_kernel;
+        break;
+      }
+    case SkeletonKernel:
+      {
+        KernelInfo
+          *new_kernel;
+        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+        /* first set of 4 kernels - corners */
+        kernel=ParseKernelArray("3x3: 0,0,-  0,1,1  -,1,-");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90);
+        /* append second set of 4 kernels - edge middles */
+        new_kernel=ParseKernelArray("3x3: 0,0,0  -,1,-  1,1,1");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90);
+        LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
     /* Distance Measuring Kernels */
@@ -1065,7 +1237,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     /* Undefined Kernels */
-    case LOGKernel:
     case DOGKernel:
       perror("Kernel Type has not been defined yet\n");
       /* FALL THRU */
@@ -2122,6 +2293,11 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         this_kernel = this_kernel->next;
         kernel_number++;
       }
+      if ( kernel_number > 1 )
+        if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+          fprintf(stderr, "Morphology %s:%lu ===> Total Changed %lu\n",
+                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
+                count, total_changed);
       if ( total_changed == 0 )
         break;  /* no changes after processing all kernels - ABORT */
       /* prepare for next loop */
@@ -2132,7 +2308,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     old_image=DestroyImage(old_image);
   }
 
-  /* finished with kernel - destary any copy that was made */
+  /* finished with kernel - destroy any copy that was made */
   if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
 
@@ -2226,13 +2402,14 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   if ( 337.5 < angle || angle <= 22.5 )
     return;   /* no change! - At least at this time */
 
+  /* Handle special cases */
   switch (kernel->type) {
     /* These built-in kernels are cylindrical kernels, rotating is useless */
     case GaussianKernel:
-    case LaplacianKernel:
-    case LOGKernel:
     case DOGKernel:
     case DiskKernel:
+    case PeaksKernel:
+    case LaplacianKernel:
     case ChebyshevKernel:
     case ManhattenKernel:
     case EuclideanKernel:
@@ -2243,6 +2420,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     case SquareKernel:
     case DiamondKernel:
     case PlusKernel:
+    case CrossKernel:
       return;
 
     /* These only allows a +/-90 degree rotation (by transpose) */
@@ -2255,11 +2433,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
         angle -= 180;
       break;
 
-    /* these are freely rotatable in 90 degree units */
-    case SobelKernel:
-    case CometKernel:
-    case UndefinedKernel:
-    case UserDefinedKernel:
+    default:
       break;
   }
   /* Attempt rotations by 45 degrees */
