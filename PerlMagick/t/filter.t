@@ -114,7 +114,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Magnify.miff', 'Magnify'
 testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/MatteFloodfill.miff', 'MatteFloodfill', q/geometry=>"+25+45"/, 0.002, 0.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/MedianFilter.miff', 'MedianFilter', q//, 0.006, 0.6);
+testFilterCompare('input.miff',  q//, 'reference/filter/MedianFilter.miff', 'MedianFilter', q//, 0.5, 0.9);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Minify.miff', 'Minify', q//, 0.05, 0.5);
@@ -150,7 +150,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/RadialBlur.miff', 'Radia
 testFilterCompare('input.miff',  q//, 'reference/filter/Raise.miff', 'Raise', q/'10x10'/, 0.002, 0.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/ReduceNoise.miff', 'ReduceNoise', q//, 0.006, 0.6);
+testFilterCompare('input.miff',  q//, 'reference/filter/ReduceNoise.miff', 'ReduceNoise', q//, 0.5, 0.9);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Resize.miff', 'Resize', q/'60%'/, 0.02, 1.02);

@@ -1363,27 +1363,27 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/resize.c magick/resize.h magick/resize-private.h \
 	magick/resource.c magick/resource_.h magick/segment.c \
 	magick/segment.h magick/semaphore.c magick/semaphore.h \
-	magick/shear.c magick/shear.h magick/signature.c \
-	magick/signature.h magick/signature-private.h \
-	magick/splay-tree.c magick/splay-tree.h magick/static.c \
-	magick/static.h magick/statistic.c magick/statistic.h \
-	magick/stream.c magick/stream.h magick/stream-private.h \
-	magick/string.c magick/string_.h magick/string-private.h \
-	magick/studio.h magick/thread.c magick/thread_.h \
-	magick/thread-private.h magick/timer.c magick/timer.h \
-	magick/token.c magick/token.h magick/token-private.h \
-	magick/transform.c magick/transform.h magick/threshold.c \
-	magick/threshold.h magick/type.c magick/type.h \
-	magick/utility.c magick/utility.h magick/version.c \
-	magick/version.h magick/vms.h magick/widget.c magick/widget.h \
-	magick/xml-tree.c magick/xml-tree.h magick/xwindow.c \
-	magick/xwindow.h magick/nt-feature.c magick/nt-base.c \
-	coders/art.c coders/avs.c coders/bmp.c coders/braille.c \
-	coders/cals.c coders/caption.c coders/cin.c coders/cip.c \
-	coders/clip.c coders/cmyk.c coders/cut.c coders/dcm.c \
-	coders/dds.c coders/dib.c coders/dng.c coders/dot.c \
-	coders/dpx.c coders/fax.c coders/fits.c coders/gif.c \
-	coders/gradient.c coders/gray.c coders/hald.c \
+	magick/semaphore-private.h magick/shear.c magick/shear.h \
+	magick/signature.c magick/signature.h \
+	magick/signature-private.h magick/splay-tree.c \
+	magick/splay-tree.h magick/static.c magick/static.h \
+	magick/statistic.c magick/statistic.h magick/stream.c \
+	magick/stream.h magick/stream-private.h magick/string.c \
+	magick/string_.h magick/string-private.h magick/studio.h \
+	magick/thread.c magick/thread_.h magick/thread-private.h \
+	magick/timer.c magick/timer.h magick/token.c magick/token.h \
+	magick/token-private.h magick/transform.c magick/transform.h \
+	magick/threshold.c magick/threshold.h magick/type.c \
+	magick/type.h magick/utility.c magick/utility.h \
+	magick/version.c magick/version.h magick/vms.h magick/widget.c \
+	magick/widget.h magick/xml-tree.c magick/xml-tree.h \
+	magick/xwindow.c magick/xwindow.h magick/nt-feature.c \
+	magick/nt-base.c coders/art.c coders/avs.c coders/bmp.c \
+	coders/braille.c coders/cals.c coders/caption.c coders/cin.c \
+	coders/cip.c coders/clip.c coders/cmyk.c coders/cut.c \
+	coders/dcm.c coders/dds.c coders/dib.c coders/dng.c \
+	coders/dot.c coders/dpx.c coders/fax.c coders/fits.c \
+	coders/gif.c coders/gradient.c coders/gray.c coders/hald.c \
 	coders/histogram.c coders/hrz.c coders/html.c coders/icon.c \
 	coders/info.c coders/inline.c coders/ipl.c coders/label.c \
 	coders/magick.c coders/map.c coders/mat.c coders/matte.c \
@@ -3874,6 +3874,7 @@ MAGICK_BASE_SRCS = \
 	magick/segment.h \
 	magick/semaphore.c \
 	magick/semaphore.h \
+	magick/semaphore-private.h \
 	magick/shear.c \
 	magick/shear.h \
 	magick/signature.c \
@@ -4045,6 +4046,7 @@ MAGICK_NOINST_HDRS = \
 	magick/random-private.h \
 	magick/resample-private.h \
 	magick/resize-private.h \
+	magick/semaphore-private.h \
 	magick/signature-private.h \
 	magick/static.h \
 	magick/stream-private.h \

@@ -46,6 +46,7 @@
 #include "magick/exception-private.h"
 #include "magick/memory_.h"
 #include "magick/semaphore.h"
+#include "magick/semaphore-private.h"
 #include "magick/string_.h"
 #include "magick/thread_.h"
 #include "magick/thread-private.h"
@@ -67,27 +68,6 @@ struct SemaphoreInfo
   unsigned long
     signature;
 };
-
-/*
-  Static declaractions.
-*/
-#if defined(MAGICKCORE_HAVE_PTHREAD)
-static pthread_mutex_t
-  semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
-static LONG
-  semaphore_mutex = 0;
-#else
-static long
-  semaphore_mutex = 0;
-#endif
-
-/*
-  Forward declaractions.
-*/
-static void
-  LockMagickMutex(void),
-  UnlockMagickMutex(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -249,45 +229,6 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o c k M a g i c k M u t e x                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LockMagickMutex() locks a global mutex.  If it is already locked, the
-%  calling thread blocks until the mutex becomes available.
-%
-%  The format of the LockMagickMutex method is:
-%
-%      void LockMagickMutex(void)
-%
-*/
-static void LockMagickMutex(void)
-{
-#if defined(MAGICKCORE_HAVE_PTHREAD)
-  {
-    int
-      status;
-
-    status=pthread_mutex_lock(&semaphore_mutex);
-    if (status != 0)
-      {
-        errno=status;
-        ThrowFatalException(ResourceLimitFatalError,"UnableToLockSemaphore");
-      }
-  }
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
-  while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
-    Sleep(10);
-#endif
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   L o c k S e m a p h o r e I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -410,43 +351,6 @@ MagickExport MagickBooleanType SemaphoreComponentGenesis(void)
 */
 MagickExport void SemaphoreComponentTerminus(void)
 {
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   U n l o c k M a g i c k M u t e x                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  UnlockMagickMutex() releases a global mutex.
-%
-%  The format of the LockMagickMutex method is:
-%
-%      void UnlockMagickMutex(void)
-%
-*/
-static void UnlockMagickMutex(void)
-{
-#if defined(MAGICKCORE_HAVE_PTHREAD)
-  {
-    int
-      status;
-
-    status=pthread_mutex_unlock(&semaphore_mutex);
-    if (status != 0)
-      {
-        errno=status;
-        ThrowFatalException(ResourceLimitFatalError,"UnableToUnlockSemaphore");
-      }
-  }
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
-  InterlockedExchange(&semaphore_mutex,0L);
-#endif
 }
 
 /*
