@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 </div>
 </div>
@@ -152,8 +152,20 @@
 
 <div class="main">
 
-<ul><dt>2010-05-08  6.6.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Fix improper 'invalid colormap index' PNG bug.</li><br />
+<ul><dt>2010-05-12  6.6.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Increase the estimated # points for the path drawing primitive.</li><br />
+<dt>2010-05-12  6.6.1-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Implementation of Pattern Matching Morphology methods    HitAndMiss, Thicken, Thinning</li>
+  <li> Reporting of Kernel Strinsg that fail to parse (though not why)</li>
+  <li> Parsing of Multiple Kernel Strings, generating a list of kernels</li>
+  <li> Union of results from Multiple Kernels for HitAndMiss method</li>
+  <li> Interated Multiple Kernels for all other morphology methods</li>
+  <li> Added Constant Kernels  Sobel:{angle} and   Laplacian:{type}</li><br />
+<dt>2010-05-08  6.6.1-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Use proper background.index when writing indexed PNG, if the background    color is in the palette.</li><br />
+<dt>2010-05-08  6.6.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix improper 'invalid colormap index' PNG bug.</li>
+  <li> Fix PerlMagick compile exception.</li><br />
 <dt>2010-05-07  6.6.1-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Added % and ! modification flags to morphology distance kernel    scaling factor, for easier usage.</li>
   <li> Bug fix for compose math channel handling and morphology diff usage</li><br />
