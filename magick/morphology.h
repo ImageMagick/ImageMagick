@@ -41,6 +41,7 @@ typedef enum
   ChebyshevKernel,    /* Distance Measuring Kernels */
   ManhattenKernel,
   EuclideanKernel,
+  SobelKernel,
   UserDefinedKernel   /* user specified kernel values */
 } KernelInfoType;
 
