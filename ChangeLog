@@ -8,6 +8,7 @@
   * Parsing of Multiple Kernel Strings, generating a list of kernels
   * Union of results from Multiple Kernels for HitAndMiss method
   * Interated Multiple Kernels for all other morphology methods
+  * Added Constant Kernels  Sobel:{angle} and   Laplacian:{type}
 
 2010-05-08  6.6.1-8 Glenn Randers-Pehrson <glennrp@image...>
   * Use proper background.index when writing indexed PNG, if the background
