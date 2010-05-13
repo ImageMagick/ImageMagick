@@ -1212,17 +1212,18 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 static void ExpandKernelInfo(KernelInfo *kernel, double angle)
 {
   KernelInfo
-    *new,
+    *clone,
     *last;
+
   double
     a;
 
   last = kernel;
   for (a=angle; a<355.0; a+=angle) {
-    new = CloneKernelInfo(last);
-    RotateKernelInfo(new, angle);
-    last->next = new;
-    last = new;
+    clone = CloneKernelInfo(last);
+    RotateKernelInfo(clone, angle);
+    last->next = clone;
+    last = clone;
   }
 }
 
