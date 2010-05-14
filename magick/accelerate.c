@@ -13,7 +13,7 @@
 %                       MagickCore Acceleration Methods                       %
 %                                                                             %
 %                              Software Design                                %
-%                              Anthony Thyssen                                %
+%                               John Cristy                                   %
 %                               January 2010                                  %
 %                                                                             %
 %                                                                             %
@@ -33,7 +33,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Morpology is the the application of various kernals, of any size and even
+% Morphology is the the application of various kernals, of any size and even
 % shape, to a image in various ways (typically binary, but not always).
 %
 % Convolution (weighted sum or average) is just one specific type of
