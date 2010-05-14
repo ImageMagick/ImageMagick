@@ -1,5 +1,6 @@
 2010-05-14  6.6.1-9 Cristy  <quetzlzacatenango@image...>
   * Increase the estimated # points for the path drawing primitive.
+  * Remove any prior resolution block from PSD before writing the new block.
 
 2010-05-14  6.6.1-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Addition of more Morphologocal/Convolution Kernels.
