@@ -239,13 +239,13 @@ _8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></
 
 <p>Note that the first argument is the width of the kernel and not the radius of the kernel.</p></ol>
 
-<p># Still to be implemented... # # Sharpen:{radius},{sigma} #    Negated Gaussian (center zeroed and re-normalized), #    with a 2 unit positive peak.   -- Check On line documentation # # LOG:{radius},{sigma1},{sigma2} #    Laplacian of Gaussian # # DOG:{radius},{sigma1},{sigma2} #    Difference of two Gaussians # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this posible with an image? #</p></ol>
+<p># Still to be implemented... # # DOG:{radius},{sigma1},{sigma2} #    Difference of two Gaussians # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this posible with an image? #</p></ol>
 
 <p>Named Constant Convolution Kernels</p></ol>
 
 <p>Sobel:[angle] The 3x3 sobel convolution kernel. Angle may be given in multiples of 45 degrees.  Kernel is unscaled by default so some normalization may be required to ensure results are not clipped. Default kernel is   -1,0,1 -2,0,2 -1,0,1</p></ol>
 
-<p>Laplacian:{type} Generate Lapacian kernel of the type specified. (1 is the default) Type 0 default square laplacian  3x3: all -1's with central 8 Type 1            3x3: central 4 edge -1 corner 0 Type 2            3x3: central 4 edge 1 corner -2 Type 3   a  5x5 laplacian Type 5   a  7x7 laplacian</p></ol>
+<p>Laplacian:{type} Generate Lapacian kernel of the type specified. (1 is the default) Type 0 default square laplacian  3x3: all -1's with central 8 Type 1            3x3: central 4 edge -1 corner 0 Type 2            3x3: central 4 edge 1 corner -2 Type 3   a  5x5 laplacian Type 4   a  7x7 laplacian</p></ol>
 
 <p>Boolean Kernels</p></ol>
 
@@ -263,17 +263,21 @@ _8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></
 
 <p>Because a "disk" is more circular when using a larger radius, using a larger radius is preferred over iterating the morphological operation.</p></ol>
 
-<p>Plus:[{radius}[,{scale}]] Generate a kernel in the shape of a 'plus' sign. The length of each arm is also the radius, which defaults to 2.</p></ol>
-
-<p>This kernel is not a good general morphological kernel, but is used more for highlighting and marking any single pixels in an image using, a "Dilate" or "Erode" method as appropriate.</p></ol>
+<p>Plus:[{radius}[,{scale}]] Cross:[{radius}[,{scale}]] Generate a kernel in the shape of a 'plus' or a cross. The length of each arm is also the radius, which defaults to 2.</p></ol>
 
 <p>NOTE: "plus:1" is equivelent to a "Diamond" kernel.</p></ol>
 
-<p>Note that unlike other kernels iterating a plus does not produce the same result as using a larger radius for the cross.</p></ol>
+<p>This kernel is not a good general morphological kernel, but is used more for highlighting and marking any single pixels in an image using, a "Dilate" or "Erode" method as appropriate.</p></ol>
+
+<p>For the same reasons iterating these kernels does not produce the same result as using a larger radius for the symbol.</p></ol>
+
+<p>Hit and Miss Kernels</p></ol>
+
+<p>Peak:radius1,radius2 Find a foreground inside a background ring of the given radii. Corners Find corners of a binary shape LineEnds Find end points of lines (for pruning a skeletion) LineJunctions Find three line junctions (in a skeletion) ConvexHull Octagonal thicken kernel, to generate convex hulls of 45 degrees Skeleton Thinning kernel, which leaves behind a skeletion of a shape</p></ol>
 
 <p>Distance Measuring Kernels</p></ol>
 
-<p>Chebyshev "[{radius}][x{scale}[!]]" Manhatten "[{radius}][x{scale}[!]]" Euclidean "[{radius}][x{scale}[!]]"</p></ol>
+<p>Chebyshev:[{radius}][x{scale}[!]] Manhatten:[{radius}][x{scale}[!]] Euclidean:[{radius}][x{scale}[!]]</p></ol>
 
 <p>Different types of distance measuring methods, which are used with the a 'Distance' morphology method for generating a gradient based on distance from an edge of a binary shape, though there is a technique for handling a anti-aliased shape.</p></ol>
 
@@ -289,7 +293,6 @@ _8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></
 
 <p>See the 'Distance' Morphological Method, for information of how it is applied.</p></ol>
 
-<p># Hit-n-Miss Kernel-Lists -- Still to be implemented # # specifically for   Pruning,  Thinning,  Thickening # </p>
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
 _8c.html" target="source" name="CloneKernelInfo">CloneKernelInfo</a></h2>
@@ -451,7 +454,7 @@ _8c.html" target="source" name="ScaleKernelInfo">ScaleKernelInfo</a></h2>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
