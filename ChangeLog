@@ -1,3 +1,6 @@
+2010-05-14  6.6.1-9 Cristy  <quetzlzacatenango@image...>
+  * Increase the estimated # points for the path drawing primitive.
+
 2010-05-14  6.6.1-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Addition of more Morphologocal/Convolution Kernels.
     DOG (Difference of Gaussians) and DOB (Difference of Blurs),
@@ -5,9 +8,6 @@
 
 2010-05-13  6.6.1-9 Cristy  <quetzlzacatenango@image...>
   * The pixel buffer was underallocated for some image formats when streaming.
-
-2010-05-12  6.6.1-8 Cristy  <quetzlzacatenango@image...>
-  * Increase the estimated # points for the path drawing primitive.
 
 2010-05-12  6.6.1-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Implementation of Pattern Matching Morphology methods
