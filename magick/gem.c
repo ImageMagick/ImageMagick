@@ -767,7 +767,7 @@ MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
   if (radius > MagickEpsilon)
     return((unsigned long) (2.0*ceil(radius)+1.0));
   if (fabs(sigma) <= MagickEpsilon)
-    return(1UL);
+    return(3UL);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -803,7 +803,7 @@ MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
   if (radius > MagickEpsilon)
     return((unsigned long) (2.0*ceil(radius)+1.0));
   if (fabs(sigma) <= MagickEpsilon)
-    return(1UL);
+    return(3UL);
   for (width=5; ; )
   {
     normalize=0.0;
