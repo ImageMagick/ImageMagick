@@ -768,6 +768,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
 
   /* Generate a new empty kernel if needed */
+  kernel=(KernelInfo *) NULL;
   switch(type) {
     case GaussianKernel:
     case DOGKernel:
