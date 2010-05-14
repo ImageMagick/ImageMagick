@@ -1053,17 +1053,22 @@ static const OptionInfo
   {
     { "Undefined", (long) UndefinedKernel, MagickTrue },
     { "Gaussian", (long) GaussianKernel, MagickFalse },
+    { "DOG", (long) DOGKernel, MagickFalse },
     { "Blur", (long) BlurKernel, MagickFalse },
+    { "DOB", (long) DOBKernel, MagickFalse },
     { "Comet", (long) CometKernel, MagickFalse },
-    { "DOG", (long) DOGKernel, MagickTrue },             /* not implemented */
-    { "Sobel", (long) SobelKernel, MagickFalse },
     { "Laplacian", (long) LaplacianKernel, MagickFalse },
+    { "Sobel", (long) SobelKernel, MagickFalse },
+    { "Roberts", (long) RobertsKernel, MagickFalse },
+    { "Prewitt", (long) PrewittKernel, MagickFalse },
+    { "Compass", (long) CompassKernel, MagickFalse },
     { "Rectangle", (long) RectangleKernel, MagickFalse },
     { "Square", (long) SquareKernel, MagickFalse },
     { "Diamond", (long) DiamondKernel, MagickFalse },
     { "Disk", (long) DiskKernel, MagickFalse },
     { "Plus", (long) PlusKernel, MagickFalse },
     { "Cross", (long) CrossKernel, MagickFalse },
+    { "Ring", (long) RingKernel, MagickFalse },
     { "Peaks", (long) PeaksKernel,MagickFalse },
     { "Corners", (long) CornersKernel,MagickFalse },
     { "LineEnds", (long) LineEndsKernel,MagickFalse },
@@ -1073,7 +1078,6 @@ static const OptionInfo
     { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
     { "Manhatten", (long) ManhattenKernel, MagickFalse },
     { "Euclidean", (long) EuclideanKernel, MagickFalse },
-    { "Sobel", (long) SobelKernel, MagickFalse },
     { "User Defined", (long) UserDefinedKernel, MagickTrue }, /* internel */
     { (char *) NULL, (long) UndefinedKernel, MagickFalse }
   },

@@ -27,18 +27,23 @@ extern "C" {
 typedef enum
 {
   UndefinedKernel,    /* also the 'no-op' kernel */
-  GaussianKernel,     /* Convolution Kernels */
-  BlurKernel,
-  CometKernel,
+  GaussianKernel,     /* Convolution Kernels, Gaussian Based */
   DOGKernel,
-  SobelKernel,        /* Named Constant Convolution Kernels */
-  LaplacianKernel,
-  RectangleKernel,    /* Shape Kernels */
+  BlurKernel,
+  DOBKernel,
+  CometKernel,
+  LaplacianKernel,    /* Convolution Kernels, by Name */
+  SobelKernel,
+  RobertsKernel,
+  PrewittKernel,
+  CompassKernel,
+  DiamondKernel,      /* Shape Kernels */
   SquareKernel,
-  DiamondKernel,
+  RectangleKernel,
   DiskKernel,
   PlusKernel,
   CrossKernel,
+  RingKernel,
   PeaksKernel,         /* Hit And Miss Kernels */
   CornersKernel,
   LineEndsKernel,

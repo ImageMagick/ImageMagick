@@ -414,6 +414,10 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
       if ( (flags & HeightValue) == 0 )
         args.sigma = 1.0;
       break;
+    case RingKernel:
+      if ( (flags & XValue) == 0 )
+        args.xi = 1.0;
+      break;
     case ChebyshevKernel:
     case ManhattenKernel:
     case EuclideanKernel:
@@ -524,7 +528,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %    Gaussian:{radius},{sigma}
 %       Generate a two-dimentional gaussian kernel, as used by -gaussian.
-%       A sigma is required.
+%       The sigma for the curve is required.  The resulting kernel is
+%       normalized,
+%
+%       If 'sigma' is zero, you get a single pixel on a field of zeros.
 %
 %       NOTE: that the 'radius' is optional, but if provided can limit (clip)
 %       the final size of the resulting kernel to a square 2*radius+1 in size.
@@ -533,15 +540,33 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       radius will be determined so as to produce the best minimal error
 %       result, which is usally much larger than is normally needed.
 %
-%    Blur:{radius},{sigma},{angle}
-%       As per Gaussian, but generates a 1 dimensional or linear gaussian
-%       blur, at the angle given (current restricted to orthogonal angles).
-%       If a 'radius' is given the kernel is clipped to a width of 2*radius+1.
-%       Angle can be rotated in multiples of 90 degrees.
+%    DOG:{radius},{sigma1},{sigma2}
+%        "Difference of Gaussians" Kernel.
+%        As "Gaussian" but with a gaussian produced by 'sigma2' subtracted
+%        from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1.
+%        The result is a zero-summing kernel.
 %
-%       Note that two such blurs perpendicular to each other is equivelent to
-%       the far large "Gaussian" kernel, but much faster to apply. This is how
-%       the -blur operator works.
+%    Blur:{radius},{sigma}[,{angle}]
+%       Generates a 1 dimensional or linear gaussian blur, at the angle given
+%       (current restricted to orthogonal angles).  If a 'radius' is given the
+%       kernel is clipped to a width of 2*radius+1.  Kernel can be rotated
+%       by a 90 degree angle.
+%
+%       If 'sigma' is zero, you get a single pixel on a field of zeros.
+%
+%       Note that two convolutions with two "Blur" kernels perpendicular to
+%       each other, is equivelent to a far larger "Gaussian" kernel with the
+%       same sigma value, However it is much faster to apply. This is how the
+%       "-blur" operator actually works.
+%
+%    DOB:{radius},{sigma1},{sigma2}[,{angle}]
+%        "Difference of Blurs" Kernel.
+%        As "Blur" but with the 1D gaussian produced by 'sigma2' subtracted
+%        from thethe 1D gaussian produced by 'sigma1'.
+%        The result is a  zero-summing kernel.
+%
+%        This can be used to generate a faster "DOG" convolution, in the same
+%        way "Blur" can.
 %
 %    Comet:{width},{sigma},{angle}
 %       Blur in one direction only, much like how a bright object leaves
@@ -554,9 +579,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %    # Still to be implemented...
 %    #
-%    # DOG:{radius},{sigma1},{sigma2}
-%    #    Difference of two Gaussians
-%    #
 %    # Filter2D
 %    # Filter1D
 %    #    Set kernel values using a resize filter, and given scale (sigma)
@@ -565,30 +587,45 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  Named Constant Convolution Kernels
 %
-%    Sobel:[angle]
-%      The 3x3 sobel convolution kernel. Angle may be given in multiples
-%      of 45 degrees.  Kernel is unscaled by default so some normalization
-%      may be required to ensure results are not clipped.
-%      Default kernel is   -1,0,1
-%                          -2,0,2
-%                          -1,0,1
+%  All these are unscaled, zero-summing kernels by default. As such for
+%  non-HDRI version of ImageMagick some form of normalization, user scaling,
+%  and biasing the results is recommended, to prevent the resulting image
+%  being 'clipped'.
+%
+%  The 3x3 kernels (most of these) can be circularly rotated in multiples of
+%  45 degrees to generate the 8 angled varients of each of the kernels.
 %
 %    Laplacian:{type}
 %      Generate Lapacian kernel of the type specified. (1 is the default)
-%        Type 0 default square laplacian  3x3: all -1's with central 8
-%        Type 1            3x3: central 4 edge -1 corner 0
-%        Type 2            3x3: central 4 edge 1 corner -2
-%        Type 3   a  5x5 laplacian
-%        Type 4   a  7x7 laplacian
+%        Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood)
+%        Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood)
+%        Type 2 :  3x3 with center:4 edge:-2 corner:1
+%        Type 3 :  3x3 with center:4 edge:1 corner:-2
+%        Type 4 :  5x5 laplacian
+%        Type 5 :  7x7 laplacian
+%
+%    Sobel:{angle}
+%      Sobel 3x3 'Edge' convolution kernel (3x3)
+%           -1, 0, 1
+%           -2, 0,-2
+%           -1, 0, 1
+%    Roberts:{angle}
+%      Roberts 3x3 convolution kernel (3x3)
+%            0, 0, 0
+%           -1, 1, 0
+%            0, 0, 0
+%    Compass:{angle}
+%      Prewitt's "Compass" convolution kernel (3x3)
+%           -1, 1, 1
+%           -1,-2, 1
+%           -1, 1, 1
+%    Prewitt:{angle}
+%      Prewitt Edge convolution kernel (3x3)
+%           -1, 0, 1
+%           -1, 0, 1
+%           -1, 0, 1
 %
 %  Boolean Kernels
-%
-%    Rectangle:{geometry}
-%       Simply generate a rectangle of 1's with the size given. You can also
-%       specify the location of the 'control point', otherwise the closest
-%       pixel to the center of the rectangle is selected.
-%
-%       Properly centered and odd sized rectangles work the best.
 %
 %    Diamond:[{radius}[,{scale}]]
 %       Generate a diamond shaped kernel with given radius to the points.
@@ -599,46 +636,62 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Generate a square shaped kernel of size radius*2+1, and defaulting
 %       to a 3x3 (radius 1).
 %
-%       Note that using a larger radius for the "Square" or the "Diamond"
-%       is also equivelent to iterating the basic morphological method
-%       that many times. However However iterating with the smaller radius 1
-%       default is actually faster than using a larger kernel radius.
+%       Note that using a larger radius for the "Square" or the "Diamond" is
+%       also equivelent to iterating the basic morphological method that many
+%       times. However iterating with the smaller radius is actually faster
+%       than using a larger kernel radius.
+%
+%    Rectangle:{geometry}
+%       Simply generate a rectangle of 1's with the size given. You can also
+%       specify the location of the 'control point', otherwise the closest
+%       pixel to the center of the rectangle is selected.
+%
+%       Properly centered and odd sized rectangles work the best.
 %
 %    Disk:[{radius}[,{scale}]]
 %       Generate a binary disk of the radius given, radius may be a float.
 %       Kernel size will be ceil(radius)*2+1 square.
 %       NOTE: Here are some disk shapes of specific interest
-%          "disk:1"    => "diamond" or "cross:1"
-%          "disk:1.5"  => "square"
-%          "disk:2"    => "diamond:2"
-%          "disk:2.5"  => a general disk shape of radius 2
-%          "disk:2.9"  => "square:2"
-%          "disk:3.5"  => default - octagonal/disk shape of radius 3
-%          "disk:4.2"  => roughly octagonal shape of radius 4
-%          "disk:4.3"  => a general disk shape of radius 4
+%          "Disk:1"    => "diamond" or "cross:1"
+%          "Disk:1.5"  => "square"
+%          "Disk:2"    => "diamond:2"
+%          "Disk:2.5"  => a general disk shape of radius 2
+%          "Disk:2.9"  => "square:2"
+%          "Disk:3.5"  => default - octagonal/disk shape of radius 3
+%          "Disk:4.2"  => roughly octagonal shape of radius 4
+%          "Disk:4.3"  => a general disk shape of radius 4
 %       After this all the kernel shape becomes more and more circular.
 %
 %       Because a "disk" is more circular when using a larger radius, using a
 %       larger radius is preferred over iterating the morphological operation.
 %
+%  Symbol Dilation Kernels
+%
+%    These kernel is not a good general morphological kernel, but is used
+%    more for highlighting and marking any single pixels in an image using,
+%    a "Dilate" method as appropriate.
+%
+%    For the same reasons iterating these kernels does not produce the
+%    same result as using a larger radius for the symbol.
+%
 %    Plus:[{radius}[,{scale}]]
 %    Cross:[{radius}[,{scale}]]
-%       Generate a kernel in the shape of a 'plus' or a cross. The length of
-%       each arm is also the radius, which defaults to 2.
+%       Generate a kernel in the shape of a 'plus' or a 'cross' with
+%       a each arm the length of the given radius (default 2).
 %
 %       NOTE: "plus:1" is equivelent to a "Diamond" kernel.
 %
-%       This kernel is not a good general morphological kernel, but is used
-%       more for highlighting and marking any single pixels in an image using,
-%       a "Dilate" or "Erode" method as appropriate.
-%
-%       For the same reasons iterating these kernels does not produce the
-%       same result as using a larger radius for the symbol.
+%    Ring:{radius1},{radius2}[,{scale}]
+%       A ring of the values given that falls between the two radii.
+%       Defaults to a ring of approximataly 3 radius in a 7x7 kernel.
+%       This is the 'edge' pixels of the default "Disk" kernel,
+%       More specifically, "Ring" -> "Ring:2.5,3.5,1.0"
 %
 %  Hit and Miss Kernels
 %
 %    Peak:radius1,radius2
-%       Find a foreground inside a background ring of the given radii.
+%       Find any peak larger than the pixels the fall between the two radii.
+%       The default ring of pixels is as per "Ring".
 %    Corners
 %       Find corners of a binary shape
 %    LineEnds
@@ -652,15 +705,15 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  Distance Measuring Kernels
 %
+%    Different types of distance measuring methods, which are used with the
+%    a 'Distance' morphology method for generating a gradient based on
+%    distance from an edge of a binary shape, though there is a technique
+%    for handling a anti-aliased shape.
+%
+%    See the 'Distance' Morphological Method, for information of how it is
+%    applied.
+%
 %    Chebyshev:[{radius}][x{scale}[%!]]
-%    Manhatten:[{radius}][x{scale}[%!]]
-%    Euclidean:[{radius}][x{scale}[%!]]
-%
-%       Different types of distance measuring methods, which are used with the
-%       a 'Distance' morphology method for generating a gradient based on
-%       distance from an edge of a binary shape, though there is a technique
-%       for handling a anti-aliased shape.
-%
 %       Chebyshev Distance (also known as Tchebychev Distance) is a value of
 %       one to any neighbour, orthogonal or diagonal. One why of thinking of
 %       it is the number of squares a 'King' or 'Queen' in chess needs to
@@ -668,12 +721,14 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       'square' like distance function, but one where diagonals are closer
 %       than expected.
 %
+%    Manhatten:[{radius}][x{scale}[%!]]
 %       Manhatten Distance (also known as Rectilinear Distance, or the Taxi
 %       Cab metric), is the distance needed when you can only travel in
 %       orthogonal (horizontal or vertical) only.  It is the distance a 'Rook'
 %       in chess would travel. It results in a diamond like distances, where
 %       diagonals are further than expected.
 %
+%    Euclidean:[{radius}][x{scale}[%!]]
 %       Euclidean Distance is the 'direct' or 'as the crow flys distance.
 %       However by default the kernel size only has a radius of 1, which
 %       limits the distance to 'Knight' like moves, with only orthogonal and
@@ -694,9 +749,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       version of IM, from any edge.  However for small images this can
 %       result in quite a dark gradient.
 %
-%       See the 'Distance' Morphological Method, for information of how it is
-%       applied.
-%
 */
 
 MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
@@ -715,62 +767,131 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   double
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
 
-  kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
-  if (kernel == (KernelInfo *) NULL)
-    return(kernel);
-  (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
-  kernel->minimum = kernel->maximum = 0.0;
-  kernel->negative_range = kernel->positive_range = 0.0;
-  kernel->type = type;
-  kernel->next = (KernelInfo *) NULL;
-  kernel->signature = MagickSignature;
+  /* Generate a new empty kernel if needed */
+  switch(type) {
+    case GaussianKernel:
+    case DOGKernel:
+    case BlurKernel:
+    case DOBKernel:
+    case CometKernel:
+    case DiamondKernel:
+    case SquareKernel:
+    case RectangleKernel:
+    case DiskKernel:
+    case PlusKernel:
+    case CrossKernel:
+    case RingKernel:
+    case PeaksKernel:
+    case ChebyshevKernel:
+    case ManhattenKernel:
+    case EuclideanKernel:
+      kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+      if (kernel == (KernelInfo *) NULL)
+        return(kernel);
+      (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
+      kernel->minimum = kernel->maximum = 0.0;
+      kernel->negative_range = kernel->positive_range = 0.0;
+      kernel->type = type;
+      kernel->next = (KernelInfo *) NULL;
+      kernel->signature = MagickSignature;
+    default:
+      break;
+  }
 
   switch(type) {
     /* Convolution Kernels */
     case GaussianKernel:
+    case DOGKernel:
       { double
-          sigma = fabs(args->sigma);
+          sigma = fabs(args->sigma),
+          sigma2 = fabs(args->xi),
+          gamma;
 
-        sigma = (sigma <= MagickEpsilon) ? 1.0 : sigma;
-
-        kernel->width = kernel->height =
-                            GetOptimalKernelWidth2D(args->rho,sigma);
+        if ( args->rho >= 1.0 )
+          kernel->width = (unsigned long)args->rho*2+1;
+        else if ( (type == GaussianKernel) || (sigma >= sigma2) )
+          kernel->width = GetOptimalKernelWidth2D(args->rho,sigma);
+        else
+          kernel->width = GetOptimalKernelWidth2D(args->rho,sigma2);
+        kernel->height = kernel->width;
         kernel->x = kernel->y = (long) (kernel->width-1)/2;
-        kernel->negative_range = kernel->positive_range = 0.0;
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        sigma = 2.0*sigma*sigma; /* simplify the expression */
-        for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
-          for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
-            kernel->positive_range += (
-              kernel->values[i] =
-                 exp(-((double)(u*u+v*v))/sigma)
-                       /*  / (MagickPI*sigma)  */ );
-        kernel->minimum = 0;
-        kernel->maximum = kernel->values[
-                         kernel->y*kernel->width+kernel->x ];
+        /* Calculate a Positive Gaussian */
+        if ( sigma > MagickEpsilon )
+          { gamma = 1.0/(2.0*sigma*sigma); /* simplify loop expressions */
+            sigma = 1.0/(MagickPI*sigma);
+            for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
+              for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+                  kernel->values[i] = sigma*exp(-((double)(u*u+v*v))*gamma);
+          }
+        else /* special case - generate a unity kernel */
+          { (void) ResetMagickMemory(kernel->values,0, (size_t)
+                         kernel->width*kernel->height*sizeof(double));
+            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+          }
+        if ( type == DOGKernel )
+          { /* Subtract a Negative Gaussian for "Difference of Gaussian" */
+            if ( sigma2 > MagickEpsilon )
+              { sigma = sigma2;                /* simplify loop expressions */
+                gamma = 1.0/(2.0*sigma*sigma);
+                sigma = 1.0/(MagickPI*sigma);
+                for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
+                  for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+                    kernel->values[i] -= sigma*exp(-((double)(u*u+v*v))*gamma);
+              }
+            else /* special case - subtract the unity kernel */
+              kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
+          }
+        /* Note the above kernel may have been 'clipped' by a user defined
+        ** radius, producing a smaller (darker) kernel.  Also for very small
+        ** sigma's (> 0.1) the central value becomes larger than one, and thus
+        ** producing a very bright kernel.
+        **
+        ** Normalization will still be needed.
+        */
 
+        /* Work out the meta-data about kernel */
+        kernel->minimum = kernel->maximum = 0.0;
+        kernel->negative_range = kernel->positive_range = 0.0;
+        u=(long) kernel->width*kernel->height;
+        for ( i=0; i < u; i++)
+          {
+            if ( fabs(kernel->values[i]) < MagickEpsilon )
+              kernel->values[i] = 0.0;
+            ( kernel->values[i] < 0)
+                ?  ( kernel->negative_range += kernel->values[i] )
+                :  ( kernel->positive_range += kernel->values[i] );
+            Minimize(kernel->minimum, kernel->values[i]);
+            Maximize(kernel->maximum, kernel->values[i]);
+          }
         /* Normalize the 2D Gaussian Kernel
         **
-        ** As it is normalized the divisor in the above kernel generator is
-        ** not needed, so is not done above.
+        ** NB: a CorrelateNormalize performs a normal Normalize if
+        ** there are no negative values.
         */
-        ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
+        ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
 
         break;
       }
     case BlurKernel:
+    case DOBKernel:
       { double
-          sigma = fabs(args->sigma);
+          sigma = fabs(args->sigma),
+          sigma2 = fabs(args->xi),
+          gamma;
 
-        sigma = (sigma <= MagickEpsilon) ? 1.0 : sigma;
-
-        kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
-        kernel->x = (long) (kernel->width-1)/2;
+        if ( args->rho >= 1.0 )
+          kernel->width = (unsigned long)args->rho*2+1;
+        else if ( (type == BlurKernel) || (sigma >= sigma2) )
+          kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
+        else
+          kernel->width = GetOptimalKernelWidth1D(args->rho,sigma2);
         kernel->height = 1;
+        kernel->x = (long) (kernel->width-1)/2;
         kernel->y = 0;
         kernel->negative_range = kernel->positive_range = 0.0;
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
@@ -788,42 +909,91 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         **
         ** I am told this method originally came from Photoshop.
         */
-        sigma *= KernelRank;                /* simplify expanded curve */
+
+        /* initialize */
         v = (long) (kernel->width*KernelRank-1)/2; /* start/end points to fit range */
-        (void) ResetMagickMemory(kernel->values,0, (size_t)
-                       kernel->width*sizeof(double));
-        for ( u=-v; u <= v; u++) {
-          kernel->values[(u+v)/KernelRank] +=
-                exp(-((double)(u*u))/(2.0*sigma*sigma))
-                       /*   / (MagickSQ2PI*sigma/KernelRank)  */ ;
-        }
-        for (i=0; i < (long) kernel->width; i++)
-          kernel->positive_range += kernel->values[i];
+        /* Calculate a Positive 1D Gaussian */
+        if ( sigma > MagickEpsilon )
+          { sigma *= KernelRank;               /* simplify loop expressions */
+            gamma = 1.0/(2.0*sigma*sigma);
+            sigma = 1.0/(MagickSQ2PI*sigma );
+            for ( u=-v; u <= v; u++) {
+              kernel->values[(u+v)/KernelRank] +=
+                                 sigma*exp(-((double)(u*u))*gamma);
+            }
+          }
+        else /* special case - generate a unity kernel */
+          kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+        if ( type == DOBKernel )
+          { /* Subtract a Second 1D Gaussian for "Difference of Blur" */
+            if ( sigma2 > MagickEpsilon )
+              { sigma = sigma2*KernelRank;      /* simplify loop expressions */
+                gamma = 1.0/(2.0*sigma*sigma);
+                sigma = 1.0/(MagickSQ2PI*sigma );
+                for ( u=-v; u <= v; u++)
+                  kernel->values[(u+v)/KernelRank] -=
+                                 sigma*exp(-((double)(u*u))*gamma);
+              }
+            else /* special case - subtract a unity kernel */
+              kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
+          }
 #else
-        for ( i=0, u=-kernel->x; i < kernel->width; i++, u++)
-          kernel->positive_range += (
-              kernel->values[i] =
-                exp(-((double)(u*u))/(2.0*sigma*sigma))
-                       /*  / (MagickSQ2PI*sigma)  */ );
+        /* Direct calculation without curve averaging */
+
+        /* Calculate a Positive Gaussian */
+        if ( sigma > MagickEpsilon )
+          { gamma = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
+            sigma = 1.0/(MagickSQ2PI*sigma);
+            for ( i=0, u=-kernel->x; u <= (long)kernel->x; u++, i++)
+              kernel->values[i] = sigma*exp(-((double)(u*u))*gamma);
+          }
+        else /* special case - generate a unity kernel */
+          { (void) ResetMagickMemory(kernel->values,0, (size_t)
+                         kernel->width*kernel->height*sizeof(double));
+            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+          }
+        if ( type == DOBKernel )
+          { /* Subtract a Second 1D Gaussian for "Difference of Blur" */
+            if ( sigma2 > MagickEpsilon )
+              { sigma = sigma2;                /* simplify loop expressions */
+                gamma = 1.0/(2.0*sigma*sigma);
+                sigma = 1.0/(MagickSQ2PI*sigma);
+                for ( i=0, u=-kernel->x; u <= (long)kernel->x; u++, i++)
+                  kernel->values[i] -= sigma*exp(-((double)(u*u))*gamma);
+              }
+            else /* special case - subtract a unity kernel */
+              kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
+          }
 #endif
-        kernel->minimum = 0;
-        kernel->maximum = kernel->values[ kernel->x ];
-        /* Note that neither methods above generate a normalized kernel,
-        ** though it gets close. The kernel may be 'clipped' by a user defined
+        /* Note the above kernel may have been 'clipped' by a user defined
         ** radius, producing a smaller (darker) kernel.  Also for very small
         ** sigma's (> 0.1) the central value becomes larger than one, and thus
         ** producing a very bright kernel.
+        **
+        ** Normalization will still be needed.
         */
+
+        /* Work out the meta-data about kernel */
+        for ( i=0; i < (long) kernel->width; i++)
+          {
+            if ( fabs(kernel->values[i]) < MagickEpsilon )
+              kernel->values[i] = 0.0;
+            ( kernel->values[i] < 0)
+                ?  ( kernel->negative_range += kernel->values[i] )
+                :  ( kernel->positive_range += kernel->values[i] );
+            Minimize(kernel->minimum, kernel->values[i]);
+            Maximize(kernel->maximum, kernel->values[i]);
+          }
 
         /* Normalize the 1D Gaussian Kernel
         **
-        ** As it is normalized the divisor in the above kernel generator is
-        ** not needed, so is not done above.
+        ** NB: a CorrelateNormalize performs a normal Normalize if
+        ** there are no negative values.
         */
-        ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
+        ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
 
-        /* rotate the kernel by given angle */
-        RotateKernelInfo(kernel, args->xi);
+        /* rotate the 1D kernel by given angle */
+        RotateKernelInfo(kernel, (type == BlurKernel) ? args->xi : args->psi );
         break;
       }
     case CometKernel:
@@ -831,7 +1001,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           sigma = fabs(args->sigma);
 
         sigma = (sigma <= MagickEpsilon) ? 1.0 : sigma;
-
         if ( args->rho < 1.0 )
           kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
         else
@@ -844,10 +1013,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* A comet blur is half a gaussian curve, so that the object is
+        /* A comet blur is half a 1D gaussian curve, so that the object is
         ** blurred in one direction only.  This may not be quite the right
         ** curve to use so may change in the future. The function must be
         ** normalised after generation, which also resolves any clipping.
+        **
+        ** As we are normalizing and not subtracting gaussians,
+        ** there is no need for a divisor in the gaussian formula
+        **
         */
 #if 1
 #define KernelRank 3
@@ -876,36 +1049,28 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         RotateKernelInfo(kernel, args->xi); /* Rotate by angle */
         break;
       }
+
     /* Convolution Kernels - Well Known Constants */
-    case SobelKernel:
-      { kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
-        kernel=ParseKernelArray("3x3:-1,0,1 -2,0,2 -1,0,1");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
-        break;
-      }
     case LaplacianKernel:
-      { kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
+      {
         switch ( (int) args->rho ) {
           case 0:
           default: /* default laplacian 'edge' filter */
-            kernel=ParseKernelArray("3x3: -1,-1,-1  -1,8,-1  -1,-1,-1");
+            kernel=ParseKernelArray("3: -1,-1,-1  -1,8,-1  -1,-1,-1");
             break;
           case 1:
-            kernel=ParseKernelArray("3x3:  0,-1,0  -1,4,-1  0,-1,0");
+            kernel=ParseKernelArray("3: 0,-1,0  -1,4,-1  0,-1,0");
             break;
           case 2:
-            kernel=ParseKernelArray("3x3: 1,-2,1  -2,4,-2  1,-2,1");
+            kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  1,-2,1");
             break;
           case 3:   /* a 5x5 laplacian */
             kernel=ParseKernelArray(
-              "5x5: -4,-1,0,-1,-4 -1,2,3,2,-1  0,3,4,3,0 -1,2,3,2,-1  -4,-1,0,-1,-4");
+              "5: -4,-1,0,-1,-4 -1,2,3,2,-1  0,3,4,3,0 -1,2,3,2,-1  -4,-1,0,-1,-4");
             break;
           case 4:   /* a 7x7 laplacian */
             kernel=ParseKernelArray(
-              "7x7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
+              "7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
             break;
         }
         if (kernel == (KernelInfo *) NULL)
@@ -913,11 +1078,70 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->type = type;
         break;
       }
-    /* Boolean Kernels */
-    case RectangleKernel:
-    case SquareKernel:
+    case SobelKernel:
       {
-        double scale;
+        kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        break;
+      }
+    case RobertsKernel:
+      {
+        kernel=ParseKernelArray("3: 0,0,0  -1,1,0  0,0,0");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        break;
+      }
+    case PrewittKernel:
+      {
+        kernel=ParseKernelArray("3: -1,1,1  0,0,0  -1,1,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        break;
+      }
+    case CompassKernel:
+      {
+        kernel=ParseKernelArray("3: -1,1,1  -1,-2,1  -1,1,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        break;
+      }
+    /* Boolean Kernels */
+    case DiamondKernel:
+      {
+        if (args->rho < 1.0)
+          kernel->width = kernel->height = 3;  /* default radius = 1 */
+        else
+          kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
+        kernel->x = kernel->y = (long) (kernel->width-1)/2;
+
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                              kernel->height*sizeof(double));
+        if (kernel->values == (double *) NULL)
+          return(DestroyKernelInfo(kernel));
+
+        /* set all kernel values within diamond area to scale given */
+        for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
+          for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+            if ((labs(u)+labs(v)) <= (long)kernel->x)
+              kernel->positive_range += kernel->values[i] = args->sigma;
+            else
+              kernel->values[i] = nan;
+        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+        break;
+      }
+    case SquareKernel:
+    case RectangleKernel:
+      { double
+          scale;
         if ( type == SquareKernel )
           {
             if (args->rho < 1.0)
@@ -953,35 +1177,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->positive_range = scale*u;
         break;
       }
-    case DiamondKernel:
-      {
-        if (args->rho < 1.0)
-          kernel->width = kernel->height = 3;  /* default radius = 1 */
-        else
-          kernel->width = kernel->height = ((unsigned long)args->rho)*2+1;
-        kernel->x = kernel->y = (long) (kernel->width-1)/2;
-
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernelInfo(kernel));
-
-        /* set all kernel values within diamond area to scale given */
-        for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
-          for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
-            if ((labs(u)+labs(v)) <= (long)kernel->x)
-              kernel->positive_range += kernel->values[i] = args->sigma;
-            else
-              kernel->values[i] = nan;
-        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
-        break;
-      }
     case DiskKernel:
       {
-        long
-          limit;
-
-        limit = (long)(args->rho*args->rho);
+        long limit = (long)(args->rho*args->rho);
         if (args->rho < 0.1)             /* default radius approx 3.5 */
           kernel->width = kernel->height = 7L, limit = 10L;
         else
@@ -1046,11 +1244,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     /* HitAndMiss Kernels */
+    case RingKernel:
     case PeaksKernel:
       {
         long
           limit1,
-          limit2;
+          limit2,
+          scale;
 
         if (args->rho < args->sigma)
           {
@@ -1064,8 +1264,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             limit1 = (long)args->sigma*args->sigma;
             limit2 = (long)args->rho*args->rho;
           }
-        if ( limit2 <= 0 )       /* default outer radius approx 3.5 */
-          kernel->width = 7L, limit2 = 11L;
+        if ( limit2 <= 0 )
+          kernel->width = 7L, limit1 = 7L, limit2 = 11L;
+
         kernel->height = kernel->width;
         kernel->x = kernel->y = (long) (kernel->width-1)/2;
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
@@ -1073,24 +1274,27 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set a ring of background points */
+        /* set a ring of points of 'scale' ( 0.0 for PeaksKernel ) */
+        scale = ( type == PeaksKernel) ? 0.0 : args->xi;
         for ( i=0, v= -kernel->y; v <= (long)kernel->y; v++)
           for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
             { long radius=u*u+v*v;
-              if ( limit1 <= radius && radius <= limit2)
-                kernel->values[i] = 0.0;
+              if (limit1 < radius && radius <= limit2)
+                kernel->positive_range += kernel->values[i] = scale;
               else
                 kernel->values[i] = nan;
             }
-        /* central point is always foreground */
-        kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
-        kernel->positive_range = 1.0;
-        kernel->maximum = 1.0;
+        kernel->minimum = kernel->minimum = scale;
+        if ( type == PeaksKernel ) {
+          /* set the central point in the middle */
+          kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+          kernel->positive_range = 1.0;
+          kernel->maximum = 1.0;
+        }
         break;
       }
     case CornersKernel:
       {
-        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
         kernel=ParseKernelArray("3x3: 0,0,-  0,1,1  -,1,-");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
@@ -1100,7 +1304,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case LineEndsKernel:
       {
-        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
         kernel=ParseKernelArray("3x3: 0,-,-  0,1,0  0,0,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
@@ -1112,7 +1315,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         KernelInfo
           *new_kernel;
-        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
         /* first set of 4 kernels */
         kernel=ParseKernelArray("3x3: -,1,-  -,1,-  1,-,1");
         if (kernel == (KernelInfo *) NULL)
@@ -1139,7 +1341,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         KernelInfo
           *new_kernel;
-        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
         /* first set of 4 kernels */
         kernel=ParseKernelArray("3x3: 1,1,-  1,0,-  1,-,0");
         if (kernel == (KernelInfo *) NULL)
@@ -1159,7 +1360,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         KernelInfo
           *new_kernel;
-        kernel=DestroyKernelInfo(kernel); /* default kernel is not needed */
         /* first set of 4 kernels - corners */
         kernel=ParseKernelArray("3x3: 0,0,-  0,1,1  -,1,-");
         if (kernel == (KernelInfo *) NULL)
@@ -1236,21 +1436,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->maximum = kernel->values[0];
         break;
       }
-    /* Undefined Kernels */
-    case DOGKernel:
-      perror("Kernel Type has not been defined yet\n");
-      /* FALL THRU */
     default:
-      /* Generate a No-Op minimal kernel - 1x1 pixel */
-      kernel->values=(double *)AcquireQuantumMemory((size_t)1,sizeof(double));
-      if (kernel->values == (double *) NULL)
-        return(DestroyKernelInfo(kernel));
-      kernel->width = kernel->height = 1;
-      kernel->x = kernel->x = 0;
-      kernel->type = UndefinedKernel;
-      kernel->maximum =
-        kernel->positive_range =
-          kernel->values[0] = 1.0;  /* a flat single-point no-op kernel! */
+      {
+        /* Generate a No-Op minimal kernel - 1x1 pixel */
+        kernel=ParseKernelArray("1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = UndefinedKernel;
+        break;
+      }
       break;
   }
 
