@@ -1084,6 +1084,9 @@ extern "C" {
 static size_t WriteStreamImage(const Image *image,const void *pixels,
   const size_t columns)
 {
+  CacheInfo
+    *cache_info;
+
   RectangleInfo
     extract_info;
 
@@ -1109,8 +1112,10 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
     case QuantumPixel: packet_size=sizeof(Quantum); break;
     case ShortPixel: packet_size=sizeof(unsigned short); break;
   }
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
   packet_size*=strlen(stream_info->map);
-  length=packet_size*image->columns;
+  length=packet_size*cache_info->columns*cache_info->rows;
   if (image != stream_info->image)
     {
       ImageInfo
