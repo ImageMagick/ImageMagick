@@ -48,6 +48,8 @@ typedef enum
   CornersKernel,
   LineEndsKernel,
   LineJunctionsKernel,
+  ThickenKernel,
+  ThinningKernel,
   ConvexHullKernel,
   SkeletonKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */

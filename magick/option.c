@@ -1073,6 +1073,8 @@ static const OptionInfo
     { "Corners", (long) CornersKernel,MagickFalse },
     { "LineEnds", (long) LineEndsKernel,MagickFalse },
     { "LineJunctions", (long) LineJunctionsKernel,MagickFalse },
+    { "Thicken", (long) ThickenKernel,MagickTrue }, /* under trail */
+    { "Thinning", (long) ThinningKernel,MagickTrue },     /* under trail */
     { "ConvexHull", (long) ConvexHullKernel,MagickFalse },
     { "Skeleton", (long) SkeletonKernel,MagickFalse },
     { "Chebyshev", (long) ChebyshevKernel, MagickFalse },

@@ -1295,7 +1295,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case CornersKernel:
       {
-        kernel=ParseKernelArray("3x3: 0,0,-  0,1,1  -,1,-");
+        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1304,7 +1304,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case LineEndsKernel:
       {
-        kernel=ParseKernelArray("3x3: 0,-,-  0,1,0  0,0,0");
+        kernel=ParseKernelArray("3: 0,-,-  0,1,0  0,0,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1316,20 +1316,20 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         KernelInfo
           *new_kernel;
         /* first set of 4 kernels */
-        kernel=ParseKernelArray("3x3: -,1,-  -,1,-  1,-,1");
+        kernel=ParseKernelArray("3: -,1,-  -,1,-  1,-,1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 90.0);
         /* append second set of 4 kernels */
-        new_kernel=ParseKernelArray("3x3: 1,-,-  -,1,-  1,-,1");
+        new_kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->type = type;
         ExpandKernelInfo(new_kernel, 90.0);
         LastKernelInfo(kernel)->next = new_kernel;
         /* append Thrid set of 4 kernels */
-        new_kernel=ParseKernelArray("3x3: -,1,-  -,1,1  1,-,-");
+        new_kernel=ParseKernelArray("3: -,1,-  -,1,1  1,-,-");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->type = type;
@@ -1337,18 +1337,36 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
+    case ThickenKernel:
+      { /* Thicken Kernel ??  -- Under trial */
+        kernel=ParseKernelArray("3: 1,1,-  1,0,0  -,0,0");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 45);
+        break;
+      }
+    case ThinningKernel:
+      { /* Thinning Kernel ??  -- Under trial */
+        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 45);
+        break;
+      }
     case ConvexHullKernel:
       {
         KernelInfo
           *new_kernel;
         /* first set of 4 kernels */
-        kernel=ParseKernelArray("3x3: 1,1,-  1,0,-  1,-,0");
+        kernel=ParseKernelArray("3: 1,1,-  1,0,-  1,-,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 90.0);
         /* append second set of 4 kernels */
-        new_kernel=ParseKernelArray("3x3: -,1,1  -,0,1  0,-,1");
+        new_kernel=ParseKernelArray("3: -,1,1  -,0,1  0,-,1");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->type = type;
@@ -1361,13 +1379,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         KernelInfo
           *new_kernel;
         /* first set of 4 kernels - corners */
-        kernel=ParseKernelArray("3x3: 0,0,-  0,1,1  -,1,-");
+        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 90);
         /* append second set of 4 kernels - edge middles */
-        new_kernel=ParseKernelArray("3x3: 0,0,0  -,1,-  1,1,1");
+        new_kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->type = type;
@@ -2223,11 +2241,13 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     curr_method;
 
   unsigned long
-    count,
-    limit,
-    changed,
-    total_changed,
-    kernel_number;
+    count,         /* count of the number of times though kernel list */
+    limit,         /* limit of the total number of times */
+    steps,         /* grand total of number of morpholgy steps done */
+    kernel_number, /* kernel number being applied */
+    changed,       /* pixels changed in one step */
+    list_changed,  /* changes made over one set of kernels */
+    total_changed; /* total count of changes to image */
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2248,10 +2268,14 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   old_image  = (Image *) NULL;
   grad_image = (Image *) NULL;
   curr_kernel = (KernelInfo *) NULL;
-  count = 0;                           /* interation count */
-  changed = 1;                         /* was last run succesfull */
-  curr_kernel = (KernelInfo *)kernel;  /* allow kernel and method */
-  curr_method = method;                /* to be changed as nessary */
+
+  steps = 0;                          /* total number of primative steps */
+  count = 0;                          /* number of times through kernel list */
+  changed = 1;                        /* assume something was changed! */
+  list_changed = 0;
+  total_changed = 0;
+  curr_kernel = (KernelInfo *)kernel; /* allow kernel and method */
+  curr_method = method;               /* to be changed as nessary */
 
   limit = (unsigned long) iterations;
   if ( iterations < 0 )
@@ -2386,13 +2410,13 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
           InheritException(exception,&new_image->exception);
           goto exit_cleanup;
         }
-      count++;  /* iteration count */
+      steps++;  /* primative morphology steps performs */
       changed = MorphologyPrimative(image,new_image,curr_method,channel,
            curr_kernel, exception);
       if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-        fprintf(stderr, "Morphology %s:%lu.%lu => Changed %lu\n",
+        fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
               MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-              count, 0L, changed);
+              1L, 0L, steps, changed);
       break;
   }
   /* At this point
@@ -2426,20 +2450,27 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       /* loop through rest of the kernels */
       this_kernel=curr_kernel->next;
       kernel_number=1;
+      count=1;  /* it is always the first list! */
       while( this_kernel != (KernelInfo *) NULL )
         {
+          steps++;
           changed = MorphologyPrimative(image,old_image,curr_method,channel,
               this_kernel,exception);
           (void) CompositeImageChannel(new_image,
             (ChannelType) (channel & ~SyncChannels), LightenCompositeOp,
             old_image, 0, 0);
-          if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-            fprintf(stderr, "Morphology %s:%lu.%lu => Changed %lu\n",
-                  MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                  count, kernel_number, changed);
+          if ( kernel->next != (KernelInfo *) NULL ) /* more than one kernel? */
+            if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+              fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
+                   MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
+                   count, kernel_number, steps, changed);
           this_kernel = this_kernel->next;
           kernel_number++;
         }
+      if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+        fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu  Total %lu\n",
+                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
+                count, steps, list_changed, total_changed);
       old_image=DestroyImage(old_image);
     }
     goto exit_cleanup;
@@ -2447,10 +2478,10 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   /* Repeat the low-level morphology over all kernels
      until iteration count limit or no change from any kernel is found */
-  if ( ( count < limit && changed > 0 ) ||
+  if ( ( steps != 0 && limit != 1 && changed > 0 ) ||
        curr_kernel->next != (KernelInfo *) NULL ) {
 
-    /* create a second working image */
+    /* More than one step so create a second working image */
     old_image = CloneImage(image,0,0,MagickTrue,exception);
     if (old_image == (Image *) NULL)
       goto error_cleanup;
@@ -2461,41 +2492,44 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
       }
 
     /* reset variables for the first/next iteration, or next kernel) */
+    count = steps;
     kernel_number = 0;
     this_kernel = curr_kernel;
-    total_changed = count != 0 ? changed : 0;
-    if ( count != 0 && this_kernel != (KernelInfo *) NULL ) {
-      count = 0;  /* first iteration is not yet finished! */
+    list_changed = (steps != 0) ? changed : 0;
+    total_changed = 0;
+    if ( (steps != 0) && this_kernel != (KernelInfo *) NULL ) {
+      count = 0;      /* first iteration is not yet finished! */
+      kernel_number++;
       this_kernel = curr_kernel->next;
-      kernel_number = 1;
-      total_changed = changed;
     }
 
     while ( count < limit ) {
-      count++;
+      count++;     /* iteration though kernel list being performed */
       while ( this_kernel != (KernelInfo *) NULL ) {
         Image *tmp = old_image;
         old_image = new_image;
         new_image = tmp;
+        steps++;
         changed = MorphologyPrimative(old_image,new_image,curr_method,channel,
                           this_kernel,exception);
-        if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-          fprintf(stderr, "Morphology %s:%lu.%lu => Changed %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                count, kernel_number, changed);
-        total_changed += changed;
+        if ( kernel->next != (KernelInfo *) NULL ) /* more than one kernel? */
+          if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+            fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
+                  MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
+                  count, kernel_number, steps, changed);
+        list_changed += changed;
         this_kernel = this_kernel->next;
         kernel_number++;
       }
-      if ( kernel_number > 1 )
-        if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-          fprintf(stderr, "Morphology %s:%lu ===> Total Changed %lu\n",
+      total_changed += list_changed;
+      if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+        fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu  Total %lu\n",
                 MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                count, total_changed);
-      if ( total_changed == 0 )
+                count, steps, list_changed, total_changed);
+      if ( list_changed == 0 )
         break;  /* no changes after processing all kernels - ABORT */
       /* prepare for next loop */
-      total_changed = 0;
+      list_changed = 0;
       kernel_number = 0;
       this_kernel = curr_kernel;
     }
