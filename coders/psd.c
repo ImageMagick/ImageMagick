@@ -428,10 +428,10 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
   {
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p=PushLongPixel(LSBEndian,p,&long_sans);
-    p=PushShortPixel(LSBEndian,p,&id);
-    p=PushShortPixel(LSBEndian,p,&short_sans);
-    p=PushLongPixel(LSBEndian,p,&count);
+    p=PushLongPixel(MSBEndian,p,&long_sans);
+    p=PushShortPixel(MSBEndian,p,&id);
+    p=PushShortPixel(MSBEndian,p,&short_sans);
+    p=PushLongPixel(MSBEndian,p,&count);
     switch (id)
     {
       case 0x03ed:
@@ -442,16 +442,16 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
         /*
           Resolution info.
         */
-        p=PushShortPixel(LSBEndian,p,&resolution);
+        p=PushShortPixel(MSBEndian,p,&resolution);
         image->x_resolution=(double) resolution;
-        p=PushShortPixel(LSBEndian,p,&short_sans);
-        p=PushShortPixel(LSBEndian,p,&short_sans);
-        p=PushShortPixel(LSBEndian,p,&short_sans);
-        p=PushShortPixel(LSBEndian,p,&resolution);
+        p=PushShortPixel(MSBEndian,p,&short_sans);
+        p=PushShortPixel(MSBEndian,p,&short_sans);
+        p=PushShortPixel(MSBEndian,p,&short_sans);
+        p=PushShortPixel(MSBEndian,p,&resolution);
         image->y_resolution=(double) resolution;
-        p=PushShortPixel(LSBEndian,p,&short_sans);
-        p=PushShortPixel(LSBEndian,p,&short_sans);
-        p=PushShortPixel(LSBEndian,p,&short_sans);
+        p=PushShortPixel(MSBEndian,p,&short_sans);
+        p=PushShortPixel(MSBEndian,p,&short_sans);
+        p=PushShortPixel(MSBEndian,p,&short_sans);
         break;
       }
       default:
@@ -1921,6 +1921,54 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
   }
 }
 
+static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
+{
+  register const unsigned char
+    *p;
+
+  size_t
+    length;
+
+  unsigned char
+    *datum;
+
+  unsigned long
+    count,
+    long_sans;
+
+  unsigned short
+    id,
+    short_sans;
+
+  length=GetStringInfoLength(bim_profile);
+  if (length < 16)
+    return;
+  datum=GetStringInfoDatum(bim_profile);
+  for (p=datum; (p >= datum) && (p < (datum+length-16)); )
+  {
+    register unsigned char
+      *q;
+
+    q=(unsigned char *) p;
+    if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
+      break;
+    p=PushLongPixel(MSBEndian,p,&long_sans);
+    p=PushShortPixel(MSBEndian,p,&id);
+    p=PushShortPixel(MSBEndian,p,&short_sans);
+    p=PushLongPixel(MSBEndian,p,&count);
+    if (id == 0x000003ed)
+      {
+        (void) CopyMagickMemory(q,q+PSDQuantum(count)+12,length-
+          (PSDQuantum(count)+12)-(q-datum));
+        SetStringInfoLength(bim_profile,length-(PSDQuantum(count)+12));
+        break;
+      }
+    p+=count;
+    if ((count & 0x01) != 0)
+      p++;
+  }
+}
+
 static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   const char
@@ -2066,18 +2114,19 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       bim_profile=CloneStringInfo(bim_profile);
       if (icc_profile != (StringInfo *) NULL)
         RemoveICCProfileFromResourceBlock(bim_profile);
+      RemoveResolutionFromResourceBlock(bim_profile);
       length+=PSDQuantum(GetStringInfoLength(bim_profile));
     }
   if (icc_profile != (const StringInfo *) NULL)
     length+=PSDQuantum(GetStringInfoLength(icc_profile))+12;
   (void) WriteBlobMSBLong(image,(unsigned int) length);
+  WriteResolutionResourceBlock(image);
   if (bim_profile != (StringInfo *) NULL)
     {
       (void) WriteBlob(image,GetStringInfoLength(bim_profile),
         GetStringInfoDatum(bim_profile));
       bim_profile=DestroyStringInfo(bim_profile);
     }
-  WriteResolutionResourceBlock(image);
   if (icc_profile != (StringInfo *) NULL)
     {
       (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
