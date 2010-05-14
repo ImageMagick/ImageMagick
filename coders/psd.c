@@ -436,6 +436,9 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
     {
       case 0x03ed:
       {
+        char
+          value[MaxTextExtent];
+
         unsigned short
           resolution;
 
@@ -444,11 +447,15 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
         */
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->x_resolution=(double) resolution;
+        (void) FormatMagickString(value,MaxTextExtent,"%g",image->x_resolution);
+        (void) SetImageProperty(image,"tiff:XResolution",value);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->y_resolution=(double) resolution;
+        (void) FormatMagickString(value,MaxTextExtent,"%g",image->y_resolution);
+        (void) SetImageProperty(image,"tiff:YResolution",value);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
