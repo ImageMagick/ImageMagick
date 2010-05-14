@@ -3,7 +3,7 @@
   * Remove any prior resolution block from PSD before writing the new block.
 
 2010-05-14  6.6.1-9 Anthony Thyssen <A.Thyssen@griffith...>
-  * Addition of more Morphologocal/Convolution Kernels.
+  * Addition of more Morphological/Convolution Kernels.
     DOG (Difference of Gaussians) and DOB (Difference of Blurs),
     Prewitt, Roberts, Compass, and Ring
 
@@ -13,7 +13,7 @@
 2010-05-12  6.6.1-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Implementation of Pattern Matching Morphology methods
     HitAndMiss, Thicken, Thinning
-  * Reporting of Kernel Strinsg that fail to parse (though not why)
+  * Reporting of Kernel Strings that fail to parse (though not why)
   * Parsing of Multiple Kernel Strings, generating a list of kernels
   * Union of results from Multiple Kernels for HitAndMiss method
   * Interated Multiple Kernels for all other morphology methods
@@ -37,13 +37,13 @@
 2010-05-06  6.6.1-6 Cristy  <quetzlzacatenango@image...>
   * Do not claim gray colorspace if gray image includes a non-gray pixel.
   * Initialize BMP alpha channel to opaque for RGB images.
-  * Fixed under allocation for reound rectangles.
+  * Fixed under allocation for round rectangles.
   * The -list option returns a 0 status as expected.
 
 2010-05-06  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Made use of new no-'sync' channel enabled mathematical compose methods
     for the difference morphology methods.  These should now work correctly
-    for specific channels, and more importantally for alpha shaped morphology.
+    for specific channels, and more importantly for alpha shaped morphology.
 
 2010-05-05  6.6.1-6 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bugs with losing the opacity channel while writing some PNG images.
@@ -60,14 +60,14 @@
   * Fix "Minus", "ModulusAdd", and "ModulusSubtract" to follow
     normal SVG 'Over' blending specifications, (see next for override)
     Note that this does NOT include the "Plus" composition method which has
-    SVG defintion for it to use a 'Plus' blending rather than 'Over' blending.
+    SVG definition for it to use a 'Plus' blending rather than 'Over' blending.
 
   * By default mathematical compositions work as per SVG definition. That is
-    the results are syncronized with 'Over' alpha-blending (except "Plus"
+    the results are synchronized with 'Over' alpha-blending (except "Plus"
     which uses 'plus' alpha-blending).
 
     By removing the default 'sync' flag from the -channel setting however
-    Break this inter-channel syncronization and do the mathematical operations
+    Break this inter-channel synchronization and do the mathematical operations
     only on the individual channels as specified by the -channel setting.
     That is do 'channel' math rather than 'SVG' composition.
 
@@ -132,7 +132,7 @@
 
 2010-03-31  6.6.1-0 Cristy  <quetzlzacatenango@image...>
   * The -recolor 4x4 matrix is now interpretted properly (previously it
-    summed rather attenuating the alpha channel).
+    summed rather than attenuating the alpha channel).
   * Support writing 1-bit PSD images.
   * Support LCMS 2.0.
   * Improved WMF support under Windows.
