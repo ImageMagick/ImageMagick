@@ -1,3 +1,6 @@
+2010-051312  6.6.1-9 Cristy  <quetzlzacatenango@image...>
+  * The pixel buffer was underallocated for some image formats when streaming.
+
 2010-05-12  6.6.1-8 Cristy  <quetzlzacatenango@image...>
   * Increase the estimated # points for the path drawing primitive.
 
