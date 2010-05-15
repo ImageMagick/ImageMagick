@@ -566,7 +566,7 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
   status=AcquireQuantumPixels(quantum_info,(6+quantum_info->pad)*image->columns*
-    ((quantum_info->depth+7)/8));  /* estimate for CMYKA + RLE byte */
+    ((quantum_info->depth+7)/8));  /* allow for CMYKA + RLE byte + pad */
   return(status);
 }
 
