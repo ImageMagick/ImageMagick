@@ -255,6 +255,9 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
   assert(quantum_info->pixels != (unsigned char **) NULL);
   for (i=0; i < (long) quantum_info->number_threads; i++)
   {
+    /*
+      Did we overrun our quantum buffer?
+    */
     assert(quantum_info->pixels[i][quantum_info->extent] == QuantumSignature);
     quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
       quantum_info->pixels[i]);
