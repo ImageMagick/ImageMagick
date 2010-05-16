@@ -1,3 +1,7 @@
+2010-05-15  6.6.1-10 Cristy  <quetzlzacatenango@image...>
+  * Use ScaleCharToQuantum() in coders/src.c (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16229).
+
 2010-05-14  6.6.1-9 Cristy  <quetzlzacatenango@image...>
   * Increase the estimated # points for the path drawing primitive.
   * Remove any prior resolution block from PSD before writing the new block.
