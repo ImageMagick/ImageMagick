@@ -106,21 +106,21 @@ static Image *ReadSCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     int bright;
 
   unsigned char colour_palette[] = {
-    000,000,000,
-    000,000,192,
-    192,000,000,
-    192,000,192,
-    000,192,000,
-    000,192,192,
-    192,192,000,
+      0,  0,  0,
+      0,  0,192,
+    192,  0,  0,
+    192,  0,192,
+      0,192,  0,
+      0,192,192,
+    192,192,  0,
     192,192,192,
-    000,000,000,
-    000,000,255,
-    255,000,000,
-    255,000,255,
-    000,255,000,
-    000,255,255,
-    255,255,000,
+      0,  0,  0,
+      0,  0,255,
+    255,  0,  0,
+    255,  0,255,
+      0,255,  0,
+      0,255,255,
+    255,255,  0,
     255,255,255
   };
 
@@ -214,13 +214,13 @@ static Image *ReadSCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
               if(binar[z])
             {
-                q->red=(Quantum) QuantumRange*(colour_palette[3*ink]);
-                q->green=(Quantum) QuantumRange*(colour_palette[1+(3*ink)]);
-                q->blue=(Quantum) QuantumRange*(colour_palette[2+(3*ink)]);
+                q->red=ScaleCharToQuantum(colour_palette[3*ink]);
+                q->green=ScaleCharToQuantum(colour_palette[1+(3*ink)]);
+                q->blue=ScaleCharToQuantum(colour_palette[2+(3*ink)]);
             } else {
-                q->red=(Quantum) QuantumRange*(colour_palette[3*paper]);
-                q->green=(Quantum) QuantumRange*(colour_palette[1+(3*paper)]);
-                q->blue=(Quantum) QuantumRange*(colour_palette[2+(3*paper)]);
+                q->red=ScaleCharToQuantum(colour_palette[3*paper]);
+                q->green=ScaleCharToQuantum(colour_palette[1+(3*paper)]);
+                q->blue=ScaleCharToQuantum(colour_palette[2+(3*paper)]);
             }
 
               pix++;
