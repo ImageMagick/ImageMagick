@@ -992,7 +992,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IntegralRotateImage()  rotates the image an integral of 90 degrees.  It
+%  IntegralRotateImage() rotates the image an integral of 90 degrees.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the rotated image.
 %
