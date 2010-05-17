@@ -70,10 +70,10 @@
 %  A description of each parameter follows:
 %
 %    o number_rows: the number pointers for the array of pointers
-%             (first dimension)
+%      (first dimension).
 %
-%    o size: the size of the array of doubles each pointer points to.
-%            (second dimension)
+%    o size: the size of the array of doubles each pointer points to
+%      (second dimension).
 %
 */
 MagickExport double **AcquireMagickMatrix(const unsigned long number_rows,
@@ -318,9 +318,9 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %    o rank: the rank or size of the dimentions of the square matrix.
 %            Also the length of vectors, and number of terms being added.
 %
-%    o number_vectors: Number of result vectors, and number or results being added.
-%             Also represents the number of separable systems of equations
-%             that is being solved.
+%    o number_vectors: Number of result vectors, and number or results being
+%      added.  Also represents the number of separable systems of equations
+%      that is being solved.
 %
 %  Example of use...
 %
@@ -395,7 +395,8 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
 %
 %    o matrix: the matrix to relinquish
 %
-%    o number_rows: the first dimension of the acquired matrix (number of pointers)
+%    o number_rows: the first dimension of the acquired matrix (number of
+%      pointers)
 %
 */
 MagickExport double **RelinquishMagickMatrix(double **matrix,
