@@ -514,9 +514,8 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   return(OverCompositeOp);
 }
 
-static MagickBooleanType ReadPSDLayer(Image *image,
-  const unsigned long channels,const unsigned long type,
-  const MagickOffsetType *offsets,ExceptionInfo *exception)
+static MagickBooleanType ReadPSDLayer(Image *image,const unsigned long channels,
+  const long type,const MagickOffsetType *offsets,ExceptionInfo *exception)
 {
   long
     y;
@@ -1230,8 +1229,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         offsets[y]=GetPSDOffset(&psd_info,layer_info[i].image);
                     }
                   status=ReadPSDLayer(layer_info[i].image,
-                    layer_info[i].channels,(unsigned long)
-                    layer_info[i].channel_info[j].type,offsets,exception);
+                    layer_info[i].channels,layer_info[i].channel_info[j].type,
+                    offsets,exception);
                   if (compression == 1)
                     offsets=(MagickOffsetType *) RelinquishMagickMemory(
                       offsets);
@@ -1359,8 +1358,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   for (i=0; i < (long) psd_info.channels; i++)
   {
-    status=ReadPSDLayer(image,psd_info.channels,(unsigned long) i,offsets+i*
-      image->rows,exception);
+    status=ReadPSDLayer(image,psd_info.channels,i,offsets+i*image->rows,
+      exception);
     if (status == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImagesTag,i,psd_info.channels);
