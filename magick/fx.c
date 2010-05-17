@@ -2066,6 +2066,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         "MissingExpression","`%s'",expression);
       return(0.0);
     }
+  *subexpression='\0';
   p=FxOperatorPrecedence(expression,exception);
   if (p != (const char *) NULL)
     {
