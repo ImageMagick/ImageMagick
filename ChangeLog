@@ -1,3 +1,6 @@
+2010-05-17  6.6.2-0 Cristy  <quetzlzacatenango@image...>
+  * 
+
 2010-05-15  6.6.1-10 Cristy  <quetzlzacatenango@image...>
   * Use ScaleCharToQuantum() in coders/src.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16229).
