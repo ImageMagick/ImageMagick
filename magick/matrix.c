@@ -64,33 +64,32 @@
 %
 %  The format of the AcquireMagickMatrix method is:
 %
-%      double **AcquireMagickMatrix(const unsigned long nptrs,
-%           const unsigned long size)
+%      double **AcquireMagickMatrix(const unsigned long number_rows,
+%        const unsigned long size)
 %
 %  A description of each parameter follows:
 %
-%    o nptrs: the number pointers for the array of pointers
+%    o number_rows: the number pointers for the array of pointers
 %             (first dimension)
 %
 %    o size: the size of the array of doubles each pointer points to.
 %            (second dimension)
 %
 */
-MagickExport double **AcquireMagickMatrix(const unsigned long nptrs,
-     const unsigned long size)
+MagickExport double **AcquireMagickMatrix(const unsigned long number_rows,
+  const unsigned long size)
 {
   double
-   **matrix;
+    **matrix;
 
-  register unsigned long
+  register long
     i,
     j;
 
-  matrix=(double **) AcquireQuantumMemory(nptrs,sizeof(*matrix));
+  matrix=(double **) AcquireQuantumMemory(number_rows,sizeof(*matrix));
   if (matrix == (double **) NULL)
     return((double **)NULL);
-
-  for (i=0; i < nptrs; i++)
+  for (i=0; i < (long) number_rows; i++)
   {
     matrix[i]=(double *) AcquireQuantumMemory(size,sizeof(*matrix[i]));
     if (matrix[i] == (double *) NULL)
@@ -100,9 +99,8 @@ MagickExport double **AcquireMagickMatrix(const unsigned long nptrs,
       matrix=(double **) RelinquishMagickMemory(matrix);
       return((double **) NULL);
     }
-    /*(void) ResetMagickMemory(matrix[i],0,size*sizeof(*matrix[i])); */
-    for (j=0; j < size; j++)
-      matrix[i][j] = 0.0;
+    for (j=0; j < (long) size; j++)
+      matrix[i][j]=0.0;
   }
   return(matrix);
 }
@@ -126,8 +124,8 @@ MagickExport double **AcquireMagickMatrix(const unsigned long nptrs,
 %
 %  The format of the GaussJordanElimination method is:
 %
-%      MagickBooleanType GaussJordanElimination(double **matrix,
-%        double **vectors, const unsigned long rank, const unsigned long nvecs)
+%      MagickBooleanType GaussJordanElimination(double **matrix,double **vectors,
+%        const unsigned long rank,const unsigned long number_vectors)
 %
 %  A description of each parameter follows:
 %
@@ -139,7 +137,7 @@ MagickExport double **AcquireMagickMatrix(const unsigned long nptrs,
 %    o rank:  The size of the matrix (both rows and columns).
 %             Also represents the number terms that need to be solved.
 %
-%    o nvecs: Number of vectors columns, argumenting the above matrix.
+%    o number_vectors: Number of vectors columns, argumenting the above matrix.
 %             Usally 1, but can be more for more complex equation solving.
 %
 %  Note that the 'matrix' is given as a 'array of row pointers' of rank size.
@@ -179,7 +177,7 @@ MagickExport double **AcquireMagickMatrix(const unsigned long nptrs,
 %
 */
 MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
-  double **vectors, const unsigned long rank, const unsigned long nvecs)
+  double **vectors,const unsigned long rank,const unsigned long number_vectors)
 {
 #define GaussJordanSwap(x,y) \
 { \
@@ -251,7 +249,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
       {
         for (k=0; k < (long) rank; k++)
           GaussJordanSwap(matrix[row][k],matrix[column][k]);
-        for (k=0; k < (long) nvecs; k++)
+        for (k=0; k < (long) number_vectors; k++)
           GaussJordanSwap(vectors[k][row],vectors[k][column]);
       }
     rows[i]=row;
@@ -262,7 +260,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
     matrix[column][column]=1.0;
     for (j=0; j < (long) rank; j++)
       matrix[column][j]*=scale;
-    for (j=0; j < (long) nvecs; j++)
+    for (j=0; j < (long) number_vectors; j++)
       vectors[j][column]*=scale;
     for (j=0; j < (long) rank; j++)
       if (j != column)
@@ -271,7 +269,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
           matrix[j][column]=0.0;
           for (k=0; k < (long) rank; k++)
             matrix[j][k]-=scale*matrix[column][k];
-          for (k=0; k < (long) nvecs; k++)
+          for (k=0; k < (long) number_vectors; k++)
             vectors[k][j]-=scale*vectors[k][column];
         }
   }
@@ -302,8 +300,8 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %  The format of the AcquireMagickMatrix method is:
 %
 %      void LeastSquaresAddTerms(double **matrix,double **vectors,
-%             const double *terms, const double *results,
-%             const unsigned long rank, const unsigned long nvecs);
+%        const double *terms,const double *results,const unsigned long rank,
+%        const unsigned long number_vectors);
 %
 %  A description of each parameter follows:
 %
@@ -320,7 +318,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %    o rank: the rank or size of the dimentions of the square matrix.
 %            Also the length of vectors, and number of terms being added.
 %
-%    o nvecs: Number of result vectors, and number or results being added.
+%    o number_vectors: Number of result vectors, and number or results being added.
 %             Also represents the number of separable systems of equations
 %             that is being solved.
 %
@@ -357,20 +355,20 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %
 */
 MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
-     const double *terms, const double *results, const unsigned long rank,
-     const unsigned long nvecs)
+  const double *terms,const double *results,const unsigned long rank,
+  const unsigned long number_vectors)
 {
-  register unsigned long
+  register long
     i,
     j;
 
-  for(j=0; j<rank; j++) {
-    for(i=0; i<rank; i++)
-      matrix[i][j] += terms[i] * terms[j];
-    for(i=0; i<nvecs; i++)
-      vectors[i][j] += results[i] * terms[j];
+  for (j=0; j < (long) rank; j++)
+  {
+    for (i=0; i < (long) rank; i++)
+      matrix[i][j]+=terms[i]*terms[j];
+    for (i=0; i < (long) number_vectors; i++)
+      vectors[i][j]+=results[i]*terms[j];
   }
-
   return;
 }
 
@@ -391,28 +389,26 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
 %  The format of the RelinquishMagickMatrix method is:
 %
 %      double **RelinquishMagickMatrix(double **matrix,
-%         const unsigned long nptrs)
+%        const unsigned long number_rows)
 %
 %  A description of each parameter follows:
 %
 %    o matrix: the matrix to relinquish
 %
-%    o nptrs: the first dimention of the acquired matrix (number of pointers)
+%    o number_rows: the first dimension of the acquired matrix (number of pointers)
 %
 */
 MagickExport double **RelinquishMagickMatrix(double **matrix,
-     const unsigned long nptrs)
+  const unsigned long number_rows)
 {
-  register unsigned long
+  register long
     i;
 
   if (matrix == (double **) NULL )
     return(matrix);
-
-  for (i=0; i < nptrs; i++)
+  for (i=0; i < (long) number_rows; i++)
      matrix[i]=(double *) RelinquishMagickMemory(matrix[i]);
   matrix=(double **) RelinquishMagickMemory(matrix);
-
   return(matrix);
 }
 
