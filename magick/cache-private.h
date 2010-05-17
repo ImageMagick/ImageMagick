@@ -105,7 +105,6 @@ typedef struct _CacheMethods
 
   DestroyPixelHandler
     destroy_pixel_handler;
-
 } CacheMethods;
 
 typedef struct _NexusInfo

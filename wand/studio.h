@@ -235,9 +235,11 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#  define wand_aligned(x)  __attribute__((aligned(x)))
 #  define wand_attribute  __attribute__
 #  define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
 #else
+#  define wand_aligned(x)  /* nothing */
 #  define wand_attribute(x)  /* nothing */
 #  define wand_unused(x) x
 #endif

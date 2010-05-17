@@ -225,9 +225,11 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#  define magick_aligned(x)  __attribute__((aligned(x)))
 #  define magick_attribute  __attribute__
 #  define magick_unused(x)  magick_unused_ ## x __attribute__((unused))
 #else
+#  define magick_aligned(x)  /* nothing */
 #  define magick_attribute(x)  /* nothing */
 #  define magick_unused(x) x
 #endif
