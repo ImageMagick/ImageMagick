@@ -5,6 +5,8 @@
   * Better handling of Gaussian tyle filters (bug fixes)
   * Bug fix and optimization of kernel size calculations in "gem.c"
   * Addition of "Laplacian of Gauussian" (LOG), also known as Mexician Hat
+  * Allow kernel rotation flags in 'user defined' kernels
+  * Add blend with unity factor to "-set option:convolve:scale"
 
 2010-05-17  6.6.2-0 Cristy  <quetzlzacatenango@image...>
   * PSD images require a proper layer to support an alpha channel.

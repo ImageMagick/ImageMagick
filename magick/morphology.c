@@ -162,12 +162,16 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %         Select from one of the built in kernels, using the name and
 %         geometry arguments supplied.  See AcquireKernelBuiltIn()
 %
-%    "WxH[+X+Y]:num, num, num ..."
+%    "WxH[+X+Y][^@]:num, num, num ..."
 %         a kernel of size W by H, with W*H floating point numbers following.
 %         the 'center' can be optionally be defined at +X+Y (such that +0+0
 %         is top left corner). If not defined the pixel in the center, for
 %         odd sizes, or to the immediate top or left of center for even sizes
 %         is automatically selected.
+%
+%         If a '^' is included the kernel expanded with 90-degree rotations,
+%         While a '@' will allow you to expand a 3x3 kernel using 45-degree
+%         circular rotates.
 %
 %    "num, num, num, num, ..."
 %         list of floating point numbers defining an 'old style' odd sized
@@ -175,17 +179,18 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %         square kernel, 25 for a 5x5 square kernel, 49 for 7x7, etc.
 %         Values can be space or comma separated.  This is not recommended.
 %
-%  Note that 'name' kernels will start with an alphabetic character while the
-%  new kernel specification has a ':' character in its specification string.
-%  If neither is the case, it is assumed an old style of a simple list of
-%  numbers generating a odd-sized square kernel has been given.
-%
 %  You can define a 'list of kernels' which can be used by some morphology
 %  operators A list is defined as a semi-colon seperated list kernels.
 %
 %     " kernel ; kernel ; kernel ; "
 %
-%  Extra ';' characters are simply ignored.
+%  Any extra ';' characters (at start, end or between kernel defintions are
+%  simply ignored.
+%
+%  Note that 'name' kernels will start with an alphabetic character while the
+%  new kernel specification has a ':' character in its specification string.
+%  If neither is the case, it is assumed an old style of a simple list of
+%  numbers generating a odd-sized square kernel has been given.
 %
 %  The format of the AcquireKernal method is:
 %
@@ -218,11 +223,17 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   double
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
 
+  MagickStatusType
+    flags;
+
+  GeometryInfo
+    args;
+
   kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
   if (kernel == (KernelInfo *)NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
-  kernel->minimum = kernel->maximum = 0.0;
+  kernel->minimum = kernel->maximum = kernel->angle = 0.0;
   kernel->negative_range = kernel->positive_range = 0.0;
   kernel->type = UserDefinedKernel;
   kernel->next = (KernelInfo *) NULL;
@@ -233,16 +244,13 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if ( end == (char *) NULL )
     end = strchr(kernel_string, '\0');
 
+  /* clear flags - for Expanding kernal lists thorugh rotations */
+   flags = NoValue;
+
   /* Has a ':' in argument - New user kernel specification */
   p = strchr(kernel_string, ':');
   if ( p != (char *) NULL && p < end)
     {
-      MagickStatusType
-        flags;
-
-      GeometryInfo
-        args;
-
       /* ParseGeometry() needs the geometry separated! -- Arrgghh */
       memcpy(token, kernel_string, (size_t) (p-kernel_string));
       token[p-kernel_string] = '\0';
@@ -344,10 +352,15 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if ( kernel->minimum == MagickHuge )
     return(DestroyKernelInfo(kernel));
 
+  if ( (flags & AreaValue) != 0 )         /* '@' symbol in kernel size */
+    ExpandKernelInfo(kernel, 45.0);
+  else if ( (flags & MinimumValue) != 0 ) /* '^' symbol in kernel size */
+    ExpandKernelInfo(kernel, 90.0);
+
   return(kernel);
 }
 
-static KernelInfo *ParseNamedKernel(const char *kernel_string)
+static KernelInfo *ParseKernelName(const char *kernel_string)
 {
   char
     token[MaxTextExtent];
@@ -421,12 +434,12 @@ static KernelInfo *ParseNamedKernel(const char *kernel_string)
     case ChebyshevKernel:
     case ManhattenKernel:
     case EuclideanKernel:
-      if ( (flags & HeightValue) == 0 )
-        args.sigma = 100.0;                    /* default distance scaling */
-      else if ( (flags & AspectValue ) != 0 )  /* '!' flag */
-        args.sigma = QuantumRange/args.sigma;  /* maximum pixel distance */
-      else if ( (flags & PercentValue ) != 0 ) /* '%' flag */
-        args.sigma *= QuantumRange/100.0;      /* percentage of color range */
+      if ( (flags & HeightValue) == 0 )           /* no distance scale */
+        args.sigma = 100.0;                       /* default distance scaling */
+      else if ( (flags & AspectValue ) != 0 )     /* '!' flag */
+        args.sigma = QuantumRange/(args.sigma+1); /* maximum pixel distance */
+      else if ( (flags & PercentValue ) != 0 )    /* '%' flag */
+        args.sigma *= QuantumRange/100.0;         /* percentage of color range */
       break;
     default:
       break;
@@ -440,8 +453,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
   KernelInfo
     *kernel,
-    *new_kernel,
-    *last_kernel;
+    *new_kernel;
 
   char
     token[MaxTextExtent];
@@ -453,19 +465,19 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
     kernel_number;
 
   p = kernel_string;
-  kernel = last_kernel = NULL;
+  kernel = NULL;
   kernel_number = 0;
 
   while ( GetMagickToken(p,NULL,token),  *token != '\0' ) {
 
-    /* ignore multiple ';' following each other */
+    /* ignore extra or multiple ';' kernel seperators */
     if ( *token != ';' ) {
 
       /* tokens starting with alpha is a Named kernel */
-      if (isalpha((int) *token) == 0)
-        new_kernel = ParseKernelArray(p);
+      if (isalpha((int) *token) != 0)
+        new_kernel = ParseKernelName(p);
       else /* otherwise a user defined kernel array */
-        new_kernel = ParseNamedKernel(p);
+        new_kernel = ParseKernelArray(p);
 
       /* Error handling -- this is not proper error handling! */
       if ( new_kernel == (KernelInfo *) NULL ) {
@@ -479,8 +491,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       if ( kernel == (KernelInfo *) NULL )
         kernel = new_kernel;
       else
-        last_kernel->next = new_kernel;
-      last_kernel = LastKernelInfo(new_kernel);
+        LastKernelInfo(kernel)->next = new_kernel;
     }
 
     /* look for the next kernel in list */
@@ -603,14 +614,15 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %  45 degrees to generate the 8 angled varients of each of the kernels.
 %
 %    Laplacian:{type}
-%      Discrete Lapacian Kernels, (unnormalized)
+%      Discrete Lapacian Kernels, (without normalization)
 %        Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood)
 %        Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood)
 %        Type 2 :  3x3 with center:4 edge:1 corner:-2
 %        Type 3 :  3x3 with center:4 edge:-2 corner:1
 %        Type 5 :  5x5 laplacian
 %        Type 7 :  7x7 laplacian
-%        Type 10 : 5x5 LOG (sigma approx 1.4)
+%        Type 15 : 5x5 LOG (sigma approx 1.4)
+%        Type 19 : 9x9 LOG (sigma approx 1.4)
 %
 %    Sobel:{angle}
 %      Sobel 3x3 'Edge' convolution kernel (3x3)
@@ -705,12 +717,14 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %    Peak:radius1,radius2
 %       Find any peak larger than the pixels the fall between the two radii.
 %       The default ring of pixels is as per "Ring".
+%    Edges
+%       Find Edges of a binary shape
 %    Corners
 %       Find corners of a binary shape
 %    LineEnds
 %       Find end points of lines (for pruning a skeletion)
 %    LineJunctions
-%       Find three line junctions (in a skeletion)
+%       Find three line junctions (within a skeletion)
 %    ConvexHull
 %       Octagonal thicken kernel, to generate convex hulls of 45 degrees
 %    Skeleton
@@ -794,7 +808,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case CornersKernel:    /* Hit and Miss kernels */
     case LineEndsKernel:
     case LineJunctionsKernel:
-    case ThickenKernel:
     case ThinningKernel:
     case ConvexHullKernel:
     case SkeletonKernel:
@@ -824,7 +837,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       if (kernel == (KernelInfo *) NULL)
         return(kernel);
       (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
-      kernel->minimum = kernel->maximum = 0.0;
+      kernel->minimum = kernel->maximum = kernel->angle = 0.0;
       kernel->negative_range = kernel->positive_range = 0.0;
       kernel->type = type;
       kernel->next = (KernelInfo *) NULL;
@@ -1088,7 +1101,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** As we are normalizing and not subtracting gaussians,
         ** there is no need for a divisor in the gaussian formula
         **
-        ** It is less comples 
+        ** It is less comples
         */
         if ( sigma > MagickEpsilon )
           {
@@ -1156,9 +1169,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel=ParseKernelArray(
               "7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
             break;
-          case 10:   /* a 5x5 LOG (sigma approx 1.4) */
+          case 15:  /* a 5x5 LOG (sigma approx 1.4) */
             kernel=ParseKernelArray(
               "5: 0,0,-1,0,0  0,-1,-2,-1,0  -1,-2,16,-2,-1  0,-1,-2,-1,0  0,0,-1,0,0");
+            break;
+          case 19:  /* a 9x9 LOG (sigma approx 1.4) */
+            /* http://www.cscjournals.org/csc/manuscript/Journals/IJIP/volume3/Issue1/IJIP-15.pdf */
+            kernel=ParseKernelArray(
+              "9: 0,-1,-1,-2,-2,-2,-1,-1,0  -1,-2,-4,-5,-5,-5,-4,-2,-1  -1,-4,-5,-3,-0,-3,-5,-4,-1  -2,-5,-3,@12,@24,@12,-3,-5,-2  -2,-5,-0,@24,@40,@24,-0,-5,-2  -2,-5,-3,@12,@24,@12,-3,-5,-2  -1,-4,-5,-3,-0,-3,-5,-4,-1  -1,-2,-4,-5,-5,-5,-4,-2,-1  0,-1,-1,-2,-2,-2,-1,-1,0");
             break;
         }
         if (kernel == (KernelInfo *) NULL)
@@ -1390,6 +1408,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         }
         break;
       }
+    case EdgesKernel:
+      {
+        kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90.0); /* Create a list of 4 rotated kernels */
+        break;
+      }
     case CornersKernel:
       {
         kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
@@ -1401,11 +1428,20 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case LineEndsKernel:
       {
-        kernel=ParseKernelArray("3: 0,-,-  0,1,0  0,0,0");
+        KernelInfo
+          *new_kernel;
+        kernel=ParseKernelArray("3: 0,0,0  0,1,0  -,1,-");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 45.0); /* Create a list of 8 rotated kernels */
+        ExpandKernelInfo(kernel, 90.0);
+        /* append second set of 4 kernels */
+        new_kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,0,1");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90.0);
+        LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
     case LineJunctionsKernel:
@@ -1417,39 +1453,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0);
+        ExpandKernelInfo(kernel, 45.0);
         /* append second set of 4 kernels */
         new_kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
-        kernel->type = type;
+        new_kernel->type = type;
         ExpandKernelInfo(new_kernel, 90.0);
         LastKernelInfo(kernel)->next = new_kernel;
-        /* append Thrid set of 4 kernels */
-        new_kernel=ParseKernelArray("3: -,1,-  -,1,1  1,-,-");
-        if (new_kernel == (KernelInfo *) NULL)
-          return(DestroyKernelInfo(kernel));
-        kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90.0);
-        LastKernelInfo(kernel)->next = new_kernel;
-        break;
-      }
-    case ThickenKernel:
-      { /* Thicken Kernel ??  -- Under trial */
-        kernel=ParseKernelArray("3: 1,1,-  1,0,0  -,0,0");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandKernelInfo(kernel, 45);
-        break;
-      }
-    case ThinningKernel:
-      { /* Thinning Kernel ??  -- Under trial */
-        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandKernelInfo(kernel, 45);
         break;
       }
     case ConvexHullKernel:
@@ -1463,31 +1474,26 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->type = type;
         ExpandKernelInfo(kernel, 90.0);
         /* append second set of 4 kernels */
-        new_kernel=ParseKernelArray("3: -,1,1  -,0,1  0,-,1");
+        new_kernel=ParseKernelArray("3: 1,1,1  1,0,0  -,-,0");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
-        kernel->type = type;
+        new_kernel->type = type;
         ExpandKernelInfo(new_kernel, 90.0);
         LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
-    case SkeletonKernel:
-      {
-        KernelInfo
-          *new_kernel;
-        /* first set of 4 kernels - corners */
-        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
+    case ThinningKernel:
+      { /* Thinning Kernel ??  -- filled corner and edge */
+        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90);
-        /* append second set of 4 kernels - edge middles */
-        new_kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
-        if (new_kernel == (KernelInfo *) NULL)
-          return(DestroyKernelInfo(kernel));
-        kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90);
-        LastKernelInfo(kernel)->next = new_kernel;
+        ExpandKernelInfo(kernel, 45);
+        break;
+      }
+    case SkeletonKernel:
+      {
+        kernel=AcquireKernelInfo("Edges;Corners");
         break;
       }
     /* Distance Measuring Kernels */
@@ -2805,9 +2811,20 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
           curr_kernel=DestroyKernelInfo(curr_kernel);
           return((Image *) NULL);
         }
+        SetGeometryInfo(&args);
         args.rho = 1.0;
         flags = (GeometryFlags) ParseGeometry(artifact, &args);
+
+        /* normalize and/or scale kernel values */
         ScaleKernelInfo(curr_kernel, args.rho, flags);
+
+        /* Add percentage of Unity Kernel, for blending with original */
+        if ( (flags & SigmaValue) != 0 )
+          {
+            if ( (flags & PercentValue) != 0 )
+              args.sigma = args.sigma/100.0;
+            UnityAddKernelInfo(curr_kernel, args.sigma);
+          }
       }
     }
 
@@ -2883,7 +2900,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     angle += 360.0;
 
   if ( 337.5 < angle || angle <= 22.5 )
-    return;   /* no change! - At least at this time */
+    return;   /* Near zero angle - no change! - At least not at this time */
 
   /* Handle special cases */
   switch (kernel->type) {
@@ -2925,15 +2942,17 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       if ( kernel->width == 3 && kernel->height == 3 )
         { /* Rotate a 3x3 square by 45 degree angle */
           MagickRealType t  = kernel->values[0];
-          kernel->values[0] = kernel->values[1];
-          kernel->values[1] = kernel->values[2];
-          kernel->values[2] = kernel->values[5];
-          kernel->values[5] = kernel->values[8];
-          kernel->values[8] = kernel->values[7];
-          kernel->values[7] = kernel->values[6];
-          kernel->values[6] = kernel->values[3];
-          kernel->values[3] = t;
-          angle = fmod(angle+45.0, 360.0);
+          kernel->values[0] = kernel->values[3];
+          kernel->values[3] = kernel->values[6];
+          kernel->values[6] = kernel->values[7];
+          kernel->values[7] = kernel->values[8];
+          kernel->values[8] = kernel->values[5];
+          kernel->values[5] = kernel->values[2];
+          kernel->values[2] = kernel->values[1];
+          kernel->values[1] = t;
+          /* NOT DONE - rotate a off-centered origin as well! */
+          angle = fmod(angle+315.0, 360.0);  /* angle reduced 45 degrees */
+          kernel->angle = fmod(kernel->angle+45.0, 360.0);
         }
       else
         perror("Unable to rotate non-3x3 kernel by 45 degrees");
@@ -2952,10 +2971,13 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           t = kernel->x;
           kernel->x = kernel->y;
           kernel->y = t;
-          if ( kernel->width == 1 )
-            angle = fmod(angle+270.0, 360.0);  /* angle -90 degrees */
-          else
-            angle = fmod(angle+90.0, 360.0);   /* angle +90 degrees */
+          if ( kernel->width == 1 ) {
+            angle = fmod(angle+270.0, 360.0);     /* angle reduced 90 degrees */
+            kernel->angle = fmod(kernel->angle+90.0, 360.0);
+          } else {
+            angle = fmod(angle+90.0, 360.0);   /* angle increased 90 degrees */
+            kernel->angle = fmod(kernel->angle+270.0, 360.0);
+          }
         }
       else if ( kernel->width == kernel->height )
         { /* Rotate a square array of values by 90 degrees */
@@ -2967,21 +2989,25 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
             for( j=0, y=kernel->height-1;  j<y;   j++, y--)
               { t                    = k[i+j*kernel->width];
-                k[i+j*kernel->width] = k[y+i*kernel->width];
-                k[y+i*kernel->width] = k[x+y*kernel->width];
-                k[x+y*kernel->width] = k[j+x*kernel->width];
-                k[j+x*kernel->width] = t;
+                k[i+j*kernel->width] = k[j+x*kernel->width];
+                k[j+x*kernel->width] = k[x+y*kernel->width];
+                k[x+y*kernel->width] = k[y+i*kernel->width];
+                k[y+i*kernel->width] = t;
               }
-          angle = fmod(angle+90.0, 360.0);  /* angle +90 degrees */
+          /* NOT DONE - rotate a off-centered origin as well! */
+          angle = fmod(angle+270.0, 360.0);     /* angle reduced 90 degrees */
+          kernel->angle = fmod(kernel->angle+90.0, 360.0);
         }
       else
         perror("Unable to rotate a non-square, non-linear kernel 90 degrees");
     }
   if ( 135.0 < angle && angle <= 225.0 )
     {
-      /* For a 180 degree rotation - also know as a reflection */
-      /* This is actually a very very common operation! */
-      /* Basically all that is needed is a reversal of the kernel data! */
+      /* For a 180 degree rotation - also know as a reflection
+       * This is actually a very very common operation!
+       * Basically all that is needed is a reversal of the kernel data!
+       * And a reflection of the origon
+       */
       unsigned long
         i,j;
       register double
@@ -2993,7 +3019,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 
       kernel->x = (long) kernel->width  - kernel->x - 1;
       kernel->y = (long) kernel->height - kernel->y - 1;
-      angle = fmod(angle+180.0, 360.0);   /* angle+180 degrees */
+      angle = fmod(angle-180.0, 360.0);   /* angle+180 degrees */
+      kernel->angle = fmod(kernel->angle+180.0, 360.0);
     }
   /* At this point angle should at least between -45 (315) and +45 degrees
    * In the future some form of non-orthogonal angled rotates could be
@@ -3192,7 +3219,7 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
   KernelInfo
     *k;
 
-  long
+  unsigned long
     c, i, u, v;
 
   for (c=0, k=kernel;  k != (KernelInfo *) NULL;  c++, k=k->next ) {
@@ -3200,10 +3227,13 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
     fprintf(stderr, "Kernel ");
     if ( kernel->next != (KernelInfo *) NULL )
       fprintf(stderr, " #%ld", c );
-    fprintf(stderr, " \"%s\" of size %lux%lu%+ld%+ld ",
-          MagickOptionToMnemonic(MagickKernelOptions, k->type),
-          kernel->width, k->height,
-          kernel->x, kernel->y );
+    fprintf(stderr, " \"%s",
+          MagickOptionToMnemonic(MagickKernelOptions, k->type) );
+    if ( fabs(k->angle) > MagickEpsilon )
+      fprintf(stderr, "@%lg", k->angle);
+    fprintf(stderr, "\" of size %lux%lu%+ld%+ld ",
+          k->width, k->height,
+          k->x, k->y );
     fprintf(stderr,
           " with values from %.*lg to %.*lg\n",
           GetMagickPrecision(), k->minimum,
@@ -3212,9 +3242,9 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
           GetMagickPrecision(), k->negative_range,
           GetMagickPrecision(), k->positive_range,
           /*kernel->normalized == MagickTrue ? " (normalized)" : */ "" );
-    for (i=v=0; v < (long) k->height; v++) {
+    for (i=v=0; v < k->height; v++) {
       fprintf(stderr,"%2ld:",v);
-      for (u=0; u < (long) k->width; u++, i++)
+      for (u=0; u < k->width; u++, i++)
         if ( IsNan(k->values[i]) )
           fprintf(stderr," %*s", GetMagickPrecision()+2, "nan");
         else
@@ -3230,7 +3260,73 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     Z e r o K e r n e l N a n s                                             %
+%     U n i t y A d d K e r n a l I n f o                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnityAddKernelInfo() Adds a given amount of the 'Unity' Convolution Kernel
+%  to the given pre-scaled and normalized Kernel.  This in effect adds that
+%  amount of the original image into the resulting convolution kernel.  This
+%  value is usually provided by the user as a percentage value in the
+%  'convolve:scale' setting.
+%
+%  The resulting effect is to either convert a 'zero-summing' edge detection
+%  kernel (such as a "Laplacian", "DOG" or a "LOG") into a 'sharpening'
+%  kernel.
+%
+%  Alternativally by using a purely positive kernel, and using a negative
+%  post-normalizing scaling factor, you can convert a 'blurring' kernel (such
+%  as a "Gaussian") into a 'unsharp' kernel.
+%
+%  The format of the ScaleKernelInfo method is:
+%
+%      void UnityAdditionKernelInfo(KernelInfo *kernel, const double scale )
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+%    o scale:
+%             scaling factor for the unity kernel to be added to
+%             the given kernel.
+%
+% This function is currently internal to this module only at this time, but
+% can be exported to other modules if needed.
+%
+*/
+MagickExport void UnityAddKernelInfo(KernelInfo *kernel,
+  const double scale)
+{
+  register unsigned long
+    i;
+
+  kernel->values[kernel->x+kernel->y*kernel->width] += scale;
+
+  /* make sure kernel meta-data is now correct */
+  kernel->minimum = kernel->maximum = 0.0;
+  kernel->negative_range = kernel->positive_range = 0.0;
+  for (i=0; i < (kernel->width*kernel->height); i++)
+    {
+      if ( fabs(kernel->values[i]) < MagickEpsilon )
+        kernel->values[i] = 0.0;
+      ( kernel->values[i] < 0)
+          ?  ( kernel->negative_range += kernel->values[i] )
+          :  ( kernel->positive_range += kernel->values[i] );
+      Minimize(kernel->minimum, kernel->values[i]);
+      Maximize(kernel->maximum, kernel->values[i]);
+    }
+
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     Z e r o K e r n e l N a n s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3249,18 +3345,17 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 %
 %    o kernel: the Morphology/Convolution kernel
 %
-% FUTURE: return the information in a string for API usage.
 */
 MagickExport void ZeroKernelNans(KernelInfo *kernel)
 {
-  register long
+  register unsigned long
     i;
 
   /* scale the lower kernels first */
   if ( kernel->next != (KernelInfo *) NULL)
     ZeroKernelNans(kernel->next);
 
-  for (i=0; i < (long) (kernel->width*kernel->height); i++)
+  for (i=0; i < (kernel->width*kernel->height); i++)
     if ( IsNan(kernel->values[i]) )
       kernel->values[i] = 0.0;
 
