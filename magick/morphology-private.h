@@ -26,6 +26,10 @@ extern "C" {
 }
 #endif
 
+extern MagickExport Image
+  *MorphologyApply(const Image *,const ChannelType,const MorphologyMethod,
+    const long, const KernelInfo *,const double,ExceptionInfo *);
+
 extern MagickExport void
   ZeroKernelNans(KernelInfo *);
 

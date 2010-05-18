@@ -84,6 +84,7 @@ static inline void SetMagickPixelPacket(const Image *image,
     pixel->index=(MagickRealType) *index;
 }
 
+/* This function is obsoleted by MorphologyApply() -- Anthony Thyssen */
 static inline void SetMagickPixelPacketBias(const Image *image,
   MagickPixelPacket *pixel)
 {

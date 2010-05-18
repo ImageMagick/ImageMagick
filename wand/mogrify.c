@@ -2251,8 +2251,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               status=MagickFalse;
               break;
             }
-            if ( GetImageArtifact(*image,"showkernel") != (const char *) NULL)
-              ShowKernelInfo(kernel);  /* display the kernel to stderr */
             morphology_image=MorphologyImageChannel(*image,channel,method,
               iterations,kernel,exception);
             kernel=DestroyKernelInfo(kernel);
