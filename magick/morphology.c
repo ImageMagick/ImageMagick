@@ -2418,11 +2418,12 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     case ThickenMorphology:
     case DistanceMorphology:     /* Distance should never use multple kernels */
     case UndefinedMorphology:
-      kernel_compose = NoCompositeOp;
+      primative = method;
       break;
   }
 
-  { /* User override of results handling */
+#if 0
+  { /* User override of results handling  -- Experimental */
     const char
        *artifact = GetImageArtifact(image,"morphology:style");
     if ( artifact != (const char *) NULL ) {
@@ -2437,6 +2438,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         perror("Invalid \"morphology:compose\" setting\n");
     }
   }
+#endif
 
   /* Initialize compound morphology stages  */
   count = 0;          /* number of low-level morphology primatives performed */
