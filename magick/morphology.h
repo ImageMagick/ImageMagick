@@ -47,10 +47,10 @@ typedef enum
   CrossKernel,
   RingKernel,
   PeaksKernel,         /* Hit And Miss Kernels */
+  EdgesKernel,
   CornersKernel,
   LineEndsKernel,
   LineJunctionsKernel,
-  ThickenKernel,
   ThinningKernel,
   ConvexHullKernel,
   SkeletonKernel,
@@ -108,7 +108,8 @@ typedef struct KernelInfo
     minimum,
     maximum,
     negative_range,
-    positive_range;
+    positive_range,
+    angle;
 
   struct KernelInfo
     *next;
@@ -131,6 +132,7 @@ extern MagickExport Image
 
 extern MagickExport void
   ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
+  UnityAddKernelInfo(KernelInfo *,const double),
   ShowKernelInfo(KernelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

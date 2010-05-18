@@ -1072,10 +1072,10 @@ static const OptionInfo
     { "Cross", (long) CrossKernel, MagickFalse },
     { "Ring", (long) RingKernel, MagickFalse },
     { "Peaks", (long) PeaksKernel,MagickFalse },
+    { "Edges", (long) EdgesKernel,MagickFalse },
     { "Corners", (long) CornersKernel,MagickFalse },
     { "LineEnds", (long) LineEndsKernel,MagickFalse },
     { "LineJunctions", (long) LineJunctionsKernel,MagickFalse },
-    { "Thicken", (long) ThickenKernel,MagickTrue }, /* under trail */
     { "Thinning", (long) ThinningKernel,MagickTrue },     /* under trail */
     { "ConvexHull", (long) ConvexHullKernel,MagickFalse },
     { "Skeleton", (long) SkeletonKernel,MagickFalse },
