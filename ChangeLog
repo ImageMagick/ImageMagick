@@ -1,3 +1,11 @@
+2010-05-18  6.6.2.0 Anthony Thyssen <A.Thyssen@griffith...>
+  * Separation of internal function MorphologyAppy() from
+    MorphologyImageChannel() to calls to convolve without user settings.
+  * Rewrite of MorphologyApply to output better 'verbose' messages
+  * Better handling of Gaussian tyle filters (bug fixes)
+  * Bug fix and optimization of kernel size calculations in "gem.c"
+  * Addition of "Laplacian of Gauussian" (LOG), also known as Mexician Hat
+
 2010-05-17  6.6.2-0 Cristy  <quetzlzacatenango@image...>
   * PSD images require a proper layer to support an alpha channel.
 

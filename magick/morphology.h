@@ -29,6 +29,7 @@ typedef enum
   UndefinedKernel,    /* also the 'no-op' kernel */
   GaussianKernel,     /* Convolution Kernels, Gaussian Based */
   DOGKernel,
+  LOGKernel,
   BlurKernel,
   DOBKernel,
   CometKernel,
@@ -37,6 +38,7 @@ typedef enum
   RobertsKernel,
   PrewittKernel,
   CompassKernel,
+  KirschKernel,
   DiamondKernel,      /* Shape Kernels */
   SquareKernel,
   RectangleKernel,
@@ -75,6 +77,7 @@ typedef enum
   CloseMorphology,             /* Erode then Dilate */
   OpenIntensityMorphology,     /* Pixel Pick using GreyScale Open */
   CloseIntensityMorphology,    /* Pixel Pick using GreyScale Close */
+  SmoothMorphology,            /* Open then Close */
 /* Difference Morphology methods */
   EdgeInMorphology,            /* Dilate difference from Original */
   EdgeOutMorphology,           /* Erode difference from Original */

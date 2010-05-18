@@ -546,6 +546,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %        from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1.
 %        The result is a zero-summing kernel.
 %
+%    LOG:{radius},{sigma}
+%        "Laplacian of a Gaussian" or "Mexician Hat" Kernel.
+%        The supposed ideal edge detection, zero-summing kernel.
+%
+%        An alturnative to this kernel is to use a "DOG" with a sigma ratio of
+%        approx 1.6, which can also be applied as a 2 pass "DOB" (see below).
+%
 %    Blur:{radius},{sigma}[,{angle}]
 %       Generates a 1 dimensional or linear gaussian blur, at the angle given
 %       (current restricted to orthogonal angles).  If a 'radius' is given the
@@ -596,13 +603,14 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %  45 degrees to generate the 8 angled varients of each of the kernels.
 %
 %    Laplacian:{type}
-%      Generate Lapacian kernel of the type specified. (1 is the default)
+%      Discrete Lapacian Kernels, (unnormalized)
 %        Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood)
 %        Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood)
-%        Type 2 :  3x3 with center:4 edge:-2 corner:1
-%        Type 3 :  3x3 with center:4 edge:1 corner:-2
-%        Type 4 :  5x5 laplacian
-%        Type 5 :  7x7 laplacian
+%        Type 2 :  3x3 with center:4 edge:1 corner:-2
+%        Type 3 :  3x3 with center:4 edge:-2 corner:1
+%        Type 5 :  5x5 laplacian
+%        Type 7 :  7x7 laplacian
+%        Type 10 : 5x5 LOG (sigma approx 1.4)
 %
 %    Sobel:{angle}
 %      Sobel 3x3 'Edge' convolution kernel (3x3)
@@ -614,16 +622,21 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %            0, 0, 0
 %           -1, 1, 0
 %            0, 0, 0
-%    Compass:{angle}
-%      Prewitt's "Compass" convolution kernel (3x3)
-%           -1, 1, 1
-%           -1,-2, 1
-%           -1, 1, 1
 %    Prewitt:{angle}
 %      Prewitt Edge convolution kernel (3x3)
 %           -1, 0, 1
 %           -1, 0, 1
 %           -1, 0, 1
+%    Compass:{angle}
+%      Prewitt's "Compass" convolution kernel (3x3)
+%           -1, 1, 1
+%           -1,-2, 1
+%           -1, 1, 1
+%    Kirsch:{angle}
+%      Kirsch's "Compass" convolution kernel (3x3)
+%           -3,-3, 5
+%           -3, 0, 5
+%           -3,-3, 5
 %
 %  Boolean Kernels
 %
@@ -768,8 +781,26 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
 
   /* Generate a new empty kernel if needed */
-  kernel=(KernelInfo *) NULL;
   switch(type) {
+    case UndefinedKernel:      /* These should not be used here */
+    case UserDefinedKernel:
+      break;
+    case LaplacianKernel:  /* Named Descrete Convolution Kernels */
+    case SobelKernel:
+    case RobertsKernel:
+    case PrewittKernel:
+    case CompassKernel:
+    case KirschKernel:
+    case CornersKernel:    /* Hit and Miss kernels */
+    case LineEndsKernel:
+    case LineJunctionsKernel:
+    case ThickenKernel:
+    case ThinningKernel:
+    case ConvexHullKernel:
+    case SkeletonKernel:
+      /* A pre-generated kernel is not needed */
+      break;
+#if 0
     case GaussianKernel:
     case DOGKernel:
     case BlurKernel:
@@ -786,6 +817,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case ChebyshevKernel:
     case ManhattenKernel:
     case EuclideanKernel:
+#endif
+    default:
+      /* Generate the base Kernel Structure */
       kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
       if (kernel == (KernelInfo *) NULL)
         return(kernel);
@@ -795,7 +829,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       kernel->type = type;
       kernel->next = (KernelInfo *) NULL;
       kernel->signature = MagickSignature;
-    default:
       break;
   }
 
@@ -803,14 +836,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     /* Convolution Kernels */
     case GaussianKernel:
     case DOGKernel:
+    case LOGKernel:
       { double
           sigma = fabs(args->sigma),
           sigma2 = fabs(args->xi),
-          gamma;
+          A, B, R;
 
         if ( args->rho >= 1.0 )
           kernel->width = (unsigned long)args->rho*2+1;
-        else if ( (type == GaussianKernel) || (sigma >= sigma2) )
+        else if ( (type != DOGKernel) || (sigma >= sigma2) )
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma);
         else
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma2);
@@ -821,33 +855,59 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* Calculate a Positive Gaussian */
-        if ( sigma > MagickEpsilon )
-          { gamma = 1.0/(2.0*sigma*sigma); /* simplify loop expressions */
-            sigma = 1.0/(MagickPI*sigma);
-            for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
-              for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
-                  kernel->values[i] = sigma*exp(-((double)(u*u+v*v))*gamma);
+        /* The following generates a 'sampled gaussian' kernel.
+         * What we really want is a 'discrete gaussian' kernel.
+         */
+
+        if ( type == GaussianKernel || type == DOGKernel )
+          { /* Calculate a Gaussian,  OR positive half of a DOG */
+            if ( sigma > MagickEpsilon )
+              { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
+                B = 1.0/(Magick2PI*sigma*sigma);
+                for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
+                  for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+                      kernel->values[i] = exp(-((double)(u*u+v*v))*A)*B;
+              }
+            else /* limiting case - a unity (normalized Dirac) kernel */
+              { (void) ResetMagickMemory(kernel->values,0, (size_t)
+                            kernel->width*kernel->height*sizeof(double));
+                kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+              }
           }
-        else /* special case - generate a unity kernel */
-          { (void) ResetMagickMemory(kernel->values,0, (size_t)
-                         kernel->width*kernel->height*sizeof(double));
-            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
-          }
+
         if ( type == DOGKernel )
           { /* Subtract a Negative Gaussian for "Difference of Gaussian" */
             if ( sigma2 > MagickEpsilon )
               { sigma = sigma2;                /* simplify loop expressions */
-                gamma = 1.0/(2.0*sigma*sigma);
-                sigma = 1.0/(MagickPI*sigma);
+                A = 1.0/(2.0*sigma*sigma);
+                B = 1.0/(Magick2PI*sigma*sigma);
                 for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
                   for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
-                    kernel->values[i] -= sigma*exp(-((double)(u*u+v*v))*gamma);
+                    kernel->values[i] -= exp(-((double)(u*u+v*v))*A)*B;
               }
-            else /* special case - subtract the unity kernel */
+            else /* limiting case - a unity (normalized Dirac) kernel */
               kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
           }
-        /* Note the above kernel may have been 'clipped' by a user defined
+
+        if ( type == LOGKernel )
+          { /* Calculate a Laplacian of a Gaussian - Or Mexician Hat */
+            if ( sigma > MagickEpsilon )
+              { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
+                B = 1.0/(MagickPI*sigma*sigma*sigma*sigma);
+                for ( i=0, v=-kernel->y; v <= (long)kernel->y; v++)
+                  for ( u=-kernel->x; u <= (long)kernel->x; u++, i++)
+                    { R = ((double)(u*u+v*v))*A;
+                      kernel->values[i] = (1-R)*exp(-R)*B;
+                    }
+              }
+            else /* special case - generate a unity kernel */
+              { (void) ResetMagickMemory(kernel->values,0, (size_t)
+                            kernel->width*kernel->height*sizeof(double));
+                kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+              }
+          }
+
+        /* Note the above kernels may have been 'clipped' by a user defined
         ** radius, producing a smaller (darker) kernel.  Also for very small
         ** sigma's (> 0.1) the central value becomes larger than one, and thus
         ** producing a very bright kernel.
@@ -883,7 +943,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       { double
           sigma = fabs(args->sigma),
           sigma2 = fabs(args->xi),
-          gamma;
+          A, B;
 
         if ( args->rho >= 1.0 )
           kernel->width = (unsigned long)args->rho*2+1;
@@ -909,33 +969,39 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** As such while wierd it is prefered.
         **
         ** I am told this method originally came from Photoshop.
+        **
+        ** A properly normalized curve is generated (apart from edge clipping)
+        ** even though we later normalize the result (for edge clipping)
+        ** to allow the correct generation of a "Difference of Blurs".
         */
 
         /* initialize */
         v = (long) (kernel->width*KernelRank-1)/2; /* start/end points to fit range */
+        (void) ResetMagickMemory(kernel->values,0, (size_t)
+                     kernel->width*kernel->height*sizeof(double));
         /* Calculate a Positive 1D Gaussian */
         if ( sigma > MagickEpsilon )
           { sigma *= KernelRank;               /* simplify loop expressions */
-            gamma = 1.0/(2.0*sigma*sigma);
-            sigma = 1.0/(MagickSQ2PI*sigma );
+            A = 1.0/(2.0*sigma*sigma);
+            B = 1.0/(MagickSQ2PI*sigma );
             for ( u=-v; u <= v; u++) {
-              kernel->values[(u+v)/KernelRank] +=
-                                 sigma*exp(-((double)(u*u))*gamma);
+              kernel->values[(u+v)/KernelRank] += exp(-((double)(u*u))*A)*B;
             }
           }
         else /* special case - generate a unity kernel */
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+
+        /* Subtract a Second 1D Gaussian for "Difference of Blur" */
         if ( type == DOBKernel )
-          { /* Subtract a Second 1D Gaussian for "Difference of Blur" */
+          {
             if ( sigma2 > MagickEpsilon )
               { sigma = sigma2*KernelRank;      /* simplify loop expressions */
-                gamma = 1.0/(2.0*sigma*sigma);
-                sigma = 1.0/(MagickSQ2PI*sigma );
+                A = 1.0/(2.0*sigma*sigma);
+                B = 1.0/(MagickSQ2PI*sigma);
                 for ( u=-v; u <= v; u++)
-                  kernel->values[(u+v)/KernelRank] -=
-                                 sigma*exp(-((double)(u*u))*gamma);
+                  kernel->values[(u+v)/KernelRank] -= exp(-((double)(u*u))*A)*B;
               }
-            else /* special case - subtract a unity kernel */
+            else /* limiting case - a unity (normalized Dirac) kernel */
               kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
           }
 #else
@@ -943,26 +1009,28 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         /* Calculate a Positive Gaussian */
         if ( sigma > MagickEpsilon )
-          { gamma = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
-            sigma = 1.0/(MagickSQ2PI*sigma);
+          { A = 1.0/(2.0*sigma*sigma);     /* simplify loop expressions */
+            B = 1.0/(MagickSQ2PI*sigma);
             for ( i=0, u=-kernel->x; u <= (long)kernel->x; u++, i++)
-              kernel->values[i] = sigma*exp(-((double)(u*u))*gamma);
+              kernel->values[i] = exp(-((double)(u*u))*A)*B;
           }
         else /* special case - generate a unity kernel */
           { (void) ResetMagickMemory(kernel->values,0, (size_t)
                          kernel->width*kernel->height*sizeof(double));
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
           }
+
+        /* Subtract a Second 1D Gaussian for "Difference of Blur" */
         if ( type == DOBKernel )
-          { /* Subtract a Second 1D Gaussian for "Difference of Blur" */
+          {
             if ( sigma2 > MagickEpsilon )
               { sigma = sigma2;                /* simplify loop expressions */
-                gamma = 1.0/(2.0*sigma*sigma);
-                sigma = 1.0/(MagickSQ2PI*sigma);
+                A = 1.0/(2.0*sigma*sigma);
+                B = 1.0/(MagickSQ2PI*sigma);
                 for ( i=0, u=-kernel->x; u <= (long)kernel->x; u++, i++)
-                  kernel->values[i] -= sigma*exp(-((double)(u*u))*gamma);
+                  kernel->values[i] -= exp(-((double)(u*u))*A)*B;
               }
-            else /* special case - subtract a unity kernel */
+            else /* limiting case - a unity (normalized Dirac) kernel */
               kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
           }
 #endif
@@ -977,8 +1045,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* Work out the meta-data about kernel */
         for ( i=0; i < (long) kernel->width; i++)
           {
-            if ( fabs(kernel->values[i]) < MagickEpsilon )
-              kernel->values[i] = 0.0;
             ( kernel->values[i] < 0)
                 ?  ( kernel->negative_range += kernel->values[i] )
                 :  ( kernel->positive_range += kernel->values[i] );
@@ -991,7 +1057,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** NB: a CorrelateNormalize performs a normal Normalize if
         ** there are no negative values.
         */
-        ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
+        //ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
 
         /* rotate the 1D kernel by given angle */
         RotateKernelInfo(kernel, (type == BlurKernel) ? args->xi : args->psi );
@@ -999,9 +1065,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case CometKernel:
       { double
-          sigma = fabs(args->sigma);
+          sigma = fabs(args->sigma),
+          A;
 
-        sigma = (sigma <= MagickEpsilon) ? 1.0 : sigma;
         if ( args->rho < 1.0 )
           kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
         else
@@ -1022,27 +1088,41 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** As we are normalizing and not subtracting gaussians,
         ** there is no need for a divisor in the gaussian formula
         **
+        ** It is less comples 
         */
+        if ( sigma > MagickEpsilon )
+          {
 #if 1
 #define KernelRank 3
-        sigma *= KernelRank;                /* simplify expanded curve */
-        v = (long) kernel->width*KernelRank; /* start/end points to fit range */
-        (void) ResetMagickMemory(kernel->values,0, (size_t)
-                       kernel->width*sizeof(double));
-        for ( u=0; u < v; u++) {
-          kernel->values[u/KernelRank] +=
-               exp(-((double)(u*u))/(2.0*sigma*sigma))
-                       /*   / (MagickSQ2PI*sigma/KernelRank)  */ ;
-        }
-        for (i=0; i < (long) kernel->width; i++)
-          kernel->positive_range += kernel->values[i];
+            v = (long) kernel->width*KernelRank; /* start/end points */
+            (void) ResetMagickMemory(kernel->values,0, (size_t)
+                          kernel->width*sizeof(double));
+            sigma *= KernelRank;            /* simplify the loop expression */
+            A = 1.0/(2.0*sigma*sigma);
+            /* B = 1.0/(MagickSQ2PI*sigma); */
+            for ( u=0; u < v; u++) {
+              kernel->values[u/KernelRank] +=
+                  exp(-((double)(u*u))*A);
+              /*  exp(-((double)(i*i))/2.0*sigma*sigma)/(MagickSQ2PI*sigma); */
+            }
+            for (i=0; i < (long) kernel->width; i++)
+              kernel->positive_range += kernel->values[i];
 #else
-        for ( i=0; i < (long) kernel->width; i++)
-          kernel->positive_range += (
-            kernel->values[i] =
-               exp(-((double)(i*i))/(2.0*sigma*sigma))
-                       /*  / (MagickSQ2PI*sigma)  */ );
+            A = 1.0/(2.0*sigma*sigma);     /* simplify the loop expression */
+            /* B = 1.0/(MagickSQ2PI*sigma); */
+            for ( i=0; i < (long) kernel->width; i++)
+              kernel->positive_range +=
+                kernel->values[i] =
+                  exp(-((double)(i*i))*A);
+                /* exp(-((double)(i*i))/2.0*sigma*sigma)/(MagickSQ2PI*sigma); */
 #endif
+          }
+        else /* special case - generate a unity kernel */
+          { (void) ResetMagickMemory(kernel->values,0, (size_t)
+                         kernel->width*kernel->height*sizeof(double));
+            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+            kernel->positive_range = 1.0;
+          }
         kernel->minimum = 0;
         kernel->maximum = kernel->values[0];
 
@@ -1056,22 +1136,29 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         switch ( (int) args->rho ) {
           case 0:
-          default: /* default laplacian 'edge' filter */
+          default: /* laplacian square filter -- default */
             kernel=ParseKernelArray("3: -1,-1,-1  -1,8,-1  -1,-1,-1");
             break;
-          case 1:
+          case 1:  /* laplacian diamond filter */
             kernel=ParseKernelArray("3: 0,-1,0  -1,4,-1  0,-1,0");
             break;
           case 2:
+            kernel=ParseKernelArray("3: -2,1,-2  1,4,1  -2,1,-2");
+            break;
+          case 3:
             kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  1,-2,1");
             break;
-          case 3:   /* a 5x5 laplacian */
+          case 5:   /* a 5x5 laplacian */
             kernel=ParseKernelArray(
-              "5: -4,-1,0,-1,-4 -1,2,3,2,-1  0,3,4,3,0 -1,2,3,2,-1  -4,-1,0,-1,-4");
+              "5: -4,-1,0,-1,-4  -1,2,3,2,-1  0,3,4,3,0  -1,2,3,2,-1  -4,-1,0,-1,-4");
             break;
-          case 4:   /* a 7x7 laplacian */
+          case 7:   /* a 7x7 laplacian */
             kernel=ParseKernelArray(
               "7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
+            break;
+          case 10:   /* a 5x5 LOG (sigma approx 1.4) */
+            kernel=ParseKernelArray(
+              "5: 0,0,-1,0,0  0,-1,-2,-1,0  -1,-2,16,-2,-1  0,-1,-2,-1,0  0,0,-1,0,0");
             break;
         }
         if (kernel == (KernelInfo *) NULL)
@@ -1109,6 +1196,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case CompassKernel:
       {
         kernel=ParseKernelArray("3: -1,1,1  -1,-2,1  -1,1,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        break;
+      }
+    case KirschKernel:
+      {
+        kernel=ParseKernelArray("3: -3,-3,5  -3,0,5  -3,-3,5");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1616,25 +1712,29 @@ static void ExpandKernelInfo(KernelInfo *kernel, double angle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M o r p h o l o g y I m a g e C h a n n e l                             %
+%     M o r p h o l o g y A p p l y                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MorphologyImageChannel() applies a user supplied kernel to the image
-%  according to the given mophology method.
+%  MorphologyApply() applies a morphological method, multiple times using
+%  a list of multiple kernels.
 %
-%  The given kernel is assumed to have been pre-scaled appropriatally, usally
-%  by the kernel generator.
+%  It is basically equivelent to as MorphologyImageChannel() (see below) but
+%  without user controls, that that function extracts and applies to kernels
+%  and morphology methods.
+%
+%  More specifically kernels are not normalized/scaled/blended by the
+%  'convolve:scale' Image Artifact (-set setting), and the convolve bias
+%  (-bias setting or image->bias) is passed directly to this function,
+%  and not extracted from an image.
 %
 %  The format of the MorphologyImage method is:
 %
-%      Image *MorphologyImage(const Image *image,MorphologyMethod method,
-%        const long iterations,KernelInfo *kernel,ExceptionInfo *exception)
-%      Image *MorphologyImageChannel(const Image *image, const ChannelType
-%        channel,MorphologyMethod method,const long iterations,
-%        KernelInfo *kernel,ExceptionInfo *exception)
+%      Image *MorphologyApply(const Image *image,MorphologyMethod method,
+%        const long iterations,const KernelInfo *kernel,const double bias,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1652,24 +1752,20 @@ static void ExpandKernelInfo(KernelInfo *kernel, double angle)
 %    o kernel: An array of double representing the morphology kernel.
 %              Warning: kernel may be normalized for the Convolve method.
 %
+%    o bias: Convolution Bias to use.
+%
 %    o exception: return any errors or warnings in this structure.
-%
-%
-% TODO: bias and auto-scale handling of the kernel for convolution
-%     The given kernel is assumed to have been pre-scaled appropriatally, usally
-%     by the kernel generator.
 %
 */
 
 
-/* Internal function
- * Apply the low-level Morphology Method Primatives using the given Kernel
- * Returning the number of pixels that changed.
- * Two pre-created images must be provided, no image is created.
- */
+/* Apply a Morphology Primative to an image using the given kernel.
+** Two pre-created images must be provided, no image is created.
+** Returning the number of pixels that changed.
+*/
 static unsigned long MorphologyPrimative(const Image *image, Image
      *result_image, const MorphologyMethod method, const ChannelType channel,
-     const KernelInfo *kernel, ExceptionInfo *exception)
+     const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
 {
 #define MorphologyTag  "Morphology/Image"
 
@@ -1681,31 +1777,19 @@ static unsigned long MorphologyPrimative(const Image *image, Image
   MagickBooleanType
     status;
 
-  MagickPixelPacket
-    bias;
-
   CacheView
     *p_view,
     *q_view;
 
-  /* Only the most basic morphology is actually performed by this routine */
-
-  /*
-    Apply Basic Morphology to Image.
-  */
   status=MagickTrue;
   changed=0;
   progress=0;
-
-  GetMagickPixelPacket(image,&bias);
-  SetMagickPixelPacketBias(image,&bias);
-  /* Future: handle auto-bias from user, based on kernel input */
 
   p_view=AcquireCacheView(image);
   q_view=AcquireCacheView(result_image);
 
   /* Some methods (including convolve) needs use a reflected kernel.
-   * Adjust 'origin' offsets for this reflected kernel.
+   * Adjust 'origin' offsets to loop though kernel as a reflection.
    */
   offx = kernel->x;
   offy = kernel->y;
@@ -1726,7 +1810,7 @@ static unsigned long MorphologyPrimative(const Image *image, Image
       /* kernel is user as is, without reflection */
       break;
     default:
-      perror("Not a low level Morphology Method");
+      assert("Not a Primitive Morphology Method" != (char *) NULL);
       break;
   }
 
@@ -1811,7 +1895,7 @@ static unsigned long MorphologyPrimative(const Image *image, Image
       max.blue    =
       max.opacity =
       max.index   = (MagickRealType) 0;
-      /* original pixel value */
+      /* default result is the original pixel value */
       result.red     = (MagickRealType) p[r].red;
       result.green   = (MagickRealType) p[r].green;
       result.blue    = (MagickRealType) p[r].blue;
@@ -1822,16 +1906,17 @@ static unsigned long MorphologyPrimative(const Image *image, Image
 
       switch (method) {
         case ConvolveMorphology:
-          /* Set the user defined bias of the weighted average output
-          **
-          ** FUTURE: provide some way for internal functions to disable
-          ** user provided bias and scaling effects.
-          */
-          result=bias;
+          /* Set the user defined bias of the weighted average output */
+          result.red     =
+          result.green   =
+          result.blue    =
+          result.opacity =
+          result.index   = bias;
           break;
         case DilateIntensityMorphology:
         case ErodeIntensityMorphology:
-          result.red = 0.0;  /* flag indicating when first match found */
+          /* use a boolean flag indicating when first match found */
+          result.red = 0.0;  /* result is not used otherwise */
           break;
         default:
           break;
@@ -2061,8 +2146,8 @@ static unsigned long MorphologyPrimative(const Image *image, Image
             /* Select Pixel with Maximum Intensity within kernel neighbourhood
             **
             ** WARNING: the intensity test fails for CMYK and does not
-            ** take into account the moderating effect of teh alpha channel
-            ** on the intensity.
+            ** take into account the moderating effect of the alpha channel
+            ** on the intensity (yet).
             **
             ** NOTE for correct working of this operation for asymetrical
             ** kernels, the kernel needs to be applied in its reflected form.
@@ -2212,43 +2297,37 @@ static unsigned long MorphologyPrimative(const Image *image, Image
 }
 
 
-MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
-  method, const long iterations,const KernelInfo *kernel, ExceptionInfo
-  *exception)
+MagickExport Image *MorphologyApply(const Image *image, const ChannelType
+     channel,const MorphologyMethod method, const long iterations,
+     const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
 {
   Image
-    *morphology_image;
-
-  morphology_image=MorphologyImageChannel(image,DefaultChannels,method,
-    iterations,kernel,exception);
-  return(morphology_image);
-}
-
-
-MagickExport Image *MorphologyImageChannel(const Image *image,
-  const ChannelType channel,const MorphologyMethod method,
-  const long iterations,const KernelInfo *kernel,ExceptionInfo *exception)
-{
-  Image
-    *new_image,
-    *old_image,
-    *grad_image;
+    *curr_image,   /* Image we are working with */
+    *work_image,   /* secondary working image */
+    *save_image;   /* save image for later use */
 
   KernelInfo
-    *curr_kernel,
-    *this_kernel;
+    *curr_kernel,  /* current kernel list to apply */
+    *this_kernel;  /* current individual kernel to apply */
 
   MorphologyMethod
-    curr_method;
+    primative;     /* the current morphology primative being applied */
+
+  MagickBooleanType
+    verbose;           /* verbose output of results */
+
+  CompositeOperator
+    kernel_compose;  /* Handling the result of multiple kernels*/
 
   unsigned long
-    count,         /* count of the number of times though kernel list */
-    limit,         /* limit of the total number of times */
-    steps,         /* grand total of number of morpholgy steps done */
-    kernel_number, /* kernel number being applied */
-    changed,       /* pixels changed in one step */
-    list_changed,  /* changes made over one set of kernels */
-    total_changed; /* total count of changes to image */
+    count,         /* count of primative steps applied */
+    loop,          /* number of times though kernel list (iterations) */
+    loop_limit,    /* finish looping after this many times */
+    stage,         /* stage number for compound morphology */
+    changed,       /* number pixels changed by one primative operation */
+    loop_changed,  /* changes made over loop though of kernels */
+    total_changed, /* total count of all changes to image */
+    kernel_number; /* kernel number being applied */
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2257,6 +2336,9 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
+  loop_limit = iterations;
+  if ( iterations < 0 )
+     loop_limit = image->columns > image->rows ? image->columns : image->rows;
   if ( iterations == 0 )
     return((Image *)NULL); /* null operation - nothing to do! */
 
@@ -2265,283 +2347,334 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
    */
   assert(kernel != (KernelInfo *)NULL);
 
-  new_image  = (Image *) NULL;          /* for cleanup */
-  old_image  = (Image *) NULL;
-  grad_image = (Image *) NULL;
-  curr_kernel = (KernelInfo *) NULL;
+  verbose = ( GetImageArtifact(image,"verbose") != (const char *) NULL );
 
-  steps = 0;                          /* total number of primative steps */
-  count = 0;                          /* number of times through kernel list */
-  changed = 1;                        /* assume something was changed! */
-  list_changed = 0;
-  total_changed = 0;
-  curr_kernel = (KernelInfo *)kernel; /* allow kernel and method */
-  curr_method = method;               /* to be changed as nessary */
+  /* initialise for cleanup */
+  curr_image = (Image *) image;    /* result of morpholgy primative */
+  work_image = (Image *) NULL;     /* secondary working image */
+  save_image = (Image *) NULL;     /* save image for some compound methods */
+  curr_kernel = (KernelInfo *)kernel; /* allow kernel list to be modified */
 
-  limit = (unsigned long) iterations;
-  if ( iterations < 0 )
-    limit = image->columns > image->rows ? image->columns : image->rows;
+  kernel_compose = NoCompositeOp;  /* iterated over all kernels */
 
-  /* Third-level morphology methods */
-  switch( curr_method ) {
-    case EdgeMorphology:
-      grad_image = MorphologyImageChannel(image, channel,
-            DilateMorphology, iterations, curr_kernel, exception);
-      if ( grad_image == (Image *) NULL )
-        goto error_cleanup;
-      /* FALL-THRU */
-    case EdgeInMorphology:
-      curr_method = ErodeMorphology;
-      break;
-    case EdgeOutMorphology:
-      curr_method = DilateMorphology;
-      break;
-    case TopHatMorphology:
-      curr_method = OpenMorphology;
-      break;
-    case BottomHatMorphology:
-      curr_method = CloseMorphology;
-      break;
-    default:
-      break; /* not a third-level method */
-  }
-
-  /* Second-level morphology methods */
-  switch( curr_method ) {
-    case OpenMorphology:
-      /* Open is a Erode then a Dilate without reflection */
-      new_image = MorphologyImageChannel(image, channel,
-            ErodeMorphology, iterations, curr_kernel, exception);
-      if (new_image == (Image *) NULL)
-        goto error_cleanup;
-      curr_method = DilateMorphology;
-      break;
-    case OpenIntensityMorphology:
-      new_image = MorphologyImageChannel(image, channel,
-            ErodeIntensityMorphology, iterations, curr_kernel, exception);
-      if (new_image == (Image *) NULL)
-        goto error_cleanup;
-      curr_method = DilateIntensityMorphology;
-      break;
-
-    case CloseMorphology:
-      /* Close is a Dilate then Erode using reflected kernel */
-      /* A reflected kernel is needed for a Close */
-      if ( curr_kernel == kernel )
-        curr_kernel = CloneKernelInfo(kernel);
-      if (curr_kernel == (KernelInfo *) NULL)
-        goto error_cleanup;
-      RotateKernelInfo(curr_kernel,180);
-      new_image = MorphologyImageChannel(image, channel,
-            DilateMorphology, iterations, curr_kernel, exception);
-      if (new_image == (Image *) NULL)
-        goto error_cleanup;
-      curr_method = ErodeMorphology;
-      break;
-    case CloseIntensityMorphology:
-      /* A reflected kernel is needed for a Close */
-      if ( curr_kernel == kernel )
-        curr_kernel = CloneKernelInfo(kernel);
-      if (curr_kernel == (KernelInfo *) NULL)
-        goto error_cleanup;
-      RotateKernelInfo(curr_kernel,180);
-      new_image = MorphologyImageChannel(image, channel,
-            DilateIntensityMorphology, iterations, curr_kernel, exception);
-      if (new_image == (Image *) NULL)
-        goto error_cleanup;
-      curr_method = ErodeIntensityMorphology;
-      break;
-
+  /* Select initial primative morphology to apply */
+  switch( method ) {
     case CorrelateMorphology:
       /* A Correlation is actually a Convolution with a reflected kernel.
-      ** However a Convolution is a weighted sum with a reflected kernel.
+      ** However a Convolution is a weighted sum using a reflected kernel.
       ** It may seem stange to convert a Correlation into a Convolution
       ** as the Correleation is the simplier method, but Convolution is
       ** much more commonly used, and it makes sense to implement it directly
       ** so as to avoid the need to duplicate the kernel when it is not
       ** required (which is typically the default).
       */
-      if ( curr_kernel == kernel )
-        curr_kernel = CloneKernelInfo(kernel);
+      curr_kernel = CloneKernelInfo(kernel);
       if (curr_kernel == (KernelInfo *) NULL)
         goto error_cleanup;
       RotateKernelInfo(curr_kernel,180);
-      curr_method = ConvolveMorphology;
-      /* FALL-THRU into Correlate (weigthed sum without reflection) */
-
+      /* FALL THRU to Convolve */
     case ConvolveMorphology:
-      { /* Scale or Normalize kernel, according to user wishes
-        ** before using it for the Convolve/Correlate method.
-        **
-        ** FUTURE: provide some way for internal functions to disable
-        ** user bias and scaling effects.
-        */
-        const char
-          *artifact = GetImageArtifact(image,"convolve:scale");
-        if ( artifact != (char *)NULL ) {
-          GeometryFlags
-            flags;
-          GeometryInfo
-            args;
-
-          if ( curr_kernel == kernel )
-            curr_kernel = CloneKernelInfo(kernel);
-          if (curr_kernel == (KernelInfo *) NULL)
-            goto error_cleanup;
-          args.rho = 1.0;
-          flags = (GeometryFlags) ParseGeometry(artifact, &args);
-          ScaleKernelInfo(curr_kernel, args.rho, flags);
-        }
-      }
-      /* FALL-THRU to do the first, and typically the only iteration */
-
-    default:
-      /* Do a single iteration using the Low-Level Morphology method!
-      ** This ensures a "new_image" has been generated, but allows us to skip
-      ** the creation of 'old_image' if no more iterations are needed.
-      **
-      ** The "curr_method" should also be set to a low-level method that is
-      ** understood by the MorphologyPrimative() internal function.
-      */
-      new_image=CloneImage(image,0,0,MagickTrue,exception);
-      if (new_image == (Image *) NULL)
+      primative = ConvolveMorphology;
+      kernel_compose = NoCompositeOp;
+      break;
+    case ErodeMorphology:      /* just erode */
+    case OpenMorphology:       /* erode then dialate */
+    case EdgeInMorphology:     /* erode and image difference */
+    case TopHatMorphology:     /* erode, dilate and image difference */
+    case SmoothMorphology:     /* erode, dilate, dilate, erode */
+      primative = ErodeMorphology;
+      break;
+    case ErodeIntensityMorphology:
+    case OpenIntensityMorphology:
+      primative = ErodeIntensityMorphology;
+      break;
+    case DilateMorphology:     /* just dilate */
+    case EdgeOutMorphology:    /* dilate and image difference */
+    case EdgeMorphology:       /* dilate and erode difference */
+      primative = DilateMorphology;
+      break;
+    case CloseMorphology:      /* dilate, then erode */
+    case BottomHatMorphology:  /* dilate and image difference */
+      curr_kernel = CloneKernelInfo(kernel);
+      if (curr_kernel == (KernelInfo *) NULL)
         goto error_cleanup;
-      if (SetImageStorageClass(new_image,DirectClass) == MagickFalse)
-        {
-          InheritException(exception,&new_image->exception);
-          goto exit_cleanup;
-        }
-      steps++;  /* primative morphology steps performs */
-      changed = MorphologyPrimative(image,new_image,curr_method,channel,
-           curr_kernel, exception);
-      if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-        fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
-              MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-              1L, 0L, steps, changed);
+      RotateKernelInfo(curr_kernel,180);
+      primative = DilateMorphology;
+      break;
+    case DilateIntensityMorphology:
+    case CloseIntensityMorphology:
+      curr_kernel = CloneKernelInfo(kernel);
+      if (curr_kernel == (KernelInfo *) NULL)
+        goto error_cleanup;
+      RotateKernelInfo(curr_kernel,180);
+      primative = DilateIntensityMorphology;
+      break;
+    case HitAndMissMorphology:
+      primative = HitAndMissMorphology;
+      loop_limit = 1;                       /* iterate only once */
+      kernel_compose = LightenCompositeOp;  /* Union of Hit-And-Miss */
+      break;
+    case ThinningMorphology:     /* iterative morphology */
+    case ThickenMorphology:
+    case DistanceMorphology:     /* Distance should never use multple kernels */
+    case UndefinedMorphology:
+      kernel_compose = NoCompositeOp;
       break;
   }
-  /* At this point
-   *   + "curr_method" should be set to a low-level morphology method
-   *   + "count=1" if the first iteration of the first kernel has been done.
-   *   + "new_image" is defined and contains the current resulting image
-   */
 
-  /* The Hit-And-Miss Morphology is not 'iterated' against the resulting
-  ** image from the previous morphology step.  It must always be applied
-  ** to the original image, with the results collected into a union (maximimum
-  ** or lighten) of all the results.  Multiple kernels may be applied but
-  ** an iteration of the morphology does nothing, so is ignored.
-  **
-  ** The first kernel is guranteed to have been done, so lets continue the
-  ** process, with the other kernels in the kernel list.
-  */
-  if ( method == HitAndMissMorphology )
-  {
-    if ( curr_kernel->next != (KernelInfo *) NULL ) {
-      /* create a second working image */
-      old_image = CloneImage(image,0,0,MagickTrue,exception);
-      if (old_image == (Image *) NULL)
-        goto error_cleanup;
-      if (SetImageStorageClass(old_image,DirectClass) == MagickFalse)
-        {
-          InheritException(exception,&old_image->exception);
-          goto exit_cleanup;
-        }
+  { /* User override of results handling */
+    const char
+       *artifact = GetImageArtifact(image,"morphology:style");
+    if ( artifact != (const char *) NULL ) {
+      if (LocaleCompare("union",artifact) == 0)
+        kernel_compose = LightenCompositeOp;
+      if (LocaleCompare("iterate",artifact) == 0)
+        kernel_compose = NoCompositeOp;
+      else
+        kernel_compose = (CompositeOperator) ParseMagickOption(
+                                 MagickComposeOptions,MagickFalse,artifact);
+      if ( kernel_compose == UndefinedCompositeOp )
+        perror("Invalid \"morphology:compose\" setting\n");
+    }
+  }
 
-      /* loop through rest of the kernels */
-      this_kernel=curr_kernel->next;
-      kernel_number=1;
-      count=1;  /* it is always the first list! */
-      while( this_kernel != (KernelInfo *) NULL )
-        {
-          steps++;
-          changed = MorphologyPrimative(image,old_image,curr_method,channel,
-              this_kernel,exception);
-          (void) CompositeImageChannel(new_image,
-            (ChannelType) (channel & ~SyncChannels), LightenCompositeOp,
-            old_image, 0, 0);
-          if ( kernel->next != (KernelInfo *) NULL ) /* more than one kernel? */
-            if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-              fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
-                   MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                   count, kernel_number, steps, changed);
-          this_kernel = this_kernel->next;
+  /* Initialize compound morphology stages  */
+  count = 0;          /* number of low-level morphology primatives performed */
+  total_changed = 0;  /* total number of pixels changed thoughout */
+  stage = 1;          /* the compound morphology stage number */
+
+  /* compount morphology staging loop */
+  while ( 1 ) {
+
+#if 1
+    /* Extra information for debugging compound operations */
+    if ( verbose == MagickTrue && primative != method )
+      fprintf(stderr, "Morphology %s: Stage %lu %s%s (%s)\n",
+        MagickOptionToMnemonic(MagickMorphologyOptions, method), stage,
+        MagickOptionToMnemonic(MagickMorphologyOptions, primative),
+        ( curr_kernel == kernel) ? "" : "*",
+        ( kernel_compose == NoCompositeOp ) ? "iterate"
+          : MagickOptionToMnemonic(MagickComposeOptions, kernel_compose) );
+#endif
+
+    if ( kernel_compose == NoCompositeOp ) {
+      /******************************
+       ** Iterate over all Kernels **
+       ******************************/
+      loop = 0;
+      loop_changed = 1;
+      while ( loop < loop_limit && loop_changed > 0 ) {
+        loop++;       /* the iteration of this kernel */
+
+        loop_changed = 0;
+        this_kernel = curr_kernel;
+        kernel_number = 0;
+        while ( this_kernel != NULL ) {
+
+          /* Create a destination image, if not yet defined */
+          if ( work_image == (Image *) NULL )
+            {
+              work_image=CloneImage(image,0,0,MagickTrue,exception);
+              if (work_image == (Image *) NULL)
+                goto error_cleanup;
+              if (SetImageStorageClass(work_image,DirectClass) == MagickFalse)
+                {
+                  InheritException(exception,&work_image->exception);
+                  goto error_cleanup;
+                }
+            }
+
+          /* morphological primative  curr -> work */
+          count++;
+          changed = MorphologyPrimative(curr_image, work_image, primative,
+                        channel, this_kernel, bias, exception);
+          loop_changed += changed;
+          total_changed += changed;
+
+          if ( verbose == MagickTrue )
+            fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
+                MagickOptionToMnemonic(MagickMorphologyOptions, primative),
+                loop, kernel_number, count, changed);
+
+          /* prepare next loop */
+          { Image *tmp = work_image;   /* swap images for iteration */
+            work_image = curr_image;
+            curr_image = tmp;
+          }
+          if ( work_image == image )
+            work_image = (Image *) NULL;  /* never assign image to 'work' */
+          this_kernel = this_kernel->next;  /* prepare next kernel (if any) */
           kernel_number++;
         }
-      if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-        fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu  Total %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                count, steps, list_changed, total_changed);
-      old_image=DestroyImage(old_image);
-    }
-    goto exit_cleanup;
-  }
 
-  /* Repeat the low-level morphology over all kernels
-     until iteration count limit or no change from any kernel is found */
-  if ( ( steps != 0 && limit != 1 && changed > 0 ) ||
-       curr_kernel->next != (KernelInfo *) NULL ) {
-
-    /* More than one step so create a second working image */
-    old_image = CloneImage(image,0,0,MagickTrue,exception);
-    if (old_image == (Image *) NULL)
-      goto error_cleanup;
-    if (SetImageStorageClass(old_image,DirectClass) == MagickFalse)
-      {
-        InheritException(exception,&old_image->exception);
-        goto exit_cleanup;
+        if ( verbose == MagickTrue && kernel->next != NULL )
+          fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu   Total %lu\n",
+                MagickOptionToMnemonic(MagickMorphologyOptions, primative),
+                loop, count, loop_changed, total_changed );
       }
-
-    /* reset variables for the first/next iteration, or next kernel) */
-    count = steps;
-    kernel_number = 0;
-    this_kernel = curr_kernel;
-    list_changed = (steps != 0) ? changed : 0;
-    total_changed = 0;
-    if ( (steps != 0) && this_kernel != (KernelInfo *) NULL ) {
-      count = 0;      /* first iteration is not yet finished! */
-      kernel_number++;
-      this_kernel = curr_kernel->next;
     }
 
-    while ( count < limit ) {
-      count++;     /* iteration though kernel list being performed */
-      while ( this_kernel != (KernelInfo *) NULL ) {
-        Image *tmp = old_image;
-        old_image = new_image;
-        new_image = tmp;
-        steps++;
-        changed = MorphologyPrimative(old_image,new_image,curr_method,channel,
-                          this_kernel,exception);
-        if ( kernel->next != (KernelInfo *) NULL ) /* more than one kernel? */
-          if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
+    else {
+      /*************************************
+       ** Composition of Iterated Kernels **
+       *************************************/
+      Image
+        *input_image,  /* starting point for kernels */
+        *union_image;
+      input_image = curr_image;
+      union_image = (Image *) NULL;
+
+      this_kernel = curr_kernel;
+      kernel_number = 0;
+      while ( this_kernel != NULL ) {
+
+        if( curr_image != (Image *) NULL && curr_image != input_image )
+          curr_image=DestroyImage(curr_image);
+        curr_image = input_image;  /* always start with the original image */
+
+        loop = 0;
+        changed = 1;
+        loop_changed = 0;
+        while ( loop < loop_limit && changed > 0 ) {
+          loop++;       /* the iteration of this kernel */
+
+          /* Create a destination image, if not defined */
+          if ( work_image == (Image *) NULL )
+            {
+              work_image=CloneImage(image,0,0,MagickTrue,exception);
+              if (work_image == (Image *) NULL)
+                goto error_cleanup;
+              if (SetImageStorageClass(work_image,DirectClass) == MagickFalse)
+                {
+                  InheritException(exception,&curr_image->exception);
+                  if( union_image != (Image *) NULL )
+                    union_image=DestroyImage(union_image);
+                  if( curr_image != input_image )
+                    curr_image = DestroyImage(curr_image);
+                  curr_image = (Image *) input_image;
+                  goto error_cleanup;
+                }
+            }
+
+          /* morphological primative  curr -> work */
+          count++;
+          changed = MorphologyPrimative(curr_image,work_image,primative,
+                        channel, this_kernel, bias, exception);
+          loop_changed += changed;
+          total_changed += changed;
+
+          if ( verbose == MagickTrue )
             fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
-                  MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                  count, kernel_number, steps, changed);
-        list_changed += changed;
-        this_kernel = this_kernel->next;
+                MagickOptionToMnemonic(MagickMorphologyOptions, primative),
+                loop, kernel_number, count, changed);
+
+          /* prepare next loop */
+          { Image *tmp = work_image;   /* swap images for iteration */
+            work_image = curr_image;   /* curr_image is now the results */
+            curr_image = tmp;
+          }
+          if ( work_image == input_image )
+            work_image = (Image *) NULL;  /* clear work of the input_image */
+
+        } /* end kernel iteration */
+
+        /* make a union of the iterated kernel */
+        if ( union_image == (Image *) NULL)   /* start the union? */
+          union_image = curr_image, curr_image = (Image *)NULL;
+        else
+          (void) CompositeImageChannel(union_image,
+            (ChannelType) (channel & ~SyncChannels), kernel_compose,
+            curr_image, 0, 0);
+
+        this_kernel = this_kernel->next;  /* next kernel (if any) */
         kernel_number++;
       }
-      total_changed += list_changed;
-      if ( GetImageArtifact(image,"verbose") != (const char *) NULL )
-        fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu  Total %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, curr_method),
-                count, steps, list_changed, total_changed);
-      if ( list_changed == 0 )
-        break;  /* no changes after processing all kernels - ABORT */
-      /* prepare for next loop */
-      list_changed = 0;
-      kernel_number = 0;
-      this_kernel = curr_kernel;
+
+      if ( verbose == MagickTrue && kernel->next != NULL && loop_limit > 1 )
+        fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu   Total %lu\n",
+              MagickOptionToMnemonic(MagickMorphologyOptions, primative),
+              loop, count, loop_changed, total_changed );
+
+#if 0
+fprintf(stderr, "--E-- image=0x%lx\n", (unsigned long)image);
+fprintf(stderr, "      input=0x%lx\n", (unsigned long)input_image);
+fprintf(stderr, "      union=0x%lx\n", (unsigned long)union_image);
+fprintf(stderr, "      curr =0x%lx\n", (unsigned long)curr_image);
+fprintf(stderr, "      work =0x%lx\n", (unsigned long)work_image);
+fprintf(stderr, "      save =0x%lx\n", (unsigned long)save_image);
+#endif
+
+      /* Finish up - return the union of results */
+      if( curr_image != (Image *) NULL && curr_image != input_image )
+          curr_image=DestroyImage(curr_image);
+      if( input_image != input_image )
+        input_image = DestroyImage(input_image);
+      curr_image = union_image;
     }
-    old_image=DestroyImage(old_image);
+
+    /* Compound Morphology Operations
+     *   set next 'primative' iteration, and continue
+     *   or break when all operations are complete.
+     */
+    stage++;   /* what is the next stage number to do */
+    switch( method ) {
+      case SmoothMorphology:           /* open, close */
+        switch ( stage ) {
+        /* case 1:  initialized above */
+        case 2:  /* open part 2 */
+          primative = DilateMorphology;
+          continue;
+        case 3:  /* close part 1 */
+          curr_kernel = CloneKernelInfo(kernel);
+          if (curr_kernel == (KernelInfo *) NULL)
+            goto error_cleanup;
+          RotateKernelInfo(curr_kernel,180);
+          continue;
+        case 4:  /* close part 2 */
+          primative = ErodeMorphology;
+          continue;
+        }
+        break;
+      case OpenMorphology:      /* erode, dilate */
+      case TopHatMorphology:
+        primative = DilateMorphology;
+        if ( stage <= 2 ) continue;
+        break;
+      case OpenIntensityMorphology:
+        primative = DilateIntensityMorphology;
+        if ( stage <= 2 ) continue;
+        break;
+      case CloseMorphology:       /* dilate, erode */
+      case BottomHatMorphology:
+        primative = ErodeMorphology;
+        if ( stage <= 2 ) continue;
+        break;
+      case CloseIntensityMorphology:
+        primative = ErodeIntensityMorphology;
+        if ( stage <= 2 ) continue;
+        break;
+      case EdgeMorphology:        /* dilate and erode difference */
+        if (stage <= 2) {
+          save_image = curr_image;
+          curr_image = (Image *) image;
+          primative = ErodeMorphology;
+          continue;
+        }
+        break;
+      default:  /* Primitive Morphology is just finished! */
+        break;
+    }
+
+    if ( verbose == MagickTrue && count > 1 )
+      fprintf(stderr, "Morphology %s: ======> Total %lu\n",
+           MagickOptionToMnemonic(MagickMorphologyOptions, method),
+           total_changed );
+
+    /* If we reach this point we are finished! - Break the Loop */
+    break;
   }
 
-  /* finished with kernel - destroy any copy that was made */
-  if ( curr_kernel != kernel )
-    curr_kernel=DestroyKernelInfo(curr_kernel);
-
-  /* Third-level Subtractive methods post-processing
+  /*  Final Post-processing for some Compound Methods
   **
   ** The removal of any 'Sync' channel flag in the Image Compositon below
   ** ensures the compose method is applied in a purely mathematical way, only
@@ -2556,32 +2689,151 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     case EdgeInMorphology:
     case TopHatMorphology:
     case BottomHatMorphology:
-      /* Get Difference relative to the original image */
-      (void) CompositeImageChannel(new_image, (ChannelType) (channel & ~SyncChannels),
-           DifferenceCompositeOp, image, 0, 0);
+      (void) CompositeImageChannel(curr_image,
+               (ChannelType) (channel & ~SyncChannels), DifferenceCompositeOp,
+               image, 0, 0);
       break;
     case EdgeMorphology:
-      /* Difference the Eroded image from the saved Dilated image */
-      (void) CompositeImageChannel(new_image, (ChannelType) (channel & ~SyncChannels),
-           DifferenceCompositeOp, grad_image, 0, 0);
-      grad_image=DestroyImage(grad_image);
+      /* Difference the Eroded Image with a Dilate image */
+      (void) CompositeImageChannel(curr_image,
+               (ChannelType) (channel & ~SyncChannels), DifferenceCompositeOp,
+               save_image, 0, 0);
       break;
     default:
       break;
   }
 
-  return(new_image);
+  goto exit_cleanup;
 
   /* Yes goto's are bad, but in this case it makes cleanup lot more efficient */
 error_cleanup:
-  if ( new_image != (Image *) NULL )
-    DestroyImage(new_image);
+  if ( curr_image != (Image *) NULL && curr_image != image )
+    DestroyImage(curr_image);
 exit_cleanup:
-  if ( old_image != (Image *) NULL )
-    DestroyImage(old_image);
-  if ( curr_kernel != (KernelInfo *) NULL &&  curr_kernel != kernel )
+  if ( work_image != (Image *) NULL )
+    DestroyImage(work_image);
+  if ( save_image != (Image *) NULL )
+    DestroyImage(save_image);
+  return(curr_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M o r p h o l o g y I m a g e C h a n n e l                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MorphologyImageChannel() applies a user supplied kernel to the image
+%  according to the given mophology method.
+%
+%  This function applies any and all user defined settings before calling
+%  the above internal function MorphologyApply().
+%
+%  User defined settings include...
+%    * convolution/correlation output bias (as per "-bias")
+%    * kernel normalization/scaling settings ("-set 'option:convolve:scale'")
+%    * kernel printing (after modification) ("-set option:showkernel 1")
+%
+%
+%  The format of the MorphologyImage method is:
+%
+%      Image *MorphologyImage(const Image *image,MorphologyMethod method,
+%        const long iterations,KernelInfo *kernel,ExceptionInfo *exception)
+%
+%      Image *MorphologyImageChannel(const Image *image, const ChannelType
+%        channel,MorphologyMethod method,const long iterations,
+%        KernelInfo *kernel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o method: the morphology method to be applied.
+%
+%    o iterations: apply the operation this many times (or no change).
+%                  A value of -1 means loop until no change found.
+%                  How this is applied may depend on the morphology method.
+%                  Typically this is a value of 1.
+%
+%    o channel: the channel type.
+%
+%    o kernel: An array of double representing the morphology kernel.
+%              Warning: kernel may be normalized for the Convolve method.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport Image *MorphologyImageChannel(const Image *image,
+  const ChannelType channel,const MorphologyMethod method,
+  const long iterations,const KernelInfo *kernel,ExceptionInfo *exception)
+{
+  const char
+    *artifact;
+
+  KernelInfo
+    *curr_kernel;
+
+  Image
+    *morphology_image;
+
+
+  /* Apply Convolve/Correlate Normalization and Scaling Factors
+     this is done BEFORE the ShowKernelInfo() function is called
+     so that users can see the results of the 'convolve:scale' option.
+   */
+  curr_kernel = (KernelInfo *) kernel;
+  if ( method == ConvolveMorphology )
+    {
+      artifact = GetImageArtifact(image,"convolve:scale");
+      if ( artifact != (char *)NULL ) {
+        GeometryFlags
+          flags;
+        GeometryInfo
+          args;
+
+        if ( curr_kernel == kernel )
+          curr_kernel = CloneKernelInfo(kernel);
+        if (curr_kernel == (KernelInfo *) NULL) {
+          curr_kernel=DestroyKernelInfo(curr_kernel);
+          return((Image *) NULL);
+        }
+        args.rho = 1.0;
+        flags = (GeometryFlags) ParseGeometry(artifact, &args);
+        ScaleKernelInfo(curr_kernel, args.rho, flags);
+      }
+    }
+
+  /* display the (normalized) kernel via stderr */
+  artifact = GetImageArtifact(image,"showkernel");
+  if ( artifact != (const char *) NULL)
+    ShowKernelInfo(curr_kernel);
+
+  /* Apply the Morphology */
+  morphology_image = MorphologyApply(image, channel, method, iterations,
+                         curr_kernel, image->bias, exception);
+
+  /* Cleanup and Exit */
+  if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
-  return(new_image);
+  return(morphology_image);
+}
+
+MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
+  method, const long iterations,const KernelInfo *kernel, ExceptionInfo
+  *exception)
+{
+  Image
+    *morphology_image;
+
+  morphology_image=MorphologyImageChannel(image,DefaultChannels,method,
+    iterations,kernel,exception);
+  return(morphology_image);
 }
 
 /*
