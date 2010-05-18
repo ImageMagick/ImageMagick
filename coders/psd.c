@@ -1984,7 +1984,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     *icc_profile;
 
   MagickBooleanType
-    invert_layer_count = MagickFalse,
+    invert_layer_count,
     status;
 
   PSDInfo
@@ -2027,6 +2027,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
+  invert_layer_count=MagickFalse;
   packet_size=(size_t) (image->depth > 8 ? 6 : 3);
   if (image->matte != MagickFalse)
     packet_size+=image->depth > 8 ? 2 : 1;
@@ -2181,16 +2182,17 @@ compute_layer_info:
     layer_count++;
     tmp_image = GetNextImageInList(tmp_image);
   }
-
-  /* if the image has a matte, then we need to use layers */
-  if ( layer_count == 0 && image->matte == MagickTrue )
-  {
-  invert_layer_count = MagickTrue;
-  base_image = image;
-  goto compute_layer_info;  /* yes, goto's suck, but it keeps the code cleaner! */
-  }
-
-  if ( layer_count == 0 )
+  if ((layer_count == 0) && (image->matte == MagickTrue))
+    {
+      /*
+        Image with matte channel requires layers.
+      */
+      invert_layer_count=MagickTrue;
+      image->matte=MagickFalse;
+      base_image=image;
+      goto compute_layer_info;
+    }
+  if (layer_count == 0)
     (void) SetPSDSize(&psd_info,image,0);
   else
   {
@@ -2201,12 +2203,10 @@ compute_layer_info:
     else
       rounded_layer_info_size = layer_info_size;
     (void) SetPSDSize(&psd_info,image,rounded_layer_info_size);
-
-    if ( invert_layer_count )
-      layer_count *= -1;  /* if we have a matte, then use negative count! */
+    if (invert_layer_count != MagickFalse)
+      layer_count*=(-1);  /* if we have a matte, then use negative count! */
     (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
-
-    layer_count = 1;
+    layer_count=1;
     tmp_image = base_image;
     tmp_image->compression=NoCompression;
     while ( tmp_image != NULL ) {
@@ -2288,28 +2288,26 @@ compute_layer_info:
         WritePascalString( image, theAttr, 4 );
       }
       tmp_image = GetNextImageInList(tmp_image);
-    };
-
-     /* now the image data! */
+    }
+    /* now the image data! */
     tmp_image = base_image;
     while ( tmp_image != NULL ) {
       status=WriteImageChannels(&psd_info,image_info,image,tmp_image,MagickTrue);
-
       /* add in the pad! */
        if ( rounded_layer_info_size != layer_info_size )
          (void) WriteBlobByte(image,'\0');
 
       tmp_image = GetNextImageInList(tmp_image);
     };
-
     /* user mask data */
-     (void) WriteBlobMSBLong(image, 0);
-
+    (void) WriteBlobMSBLong(image,0);
   }
-
-  /* now the background image data! */
+  /*
+    Write composite image.
+  */
+  if (invert_layer_count != MagickFalse)
+    image->matte=MagickTrue;
   status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
-
   (void) CloseBlob(image);
   return(status);
 }
