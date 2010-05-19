@@ -2862,7 +2862,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
    * users can see the results of the 'option:convolve:scale' option.
    */
   curr_kernel = (KernelInfo *) kernel;
-  if ( method == ConvolveMorphology )
+  if ( method == ConvolveMorphology ||  method == CorrelateMorphology )
     {
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (char *)NULL ) {
