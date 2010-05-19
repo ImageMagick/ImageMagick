@@ -2214,7 +2214,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       {
         (void) WriteBlobMSBShort(image,(unsigned short)
           (tmp_image->matte != MagickFalse ? 4 : 3));
-       if (tmp_image->matte!= MagickFalse ) {
+       if (tmp_image->matte != MagickFalse ) {
          (void) WriteBlobMSBShort(image,(unsigned short) -1);
          (void) SetPSDSize(&psd_info,image,channel_size);
        }
