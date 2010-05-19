@@ -10,6 +10,7 @@
 
 2010-05-17  6.6.2-0 Cristy  <quetzlzacatenango@image...>
   * PSD images require a proper layer to support an alpha channel.
+  * Enable PFM endian support.
 
 2010-05-15  6.6.1-10 Cristy  <quetzlzacatenango@image...>
   * Use ScaleCharToQuantum() in coders/src.c (reference
