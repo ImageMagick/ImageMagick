@@ -1075,7 +1075,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           A;
 
         if ( args->rho < 1.0 )
-          kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
+          kernel->width = (GetOptimalKernelWidth1D(args->rho,sigma)-1)/2+1;
         else
           kernel->width = (unsigned long)args->rho;
         kernel->x = kernel->y = 0;
