@@ -1334,6 +1334,7 @@ ModuleExport unsigned long RegisterPNMImage(void)
   entry=SetMagickInfo("PFM");
   entry->decoder=(DecodeImageHandler *) ReadPNMImage;
   entry->encoder=(EncodeImageHandler *) WritePNMImage;
+  entry->endian_support=MagickTrue;
   entry->description=ConstantString("Portable float format");
   entry->module=ConstantString("PFM");
   (void) RegisterMagickInfo(entry);

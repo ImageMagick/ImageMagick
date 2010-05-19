@@ -31,9 +31,9 @@ extern MagickExport double
     const MagickRealType);
 
 extern MagickExport unsigned long
-  GetOptimalKernelWidth(double,double),
-  GetOptimalKernelWidth1D(double,double),
-  GetOptimalKernelWidth2D(double,double);
+  GetOptimalKernelWidth(const double,const double),
+  GetOptimalKernelWidth1D(const double,const double),
+  GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport void
   ConvertHSBToRGB(const double,const double,const double,Quantum *,Quantum *,

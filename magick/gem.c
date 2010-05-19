@@ -745,12 +745,15 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-MagickExport unsigned long GetOptimalKernelWidth1D(double radius, double sigma)
+MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
+  const double sigma)
 {
-  MagickRealType
+  double
+    alpha,
+    beta,
+    gamma,
     normalize,
-    value,
-    A,B;
+    value;
 
   long
     j;
@@ -764,18 +767,18 @@ MagickExport unsigned long GetOptimalKernelWidth1D(double radius, double sigma)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (radius > MagickEpsilon)
     return((unsigned long) (2.0*ceil(radius)+1.0));
-  sigma = fabs(sigma);
-  if (sigma <= MagickEpsilon)
+  gamma=fabs(sigma);
+  if (gamma <= MagickEpsilon)
     return(3UL);
-  A = 1.0/(2.0*sigma*sigma);
-  B = 1.0/(MagickSQ2PI*sigma);
+  alpha=1.0/(2.0*gamma*gamma);
+  beta=1.0/(MagickSQ2PI*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
     j=(long) width/2;
     for (i=(-j); i <= j; i++)
-      normalize+=exp(-((double)(i*i))*A)*B;
-    value=exp(-((double)(j*j))*A)*B / normalize;
+      normalize+=exp(-((double) (i*i))*alpha)*beta;
+    value=exp(-((double) (j*j))*alpha)*beta/normalize;
     if ((value < QuantumScale) || (value < MagickEpsilon))
       break;
     width+=2;
@@ -783,12 +786,15 @@ MagickExport unsigned long GetOptimalKernelWidth1D(double radius, double sigma)
   return((unsigned long) (width-2));
 }
 
-MagickExport unsigned long GetOptimalKernelWidth2D(double radius, double sigma)
+MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
+  const double sigma)
 {
   double
+    alpha,
+    beta,
+    gamma,
     normalize,
-    value,
-    A,B;
+    value;
 
   long
     j,
@@ -801,19 +807,19 @@ MagickExport unsigned long GetOptimalKernelWidth2D(double radius, double sigma)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (radius > MagickEpsilon)
     return((unsigned long) (2.0*ceil(radius)+1.0));
-  sigma = fabs(sigma);
-  if (sigma <= MagickEpsilon)
+  gamma=fabs(sigma);
+  if (gamma <= MagickEpsilon)
     return(3UL);
-  A = 1.0/(2.0*sigma*sigma);
-  B = 1.0/(Magick2PI*sigma*sigma);
+  alpha=1.0/(2.0*gamma*gamma);
+  beta=1.0/(Magick2PI*gamma*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
     j=(long) width/2;
     for (v=(-j); v <= j; v++)
       for (u=(-j); u <= j; u++)
-        normalize+=exp(-((double)(u*u+v*v))*A)*B;
-    value=exp(-((double)(j*j))*A)*B / normalize;
+        normalize+=exp(-((double) (u*u+v*v))*alpha)*beta;
+    value=exp(-((double) (j*j))*alpha)*beta/normalize;
     if ((value < QuantumScale) || (value < MagickEpsilon))
       break;
     width+=2;

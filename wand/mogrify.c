@@ -2212,23 +2212,24 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("morphology",option+1) == 0)
           {
-            MorphologyMethod
-              method;
-
-            KernelInfo
-              *kernel;
-
             char
               token[MaxTextExtent];
 
             const char
               *p;
 
+            Image
+              *morphology_image;
+
+            KernelInfo
+              *kernel;
+
             long
               iterations;
 
-            Image
-              *morphology_image;
+            MorphologyMethod
+              method;
+
             /*
               Morphological Image Operation
             */
@@ -2245,12 +2246,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               iterations=StringToLong(p);
             kernel=AcquireKernelInfo(argv[i+2]);
             if (kernel == (KernelInfo *) NULL)
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnabletoParseKernel","morphology");
-              status=MagickFalse;
-              break;
-            }
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  OptionError,"UnabletoParseKernel","morphology");
+                status=MagickFalse;
+                break;
+              }
             morphology_image=MorphologyImageChannel(*image,channel,method,
               iterations,kernel,exception);
             kernel=DestroyKernelInfo(kernel);
