@@ -635,11 +635,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %           -1, 0, 1
 %           -2, 0,-2
 %           -1, 0, 1
-%    FreiChen:{angle}
-%      Frei-Chen 'Edge' convolution kernel (3x3)
-%             -1,     0,    1
-%           -sqrt(2), 0,  sqrt(2)
-%             -1,     0,    1
+%
 %    Roberts:{angle}
 %      Roberts convolution kernel (3x3)
 %            0, 0, 0
@@ -660,6 +656,54 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %           -3,-3, 5
 %           -3, 0, 5
 %           -3,-3, 5
+%
+%    FreiChen:{type},{angle}
+%      Frei-Chen Edge Detector is a set of 9 unique convolution kernels that
+%      are specially weighted. After applying each to the original image, the
+%      results is then added together.
+%
+%        Type 1: |  1,   sqrt(2),  1 |
+%                |  0,     0,      0 | / 2*sqrt(2)
+%                | -1,  -sqrt(2), -1 |
+%
+%        Type 2: |   1,     0,   1     |
+%                | sqrt(2), 0, sqrt(2) | / 2*sqrt(2)
+%                |   1,     0,   1     |
+%
+%        Type 3: |    0,    -1, sqrt(2) |
+%                |    1,     0,   -1    | / 2*sqrt(2)
+%                | -sqrt(2), 1,    0    |
+%
+%        Type 4: | sqrt(2), -1,     1    |
+%                |   -1,     0,     1    | / 2*sqrt(2)
+%                |    0,     1, -sqrt(2) |
+%
+%        Type 5: |  0, 1,  0 |
+%                | -1, 0, -1 | / 2
+%                |  0, 1,  0 |
+%
+%        Type 6: | -1, 0,  1 |
+%                |  0, 0,  0 | / 2
+%                |  1, 0, -1 |
+%
+%        Type 7: | -1, -2,  1 |
+%                | -2,  4, -2 | / 6
+%                |  1, -2,  1 |
+%
+%        Type 8: | -2,  1, -2 |
+%                |  1,  4,  1 | / 6
+%                | -2,  1, -2 |
+%
+%        Type 9: | 1,  1, 1 |
+%                | 1,  1, 1 | / 3
+%                | 1,  1, 1 |
+%
+%      The first 4 are for edge detection, the next 4 are for line detection
+%      and the last is to add a average component to the results.
+%
+%      The '{angle}' argument is not normally used but provided for
+%      convenience of generating other kernels from these kernels.
+%
 %
 %  Boolean Kernels
 %
@@ -1141,8 +1185,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
     /* Convolution Kernels - Well Known Constants */
     case LaplacianKernel:
-      {
-        switch ( (int) args->rho ) {
+      { switch ( (int) args->rho ) {
           case 0:
           default: /* laplacian square filter -- default */
             kernel=ParseKernelArray("3: -1,-1,-1  -1,8,-1  -1,-1,-1");
@@ -1188,17 +1231,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
         break;
       }
-    case FreiChenKernel:
-      {
-        kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->values[3] = -MagickSQ2;
-        kernel->values[5] = +MagickSQ2;
-        CalcKernelMetaData(kernel);     /* recalculate meta-data */
-        RotateKernelInfo(kernel, args->rho);  /* Rotate by angle */
-        break;
-      }
     case RobertsKernel:
       {
         kernel=ParseKernelArray("3: 0,0,0  -1,1,0  0,0,0");
@@ -1235,6 +1267,80 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         RotateKernelInfo(kernel, args->rho);
         break;
       }
+    case FreiChenKernel:
+      { switch ( (int) args->rho ) {
+          default:
+          case 1:
+            kernel=ParseKernelArray("3: 1,2,1  0,0,0  -1,2,-1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->values[1] = +MagickSQ2;
+            kernel->values[7] = -MagickSQ2;
+            CalcKernelMetaData(kernel);     /* recalculate meta-data */
+            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            break;
+          case 2:
+            kernel=ParseKernelArray("3: 1,0,1  2,0,2  1,0,1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->values[3] = +MagickSQ2;
+            kernel->values[5] = +MagickSQ2;
+            CalcKernelMetaData(kernel);
+            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            break;
+          case 3:
+            kernel=ParseKernelArray("3: 0,-1,2  1,0,-1  -2,1,0");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->values[2] = +MagickSQ2;
+            kernel->values[6] = -MagickSQ2;
+            CalcKernelMetaData(kernel);
+            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            break;
+          case 4:
+            kernel=ParseKernelArray("3: 2,-1,1  -1,0,1  0,1,-2");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->values[0] = +MagickSQ2;
+            kernel->values[8] = -MagickSQ2;
+            CalcKernelMetaData(kernel);
+            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            break;
+          case 5:
+            kernel=ParseKernelArray("3: 0,1,0  -1,0,-1  0,1,0");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            ScaleKernelInfo(kernel, 1.0/2.0, NoValue);
+            break;
+          case 6:
+            kernel=ParseKernelArray("3: -1,0,1  0,0,0  1,0,-1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            ScaleKernelInfo(kernel, 1.0/2.0, NoValue);
+            break;
+          case 7:
+            kernel=ParseKernelArray("3: -1,-2,1  -2,4,-2  1,-2,1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            ScaleKernelInfo(kernel, 1.0/6.0, NoValue);
+            break;
+          case 8:
+            kernel=ParseKernelArray("3: -2,1,-2  1,4,1  -2,1,-2");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            ScaleKernelInfo(kernel, 1.0/6.0, NoValue);
+            break;
+          case 9:
+            kernel=ParseKernelArray("3: 1,1,1  1,1,1  1,1,1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            ScaleKernelInfo(kernel, 1.0/3.0, NoValue);
+            break;
+        }
+        RotateKernelInfo(kernel, args->sigma);  /* Rotate by angle */
+        break;
+      }
+
     /* Boolean Kernels */
     case DiamondKernel:
       {
