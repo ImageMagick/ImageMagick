@@ -2171,7 +2171,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     else
       {
         size_t length=strlen(theAttr);
-        layer_info_size += 8+length+(4-(length % 4))+1;
+        layer_info_size += 8+length+(4-(length % 4));
       }
     layer_count++;
     tmp_image = GetNextImageInList(tmp_image);
@@ -2214,7 +2214,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       {
         (void) WriteBlobMSBShort(image,(unsigned short)
           (tmp_image->matte != MagickFalse ? 4 : 3));
-       if (tmp_image->matte != MagickFalse ) {
+       if (tmp_image->matte!= MagickFalse ) {
          (void) WriteBlobMSBShort(image,(unsigned short) -1);
          (void) SetPSDSize(&psd_info,image,channel_size);
        }
@@ -2263,7 +2263,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       } else {
         size_t length=strlen(theAttr);
         (void) WriteBlobMSBLong(image,(unsigned int) (length+(4-(length % 4))+
-          1+8));
+          8));
         (void) WriteBlobMSBLong(image,0);
         (void) WriteBlobMSBLong(image,0);
         WritePascalString( image, theAttr, 4 );
