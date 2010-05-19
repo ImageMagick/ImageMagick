@@ -2188,7 +2188,6 @@ compute_layer_info:
         Image with matte channel requires layers.
       */
       invert_layer_count=MagickTrue;
-      image->matte=MagickFalse;
       base_image=image;
       goto compute_layer_info;
     }
@@ -2305,8 +2304,6 @@ compute_layer_info:
   /*
     Write composite image.
   */
-  if (invert_layer_count != MagickFalse)
-    image->matte=MagickTrue;
   status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
   (void) CloseBlob(image);
   return(status);
