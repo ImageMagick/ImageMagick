@@ -1769,10 +1769,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     else
       {
         if (tmp_image->colorspace == CMYKColorspace)
-          {
-            tmp_image->compression=NoCompression;
-            (void) NegateImage(tmp_image,MagickFalse);
-          }
+          (void) NegateImage(tmp_image,MagickFalse);
         if (tmp_image->compression == RLECompression)
           {
             /*
@@ -2193,7 +2190,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
     layer_count=1;
     tmp_image = base_image;
-    tmp_image->compression=NoCompression;
     while ( tmp_image != NULL ) {
       (void) WriteBlobMSBLong(image,0);
       (void) WriteBlobMSBLong(image,0);
