@@ -4,9 +4,15 @@
   * Rewrite of MorphologyApply to output better 'verbose' messages
   * Better handling of Gaussian tyle filters (bug fixes)
   * Bug fix and optimization of kernel size calculations in "gem.c"
-  * Addition of "Laplacian of Gauussian" (LOG), also known as Mexician Hat
   * Allow kernel rotation flags in 'user defined' kernels
-  * Add blend with unity factor to "-set option:convolve:scale"
+    EG: -set option:showkernel 1 -morphology Thinning  '3@: 0,1,0 0,1,0 0,0,0'
+  * Allow a scaled unity kernel to be added to kernel (EdgeDet->Sharpen)
+    EG: -set option:convolve:scale [kernel_scale][^!],[unity_scale][%]
+  * Addition of "Laplacian of Gauussian" (LOG), also known as Mexician Hat
+    EG: -morphology convolve LOG:0x1
+  * Added FreiChen, Kirsch  Convolution kernels
+  * Added Descrete 'Laplacian of Gaussian' kernels (Laplacian type 15 and 19)
+  * Added Edges HitAndMiss Kernel
 
 2010-05-17  6.6.2-0 Cristy  <quetzlzacatenango@image...>
   * PSD images require a proper layer to support an alpha channel.
@@ -24,7 +30,10 @@
 2010-05-14  6.6.1-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Addition of more Morphological/Convolution Kernels.
     DOG (Difference of Gaussians) and DOB (Difference of Blurs),
-    Prewitt, Roberts, Compass, and Ring
+    EG:    -morphology convolve DOG:0x1,3
+           -morphology convolve DOB:0x1,3,90
+  * Added Prewitt, Roberts, Compass  Convolution Kernels
+  * Ring Symbol Kernel (subtraction of Disk from a Disk)
 
 2010-05-13  6.6.1-9 Cristy  <quetzlzacatenango@image...>
   * The pixel buffer was underallocated for some image formats when streaming.
