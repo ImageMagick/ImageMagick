@@ -659,8 +659,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %    FreiChen:{type},{angle}
 %      Frei-Chen Edge Detector is a set of 9 unique convolution kernels that
-%      are specially weighted. After applying each to the original image, the
-%      results is then added together.
+%      are specially weighted.  They should not be normalized. After applying
+%      each to the original image, the results is then added together.  The
+%      square root of the resulting image is the cosine of the edge, and the
+%      direction of the feature detection.
 %
 %        Type 1: |  1,   sqrt(2),  1 |
 %                |  0,     0,      0 | / 2*sqrt(2)
@@ -674,7 +676,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %                |    1,     0,   -1    | / 2*sqrt(2)
 %                | -sqrt(2), 1,    0    |
 %
-%        Type 4: | sqrt(2), -1,     1    |
+%        Type 4: | sqrt(2), -1,     0    |
 %                |   -1,     0,     1    | / 2*sqrt(2)
 %                |    0,     1, -sqrt(2) |
 %
@@ -700,9 +702,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %      The first 4 are for edge detection, the next 4 are for line detection
 %      and the last is to add a average component to the results.
-%
-%      The '{angle}' argument is not normally used but provided for
-%      convenience of generating other kernels from these kernels.
 %
 %
 %  Boolean Kernels
@@ -1268,6 +1267,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     case FreiChenKernel:
+      /* http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf */
+      /* http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf */
       { switch ( (int) args->rho ) {
           default:
           case 1:
@@ -1298,7 +1299,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 4:
-            kernel=ParseKernelArray("3: 2,-1,1  -1,0,1  0,1,-2");
+            kernel=ParseKernelArray("3: 2,-1,0  -1,0,1  0,1,-2");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->values[0] = +MagickSQ2;
@@ -1331,7 +1332,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/6.0, NoValue);
             break;
           case 9:
-            kernel=ParseKernelArray("3: 1,1,1  1,1,1  1,1,1");
+            kernel=ParseKernelName("3: 1,1,1  1,1,1  1,1,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             ScaleKernelInfo(kernel, 1.0/3.0, NoValue);
