@@ -1052,6 +1052,7 @@ static const OptionInfo
   KernelOptions[] =
   {
     { "Undefined", (long) UndefinedKernel, MagickTrue },
+    { "Unity", (long) UnityKernel, MagickFalse },
     { "Gaussian", (long) GaussianKernel, MagickFalse },
     { "DOG", (long) DOGKernel, MagickFalse },
     { "LOG", (long) LOGKernel, MagickFalse },
@@ -1060,6 +1061,7 @@ static const OptionInfo
     { "Comet", (long) CometKernel, MagickFalse },
     { "Laplacian", (long) LaplacianKernel, MagickFalse },
     { "Sobel", (long) SobelKernel, MagickFalse },
+    { "FreiChen", (long) FreiChenKernel, MagickFalse },
     { "Roberts", (long) RobertsKernel, MagickFalse },
     { "Prewitt", (long) PrewittKernel, MagickFalse },
     { "Compass", (long) CompassKernel, MagickFalse },

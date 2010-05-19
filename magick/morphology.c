@@ -65,6 +65,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor-private.h"
 #include "magick/morphology.h"
+#include "magick/morphology-private.h"
 #include "magick/option.h"
 #include "magick/pixel-private.h"
 #include "magick/prepress.h"
@@ -107,6 +108,7 @@ static inline double MagickMax(const double x,const double y)
 
 /* Currently these are only internal to this module */
 static void
+  CalcKernelMetaData(KernelInfo *),
   ExpandKernelInfo(KernelInfo *, double),
   RotateKernelInfo(KernelInfo *, double);
 
@@ -400,7 +402,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
 
 #if 0
   /* For Debugging Geometry Input */
-  fprintf(stderr, "Geometry = %04x : %lf x %lf %+lf %+lf\n",
+  fprintf(stderr, "Geometry = 0x%04X : %lg x %lg %+lg %+lg\n",
        flags, args.rho, args.sigma, args.xi, args.psi );
 #endif
 
@@ -537,6 +539,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %  Convolution Kernels
 %
+%    Unity
+%       the No-Op kernel, also requivelent to  Gaussian of sigma zero.
+%       Basically a 3x3 kernel of a 1 surrounded by zeros.
+%
 %    Gaussian:{radius},{sigma}
 %       Generate a two-dimentional gaussian kernel, as used by -gaussian.
 %       The sigma for the curve is required.  The resulting kernel is
@@ -625,12 +631,17 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %        Type 19 : 9x9 LOG (sigma approx 1.4)
 %
 %    Sobel:{angle}
-%      Sobel 3x3 'Edge' convolution kernel (3x3)
+%      Sobel 'Edge' convolution kernel (3x3)
 %           -1, 0, 1
 %           -2, 0,-2
 %           -1, 0, 1
+%    FreiChen:{angle}
+%      Frei-Chen 'Edge' convolution kernel (3x3)
+%             -1,     0,    1
+%           -sqrt(2), 0,  sqrt(2)
+%             -1,     0,    1
 %    Roberts:{angle}
-%      Roberts 3x3 convolution kernel (3x3)
+%      Roberts convolution kernel (3x3)
 %            0, 0, 0
 %           -1, 1, 0
 %            0, 0, 0
@@ -869,8 +880,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* The following generates a 'sampled gaussian' kernel.
+        /* WARNING: The following generates a 'sampled gaussian' kernel.
          * What we really want is a 'discrete gaussian' kernel.
+         *
+         * How to do this is currently not known, but appears to be
+         * basied on the Error Function 'erf()' (intergral of a gaussian)
          */
 
         if ( type == GaussianKernel || type == DOGKernel )
@@ -929,25 +943,12 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** Normalization will still be needed.
         */
 
-        /* Work out the meta-data about kernel */
-        kernel->minimum = kernel->maximum = 0.0;
-        kernel->negative_range = kernel->positive_range = 0.0;
-        u=(long) kernel->width*kernel->height;
-        for ( i=0; i < u; i++)
-          {
-            if ( fabs(kernel->values[i]) < MagickEpsilon )
-              kernel->values[i] = 0.0;
-            ( kernel->values[i] < 0)
-                ?  ( kernel->negative_range += kernel->values[i] )
-                :  ( kernel->positive_range += kernel->values[i] );
-            Minimize(kernel->minimum, kernel->values[i]);
-            Maximize(kernel->maximum, kernel->values[i]);
-          }
         /* Normalize the 2D Gaussian Kernel
         **
         ** NB: a CorrelateNormalize performs a normal Normalize if
         ** there are no negative values.
         */
+        CalcKernelMetaData(kernel);  /* the other kernel meta-data */
         ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
 
         break;
@@ -1056,22 +1057,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** Normalization will still be needed.
         */
 
-        /* Work out the meta-data about kernel */
-        for ( i=0; i < (long) kernel->width; i++)
-          {
-            ( kernel->values[i] < 0)
-                ?  ( kernel->negative_range += kernel->values[i] )
-                :  ( kernel->positive_range += kernel->values[i] );
-            Minimize(kernel->minimum, kernel->values[i]);
-            Maximize(kernel->maximum, kernel->values[i]);
-          }
-
         /* Normalize the 1D Gaussian Kernel
         **
         ** NB: a CorrelateNormalize performs a normal Normalize if
         ** there are no negative values.
         */
-        //ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
+        CalcKernelMetaData(kernel);  /* the other kernel meta-data */
+        ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
 
         /* rotate the 1D kernel by given angle */
         RotateKernelInfo(kernel, (type == BlurKernel) ? args->xi : args->psi );
@@ -1137,8 +1129,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
             kernel->positive_range = 1.0;
           }
-        kernel->minimum = 0;
+
+        kernel->minimum = 0.0;
         kernel->maximum = kernel->values[0];
+        kernel->negative_range = 0.0;
 
         ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
         RotateKernelInfo(kernel, args->xi); /* Rotate by angle */
@@ -1194,13 +1188,24 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
         break;
       }
+    case FreiChenKernel:
+      {
+        kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->values[3] = -MagickSQ2;
+        kernel->values[5] = +MagickSQ2;
+        CalcKernelMetaData(kernel);     /* recalculate meta-data */
+        RotateKernelInfo(kernel, args->rho);  /* Rotate by angle */
+        break;
+      }
     case RobertsKernel:
       {
         kernel=ParseKernelArray("3: 0,0,0  -1,1,0  0,0,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        RotateKernelInfo(kernel, args->rho);
         break;
       }
     case PrewittKernel:
@@ -1209,7 +1214,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        RotateKernelInfo(kernel, args->rho);
         break;
       }
     case CompassKernel:
@@ -1218,7 +1223,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        RotateKernelInfo(kernel, args->rho);
         break;
       }
     case KirschKernel:
@@ -1227,7 +1232,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        RotateKernelInfo(kernel, args->rho); /* Rotate by angle */
+        RotateKernelInfo(kernel, args->rho);
         break;
       }
     /* Boolean Kernels */
@@ -1558,13 +1563,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->maximum = kernel->values[0];
         break;
       }
+    case UnityKernel:
     default:
       {
-        /* Generate a No-Op minimal kernel - 1x1 pixel */
-        kernel=ParseKernelArray("1");
+        /* Unity or No-Op Kernel - 3x3 with 1 in center */
+        kernel=ParseKernelArray("3:0,0,0,0,1,0,0,0,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
-        kernel->type = UndefinedKernel;
+        kernel->type = ( type == UnityKernel ) ? UnityKernel : UndefinedKernel;
         break;
       }
       break;
@@ -1719,6 +1725,63 @@ static void ExpandKernelInfo(KernelInfo *kernel, double angle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++     C a l c M e t a K e r n a l I n f o                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CalcKernelMetaData() recalculate the KernelInfo meta-data of this kernel only,
+%  using the kernel values.  This should only ne used if it is not posible to
+%  calculate that meta-data in some easier way.
+%
+%  It is important that the meta-data is correct before ScaleKernelInfo() is
+%  used to perform kernel normalization.
+%
+%  The format of the CalcKernelMetaData method is:
+%
+%      void CalcKernelMetaData(KernelInfo *kernel, const double scale )
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel to modify
+%
+%  WARNING: Minimum and Maximum values are assumed to include zero, even if
+%  zero is not part of the kernel (as in Gaussian Derived kernels). This
+%  however is not true for flat-shaped morphological kernels.
+%
+%  WARNING: Only the specific kernel pointed to is modified, not a list of
+%  multiple kernels.
+%
+% This is an internal function and not expected to be useful outside this
+% module.  This could change however.
+*/
+static void CalcKernelMetaData(KernelInfo *kernel)
+{
+  register unsigned long
+    i;
+
+  kernel->minimum = kernel->maximum = 0.0;
+  kernel->negative_range = kernel->positive_range = 0.0;
+  for (i=0; i < (kernel->width*kernel->height); i++)
+    {
+      if ( fabs(kernel->values[i]) < MagickEpsilon )
+        kernel->values[i] = 0.0;
+      ( kernel->values[i] < 0)
+          ?  ( kernel->negative_range += kernel->values[i] )
+          :  ( kernel->positive_range += kernel->values[i] );
+      Minimize(kernel->minimum, kernel->values[i]);
+      Maximize(kernel->maximum, kernel->values[i]);
+    }
+
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     M o r p h o l o g y A p p l y                                           %
 %                                                                             %
 %                                                                             %
@@ -1770,7 +1833,7 @@ static void ExpandKernelInfo(KernelInfo *kernel, double angle)
 ** Two pre-created images must be provided, no image is created.
 ** Returning the number of pixels that changed.
 */
-static unsigned long MorphologyPrimative(const Image *image, Image
+static unsigned long MorphologyPrimitive(const Image *image, Image
      *result_image, const MorphologyMethod method, const ChannelType channel,
      const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
 {
@@ -2497,7 +2560,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
           /* morphological primitive  curr -> work */
           count++;
-          changed = MorphologyPrimative(curr_image, work_image, primitive,
+          changed = MorphologyPrimitive(curr_image, work_image, primitive,
                         channel, this_kernel, bias, exception);
           loop_changed += changed;
           total_changed += changed;
@@ -2569,7 +2632,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
           /* morphological primitive  curr -> work */
           count++;
-          changed = MorphologyPrimative(curr_image,work_image,primitive,
+          changed = MorphologyPrimitive(curr_image,work_image,primitive,
                         channel, this_kernel, bias, exception);
           loop_changed += changed;
           total_changed += changed;
@@ -2746,10 +2809,10 @@ exit_cleanup:
 %  the above internal function MorphologyApply().
 %
 %  User defined settings include...
-%    * convolution/correlation output bias (as per "-bias")
-%    * kernel normalization/scaling settings ("-set 'option:convolve:scale'")
-%    * kernel printing (after modification) ("-set option:showkernel 1")
-%
+%    * Output Bias for Convolution and correlation   ("-bias")
+%    * Kernel Scale/normalize settings     ("-set 'option:convolve:scale'")
+%      This can also includes the addition of a scaled unity kernel.
+%    * Show Kernel being applied           ("-set option:showkernel 1")
 %
 %  The format of the MorphologyImage method is:
 %
@@ -2794,40 +2857,22 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     *morphology_image;
 
 
-  /* Apply Convolve/Correlate Normalization and Scaling Factors
-     this is done BEFORE the ShowKernelInfo() function is called
-     so that users can see the results of the 'convolve:scale' option.
+  /* Apply Convolve/Correlate Normalization and Scaling Factors.
+   * This is done BEFORE the ShowKernelInfo() function is called so that
+   * users can see the results of the 'option:convolve:scale' option.
    */
   curr_kernel = (KernelInfo *) kernel;
   if ( method == ConvolveMorphology )
     {
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (char *)NULL ) {
-        GeometryFlags
-          flags;
-        GeometryInfo
-          args;
-
         if ( curr_kernel == kernel )
           curr_kernel = CloneKernelInfo(kernel);
         if (curr_kernel == (KernelInfo *) NULL) {
           curr_kernel=DestroyKernelInfo(curr_kernel);
           return((Image *) NULL);
         }
-        SetGeometryInfo(&args);
-        args.rho = 1.0;
-        flags = (GeometryFlags) ParseGeometry(artifact, &args);
-
-        /* normalize and/or scale kernel values */
-        ScaleKernelInfo(curr_kernel, args.rho, flags);
-
-        /* Add percentage of Unity Kernel, for blending with original */
-        if ( (flags & SigmaValue) != 0 )
-          {
-            if ( (flags & PercentValue) != 0 )
-              args.sigma = args.sigma/100.0;
-            UnityAddKernelInfo(curr_kernel, args.sigma);
-          }
+        ScaleGeometryKernelInfo(curr_kernel, artifact);
       }
     }
 
@@ -2845,6 +2890,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     curr_kernel=DestroyKernelInfo(curr_kernel);
   return(morphology_image);
 }
+
 
 MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
   method, const long iterations,const KernelInfo *kernel, ExceptionInfo
@@ -2869,8 +2915,11 @@ MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RotateKernelInfo() rotates the kernel by the angle given.  Currently it is
-%  restricted to 90 degree angles, but this may be improved in the future.
+%  RotateKernelInfo() rotates the kernel by the angle given.
+%
+%  Currently it is restricted to 90 degree angles, of either 1D kernels
+%  or square kernels. And 'circular' rotations of 45 degrees for 3x3 kernels.
+%  It will ignore usless rotations for specific 'named' built-in kernels.
 %
 %  The format of the RotateKernelInfo method is:
 %
@@ -2882,9 +2931,8 @@ MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
 %
 %    o angle: angle to rotate in degrees
 %
-% This function is only internel to this module, as it is not finalized,
-% especially with regard to non-orthogonal angles, and rotation of larger
-% 2D kernels.
+% This function is currently internal to this module only, but can be exported
+% to other modules if needed.
 */
 static void RotateKernelInfo(KernelInfo *kernel, double angle)
 {
@@ -3056,6 +3104,74 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     S c a l e G e o m e t r y K e r n e l I n f o                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleGeometryKernelInfo() takes a geometry argument string, typically
+%  provided as a  "-set option:convolve:scale {geometry}" user setting,
+%  and modifies the kernel according to the parsed arguments of that setting.
+%
+%  The first argument (and any normalization flags) are passed to
+%  ScaleKernelInfo() to scale/normalize the kernel.  The second argument
+%  is then passed to UnityAddKernelInfo() to add a scled unity kernel
+%  into the scaled/normalized kernel.
+%
+%  The format of the ScaleKernelInfo method is:
+%
+%      void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
+%               const MagickStatusType normalize_flags )
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel to modify
+%
+%    o geometry:
+%             The geometry string to parse, typically from the user provided
+%             "-set option:convolve:scale {geometry}" setting.
+%
+*/
+MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
+     const char *geometry)
+{
+  GeometryFlags
+    flags;
+  GeometryInfo
+    args;
+
+  SetGeometryInfo(&args);
+  flags = (GeometryFlags) ParseGeometry(geometry, &args);
+
+#if 0
+  /* For Debugging Geometry Input */
+  fprintf(stderr, "Geometry = 0x%04X : %lg x %lg %+lg %+lg\n",
+       flags, args.rho, args.sigma, args.xi, args.psi );
+#endif
+
+  if ( (flags & PercentValue) != 0 )      /* Handle Percentage flag*/
+    args.rho *= 0.01,  args.sigma *= 0.01;
+
+  if ( (flags & RhoValue) == 0 )          /* Set Defaults for missing args */
+    args.rho = 1.0;
+  if ( (flags & SigmaValue) == 0 )
+    args.sigma = 0.0;
+
+  /* Scale/Normalize the input kernel */
+  ScaleKernelInfo(kernel, args.rho, flags);
+
+  /* Add Unity Kernel, for blending with original */
+  if ( (flags & SigmaValue) != 0 )
+    UnityAddKernelInfo(kernel, args.sigma);
+
+  return;
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     S c a l e K e r n e l I n f o                                           %
 %                                                                             %
 %                                                                             %
@@ -3068,10 +3184,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %  By default (no flags given) the values within the kernel is scaled
 %  directly using given scaling factor without change.
 %
-%  If any 'normalize_flags' are given the kernel will first be normalized and
-%  then further scaled by the scaling factor value given.  A 'PercentValue'
-%  flag will cause the given scaling factor to be divided by one hundred
-%  percent.
+%  If either of the two 'normalize_flags' are given the kernel will first be
+%  normalized and then further scaled by the scaling factor value given.
 %
 %  Kernel normalization ('normalize_flags' given) is designed to ensure that
 %  any use of the kernel scaling factor with 'Convolve' or 'Correlate'
@@ -3102,9 +3216,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %  kernels creation.
 %
 %  NOTE: The values used for 'normalize_flags' have been selected specifically
-%  to match the use of geometry options, so that '!' means NormalizeValue,
-%  '^' means CorrelateNormalizeValue, and '%' means PercentValue.  All other
-%  GeometryFlags values are ignored.
+%  to match the use of geometry options, so that '!' means NormalizeValue, '^'
+%  means CorrelateNormalizeValue.  All other GeometryFlags values are ignored.
 %
 %  The format of the ScaleKernelInfo method is:
 %
@@ -3124,8 +3237,6 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %             specifically: NormalizeValue, CorrelateNormalizeValue,
 %                           and/or PercentValue
 %
-% This function is internal to this module only at this time, but can be
-% exported to other modules if needed.
 */
 MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   const double scaling_factor,const GeometryFlags normalize_flags)
@@ -3137,19 +3248,20 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
     pos_scale,
     neg_scale;
 
-  /* scale the lower kernels first */
+  /* do the other kernels in a multi-kernel list first */
   if ( kernel->next != (KernelInfo *) NULL)
     ScaleKernelInfo(kernel->next, scaling_factor, normalize_flags);
 
+  /* Normalization of Kernel */
   pos_scale = 1.0;
   if ( (normalize_flags&NormalizeValue) != 0 ) {
-    /* normalize kernel appropriately */
+    /* non-zero and zero-summing kernels */
     if ( fabs(kernel->positive_range + kernel->negative_range) > MagickEpsilon )
       pos_scale = fabs(kernel->positive_range + kernel->negative_range);
     else
       pos_scale = kernel->positive_range; /* special zero-summing kernel */
   }
-  /* force kernel into being a normalized zero-summing kernel */
+  /* Force kernel into a normalized zero-summing kernel */
   if ( (normalize_flags&CorrelateNormalizeValue) != 0 ) {
     pos_scale = ( fabs(kernel->positive_range) > MagickEpsilon )
                  ? kernel->positive_range : 1.0;
@@ -3162,10 +3274,6 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   /* finialize scaling_factor for positive and negative components */
   pos_scale = scaling_factor/pos_scale;
   neg_scale = scaling_factor/neg_scale;
-  if ( (normalize_flags&PercentValue) != 0 ) {
-    pos_scale /= 100.0;
-    neg_scale /= 100.0;
-  }
 
   for (i=0; i < (long) (kernel->width*kernel->height); i++)
     if ( ! IsNan(kernel->values[i]) )
@@ -3178,7 +3286,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   kernel->maximum *= (kernel->maximum >= 0.0) ? pos_scale : neg_scale;
   kernel->minimum *= (kernel->minimum >= 0.0) ? pos_scale : neg_scale;
 
-  /* swap kernel settings if user scaling factor is negative */
+  /* swap kernel settings if user's scaling factor is negative */
   if ( scaling_factor < MagickEpsilon ) {
     double t;
     t = kernel->positive_range;
@@ -3197,7 +3305,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     S h o w K e r n e l I n f o                                             %
+%     S h o w K e r n e l I n f o                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3214,8 +3322,6 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %
 %    o kernel: the Morphology/Convolution kernel
 %
-% This function is internal to this module only at this time. That may change
-% in the future.
 */
 MagickExport void ShowKernelInfo(KernelInfo *kernel)
 {
@@ -3227,7 +3333,7 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 
   for (c=0, k=kernel;  k != (KernelInfo *) NULL;  c++, k=k->next ) {
 
-    fprintf(stderr, "Kernel ");
+    fprintf(stderr, "Kernel");
     if ( kernel->next != (KernelInfo *) NULL )
       fprintf(stderr, " #%lu", c );
     fprintf(stderr, " \"%s",
@@ -3241,12 +3347,18 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
           " with values from %.*lg to %.*lg\n",
           GetMagickPrecision(), k->minimum,
           GetMagickPrecision(), k->maximum);
-    fprintf(stderr, "Forming convolution output range from %.*lg to %.*lg%s\n",
+    fprintf(stderr, "Forming a output range from %.*lg to %.*lg",
           GetMagickPrecision(), k->negative_range,
-          GetMagickPrecision(), k->positive_range,
-          /*kernel->normalized == MagickTrue ? " (normalized)" : */ "" );
+          GetMagickPrecision(), k->positive_range);
+    if ( fabs(k->positive_range+k->negative_range) < MagickEpsilon )
+      fprintf(stderr, " (Zero-Summing)\n");
+    else if ( fabs(k->positive_range+k->negative_range-1.0) < MagickEpsilon )
+      fprintf(stderr, " (Normalized)\n");
+    else
+      fprintf(stderr, " (Sum %.*lg)\n",
+          GetMagickPrecision(), k->positive_range+k->negative_range);
     for (i=v=0; v < k->height; v++) {
-      fprintf(stderr,"%2lu:",v);
+      fprintf(stderr, "%2lu:", v );
       for (u=0; u < k->width; u++, i++)
         if ( IsNan(k->values[i]) )
           fprintf(stderr," %*s", GetMagickPrecision()+2, "nan");
@@ -3283,7 +3395,7 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 %  post-normalizing scaling factor, you can convert a 'blurring' kernel (such
 %  as a "Gaussian") into a 'unsharp' kernel.
 %
-%  The format of the ScaleKernelInfo method is:
+%  The format of the UnityAdditionKernelInfo method is:
 %
 %      void UnityAdditionKernelInfo(KernelInfo *kernel, const double scale )
 %
@@ -3295,31 +3407,17 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 %             scaling factor for the unity kernel to be added to
 %             the given kernel.
 %
-% This function is currently internal to this module only at this time, but
-% can be exported to other modules if needed.
-%
 */
 MagickExport void UnityAddKernelInfo(KernelInfo *kernel,
   const double scale)
 {
-  register unsigned long
-    i;
+  /* do the other kernels in a multi-kernel list first */
+  if ( kernel->next != (KernelInfo *) NULL)
+    UnityAddKernelInfo(kernel->next, scale);
 
+  /* Add the scaled unity kernel to the existing kernel */
   kernel->values[kernel->x+kernel->y*kernel->width] += scale;
-
-  /* make sure kernel meta-data is now correct */
-  kernel->minimum = kernel->maximum = 0.0;
-  kernel->negative_range = kernel->positive_range = 0.0;
-  for (i=0; i < (kernel->width*kernel->height); i++)
-    {
-      if ( fabs(kernel->values[i]) < MagickEpsilon )
-        kernel->values[i] = 0.0;
-      ( kernel->values[i] < 0)
-          ?  ( kernel->negative_range += kernel->values[i] )
-          :  ( kernel->positive_range += kernel->values[i] );
-      Minimize(kernel->minimum, kernel->values[i]);
-      Maximize(kernel->maximum, kernel->values[i]);
-    }
+  CalcKernelMetaData(kernel);  /* recalculate the meta-data */
 
   return;
 }
@@ -3342,7 +3440,7 @@ MagickExport void UnityAddKernelInfo(KernelInfo *kernel,
 %
 %  The format of the ZeroKernelNans method is:
 %
-%      voidZeroKernelNans (KernelInfo *kernel)
+%      void ZeroKernelNans (KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -3354,7 +3452,7 @@ MagickExport void ZeroKernelNans(KernelInfo *kernel)
   register unsigned long
     i;
 
-  /* scale the lower kernels first */
+  /* do the other kernels in a multi-kernel list first */
   if ( kernel->next != (KernelInfo *) NULL)
     ZeroKernelNans(kernel->next);
 

@@ -26,7 +26,8 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedKernel,    /* also the 'no-op' kernel */
+  UndefinedKernel,    /* equivelent to UnityKernel */
+  UnityKernel,        /* The no-op or 'original image' kernel */
   GaussianKernel,     /* Convolution Kernels, Gaussian Based */
   DOGKernel,
   LOGKernel,
@@ -35,6 +36,7 @@ typedef enum
   CometKernel,
   LaplacianKernel,    /* Convolution Kernels, by Name */
   SobelKernel,
+  FreiChenKernel,
   RobertsKernel,
   PrewittKernel,
   CompassKernel,
@@ -118,6 +120,7 @@ typedef struct KernelInfo
     signature;
 } KernelInfo;
 
+
 extern MagickExport KernelInfo
   *AcquireKernelInfo(const char *),
   *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *),
@@ -131,8 +134,7 @@ extern MagickExport Image
     const MorphologyMethod,const long,const KernelInfo *,ExceptionInfo *);
 
 extern MagickExport void
-  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
-  UnityAddKernelInfo(KernelInfo *,const double),
+  ScaleGeometryKernelInfo(KernelInfo *,const char *),
   ShowKernelInfo(KernelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
