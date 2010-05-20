@@ -688,17 +688,17 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %                |  0, 0,  0 | / 2
 %                |  1, 0, -1 |
 %
-%        Type 7: | -1, -2,  1 |
+%        Type 7: |  1, -2,  1 |
 %                | -2,  4, -2 | / 6
 %                |  1, -2,  1 |
 %
-%        Type 8: | -2,  1, -2 |
-%                |  1,  4,  1 | / 6
-%                | -2,  1, -2 |
+%        Type 8: | -2, 1, -2 |
+%                |  1, 4,  1 | / 6
+%                | -2, 1, -2 |
 %
-%        Type 9: | 1,  1, 1 |
-%                | 1,  1, 1 | / 3
-%                | 1,  1, 1 |
+%        Type 9: | 1, 1, 1 |
+%                | 1, 1, 1 | / 3
+%                | 1, 1, 1 |
 %
 %      The first 4 are for edge detection, the next 4 are for line detection
 %      and the last is to add a average component to the results.
@@ -1320,7 +1320,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/2.0, NoValue);
             break;
           case 7:
-            kernel=ParseKernelArray("3: -1,-2,1  -2,4,-2  1,-2,1");
+            kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  1,-2,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             ScaleKernelInfo(kernel, 1.0/6.0, NoValue);
@@ -3362,11 +3362,12 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   /* Normalization of Kernel */
   pos_scale = 1.0;
   if ( (normalize_flags&NormalizeValue) != 0 ) {
-    /* non-zero and zero-summing kernels */
     if ( fabs(kernel->positive_range + kernel->negative_range) > MagickEpsilon )
+      /* non-zero-summing kernel (generally positive) */
       pos_scale = fabs(kernel->positive_range + kernel->negative_range);
     else
-      pos_scale = kernel->positive_range; /* special zero-summing kernel */
+      /* zero-summing kernel */
+      pos_scale = kernel->positive_range;
   }
   /* Force kernel into a normalized zero-summing kernel */
   if ( (normalize_flags&CorrelateNormalizeValue) != 0 ) {
@@ -3468,9 +3469,9 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
       fprintf(stderr, "%2lu:", v );
       for (u=0; u < k->width; u++, i++)
         if ( IsNan(k->values[i]) )
-          fprintf(stderr," %*s", GetMagickPrecision()+2, "nan");
+          fprintf(stderr," %*s", GetMagickPrecision()+3, "nan");
         else
-          fprintf(stderr," %*.*lg", GetMagickPrecision()+2,
+          fprintf(stderr," %*.*lg", GetMagickPrecision()+3,
               GetMagickPrecision(), k->values[i]);
       fprintf(stderr,"\n");
     }
