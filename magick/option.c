@@ -1008,6 +1008,7 @@ static const OptionInfo
     { "morph", MagickTrue, MagickFalse },
     { "mosaic", MagickTrue, MagickFalse },
     { "optimize", MagickTrue, MagickFalse },
+    { "print", MagickTrue, MagickFalse },
     { "process", MagickTrue, MagickFalse },
     { "quiet", MagickTrue, MagickFalse },
     { "separate", MagickTrue, MagickFalse },
