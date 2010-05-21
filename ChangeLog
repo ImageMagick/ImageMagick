@@ -19,6 +19,7 @@
   * Enable PFM endian support.
   * Add context to -border for montage.  Inside the parenthesis it adds a border
     to the image otherwise it sets the border for the layout manager.
+  * 24-bit BMP images are not colormapped even if header colors != 0.
 
 2010-05-15  6.6.1-10 Cristy  <quetzlzacatenango@image...>
   * Use ScaleCharToQuantum() in coders/src.c (reference
