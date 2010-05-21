@@ -527,8 +527,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("border",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
-            montage_info->border_width=0;
+            if (k == 0)
+              {
+                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                montage_info->border_width=0;
+              }
             if (*option == '+')
               break;
             i++;
@@ -536,7 +539,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->border_width=StringToUnsignedLong(argv[i]);
+            if (k == 0)
+              montage_info->border_width=StringToUnsignedLong(argv[i]);
             break;
           }
         if (LocaleCompare("bordercolor",option+1) == 0)
@@ -939,8 +943,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("frame",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
-            (void) CloneString(&montage_info->frame,(char *) NULL);
+            if (k == 0)
+              {
+                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                (void) CloneString(&montage_info->frame,(char *) NULL);
+              }
             if (*option == '+')
               break;
             i++;
@@ -948,7 +955,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            (void) CloneString(&montage_info->frame,argv[i]);
+            if (k == 0)
+              (void) CloneString(&montage_info->frame,argv[i]);
             break;
           }
         ThrowMontageException(OptionError,"UnrecognizedOption",option)
@@ -1400,8 +1408,20 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("shadow",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
-            montage_info->shadow=(*option == '-') ? MagickTrue : MagickFalse;
+            if (k == 0)
+              {
+                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                montage_info->shadow=(*option == '-') ? MagickTrue :
+                  MagickFalse;
+                break;
+              }
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (long) (argc-1))
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("sharpen",option+1) == 0)
@@ -1482,8 +1502,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("tile",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
-            (void) CloneString(&montage_info->tile,(char *) NULL);
+            if (k == 0)
+              {
+                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                (void) CloneString(&montage_info->tile,(char *) NULL);
+              }
             if (*option == '+')
               break;
             i++;
@@ -1491,7 +1514,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            (void) CloneString(&montage_info->tile,argv[i]);
+            if (k == 0)
+              (void) CloneString(&montage_info->tile,argv[i]);
             break;
           }
         if (LocaleCompare("tile-offset",option+1) == 0)

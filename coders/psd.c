@@ -2203,36 +2203,32 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
           (tmp_image->storage_class == PseudoClass)) {
        (void) WriteBlobMSBShort(image,(unsigned short)
          (tmp_image->matte != MagickFalse ? 2 : 1));
-       if (tmp_image->matte != MagickFalse) {
-         (void) WriteBlobMSBShort(image,(unsigned short) -1);
-         (void) SetPSDSize(&psd_info,image,channel_size);
-       }
        (void) WriteBlobMSBShort(image, 0);
        (void) SetPSDSize(&psd_info,image,channel_size);
+       if (tmp_image->matte != MagickFalse) {
+         (void) WriteBlobMSBShort(image,(unsigned short) 1);
+         (void) SetPSDSize(&psd_info,image,channel_size);
+       }
       } else
       if (tmp_image->colorspace != CMYKColorspace)
       {
         (void) WriteBlobMSBShort(image,(unsigned short)
           (tmp_image->matte != MagickFalse ? 4 : 3));
-       if (tmp_image->matte!= MagickFalse ) {
-         (void) WriteBlobMSBShort(image,(unsigned short) -1);
-         (void) SetPSDSize(&psd_info,image,channel_size);
-       }
        (void) WriteBlobMSBShort(image, 0);
        (void) SetPSDSize(&psd_info,image,channel_size);
        (void) WriteBlobMSBShort(image, 1);
        (void) SetPSDSize(&psd_info,image,channel_size);
        (void) WriteBlobMSBShort(image, 2);
        (void) SetPSDSize(&psd_info,image,channel_size);
+       if (tmp_image->matte!= MagickFalse ) {
+         (void) WriteBlobMSBShort(image,(unsigned short) 3);
+         (void) SetPSDSize(&psd_info,image,channel_size);
+       }
       }
       else
       {
         (void) WriteBlobMSBShort(image,(unsigned short)
           (tmp_image->matte ? 5 : 4));
-       if (tmp_image->matte) {
-         (void) WriteBlobMSBShort(image,(unsigned short) -1);
-         (void) SetPSDSize(&psd_info,image,channel_size);
-       }
        (void) WriteBlobMSBShort(image, 0);
        (void) SetPSDSize(&psd_info,image,channel_size);
        (void) WriteBlobMSBShort(image, 1);
@@ -2241,6 +2237,10 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
        (void) SetPSDSize(&psd_info,image,channel_size);
        (void) WriteBlobMSBShort(image, 3);
        (void) SetPSDSize(&psd_info,image,channel_size);
+       if (tmp_image->matte) {
+         (void) WriteBlobMSBShort(image,(unsigned short) 4);
+         (void) SetPSDSize(&psd_info,image,channel_size);
+       }
       }
 
       (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
