@@ -148,12 +148,7 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((pixel->red == pixel->green) && (pixel->green == pixel->blue))
     return(pixel->red);
-#if (MAGICKCORE_QUANTUM_DEPTH <= 16)
-  return((Quantum) ((306U*(unsigned int) pixel->red+
-    601U*(unsigned int) pixel->green+117U*(unsigned int) pixel->blue) >> 10U));
-#else
   return((Quantum) (0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue+0.5));
-#endif
 #else
   if ((fabs(pixel->red-pixel->green) <= MagickEpsilon) &&
       (fabs(pixel->green-pixel->blue) <= MagickEpsilon))
