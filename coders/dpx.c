@@ -988,7 +988,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
            profile=AcquireStringInfo(dpx.file.user_size-sizeof(dpx.user.id));
            offset+=ReadBlob(image,GetStringInfoLength(profile),
              GetStringInfoDatum(profile));
-           (void) SetImageProfile(image,"dpx:user.data",profile);
+           (void) SetImageProfile(image,"dpx",profile);
            profile=DestroyStringInfo(profile);
         }
     }
@@ -1371,9 +1371,11 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx.file.magic=0x53445058U;
   offset+=WriteBlobLong(image,dpx.file.magic);
   dpx.file.image_offset=0x2000U;
-  profile=GetImageProfile(image,"dpx:user.data");
+  profile=GetImageProfile(image,"dpx");
   if (profile != (StringInfo *) NULL)
     {
+      if (GetStringInfoLength(profile) > 1048576)
+        ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
       dpx.file.image_offset+=(unsigned int) GetStringInfoLength(profile);
       dpx.file.image_offset=(((dpx.file.image_offset+0x2000-1)/0x2000)*0x2000);
     }
