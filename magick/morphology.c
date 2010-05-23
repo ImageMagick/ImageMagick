@@ -1863,19 +1863,19 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
 static void ExpandKernelInfo(KernelInfo *kernel, const double angle)
 {
   KernelInfo
-    *new,
+    *clone,
     *last;
 
   last = kernel;
   while(1) {
-    new = CloneKernelInfo(last);
-    RotateKernelInfo(new, angle);
-    if ( SameKernelInfo(kernel, new) == MagickTrue )
+    clone = CloneKernelInfo(last);
+    RotateKernelInfo(clone, angle);
+    if ( SameKernelInfo(kernel, clone) == MagickTrue )
       break;
-    last->next = new;
-    last = new;
+    last->next = clone;
+    last = clone;
   }
-  new = DestroyKernelInfo(new); /* This was the same as the first - junk */
+  clone = DestroyKernelInfo(clone); /* This was the same as the first - junk */
   return;
 }
 
