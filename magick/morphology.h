@@ -51,9 +51,9 @@ typedef enum
   PeaksKernel,         /* Hit And Miss Kernels */
   EdgesKernel,
   CornersKernel,
+  RidgesKernel,
   LineEndsKernel,
   LineJunctionsKernel,
-  ThinningKernel,
   ConvexHullKernel,
   SkeletonKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */

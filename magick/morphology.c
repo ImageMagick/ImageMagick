@@ -775,6 +775,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Find Edges of a binary shape
 %    Corners
 %       Find corners of a binary shape
+%    Ridges
+%       Find Ridges or Thin lines
 %    LineEnds
 %       Find end points of lines (for pruning a skeletion)
 %    LineJunctions
@@ -863,7 +865,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case CornersKernel:    /* Hit and Miss kernels */
     case LineEndsKernel:
     case LineJunctionsKernel:
-    case ThinningKernel:
     case ConvexHullKernel:
     case SkeletonKernel:
       /* A pre-generated kernel is not needed */
@@ -1539,6 +1540,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ExpandKernelInfo(kernel, 90.0); /* Create a list of 4 rotated kernels */
         break;
       }
+    case RidgesKernel:
+      {
+        kernel=ParseKernelArray("3: -,-,-  0,1,0  -,-,-");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 45.0); /* 4 rotated kernels (symmetrical) */
+        break;
+      }
     case LineEndsKernel:
       {
         KernelInfo
@@ -1595,18 +1605,22 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
-    case ThinningKernel:
-      { /* Thinning Kernel ??  -- filled corner and edge */
+    case SkeletonKernel:
+      { /* what is the best form for medial axis skeletonization? */
+#if 0
+#  if 0
+        kernel=AcquireKernelInfo("Corners;Edges");
+#  else
+        kernel=AcquireKernelInfo("Edges;Corners");
+#  endif
+#else
         kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 45);
         break;
-      }
-    case SkeletonKernel:
-      {
-        kernel=AcquireKernelInfo("Edges;Corners");
+#endif
         break;
       }
     /* Distance Measuring Kernels */
@@ -1809,22 +1823,47 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
-static void ExpandKernelInfo(KernelInfo *kernel, double angle)
+
+/* Internal Routine - Return true if two kernels are the same */
+static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
+     const KernelInfo *kernel2)
+{
+  register unsigned long
+    i;
+  if ( kernel1->width != kernel2->width )
+    return MagickFalse;
+  if ( kernel1->height != kernel2->height )
+    return MagickFalse;
+  for (i=0; i < (kernel1->width*kernel1->height); i++) {
+    /* Test Nan */
+    if ( IsNan(kernel1->values[i]) && !IsNan(kernel2->values[i]) )
+      return MagickFalse;
+    if ( IsNan(kernel2->values[i]) && !IsNan(kernel1->values[i]) )
+      return MagickFalse;
+    /* Test actual value */
+    if ( fabs(kernel1->values[i] - kernel2->values[i]) > MagickEpsilon )
+      return MagickFalse;
+  }
+  return MagickTrue;
+}
+
+static void ExpandKernelInfo(KernelInfo *kernel, const double angle)
 {
   KernelInfo
-    *clone,
+    *new,
     *last;
 
-  double
-    a;
-
   last = kernel;
-  for (a=angle; a<355.0; a+=angle) {
-    clone = CloneKernelInfo(last);
-    RotateKernelInfo(clone, angle);
-    last->next = clone;
-    last = clone;
+  while(1) {
+    new = CloneKernelInfo(last);
+    RotateKernelInfo(new, angle);
+    if ( SameKernelInfo(kernel, new) == MagickTrue )
+      break;
+    last->next = new;
+    last = new;
   }
+  new = DestroyKernelInfo(new); /* This was the same as the first - junk */
+  return;
 }
 
 /*
@@ -1907,10 +1946,11 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  (-bias setting or image->bias) is passed directly to this function,
 %  and not extracted from an image.
 %
-%  The format of the MorphologyImage method is:
+%  The format of the MorphologyApply method is:
 %
 %      Image *MorphologyApply(const Image *image,MorphologyMethod method,
-%        const long iterations,const KernelInfo *kernel,const double bias,
+%        const long iterations,const KernelInfo *kernel,
+%        const CompositeMethod compose, const double bias,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1929,7 +1969,13 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %    o kernel: An array of double representing the morphology kernel.
 %              Warning: kernel may be normalized for the Convolve method.
 %
-%    o bias: Convolution Bias to use.
+%    o compose: How to handle or merge multi-kernel results.
+%               If 'Undefined' use default of the Morphology method.
+%               If 'No' force image to be re-iterated by each kernel.
+%               Otherwise merge the results using the mathematical compose
+%               method given.
+%
+%    o bias: Convolution Output Bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2476,35 +2522,45 @@ static unsigned long MorphologyPrimitive(const Image *image, Image
 
 MagickExport Image *MorphologyApply(const Image *image, const ChannelType
      channel,const MorphologyMethod method, const long iterations,
-     const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
+     const KernelInfo *kernel, const CompositeOperator compose,
+     const double bias, ExceptionInfo *exception)
 {
   Image
-    *curr_image,   /* Image we are working with */
-    *work_image,   /* secondary working image */
-    *save_image;   /* save image for later use */
+    *curr_image,    /* Image we are working with or iterating */
+    *work_image,    /* secondary image for primative iteration */
+    *save_image,    /* saved image - for 'edge' method only */
+    *rslt_image;    /* resultant image - after multi-kernel handling */
 
   KernelInfo
-    *curr_kernel,  /* current kernel list to apply */
-    *this_kernel;  /* current individual kernel to apply */
+    *reflected_kernel, /* A reflected copy of the kernel (if needed) */
+    *norm_kernel,      /* the current normal un-reflected kernel */
+    *rflt_kernel,      /* the current reflected kernel (if needed) */
+    *this_kernel;      /* the kernel being applied */
 
   MorphologyMethod
-    primitive;     /* the current morphology primitive being applied */
-
-  MagickBooleanType
-    verbose;           /* verbose output of results */
+    primative;      /* the current morphology primative being applied */
 
   CompositeOperator
-    kernel_compose;  /* Handling the result of multiple kernels*/
+    rslt_compose;   /* multi-kernel compose method for results to use */
+
+  MagickBooleanType
+    verbose;        /* verbose output of results */
 
   unsigned long
-    count,         /* count of primitive steps applied */
-    loop,          /* number of times though kernel list (iterations) */
-    loop_limit,    /* finish looping after this many times */
-    stage,         /* stage number for compound morphology */
-    changed,       /* number pixels changed by one primitive operation */
-    loop_changed,  /* changes made over loop though of kernels */
-    total_changed, /* total count of all changes to image */
-    kernel_number; /* kernel number being applied */
+    method_loop,    /* Loop 1: number of compound method iterations */
+    method_limit,   /*         maximum number of compound method iterations */
+    kernel_number,  /* Loop 2: the kernel number being applied */
+    stage_loop,     /* Loop 3: primative loop for compound morphology */
+    stage_limit,    /*         how many primatives in this compound */
+    kernel_loop,    /* Loop 4: iterate the kernel (basic morphology) */
+    kernel_limit,   /*         number of times to iterate kernel */
+    count,          /* total count of primative steps applied */
+    changed,        /* number pixels changed by last primative operation */
+    kernel_changed, /* total count of changed using iterated kernel */
+    method_changed; /* total count of changed over method iteration */
+
+  char
+    v_info[80];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2513,144 +2569,196 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-  loop_limit = (unsigned long) iterations;
-  if ( iterations < 0 )
-     loop_limit = image->columns > image->rows ? image->columns : image->rows;
   if ( iterations == 0 )
-    return((Image *)NULL); /* null operation - nothing to do! */
+    return((Image *)NULL);   /* null operation - nothing to do! */
 
-  /* kernel must be valid at this point
-   * (except maybe for posible future morphology methods like "Prune"
-   */
-  assert(kernel != (KernelInfo *)NULL);
+  kernel_limit = (unsigned long) iterations;
+  if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
+     kernel_limit = image->columns > image->rows ? image->columns : image->rows;
 
   verbose = ( GetImageArtifact(image,"verbose") != (const char *) NULL ) ?
     MagickTrue : MagickFalse;
 
   /* initialise for cleanup */
-  curr_image = (Image *) image;    /* result of morpholgy primitive */
-  work_image = (Image *) NULL;     /* secondary working image */
-  save_image = (Image *) NULL;     /* save image for some compound methods */
-  curr_kernel = (KernelInfo *)kernel; /* allow kernel list to be modified */
+  curr_image = (Image *) image;
+  work_image = save_image = rslt_image = (Image *) NULL;
+  reflected_kernel = (KernelInfo *) NULL;
 
-  kernel_compose = NoCompositeOp;  /* iterated over all kernels */
 
-  /* Select initial primitive morphology to apply */
-  primitive = UndefinedMorphology;
+  count = 0;      /* number of low-level morphology primatives performed */
+
+  /* Initialize specific methods
+   * + which loop should use the given iteratations
+   * + how many primatives make up the compound morphology
+   * + multi-kernel compose method to use (by default)
+   */
+  method_limit = 1;       /* just do method once, unless otherwise set */
+  stage_limit = 1;        /* assume method is not a compount */
+  rslt_compose = compose; /* and we are composing multi-kernels as given */
   switch( method ) {
-    case CorrelateMorphology:
-      /* A Correlation is actually a Convolution with a reflected kernel.
-      ** However a Convolution is a weighted sum using a reflected kernel.
-      ** It may seem stange to convert a Correlation into a Convolution
-      ** as the Correleation is the simplier method, but Convolution is
-      ** much more commonly used, and it makes sense to implement it directly
-      ** so as to avoid the need to duplicate the kernel when it is not
-      ** required (which is typically the default).
-      */
-      curr_kernel = CloneKernelInfo(kernel);
-      if (curr_kernel == (KernelInfo *) NULL)
-        goto error_cleanup;
-      RotateKernelInfo(curr_kernel,180);
-      /* FALL THRU to Convolve */
-    case ConvolveMorphology:
-      primitive = ConvolveMorphology;
-      kernel_compose = NoCompositeOp;
+    case SmoothMorphology:  /* 4 primative compound morphology */
+      stage_limit = 4;
       break;
-    case ErodeMorphology:      /* just erode */
-    case OpenMorphology:       /* erode then dialate */
-    case EdgeInMorphology:     /* erode and image difference */
-    case TopHatMorphology:     /* erode, dilate and image difference */
-    case SmoothMorphology:     /* erode, dilate, dilate, erode */
-      primitive = ErodeMorphology;
-      break;
-    case ErodeIntensityMorphology:
+    case OpenMorphology:    /* 2 primative compound morphology */
     case OpenIntensityMorphology:
-      primitive = ErodeIntensityMorphology;
-      break;
-    case DilateMorphology:     /* just dilate */
-    case EdgeOutMorphology:    /* dilate and image difference */
-    case EdgeMorphology:       /* dilate and erode difference */
-      primitive = DilateMorphology;
-      break;
-    case CloseMorphology:      /* dilate, then erode */
-    case BottomHatMorphology:  /* dilate and image difference */
-      curr_kernel = CloneKernelInfo(kernel);
-      if (curr_kernel == (KernelInfo *) NULL)
-        goto error_cleanup;
-      RotateKernelInfo(curr_kernel,180);
-      primitive = DilateMorphology;
-      break;
-    case DilateIntensityMorphology:
+    case TopHatMorphology:
+    case CloseMorphology:
     case CloseIntensityMorphology:
-      curr_kernel = CloneKernelInfo(kernel);
-      if (curr_kernel == (KernelInfo *) NULL)
-        goto error_cleanup;
-      RotateKernelInfo(curr_kernel,180);
-      primitive = DilateIntensityMorphology;
+    case BottomHatMorphology:
+    case EdgeMorphology:
+      stage_limit = 2;
       break;
     case HitAndMissMorphology:
-      primitive = HitAndMissMorphology;
-      loop_limit = 1;                       /* iterate only once */
-      kernel_compose = LightenCompositeOp;  /* Union of Hit-And-Miss */
+      kernel_limit = 1;            /* Only apply each kernel once to image */
+      rslt_compose = LightenCompositeOp;  /* Union of multi-kernel results */
       break;
-    case ThinningMorphology:     /* iterative morphology */
+    case ThinningMorphology:  /* don't interate each kernel, iterate method */
     case ThickenMorphology:
-    case DistanceMorphology:     /* Distance should never use multple kernels */
-    case UndefinedMorphology:
-      primitive = method;
+      method_limit = kernel_limit; /* iterate method with each kernel */
+      kernel_limit = 1;            /* do not do kernel iteration  */
+      break;
+    default:
       break;
   }
 
-#if 0
-  { /* User override of results handling  -- Experimental */
-    const char
-       *artifact = GetImageArtifact(image,"morphology:style");
-    if ( artifact != (const char *) NULL ) {
-      if (LocaleCompare("union",artifact) == 0)
-        kernel_compose = LightenCompositeOp;
-      if (LocaleCompare("iterate",artifact) == 0)
-        kernel_compose = NoCompositeOp;
-      else
-        kernel_compose = (CompositeOperator) ParseMagickOption(
-                                 MagickComposeOptions,MagickFalse,artifact);
-      if ( kernel_compose == UndefinedCompositeOp )
-        perror("Invalid \"morphology:compose\" setting\n");
-    }
+  if ( compose != UndefinedCompositeOp )
+    rslt_compose = compose;  /* override default composition for method */
+  if ( rslt_compose == UndefinedCompositeOp )
+    rslt_compose = NoCompositeOp; /* still not defined! Then re-iterate */
+
+  /* Some methods require a refltected kernel to use with primatives
+   * create the reflected kernel for the methods that need it */
+  switch ( method ) {
+    case CorrelateMorphology:
+    case CloseMorphology:
+    case CloseIntensityMorphology:
+    case BottomHatMorphology:
+    case SmoothMorphology:
+      reflected_kernel = CloneKernelInfo(kernel);
+      if (reflected_kernel == (KernelInfo *) NULL)
+        goto error_cleanup;
+      RotateKernelInfo(reflected_kernel,180);
+      break;
+    default:
+      break;
   }
-#endif
 
-  /* Initialize compound morphology stages  */
-  count = 0;          /* number of low-level morphology primitives performed */
-  total_changed = 0;  /* total number of pixels changed thoughout */
-  stage = 1;          /* the compound morphology stage number */
+  /* Loop 1:  iterate the compound method */
+  method_loop = 0;
+  method_changed = 1;
+  while ( method_loop < method_limit && method_changed > 0 ) {
+    method_loop++;
+    method_changed = 0;
 
-  /* compount morphology staging loop */
-  while ( 1 ) {
+    /* Loop 2:  iterate over each kernel in a multi-kernel list */
+    norm_kernel = (KernelInfo *) kernel;
+    rflt_kernel = reflected_kernel;
+    kernel_number = 0;
+    while ( norm_kernel != NULL ) {
 
-#if 1
-    /* Extra information for debugging compound operations */
-    if ( verbose == MagickTrue && primitive != method )
-      fprintf(stderr, "Morphology %s: Stage %lu %s%s (%s)\n",
-        MagickOptionToMnemonic(MagickMorphologyOptions, method), stage,
-        MagickOptionToMnemonic(MagickMorphologyOptions, primitive),
-        ( curr_kernel == kernel) ? "" : "*",
-        ( kernel_compose == NoCompositeOp ) ? "iterate"
-          : MagickOptionToMnemonic(MagickComposeOptions, kernel_compose) );
-#endif
+      /* Loop 3: Compound Morphology Staging - Select Primative to apply */
+      stage_loop = 0;          /* the compound morphology stage number */
+      while ( stage_loop < stage_limit ) {
+        stage_loop++;   /* The stage of the compound morphology */
 
-    if ( kernel_compose == NoCompositeOp ) {
-      /******************************
-       ** Iterate over all Kernels **
-       ******************************/
-      loop = 0;
-      loop_changed = 1;
-      while ( loop < loop_limit && loop_changed > 0 ) {
-        loop++;       /* the iteration of this kernel */
+        /* Select primative morphology for this stage of compound method */
+        this_kernel = norm_kernel; /* default use unreflected kernel */
+        switch( method ) {
+          case ErodeMorphology:      /* just erode */
+          case EdgeInMorphology:     /* erode and image difference */
+            primative = ErodeMorphology;
+            break;
+          case DilateMorphology:     /* just dilate */
+          case EdgeOutMorphology:    /* dilate and image difference */
+            primative = DilateMorphology;
+            break;
+          case OpenMorphology:       /* erode then dialate */
+          case TopHatMorphology:     /* open and image difference */
+            primative = ErodeMorphology;
+            if ( stage_loop == 2 )
+              primative = DilateMorphology;
+            break;
+          case OpenIntensityMorphology:
+            primative = ErodeIntensityMorphology;
+            if ( stage_loop == 2 )
+              primative = DilateIntensityMorphology;
+          case CloseMorphology:      /* dilate, then erode */
+          case BottomHatMorphology:  /* close and image difference */
+            this_kernel = rflt_kernel; /* use the reflected kernel */
+            primative = DilateMorphology;
+            if ( stage_loop == 2 )
+              primative = ErodeMorphology;
+            break;
+          case CloseIntensityMorphology:
+            this_kernel = rflt_kernel; /* use the reflected kernel */
+            primative = DilateIntensityMorphology;
+            if ( stage_loop == 2 )
+              primative = ErodeIntensityMorphology;
+            break;
+          case SmoothMorphology:         /* open, close */
+            switch ( stage_loop ) {
+              case 1: /* start an open method, which starts with Erode */
+                primative = ErodeMorphology;
+                break;
+              case 2:  /* now Dilate the Erode */
+                primative = DilateMorphology;
+                break;
+              case 3:  /* Reflect kernel a close */
+                this_kernel = rflt_kernel; /* use the reflected kernel */
+                primative = DilateMorphology;
+                break;
+              case 4:  /* Finish the Close */
+                this_kernel = rflt_kernel; /* use the reflected kernel */
+                primative = ErodeMorphology;
+                break;
+            }
+            break;
+          case EdgeMorphology:        /* dilate and erode difference */
+            primative = DilateMorphology;
+            if ( stage_loop == 2 ) {
+              save_image = curr_image;      /* save the image difference */
+              curr_image = (Image *) image;
+              primative = ErodeMorphology;
+            }
+            break;
+          case CorrelateMorphology:
+            /* A Correlation is a Convolution with a reflected kernel.
+            ** However a Convolution is a weighted sum using a reflected
+            ** kernel.  It may seem stange to convert a Correlation into a
+            ** Convolution as the Correlation is the simplier method, but
+            ** Convolution is much more commonly used, and it makes sense to
+            ** implement it directly so as to avoid the need to duplicate the
+            ** kernel when it is not required (which is typically the
+            ** default).
+            */
+            this_kernel = rflt_kernel; /* use the reflected kernel */
+            primative = ConvolveMorphology;
+            break;
+          default:
+            primative = method;       /* method is a primative */
+            break;
+        }
 
-        loop_changed = 0;
-        this_kernel = curr_kernel;
-        kernel_number = 0;
-        while ( this_kernel != NULL ) {
+        /* Extra information for debugging compound operations */
+        if ( verbose == MagickTrue ) {
+          if ( stage_limit > 1 )
+            sprintf(v_info, "%s:%lu.%lu -> ",
+                 MagickOptionToMnemonic(MagickMorphologyOptions, method),
+                 method_loop, stage_loop );
+          else if ( primative != method )
+            sprintf(v_info, "%s:%lu -> ",
+                 MagickOptionToMnemonic(MagickMorphologyOptions, method),
+                 method_loop );
+          else
+            v_info[0] = '\0';
+        }
+
+        /* Loop 4: Iterate the kernel with primative */
+        kernel_loop = 0;
+        kernel_changed = 0;
+        changed = 1;
+        while ( kernel_loop < kernel_limit && changed > 0 ) {
+          kernel_loop++;     /* the iteration of this kernel */
 
           /* Create a destination image, if not yet defined */
           if ( work_image == (Image *) NULL )
@@ -2665,237 +2773,143 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
                 }
             }
 
-          /* morphological primitive  curr -> work */
+          /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
-          changed = MorphologyPrimitive(curr_image, work_image, primitive,
+          changed = MorphologyPrimitive(curr_image, work_image, primative,
                         channel, this_kernel, bias, exception);
-          loop_changed += changed;
-          total_changed += changed;
+          kernel_changed += changed;
+          method_changed += changed;
 
-          if ( verbose == MagickTrue )
-            fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, primitive),
-                loop, kernel_number, count, changed);
-
+          if ( verbose == MagickTrue ) {
+            if ( kernel_loop > 1 )
+              fprintf(stderr, "\n"); /* add end-of-line from previous */
+            fprintf(stderr, "%s%s%s:%lu.%lu #%lu => Changed %lu", v_info,
+                MagickOptionToMnemonic(MagickMorphologyOptions, primative),
+                 ( this_kernel == rflt_kernel ) ? "*" : "",
+               method_loop+kernel_loop-1, kernel_number, count, changed);
+          }
           /* prepare next loop */
           { Image *tmp = work_image;   /* swap images for iteration */
             work_image = curr_image;
             curr_image = tmp;
           }
           if ( work_image == image )
-            work_image = (Image *) NULL;  /* never assign image to 'work' */
-          this_kernel = this_kernel->next;  /* prepare next kernel (if any) */
-          kernel_number++;
-        }
+            work_image = (Image *) NULL; /* replace input 'image' */
 
-        if ( verbose == MagickTrue && kernel->next != NULL )
-          fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu   Total %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, primitive),
-                loop, count, loop_changed, total_changed );
-      }
-    }
+        } /* End Loop 4: Iterate the kernel with primative */
 
-    else {
-      /*************************************
-       ** Composition of Iterated Kernels **
-       *************************************/
-      Image
-        *input_image,  /* starting point for kernels */
-        *union_image;
-      input_image = curr_image;
-      union_image = (Image *) NULL;
-
-      this_kernel = curr_kernel;
-      kernel_number = 0;
-      while ( this_kernel != NULL ) {
-
-        if( curr_image != (Image *) NULL && curr_image != input_image )
-          curr_image=DestroyImage(curr_image);
-        curr_image = input_image;  /* always start with the original image */
-
-        loop = 0;
-        changed = 1;
-        loop_changed = 0;
-        while ( loop < loop_limit && changed > 0 ) {
-          loop++;       /* the iteration of this kernel */
-
-          /* Create a destination image, if not defined */
-          if ( work_image == (Image *) NULL )
-            {
-              work_image=CloneImage(image,0,0,MagickTrue,exception);
-              if (work_image == (Image *) NULL)
-                goto error_cleanup;
-              if (SetImageStorageClass(work_image,DirectClass) == MagickFalse)
-                {
-                  InheritException(exception,&curr_image->exception);
-                  if( union_image != (Image *) NULL )
-                    union_image=DestroyImage(union_image);
-                  if( curr_image != input_image )
-                    curr_image = DestroyImage(curr_image);
-                  curr_image = (Image *) input_image;
-                  goto error_cleanup;
-                }
-            }
-
-          /* morphological primitive  curr -> work */
-          count++;
-          changed = MorphologyPrimitive(curr_image,work_image,primitive,
-                        channel, this_kernel, bias, exception);
-          loop_changed += changed;
-          total_changed += changed;
-
-          if ( verbose == MagickTrue )
-            fprintf(stderr, "Morphology %s:%lu.%lu #%lu => Changed %lu\n",
-                MagickOptionToMnemonic(MagickMorphologyOptions, primitive),
-                loop, kernel_number, count, changed);
-
-          /* prepare next loop */
-          { Image *tmp = work_image;   /* swap images for iteration */
-            work_image = curr_image;   /* curr_image is now the results */
-            curr_image = tmp;
-          }
-          if ( work_image == input_image )
-            work_image = (Image *) NULL;  /* clear work of the input_image */
-
-        } /* end kernel iteration */
-
-        /* make a union of the iterated kernel */
-        if ( union_image == (Image *) NULL)   /* start the union? */
-          union_image = curr_image, curr_image = (Image *)NULL;
-        else
-          (void) CompositeImageChannel(union_image,
-            (ChannelType) (channel & ~SyncChannels), kernel_compose,
-            curr_image, 0, 0);
-
-        this_kernel = this_kernel->next;  /* next kernel (if any) */
-        kernel_number++;
-      }
-
-      if ( verbose == MagickTrue && kernel->next != NULL && loop_limit > 1 )
-        fprintf(stderr, "Morphology %s:%lu #%lu ===> Changed %lu   Total %lu\n",
-              MagickOptionToMnemonic(MagickMorphologyOptions, primitive),
-              loop, count, loop_changed, total_changed );
+        if ( verbose == MagickTrue && kernel_changed != changed )
+          fprintf(stderr, "   Total %lu", kernel_changed);
+        if ( verbose == MagickTrue && stage_loop < stage_limit )
+          fprintf(stderr, "\n"); /* add end-of-line before looping */
 
 #if 0
-fprintf(stderr, "--E-- image=0x%lx\n", (unsigned long)image);
-fprintf(stderr, "      input=0x%lx\n", (unsigned long)input_image);
-fprintf(stderr, "      union=0x%lx\n", (unsigned long)union_image);
-fprintf(stderr, "      curr =0x%lx\n", (unsigned long)curr_image);
-fprintf(stderr, "      work =0x%lx\n", (unsigned long)work_image);
-fprintf(stderr, "      save =0x%lx\n", (unsigned long)save_image);
+    fprintf(stderr, "--E-- image=0x%lx\n", (unsigned long)image);
+    fprintf(stderr, "      curr =0x%lx\n", (unsigned long)curr_image);
+    fprintf(stderr, "      work =0x%lx\n", (unsigned long)work_image);
+    fprintf(stderr, "      save =0x%lx\n", (unsigned long)save_image);
+    fprintf(stderr, "      union=0x%lx\n", (unsigned long)rslt_image);
 #endif
 
-      /* Finish up - return the union of results */
-      if( curr_image != (Image *) NULL && curr_image != input_image )
-          curr_image=DestroyImage(curr_image);
-      if( input_image != input_image )
-        input_image = DestroyImage(input_image);
-      curr_image = union_image;
-    }
+      } /* End Loop 3: Primative (staging) Loop for Coumpound Methods */
 
-    /* Compound Morphology Operations
-     *   set next 'primitive' iteration, and continue
-     *   or break when all operations are complete.
-     */
-    stage++;   /* what is the next stage number to do */
-    switch( method ) {
-      case SmoothMorphology:           /* open, close */
-        switch ( stage ) {
-        /* case 1:  initialized above */
-        case 2:  /* open part 2 */
-          primitive = DilateMorphology;
-          continue;
-        case 3:  /* close part 1 */
-          curr_kernel = CloneKernelInfo(kernel);
-          if (curr_kernel == (KernelInfo *) NULL)
-            goto error_cleanup;
-          RotateKernelInfo(curr_kernel,180);
-          continue;
-        case 4:  /* close part 2 */
-          primitive = ErodeMorphology;
-          continue;
+      /*  Final Post-processing for some Compound Methods
+      **
+      ** The removal of any 'Sync' channel flag in the Image Compositon
+      ** below ensures the methematical compose method is applied in a
+      ** purely mathematical way, and only to the selected channels.
+      ** Turn off SVG composition 'alpha blending'.
+      */
+      switch( method ) {
+        case EdgeOutMorphology:
+        case EdgeInMorphology:
+        case TopHatMorphology:
+        case BottomHatMorphology:
+          if ( verbose == MagickTrue )
+            fprintf(stderr, "\n%s: Difference with original image",
+                 MagickOptionToMnemonic(MagickMorphologyOptions, method) );
+          (void) CompositeImageChannel(curr_image,
+                  (ChannelType) (channel & ~SyncChannels),
+                  DifferenceCompositeOp, image, 0, 0);
+          break;
+        case EdgeMorphology:
+          if ( verbose == MagickTrue )
+            fprintf(stderr, "\n%s: Difference of Dilate and Erode",
+                 MagickOptionToMnemonic(MagickMorphologyOptions, method) );
+          (void) CompositeImageChannel(curr_image,
+                  (ChannelType) (channel & ~SyncChannels),
+                  DifferenceCompositeOp, save_image, 0, 0);
+          save_image = DestroyImage(save_image); /* finished with save image */
+          break;
+        default:
+          break;
+      }
+
+      /* multi-kernel handling:  re-iterate, or compose results */
+      if ( kernel->next == (KernelInfo *) NULL )
+        rslt_image = curr_image;   /* not multi-kernel nothing to do */
+      else if ( rslt_compose == NoCompositeOp )
+        { if ( verbose == MagickTrue )
+            fprintf(stderr, " (re-iterate)");
+          rslt_image = curr_image;
+          /* original image is no longer actually needed! */
         }
-        break;
-      case OpenMorphology:      /* erode, dilate */
-      case TopHatMorphology:
-        primitive = DilateMorphology;
-        if ( stage <= 2 ) continue;
-        break;
-      case OpenIntensityMorphology:
-        primitive = DilateIntensityMorphology;
-        if ( stage <= 2 ) continue;
-        break;
-      case CloseMorphology:       /* dilate, erode */
-      case BottomHatMorphology:
-        primitive = ErodeMorphology;
-        if ( stage <= 2 ) continue;
-        break;
-      case CloseIntensityMorphology:
-        primitive = ErodeIntensityMorphology;
-        if ( stage <= 2 ) continue;
-        break;
-      case EdgeMorphology:        /* dilate and erode difference */
-        if (stage <= 2) {
-          save_image = curr_image;
-          curr_image = (Image *) image;
-          primitive = ErodeMorphology;
-          continue;
+      else if ( rslt_image == (Image *) NULL)
+        { if ( verbose == MagickTrue )
+            fprintf(stderr, " (save for compose)");
+          rslt_image = curr_image;
+          curr_image = (Image *) image;  /* continue with original image */
         }
-        break;
-      default:  /* Primitive Morphology is just finished! */
-        break;
-    }
+      else
+        { /* add the new 'current' result to the composition
+          **
+          ** The removal of any 'Sync' channel flag in the Image Compositon
+          ** below ensures the methematical compose method is applied in a
+          ** purely mathematical way, and only to the selected channels.
+          ** Turn off SVG composition 'alpha blending'.
+          */
+          if ( verbose == MagickTrue )
+            fprintf(stderr, " (compose \"%s\")",
+                 MagickOptionToMnemonic(MagickComposeOptions, rslt_compose) );
+          (void) CompositeImageChannel(rslt_image,
+               (ChannelType) (channel & ~SyncChannels), rslt_compose,
+               curr_image, 0, 0);
+          curr_image = (Image *) image;  /* continue with original image */
+        }
+      if ( verbose == MagickTrue )
+        fprintf(stderr, "\n");
 
-    if ( verbose == MagickTrue && count > 1 )
-      fprintf(stderr, "Morphology %s: ======> Total %lu\n",
-           MagickOptionToMnemonic(MagickMorphologyOptions, method),
-           total_changed );
+      /* loop to the next kernel in a multi-kernel list */
+      norm_kernel = norm_kernel->next;
+      if ( rflt_kernel != (KernelInfo *) NULL )
+        rflt_kernel = rflt_kernel->next;
+      kernel_number++;
+    } /* End Loop 2: Loop over each kernel */
 
-    /* If we reach this point we are finished! - Break the Loop */
-    break;
-  }
-
-  /*  Final Post-processing for some Compound Methods
-  **
-  ** The removal of any 'Sync' channel flag in the Image Compositon below
-  ** ensures the compose method is applied in a purely mathematical way, only
-  ** the selected channels, without any normal 'alpha blending' normally
-  ** associated with the compose method.
-  **
-  ** Note "method" here is the 'original' morphological method, and not the
-  ** 'current' morphological method used above to generate "new_image".
-  */
-  switch( method ) {
-    case EdgeOutMorphology:
-    case EdgeInMorphology:
-    case TopHatMorphology:
-    case BottomHatMorphology:
-      (void) CompositeImageChannel(curr_image,
-               (ChannelType) (channel & ~SyncChannels), DifferenceCompositeOp,
-               image, 0, 0);
-      break;
-    case EdgeMorphology:
-      /* Difference the Eroded Image with a Dilate image */
-      (void) CompositeImageChannel(curr_image,
-               (ChannelType) (channel & ~SyncChannels), DifferenceCompositeOp,
-               save_image, 0, 0);
-      break;
-    default:
-      break;
-  }
+  } /* End Loop 1: compound method interation */
 
   goto exit_cleanup;
 
-  /* Yes goto's are bad, but in this case it makes cleanup lot more efficient */
+  /* Yes goto's are bad, but it makes cleanup lot more efficient */
 error_cleanup:
-  if ( curr_image != (Image *) NULL && curr_image != image )
-    (void) DestroyImage(curr_image);
+  if ( curr_image != (Image *) NULL &&
+       curr_image != rslt_image &&
+       curr_image != image )
+    curr_image = DestroyImage(curr_image);
+  if ( rslt_image != (Image *) NULL )
+    rslt_image = DestroyImage(rslt_image);
 exit_cleanup:
+  if ( curr_image != (Image *) NULL &&
+       curr_image != rslt_image &&
+       curr_image != image )
+    curr_image = DestroyImage(curr_image);
   if ( work_image != (Image *) NULL )
-    (void) DestroyImage(work_image);
+    work_image = DestroyImage(work_image);
   if ( save_image != (Image *) NULL )
-    (void) DestroyImage(save_image);
-  return(curr_image);
+    save_image = DestroyImage(save_image);
+  if ( reflected_kernel != (KernelInfo *) NULL )
+    reflected_kernel = DestroyKernelInfo(reflected_kernel);
+  return(rslt_image);
 }
 
 /*
@@ -2960,6 +2974,9 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   KernelInfo
     *curr_kernel;
 
+  CompositeOperator
+    compose;
+
   Image
     *morphology_image;
 
@@ -2985,19 +3002,33 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
 
   /* display the (normalized) kernel via stderr */
   artifact = GetImageArtifact(image,"showkernel");
+  if ( artifact == (const char *) NULL)
+    artifact = GetImageArtifact(image,"convolve:showkernel");
+  if ( artifact == (const char *) NULL)
+    artifact = GetImageArtifact(image,"morphology:showkernel");
   if ( artifact != (const char *) NULL)
     ShowKernelInfo(curr_kernel);
 
+  /* override the default handling of multi-kernel morphology results
+   * if 'Undefined' use the default method
+   * if 'None' (default for 'Convolve') re-iterate previous result
+   * otherwise merge resulting images using compose method given
+   */
+  compose = UndefinedCompositeOp;  /* use default for method */
+  artifact = GetImageArtifact(image,"morphology:compose");
+  if ( artifact != (const char *) NULL)
+    compose = (CompositeOperator) ParseMagickOption(
+                             MagickComposeOptions,MagickFalse,artifact);
+
   /* Apply the Morphology */
   morphology_image = MorphologyApply(image, channel, method, iterations,
-                         curr_kernel, image->bias, exception);
+                         curr_kernel, compose, image->bias, exception);
 
   /* Cleanup and Exit */
   if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
   return(morphology_image);
 }
-
 
 MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
   method, const long iterations,const KernelInfo *kernel, ExceptionInfo
