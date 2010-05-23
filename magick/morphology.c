@@ -2742,11 +2742,11 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         /* Extra information for debugging compound operations */
         if ( verbose == MagickTrue ) {
           if ( stage_limit > 1 )
-            sprintf(v_info, "%s:%lu.%lu -> ",
+            (void) FormatMagickString(v_info, MaxTextExtent, "%s:%lu.%lu -> ",
                  MagickOptionToMnemonic(MagickMorphologyOptions, method),
                  method_loop, stage_loop );
           else if ( primative != method )
-            sprintf(v_info, "%s:%lu -> ",
+            (void) FormatMagickString(v_info, MaxTextExtent, "%s:%lu -> ",
                  MagickOptionToMnemonic(MagickMorphologyOptions, method),
                  method_loop );
           else
