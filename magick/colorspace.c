@@ -115,8 +115,20 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
   r=QuantumScale*red;
+  if (r > 0.04045)
+    r=pow((r+0.055)/1.055,2.4);
+  else
+    r/=12.92;
   g=QuantumScale*green;
+  if (g > 0.04045)
+    g=pow((g+0.055)/1.055,2.4);
+  else
+    g/=12.92;
   b=QuantumScale*blue;
+  if (b > 0.04045)
+    b=pow((b+0.055)/1.055,2.4);
+  else
+    b/=12.92;
   *X=0.4124240*r+0.3575790*g+0.1804640*b;
   *Y=0.2126560*r+0.7151580*g+0.0721856*b;
   *Z=0.0193324*r+0.1191930*g+0.9504440*b;
@@ -133,7 +145,7 @@ static double LabF1(double alpha)
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   double *L,double *a,double *b)
 {
-#define D50X  (0.9642)  
+#define D50X  (0.9642)
 #define D50Y  (1.0)
 #define D50Z  (0.8249)
 
@@ -149,15 +161,17 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   *a=0.5;
   *b=0.5;
   if ((X == 0.0) && (Y == 0.0) && (Z == 0.0))
-    puts("a");
-  if ((X == 0.0) && (Y == 0.0) && (Z == 0.0))
     return;
   fx=LabF1(X/D50X);
   fy=LabF1(Y/D50Y);
   fz=LabF1(Z/D50Z);
   *L=(116.0*fy-16.0)/100.0;
-  *a=(500.0*(fx-fy))/255.0+0.5;
-  *b=(200.0*(fy-fz))/255.0+0.5;
+  *a=(500.0*(fx-fy))/255.0;
+  if (*a < 0.0)
+    *a+=1.0;
+  *b=(200.0*(fy-fz))/255.0;
+  if (*b < 0.0)
+    *b+=1.0;
 }
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
@@ -1262,7 +1276,6 @@ static double LabF2(double alpha)
   return(0.0);
 }
 
-
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   double *X,double *Y,double *Z)
 {
@@ -1281,8 +1294,8 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   if (L <= 0.0)
     return;
   y=(100.0*L+16.0)/116.0;
-  x=y+255.0*0.002*(a-0.5);
-  z=y-255.0*0.005*(b-0.5);
+  x=y+255.0*0.002*(a > 0.5 ? a-1.0 : a);
+  z=y-255.0*0.005*(b > 0.5 ? b-1.0 : b);
   *X=D50X*LabF2(x);
   *Y=D50Y*LabF2(y);
   *Z=D50Z*LabF2(z);
