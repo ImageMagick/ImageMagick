@@ -30,7 +30,8 @@ extern "C" {
 
 extern MagickExport Image
   *MorphologyApply(const Image *,const ChannelType,const MorphologyMethod,
-    const long, const KernelInfo *,const double,ExceptionInfo *);
+    const long, const KernelInfo *, const CompositeOperator, const double,
+    ExceptionInfo *);
 
 extern MagickExport void
   ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
