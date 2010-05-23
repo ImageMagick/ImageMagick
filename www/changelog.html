@@ -141,6 +141,9 @@
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
+<div  class="sponsor">
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+</div>
 </div>
 </div>
 
@@ -149,14 +152,39 @@
 
 <div class="main">
 
-<ul><dt>2010-05-15  6.6.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-05-23  6.6.2.0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Third Re-write of MorphologyApply() to better handle compound methods.</li>
+  <li> Implemented  -set option:morphology:compose for merging results of    multiple kernels. "None" means re-iterate results with next kernel.    While "Undefined" means to use the internal default for a method.    Thinning, Thickening, HitAndMiss, Convolve, Correlate defaults to "None"    while HitAndMiss defaults to "Lighten" (union of all kernel results).    Other morphology methods defaults still to be decided.</li>
+  <li> Added HitAndMiss Kernel: Ridges  (find ridges and pixel width lines)</li>
+  <li> ExpandKernelInfo() (rotation expand) now groks symmetrical kernels.</li><br />
+<dt>2010-05-18  6.6.2.0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Separation of internal function MorphologyAppy() from    MorphologyImageChannel() to calls to convolve without user settings.</li>
+  <li> Rewrite of MorphologyApply() to output better 'verbose' messages</li>
+  <li> Better handling of Gaussian tyle filters (bug fixes)</li>
+  <li> Bug fix and optimization of kernel size calculations in "gem.c"</li>
+  <li> Allow kernel rotation flags in 'user defined' kernels    EG: -set option:showkernel 1 -morphology Thinning  '3@: 0,1,0 0,1,0 0,0,0'</li>
+  <li> Allow a scaled unity kernel to be added to kernel (EdgeDet-&gt;Sharpen)    EG: -set option:convolve:scale [kernel_scale][^!],[unity_scale][%]</li>
+  <li> Addition of "Laplacian of Gauussian" (LOG), also known as Mexician Hat    EG: -morphology convolve LOG:0x1</li>
+  <li> Added FreiChen, Kirsch  Convolution kernels</li>
+  <li> Added Descrete 'Laplacian of Gaussian' kernels (Laplacian type 15 and 19)</li>
+  <li> Added Edges HitAndMiss Kernel</li><br />
+<dt>2010-05-17  6.6.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> PSD images require a proper layer to support an alpha channel.</li>
+  <li> Enable PFM endian support.</li>
+  <li> Add context to -border for montage.  Inside the parenthesis it adds a border    to the image otherwise it sets the border for the layout manager.</li>
+  <li> 24-bit BMP images are not colormapped even if header colors != 0.</li>
+  <li> Set DPX user data like this: -set profile dpx:userdata.txt.</li>
+  <li> Make sure Lab =&gt; RGB =&gt; Lab survives the round trip.</li><br />
+<dt>2010-05-15  6.6.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Use ScaleCharToQuantum() in coders/src.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16229).</li>
   <li> Don't clamp HDRI EXR pixels.</li><br />
 <dt>2010-05-14  6.6.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Increase the estimated # points for the path drawing primitive.</li>
   <li> Remove any prior resolution block from PSD before writing the new block.</li><br />
 <dt>2010-05-14  6.6.1-9 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Addition of more Morphological/Convolution Kernels.    DOG (Difference of Gaussians) and DOB (Difference of Blurs),    Prewitt, Roberts, Compass, and Ring</li><br />
+  <li> Addition of more Morphological/Convolution Kernels.    DOG (Difference of Gaussians) and DOB (Difference of Blurs),    EG:    -morphology convolve DOG:0x1,3           -morphology convolve DOB:0x1,3,90</li>
+  <li> Added Prewitt, Roberts, Compass  Convolution Kernels</li>
+  <li> Ring Symbol Kernel (subtraction of Disk from a Disk)</li><br />
 <dt>2010-05-13  6.6.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The pixel buffer was underallocated for some image formats when streaming.</li><br />
 <dt>2010-05-12  6.6.1-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
@@ -1509,7 +1537,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
