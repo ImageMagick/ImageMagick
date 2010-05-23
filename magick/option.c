@@ -1077,9 +1077,9 @@ static const OptionInfo
     { "Peaks", (long) PeaksKernel,MagickFalse },
     { "Edges", (long) EdgesKernel,MagickFalse },
     { "Corners", (long) CornersKernel,MagickFalse },
+    { "Ridges", (long) RidgesKernel,MagickFalse },
     { "LineEnds", (long) LineEndsKernel,MagickFalse },
     { "LineJunctions", (long) LineJunctionsKernel,MagickFalse },
-    { "Thinning", (long) ThinningKernel,MagickTrue },     /* under trail */
     { "ConvexHull", (long) ConvexHullKernel,MagickFalse },
     { "Skeleton", (long) SkeletonKernel,MagickFalse },
     { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
