@@ -122,39 +122,42 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
   *Z=0.0193324*r+0.1191930*g+0.9504440*b;
 }
 
+static double LabF1(double alpha)
+{
+
+  if (alpha <= ((24.0/116.0)*(24.0/116.0)*(24.0/116.0)))
+    return((841.0/108.0)*alpha+(16.0/116.0));
+  return(pow(alpha,1.0/3.0));
+}
+
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   double *L,double *a,double *b)
 {
+#define D50X  (0.9642)  
+#define D50Y  (1.0)
+#define D50Z  (0.8249)
+
   double
-    x,
-    y,
-    z;
+    fx,
+    fy,
+    fz;
 
   assert(L != (double *) NULL);
   assert(a != (double *) NULL);
   assert(b != (double *) NULL);
-  x=X/0.9504559271;
-  if (x > 0.008856)
-    x=pow(x,1.0/3.0);
-  else
-    x=(7.787037*x)+(16.0/116.0);
-  y=Y/1.0000000000;
-  if (y > 0.008856)
-    y=pow(y,1.0/3.0);
-  else
-    y=(7.787037*y)+(16.0/116.0);
-  z=Z/1.0890577508;
-  if (z > 0.008856)
-    z=pow(z,1.0/3.0);
-  else
-    z=(7.787037*z)+(16.0/116.0);
-  *L=((116.0*y)-16.0)/100.0;
-  *a=(500.0*(x-y))/255.0;
-  if (*a < 0.0)
-    *a+=1.0;
-  *b=(200.0*(y-z))/255.0;
-  if (*b < 0.0)
-    *b+=1.0;
+  *L=0.0;
+  *a=0.5;
+  *b=0.5;
+  if ((X == 0.0) && (Y == 0.0) && (Z == 0.0))
+    puts("a");
+  if ((X == 0.0) && (Y == 0.0) && (Z == 0.0))
+    return;
+  fx=LabF1(X/D50X);
+  fy=LabF1(Y/D50Y);
+  fz=LabF1(Z/D50Z);
+  *L=(116.0*fy-16.0)/100.0;
+  *a=(500.0*(fx-fy))/255.0+0.5;
+  *b=(200.0*(fy-fz))/255.0+0.5;
 }
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
@@ -1246,11 +1249,25 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %
 */
 
+static double LabF2(double alpha)
+{
+  double
+    beta;
+
+  if (alpha > (24.0/116.0))
+    return(alpha*alpha*alpha);
+  beta=(108.0/841.0)*(alpha-(16.0/116.0));
+  if (beta > 0.0)
+    return(beta);
+  return(0.0);
+}
+
+
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   double *X,double *Y,double *Z)
 {
+
   double
-    cube,
     x,
     y,
     z;
@@ -1258,27 +1275,17 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
+  *X=0.0;
+  *Y=0.0;
+  *Z=0.0;
+  if (L <= 0.0)
+    return;
   y=(100.0*L+16.0)/116.0;
-  x=y+255.0*(a > 0.5 ? a-1.0 : a)/500.0;
-  z=y-255.0*(b > 0.5 ? b-1.0 : b)/200.0;
-  cube=y*y*y;
-  if (cube > 0.008856)
-    y=cube;
-  else
-    y=(y-16.0/116.0)/7.787037;
-  cube=x*x*x;
-  if (cube > 0.008856)
-    x=cube;
-  else
-    x=(x-16.0/116.0)/7.787037;
-  cube=z*z*z;
-  if (cube > 0.008856)
-    z=cube;
-  else
-    z=(z-16.0/116.0)/7.787037;
-  *X=0.9504559271*x;
-  *Y=1.0000000000*y;
-  *Z=1.0890577508*z;
+  x=y+255.0*0.002*(a-0.5);
+  z=y-255.0*0.005*(b-0.5);
+  *X=D50X*LabF2(x);
+  *Y=D50Y*LabF2(y);
+  *Z=D50Z*LabF2(z);
 }
 
 static inline unsigned short RoundToYCC(const MagickRealType value)
