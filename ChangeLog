@@ -32,6 +32,7 @@
     to the image otherwise it sets the border for the layout manager.
   * 24-bit BMP images are not colormapped even if header colors != 0.
   * Set DPX user data like this: -set profile dpx:userdata.txt.
+  * Make sure Lab => RGB => Lab survives the round trip.
 
 2010-05-15  6.6.1-10 Cristy  <quetzlzacatenango@image...>
   * Use ScaleCharToQuantum() in coders/src.c (reference
