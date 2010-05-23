@@ -364,6 +364,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
 
 static KernelInfo *ParseKernelName(const char *kernel_string)
 {
+  KernelInfo
+    *kernel;
+
   char
     token[MaxTextExtent];
 
@@ -447,7 +450,17 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
       break;
   }
 
-  return(AcquireKernelBuiltIn((KernelInfoType)type, &args));
+  kernel = AcquireKernelBuiltIn((KernelInfoType)type, &args);
+
+  /* global expand to rotated kernel list - only for single kernels */
+  if ( kernel->next == (KernelInfo *) NULL ) {
+    if ( (flags & AreaValue) != 0 )         /* '@' symbol in kernel args */
+      ExpandKernelInfo(kernel, 45.0);
+    else if ( (flags & MinimumValue) != 0 ) /* '^' symbol in kernel args */
+      ExpandKernelInfo(kernel, 90.0);
+  }
+
+  return(kernel);
 }
 
 MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)

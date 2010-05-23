@@ -7,7 +7,10 @@
     while HitAndMiss defaults to "Lighten" (union of all kernel results).
     Other morphology methods defaults still to be decided.
   * Added HitAndMiss Kernel: Ridges  (find ridges and pixel width lines)
+  * Rotation Expansion of single kernels '^' and '@' flags in arguments
+    EG: -set option:showkernel 1 -morphology Convolve 'Blur:0x2^'
   * ExpandKernelInfo() (rotation expand) now groks symmetrical kernels.
+    So the above will only produce a list of 2 kernels, not 4 kernels
 
 2010-05-18  6.6.2.0 Anthony Thyssen <A.Thyssen@griffith...>
   * Separation of internal function MorphologyAppy() from
@@ -15,7 +18,8 @@
   * Rewrite of MorphologyApply() to output better 'verbose' messages
   * Better handling of Gaussian tyle filters (bug fixes)
   * Bug fix and optimization of kernel size calculations in "gem.c"
-  * Allow kernel rotation flags in 'user defined' kernels
+  * Allow '^' or '@' flags in 'user defined' kernel size arguments to
+    expand kernel into a rotated list.
     EG: -set option:showkernel 1 -morphology Thinning  '3@: 0,1,0 0,1,0 0,0,0'
   * Allow a scaled unity kernel to be added to kernel (EdgeDet->Sharpen)
     EG: -set option:convolve:scale [kernel_scale][^!],[unity_scale][%]
