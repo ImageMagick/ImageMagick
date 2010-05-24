@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 </div>
 </div>
@@ -156,13 +156,14 @@
   <li> Third Re-write of MorphologyApply() to better handle compound methods.</li>
   <li> Implemented  -set option:morphology:compose for merging results of    multiple kernels. "None" means re-iterate results with next kernel.    While "Undefined" means to use the internal default for a method.    Thinning, Thickening, HitAndMiss, Convolve, Correlate defaults to "None"    while HitAndMiss defaults to "Lighten" (union of all kernel results).    Other morphology methods defaults still to be decided.</li>
   <li> Added HitAndMiss Kernel: Ridges  (find ridges and pixel width lines)</li>
-  <li> ExpandKernelInfo() (rotation expand) now groks symmetrical kernels.</li><br />
+  <li> Rotation Expansion of single kernels '^' and '@' flags in arguments    EG: -set option:showkernel 1 -morphology Convolve 'Blur:0x2^'</li>
+  <li> ExpandKernelInfo() (rotation expand) now groks symmetrical kernels.    So the above will only produce a list of 2 kernels, not 4 kernels</li><br />
 <dt>2010-05-18  6.6.2.0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Separation of internal function MorphologyAppy() from    MorphologyImageChannel() to calls to convolve without user settings.</li>
   <li> Rewrite of MorphologyApply() to output better 'verbose' messages</li>
   <li> Better handling of Gaussian tyle filters (bug fixes)</li>
   <li> Bug fix and optimization of kernel size calculations in "gem.c"</li>
-  <li> Allow kernel rotation flags in 'user defined' kernels    EG: -set option:showkernel 1 -morphology Thinning  '3@: 0,1,0 0,1,0 0,0,0'</li>
+  <li> Allow '^' or '@' flags in 'user defined' kernel size arguments to    expand kernel into a rotated list.    EG: -set option:showkernel 1 -morphology Thinning  '3@: 0,1,0 0,1,0 0,0,0'</li>
   <li> Allow a scaled unity kernel to be added to kernel (EdgeDet-&gt;Sharpen)    EG: -set option:convolve:scale [kernel_scale][^!],[unity_scale][%]</li>
   <li> Addition of "Laplacian of Gauussian" (LOG), also known as Mexician Hat    EG: -morphology convolve LOG:0x1</li>
   <li> Added FreiChen, Kirsch  Convolution kernels</li>
