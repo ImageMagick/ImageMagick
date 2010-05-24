@@ -2677,6 +2677,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
         /* Select primative morphology for this stage of compound method */
         this_kernel = norm_kernel; /* default use unreflected kernel */
+        primative = method;        /* Assume method is a primative */
         switch( method ) {
           case ErodeMorphology:      /* just erode */
           case EdgeInMorphology:     /* erode and image difference */
@@ -2749,7 +2750,6 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             primative = ConvolveMorphology;
             break;
           default:
-            primative = method;       /* method is a primative */
             break;
         }
 
