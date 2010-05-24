@@ -966,9 +966,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             layer_info[i].page.y=(long) ReadBlobMSBLong(image);
             layer_info[i].page.x=(long) ReadBlobMSBLong(image);
             layer_info[i].page.height=(unsigned long)
-              ReadBlobMSBLong(image)-layer_info[i].page.y;
+              (ReadBlobMSBLong(image)-layer_info[i].page.y);
             layer_info[i].page.width=(unsigned long)
-              ReadBlobMSBLong(image)-layer_info[i].page.x;
+              (ReadBlobMSBLong(image)-layer_info[i].page.x);
             layer_info[i].channels=ReadBlobMSBShort(image);
             if (layer_info[i].channels > MaxPSDChannels)
               ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
