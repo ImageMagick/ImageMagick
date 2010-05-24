@@ -969,6 +969,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (ReadBlobMSBLong(image)-layer_info[i].page.y);
             layer_info[i].page.width=(unsigned long)
               (ReadBlobMSBLong(image)-layer_info[i].page.x);
+            if (layer_info[i].page.height > 300000)
+              layer_info[i].page.height+=4294967295UL;
+            if (layer_info[i].page.width > 300000)
+              layer_info[i].page.width+=4294967295UL;
             layer_info[i].channels=ReadBlobMSBShort(image);
             if (layer_info[i].channels > MaxPSDChannels)
               ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
@@ -1030,6 +1034,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       (ReadBlobMSBLong(image)-layer_info[i].mask.y);
                     layer_info[i].mask.width=(unsigned long)
                       (ReadBlobMSBLong(image)-layer_info[i].mask.x);
+                    if (layer_info[i].mask.height > 300000)
+                      layer_info[i].mask.height+=4294967295UL;
+                    if (layer_info[i].mask.width > 300000)
+                      layer_info[i].mask.width+=4294967295UL;
                     if (image->debug != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "      layer mask: offset(%ld,%ld), size(%ld,%ld), length=%ld",
