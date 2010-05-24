@@ -68,14 +68,14 @@ endif
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-  COMPARE="$(MEMCHECK) @abs_top_builddir@/utilities/compare" \
-  COMPOSITE="$(MEMCHECK) @abs_top_builddir@/utilities/composite" \
-  CONJURE="$(MEMCHECK) @abs_top_builddir@/utilities/conjure" \
-  CONVERT="$(MEMCHECK) @abs_top_builddir@/utilities/convert" \
-  DISPLAY="$(MEMCHECK) @abs_top_builddir@/utilities/display" \
-  IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify" \
-  MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" \
-  VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate" \
+	COMPARE="$(MEMCHECK) @abs_top_builddir@/utilities/compare" \
+	COMPOSITE="$(MEMCHECK) @abs_top_builddir@/utilities/composite" \
+	CONJURE="$(MEMCHECK) @abs_top_builddir@/utilities/conjure" \
+	CONVERT="$(MEMCHECK) @abs_top_builddir@/utilities/convert" \
+	DISPLAY="$(MEMCHECK) @abs_top_builddir@/utilities/display" \
+	IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify" \
+	MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" \
+	VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate" \
 	LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}" \
 	MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@' \
 	MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@' \
