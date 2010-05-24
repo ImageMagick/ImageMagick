@@ -242,8 +242,9 @@ ModuleExport unsigned long RegisterMPEGImage(void)
   entry=SetMagickInfo("AVI");
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsAVI;
+  entry->blob_support=MagickFalse;
   entry->description=ConstantString("Microsoft Audio/Visual Interleaved");
-  entry->module=ConstantString("AVI");
+  entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MOV");
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
