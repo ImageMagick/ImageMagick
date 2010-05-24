@@ -2657,7 +2657,6 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 }
 
 #if defined(MAGICKCORE_RSVG_DELEGATE)
-#if !defined(MAGICKCORE_CAIRO_DELEGATE)
 static void SVGSetImageSize(int *width,int *height,gpointer context)
 {
   Image
@@ -2667,7 +2666,6 @@ static void SVGSetImageSize(int *width,int *height,gpointer context)
   *width=(int) (*width*image->x_resolution/72.0);
   *height=(int) (*height*image->y_resolution/72.0);
 }
-#endif
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -2771,9 +2769,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (svg_handle == (RsvgHandle *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       rsvg_handle_set_base_uri(svg_handle,image_info->filename);
-#if !defined(MAGICKCORE_CAIRO_DELEGATE)
       rsvg_handle_set_size_callback(svg_handle,SVGSetImageSize,image,NULL);
-#endif
       if ((image->x_resolution != 72.0) && (image->y_resolution != 72.0))
         rsvg_handle_set_dpi_x_y(svg_handle,image->x_resolution,
           image->y_resolution);
