@@ -1,6 +1,7 @@
 2010-05-24  6.6.2-1 Cristy  <quetzlzacatenango@image...>
   * Respect density when rendering SVG images.
   * Set AVI handler to the MPEG coder.
+  * Compute the proper DPX user data field size.
 
 2010-05-23  6.6.2.0 Anthony Thyssen <A.Thyssen@griffith...>
   * Third Re-write of MorphologyApply() to better handle compound methods.
