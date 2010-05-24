@@ -109,7 +109,7 @@ static inline double MagickMax(const double x,const double y)
 /* Currently these are only internal to this module */
 static void
   CalcKernelMetaData(KernelInfo *),
-  ExpandKernelInfo(KernelInfo *, double),
+  ExpandKernelInfo(KernelInfo *, const double),
   RotateKernelInfo(KernelInfo *, double);
 
 
