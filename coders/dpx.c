@@ -985,7 +985,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           StringInfo
             *profile;
 
-           profile=AcquireStringInfo(dpx.file.user_size-sizeof(dpx.user.id));
+           profile=AcquireStringInfo(dpx.file.user_size);
            offset+=ReadBlob(image,GetStringInfoLength(profile),
              GetStringInfoDatum(profile));
            (void) SetImageProfile(image,"dpx",profile);
