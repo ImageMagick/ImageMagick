@@ -109,7 +109,7 @@ static inline double MagickMax(const double x,const double y)
 /* Currently these are only internal to this module */
 static void
   CalcKernelMetaData(KernelInfo *),
-  ExpandKernelInfo(KernelInfo *, const double),
+  ExpandKernelInfo(KernelInfo *, double),
   RotateKernelInfo(KernelInfo *, double);
 
 
@@ -1863,19 +1863,19 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
 static void ExpandKernelInfo(KernelInfo *kernel, const double angle)
 {
   KernelInfo
-    *clone,
+    *new,
     *last;
 
   last = kernel;
   while(1) {
-    clone = CloneKernelInfo(last);
-    RotateKernelInfo(clone, angle);
-    if ( SameKernelInfo(kernel, clone) == MagickTrue )
+    new = CloneKernelInfo(last);
+    RotateKernelInfo(new, angle);
+    if ( SameKernelInfo(kernel, new) == MagickTrue )
       break;
-    last->next = clone;
-    last = clone;
+    last->next = new;
+    last = new;
   }
-  clone = DestroyKernelInfo(clone); /* This was the same as the first - junk */
+  new = DestroyKernelInfo(new); /* This was the same as the first - junk */
   return;
 }
 
@@ -2582,6 +2582,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
+  count = 0;      /* number of low-level morphology primatives performed */
   if ( iterations == 0 )
     return((Image *)NULL);   /* null operation - nothing to do! */
 
@@ -2596,9 +2597,6 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   curr_image = (Image *) image;
   work_image = save_image = rslt_image = (Image *) NULL;
   reflected_kernel = (KernelInfo *) NULL;
-
-
-  count = 0;      /* number of low-level morphology primatives performed */
 
   /* Initialize specific methods
    * + which loop should use the given iteratations
@@ -2622,25 +2620,28 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       stage_limit = 2;
       break;
     case HitAndMissMorphology:
-      kernel_limit = 1;            /* Only apply each kernel once to image */
+      kernel_limit = 1;          /* no method or kernel iteration */
       rslt_compose = LightenCompositeOp;  /* Union of multi-kernel results */
       break;
-    case ThinningMorphology:  /* don't interate each kernel, iterate method */
+    case ThinningMorphology:
     case ThickenMorphology:
-      method_limit = kernel_limit; /* iterate method with each kernel */
-      kernel_limit = 1;            /* do not do kernel iteration  */
+    case DistanceMorphology:
+      method_limit = kernel_limit;  /* iterate method with each kernel */
+      kernel_limit = 1;             /* do not do kernel iteration  */
+      rslt_compose = NoCompositeOp; /* Re-iterate with multiple kernels */
       break;
     default:
       break;
   }
 
+  /* Handle user (caller) specified multi-kernel composition method */
   if ( compose != UndefinedCompositeOp )
     rslt_compose = compose;  /* override default composition for method */
   if ( rslt_compose == UndefinedCompositeOp )
     rslt_compose = NoCompositeOp; /* still not defined! Then re-iterate */
 
-  /* Some methods require a refltected kernel to use with primatives
-   * create the reflected kernel for the methods that need it */
+  /* Some methods require a reflected kernel to use with primatives.
+   * Create the reflected kernel for those methods. */
   switch ( method ) {
     case CorrelateMorphology:
     case CloseMorphology:
@@ -2860,12 +2861,15 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
       /* multi-kernel handling:  re-iterate, or compose results */
       if ( kernel->next == (KernelInfo *) NULL )
-        rslt_image = curr_image;   /* not multi-kernel nothing to do */
+        rslt_image = curr_image;   /* just return the resulting image */
       else if ( rslt_compose == NoCompositeOp )
-        { if ( verbose == MagickTrue )
-            fprintf(stderr, " (re-iterate)");
-          rslt_image = curr_image;
-          /* original image is no longer actually needed! */
+        { if ( verbose == MagickTrue ) {
+            if ( this_kernel->next != (KernelInfo *) NULL )
+              fprintf(stderr, " (re-iterate)");
+            else
+              fprintf(stderr, " (done)");
+          }
+          rslt_image = curr_image; /* return result, and re-iterate */
         }
       else if ( rslt_image == (Image *) NULL)
         { if ( verbose == MagickTrue )
