@@ -785,11 +785,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Find any peak larger than the pixels the fall between the two radii.
 %       The default ring of pixels is as per "Ring".
 %    Edges
-%       Find Edges of a binary shape
+%       Find edges of a binary shape
 %    Corners
 %       Find corners of a binary shape
 %    Ridges
-%       Find Ridges or Thin lines
+%       Find single pixel ridges or thin lines
+%    Ridges2
+%       Find 2 pixel thick ridges or lines
 %    LineEnds
 %       Find end points of lines (for pruning a skeletion)
 %    LineJunctions
@@ -1562,6 +1564,25 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ExpandKernelInfo(kernel, 45.0); /* 4 rotated kernels (symmetrical) */
         break;
       }
+    case Ridges2Kernel:
+      {
+        KernelInfo
+          *new_kernel;
+        kernel=ParseKernelArray("4x1^:0,1,1,0");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90.0); /* 4 rotated kernels */
+        /* append second set of 4 kernels */
+        new_kernel=ParseKernelArray("4x4^:0,-,-,- -,1,-,- -,-,1,- -,-,-,0'");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90.0);  /* 4 rotated kernels */
+        LastKernelInfo(kernel)->next = new_kernel;
+        break;
+        break;
+      }
     case LineEndsKernel:
       {
         KernelInfo
@@ -1843,20 +1864,26 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
 {
   register unsigned long
     i;
-  if ( kernel1->width != kernel2->width )
+
+  /* check size and origin location */
+  if (    kernel1->width != kernel2->width
+       || kernel1->height != kernel2->height
+       || kernel1->x != kernel2->x
+       || kernel1->y != kernel2->y )
     return MagickFalse;
-  if ( kernel1->height != kernel2->height )
-    return MagickFalse;
+
+  /* check actual kernel values */
   for (i=0; i < (kernel1->width*kernel1->height); i++) {
-    /* Test Nan */
+    /* Test for Nan equivelence */
     if ( IsNan(kernel1->values[i]) && !IsNan(kernel2->values[i]) )
       return MagickFalse;
     if ( IsNan(kernel2->values[i]) && !IsNan(kernel1->values[i]) )
       return MagickFalse;
-    /* Test actual value */
+    /* Test actual values are equivelent */
     if ( fabs(kernel1->values[i] - kernel2->values[i]) > MagickEpsilon )
       return MagickFalse;
   }
+
   return MagickTrue;
 }
 
@@ -3156,7 +3183,18 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           kernel->values[5] = kernel->values[2];
           kernel->values[2] = kernel->values[1];
           kernel->values[1] = t;
-          /* NOT DONE - rotate a off-centered origin as well! */
+          /* rotate non-centered origin */
+          if ( kernel->x != 1 || kernel->y != 1 ) {
+            long x,y;
+            x = (long) kernel->x-1;
+            y = (long) kernel->y-1;
+                 if ( x == y  ) x = 0;
+            else if ( x == 0  ) x = -y;
+            else if ( x == -y ) y = 0;
+            else if ( y == 0  ) y = x;
+            kernel->x = (unsigned long) x+1;
+            kernel->y = (unsigned long) y+1;
+          }
           angle = fmod(angle+315.0, 360.0);  /* angle reduced 45 degrees */
           kernel->angle = fmod(kernel->angle+45.0, 360.0);
         }
@@ -3187,20 +3225,27 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
         }
       else if ( kernel->width == kernel->height )
         { /* Rotate a square array of values by 90 degrees */
-          register unsigned long
-            i,j,x,y;
-          register MagickRealType
-            *k,t;
-          k=kernel->values;
-          for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
-            for( j=0, y=kernel->height-1;  j<y;   j++, y--)
-              { t                    = k[i+j*kernel->width];
-                k[i+j*kernel->width] = k[j+x*kernel->width];
-                k[j+x*kernel->width] = k[x+y*kernel->width];
-                k[x+y*kernel->width] = k[y+i*kernel->width];
-                k[y+i*kernel->width] = t;
-              }
-          /* NOT DONE - rotate a off-centered origin as well! */
+          { register unsigned long
+              i,j,x,y;
+            register MagickRealType
+              *k,t;
+            k=kernel->values;
+            for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
+              for( j=0, y=kernel->height-1;  j<y;   j++, y--)
+                { t                    = k[i+j*kernel->width];
+                  k[i+j*kernel->width] = k[j+x*kernel->width];
+                  k[j+x*kernel->width] = k[x+y*kernel->width];
+                  k[x+y*kernel->width] = k[y+i*kernel->width];
+                  k[y+i*kernel->width] = t;
+                }
+          }
+          /* rotate the origin - relative to center of array */
+          { register long x,y;
+            x = (long) kernel->x*2-kernel->width+1;
+            y = (long) kernel->y*2-kernel->height+1;
+            kernel->x = (unsigned long) ( -y +kernel->width-1)/2;
+            kernel->y = (unsigned long) ( +x +kernel->height-1)/2;
+          }
           angle = fmod(angle+270.0, 360.0);     /* angle reduced 90 degrees */
           kernel->angle = fmod(kernel->angle+90.0, 360.0);
         }

@@ -52,6 +52,7 @@ typedef enum
   EdgesKernel,
   CornersKernel,
   RidgesKernel,
+  Ridges2Kernel,
   LineEndsKernel,
   LineJunctionsKernel,
   ConvexHullKernel,
