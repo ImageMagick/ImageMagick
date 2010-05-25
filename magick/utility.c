@@ -1288,6 +1288,13 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   if (path[1] != ":")
 #endif
   for (p=component; *p != '\0'; p++)
+  {
+    if ((*p == '%') && (*(p+1) == '['))
+      {
+        for (p++; (*p != ']') && (*p != '\0'); p++) ;
+        if (*p == '\0')
+          break;
+      }
     if ((*p == ':') && (IsPathDirectory(path) < 0) &&
         (IsPathAccessible(path) == MagickFalse))
       {
@@ -1302,6 +1309,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
             *q=(*++p);
         break;
       }
+  }
   *subimage='\0';
   p=component;
   if (*p != '\0')
