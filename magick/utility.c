@@ -1291,6 +1291,9 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   {
     if ((*p == '%') && (*(p+1) == '['))
       {
+        /*
+          Skip over %[...].
+        */
         for (p++; (*p != ']') && (*p != '\0'); p++) ;
         if (*p == '\0')
           break;
