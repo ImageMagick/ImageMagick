@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 </div>
 </div>
@@ -159,6 +159,12 @@ _8c.html" target="source" name="AcquireCacheViewIndexes">AcquireCacheViewIndexes
 <div class="doc-section">
 
 <p>AcquireCacheViewIndexes() returns the indexes associated with the specified view.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewVirtualIndexQueue(cache_view);
+</pre>
 
 <p>The format of the AcquireCacheViewIndexes method is:</p>
 
@@ -177,6 +183,12 @@ _8c.html" target="source" name="AcquireCacheViewPixels">AcquireCacheViewPixels</
 <div class="doc-section">
 
 <p>AcquireCacheViewPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewVirtualPixels(cache_view,x,y,columns,rows,exception);
+</pre>
 
 <p>The format of the AcquireCacheViewPixels method is:</p>
 
@@ -210,6 +222,12 @@ _8c.html" target="source" name="AcquireImagePixels">AcquireImagePixels</a></h2>
 
 <p>Note, the AcquireImagePixels() and GetAuthenticPixels() methods are not thread-safe.  In a threaded environment, use GetCacheViewVirtualPixels() or GetCacheViewAuthenticPixels() instead.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetVirtualPixels(image,x,y,columns,rows,exception);
+</pre>
+
 <p>The format of the AcquireImagePixels() method is:</p>
 
 <pre class="code">
@@ -234,7 +252,13 @@ _8c.html" target="source" name="AcquireImagePixels">AcquireImagePixels</a></h2>
 _8c.html" target="source" name="AcquireIndexes">AcquireIndexes</a></h2>
 <div class="doc-section">
 
-<p>AcquireIndexes() returns the black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels(). NULL is returned if the black channel or colormap indexes are not available.</p></ol>
+<p>AcquireIndexes() returns the black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetVirtualIndexQueue(image);
+</pre>
 
 <p>The format of the AcquireIndexes() method is:</p>
 
@@ -275,6 +299,12 @@ _8c.html" target="source" name="AcquireOneCacheViewPixel">AcquireOneCacheViewPix
 
 <p>AcquireOneCacheViewPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetOneCacheViewVirtualPixel(cache_view,x,y,pixel,exception);
+</pre>
+
 <p>The format of the AcquireOneCacheViewPixel method is:</p>
 
 <pre class="code">
@@ -302,6 +332,13 @@ _8c.html" target="source" name="AcquireOneCacheViewVirtualPixel">AcquireOneCache
 <div class="doc-section">
 
 <p>AcquireOneCacheViewVirtualPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetOneCacheViewVirtualMethodPixel(cache_view,virtual_pixel_method,
+  x,y,pixel,exception);
+</pre>
 
 <p>The format of the AcquireOneCacheViewPixel method is:</p>
 
@@ -336,6 +373,13 @@ _8c.html" target="source" name="AcquireOneMagickPixel">AcquireOneMagickPixel</a>
 
 <p>AcquireOneMagickPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOnePixel() instead.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickPixelPacket pixel;
+      GetOneVirtualMagickPixel(image,x,y,&pixel,exception);
+</pre>
+
 <p>The format of the AcquireOneMagickPixel() method is:</p>
 
 <pre class="code">
@@ -361,6 +405,13 @@ _8c.html" target="source" name="AcquireOnePixel">AcquireOnePixel</a></h2>
 
 <p>AcquireOnePixel() returns a single pixel at the specified (x,y) location. The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOnePixel() instead.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      PixelPacket pixel;
+      GetOneVirtualPixel(image,x,y,&pixel,exception);
+</pre>
+
 <p>The format of the AcquireOnePixel() method is:</p>
 
 <pre class="code">
@@ -385,6 +436,13 @@ _8c.html" target="source" name="AcquireOneVirtualPixel">AcquireOneVirtualPixel</
 <div class="doc-section">
 
 <p>AcquireOneVirtualPixel() returns a single pixel at the specified (x,y) location as defined by specified pixel method.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOnePixel() instead.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      PixelPacket pixel;
+      GetOneVirtualMethodPixel(image,virtual_pixel_method,x,y,&pixel,exception);
+</pre>
 
 <p>The format of the AcquireOneVirtualPixel() method is:</p>
 
@@ -415,6 +473,12 @@ _8c.html" target="source" name="AcquirePixels">AcquirePixels</a></h2>
 
 <p>AcquirePixels() returns the pixels associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetVirtualPixelQueue(image);
+</pre>
+
 <p>The format of the AcquirePixels() method is:</p>
 
 <pre class="code">
@@ -432,6 +496,12 @@ _8c.html" target="source" name="AffinityImage">AffinityImage</a></h2>
 <div class="doc-section">
 
 <p>AffinityImage() replaces the colors of an image with the closest color from a reference image.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemapImage(quantize_info,image,affinity_image);
+</pre>
 
 <p>The format of the AffinityImage method is:</p>
 
@@ -458,6 +528,12 @@ _8c.html" target="source" name="AffinityImages">AffinityImages</a></h2>
 
 <p>AffinityImages() replaces the colors of a sequence of images with the closest color from a reference image.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemapImages(quantize_info,images,affinity_image);
+</pre>
+
 <p>The format of the AffinityImage method is:</p>
 
 <pre class="code">
@@ -483,6 +559,12 @@ _8c.html" target="source" name="AllocateImage">AllocateImage</a></h2>
 
 <p>AllocateImage() returns a pointer to an image structure initialized to default values.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireImage(image_info);
+</pre>
+
 <p>The format of the AllocateImage method is:</p>
 
 <pre class="code">
@@ -500,6 +582,12 @@ _8c.html" target="source" name="AllocateImageColormap">AllocateImageColormap</a>
 <div class="doc-section">
 
 <p>AllocateImageColormap() allocates an image colormap and initializes it to a linear gray colorspace.  If the image already has a colormap, it is replaced.  AllocateImageColormap() returns MagickTrue if successful, otherwise MagickFalse if there is not enough memory.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireImageColormap(image,colors);
+</pre>
 
 <p>The format of the AllocateImageColormap method is:</p>
 
@@ -522,6 +610,12 @@ _8c.html" target="source" name="AllocateNextImage">AllocateNextImage</a></h2>
 <div class="doc-section">
 
 <p>AllocateNextImage() initializes the next image in a sequence to default values.  The next member of image points to the newly allocated image.  If there is a memory shortage, next is assigned NULL.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireNextImage(image_info,image);
+</pre>
 
 <p>The format of the AllocateNextImage method is:</p>
 
@@ -561,6 +655,12 @@ _8c.html" target="source" name="AverageImages">AverageImages</a></h2>
 <div class="doc-section">
 
 <p>AverageImages() takes a set of images and averages them together.  Each image in the set must have the same width and height.  AverageImages() returns a single image with each corresponding pixel component of each image averaged.   On failure, a NULL image is returned and exception describes the reason for the failure.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      EvaluateImages(images,MeanEvaluateOperator,exception);
+</pre>
 
 <p>The format of the AverageImages method is:</p>
 
@@ -604,6 +704,12 @@ _8c.html" target="source" name="ClipPathImage">ClipPathImage</a></h2>
 
 <p>ClipPathImage() sets the image clip mask based any clipping path information if it exists.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ClipImagePath(image,pathname,inside);
+</pre>
+
 <p>The format of the ClipImage method is:</p>
 
 <pre class="code">
@@ -628,6 +734,12 @@ _8c.html" target="source" name="CloneImageAttributes">CloneImageAttributes</a></
 <div class="doc-section">
 
 <p>CloneImageAttributes() clones one or more image attributes.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      CloneImageProperties(image,clone_image);
+</pre>
 
 <p>The format of the CloneImageAttributes method is:</p>
 
@@ -675,6 +787,12 @@ _8c.html" target="source" name="CloseCacheView">CloseCacheView</a></h2>
 <div class="doc-section">
 
 <p>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView().</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      DestroyCacheView(view_info);
+</pre>
 
 <p>The format of the CloseCacheView method is:</p>
 
@@ -728,6 +846,12 @@ _8c.html" target="source" name="DeleteImageAttribute">DeleteImageAttribute</a></
 
 <p>DeleteImageAttribute() deletes an attribute from the image.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      DeleteImageProperty(image,key);
+</pre>
+
 <p>The format of the DeleteImageAttribute method is:</p>
 
 <pre class="code">
@@ -770,6 +894,14 @@ _8c.html" target="source" name="DeleteMagickRegistry">DeleteMagickRegistry</a></
 
 <p>DeleteMagickRegistry() deletes an entry in the registry as defined by the id. It returns MagickTrue if the entry is deleted otherwise MagickFalse if no entry is found in the registry that matches the id.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      char key[MaxTextExtent];
+      FormatMagickString(key,MaxTextExtent,"ld\n",id);
+      DeleteImageRegistry(key);
+</pre>
+
 <p>The format of the DeleteMagickRegistry method is:</p>
 
 <pre class="code">
@@ -787,6 +919,12 @@ _8c.html" target="source" name="DescribeImage">DescribeImage</a></h2>
 <div class="doc-section">
 
 <p>DescribeImage() describes an image by printing its attributes to the file. Attributes include the image width, height, size, and others.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      IdentifyImage(image,file,verbose);
+</pre>
 
 <p>The format of the DescribeImage method is:</p>
 
@@ -831,6 +969,12 @@ _8c.html" target="source" name="DestroyImages">DestroyImages</a></h2>
 
 <p>DestroyImages() destroys an image list.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      DestroyImageList(image);
+</pre>
+
 <p>The format of the DestroyImages method is:</p>
 
 <pre class="code">
@@ -849,6 +993,12 @@ _8c.html" target="source" name="DestroyMagick">DestroyMagick</a></h2>
 
 <p>DestroyMagick() destroys the ImageMagick environment.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickCoreTerminus();
+</pre>
+
 <p>The format of the DestroyMagick function is:</p>
 
 <pre class="text">
@@ -866,6 +1016,13 @@ _8c.html" target="source" name="DispatchImage">DispatchImage</a></h2>
 
 <pre class="text">
   DispatchImage(image,0,0,640,1,"RGB",CharPixel,pixels,exception);
+</pre>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ExportImagePixels(image,x_offset,y_offset,columns,rows,map,type,pixels,
+  exception);
 </pre>
 
 <p>The format of the DispatchImage method is:</p>
@@ -907,8 +1064,8 @@ _8c.html" target="source" name="ExtractSubimageFromImageImage">ExtractSubimageFr
 <p>The format of the ExtractSubimageFromImageImage method is:</p>
 
 <pre class="code">
-  Image *ExtractSubimageFromImage(const Image *image,const Image *reference,
-    ExceptionInfo *exception)
+  Image *ExtractSubimageFromImage(const Image *image,
+    const Image *reference,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -928,6 +1085,12 @@ _8c.html" target="source" name="FlattenImages">FlattenImages</a></h2>
 <div class="doc-section">
 
 <p>FlattenImages() Obsolete Function: Use MergeImageLayers() instead.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MergeImageLayers(image,FlattenLayer,exception);
+</pre>
 
 <p>The format of the FlattenImage method is:</p>
 
@@ -1023,6 +1186,13 @@ _8c.html" target="source" name="GetCacheView">GetCacheView</a></h2>
 
 <p>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
+  GetCacheViewException(cache_view));
+</pre>
+
 <p>The format of the GetCacheView method is:</p>
 
 <pre class="code">
@@ -1045,6 +1215,12 @@ _8c.html" target="source" name="GetCacheViewIndexes">GetCacheViewIndexes</a></h2
 
 <p>GetCacheViewIndexes() returns the indexes associated with the specified view.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewAuthenticIndexQueue(cache_view);
+</pre>
+
 <p>The format of the GetCacheViewIndexes method is:</p>
 
 <pre class="code">
@@ -1062,6 +1238,13 @@ _8c.html" target="source" name="GetCacheViewPixels">GetCacheViewPixels</a></h2>
 <div class="doc-section">
 
 <p>GetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
+  GetCacheViewException(cache_view));
+</pre>
 
 <p>The format of the GetCacheViewPixels method is:</p>
 
@@ -1107,6 +1290,12 @@ _8c.html" target="source" name="GetImageClippingPathAttribute">GetImageClippingP
 
 <p>GetImageClippingPathAttribute() searches the list of image attributes and returns a pointer to a clipping path if it exists otherwise NULL.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageAttribute(image,"8BIM:1999,2998");
+</pre>
+
 <p>The format of the GetImageClippingPathAttribute method is:</p>
 
 <pre class="code">
@@ -1127,6 +1316,12 @@ _8c.html" target="source" name="GetImageFromMagickRegistry">GetImageFromMagickRe
 <div class="doc-section">
 
 <p>GetImageFromMagickRegistry() gets an image from the registry as defined by its name.  If the image is not found, a NULL image is returned.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageRegistry(ImageRegistryType,name,exception);
+</pre>
 
 <p>The format of the GetImageFromMagickRegistry method is:</p>
 
@@ -1181,6 +1376,14 @@ _8c.html" target="source" name="GetImageGeometry">GetImageGeometry</a></h2>
 
 <p>GetImageGeometry() returns a region as defined by the geometry string with respect to the image and its gravity.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      if (size_to_fit != MagickFalse)
+  ParseRegionGeometry(image,geometry,region_info,&image->exception); else
+  ParsePageGeometry(image,geometry,region_info,&image->exception);
+</pre>
+
 <p>The format of the GetImageGeometry method is:</p>
 
 <pre class="code">
@@ -1209,6 +1412,13 @@ _8c.html" target="source" name="GetImageList">GetImageList</a></h2>
 
 <p>GetImageList() returns an image at the specified position in the list.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      CloneImage(GetImageFromList(images,(long) offset),0,0,MagickTrue,
+  exception);
+</pre>
+
 <p>The format of the GetImageList method is:</p>
 
 <pre class="code">
@@ -1234,6 +1444,12 @@ _8c.html" target="source" name="GetImageListIndex">GetImageListIndex</a></h2>
 
 <p>GetImageListIndex() returns the position in the list of the specified image.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageIndexInList(images);
+</pre>
+
 <p>The format of the GetImageListIndex method is:</p>
 
 <pre class="code">
@@ -1251,6 +1467,12 @@ _8c.html" target="source" name="GetImageListSize">GetImageListSize</a></h2>
 <div class="doc-section">
 
 <p>GetImageListSize() returns the number of images in the list.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageListLength(images);
+</pre>
 
 <p>The format of the GetImageListSize method is:</p>
 
@@ -1274,6 +1496,12 @@ _8c.html" target="source" name="GetImagePixels">GetImagePixels</a></h2>
 
 <p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or if the storage class is PseduoClass, call GetAuthenticIndexQueue() after invoking GetImagePixels() to obtain the black color component or colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetAuthenticPixels(image,x,y,columns,rows,&image->exception);
+</pre>
+
 <p>The format of the GetImagePixels() method is:</p>
 
 <pre class="code">
@@ -1296,6 +1524,12 @@ _8c.html" target="source" name="GetIndexes">GetIndexes</a></h2>
 
 <p>GetIndexes() returns the black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetAuthenticIndexQueue(image);
+</pre>
+
 <p>The format of the GetIndexes() method is:</p>
 
 <pre class="code">
@@ -1317,6 +1551,12 @@ _8c.html" target="source" name="GetNextImage">GetNextImage</a></h2>
 
 <p>GetNextImage() returns the next image in a list.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetNextImageInList(images);
+</pre>
+
 <p>The format of the GetNextImage method is:</p>
 
 <pre class="code">
@@ -1334,6 +1574,15 @@ _8c.html" target="source" name="GetNextImageAttribute">GetNextImageAttribute</a>
 <div class="doc-section">
 
 <p>GetNextImageAttribute() gets the next image attribute.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      const char *property;
+      property=GetNextImageProperty(image);
+      if (property != (const char *) NULL) 
+  GetImageAttribute(image,property);
+</pre>
 
 <p>The format of the GetNextImageAttribute method is:</p>
 
@@ -1353,6 +1602,12 @@ _8c.html" target="source" name="GetNumberScenes">GetNumberScenes</a></h2>
 
 <p>GetNumberScenes() returns the number of images in the list.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageListLength(image);
+</pre>
+
 <p>The format of the GetNumberScenes method is:</p>
 
 <pre class="code">
@@ -1370,6 +1625,12 @@ _8c.html" target="source" name="GetOnePixel">GetOnePixel</a></h2>
 <div class="doc-section">
 
 <p>GetOnePixel() returns a single pixel at the specified (x,y) location. The image background color is returned if an error occurs.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetOneAuthenticPixel(image,x,y,&pixel,&image->exception);
+</pre>
 
 <p>The format of the GetOnePixel() method is:</p>
 
@@ -1392,6 +1653,12 @@ _8c.html" target="source" name="GetPixels">GetPixels</a></h2>
 
 <p>GetPixels() returns the pixels associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetAuthenticPixelQueue(image);
+</pre>
+
 <p>The format of the GetPixels() method is:</p>
 
 <pre class="code">
@@ -1412,6 +1679,12 @@ _8c.html" target="source" name="GetPreviousImage">GetPreviousImage</a></h2>
 <div class="doc-section">
 
 <p>GetPreviousImage() returns the previous image in a list.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetPreviousImageInList(images));
+</pre>
 
 <p>The format of the GetPreviousImage method is:</p>
 
@@ -1471,6 +1744,12 @@ _8c.html" target="source" name="InitializeMagick">InitializeMagick</a></h2>
 
 <p>InitializeMagick() initializes the ImageMagick environment.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickCoreGenesis(path,MagickFalse);
+</pre>
+
 <p>The format of the InitializeMagick function is:</p>
 
 <pre class="text">
@@ -1521,6 +1800,12 @@ _8c.html" target="source" name="InterpretImageAttributes">InterpretImageAttribut
 
 <p>InterpretImageAttributes() replaces any embedded formatting characters with the appropriate image attribute and returns the translated text.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      InterpretImageProperties(image_info,image,embed_text);
+</pre>
+
 <p>The format of the InterpretImageAttributes method is:</p>
 
 <pre class="code">
@@ -1547,6 +1832,12 @@ _8c.html" target="source" name="LevelImageColor">LevelImageColor</a></h2>
 <p>LevelImageColor() will map the given color to "black" and "white" values, limearly spreading out the colors, and level values on a channel by channel bases, as per LevelImage().  The given colors allows you to specify different level ranges for each of the color channels seperatally.</p></ol>
 
 <p>If the boolean 'invert' is set true the image values will modifyed in the reverse direction. That is any existing "black" and "white" colors in the image will become the color values given, with all other values compressed appropriatally.  This effectivally maps a greyscale gradient into the given color gradient.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      LevelColorsImageChannel(image,channel,black_color,white_color,invert);
+</pre>
 
 <p>The format of the LevelImageColors method is:</p>
 
@@ -1598,6 +1889,12 @@ _8c.html" target="source" name="LiberateSemaphoreInfo">LiberateSemaphoreInfo</a>
 
 <p>LiberateSemaphoreInfo() relinquishes a semaphore.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      UnlockSemaphoreInfo(*semaphore_info);
+</pre>
+
 <p>The format of the LiberateSemaphoreInfo method is:</p>
 
 <pre class="code">
@@ -1615,6 +1912,12 @@ _8c.html" target="source" name="MagickIncarnate">MagickIncarnate</a></h2>
 <div class="doc-section">
 
 <p>MagickIncarnate() initializes the ImageMagick environment.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickCoreGenesis(path,MagickFalse);
+</pre>
 
 <p>The format of the MagickIncarnate function is:</p>
 
@@ -1660,6 +1963,15 @@ _8c.html" target="source" name="MapImage">MapImage</a></h2>
 
 <p>MapImage() replaces the colors of an image with the closest color from a reference image.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+       QuantizeInfo quantize_info;
+       GetQuantizeInfo(&quantize_info);
+       quantize_info.dither=dither;
+       RemapImage(&quantize_info,image,map_image);
+</pre>
+
 <p>The format of the MapImage method is:</p>
 
 <pre class="code">
@@ -1684,6 +1996,15 @@ _8c.html" target="source" name="MapImages">MapImages</a></h2>
 <div class="doc-section">
 
 <p>MapImages() replaces the colors of a sequence of images with the closest color from a reference image.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+       QuantizeInfo quantize_info;
+       GetQuantizeInfo(&quantize_info);
+       quantize_info.dither=dither;
+       RemapImages(&quantize_info,images,map_image);
+</pre>
 
 <p>The format of the MapImage method is:</p>
 
@@ -1744,6 +2065,12 @@ _8c.html" target="source" name="MaximumImages">MaximumImages</a></h2>
 
 <p>MaximumImages() returns the maximum intensity of an image sequence.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      EvaluateImages(images,MinEvaluateOperator,exception);
+</pre>
+
 <p>The format of the MaxImages method is:</p>
 
 <pre class="code">
@@ -1765,6 +2092,12 @@ _8c.html" target="source" name="MinimumImages">MinimumImages</a></h2>
 
 <p>MinimumImages() returns the minimum intensity of an image sequence.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      EvaluateImages(images,MinEvaluateOperator,exception);
+</pre>
+
 <p>The format of the MinimumImages method is:</p>
 
 <pre class="code">
@@ -1785,6 +2118,12 @@ _8c.html" target="source" name="MosaicImages">MosaicImages</a></h2>
 <div class="doc-section">
 
 <p>MosaicImages() Obsolete Function: Use MergeImageLayers() instead.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MergeImageLayers(image,MosaicLayer,exception);
+</pre>
 
 <p>The format of the MosaicImage method is:</p>
 
@@ -1834,6 +2173,12 @@ _8c.html" target="source" name="OpenCacheView">OpenCacheView</a></h2>
 
 <p>OpenCacheView() opens a view into the pixel cache, using the VirtualPixelMethod that is defined within the given image itself.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireCacheView(image);
+</pre>
+
 <p>The format of the OpenCacheView method is:</p>
 
 <pre class="code">
@@ -1853,6 +2198,13 @@ _8c.html" target="source" name="PaintFloodfill">PaintFloodfill</a></h2>
 <p>PaintFloodfill() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p></ol>
 
 <p>By default target must match a particular pixel color exactly. However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      FloodfillPaintImage(image,channel,draw_info,target,x,y,
+  method == FloodfillMethod ? MagickFalse : MagickTrue);
+</pre>
 
 <p>The format of the PaintFloodfillImage method is:</p>
 
@@ -1891,6 +2243,13 @@ _8c.html" target="source" name="PaintOpaqueImage">PaintOpaqueImage</a></h2>
 
 <p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      OpaquePaintImageChannel(image,DefaultChannels,target,fill,MagickFalse);
+      OpaquePaintImageChannel(image,channel,target,fill,MagickFalse);
+</pre>
+
 <p>The format of the PaintOpaqueImage method is:</p>
 
 <pre class="code">
@@ -1924,6 +2283,12 @@ _8c.html" target="source" name="PaintTransparentImage">PaintTransparentImage</a>
 
 <p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      TransparentPaintImage(image,target,opacity,MagickFalse);
+</pre>
+
 <p>The format of the PaintTransparentImage method is:</p>
 
 <pre class="code">
@@ -1949,6 +2314,13 @@ _8c.html" target="source" name="ParseSizeGeometry">ParseSizeGeometry</a></h2>
 
 <p>ParseSizeGeometry() returns a region as defined by the geometry string with respect to the image dimensions and aspect ratio.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ParseMetaGeometry(geometry,&region_info->x,&region_info->y,
+  &region_info->width,&region_info->height);
+</pre>
+
 <p>The format of the ParseSizeGeometry method is:</p>
 
 <pre class="code">
@@ -1970,6 +2342,12 @@ _8c.html" target="source" name="PopImageList">PopImageList</a></h2>
 <div class="doc-section">
 
 <p>PopImageList() removes the last image in the list.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemoveLastImageFromList(images);
+</pre>
 
 <p>The format of the PopImageList method is:</p>
 
@@ -2014,6 +2392,12 @@ _8c.html" target="source" name="PostscriptGeometry">PostscriptGeometry</a></h2>
 
 <p>PostscriptGeometry() replaces any page mneumonic with the equivalent size in picas.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetPageGeometry(page);
+</pre>
+
 <p>The format of the PostscriptGeometry method is:</p>
 
 <pre class="code">
@@ -2031,6 +2415,12 @@ _8c.html" target="source" name="PushImageList">PushImageList</a></h2>
 <div class="doc-section">
 
 <p>PushImageList() adds an image to the end of the list.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AppendImageToList(images,CloneImageList(image,exception));
+</pre>
 
 <p>The format of the PushImageList method is:</p>
 
@@ -2093,6 +2483,11 @@ _8c.html" target="source" name="QuantizationError">QuantizationError</a></h2>
 <h5>normalized_maximum_square_error</h5>
 <ol><p>Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageQuantizeError(image);
+</pre>
 
 <p>The format of the QuantizationError method is:</p>
 
@@ -2190,6 +2585,12 @@ _8c.html" target="source" name="ResetImageAttributeIterator">ResetImageAttribute
 
 <p>ResetImageAttributeIterator() resets the image attributes iterator.  Use it in conjunction with GetNextImageAttribute() to iterate over all the values associated with an image.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ResetImagePropertyIterator(image);
+</pre>
+
 <p>The format of the ResetImageAttributeIterator method is:</p>
 
 <pre class="code">
@@ -2207,6 +2608,13 @@ _8c.html" target="source" name="SetCacheViewPixels">SetCacheViewPixels</a></h2>
 <div class="doc-section">
 
 <p>SetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      QueueCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
+  GetCacheViewException(cache_view));
+</pre>
 
 <p>The format of the SetCacheViewPixels method is:</p>
 
@@ -2273,6 +2681,12 @@ _8c.html" target="source" name="SetImageAttribute">SetImageAttribute</a></h2>
 
 <p>SetImageAttribute() searches the list of image attributes and replaces the attribute value.  If it is not found in the list, the attribute name and value is added to the list.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SetImageProperty(image,key,value);
+</pre>
+
 <p>The format of the SetImageAttribute method is:</p>
 
 <pre class="code">
@@ -2331,6 +2745,12 @@ _8c.html" target="source" name="SetImagePixels">SetImagePixels</a></h2>
 <p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file. The returned pointer should *never* be deallocated by the user.</p></ol>
 
 <p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or the colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      QueueAuthenticPixels(image,x,y,columns,rows,&image->exception);
+</pre>
 
 <p>The format of the SetImagePixels() method is:</p>
 
@@ -2403,6 +2823,12 @@ _8c.html" target="source" name="ShiftImageList">ShiftImageList</a></h2>
 
 <p>ShiftImageList() removes an image from the beginning of the list.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemoveFirstImageFromList(images);
+</pre>
+
 <p>The format of the ShiftImageList method is:</p>
 
 <pre class="code">
@@ -2471,6 +2897,12 @@ _8c.html" target="source" name="SyncCacheView">SyncCacheView</a></h2>
 
 <p>SyncCacheView() saves the cache view pixels to the in-memory or disk cache.  It returns MagickTrue if the pixel region is synced, otherwise MagickFalse.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SyncCacheViewAuthenticPixels(cache_view,GetCacheViewException(cache_view));
+</pre>
+
 <p>The format of the SyncCacheView method is:</p>
 
 <pre class="code">
@@ -2488,6 +2920,12 @@ _8c.html" target="source" name="SyncCacheViewPixels">SyncCacheViewPixels</a></h2
 <div class="doc-section">
 
 <p>SyncCacheViewPixels() saves the cache view pixels to the in-memory or disk cache.  It returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SyncCacheViewAuthenticPixels(cache_view,GetCacheViewException(cache_view));
+</pre>
 
 <p>The format of the SyncCacheViewPixels method is:</p>
 
@@ -2509,6 +2947,12 @@ _8c.html" target="source" name="SyncImagePixels">SyncImagePixels</a></h2>
 <div class="doc-section">
 
 <p>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns MagickTrue if the pixel region is synced, otherwise MagickFalse.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SyncAuthenticPixels(image,&image->exception);
+</pre>
 
 <p>The format of the SyncImagePixels() method is:</p>
 
@@ -2610,6 +3054,12 @@ _8c.html" target="source" name="TranslateText">TranslateText</a></h2>
 
 <p>TranslateText() replaces any embedded formatting characters with the appropriate image attribute and returns the translated text.</p></ol>
 
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      InterpretImageProperties(image_info,image,embed_text);
+</pre>
+
 <p>The format of the TranslateText method is:</p>
 
 <pre class="code">
@@ -2661,6 +3111,12 @@ _8c.html" target="source" name="UnshiftImageList">UnshiftImageList</a></h2>
 <div class="doc-section">
 
 <p>UnshiftImageList() adds the image to the beginning of the list.</p></ol>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      PrependImageToList(images,CloneImageList(image,exception));
+</pre>
 
 <p>The format of the UnshiftImageList method is:</p>
 
