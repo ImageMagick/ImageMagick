@@ -1078,14 +1078,16 @@ static const OptionInfo
     { "Edges", (long) EdgesKernel, MagickFalse },
     { "Corners", (long) CornersKernel, MagickFalse },
     { "Ridges", (long) RidgesKernel, MagickFalse },
-    { "Ridges2", (long) RidgesKernel, MagickFalse },
+    { "Ridges2", (long) Ridges2Kernel, MagickFalse },
     { "LineEnds", (long) LineEndsKernel, MagickFalse },
     { "LineJunctions", (long) LineJunctionsKernel, MagickFalse },
     { "ConvexHull", (long) ConvexHullKernel, MagickFalse },
     { "Skeleton", (long) SkeletonKernel, MagickFalse },
+    { "Mat", (long) MatKernel, MagickTrue },      /* experimental */
     { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
     { "Manhatten", (long) ManhattenKernel, MagickFalse },
     { "Euclidean", (long) EuclideanKernel, MagickFalse },
+    { "Test", (long) TestKernel, MagickTrue },    /* for experimental kernels */
     { "User Defined", (long) UserDefinedKernel, MagickTrue }, /* internel */
     { (char *) NULL, (long) UndefinedKernel, MagickFalse }
   },
