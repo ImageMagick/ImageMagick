@@ -189,7 +189,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %
 %     " kernel ; kernel ; kernel ; "
 %
-%  Any extra ';' characters (at start, end or between kernel defintions are
+%  Any extra ';' characters, at start, end or between kernel defintions are
 %  simply ignored.
 %
 %  Note that 'name' kernels will start with an alphabetic character while the
@@ -733,6 +733,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %      normalization) with the special "-set option:morphology:compose Plus"
 %      setting to apply the full FreiChen Edge Detection Technique.
 %
+%      If 'type' is large it will be taken to be an actual rotation angle for
+%      the default FreiChen (type 0) kernel.  As such  FreiChen:45  will look
+%      like a  Sobel:45  but with 'sqrt(2)' instead of '2' values.
+%
 %
 %  Boolean Kernels
 %
@@ -887,25 +891,33 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   /* Generate a new empty kernel if needed */
   kernel=(KernelInfo *) NULL;
   switch(type) {
-    case UndefinedKernel:      /* These should not be used here */
+    case UndefinedKernel:    /* These should not call this function */
     case UserDefinedKernel:
+    case TestKernel:
       break;
-    case LaplacianKernel:  /* Named Descrete Convolution Kernels */
+    case UnityKernel:      /* Named Descrete Convolution Kernels */
+    case LaplacianKernel:
     case SobelKernel:
     case RobertsKernel:
     case PrewittKernel:
     case CompassKernel:
     case KirschKernel:
+    case FreiChenKernel:
     case CornersKernel:    /* Hit and Miss kernels */
     case LineEndsKernel:
     case LineJunctionsKernel:
+    case EdgesKernel:
+    case RidgesKernel:
+    case Ridges2Kernel:
     case ConvexHullKernel:
     case SkeletonKernel:
+    case MatKernel:
       /* A pre-generated kernel is not needed */
       break;
-#if 0
+#if 0 /* set to 1 to do a compile-time check that we haven't missed anything */
     case GaussianKernel:
     case DOGKernel:
+    case LOGKernel:
     case BlurKernel:
     case DOBKernel:
     case CometKernel:
@@ -920,8 +932,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case ChebyshevKernel:
     case ManhattenKernel:
     case EuclideanKernel:
-#endif
+#else
     default:
+#endif
       /* Generate the base Kernel Structure */
       kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
       if (kernel == (KernelInfo *) NULL)
@@ -1304,16 +1317,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case FreiChenKernel:
       /* http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf */
       /* http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf */
-      { switch ( (long) args->rho ) {
+      { switch ( (int) args->rho ) {
           default:
           case 0:
             kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
-            kernel->values[4] = -MagickSQ2;
-            kernel->values[6] = +MagickSQ2;
+            kernel->values[3] = -MagickSQ2;
+            kernel->values[5] = +MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
-            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 1:
             kernel=ParseKernelArray("3: 1,2,1  0,0,0  -1,2,-1");
@@ -1391,7 +1403,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/3.0, NoValue);
             break;
           case -1:
-            kernel=ParseKernelName("FreiChen:1;FreiChen:2;FreiChen:3;FreiChen:4;FreiChen:5;FreiChen:6;FreiChen:7;FreiChen:8;FreiChen:9");
+            kernel=AcquireKernelInfo("FreiChen:1;FreiChen:2;FreiChen:3;FreiChen:4;FreiChen:5;FreiChen:6;FreiChen:7;FreiChen:8;FreiChen:9");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
             break;
         }
         if ( fabs(args->sigma) > MagickEpsilon )
