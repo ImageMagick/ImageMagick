@@ -10,6 +10,8 @@
   * Compute the proper DPX user data field size.
   * Do not interpret a format specifier when enclosed in brackets (e.g.
     rose_tile_%[filename:tile].gif.
+  * Use 64-bit types when compiling with the 64-bit Visual C++ compiler under
+    Windows.
 
 2010-05-23  6.6.2.0 Anthony Thyssen <A.Thyssen@griffith...>
   * Third Re-write of MorphologyApply() to better handle compound methods.

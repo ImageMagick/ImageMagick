@@ -1535,13 +1535,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   Image
     *destination_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     modify_outside_overlay,
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickPixelPacket
     zero;
@@ -1557,6 +1556,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
 
   MagickStatusType
     flags;
+
+  ssize_t
+    y;
 
   /*
     Prepare composite image.

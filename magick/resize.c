@@ -2342,16 +2342,18 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   Image
     *sample_image;
 
-  ssize_t
-    progress,
-    *x_offset,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   register ssize_t
     x;
+
+  ssize_t
+    *x_offset,
+    y;
 
   /*
     Initialize sampled image attributes.

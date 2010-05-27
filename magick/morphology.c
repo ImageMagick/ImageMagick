@@ -2152,17 +2152,19 @@ static size_t MorphologyPrimitive(const Image *image, Image
 {
 #define MorphologyTag  "Morphology/Image"
 
+  CacheView
+    *p_view,
+    *q_view;
+
   ssize_t
-    progress,
     y, offx, offy,
     changed;
 
   MagickBooleanType
     status;
 
-  CacheView
-    *p_view,
-    *q_view;
+  MagickOffsetType
+    progress;
 
   status=MagickTrue;
   changed=0;
