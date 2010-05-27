@@ -1730,6 +1730,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 45.0);
+        /* append the mirror versions too */
+        new_kernel=ParseKernelArray("3: 1,1,1  1,0,-  -,-,0");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        ExpandKernelInfo(new_kernel, 45.0);
+        LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
     case SkeletonKernel:
