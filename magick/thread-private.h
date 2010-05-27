@@ -36,7 +36,7 @@ extern "C" {
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   typedef CRITICAL_SECTION MagickMutexType;
 #else
-  typedef unsigned long MagickMutexType;
+  typedef size_t MagickMutexType;
 #endif
 
 static inline MagickThreadType GetMagickThreadId(void)
@@ -50,7 +50,7 @@ static inline MagickThreadType GetMagickThreadId(void)
 #endif
 }
 
-static inline unsigned long GetMagickThreadSignature(void)
+static inline size_t GetMagickThreadSignature(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   {
@@ -59,7 +59,7 @@ static inline unsigned long GetMagickThreadSignature(void)
       pthread_t
         id;
 
-      unsigned long
+      size_t
         signature;
     } magick_thread;
 
@@ -68,9 +68,9 @@ static inline unsigned long GetMagickThreadSignature(void)
     return(magick_thread.signature);
   }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  return((unsigned long) GetCurrentThreadId());
+  return((size_t) GetCurrentThreadId());
 #else
-  return((unsigned long) getpid());
+  return((size_t) getpid());
 #endif
 }
 
@@ -92,14 +92,14 @@ static inline MagickBooleanType IsMagickThreadEqual(const MagickThreadType id)
 /*
   Lightweight OpenMP methods.
 */
-static inline unsigned long GetOpenMPMaximumThreads(void)
+static inline size_t GetOpenMPMaximumThreads(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   {
-    static unsigned long
+    static size_t
       maximum_threads = 1UL;
 
-    if (omp_get_max_threads() > (long) maximum_threads)
+    if (omp_get_max_threads() > (ssize_t) maximum_threads)
       maximum_threads=omp_get_max_threads();
     return(maximum_threads);
   }
@@ -108,7 +108,7 @@ static inline unsigned long GetOpenMPMaximumThreads(void)
 #endif
 }
 
-static inline long GetOpenMPThreadId(void)
+static inline ssize_t GetOpenMPThreadId(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   return(omp_get_thread_num());
@@ -117,7 +117,7 @@ static inline long GetOpenMPThreadId(void)
 #endif
 }
 
-static inline void SetOpenMPMaximumThreads(const unsigned long threads)
+static inline void SetOpenMPMaximumThreads(const size_t threads)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   omp_set_num_threads(threads);

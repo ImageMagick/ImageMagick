@@ -153,7 +153,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   int
     c;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -297,7 +297,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
   length=GetQuantumExtent(image,quantum_info,IndexQuantum);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -340,10 +340,10 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterVICARImage method is:
 %
-%      unsigned long RegisterVICARImage(void)
+%      size_t RegisterVICARImage(void)
 %
 */
-ModuleExport unsigned long RegisterVICARImage(void)
+ModuleExport size_t RegisterVICARImage(void)
 {
   MagickInfo
     *entry;
@@ -463,7 +463,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   (void) FormatMagickString(header,MaxTextExtent,
     "LBLSIZE=%lu FORMAT='BYTE' TYPE='IMAGE' BUFSIZE=20000 DIM=2 EOL=0 "
     "RECSIZE=%lu ORG='BSQ' NL=%lu NS=%lu NB=1 N1=0 N2=0 N3=0 N4=0 NBB=0 "
-    "NLB=0 TASK='ImageMagick'",(unsigned long) MaxTextExtent,image->columns,
+    "NLB=0 TASK='ImageMagick'",(size_t) MaxTextExtent,image->columns,
     image->rows,image->columns);
   (void) WriteBlob(image,MaxTextExtent,(unsigned char *) header);
   /*
@@ -474,7 +474,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

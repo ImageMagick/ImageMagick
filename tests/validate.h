@@ -418,7 +418,7 @@ static const struct ReferenceStorage
     { DoublePixel, sizeof(double) },
     { FloatPixel, sizeof(float) },
     { IntegerPixel, sizeof(unsigned int) },
-    { LongPixel, sizeof(unsigned long) },
+    { LongPixel, sizeof(size_t) },
     { ShortPixel, sizeof(unsigned short) },
     { UndefinedPixel, 0 }
   };
@@ -428,7 +428,7 @@ struct ReferenceTypes
   ImageType
     type;
 
-  unsigned long
+  size_t
     depth;
 };
 

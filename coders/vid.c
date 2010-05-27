@@ -125,7 +125,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RectangleInfo
     geometry;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -158,7 +158,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void *) NULL);
   if (read_info->size == (char *) NULL)
     (void) CloneString(&read_info->size,DefaultTileGeometry);
-  for (i=0; i < (long) number_files; i++)
+  for (i=0; i < (ssize_t) number_files; i++)
   {
     if (image_info->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %s",
@@ -232,10 +232,10 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterVIDImage method is:
 %
-%      unsigned long RegisterVIDImage(void)
+%      size_t RegisterVIDImage(void)
 %
 */
-ModuleExport unsigned long RegisterVIDImage(void)
+ModuleExport size_t RegisterVIDImage(void)
 {
   MagickInfo
     *entry;

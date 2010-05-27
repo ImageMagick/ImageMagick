@@ -146,8 +146,8 @@ MagickExport void ConstituteComponentTerminus(void)
 %
 %  The format of the ConstituteImage method is:
 %
-%      Image *ConstituteImage(const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType storage,
+%      Image *ConstituteImage(const size_t columns,
+%        const size_t rows,const char *map,const StorageType storage,
 %        const void *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -174,8 +174,8 @@ MagickExport void ConstituteComponentTerminus(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ConstituteImage(const unsigned long columns,
-  const unsigned long rows,const char *map,const StorageType storage,
+MagickExport Image *ConstituteImage(const size_t columns,
+  const size_t rows,const char *map,const StorageType storage,
   const void *pixels,ExceptionInfo *exception)
 {
   Image
@@ -333,7 +333,7 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
       ExceptionInfo
         *sans;
 
-      long
+      ssize_t
         extent,
         scene;
 
@@ -346,8 +346,8 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
       sans=DestroyExceptionInfo(sans);
       (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
-      extent=(long) (read_info->scene+read_info->number_scenes);
-      for (scene=(long) read_info->scene; scene < (long) extent; scene++)
+      extent=(ssize_t) (read_info->scene+read_info->number_scenes);
+      for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
         (void) InterpretImageFilename(image_info,(Image *) NULL,filename,(int)
           scene,read_info->filename);
@@ -468,7 +468,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         if ((image_info->endian == UndefinedEndian) &&
             (GetMagickRawSupport(magick_info) != MagickFalse))
           {
-            unsigned long
+            size_t
               lsb_first;
 
             lsb_first=1;
@@ -832,7 +832,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       ExceptionInfo
         *sans;
 
-      long
+      ssize_t
         extent,
         scene;
 
@@ -845,8 +845,8 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       sans=DestroyExceptionInfo(sans);
       (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
-      extent=(long) (read_info->scene+read_info->number_scenes);
-      for (scene=(long) read_info->scene; scene < (long) extent; scene++)
+      extent=(ssize_t) (read_info->scene+read_info->number_scenes);
+      for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
         (void) InterpretImageFilename(image_info,(Image *) NULL,filename,(int)
           scene,read_info->filename);
@@ -1036,7 +1036,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         if ((image_info->endian == UndefinedEndian) &&
             (GetMagickRawSupport(magick_info) != MagickFalse))
           {
-            unsigned long
+            size_t
               lsb_first;
 
             lsb_first=1;
@@ -1276,15 +1276,15 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))
     if (p->scene >= GetNextImageInList(p)->scene)
       {
-        register long
+        register ssize_t
           i;
 
         /*
           Generate consistent scene numbers.
         */
-        i=(long) images->scene;
+        i=(ssize_t) images->scene;
         for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
-          p->scene=(unsigned long) i++;
+          p->scene=(size_t) i++;
         break;
       }
   /*

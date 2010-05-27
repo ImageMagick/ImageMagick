@@ -191,7 +191,7 @@ MagickExport const LocaleInfo *GetLocaleInfo_(const char *tag,
 %  The format of the GetLocaleInfoList function is:
 %
 %      const LocaleInfo **GetLocaleInfoList(const char *pattern,
-%        unsigned long *number_messages,ExceptionInfo *exception)
+%        size_t *number_messages,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -226,7 +226,7 @@ static int LocaleInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
-  unsigned long *number_messages,ExceptionInfo *exception)
+  size_t *number_messages,ExceptionInfo *exception)
 {
   const LocaleInfo
     **messages;
@@ -234,7 +234,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
   register const LocaleInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -242,7 +242,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_messages != (unsigned long *) NULL);
+  assert(number_messages != (size_t *) NULL);
   *number_messages=0;
   p=GetLocaleInfo_("*",exception);
   if (p == (const LocaleInfo *) NULL)
@@ -267,7 +267,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
   UnlockSemaphoreInfo(locale_semaphore);
   qsort((void *) messages,(size_t) i,sizeof(*messages),LocaleInfoCompare);
   messages[i]=(LocaleInfo *) NULL;
-  *number_messages=(unsigned long) i;
+  *number_messages=(size_t) i;
   return(messages);
 }
 
@@ -287,7 +287,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
 %
 %  The format of the GetLocaleList function is:
 %
-%      char **GetLocaleList(const char *pattern,unsigned long *number_messages,
+%      char **GetLocaleList(const char *pattern,size_t *number_messages,
 %        Exceptioninfo *exception)
 %
 %  A description of each parameter follows:
@@ -321,7 +321,7 @@ static int LocaleTagCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetLocaleList(const char *pattern,
-  unsigned long *number_messages,ExceptionInfo *exception)
+  size_t *number_messages,ExceptionInfo *exception)
 {
   char
     **messages;
@@ -329,7 +329,7 @@ MagickExport char **GetLocaleList(const char *pattern,
   register const LocaleInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -337,7 +337,7 @@ MagickExport char **GetLocaleList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_messages != (unsigned long *) NULL);
+  assert(number_messages != (size_t *) NULL);
   *number_messages=0;
   p=GetLocaleInfo_("*",exception);
   if (p == (const LocaleInfo *) NULL)
@@ -358,7 +358,7 @@ MagickExport char **GetLocaleList(const char *pattern,
   UnlockSemaphoreInfo(locale_semaphore);
   qsort((void *) messages,(size_t) i,sizeof(*messages),LocaleTagCompare);
   messages[i]=(char *) NULL;
-  *number_messages=(unsigned long) i;
+  *number_messages=(size_t) i;
   return(messages);
 }
 
@@ -617,10 +617,10 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
   const LocaleInfo
     **locale_info;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_messages;
 
   if (file == (const FILE *) NULL)
@@ -630,7 +630,7 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
   if (locale_info == (const LocaleInfo **) NULL)
     return(MagickFalse);
   path=(const char *) NULL;
-  for (i=0; i < (long) number_messages; i++)
+  for (i=0; i < (ssize_t) number_messages; i++)
   {
     if (locale_info[i]->stealth != MagickFalse)
       continue;
@@ -672,7 +672,7 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 %  The format of the LoadLocaleList method is:
 %
 %      MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -686,9 +686,9 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 %
 */
 
-static void ChopLocaleComponents(char *path,const unsigned long components)
+static void ChopLocaleComponents(char *path,const size_t components)
 {
-  long
+  ssize_t
     count;
 
   register char
@@ -699,13 +699,13 @@ static void ChopLocaleComponents(char *path,const unsigned long components)
   p=path+strlen(path)-1;
   if (*p == '/')
     *p='\0';
-  for (count=0; (count < (long) components) && (p > path); p--)
+  for (count=0; (count < (ssize_t) components) && (p > path); p--)
     if (*p == '/')
       {
         *p='\0';
         count++;
       }
-  if (count < (long) components)
+  if (count < (ssize_t) components)
     *path='\0';
 }
 
@@ -740,7 +740,7 @@ static void LocaleFatalErrorHandler(
 
 
 static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
-  const char *locale,const unsigned long depth,ExceptionInfo *exception)
+  const char *locale,const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],

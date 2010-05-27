@@ -102,13 +102,13 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickPixelPacket
     color;
 
-  long
+  ssize_t
     y;
 
   PixelPacket
     pixel;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -140,17 +140,17 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->matte=color.matte;
   index=0;
   SetPixelPacket(image,&color,&pixel,&index);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
       *q++=pixel;
     if (image->colorspace == CMYKColorspace)
       {
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           indexes[x]=index;
       }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -179,10 +179,10 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterXCImage method is:
 %
-%      unsigned long RegisterXCImage(void)
+%      size_t RegisterXCImage(void)
 %
 */
-ModuleExport unsigned long RegisterXCImage(void)
+ModuleExport size_t RegisterXCImage(void)
 {
   MagickInfo
     *entry;

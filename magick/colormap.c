@@ -87,7 +87,7 @@
 %  The format of the AcquireImageColormap method is:
 %
 %      MagickBooleanType AcquireImageColormap(Image *image,
-%        const unsigned long colors)
+%        const size_t colors)
 %
 %  A description of each parameter follows:
 %
@@ -97,16 +97,16 @@
 %
 */
 
-static inline unsigned long MagickMax(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMax(const size_t x,
+  const size_t y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-static inline unsigned long MagickMin(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMin(const size_t x,
+  const size_t y)
 {
   if (x < y)
     return(x);
@@ -114,9 +114,9 @@ static inline unsigned long MagickMin(const unsigned long x,
 }
 
 MagickExport MagickBooleanType AcquireImageColormap(Image *image,
-  const unsigned long colors)
+  const size_t colors)
 {
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -140,12 +140,12 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   if (image->colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  for (i=0; i < (long) image->colors; i++)
+  for (i=0; i < (ssize_t) image->colors; i++)
   {
-    unsigned long
+    size_t
       pixel;
 
-    pixel=(unsigned long) (i*(QuantumRange/MagickMax(colors-1,1)));
+    pixel=(size_t) (i*(QuantumRange/MagickMax(colors-1,1)));
     image->colormap[i].red=(Quantum) pixel;
     image->colormap[i].green=(Quantum) pixel;
     image->colormap[i].blue=(Quantum) pixel;
@@ -171,7 +171,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 %
 %  The format of the CycleColormapImage method is:
 %
-%      MagickBooleanType CycleColormapImage(Image *image,const long displace)
+%      MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
 %
 %  A description of each parameter follows:
 %
@@ -181,7 +181,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 %
 */
 MagickExport MagickBooleanType CycleColormapImage(Image *image,
-  const long displace)
+  const ssize_t displace)
 {
   CacheView
     *image_view;
@@ -189,7 +189,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -207,15 +207,15 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    long
+    ssize_t
       index;
 
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -230,9 +230,9 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(long) (indexes[x]+displace) % image->colors;
+      index=(ssize_t) (indexes[x]+displace) % image->colors;
       if (index < 0)
         index+=image->colors;
       indexes[x]=(IndexPacket) index;
@@ -304,13 +304,13 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   unsigned short
@@ -336,7 +336,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (i=0; i < (long) image->colors; i++)
+  for (i=0; i < (ssize_t) image->colors; i++)
     image->colormap[i].opacity=(IndexPacket) i;
   /*
     Sort image colormap by decreasing color popularity.
@@ -349,17 +349,17 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (i=0; i < (long) image->colors; i++)
-    pixels[(long) image->colormap[i].opacity]=(unsigned short) i;
+  for (i=0; i < (ssize_t) image->colors; i++)
+    pixels[(ssize_t) image->colormap[i].opacity]=(unsigned short) i;
   status=MagickTrue;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     IndexPacket
       index;
 
-    register long
+    register ssize_t
       x;
 
     register IndexPacket
@@ -375,11 +375,11 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(IndexPacket) pixels[(long) indexes[x]];
+      index=(IndexPacket) pixels[(ssize_t) indexes[x]];
       indexes[x]=index;
-      *q++=image->colormap[(long) index];
+      *q++=image->colormap[(ssize_t) index];
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

@@ -260,7 +260,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   }
   UnlockSemaphoreInfo(resource_semaphore);
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %sB/%sB/%sB",
-    MagickOptionToMnemonic(MagickResourceOptions,(long) type),resource_request,
+    MagickOptionToMnemonic(MagickResourceOptions,(ssize_t) type),resource_request,
     resource_current,resource_limit);
   return(status);
 }
@@ -424,7 +424,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
   register char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   static const char
@@ -678,15 +678,15 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MaxTextExtent);
   if (resource_info.time_limit != MagickResourceInfinity)
-    (void) FormatMagickString(time_limit,MaxTextExtent,"%lu",(unsigned long)
+    (void) FormatMagickString(time_limit,MaxTextExtent,"%lu",(size_t)
       resource_info.time_limit);
   (void) fprintf(file,"File         Area       Memory          Map"
     "         Disk    Thread         Time\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
   (void) fprintf(file,"%4lu  %10sB  %10sB  %10sB  %10sB    %6lu  %11s\n",
-    (unsigned long) resource_info.file_limit,area_limit,memory_limit,map_limit,
-    disk_limit,(unsigned long) resource_info.thread_limit,time_limit);
+    (size_t) resource_info.file_limit,area_limit,memory_limit,map_limit,
+    disk_limit,(size_t) resource_info.thread_limit,time_limit);
   (void) fflush(file);
   UnlockSemaphoreInfo(resource_semaphore);
   return(MagickTrue);
@@ -799,7 +799,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
   }
   UnlockSemaphoreInfo(resource_semaphore);
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %sB/%sB/%sB",
-    MagickOptionToMnemonic(MagickResourceOptions,(long) type),resource_request,
+    MagickOptionToMnemonic(MagickResourceOptions,(ssize_t) type),resource_request,
     resource_current,resource_limit);
 }
 
@@ -873,8 +873,8 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
 %
 */
 
-static inline unsigned long MagickMax(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMax(const size_t x,
+  const size_t y)
 {
   if (x > y)
     return(x);
@@ -898,7 +898,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
   char
     *limit;
 
-  long
+  ssize_t
     files,
     pages,
     pagesize;
@@ -968,7 +968,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
         resources;
 
       if (getrlimit(RLIMIT_NOFILE,&resources) != -1)
-        files=(long) resources.rlim_cur;
+        files=(ssize_t) resources.rlim_cur;
   }
 #endif
 #if defined(MAGICKCORE_HAVE_GETDTABLESIZE) && defined(MAGICKCORE_POSIX_SUPPORT)
@@ -977,7 +977,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
 #endif
   if (files < 0)
     files=64;
-  (void) SetMagickResourceLimit(FileResource,MagickMax((unsigned long)
+  (void) SetMagickResourceLimit(FileResource,MagickMax((size_t)
     (3*files/4),64));
   limit=GetEnvironmentValue("MAGICK_FILE_LIMIT");
   if (limit == (char *) NULL)
@@ -1100,7 +1100,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     }
     case ThreadResource:
     {
-      SetOpenMPMaximumThreads((unsigned long) limit);
+      SetOpenMPMaximumThreads((size_t) limit);
       resource_info.thread_limit=GetOpenMPMaximumThreads();
       break;
     }

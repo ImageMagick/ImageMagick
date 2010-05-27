@@ -71,7 +71,7 @@
 */
 typedef struct _EPTInfo
 {
-  unsigned long
+  size_t
     magick;
 
   MagickOffsetType
@@ -267,10 +267,10 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterEPTImage method is:
 %
-%      unsigned long RegisterEPTImage(void)
+%      size_t RegisterEPTImage(void)
 %
 */
-ModuleExport unsigned long RegisterEPTImage(void)
+ModuleExport size_t RegisterEPTImage(void)
 {
   MagickInfo
     *entry;

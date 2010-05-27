@@ -691,7 +691,7 @@ int main( int /*argc*/, char ** argv)
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", fileSize ("
-	     << static_cast<long>(image.fileSize())
+	     << static_cast<ssize_t>(image.fileSize())
 	     << ") is not zero as expected" << endl;
       }
 

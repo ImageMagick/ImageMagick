@@ -452,7 +452,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SegmentInfo
     bounds;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -463,7 +463,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
     magick[4],
     version[4];
 
-  unsigned long
+  size_t
     number_blocks,
     number_colors,
     number_stitches;
@@ -501,8 +501,8 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Get PES colors.
   */
-  number_colors=(unsigned long) ReadBlobByte(image)+1;
-  for (i=0; i < (long) number_colors; i++)
+  number_colors=(size_t) ReadBlobByte(image)+1;
+  for (i=0; i < (ssize_t) number_colors; i++)
   {
     j=(int) ReadBlobByte(image);
     blocks[i].color=PESColor+j;
@@ -510,7 +510,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   for ( ; i < 256L; i++)
     blocks[i].offset=0;
-  for (i=0; i < (long) (532L-number_colors-21); i++)
+  for (i=0; i < (ssize_t) (532L-number_colors-21); i++)
     if (ReadBlobByte(image) == EOF)
       break;
   if (EOFBlob(image) != MagickFalse)
@@ -602,7 +602,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((double) y > bounds.y2)
       bounds.y2=(double) y;
     i++;
-    if (i >= (long) number_stitches)
+    if (i >= (ssize_t) number_stitches)
       {
         /*
           Make room for more stitches.
@@ -616,7 +616,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   j++;
   blocks[j].offset=(ssize_t) i;
-  number_blocks=(unsigned long) j;
+  number_blocks=(size_t) j;
   /*
     Write stitches as SVG file.
   */
@@ -632,14 +632,14 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
     "ev=\"http://www.w3.org/2001/xml-events\" version=\"1.1\" "
     "baseProfile=\"full\" width=\"%g\" height=\"%g\">\n",bounds.x2-bounds.x1,
     bounds.y2-bounds.y1);
-  for (i=0; i < (long) number_blocks; i++)
+  for (i=0; i < (ssize_t) number_blocks; i++)
   {
     offset=blocks[i].offset;
     (void) fprintf(file,"  <path stroke=\"#%02x%02x%02x\" fill=\"none\" "
       "d=\"M %g %g",blocks[i].color->red,blocks[i].color->green,
       blocks[i].color->blue,stitches[offset].x-bounds.x1,
       stitches[offset].y-bounds.y1);
-    for (j=1; j < (long) (blocks[i+1].offset-offset); j++)
+    for (j=1; j < (ssize_t) (blocks[i+1].offset-offset); j++)
       (void) fprintf(file," L %g %g",stitches[offset+j].x-bounds.x1,
         stitches[offset+j].y-bounds.y1);
     (void) fprintf(file,"\"/>\n");
@@ -689,10 +689,10 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterPESImage method is:
 %
-%      unsigned long RegisterPESImage(void)
+%      size_t RegisterPESImage(void)
 %
 */
-ModuleExport unsigned long RegisterPESImage(void)
+ModuleExport size_t RegisterPESImage(void)
 {
   MagickInfo
     *entry;

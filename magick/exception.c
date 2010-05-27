@@ -915,7 +915,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
 %  The format of the ThrowMagickException method is:
 %
 %      MagickBooleanType ThrowFileException(ExceptionInfo *exception,
-%        const char *module,const char *function,const unsigned long line,
+%        const char *module,const char *function,const size_t line,
 %        const ExceptionType severity,const char *tag,const char *format,...)
 %
 %  A description of each parameter follows:
@@ -938,7 +938,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
 
 MagickExport MagickBooleanType ThrowMagickExceptionList(
   ExceptionInfo *exception,const char *module,const char *function,
-  const unsigned long line,const ExceptionType severity,const char *tag,
+  const size_t line,const ExceptionType severity,const char *tag,
   const char *format,va_list operands)
 {
   char
@@ -988,7 +988,7 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
 }
 
 MagickExport MagickBooleanType ThrowMagickException(ExceptionInfo *exception,
-  const char *module,const char *function,const unsigned long line,
+  const char *module,const char *function,const size_t line,
   const ExceptionType severity,const char *tag,const char *format,...)
 {
   MagickBooleanType

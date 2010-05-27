@@ -206,10 +206,10 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterFAXImage method is:
 %
-%      unsigned long RegisterFAXImage(void)
+%      size_t RegisterFAXImage(void)
 %
 */
-ModuleExport unsigned long RegisterFAXImage(void)
+ModuleExport size_t RegisterFAXImage(void)
 {
   MagickInfo
     *entry;

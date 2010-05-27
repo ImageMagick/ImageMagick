@@ -80,10 +80,10 @@ static MagickBooleanType
 %
 %  The format of the RegisterCLIPImage method is:
 %
-%      unsigned long RegisterCLIPImage(void)
+%      size_t RegisterCLIPImage(void)
 %
 */
-ModuleExport unsigned long RegisterCLIPImage(void)
+ModuleExport size_t RegisterCLIPImage(void)
 {
   MagickInfo
     *entry;

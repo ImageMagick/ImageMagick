@@ -83,10 +83,10 @@ static MagickBooleanType
 %
 %  The format of the RegisterTHUMBNAILImage method is:
 %
-%      unsigned long RegisterTHUMBNAILImage(void)
+%      size_t RegisterTHUMBNAILImage(void)
 %
 */
-ModuleExport unsigned long RegisterTHUMBNAILImage(void)
+ModuleExport size_t RegisterTHUMBNAILImage(void)
 {
   MagickInfo
     *entry;
@@ -166,7 +166,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -190,7 +190,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   length=(size_t) StringToLong(property);
   (void) ResetMagickMemory(magick,0,sizeof(magick));
-  for (i=0; i < (long) length; i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     magick[0]=magick[1];
     magick[1]=magick[2];

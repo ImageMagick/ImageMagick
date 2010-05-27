@@ -33,7 +33,7 @@ extern "C" {
 
 struct _MagickWand
 {
-  unsigned long
+  size_t
     id;
 
   char
@@ -56,7 +56,7 @@ struct _MagickWand
     pend,
     debug;
 
-  unsigned long
+  size_t
     signature;
 };
 

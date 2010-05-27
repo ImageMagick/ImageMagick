@@ -152,7 +152,7 @@ static inline double GetFITSPixel(Image *image,int bits_per_pixel)
     case 4:
     {
       if (bits_per_pixel > 0)
-        return((double) ((long) ReadBlobLong(image)));
+        return((double) ((ssize_t) ReadBlobLong(image)));
       return((double) ReadBlobFloat(image));
     }
     case 8:
@@ -196,18 +196,18 @@ static void GetFITSPixelExtrema(Image *image,const int bits_per_pixel,
   (void) SeekBlob(image,offset,SEEK_SET);
 }
 
-static inline double GetFITSPixelRange(const unsigned long depth)
+static inline double GetFITSPixelRange(const size_t depth)
 {
   return((double) ((MagickOffsetType) GetQuantumRange(depth)));
 }
 
 static void SetFITSUnsignedPixels(const size_t length,
-  const unsigned long bits_per_pixel,unsigned char *pixels)
+  const size_t bits_per_pixel,unsigned char *pixels)
 {
-  register long
+  register ssize_t
     i;
 
-  for (i=0; i < (long) length; i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     *pixels^=0x80;
     pixels+=bits_per_pixel >> 3;
@@ -259,7 +259,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   int
     c;
 
-  long
+  ssize_t
     scene,
     y;
 
@@ -269,7 +269,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   MagickSizeType
     number_pixels;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -409,14 +409,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
     ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
-  for (scene=0; scene < (long) fits_info.number_planes; scene++)
+  for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
   {
-    image->columns=(unsigned long) fits_info.columns;
-    image->rows=(unsigned long) fits_info.rows;
-    image->depth=(unsigned long) (fits_info.bits_per_pixel < 0 ? -1 : 1)*
+    image->columns=(size_t) fits_info.columns;
+    image->rows=(size_t) fits_info.rows;
+    image->depth=(size_t) (fits_info.bits_per_pixel < 0 ? -1 : 1)*
       fits_info.bits_per_pixel;
     image->endian=fits_info.endian;
-    image->scene=(unsigned long) scene;
+    image->scene=(size_t) scene;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -426,7 +426,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if ((fits_info.min_data != 0.0) || (fits_info.max_data != 0.0))
       {
         if ((fits_info.bits_per_pixel != 0) && (fits_info.max_data == 0.0))
-          fits_info.max_data=GetFITSPixelRange((unsigned long)
+          fits_info.max_data=GetFITSPixelRange((size_t)
             fits_info.bits_per_pixel);
       }
     else
@@ -437,12 +437,12 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
       fits_info.min_data)+fits_info.zero);
-    for (y=(long) image->rows-1; y >= 0; y--)
+    for (y=(ssize_t) image->rows-1; y >= 0; y--)
     {
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
         q->red=(Quantum) ClampToQuantum(scale*(fits_info.scale*(pixel-
@@ -472,7 +472,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    if (scene < (long) (fits_info.number_planes-1))
+    if (scene < (ssize_t) (fits_info.number_planes-1))
       {
         /*
           Allocate next image structure.
@@ -514,10 +514,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterFITSImage method is:
 %
-%      unsigned long RegisterFITSImage(void)
+%      size_t RegisterFITSImage(void)
 %
 */
-ModuleExport unsigned long RegisterFITSImage(void)
+ModuleExport size_t RegisterFITSImage(void)
 {
   MagickInfo
     *entry;
@@ -601,7 +601,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     header[FITSBlocksize],
     *fits_info;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -693,7 +693,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
       offset+=80;
     }
   (void) FormatMagickString(header,FITSBlocksize,"HISTORY %.72s",
-    GetMagickVersion((unsigned long *) NULL));
+    GetMagickVersion((size_t *) NULL));
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) strncpy(header,"END",FITSBlocksize);
@@ -705,7 +705,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   */
   pixels=GetQuantumPixels(quantum_info);
   length=GetQuantumExtent(image,quantum_info,GrayQuantum);
-  for (y=(long) image->rows-1; y >= 0; y--)
+  for (y=(ssize_t) image->rows-1; y >= 0; y--)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

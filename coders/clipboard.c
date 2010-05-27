@@ -101,10 +101,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -201,12 +201,12 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
       BitBlt(hDC,0,0,image->columns,image->rows,hMemDC,0,0,SRCCOPY);
       /* finally copy the pixels! */
       pBits=ppBits;
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=ScaleCharToQuantum(pBits->rgbRed);
           q->green=ScaleCharToQuantum(pBits->rgbGreen);
@@ -247,10 +247,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterCLIPBOARDImage method is:
 %
-%      unsigned long RegisterCLIPBOARDImage(void)
+%      size_t RegisterCLIPBOARDImage(void)
 %
 */
-ModuleExport unsigned long RegisterCLIPBOARDImage(void)
+ModuleExport size_t RegisterCLIPBOARDImage(void)
 {
   MagickInfo
     *entry;

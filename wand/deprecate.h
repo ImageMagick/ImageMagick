@@ -46,30 +46,30 @@ extern WandExport char
   *PixelIteratorGetException(const PixelIterator *,ExceptionType *)
     magick_attribute((deprecated));
 
-extern WandExport long
+extern WandExport ssize_t
   MagickGetImageIndex(MagickWand *) magick_attribute((deprecated));
 
 extern WandExport MagickBooleanType
   MagickClipPathImage(MagickWand *,const char *,const MagickBooleanType)
     magick_attribute((deprecated)),
   MagickColorFloodfillImage(MagickWand *,const PixelWand *,const double,
-    const PixelWand *,const long,const long) magick_attribute((deprecated)),
-  MagickGetImageChannelExtrema(MagickWand *,const ChannelType,unsigned long *,
-    unsigned long *) magick_attribute((deprecated)),
-  MagickGetImageExtrema(MagickWand *,unsigned long *,unsigned long *)
+    const PixelWand *,const ssize_t,const ssize_t) magick_attribute((deprecated)),
+  MagickGetImageChannelExtrema(MagickWand *,const ChannelType,size_t *,
+    size_t *) magick_attribute((deprecated)),
+  MagickGetImageExtrema(MagickWand *,size_t *,size_t *)
     magick_attribute((deprecated)),
   MagickGetImageMatte(MagickWand *) magick_attribute((deprecated)),
-  MagickGetImagePixels(MagickWand *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,void *)
+  MagickGetImagePixels(MagickWand *,const ssize_t,const ssize_t,const size_t,
+    const size_t,const char *,const StorageType,void *)
     magick_attribute((deprecated)),
   MagickMapImage(MagickWand *,const MagickWand *,const MagickBooleanType)
     magick_attribute((deprecated)),
   MagickMatteFloodfillImage(MagickWand *,const double,const double,
-    const PixelWand *,const long,const long) magick_attribute((deprecated)),
+    const PixelWand *,const ssize_t,const ssize_t) magick_attribute((deprecated)),
   MagickOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double) magick_attribute((deprecated)),
   MagickPaintFloodfillImage(MagickWand *,const ChannelType,const PixelWand *,
-    const double,const PixelWand *,const long,const long)
+    const double,const PixelWand *,const ssize_t,const ssize_t)
     magick_attribute((deprecated)),
   MagickPaintOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double) magick_attribute((deprecated)),
@@ -78,15 +78,15 @@ extern WandExport MagickBooleanType
     magick_attribute((deprecated)),
   MagickPaintTransparentImage(MagickWand *,const PixelWand *,const double,
     const double) magick_attribute((deprecated)),
-  MagickRecolorImage(MagickWand *,const unsigned long,const double *)
+  MagickRecolorImage(MagickWand *,const size_t,const double *)
     magick_attribute((deprecated)),
   MagickSetImageAttribute(MagickWand *,const char *,const char *)
     magick_attribute((deprecated)),
-  MagickSetImageIndex(MagickWand *,const long) magick_attribute((deprecated)),
+  MagickSetImageIndex(MagickWand *,const ssize_t) magick_attribute((deprecated)),
   MagickSetImageOption(MagickWand *,const char *,const char *,const char *)
     magick_attribute((deprecated)),
-  MagickSetImagePixels(MagickWand *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,const void *)
+  MagickSetImagePixels(MagickWand *,const ssize_t,const ssize_t,const size_t,
+    const size_t,const char *,const StorageType,const void *)
     magick_attribute((deprecated)),
   MagickTransparentImage(MagickWand *,const PixelWand *,const double,
     const double) magick_attribute((deprecated));
@@ -97,8 +97,8 @@ extern WandExport MagickWand
   *MagickMaximumImages(MagickWand *),
   *MagickMinimumImages(MagickWand *),
   *MagickMosaicImages(MagickWand *) magick_attribute((deprecated)),
-  *MagickRegionOfInterestImage(MagickWand *,const unsigned long,
-    const unsigned long,const long,const long) magick_attribute((deprecated));
+  *MagickRegionOfInterestImage(MagickWand *,const size_t,
+    const size_t,const ssize_t,const ssize_t) magick_attribute((deprecated));
 
 extern WandExport MagickSizeType
   MagickGetImageSize(MagickWand *) magick_attribute((deprecated));

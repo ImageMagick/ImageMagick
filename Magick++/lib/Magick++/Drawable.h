@@ -934,7 +934,7 @@ public:
 
   DrawableFont ( const std::string &family_,
                  StyleType style_,
-                 const unsigned long weight_,
+                 const size_t weight_,
                  StretchType stretch_ );
   DrawableFont ( const DrawableFont& original_ );
 
@@ -959,7 +959,7 @@ private:
   std::string   _font;
   std::string   _family;
   StyleType     _style;
-  unsigned long _weight;
+  size_t _weight;
   StretchType   _stretch;
 };
 
@@ -1304,8 +1304,8 @@ private:
 class MagickDLLDecl DrawablePushPattern : public DrawableBase
 {
 public:
-  DrawablePushPattern ( const std::string &id_, long x_, long y_,
-                        long width_, long height_ );
+  DrawablePushPattern ( const std::string &id_, ssize_t x_, ssize_t y_,
+                        ssize_t width_, ssize_t height_ );
 
   DrawablePushPattern ( const DrawablePushPattern& original_ );
 
@@ -1319,10 +1319,10 @@ public:
 
 private:
   std::string         _id;
-  long		_x;
-  long		_y;
-  long		_width;
-  long		_height;
+  ssize_t		_x;
+  ssize_t		_y;
+  ssize_t		_width;
+  ssize_t		_height;
 };
 
 // Rectangle
@@ -2055,8 +2055,8 @@ private:
 class MagickDLLDecl DrawableViewbox : public DrawableBase
 {
 public:
-  DrawableViewbox(unsigned long x1_, unsigned long y1_,
-                  unsigned long x2_, unsigned long y2_)
+  DrawableViewbox(size_t x1_, size_t y1_,
+                  size_t x2_, size_t y2_)
     : _x1(x1_),
       _y1(y1_),
       _x2(x2_),
@@ -2071,47 +2071,47 @@ public:
   /*virtual*/
   DrawableBase* copy() const;
 
-  void x1( unsigned long x1_ )
+  void x1( size_t x1_ )
     {
       _x1 = x1_;
     }
-  unsigned long x1( void ) const
+  size_t x1( void ) const
     {
       return _x1;
     }
 
-  void y1( unsigned long y1_ )
+  void y1( size_t y1_ )
     {
       _y1 = y1_;
     }
-  unsigned long y1( void ) const
+  size_t y1( void ) const
     {
       return _y1;
     }
 
-  void x2( unsigned long x2_ )
+  void x2( size_t x2_ )
     {
       _x2 = x2_;
     }
-  unsigned long x2( void ) const
+  size_t x2( void ) const
     {
       return _x2;
     }
 
-  void y2( unsigned long y2_ )
+  void y2( size_t y2_ )
     {
       _y2 = y2_;
     }
-  unsigned long y2( void ) const
+  size_t y2( void ) const
     {
       return _y2;
     }
 
 private:
-  unsigned long _x1;
-  unsigned long _y1;
-  unsigned long _x2;
-  unsigned long _y2;
+  size_t _x1;
+  size_t _y1;
+  size_t _x2;
+  size_t _y2;
 };
 
 //
@@ -2197,7 +2197,7 @@ private:
   double	_radiusX;	// X radius
   double	_radiusY;	// Y radius
   double	_xAxisRotation;	// Rotation relative to X axis
-  bool        _largeArcFlag;	// Draw longer of the two matching arcs
+  bool        _largeArcFlag;	// Draw ssize_ter of the two matching arcs
   bool        _sweepFlag;	// Draw arc matching clock-wise rotation
   double	_x;		// End-point X
   double	_y;		// End-point Y

@@ -370,8 +370,8 @@ static MagickBooleanType IsDPX(const unsigned char *magick,const size_t extent)
 %
 */
 
-static size_t GetBytesPerRow(unsigned long columns,
-  unsigned long samples_per_pixel,unsigned long bits_per_pixel,
+static size_t GetBytesPerRow(size_t columns,
+  size_t samples_per_pixel,size_t bits_per_pixel,
   MagickBooleanType pad)
 {
   size_t
@@ -513,14 +513,14 @@ static void SetPrimaryChromaticity(const DPXColorimetric colorimetric,
   }
 }
 
-static void TimeCodeToString(const unsigned long timestamp,char *code)
+static void TimeCodeToString(const size_t timestamp,char *code)
 {
 #define TimeFields  7
 
   unsigned int
     shift;
 
-  register long
+  register ssize_t
     i;
 
   *code='\0';
@@ -549,7 +549,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     row,
     y;
 
@@ -565,7 +565,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   QuantumType
     quantum_type;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -577,7 +577,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     component_type;
 
-  unsigned long
+  size_t
     samples_per_pixel;
 
   /*
@@ -900,18 +900,18 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dpx.television.interlace=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.interlace != 0)
-        (void) FormatImageProperty(image,"dpx:television.interlace","%ld",(long)
+        (void) FormatImageProperty(image,"dpx:television.interlace","%ld",(ssize_t)
           dpx.television.interlace);
       dpx.television.field_number=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.field_number != 0)
         (void) FormatImageProperty(image,"dpx:television.field_number","%ld",
-          (long) dpx.television.field_number);
+          (ssize_t) dpx.television.field_number);
       dpx.television.video_signal=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.video_signal != 0)
         (void) FormatImageProperty(image,"dpx:television.video_signal","%ld",
-          (long) dpx.television.video_signal);
+          (ssize_t) dpx.television.video_signal);
       dpx.television.padding=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.padding != 0)
@@ -992,7 +992,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
            profile=DestroyStringInfo(profile);
         }
     }
-  for ( ; offset < (long) dpx.file.image_offset; offset++)
+  for ( ; offset < (ssize_t) dpx.file.image_offset; offset++)
     (void) ReadBlobByte(image);
   /*
     Read DPX image header.
@@ -1076,9 +1076,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetQuantumQuantum(quantum_info,32);
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    long
+    ssize_t
       offset;
 
     MagickBooleanType
@@ -1158,10 +1158,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterDPXImage method is:
 %
-%      unsigned long RegisterDPXImage(void)
+%      size_t RegisterDPXImage(void)
 %
 */
-ModuleExport unsigned long RegisterDPXImage(void)
+ModuleExport size_t RegisterDPXImage(void)
 {
   MagickInfo
     *entry;
@@ -1251,7 +1251,7 @@ static unsigned int StringToTimeCode(const char *key)
   char
     buffer[2];
 
-  register long
+  register ssize_t
     i;
 
   unsigned int
@@ -1286,7 +1286,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   DPXInfo
     dpx;
 
-  long
+  ssize_t
     horizontal_factor,
     vertical_factor,
     y;
@@ -1312,7 +1312,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -1347,8 +1347,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
         flags;
 
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
-      horizontal_factor=(long) geometry_info.rho;
-      vertical_factor=(long) geometry_info.sigma;
+      horizontal_factor=(ssize_t) geometry_info.rho;
+      vertical_factor=(ssize_t) geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
@@ -1408,7 +1408,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     dpx.file.timestamp);
   offset+=WriteBlob(image,sizeof(dpx.file.timestamp),(unsigned char *)
     dpx.file.timestamp);
-  (void) strncpy(dpx.file.creator,GetMagickVersion((unsigned long *) NULL),
+  (void) strncpy(dpx.file.creator,GetMagickVersion((size_t *) NULL),
     sizeof(dpx.file.creator));
   value=GetDPXProperty(image_info,image,"dpx:file.creator");
   if (value != (const char *) NULL)
@@ -1809,7 +1809,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
       extent=GetBytesPerRow(image->columns,1UL,image->depth,MagickTrue);
     }
   pixels=GetQuantumPixels(quantum_info);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

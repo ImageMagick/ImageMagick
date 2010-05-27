@@ -88,7 +88,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -111,7 +111,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
       density;
@@ -122,7 +122,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
     register const PixelPacket
       *p;
 
-    register long
+    register ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -132,7 +132,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       density=(double) p->red+p->green+p->blue+indexes[x];
       if (density > total_ink_density)

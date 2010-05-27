@@ -67,7 +67,7 @@ struct _CacheView
   VirtualPixelMethod
     virtual_pixel_method;
 
-  unsigned long
+  size_t
     number_threads;
 
   NexusInfo
@@ -76,7 +76,7 @@ struct _CacheView
   MagickBooleanType
     debug;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -303,7 +303,7 @@ MagickExport ExceptionInfo *GetCacheViewException(const CacheView *cache_view)
 */
 MagickExport MagickSizeType GetCacheViewExtent(const CacheView *cache_view)
 {
-  long
+  ssize_t
     id;
 
   MagickSizeType
@@ -316,7 +316,7 @@ MagickExport MagickSizeType GetCacheViewExtent(const CacheView *cache_view)
       cache_view->image->filename);
   assert(cache_view->image->cache != (Cache) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   extent=GetPixelCacheNexusExtent(cache_view->image->cache,
     cache_view->nexus_info[id]);
   return(extent);
@@ -373,8 +373,8 @@ MagickExport ClassType GetCacheViewStorageClass(const CacheView *cache_view)
 %  The format of the GetCacheViewAuthenticPixels method is:
 %
 %      PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
-%        const long x,const long y,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -385,13 +385,13 @@ MagickExport ClassType GetCacheViewStorageClass(const CacheView *cache_view)
 %
 */
 MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
   Cache
     cache;
 
-  long
+  ssize_t
     id;
 
   PixelPacket
@@ -406,7 +406,7 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
   if (cache == (Cache) NULL)
     return((PixelPacket *) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,columns,rows,
     cache_view->nexus_info[id],exception);
   return(pixels);
@@ -429,7 +429,7 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
 %  The format of the GetOneCacheViewAuthenticPixel method is:
 %
 %      MagickBooleaNType GetOneCacheViewAuthenticPixel(
-%        const CacheView *cache_view,const long x,const long y,
+%        const CacheView *cache_view,const ssize_t x,const ssize_t y,
 %        Pixelpacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -444,13 +444,13 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
-  const CacheView *cache_view,const long x,const long y,PixelPacket *pixel,
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
   ExceptionInfo *exception)
 {
   Cache
     cache;
 
-  long
+  ssize_t
     id;
 
   PixelPacket
@@ -466,7 +466,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     return(MagickFalse);
   *pixel=cache_view->image->background_color;
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,1,1,
     cache_view->nexus_info[id],exception);
   if (pixels == (const PixelPacket *) NULL)
@@ -504,7 +504,7 @@ MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
   IndexPacket
     *indexes;
 
-  long
+  ssize_t
     id;
 
   assert(cache_view != (CacheView *) NULL);
@@ -514,7 +514,7 @@ MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
       cache_view->image->filename);
   assert(cache_view->image->cache != (Cache) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   indexes=GetPixelCacheNexusIndexes(cache_view->image->cache,
     cache_view->nexus_info[id]);
   return(indexes);
@@ -547,7 +547,7 @@ MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
 */
 MagickExport PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
 {
-  long
+  ssize_t
     id;
 
   PixelPacket
@@ -560,7 +560,7 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
       cache_view->image->filename);
   assert(cache_view->image->cache != (Cache) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetPixelCacheNexusPixels(cache_view->image->cache,
     cache_view->nexus_info[id]);
   return(pixels);
@@ -597,7 +597,7 @@ MagickExport const IndexPacket *GetCacheViewVirtualIndexQueue(
   const IndexPacket
     *indexes;
 
-  long
+  ssize_t
     id;
 
   assert(cache_view != (const CacheView *) NULL);
@@ -607,7 +607,7 @@ MagickExport const IndexPacket *GetCacheViewVirtualIndexQueue(
       cache_view->image->filename);
   assert(cache_view->image->cache != (Cache) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   indexes=GetVirtualIndexesFromNexus(cache_view->image->cache,
     cache_view->nexus_info[id]);
   return(indexes);
@@ -644,7 +644,7 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixelQueue(
   const PixelPacket
     *pixels;
 
-  long
+  ssize_t
     id;
 
   assert(cache_view != (const CacheView *) NULL);
@@ -654,7 +654,7 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixelQueue(
       cache_view->image->filename);
   assert(cache_view->image->cache != (Cache) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetVirtualPixelsNexus(cache_view->image->cache,
     cache_view->nexus_info[id]);
   return(pixels);
@@ -679,8 +679,8 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixelQueue(
 %  The format of the GetCacheViewVirtualPixels method is:
 %
 %      const PixelPacket *GetCacheViewVirtualPixels(
-%        const CacheView *cache_view,const long x,const long y,
-%        const unsigned long columns,const unsigned long rows,
+%        const CacheView *cache_view,const ssize_t x,const ssize_t y,
+%        const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -694,13 +694,13 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixelQueue(
 %
 */
 MagickExport const PixelPacket *GetCacheViewVirtualPixels(
-  const CacheView *cache_view,const long x,const long y,
-  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,
+  const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
   const PixelPacket
     *pixels;
 
-  long
+  ssize_t
     id;
 
   assert(cache_view != (CacheView *) NULL);
@@ -709,7 +709,7 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixels(
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,columns,rows,
     cache_view->nexus_info[id],exception);
@@ -734,7 +734,7 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixels(
 %  The format of the GetOneCacheViewVirtualPixel method is:
 %
 %      MagickBooleanType GetOneCacheViewVirtualPixel(
-%        const CacheView *cache_view,const long x,const long y,
+%        const CacheView *cache_view,const ssize_t x,const ssize_t y,
 %        PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -749,13 +749,13 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixels(
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
-  const CacheView *cache_view,const long x,const long y,PixelPacket *pixel,
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
   ExceptionInfo *exception)
 {
   const PixelPacket
     *pixels;
 
-  long
+  ssize_t
     id;
 
   assert(cache_view != (CacheView *) NULL);
@@ -765,7 +765,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
       cache_view->image->filename);
   *pixel=cache_view->image->background_color;
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
     exception);
@@ -795,8 +795,8 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
 %
 %      MagickBooleanType GetOneCacheViewVirtualMethodPixel(
 %        const CacheView *cache_view,
-%        const VirtualPixelMethod virtual_pixel_method,const long x,
-%        const long y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -813,12 +813,12 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
 */
 MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
   const CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method,
-  const long x,const long y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
   const PixelPacket
     *pixels;
 
-  long
+  ssize_t
     id;
 
   assert(cache_view != (CacheView *) NULL);
@@ -828,7 +828,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
       cache_view->image->filename);
   *pixel=cache_view->image->background_color;
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=GetVirtualPixelsFromNexus(cache_view->image,virtual_pixel_method,x,y,1,
     1,cache_view->nexus_info[id],exception);
   if (pixels == (const PixelPacket *) NULL)
@@ -856,8 +856,8 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
 %  The format of the QueueCacheViewAuthenticPixels method is:
 %
 %      PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
-%        const long x,const long y,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -870,13 +870,13 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
 %
 */
 MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
   Cache
     cache;
 
-  long
+  ssize_t
     id;
 
   PixelPacket
@@ -891,7 +891,7 @@ MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
   if (cache == (Cache) NULL)
     return((PixelPacket *) NULL);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   pixels=QueueAuthenticNexus(cache_view->image,x,y,columns,rows,
     cache_view->nexus_info[id],exception);
   return(pixels);
@@ -1002,7 +1002,7 @@ MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
 MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
   CacheView *cache_view,ExceptionInfo *exception)
 {
-  long
+  ssize_t
     id;
 
   MagickBooleanType
@@ -1014,7 +1014,7 @@ MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
   id=GetOpenMPThreadId();
-  assert(id < (long) cache_view->number_threads);
+  assert(id < (ssize_t) cache_view->number_threads);
   status=SyncAuthenticPixelCacheNexus(cache_view->image,
     cache_view->nexus_info[id],exception);
   return(status);

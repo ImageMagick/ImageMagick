@@ -105,7 +105,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   InterlaceType
     interlace;
 
-  long
+  ssize_t
     horizontal_factor,
     vertical_factor,
     y;
@@ -116,13 +116,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register const PixelPacket
     *chroma_pixels;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
     *q;
 
-  register long
+  register ssize_t
     i;
 
   register unsigned char
@@ -160,8 +160,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         flags;
 
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
-      horizontal_factor=(long) geometry_info.rho;
-      vertical_factor=(long) geometry_info.sigma;
+      horizontal_factor=(ssize_t) geometry_info.rho;
+      vertical_factor=(ssize_t) geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
@@ -227,7 +227,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
       }
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       register PixelPacket
         *chroma_pixels;
@@ -244,7 +244,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             chroma_image->columns,1,exception);
           if (chroma_pixels == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x+=2)
+          for (x=0; x < (ssize_t) image->columns; x+=2)
           {
             chroma_pixels->red=(Quantum) 0;
             chroma_pixels->green=ScaleCharToQuantum(*p++);
@@ -268,7 +268,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             q->red=ScaleCharToQuantum(*p++);
             q->green=0;
@@ -301,7 +301,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (interlace != NoInterlace)
       {
-        for (y=0; y < (long) chroma_image->rows; y++)
+        for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
           count=ReadBlob(image,(size_t) chroma_image->columns,scanline);
           p=scanline;
@@ -309,7 +309,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             exception);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) chroma_image->columns; x++)
+          for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
             q->red=(Quantum) 0;
             q->green=ScaleCharToQuantum(*p++);
@@ -330,7 +330,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               return((Image *) NULL);
             }
         }
-      for (y=0; y < (long) chroma_image->rows; y++)
+      for (y=0; y < (ssize_t) chroma_image->rows; y++)
       {
         count=ReadBlob(image,(size_t) chroma_image->columns,scanline);
         p=scanline;
@@ -338,7 +338,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) chroma_image->columns; x++)
+        for (x=0; x < (ssize_t) chroma_image->columns; x++)
         {
           q->blue=ScaleCharToQuantum(*p++);
           q++;
@@ -355,7 +355,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     chroma_image=DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       chroma_pixels=GetVirtualPixels(resize_image,0,y,resize_image->columns,1,
@@ -363,7 +363,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((q == (PixelPacket *) NULL) ||
           (chroma_pixels == (const PixelPacket *) NULL))
         break;
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         q->green=chroma_pixels->green;
         q->blue=chroma_pixels->blue;
@@ -437,10 +437,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterYUVImage method is:
 %
-%      unsigned long RegisterYUVImage(void)
+%      size_t RegisterYUVImage(void)
 %
 */
-ModuleExport unsigned long RegisterYUVImage(void)
+ModuleExport size_t RegisterYUVImage(void)
 {
   MagickInfo
     *entry;
@@ -515,7 +515,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
   InterlaceType
     interlace;
 
-  long
+  ssize_t
     horizontal_factor,
     vertical_factor,
     y;
@@ -530,10 +530,10 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
     *p,
     *s;
 
-  register long
+  register ssize_t
     x;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -555,8 +555,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         flags;
 
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
-      horizontal_factor=(long) geometry_info.rho;
-      vertical_factor=(long) geometry_info.sigma;
+      horizontal_factor=(ssize_t) geometry_info.rho;
+      vertical_factor=(ssize_t) geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
@@ -613,7 +613,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         /*
           Write noninterlaced YUV.
         */
-        for (y=0; y < (long) yuv_image->rows; y++)
+        for (y=0; y < (ssize_t) yuv_image->rows; y++)
         {
           p=GetVirtualPixels(yuv_image,0,y,yuv_image->columns,1,
             &yuv_image->exception);
@@ -623,7 +623,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
             &chroma_image->exception);
           if (s == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) yuv_image->columns; x++)
+          for (x=0; x < (ssize_t) yuv_image->columns; x++)
           {
             (void) WriteBlobByte(image,ScaleQuantumToChar(s->green));
             (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
@@ -648,13 +648,13 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         /*
           Initialize Y channel.
         */
-        for (y=0; y < (long) yuv_image->rows; y++)
+        for (y=0; y < (ssize_t) yuv_image->rows; y++)
         {
           p=GetVirtualPixels(yuv_image,0,y,yuv_image->columns,1,
             &yuv_image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) yuv_image->columns; x++)
+          for (x=0; x < (ssize_t) yuv_image->columns; x++)
           {
             (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
             p++;
@@ -685,13 +685,13 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
             if (status == MagickFalse)
               return(status);
           }
-        for (y=0; y < (long) chroma_image->rows; y++)
+        for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
           p=GetVirtualPixels(chroma_image,0,y,chroma_image->columns,1,
             &chroma_image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) chroma_image->columns; x++)
+          for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
             (void) WriteBlobByte(image,ScaleQuantumToChar(GetGreenPixelComponent(p)));
             p++;
@@ -715,13 +715,13 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
             if (status == MagickFalse)
               return(status);
           }
-        for (y=0; y < (long) chroma_image->rows; y++)
+        for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
           p=GetVirtualPixels(chroma_image,0,y,chroma_image->columns,1,
             &chroma_image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) chroma_image->columns; x++)
+          for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
             (void) WriteBlobByte(image,ScaleQuantumToChar(GetBluePixelComponent(p)));
             p++;

@@ -27,7 +27,7 @@ extern "C" {
 
 extern MagickExport Image
   *XDisplayImage(Display *,XResourceInfo *,char **,int,Image **,
-    unsigned long *);
+    size_t *);
 
 extern MagickExport MagickBooleanType XDisplayBackgroundImage(Display *,
   XResourceInfo *,Image *);

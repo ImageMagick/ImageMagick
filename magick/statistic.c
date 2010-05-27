@@ -134,11 +134,11 @@
 
 static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
 {
-  register long
+  register ssize_t
     i;
 
   assert(pixels != (MagickPixelPacket **) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (pixels[i] != (MagickPixelPacket *) NULL)
       pixels[i]=(MagickPixelPacket *) RelinquishMagickMemory(pixels[i]);
   pixels=(MagickPixelPacket **) RelinquishAlignedMemory(pixels);
@@ -147,14 +147,14 @@ static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
 
 static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
 {
-  register long
+  register ssize_t
     i,
     j;
 
   MagickPixelPacket
     **pixels;
 
-  unsigned long
+  size_t
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -163,13 +163,13 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
   if (pixels == (MagickPixelPacket **) NULL)
     return((MagickPixelPacket **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(image->columns,
       sizeof(**pixels));
     if (pixels[i] == (MagickPixelPacket *) NULL)
       return(DestroyPixelThreadSet(pixels));
-    for (j=0; j < (long) image->columns; j++)
+    for (j=0; j < (ssize_t) image->columns; j++)
       GetMagickPixelPacket(image,&pixels[i][j]);
   }
   return(pixels);
@@ -219,7 +219,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case AndEvaluateOperator:
     {
-      result=(MagickRealType) ((unsigned long) pixel & (unsigned long)
+      result=(MagickRealType) ((size_t) pixel & (size_t)
         (value+0.5));
       break;
     }
@@ -254,7 +254,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case LeftShiftEvaluateOperator:
     {
-      result=(MagickRealType) ((unsigned long) pixel << (unsigned long)
+      result=(MagickRealType) ((size_t) pixel << (size_t)
         (value+0.5));
       break;
     }
@@ -292,7 +292,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case OrEvaluateOperator:
     {
-      result=(MagickRealType) ((unsigned long) pixel | (unsigned long)
+      result=(MagickRealType) ((size_t) pixel | (size_t)
         (value+0.5));
       break;
     }
@@ -310,7 +310,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case RightShiftEvaluateOperator:
     {
-      result=(MagickRealType) ((unsigned long) pixel >> (unsigned long)
+      result=(MagickRealType) ((size_t) pixel >> (size_t)
         (value+0.5));
       break;
     }
@@ -355,7 +355,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case XorEvaluateOperator:
     {
-      result=(MagickRealType) ((unsigned long) pixel ^ (unsigned long)
+      result=(MagickRealType) ((size_t) pixel ^ (size_t)
         (value+0.5));
       break;
     }
@@ -387,7 +387,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   Image
     *evaluate_image;
 
-  long
+  ssize_t
     progress,
     y;
 
@@ -401,7 +401,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   RandomInfo
     **restrict random_info;
 
-  unsigned long
+  size_t
     number_images;
 
   /*
@@ -453,7 +453,7 @@ MagickExport Image *EvaluateImages(const Image *images,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic) shared(progress,status)
 #endif
-  for (y=0; y < (long) evaluate_image->rows; y++)
+  for (y=0; y < (ssize_t) evaluate_image->rows; y++)
   {
     CacheView
       *image_view;
@@ -467,7 +467,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     register IndexPacket
       *restrict evaluate_indexes;
 
-    register long
+    register ssize_t
       i,
       id,
       x;
@@ -491,10 +491,10 @@ MagickExport Image *EvaluateImages(const Image *images,
     pixel=zero;
     id=GetOpenMPThreadId();
     evaluate_pixel=evaluate_pixels[id];
-    for (x=0; x < (long) evaluate_image->columns; x++)
+    for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       evaluate_pixel[x]=zero;
     next=images;
-    for (i=0; i < (long) number_images; i++)
+    for (i=0; i < (ssize_t) number_images; i++)
     {
       register const IndexPacket
         *indexes;
@@ -510,7 +510,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           break;
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (x=0; x < (long) next->columns; x++)
+      for (x=0; x < (ssize_t) next->columns; x++)
       {
         evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],p->red,
           i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].red);
@@ -531,7 +531,7 @@ MagickExport Image *EvaluateImages(const Image *images,
       next=GetNextImageInList(next);
     }
     if (op == MeanEvaluateOperator)
-      for (x=0; x < (long) evaluate_image->columns; x++)
+      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
         evaluate_pixel[x].red/=number_images;
         evaluate_pixel[x].green/=number_images;
@@ -539,7 +539,7 @@ MagickExport Image *EvaluateImages(const Image *images,
         evaluate_pixel[x].opacity/=number_images;
         evaluate_pixel[x].index/=number_images;
       }
-    for (x=0; x < (long) evaluate_image->columns; x++)
+    for (x=0; x < (ssize_t) evaluate_image->columns; x++)
     {
       q->red=ClampToQuantum(evaluate_pixel[x].red);
       q->green=ClampToQuantum(evaluate_pixel[x].green);
@@ -583,7 +583,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   CacheView
     *image_view;
 
-  long
+  ssize_t
     progress,
     y;
 
@@ -611,12 +611,12 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       id,
       x;
 
@@ -633,7 +633,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     id=GetOpenMPThreadId();
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
         q->red=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q->red,op,
@@ -697,11 +697,11 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 %  The format of the FunctionImageChannel method is:
 %
 %      MagickBooleanType FunctionImage(Image *image,
-%        const MagickFunction function,const long number_parameters,
+%        const MagickFunction function,const ssize_t number_parameters,
 %        const double *parameters,ExceptionInfo *exception)
 %      MagickBooleanType FunctionImageChannel(Image *image,
 %        const ChannelType channel,const MagickFunction function,
-%        const long number_parameters,const double *argument,
+%        const ssize_t number_parameters,const double *argument,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -719,13 +719,13 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 */
 
 static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
-  const unsigned long number_parameters,const double *parameters,
+  const size_t number_parameters,const double *parameters,
   ExceptionInfo *exception)
 {
   MagickRealType
     result;
 
-  register long
+  register ssize_t
     i;
 
   (void) exception;
@@ -740,7 +740,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
        *   For example:      c0*x^3 + c1*x^2 + c2*x  + c3
        */
       result=0.0;
-      for (i=0; i < (long) number_parameters; i++)
+      for (i=0; i < (ssize_t) number_parameters; i++)
         result = result*QuantumScale*pixel + parameters[i];
       result *= QuantumRange;
       break;
@@ -801,7 +801,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
 }
 
 MagickExport MagickBooleanType FunctionImage(Image *image,
-  const MagickFunction function,const unsigned long number_parameters,
+  const MagickFunction function,const size_t number_parameters,
   const double *parameters,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -814,7 +814,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
 
 MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   const ChannelType channel,const MagickFunction function,
-  const unsigned long number_parameters,const double *parameters,
+  const size_t number_parameters,const double *parameters,
   ExceptionInfo *exception)
 {
 #define FunctionImageTag  "Function/Image "
@@ -822,7 +822,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   CacheView
     *image_view;
 
-  long
+  ssize_t
     progress,
     y;
 
@@ -846,12 +846,12 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -866,7 +866,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
         q->red=ApplyFunction(q->red,function,number_parameters,parameters,
@@ -927,7 +927,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 %  The format of the GetImageChannelExtrema method is:
 %
 %      MagickBooleanType GetImageChannelExtrema(const Image *image,
-%        const ChannelType channel,unsigned long *minima,unsigned long *maxima,
+%        const ChannelType channel,size_t *minima,size_t *maxima,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -945,13 +945,13 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 */
 
 MagickExport MagickBooleanType GetImageExtrema(const Image *image,
-  unsigned long *minima,unsigned long *maxima,ExceptionInfo *exception)
+  size_t *minima,size_t *maxima,ExceptionInfo *exception)
 {
   return(GetImageChannelExtrema(image,AllChannels,minima,maxima,exception));
 }
 
 MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
-  const ChannelType channel,unsigned long *minima,unsigned long *maxima,
+  const ChannelType channel,size_t *minima,size_t *maxima,
   ExceptionInfo *exception)
 {
   double
@@ -966,8 +966,8 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=GetImageChannelRange(image,channel,&min,&max,exception);
-  *minima=(unsigned long) ceil(min-0.5);
-  *maxima=(unsigned long) floor(max+0.5);
+  *minima=(size_t) ceil(min-0.5);
+  *maxima=(size_t) floor(max+0.5);
   return(status);
 }
 
@@ -1023,7 +1023,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
   double
     area;
 
-  long
+  ssize_t
     y;
 
   assert(image != (Image *) NULL);
@@ -1033,7 +1033,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
   *mean=0.0;
   *standard_deviation=0.0;
   area=0.0;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -1041,14 +1041,14 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
         {
@@ -1084,7 +1084,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
       p++;
     }
   }
-  if (y < (long) image->rows)
+  if (y < (ssize_t) image->rows)
     return(MagickFalse);
   if (area != 0)
     {
@@ -1092,7 +1092,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
       *standard_deviation/=area;
     }
   *standard_deviation=sqrt(*standard_deviation-(*mean*(*mean)));
-  return(y == (long) image->rows ? MagickTrue : MagickFalse);
+  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1152,7 +1152,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
     sum_cubes,
     sum_fourth_power;
 
-  long
+  ssize_t
     y;
 
   assert(image != (Image *) NULL);
@@ -1167,7 +1167,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
   sum_squares=0.0;
   sum_cubes=0.0;
   sum_fourth_power=0.0;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -1175,14 +1175,14 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
         {
@@ -1233,7 +1233,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
       p++;
     }
   }
-  if (y < (long) image->rows)
+  if (y < (ssize_t) image->rows)
     return(MagickFalse);
   if (area != 0.0)
     {
@@ -1253,7 +1253,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
       *skewness=sum_cubes-3.0*mean*sum_squares+2.0*mean*mean*mean;
       *skewness/=standard_deviation*standard_deviation*standard_deviation;
     }
-  return(y == (long) image->rows ? MagickTrue : MagickFalse);
+  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1299,7 +1299,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   const ChannelType channel,double *minima,double *maxima,
   ExceptionInfo *exception)
 {
-  long
+  ssize_t
     y;
 
   MagickPixelPacket
@@ -1312,7 +1312,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   *maxima=(-1.0E-37);
   *minima=1.0E+37;
   GetMagickPixelPacket(image,&pixel);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -1320,14 +1320,14 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,p,indexes+x,&pixel);
       if ((channel & RedChannel) != 0)
@@ -1369,7 +1369,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
       p++;
     }
   }
-  return(y == (long) image->rows ? MagickTrue : MagickFalse);
+  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1416,7 +1416,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     sum_squares,
     sum_cubes;
 
-  long
+  ssize_t
     y;
 
   MagickStatusType
@@ -1425,13 +1425,13 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   QuantumAny
     range;
 
-  register long
+  register ssize_t
     i;
 
   size_t
     length;
 
-  unsigned long
+  size_t
     channels,
     depth;
 
@@ -1456,7 +1456,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].kurtosis=0.0;
     channel_statistics[i].skewness=0.0;
   }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -1464,14 +1464,14 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (long) image->columns; )
+    for (x=0; x < (ssize_t) image->columns; )
     {
       if (channel_statistics[RedChannel].depth != MAGICKCORE_QUANTUM_DEPTH)
         {
@@ -1620,7 +1620,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   }
   for (i=0; i < AllChannels; i++)
   {
-    channel_statistics[AllChannels].depth=(unsigned long) MagickMax((double)
+    channel_statistics[AllChannels].depth=(size_t) MagickMax((double)
       channel_statistics[AllChannels].depth,(double)
       channel_statistics[i].depth);
     channel_statistics[AllChannels].minima=MagickMin(

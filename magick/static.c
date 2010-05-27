@@ -107,7 +107,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
   (void) exception;
 #else
   {
-    extern unsigned long
+    extern size_t
       analyzeImage(Image **,const int,char **,ExceptionInfo *);
 
     ImageFilterHandler
@@ -118,7 +118,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
       image_filter=(ImageFilterHandler *) analyzeImage;
     if (image_filter != (ImageFilterHandler *) NULL)
       {
-        unsigned long
+        size_t
           signature;
 
         if ((*image)->debug != MagickFalse)

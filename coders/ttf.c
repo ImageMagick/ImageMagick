@@ -187,7 +187,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -196,7 +196,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PixelPacket
     background_color;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -230,12 +230,12 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Color canvas with background color
   */
   background_color=image_info->background_color;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
       *q++=background_color;
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -306,10 +306,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterTTFImage method is:
 %
-%      unsigned long RegisterTTFImage(void)
+%      size_t RegisterTTFImage(void)
 %
 */
-ModuleExport unsigned long RegisterTTFImage(void)
+ModuleExport size_t RegisterTTFImage(void)
 {
   char
     version[MaxTextExtent];

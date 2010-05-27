@@ -62,7 +62,7 @@ typedef struct _RegistryInfo
   void
     *value;
 
-  unsigned long
+  size_t
     signature;
 } RegistryInfo;
 

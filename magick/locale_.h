@@ -38,19 +38,19 @@ typedef struct _LocaleInfo
     *previous,
     *next;  /* deprecated, use GetLocaleInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } LocaleInfo;
 
 extern MagickExport char
-  **GetLocaleList(const char *,unsigned long *,ExceptionInfo *);
+  **GetLocaleList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
   *GetLocaleMessage(const char *);
 
 extern MagickExport const LocaleInfo
   *GetLocaleInfo_(const char *,ExceptionInfo *),
-  **GetLocaleInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetLocaleInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport LinkedListInfo
   *DestroyLocaleOptions(LinkedListInfo *),

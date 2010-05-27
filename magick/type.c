@@ -193,7 +193,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 %      const TypeInfo *GetTypeInfoByFamily(const char *family,
 %        const StyleType style,const StretchType stretch,
-%        const unsigned long weight,ExceptionInfo *exception)
+%        const size_t weight,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -209,16 +209,16 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 */
 
-static inline unsigned long MagickMax(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMax(const size_t x,
+  const size_t y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-static inline unsigned long MagickMin(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMin(const size_t x,
+  const size_t y)
 {
   if (x < y)
     return(x);
@@ -226,7 +226,7 @@ static inline unsigned long MagickMin(const unsigned long x,
 }
 
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
-  const StyleType style,const StretchType stretch,const unsigned long weight,
+  const StyleType style,const StretchType stretch,const size_t weight,
   ExceptionInfo *exception)
 {
   typedef struct _Fontmap
@@ -239,13 +239,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const TypeInfo
     *type_info;
 
-  long
+  ssize_t
     range;
 
   register const TypeInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   static const Fontmap
@@ -261,7 +261,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       { NULL, NULL }
     };
 
-  unsigned long
+  size_t
     max_score,
     score;
 
@@ -358,15 +358,15 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     if (weight == 0)
       score+=16;
     else
-      score+=(16*(800-((long) MagickMax(MagickMin(weight,900),p->weight)-
-        (long) MagickMin(MagickMin(weight,900),p->weight))))/800;
+      score+=(16*(800-((ssize_t) MagickMax(MagickMin(weight,900),p->weight)-
+        (ssize_t) MagickMin(MagickMin(weight,900),p->weight))))/800;
     if ((stretch == UndefinedStretch) || (stretch == AnyStretch))
       score+=8;
     else
       {
-        range=(long) UltraExpandedStretch-(long) NormalStretch;
-        score+=(8*(range-((long) MagickMax(stretch,p->stretch)-
-          (long) MagickMin(stretch,p->stretch))))/range;
+        range=(ssize_t) UltraExpandedStretch-(ssize_t) NormalStretch;
+        score+=(8*(range-((ssize_t) MagickMax(stretch,p->stretch)-
+          (ssize_t) MagickMin(stretch,p->stretch))))/range;
       }
     if (score > max_score)
       {
@@ -424,7 +424,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
 %  The format of the GetTypeInfoList function is:
 %
 %      const TypeInfo **GetTypeInfoList(const char *pattern,
-%        unsigned long *number_fonts,ExceptionInfo *exception)
+%        size_t *number_fonts,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -458,7 +458,7 @@ static int TypeInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
-  unsigned long *number_fonts,ExceptionInfo *exception)
+  size_t *number_fonts,ExceptionInfo *exception)
 {
   const TypeInfo
     **fonts;
@@ -466,7 +466,7 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
   register const TypeInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -474,7 +474,7 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_fonts != (unsigned long *) NULL);
+  assert(number_fonts != (size_t *) NULL);
   *number_fonts=0;
   p=GetTypeInfo("*",exception);
   if (p == (const TypeInfo *) NULL)
@@ -499,7 +499,7 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
   UnlockSemaphoreInfo(type_semaphore);
   qsort((void *) fonts,(size_t) i,sizeof(*fonts),TypeInfoCompare);
   fonts[i]=(TypeInfo *) NULL;
-  *number_fonts=(unsigned long) i;
+  *number_fonts=(size_t) i;
   return(fonts);
 }
 
@@ -518,7 +518,7 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
 %
 %  The format of the GetTypeList function is:
 %
-%      char **GetTypeList(const char *pattern,unsigned long *number_fonts,
+%      char **GetTypeList(const char *pattern,size_t *number_fonts,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -550,7 +550,7 @@ static int TypeCompare(const void *x,const void *y)
 }
 #endif
 
-MagickExport char **GetTypeList(const char *pattern,unsigned long *number_fonts,
+MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
   ExceptionInfo *exception)
 {
   char
@@ -559,7 +559,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_fonts,
   register const TypeInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -567,7 +567,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_fonts,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_fonts != (unsigned long *) NULL);
+  assert(number_fonts != (size_t *) NULL);
   *number_fonts=0;
   p=GetTypeInfo("*",exception);
   if (p == (const TypeInfo *) NULL)
@@ -592,7 +592,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_fonts,
   UnlockSemaphoreInfo(type_semaphore);
   qsort((void *) fonts,(size_t) i,sizeof(*fonts),TypeCompare);
   fonts[i]=(char *) NULL;
-  *number_fonts=(unsigned long) i;
+  *number_fonts=(size_t) i;
   return(fonts);
 }
 
@@ -652,7 +652,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
     width,
     weight;
 
-  register long
+  register ssize_t
     i;
 
   TypeInfo
@@ -683,7 +683,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
       FcConfigDestroy(font_config);
       return(MagickFalse);
     }
-  for (i=0; i < (long) font_set->nfont; i++)
+  for (i=0; i < (ssize_t) font_set->nfont; i++)
   {
     status=FcPatternGetString(font_set->fonts[i],FC_FAMILY,0,&family);
     if (status != FcResultMatch)
@@ -832,10 +832,10 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
   const TypeInfo
     **type_info;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_fonts;
 
   if (file == (FILE *) NULL)
@@ -846,7 +846,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     return(MagickFalse);
   *weight='\0';
   path=(const char *) NULL;
-  for (i=0; i < (long) number_fonts; i++)
+  for (i=0; i < (ssize_t) number_fonts; i++)
   {
     if (type_info[i]->stealth != MagickFalse)
       continue;
@@ -896,7 +896,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %  The format of the LoadTypeList method is:
 %
 %      MagickBooleanType LoadTypeList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -938,7 +938,7 @@ static void *DestroyTypeNode(void *type_info)
 }
 
 static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     font_path[MaxTextExtent],

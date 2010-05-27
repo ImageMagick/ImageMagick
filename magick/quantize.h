@@ -34,10 +34,10 @@ typedef enum
 
 typedef struct _QuantizeInfo
 {
-  unsigned long
+  size_t
     number_colors;
 
-  unsigned long
+  size_t
     tree_depth;
 
   MagickBooleanType
@@ -49,7 +49,7 @@ typedef struct _QuantizeInfo
   MagickBooleanType
     measure_error;
 
-  unsigned long
+  size_t
     signature;
 
   DitherMethod
@@ -59,7 +59,7 @@ typedef struct _QuantizeInfo
 extern MagickExport MagickBooleanType
   CompressImageColormap(Image *),
   GetImageQuantizeError(Image *),
-  PosterizeImage(Image *,const unsigned long,const MagickBooleanType),
+  PosterizeImage(Image *,const size_t,const MagickBooleanType),
   QuantizeImage(const QuantizeInfo *,Image *),
   QuantizeImages(const QuantizeInfo *,Image *),
   RemapImage(const QuantizeInfo *,Image *,const Image *),

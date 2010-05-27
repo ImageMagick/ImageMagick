@@ -105,13 +105,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   TypeMetric
     metrics;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -162,8 +162,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
         status=GetMultilineTypeMetrics(image,draw_info,&metrics);
-        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+
           0.5);
         if ((width > (image->columns+1)) || (height > (image->rows+1)))
           break;
@@ -181,8 +181,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
         status=GetMultilineTypeMetrics(image,draw_info,&metrics);
-        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+
           0.5);
         if ((width > (image->columns+1)) || (height > (image->rows+1)))
           break;
@@ -192,10 +192,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     }
   i=FormatMagickCaption(image,draw_info,&metrics,&caption);
   if (image->rows == 0)
-    image->rows=(unsigned long) ((i+1)*(metrics.ascent-metrics.descent+
+    image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
       draw_info->stroke_width)+0.5);
   if (image->rows == 0)
-    image->rows=(unsigned long) ((i+1)*draw_info->pointsize+
+    image->rows=(size_t) ((i+1)*draw_info->pointsize+
       draw_info->stroke_width+0.5);
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
@@ -209,7 +209,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   (void) CloneString(&draw_info->text,caption);
   status=GetMultilineTypeMetrics(image,draw_info,&metrics);
   if (draw_info->gravity != UndefinedGravity)
-    image->page.x=(long) (metrics.bounds.x1-draw_info->stroke_width/2.0);
+    image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
   else
     {
       (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
@@ -243,10 +243,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterCAPTIONImage method is:
 %
-%      unsigned long RegisterCAPTIONImage(void)
+%      size_t RegisterCAPTIONImage(void)
 %
 */
-ModuleExport unsigned long RegisterCAPTIONImage(void)
+ModuleExport size_t RegisterCAPTIONImage(void)
 {
   MagickInfo
     *entry;

@@ -91,10 +91,10 @@ static MagickBooleanType
 %
 %  The format of the RegisterHISTOGRAMImage method is:
 %
-%      unsigned long RegisterHISTOGRAMImage(void)
+%      size_t RegisterHISTOGRAMImage(void)
 %
 */
-ModuleExport unsigned long RegisterHISTOGRAMImage(void)
+ModuleExport size_t RegisterHISTOGRAMImage(void)
 {
   MagickInfo
     *entry;
@@ -197,7 +197,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   ImageInfo
     *write_info;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -216,7 +216,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -263,12 +263,12 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   */
   channel=image_info->channel;
   (void) ResetMagickMemory(histogram,0,length*sizeof(*histogram));
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
         histogram[ScaleQuantumToChar(GetRedPixelComponent(p))].red++;
@@ -280,7 +280,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     }
   }
   maximum=histogram[0].red;
-  for (x=0; x < (long) histogram_image->columns; x++)
+  for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
     if (((channel & RedChannel) != 0) && (maximum < histogram[x].red))
       maximum=histogram[x].red;
@@ -297,16 +297,16 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   (void) QueryColorDatabase("#000000",&histogram_image->background_color,
     &image->exception);
   (void) SetImageBackgroundColor(histogram_image);
-  for (x=0; x < (long) histogram_image->columns; x++)
+  for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
     q=GetAuthenticPixels(histogram_image,x,0,1,histogram_image->rows,exception);
     if (q == (PixelPacket *) NULL)
       break;
     if ((channel & RedChannel) != 0)
       {
-        y=(long) ceil(histogram_image->rows-scale*histogram[x].red-0.5);
+        y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].red-0.5);
         r=q+y;
-        for ( ; y < (long) histogram_image->rows; y++)
+        for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           r->red=(Quantum) QuantumRange;
           r++;
@@ -314,9 +314,9 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       }
     if ((channel & GreenChannel) != 0)
       {
-        y=(long) ceil(histogram_image->rows-scale*histogram[x].green-0.5);
+        y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].green-0.5);
         r=q+y;
-        for ( ; y < (long) histogram_image->rows; y++)
+        for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           r->green=(Quantum) QuantumRange;
           r++;
@@ -324,9 +324,9 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       }
     if ((channel & BlueChannel) != 0)
       {
-        y=(long) ceil(histogram_image->rows-scale*histogram[x].blue-0.5);
+        y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].blue-0.5);
         r=q+y;
-        for ( ; y < (long) histogram_image->rows; y++)
+        for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           r->blue=(Quantum) QuantumRange;
           r++;

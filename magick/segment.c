@@ -122,7 +122,7 @@ typedef struct _ExtentPacket
   MagickRealType
     center;
 
-  long
+  ssize_t
     index,
     left,
     right;
@@ -138,7 +138,7 @@ typedef struct _Cluster
     green,
     blue;
 
-  long
+  ssize_t
     count,
     id;
 } Cluster;
@@ -148,7 +148,7 @@ typedef struct _IntervalTree
   MagickRealType
     tau;
 
-  long
+  ssize_t
     left,
     right;
 
@@ -185,15 +185,15 @@ static const int
   Method prototypes.
 */
 static MagickRealType
-  OptimalTau(const long *,const double,const double,const double,
+  OptimalTau(const ssize_t *,const double,const double,const double,
     const double,short *);
 
-static long
+static ssize_t
   DefineRegion(const short *,ExtentPacket *);
 
 static void
-  InitializeHistogram(const Image *,long **,ExceptionInfo *),
-  ScaleSpace(const long *,const MagickRealType,MagickRealType *),
+  InitializeHistogram(const Image *,ssize_t **,ExceptionInfo *),
+  ScaleSpace(const ssize_t *,const MagickRealType,MagickRealType *),
   ZeroCrossHistogram(MagickRealType *,const MagickRealType,short *);
 
 /*
@@ -208,7 +208,7 @@ static void
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Classify() defines one or more classes.  Each pixel is thresholded to
-%  determine which class it belongs to.  If the class is not identified it is
+%  determine which class it bessize_ts to.  If the class is not identified it is
 %  assigned to the closest class based on the fuzzy c-Means technique.
 %
 %  The format of the Classify method is:
@@ -259,7 +259,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     green,
     red;
 
-  long
+  ssize_t
     count,
     progress,
     y;
@@ -270,13 +270,13 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   register MagickRealType
     *squares;
 
-  unsigned long
+  size_t
     number_clusters;
 
   /*
@@ -350,31 +350,31 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
       *p;
 
-    register long
+    register ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((long) ScaleQuantumToChar(GetRedPixelComponent(p)) >=
+        if (((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) >=
              (cluster->red.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetRedPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) <=
              (cluster->red.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetGreenPixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) >=
              (cluster->green.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetGreenPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) <=
              (cluster->green.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetBluePixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetBluePixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
@@ -437,7 +437,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       last_cluster->next=next_cluster;
     cluster=(Cluster *) RelinquishMagickMemory(cluster);
   }
-  number_clusters=(unsigned long) count;
+  number_clusters=(size_t) count;
   if (verbose != MagickFalse)
     {
       /*
@@ -524,7 +524,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     Cluster
       *cluster;
@@ -535,7 +535,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -550,22 +550,22 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       indexes[x]=(IndexPacket) 0;
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        if (((long) ScaleQuantumToChar(q->red) >=
+        if (((ssize_t) ScaleQuantumToChar(q->red) >=
              (cluster->red.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(q->red) <=
+            ((ssize_t) ScaleQuantumToChar(q->red) <=
              (cluster->red.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(q->green) >=
+            ((ssize_t) ScaleQuantumToChar(q->green) >=
              (cluster->green.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(q->green) <=
+            ((ssize_t) ScaleQuantumToChar(q->green) <=
              (cluster->green.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(q->blue) >=
+            ((ssize_t) ScaleQuantumToChar(q->blue) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(q->blue) <=
+            ((ssize_t) ScaleQuantumToChar(q->blue) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
@@ -584,7 +584,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             ratio,
             sum;
 
-          register long
+          register ssize_t
             j,
             k;
 
@@ -592,26 +592,26 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             Compute fuzzy membership.
           */
           local_minima=0.0;
-          for (j=0; j < (long) image->colors; j++)
+          for (j=0; j < (ssize_t) image->colors; j++)
           {
             sum=0.0;
             p=image->colormap+j;
-            distance_squared=squares[(long) ScaleQuantumToChar(q->red)-
-              (long) ScaleQuantumToChar(GetRedPixelComponent(p))]+
-              squares[(long) ScaleQuantumToChar(q->green)-
-              (long) ScaleQuantumToChar(GetGreenPixelComponent(p))]+
-              squares[(long) ScaleQuantumToChar(q->blue)-
-              (long) ScaleQuantumToChar(GetBluePixelComponent(p))];
+            distance_squared=squares[(ssize_t) ScaleQuantumToChar(q->red)-
+              (ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p))]+
+              squares[(ssize_t) ScaleQuantumToChar(q->green)-
+              (ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p))]+
+              squares[(ssize_t) ScaleQuantumToChar(q->blue)-
+              (ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p))];
             numerator=distance_squared;
-            for (k=0; k < (long) image->colors; k++)
+            for (k=0; k < (ssize_t) image->colors; k++)
             {
               p=image->colormap+k;
-              distance_squared=squares[(long) ScaleQuantumToChar(q->red)-
-                (long) ScaleQuantumToChar(GetRedPixelComponent(p))]+
-                squares[(long) ScaleQuantumToChar(q->green)-
-                (long) ScaleQuantumToChar(GetGreenPixelComponent(p))]+
-                squares[(long) ScaleQuantumToChar(q->blue)-
-                (long) ScaleQuantumToChar(GetBluePixelComponent(p))];
+              distance_squared=squares[(ssize_t) ScaleQuantumToChar(q->red)-
+                (ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p))]+
+                squares[(ssize_t) ScaleQuantumToChar(q->green)-
+                (ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p))]+
+                squares[(ssize_t) ScaleQuantumToChar(q->blue)-
+                (ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p))];
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }
@@ -676,32 +676,32 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 %  The format of the ConsolidateCrossings method is:
 %
 %      ConsolidateCrossings(ZeroCrossing *zero_crossing,
-%        const unsigned long number_crossings)
+%        const size_t number_crossings)
 %
 %  A description of each parameter follows.
 %
 %    o zero_crossing: Specifies an array of structures of type ZeroCrossing.
 %
-%    o number_crossings: This unsigned long specifies the number of elements
+%    o number_crossings: This size_t specifies the number of elements
 %      in the zero_crossing array.
 %
 */
 
-static inline long MagickAbsoluteValue(const long x)
+static inline ssize_t MagickAbsoluteValue(const ssize_t x)
 {
   if (x < 0)
     return(-x);
   return(x);
 }
 
-static inline long MagickMax(const long x,const long y)
+static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-static inline long MagickMin(const long x,const long y)
+static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 {
   if (x < y)
     return(x);
@@ -709,16 +709,16 @@ static inline long MagickMin(const long x,const long y)
 }
 
 static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
-  const unsigned long number_crossings)
+  const size_t number_crossings)
 {
-  long
+  ssize_t
     center,
     correct,
     count,
     left,
     right;
 
-  register long
+  register ssize_t
     i,
     j,
     k,
@@ -727,7 +727,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
   /*
     Consolidate zero crossings.
   */
-  for (i=(long) number_crossings-1; i >= 0; i--)
+  for (i=(ssize_t) number_crossings-1; i >= 0; i--)
     for (j=0; j <= 255; j++)
     {
       if (zero_crossing[i].crossings[j] == 0)
@@ -813,7 +813,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
 %
 %  The format of the DefineRegion method is:
 %
-%      long DefineRegion(const short *extrema,ExtentPacket *extents)
+%      ssize_t DefineRegion(const short *extrema,ExtentPacket *extents)
 %
 %  A description of each parameter follows.
 %
@@ -825,7 +825,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
 %      of a particular peak or valley of a color component.
 %
 */
-static long DefineRegion(const short *extrema,ExtentPacket *extents)
+static ssize_t DefineRegion(const short *extrema,ExtentPacket *extents)
 {
   /*
     Initialize to default values.
@@ -884,7 +884,7 @@ static long DefineRegion(const short *extrema,ExtentPacket *extents)
 static void DerivativeHistogram(const MagickRealType *histogram,
   MagickRealType *derivative)
 {
-  register long
+  register ssize_t
     i,
     n;
 
@@ -955,7 +955,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
     green,
     red;
 
-  long
+  ssize_t
     count,
     *histogram[MaxDimension],
     y;
@@ -969,7 +969,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -986,14 +986,14 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   GetMagickPixelPacket(image,pixel);
   for (i=0; i < MaxDimension; i++)
   {
-    histogram[i]=(long *) AcquireQuantumMemory(256UL,sizeof(**histogram));
+    histogram[i]=(ssize_t *) AcquireQuantumMemory(256UL,sizeof(**histogram));
     extrema[i]=(short *) AcquireQuantumMemory(256UL,sizeof(**histogram));
-    if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
+    if ((histogram[i] == (ssize_t *) NULL) || (extrema[i] == (short *) NULL))
       {
         for (i-- ; i >= 0; i--)
         {
           extrema[i]=(short *) RelinquishMagickMemory(extrema[i]);
-          histogram[i]=(long *) RelinquishMagickMemory(histogram[i]);
+          histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
         }
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -1084,25 +1084,25 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
     Count the pixels for each cluster.
   */
   count=0;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((long) ScaleQuantumToChar(GetRedPixelComponent(p)) >=
+        if (((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) >=
              (cluster->red.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetRedPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) <=
              (cluster->red.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetGreenPixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) >=
              (cluster->green.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetGreenPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) <=
              (cluster->green.right+SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetBluePixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((long) ScaleQuantumToChar(GetBluePixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
@@ -1195,7 +1195,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   for (i=0; i < MaxDimension; i++)
   {
     extrema[i]=(short *) RelinquishMagickMemory(extrema[i]);
-    histogram[i]=(long *) RelinquishMagickMemory(histogram[i]);
+    histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
   }
   return(MagickTrue);
 }
@@ -1215,7 +1215,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
 %
 %  The format of the InitializeHistogram method is:
 %
-%      InitializeHistogram(const Image *image,long **histogram)
+%      InitializeHistogram(const Image *image,ssize_t **histogram)
 %
 %  A description of each parameter follows.
 %
@@ -1226,16 +1226,16 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
 %      of pixels for each intensity of a particular color component.
 %
 */
-static void InitializeHistogram(const Image *image,long **histogram,
+static void InitializeHistogram(const Image *image,ssize_t **histogram,
   ExceptionInfo *exception)
 {
-  long
+  ssize_t
     y;
 
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -1248,16 +1248,16 @@ static void InitializeHistogram(const Image *image,long **histogram,
     histogram[Green][i]=0;
     histogram[Blue][i]=0;
   }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      histogram[Red][(long) ScaleQuantumToChar(GetRedPixelComponent(p))]++;
-      histogram[Green][(long) ScaleQuantumToChar(GetGreenPixelComponent(p))]++;
-      histogram[Blue][(long) ScaleQuantumToChar(GetBluePixelComponent(p))]++;
+      histogram[Red][(ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p))]++;
+      histogram[Green][(ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p))]++;
+      histogram[Blue][(ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p))]++;
       p++;
     }
   }
@@ -1279,19 +1279,19 @@ static void InitializeHistogram(const Image *image,long **histogram,
 %
 %  The format of the InitializeIntervalTree method is:
 %
-%      InitializeIntervalTree(IntervalTree **list,long *number_nodes,
+%      InitializeIntervalTree(IntervalTree **list,ssize_t *number_nodes,
 %        IntervalTree *node)
 %
 %  A description of each parameter follows.
 %
 %    o zero_crossing: Specifies an array of structures of type ZeroCrossing.
 %
-%    o number_crossings: This unsigned long specifies the number of elements
+%    o number_crossings: This size_t specifies the number of elements
 %      in the zero_crossing array.
 %
 */
 
-static void InitializeList(IntervalTree **list,long *number_nodes,
+static void InitializeList(IntervalTree **list,ssize_t *number_nodes,
   IntervalTree *node)
 {
   if (node == (IntervalTree *) NULL)
@@ -1313,7 +1313,7 @@ static void MeanStability(IntervalTree *node)
   child=node->child;
   if (child != (IntervalTree *) NULL)
     {
-      register long
+      register ssize_t
         count;
 
       register MagickRealType
@@ -1345,7 +1345,7 @@ static void Stability(IntervalTree *node)
 }
 
 static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
-  const unsigned long number_crossings)
+  const size_t number_crossings)
 {
   IntervalTree
     *head,
@@ -1353,13 +1353,13 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
     *node,
     *root;
 
-  long
+  ssize_t
     j,
     k,
     left,
     number_nodes;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -1378,7 +1378,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   root->tau=0.0;
   root->left=0;
   root->right=255;
-  for (i=(-1); i < (long) number_crossings; i++)
+  for (i=(-1); i < (ssize_t) number_crossings; i++)
   {
     /*
       Initialize list with all nodes with no children.
@@ -1454,7 +1454,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 %  The format of the OptimalTau method is:
 %
-%    MagickRealType OptimalTau(const long *histogram,const double max_tau,
+%    MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
 %      const double min_tau,const double delta_tau,
 %      const double smooth_threshold,short *extrema)
 %
@@ -1469,7 +1469,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 */
 
-static void ActiveNodes(IntervalTree **list,long *number_nodes,
+static void ActiveNodes(IntervalTree **list,ssize_t *number_nodes,
   IntervalTree *node)
 {
   if (node == (IntervalTree *) NULL)
@@ -1495,7 +1495,7 @@ static void FreeNodes(IntervalTree *node)
   node=(IntervalTree *) RelinquishMagickMemory(node);
 }
 
-static MagickRealType OptimalTau(const long *histogram,const double max_tau,
+static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
   const double min_tau,const double delta_tau,const double smooth_threshold,
   short *extrema)
 {
@@ -1504,7 +1504,7 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
     *node,
     *root;
 
-  long
+  ssize_t
     index,
     j,
     k,
@@ -1517,14 +1517,14 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
     tau,
     value;
 
-  register long
+  register ssize_t
     i,
     x;
 
   MagickBooleanType
     peak;
 
-  unsigned long
+  size_t
     count,
     number_crossings;
 
@@ -1541,12 +1541,12 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
   /*
     Allocate zero crossing list.
   */
-  count=(unsigned long) ((max_tau-min_tau)/delta_tau)+2;
+  count=(size_t) ((max_tau-min_tau)/delta_tau)+2;
   zero_crossing=(ZeroCrossing *) AcquireQuantumMemory((size_t) count,
     sizeof(*zero_crossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
     return(0.0);
-  for (i=0; i < (long) count; i++)
+  for (i=0; i < (ssize_t) count; i++)
     zero_crossing[i].tau=(-1.0);
   /*
     Initialize zero crossing list.
@@ -1579,7 +1579,7 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
   DerivativeHistogram(derivative,second_derivative);
   ZeroCrossHistogram(second_derivative,smooth_threshold,
     zero_crossing[i].crossings);
-  number_crossings=(unsigned long) i;
+  number_crossings=(size_t) i;
   derivative=(MagickRealType *) RelinquishMagickMemory(derivative);
   second_derivative=(MagickRealType *)
     RelinquishMagickMemory(second_derivative);
@@ -1590,7 +1590,7 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
   /*
     Force endpoints to be included in the interval.
   */
-  for (i=0; i <= (long) number_crossings; i++)
+  for (i=0; i <= (ssize_t) number_crossings; i++)
   {
     for (j=0; j < 255; j++)
       if (zero_crossing[i].crossings[j] != 0)
@@ -1625,7 +1625,7 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
     */
     k=0;
     node=list[i];
-    for (j=0; j <= (long) number_crossings; j++)
+    for (j=0; j <= (ssize_t) number_crossings; j++)
       if (zero_crossing[j].tau == node->tau)
         k=j;
     /*
@@ -1693,7 +1693,7 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
 %
 %  The format of the ScaleSpace method is:
 %
-%      ScaleSpace(const long *histogram,const MagickRealType tau,
+%      ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
 %        MagickRealType *scale_histogram)
 %
 %  A description of each parameter follows.
@@ -1703,7 +1703,7 @@ static MagickRealType OptimalTau(const long *histogram,const double max_tau,
 %
 */
 
-static void ScaleSpace(const long *histogram,const MagickRealType tau,
+static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
   MagickRealType *scale_histogram)
 {
   MagickRealType
@@ -1712,7 +1712,7 @@ static void ScaleSpace(const long *histogram,const MagickRealType tau,
     *gamma,
     sum;
 
-  register long
+  register ssize_t
     u,
     x;
 
@@ -1783,13 +1783,13 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   const ColorspaceType colorspace,const MagickBooleanType verbose,
   const double cluster_threshold,const double smooth_threshold)
 {
-  long
+  ssize_t
     *histogram[MaxDimension];
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   short
@@ -1804,14 +1804,14 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   for (i=0; i < MaxDimension; i++)
   {
-    histogram[i]=(long *) AcquireQuantumMemory(256,sizeof(**histogram));
+    histogram[i]=(ssize_t *) AcquireQuantumMemory(256,sizeof(**histogram));
     extrema[i]=(short *) AcquireQuantumMemory(256,sizeof(**extrema));
-    if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
+    if ((histogram[i] == (ssize_t *) NULL) || (extrema[i] == (short *) NULL))
       {
         for (i-- ; i >= 0; i--)
         {
           extrema[i]=(short *) RelinquishMagickMemory(extrema[i]);
-          histogram[i]=(long *) RelinquishMagickMemory(histogram[i]);
+          histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
         }
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename)
@@ -1841,7 +1841,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   for (i=0; i < MaxDimension; i++)
   {
     extrema[i]=(short *) RelinquishMagickMemory(extrema[i]);
-    histogram[i]=(long *) RelinquishMagickMemory(histogram[i]);
+    histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
   }
   return(status);
 }
@@ -1879,10 +1879,10 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
 static void ZeroCrossHistogram(MagickRealType *second_derivative,
   const MagickRealType smooth_threshold,short *crossings)
 {
-  long
+  ssize_t
     parity;
 
-  register long
+  register ssize_t
     i;
 
   /*

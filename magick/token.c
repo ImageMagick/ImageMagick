@@ -61,13 +61,13 @@ struct _TokenInfo
   MagickStatusType
     flag;
 
-  long
+  ssize_t
     offset;
 
   char
     quote;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -172,7 +172,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
   register const char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   i=0;
@@ -273,7 +273,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
       offset=4;
       if (token[offset] == '#')
         offset++;
-      i=(long) strlen(token);
+      i=(ssize_t) strlen(token);
       (void) CopyMagickString(token,token+offset,MaxTextExtent);
       token[i-offset-1]='\0';
     }
@@ -388,7 +388,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       }
       case '[':
       {
-        long
+        ssize_t
           c;
 
         pattern+=GetUTFOctets(pattern);
@@ -768,7 +768,7 @@ MagickExport MagickBooleanType IsGlob(const char *path)
 #define IN_QUOTE 2
 #define IN_OZONE 3
 
-static long sindex(int c,const char *string)
+static ssize_t sindex(int c,const char *string)
 {
   register const char
     *p;
@@ -782,7 +782,7 @@ static long sindex(int c,const char *string)
 static void StoreToken(TokenInfo *token_info,char *string,
   size_t max_token_length,int c)
 {
-  register long
+  register ssize_t
     i;
 
   if ((token_info->offset < 0) ||
@@ -817,7 +817,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,const unsigned flag,
   int
     c;
 
-  register long
+  register ssize_t
     i;
 
   *breaker='\0';

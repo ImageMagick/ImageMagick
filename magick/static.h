@@ -26,7 +26,7 @@ extern MagickExport MagickBooleanType
   InvokeStaticImageFilter(const char *,Image **,const int,const char **,
     ExceptionInfo *);
 
-extern ModuleExport unsigned long
+extern ModuleExport size_t
   RegisterARTImage(void),
   RegisterAVIImage(void),
   RegisterAVSImage(void),

@@ -26,7 +26,7 @@ extern "C" {
 #include "magick/exception.h"
 
 #if !defined(GetMagickModule)
-# define GetMagickModule()  __FILE__,__func__,(unsigned long) __LINE__
+# define GetMagickModule()  __FILE__,__func__,(size_t) __LINE__
 #endif
 
 #define MagickLogFilename  "log.xml"
@@ -59,14 +59,14 @@ typedef struct _LogInfo
   LogInfo;
 
 extern MagickExport char
-  **GetLogList(const char *,unsigned long *,ExceptionInfo *);
+  **GetLogList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
   *GetLogName(void),
   *SetLogName(const char *);
                                                                                 
 extern MagickExport const LogInfo
-  **GetLogInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetLogInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport LogEventType
   SetLogEventMask(const char *);
@@ -76,10 +76,10 @@ extern MagickExport MagickBooleanType
   ListLogInfo(FILE *,ExceptionInfo *),
   LogComponentGenesis(void),
   LogMagickEvent(const LogEventType,const char *,const char *,
-    const unsigned long,const char *,...) 
+    const size_t,const char *,...) 
     magick_attribute((format (printf,5,6))),
   LogMagickEventList(const LogEventType,const char *,const char *,
-    const unsigned long,const char *,va_list)
+    const size_t,const char *,va_list)
     magick_attribute((format (printf,5,0)));
 
 extern MagickExport void

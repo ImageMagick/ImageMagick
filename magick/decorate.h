@@ -24,11 +24,11 @@ extern "C" {
 
 typedef struct _FrameInfo
 {
-  unsigned long
+  size_t
     width,
     height;
 
-  long
+  ssize_t
     x,
     y,
     inner_bevel,

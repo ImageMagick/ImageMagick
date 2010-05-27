@@ -129,7 +129,7 @@ MagickExport Image *CompareImageChannels(Image *image,
     *difference_image,
     *highlight_image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -200,7 +200,7 @@ MagickExport Image *CompareImageChannels(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickBooleanType
       sync;
@@ -220,7 +220,7 @@ MagickExport Image *CompareImageChannels(Image *image,
     register IndexPacket
       *restrict highlight_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -244,7 +244,7 @@ MagickExport Image *CompareImageChannels(Image *image,
     highlight_indexes=GetCacheViewAuthenticIndexQueue(highlight_view);
     pixel=zero;
     reconstruct_pixel=zero;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickStatusType
         difference;
@@ -353,7 +353,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -372,7 +372,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
       channel_distortion[AllChannels+1];
@@ -389,7 +389,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       i,
       x;
 
@@ -408,7 +408,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
     pixel=zero;
     reconstruct_pixel=pixel;
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,p,indexes+x,&pixel);
       SetMagickPixelPacket(reconstruct_image,q,reconstruct_indexes+x,
@@ -435,7 +435,7 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetAbsoluteError)
 #endif
-    for (i=0; i <= (long) AllChannels; i++)
+    for (i=0; i <= (ssize_t) AllChannels; i++)
       distortion[i]+=channel_distortion[i];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -443,10 +443,10 @@ static MagickBooleanType GetAbsoluteError(const Image *image,
   return(status);
 }
 
-static unsigned long GetNumberChannels(const Image *image,
+static size_t GetNumberChannels(const Image *image,
   const ChannelType channel)
 {
-  unsigned long
+  size_t
     channels;
 
   channels=0;
@@ -473,13 +473,13 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   status=MagickTrue;
@@ -488,7 +488,7 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
       channel_distortion[AllChannels+1];
@@ -501,7 +501,7 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       i,
       x;
 
@@ -518,7 +518,7 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickRealType
         distance;
@@ -562,12 +562,12 @@ static MagickBooleanType GetMeanAbsoluteError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetMeanAbsoluteError)
 #endif
-    for (i=0; i <= (long) AllChannels; i++)
+    for (i=0; i <= (ssize_t) AllChannels; i++)
       distortion[i]+=channel_distortion[i];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i <= (long) AllChannels; i++)
+  for (i=0; i <= (ssize_t) AllChannels; i++)
     distortion[i]/=((double) image->columns*image->rows);
   distortion[AllChannels]/=(double) GetNumberChannels(image,channel);
   return(status);
@@ -581,7 +581,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     *image_view,
     *reconstruct_view;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -602,7 +602,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   mean_error=0.0;
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes,
@@ -612,7 +612,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -625,7 +625,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickRealType
         distance;
@@ -710,13 +710,13 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   status=MagickTrue;
@@ -725,7 +725,7 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
       channel_distortion[AllChannels+1];
@@ -738,7 +738,7 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       i,
       x;
 
@@ -755,7 +755,7 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickRealType
         distance;
@@ -800,12 +800,12 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetMeanSquaredError)
 #endif
-    for (i=0; i <= (long) AllChannels; i++)
+    for (i=0; i <= (ssize_t) AllChannels; i++)
       distortion[i]+=channel_distortion[i];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i <= (long) AllChannels; i++)
+  for (i=0; i <= (ssize_t) AllChannels; i++)
     distortion[i]/=((double) image->columns*image->rows);
   distortion[AllChannels]/=(double) GetNumberChannels(image,channel);
   return(status);
@@ -819,7 +819,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -831,7 +831,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
       channel_distortion[AllChannels+1];
@@ -844,7 +844,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       i,
       x;
 
@@ -861,7 +861,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickRealType
         distance;
@@ -916,7 +916,7 @@ static MagickBooleanType GetPeakAbsoluteError(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetPeakAbsoluteError)
 #endif
-    for (i=0; i <= (long) AllChannels; i++)
+    for (i=0; i <= (ssize_t) AllChannels; i++)
       if (channel_distortion[i] > distortion[i])
         distortion[i]=channel_distortion[i];
   }
@@ -1244,7 +1244,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -1270,7 +1270,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes,
@@ -1280,7 +1280,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -1290,7 +1290,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       break;
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickRealType
         distance;
@@ -1382,7 +1382,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 */
 
 static double GetSimilarityMetric(const Image *image,const Image *reference,
-  const long x_offset,const long y_offset,ExceptionInfo *exception)
+  const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -1391,7 +1391,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   double
     similarity;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -1407,7 +1407,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) reference->rows; y++)
+  for (y=0; y < (ssize_t) reference->rows; y++)
   {
     register const IndexPacket
       *restrict indexes,
@@ -1417,7 +1417,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       *restrict p,
       *restrict q;
 
-    register long
+    register ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1433,7 +1433,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reference_indexes=GetCacheViewVirtualIndexQueue(reference_view);
-    for (x=0; x < (long) reference->columns; x++)
+    for (x=0; x < (ssize_t) reference->columns; x++)
     {
       double
         thread_similarity;
@@ -1485,15 +1485,17 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   CacheView
     *similarity_view;
 
-  long
-    progress,
-    y;
-
   Image
     *similarity_image;
 
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1526,12 +1528,12 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) (image->rows-reference->rows+1); y++)
+  for (y=0; y < (ssize_t) (image->rows-reference->rows+1); y++)
   {
     double
       similarity;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -1546,7 +1548,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (long) (image->columns-reference->columns+1); x++)
+    for (x=0; x < (ssize_t) (image->columns-reference->columns+1); x++)
     {
       similarity=GetSimilarityMetric(image,reference,x,y,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

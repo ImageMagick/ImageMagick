@@ -122,7 +122,7 @@ static MagickBooleanType IsSFW(const unsigned char *magick,const size_t length)
 static unsigned char *SFWScan(unsigned char *p,const unsigned char *q,
   const unsigned char *target,const int length)
 {
-  register long
+  register ssize_t
     i;
 
   for ( ; p < q; p++)
@@ -375,10 +375,10 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterSFWImage method is:
 %
-%      unsigned long RegisterSFWImage(void)
+%      size_t RegisterSFWImage(void)
 %
 */
-ModuleExport unsigned long RegisterSFWImage(void)
+ModuleExport size_t RegisterSFWImage(void)
 {
   MagickInfo
     *entry;

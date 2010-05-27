@@ -43,7 +43,7 @@ typedef struct _MontageInfo
   double
     pointsize;
 
-  unsigned long
+  size_t
     border_width;
 
   MagickBooleanType
@@ -65,7 +65,7 @@ typedef struct _MontageInfo
   MagickBooleanType
     debug;
 
-  unsigned long
+  size_t
     signature;
 } MontageInfo;
 

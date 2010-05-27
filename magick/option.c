@@ -80,31 +80,31 @@
 static const OptionInfo
   AlignOptions[] =
   {
-    { "Undefined", (long) UndefinedAlign, MagickTrue },
-    { "Center", (long) CenterAlign, MagickFalse },
-    { "End", (long) RightAlign, MagickFalse },
-    { "Left", (long) LeftAlign, MagickFalse },
-    { "Middle", (long) CenterAlign, MagickFalse },
-    { "Right", (long) RightAlign, MagickFalse },
-    { "Start", (long) LeftAlign, MagickFalse },
-    { (char *) NULL, (long) UndefinedAlign, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedAlign, MagickTrue },
+    { "Center", (ssize_t) CenterAlign, MagickFalse },
+    { "End", (ssize_t) RightAlign, MagickFalse },
+    { "Left", (ssize_t) LeftAlign, MagickFalse },
+    { "Middle", (ssize_t) CenterAlign, MagickFalse },
+    { "Right", (ssize_t) RightAlign, MagickFalse },
+    { "Start", (ssize_t) LeftAlign, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedAlign, MagickFalse }
   },
   AlphaOptions[] =
   {
-    { "Undefined", (long) UndefinedAlphaChannel, MagickTrue },
-    { "Activate", (long) ActivateAlphaChannel, MagickFalse },
-    { "Background", (long) BackgroundAlphaChannel, MagickFalse },
-    { "Copy", (long) CopyAlphaChannel, MagickFalse },
-    { "Deactivate", (long) DeactivateAlphaChannel, MagickFalse },
-    { "Extract", (long) ExtractAlphaChannel, MagickFalse },
-    { "Off", (long) DeactivateAlphaChannel, MagickFalse },
-    { "On", (long) ActivateAlphaChannel, MagickFalse },
-    { "Opaque", (long) OpaqueAlphaChannel, MagickFalse },
-    { "Set", (long) SetAlphaChannel, MagickFalse },
-    { "Shape", (long) ShapeAlphaChannel, MagickFalse },
-    { "Reset", (long) SetAlphaChannel, MagickTrue }, /* deprecated */
-    { "Transparent", (long) TransparentAlphaChannel, MagickFalse },
-    { (char *) NULL, (long) UndefinedAlphaChannel, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedAlphaChannel, MagickTrue },
+    { "Activate", (ssize_t) ActivateAlphaChannel, MagickFalse },
+    { "Background", (ssize_t) BackgroundAlphaChannel, MagickFalse },
+    { "Copy", (ssize_t) CopyAlphaChannel, MagickFalse },
+    { "Deactivate", (ssize_t) DeactivateAlphaChannel, MagickFalse },
+    { "Extract", (ssize_t) ExtractAlphaChannel, MagickFalse },
+    { "Off", (ssize_t) DeactivateAlphaChannel, MagickFalse },
+    { "On", (ssize_t) ActivateAlphaChannel, MagickFalse },
+    { "Opaque", (ssize_t) OpaqueAlphaChannel, MagickFalse },
+    { "Set", (ssize_t) SetAlphaChannel, MagickFalse },
+    { "Shape", (ssize_t) ShapeAlphaChannel, MagickFalse },
+    { "Reset", (ssize_t) SetAlphaChannel, MagickTrue }, /* deprecated */
+    { "Transparent", (ssize_t) TransparentAlphaChannel, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedAlphaChannel, MagickFalse }
   },
   BooleanOptions[] =
   {
@@ -116,43 +116,43 @@ static const OptionInfo
   },
   ChannelOptions[] =
   {
-    { "Undefined", (long) UndefinedChannel, MagickTrue },
-    { "All", (long) AllChannels, MagickFalse },
-    { "Alpha", (long) OpacityChannel, MagickFalse },
-    { "Black", (long) BlackChannel, MagickFalse },
-    { "Blue", (long) BlueChannel, MagickFalse },
-    { "Cyan", (long) CyanChannel, MagickFalse },
-    { "Default", (long) DefaultChannels, MagickFalse },
-    { "Gray", (long) GrayChannel, MagickFalse },
-    { "Green", (long) GreenChannel, MagickFalse },
-    { "Hue", (long) RedChannel, MagickFalse },
-    { "Index", (long) IndexChannel, MagickFalse },
-    { "Lightness", (long) BlueChannel, MagickFalse },
-    { "Luminance", (long) BlueChannel, MagickFalse },
-    { "Luminosity", (long) BlueChannel, MagickFalse },  /* deprecated */
-    { "Magenta", (long) MagentaChannel, MagickFalse },
-    { "Matte", (long) OpacityChannel, MagickFalse },
-    { "Opacity", (long) OpacityChannel, MagickFalse },
-    { "Red", (long) RedChannel, MagickFalse },
-    { "Saturation", (long) GreenChannel, MagickFalse },
-    { "Yellow", (long) YellowChannel, MagickFalse },
-    { "Sync", (long) SyncChannels, MagickFalse },   /* special channel flag */
-    { (char *) NULL, (long) UndefinedChannel, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedChannel, MagickTrue },
+    { "All", (ssize_t) AllChannels, MagickFalse },
+    { "Alpha", (ssize_t) OpacityChannel, MagickFalse },
+    { "Black", (ssize_t) BlackChannel, MagickFalse },
+    { "Blue", (ssize_t) BlueChannel, MagickFalse },
+    { "Cyan", (ssize_t) CyanChannel, MagickFalse },
+    { "Default", (ssize_t) DefaultChannels, MagickFalse },
+    { "Gray", (ssize_t) GrayChannel, MagickFalse },
+    { "Green", (ssize_t) GreenChannel, MagickFalse },
+    { "Hue", (ssize_t) RedChannel, MagickFalse },
+    { "Index", (ssize_t) IndexChannel, MagickFalse },
+    { "Lightness", (ssize_t) BlueChannel, MagickFalse },
+    { "Luminance", (ssize_t) BlueChannel, MagickFalse },
+    { "Luminosity", (ssize_t) BlueChannel, MagickFalse },  /* deprecated */
+    { "Magenta", (ssize_t) MagentaChannel, MagickFalse },
+    { "Matte", (ssize_t) OpacityChannel, MagickFalse },
+    { "Opacity", (ssize_t) OpacityChannel, MagickFalse },
+    { "Red", (ssize_t) RedChannel, MagickFalse },
+    { "Saturation", (ssize_t) GreenChannel, MagickFalse },
+    { "Yellow", (ssize_t) YellowChannel, MagickFalse },
+    { "Sync", (ssize_t) SyncChannels, MagickFalse },   /* special channel flag */
+    { (char *) NULL, (ssize_t) UndefinedChannel, MagickFalse }
   },
   ClassOptions[] =
   {
-    { "Undefined", (long) UndefinedClass, MagickTrue },
-    { "DirectClass", (long) DirectClass, MagickFalse },
-    { "PseudoClass", (long) PseudoClass, MagickFalse },
-    { (char *) NULL, (long) UndefinedClass, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedClass, MagickTrue },
+    { "DirectClass", (ssize_t) DirectClass, MagickFalse },
+    { "PseudoClass", (ssize_t) PseudoClass, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedClass, MagickFalse }
   },
   ClipPathOptions[] =
   {
-    { "Undefined", (long) UndefinedPathUnits, MagickTrue },
-    { "ObjectBoundingBox", (long) ObjectBoundingBox, MagickFalse },
-    { "UserSpace", (long) UserSpace, MagickFalse },
-    { "UserSpaceOnUse", (long) UserSpaceOnUse, MagickFalse },
-    { (char *) NULL, (long) UndefinedPathUnits, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedPathUnits, MagickTrue },
+    { "ObjectBoundingBox", (ssize_t) ObjectBoundingBox, MagickFalse },
+    { "UserSpace", (ssize_t) UserSpace, MagickFalse },
+    { "UserSpaceOnUse", (ssize_t) UserSpaceOnUse, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedPathUnits, MagickFalse }
   },
   CommandOptions[] =
   {
@@ -686,297 +686,297 @@ static const OptionInfo
     { "-window-group", 1L, MagickFalse },
     { "+write", 1L, MagickFalse },
     { "-write", 1L, MagickFalse },
-    { (char *) NULL, (long) 0L, MagickFalse }
+    { (char *) NULL, (ssize_t) 0L, MagickFalse }
   },
   ComposeOptions[] =
   {
-    { "Undefined", (long) UndefinedCompositeOp, MagickTrue },
-    { "Atop", (long) AtopCompositeOp, MagickFalse },
-    { "Blend", (long) BlendCompositeOp, MagickFalse },
-    { "Blur", (long) BlurCompositeOp, MagickFalse },
-    { "Bumpmap", (long) BumpmapCompositeOp, MagickFalse },
-    { "ChangeMask", (long) ChangeMaskCompositeOp, MagickFalse },
-    { "Clear", (long) ClearCompositeOp, MagickFalse },
-    { "ColorBurn", (long) ColorBurnCompositeOp, MagickFalse },
-    { "ColorDodge", (long) ColorDodgeCompositeOp, MagickFalse },
-    { "Colorize", (long) ColorizeCompositeOp, MagickFalse },
-    { "CopyBlack", (long) CopyBlackCompositeOp, MagickFalse },
-    { "CopyBlue", (long) CopyBlueCompositeOp, MagickFalse },
-    { "CopyCyan", (long) CopyCyanCompositeOp, MagickFalse },
-    { "CopyGreen", (long) CopyGreenCompositeOp, MagickFalse },
-    { "Copy", (long) CopyCompositeOp, MagickFalse },
-    { "CopyMagenta", (long) CopyMagentaCompositeOp, MagickFalse },
-    { "CopyOpacity", (long) CopyOpacityCompositeOp, MagickFalse },
-    { "CopyRed", (long) CopyRedCompositeOp, MagickFalse },
-    { "CopyYellow", (long) CopyYellowCompositeOp, MagickFalse },
-    { "Darken", (long) DarkenCompositeOp, MagickFalse },
-    { "Divide", (long) DivideCompositeOp, MagickFalse },
-    { "Dst", (long) DstCompositeOp, MagickFalse },
-    { "Difference", (long) DifferenceCompositeOp, MagickFalse },
-    { "Displace", (long) DisplaceCompositeOp, MagickFalse },
-    { "Dissolve", (long) DissolveCompositeOp, MagickFalse },
-    { "Distort", (long) DistortCompositeOp, MagickFalse },
-    { "DstAtop", (long) DstAtopCompositeOp, MagickFalse },
-    { "DstIn", (long) DstInCompositeOp, MagickFalse },
-    { "DstOut", (long) DstOutCompositeOp, MagickFalse },
-    { "DstOver", (long) DstOverCompositeOp, MagickFalse },
-    { "Dst", (long) DstCompositeOp, MagickFalse },
-    { "Exclusion", (long) ExclusionCompositeOp, MagickFalse },
-    { "HardLight", (long) HardLightCompositeOp, MagickFalse },
-    { "Hue", (long) HueCompositeOp, MagickFalse },
-    { "In", (long) InCompositeOp, MagickFalse },
-    { "Lighten", (long) LightenCompositeOp, MagickFalse },
-    { "LinearBurn", (long) LinearBurnCompositeOp, MagickFalse },
-    { "LinearDodge", (long) LinearDodgeCompositeOp, MagickFalse },
-    { "LinearLight", (long) LinearLightCompositeOp, MagickFalse },
-    { "Luminize", (long) LuminizeCompositeOp, MagickFalse },
-    { "Mathematics", (long) MathematicsCompositeOp, MagickFalse },
-    { "Minus", (long) MinusCompositeOp, MagickFalse },
-    { "Modulate", (long) ModulateCompositeOp, MagickFalse },
-    { "ModulusAdd", (long) ModulusAddCompositeOp, MagickFalse },
-    { "ModulusSubtract", (long) ModulusSubtractCompositeOp, MagickFalse },
-    { "Multiply", (long) MultiplyCompositeOp, MagickFalse },
-    { "None", (long) NoCompositeOp, MagickFalse },
-    { "Out", (long) OutCompositeOp, MagickFalse },
-    { "Overlay", (long) OverlayCompositeOp, MagickFalse },
-    { "Over", (long) OverCompositeOp, MagickFalse },
-    { "PegtopLight", (long) PegtopLightCompositeOp, MagickFalse },
-    { "PinLight", (long) PinLightCompositeOp, MagickFalse },
-    { "Plus", (long) PlusCompositeOp, MagickFalse },
-    { "Replace", (long) ReplaceCompositeOp, MagickFalse },
-    { "Saturate", (long) SaturateCompositeOp, MagickFalse },
-    { "Screen", (long) ScreenCompositeOp, MagickFalse },
-    { "SoftLight", (long) SoftLightCompositeOp, MagickFalse },
-    { "Src", (long) SrcCompositeOp, MagickFalse },
-    { "SrcAtop", (long) SrcAtopCompositeOp, MagickFalse },
-    { "SrcIn", (long) SrcInCompositeOp, MagickFalse },
-    { "SrcOut", (long) SrcOutCompositeOp, MagickFalse },
-    { "SrcOver", (long) SrcOverCompositeOp, MagickFalse },
-    { "Src", (long) SrcCompositeOp, MagickFalse },
-    { "VividLight", (long) VividLightCompositeOp, MagickFalse },
-    { "Xor", (long) XorCompositeOp, MagickFalse },
-    { "Add", (long) AddCompositeOp, MagickTrue }, /* depreciate */
-    { "Subtract", (long) SubtractCompositeOp, MagickTrue }, /* depreciate */
-    { "Threshold", (long) ThresholdCompositeOp, MagickTrue }, /* depreciate */
-    { (char *) NULL, (long) UndefinedCompositeOp, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedCompositeOp, MagickTrue },
+    { "Atop", (ssize_t) AtopCompositeOp, MagickFalse },
+    { "Blend", (ssize_t) BlendCompositeOp, MagickFalse },
+    { "Blur", (ssize_t) BlurCompositeOp, MagickFalse },
+    { "Bumpmap", (ssize_t) BumpmapCompositeOp, MagickFalse },
+    { "ChangeMask", (ssize_t) ChangeMaskCompositeOp, MagickFalse },
+    { "Clear", (ssize_t) ClearCompositeOp, MagickFalse },
+    { "ColorBurn", (ssize_t) ColorBurnCompositeOp, MagickFalse },
+    { "ColorDodge", (ssize_t) ColorDodgeCompositeOp, MagickFalse },
+    { "Colorize", (ssize_t) ColorizeCompositeOp, MagickFalse },
+    { "CopyBlack", (ssize_t) CopyBlackCompositeOp, MagickFalse },
+    { "CopyBlue", (ssize_t) CopyBlueCompositeOp, MagickFalse },
+    { "CopyCyan", (ssize_t) CopyCyanCompositeOp, MagickFalse },
+    { "CopyGreen", (ssize_t) CopyGreenCompositeOp, MagickFalse },
+    { "Copy", (ssize_t) CopyCompositeOp, MagickFalse },
+    { "CopyMagenta", (ssize_t) CopyMagentaCompositeOp, MagickFalse },
+    { "CopyOpacity", (ssize_t) CopyOpacityCompositeOp, MagickFalse },
+    { "CopyRed", (ssize_t) CopyRedCompositeOp, MagickFalse },
+    { "CopyYellow", (ssize_t) CopyYellowCompositeOp, MagickFalse },
+    { "Darken", (ssize_t) DarkenCompositeOp, MagickFalse },
+    { "Divide", (ssize_t) DivideCompositeOp, MagickFalse },
+    { "Dst", (ssize_t) DstCompositeOp, MagickFalse },
+    { "Difference", (ssize_t) DifferenceCompositeOp, MagickFalse },
+    { "Displace", (ssize_t) DisplaceCompositeOp, MagickFalse },
+    { "Dissolve", (ssize_t) DissolveCompositeOp, MagickFalse },
+    { "Distort", (ssize_t) DistortCompositeOp, MagickFalse },
+    { "DstAtop", (ssize_t) DstAtopCompositeOp, MagickFalse },
+    { "DstIn", (ssize_t) DstInCompositeOp, MagickFalse },
+    { "DstOut", (ssize_t) DstOutCompositeOp, MagickFalse },
+    { "DstOver", (ssize_t) DstOverCompositeOp, MagickFalse },
+    { "Dst", (ssize_t) DstCompositeOp, MagickFalse },
+    { "Exclusion", (ssize_t) ExclusionCompositeOp, MagickFalse },
+    { "HardLight", (ssize_t) HardLightCompositeOp, MagickFalse },
+    { "Hue", (ssize_t) HueCompositeOp, MagickFalse },
+    { "In", (ssize_t) InCompositeOp, MagickFalse },
+    { "Lighten", (ssize_t) LightenCompositeOp, MagickFalse },
+    { "LinearBurn", (ssize_t) LinearBurnCompositeOp, MagickFalse },
+    { "LinearDodge", (ssize_t) LinearDodgeCompositeOp, MagickFalse },
+    { "LinearLight", (ssize_t) LinearLightCompositeOp, MagickFalse },
+    { "Luminize", (ssize_t) LuminizeCompositeOp, MagickFalse },
+    { "Mathematics", (ssize_t) MathematicsCompositeOp, MagickFalse },
+    { "Minus", (ssize_t) MinusCompositeOp, MagickFalse },
+    { "Modulate", (ssize_t) ModulateCompositeOp, MagickFalse },
+    { "ModulusAdd", (ssize_t) ModulusAddCompositeOp, MagickFalse },
+    { "ModulusSubtract", (ssize_t) ModulusSubtractCompositeOp, MagickFalse },
+    { "Multiply", (ssize_t) MultiplyCompositeOp, MagickFalse },
+    { "None", (ssize_t) NoCompositeOp, MagickFalse },
+    { "Out", (ssize_t) OutCompositeOp, MagickFalse },
+    { "Overlay", (ssize_t) OverlayCompositeOp, MagickFalse },
+    { "Over", (ssize_t) OverCompositeOp, MagickFalse },
+    { "PegtopLight", (ssize_t) PegtopLightCompositeOp, MagickFalse },
+    { "PinLight", (ssize_t) PinLightCompositeOp, MagickFalse },
+    { "Plus", (ssize_t) PlusCompositeOp, MagickFalse },
+    { "Replace", (ssize_t) ReplaceCompositeOp, MagickFalse },
+    { "Saturate", (ssize_t) SaturateCompositeOp, MagickFalse },
+    { "Screen", (ssize_t) ScreenCompositeOp, MagickFalse },
+    { "SoftLight", (ssize_t) SoftLightCompositeOp, MagickFalse },
+    { "Src", (ssize_t) SrcCompositeOp, MagickFalse },
+    { "SrcAtop", (ssize_t) SrcAtopCompositeOp, MagickFalse },
+    { "SrcIn", (ssize_t) SrcInCompositeOp, MagickFalse },
+    { "SrcOut", (ssize_t) SrcOutCompositeOp, MagickFalse },
+    { "SrcOver", (ssize_t) SrcOverCompositeOp, MagickFalse },
+    { "Src", (ssize_t) SrcCompositeOp, MagickFalse },
+    { "VividLight", (ssize_t) VividLightCompositeOp, MagickFalse },
+    { "Xor", (ssize_t) XorCompositeOp, MagickFalse },
+    { "Add", (ssize_t) AddCompositeOp, MagickTrue }, /* depreciate */
+    { "Subtract", (ssize_t) SubtractCompositeOp, MagickTrue }, /* depreciate */
+    { "Threshold", (ssize_t) ThresholdCompositeOp, MagickTrue }, /* depreciate */
+    { (char *) NULL, (ssize_t) UndefinedCompositeOp, MagickFalse }
   },
   CompressOptions[] =
   {
-    { "Undefined", (long) UndefinedCompression, MagickTrue },
-    { "B44", (long) B44Compression, MagickFalse },
-    { "B44A", (long) B44ACompression, MagickFalse },
-    { "BZip", (long) BZipCompression, MagickFalse },
-    { "DXT1", (long) DXT1Compression, MagickFalse },
-    { "DXT3", (long) DXT3Compression, MagickFalse },
-    { "DXT5", (long) DXT5Compression, MagickFalse },
-    { "Fax", (long) FaxCompression, MagickFalse },
-    { "Group4", (long) Group4Compression, MagickFalse },
-    { "JPEG", (long) JPEGCompression, MagickFalse },
-    { "JPEG2000", (long) JPEG2000Compression, MagickFalse },
-    { "Lossless", (long) LosslessJPEGCompression, MagickFalse },
-    { "LosslessJPEG", (long) LosslessJPEGCompression, MagickFalse },
-    { "LZW", (long) LZWCompression, MagickFalse },
-    { "None", (long) NoCompression, MagickFalse },
-    { "Piz", (long) PizCompression, MagickFalse },
-    { "Pxr24", (long) Pxr24Compression, MagickFalse },
-    { "RLE", (long) RLECompression, MagickFalse },
-    { "Zip", (long) ZipCompression, MagickFalse },
-    { "RunlengthEncoded", (long) RLECompression, MagickFalse },
-    { "ZipS", (long) ZipSCompression, MagickFalse },
-    { (char *) NULL, (long) UndefinedCompression, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedCompression, MagickTrue },
+    { "B44", (ssize_t) B44Compression, MagickFalse },
+    { "B44A", (ssize_t) B44ACompression, MagickFalse },
+    { "BZip", (ssize_t) BZipCompression, MagickFalse },
+    { "DXT1", (ssize_t) DXT1Compression, MagickFalse },
+    { "DXT3", (ssize_t) DXT3Compression, MagickFalse },
+    { "DXT5", (ssize_t) DXT5Compression, MagickFalse },
+    { "Fax", (ssize_t) FaxCompression, MagickFalse },
+    { "Group4", (ssize_t) Group4Compression, MagickFalse },
+    { "JPEG", (ssize_t) JPEGCompression, MagickFalse },
+    { "JPEG2000", (ssize_t) JPEG2000Compression, MagickFalse },
+    { "Lossless", (ssize_t) LosslessJPEGCompression, MagickFalse },
+    { "LosslessJPEG", (ssize_t) LosslessJPEGCompression, MagickFalse },
+    { "LZW", (ssize_t) LZWCompression, MagickFalse },
+    { "None", (ssize_t) NoCompression, MagickFalse },
+    { "Piz", (ssize_t) PizCompression, MagickFalse },
+    { "Pxr24", (ssize_t) Pxr24Compression, MagickFalse },
+    { "RLE", (ssize_t) RLECompression, MagickFalse },
+    { "Zip", (ssize_t) ZipCompression, MagickFalse },
+    { "RunlengthEncoded", (ssize_t) RLECompression, MagickFalse },
+    { "ZipS", (ssize_t) ZipSCompression, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedCompression, MagickFalse }
   },
   ColorspaceOptions[] =
   {
-    { "Undefined", (long) UndefinedColorspace, MagickTrue },
-    { "CMY", (long) CMYColorspace, MagickFalse },
-    { "CMYK", (long) CMYKColorspace, MagickFalse },
-    { "Gray", (long) GRAYColorspace, MagickFalse },
-    { "HSB", (long) HSBColorspace, MagickFalse },
-    { "HSL", (long) HSLColorspace, MagickFalse },
-    { "HWB", (long) HWBColorspace, MagickFalse },
-    { "Lab", (long) LabColorspace, MagickFalse },
-    { "Log", (long) LogColorspace, MagickFalse },
-    { "OHTA", (long) OHTAColorspace, MagickFalse },
-    { "Rec601Luma", (long) Rec601LumaColorspace, MagickFalse },
-    { "Rec601YCbCr", (long) Rec601YCbCrColorspace, MagickFalse },
-    { "Rec709Luma", (long) Rec709LumaColorspace, MagickFalse },
-    { "Rec709YCbCr", (long) Rec709YCbCrColorspace, MagickFalse },
-    { "RGB", (long) RGBColorspace, MagickFalse },
-    { "sRGB", (long) sRGBColorspace, MagickFalse },
-    { "Transparent", (long) TransparentColorspace, MagickFalse },
-    { "XYZ", (long) XYZColorspace, MagickFalse },
-    { "YCbCr", (long) YCbCrColorspace, MagickFalse },
-    { "YCC", (long) YCCColorspace, MagickFalse },
-    { "YIQ", (long) YIQColorspace, MagickFalse },
-    { "YPbPr", (long) YPbPrColorspace, MagickFalse },
-    { "YUV", (long) YUVColorspace, MagickFalse },
-    { (char *) NULL, (long) UndefinedColorspace, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedColorspace, MagickTrue },
+    { "CMY", (ssize_t) CMYColorspace, MagickFalse },
+    { "CMYK", (ssize_t) CMYKColorspace, MagickFalse },
+    { "Gray", (ssize_t) GRAYColorspace, MagickFalse },
+    { "HSB", (ssize_t) HSBColorspace, MagickFalse },
+    { "HSL", (ssize_t) HSLColorspace, MagickFalse },
+    { "HWB", (ssize_t) HWBColorspace, MagickFalse },
+    { "Lab", (ssize_t) LabColorspace, MagickFalse },
+    { "Log", (ssize_t) LogColorspace, MagickFalse },
+    { "OHTA", (ssize_t) OHTAColorspace, MagickFalse },
+    { "Rec601Luma", (ssize_t) Rec601LumaColorspace, MagickFalse },
+    { "Rec601YCbCr", (ssize_t) Rec601YCbCrColorspace, MagickFalse },
+    { "Rec709Luma", (ssize_t) Rec709LumaColorspace, MagickFalse },
+    { "Rec709YCbCr", (ssize_t) Rec709YCbCrColorspace, MagickFalse },
+    { "RGB", (ssize_t) RGBColorspace, MagickFalse },
+    { "sRGB", (ssize_t) sRGBColorspace, MagickFalse },
+    { "Transparent", (ssize_t) TransparentColorspace, MagickFalse },
+    { "XYZ", (ssize_t) XYZColorspace, MagickFalse },
+    { "YCbCr", (ssize_t) YCbCrColorspace, MagickFalse },
+    { "YCC", (ssize_t) YCCColorspace, MagickFalse },
+    { "YIQ", (ssize_t) YIQColorspace, MagickFalse },
+    { "YPbPr", (ssize_t) YPbPrColorspace, MagickFalse },
+    { "YUV", (ssize_t) YUVColorspace, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedColorspace, MagickFalse }
   },
   DataTypeOptions[] =
   {
-    { "Undefined", (long) UndefinedData, MagickTrue },
-    { "Byte", (long) ByteData, MagickFalse },
-    { "Long", (long) LongData, MagickFalse },
-    { "Short", (long) ShortData, MagickFalse },
-    { "String", (long) StringData, MagickFalse },
-    { (char *) NULL, (long) UndefinedData, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedData, MagickTrue },
+    { "Byte", (ssize_t) ByteData, MagickFalse },
+    { "Long", (ssize_t) LongData, MagickFalse },
+    { "Short", (ssize_t) ShortData, MagickFalse },
+    { "String", (ssize_t) StringData, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedData, MagickFalse }
   },
   DecorateOptions[] =
   {
-    { "Undefined", (long) UndefinedDecoration, MagickTrue },
-    { "LineThrough", (long) LineThroughDecoration, MagickFalse },
-    { "None", (long) NoDecoration, MagickFalse },
-    { "Overline", (long) OverlineDecoration, MagickFalse },
-    { "Underline", (long) UnderlineDecoration, MagickFalse },
-    { (char *) NULL, (long) UndefinedDecoration, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedDecoration, MagickTrue },
+    { "LineThrough", (ssize_t) LineThroughDecoration, MagickFalse },
+    { "None", (ssize_t) NoDecoration, MagickFalse },
+    { "Overline", (ssize_t) OverlineDecoration, MagickFalse },
+    { "Underline", (ssize_t) UnderlineDecoration, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedDecoration, MagickFalse }
   },
   DirectionOptions[] =
   {
-    { "Undefined", (long) UndefinedDirection, MagickTrue },
-    { "right-to-left", (long) RightToLeftDirection, MagickFalse },
-    { "left-to-right", (long) LeftToRightDirection, MagickFalse },
-    { (char *) NULL, (long) UndefinedDirection, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedDirection, MagickTrue },
+    { "right-to-left", (ssize_t) RightToLeftDirection, MagickFalse },
+    { "left-to-right", (ssize_t) LeftToRightDirection, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedDirection, MagickFalse }
   },
   DisposeOptions[] =
   {
-    { "Undefined", (long) UndefinedDispose, MagickTrue },
-    { "Background", (long) BackgroundDispose, MagickFalse },
-    { "None", (long) NoneDispose, MagickFalse },
-    { "Previous", (long) PreviousDispose, MagickFalse },
-    { "Undefined", (long) UndefinedDispose, MagickFalse },
-    { "0", (long) UndefinedDispose, MagickFalse },
-    { "1", (long) NoneDispose, MagickFalse },
-    { "2", (long) BackgroundDispose, MagickFalse },
-    { "3", (long) PreviousDispose, MagickFalse },
-    { (char *) NULL, (long) UndefinedDispose, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedDispose, MagickTrue },
+    { "Background", (ssize_t) BackgroundDispose, MagickFalse },
+    { "None", (ssize_t) NoneDispose, MagickFalse },
+    { "Previous", (ssize_t) PreviousDispose, MagickFalse },
+    { "Undefined", (ssize_t) UndefinedDispose, MagickFalse },
+    { "0", (ssize_t) UndefinedDispose, MagickFalse },
+    { "1", (ssize_t) NoneDispose, MagickFalse },
+    { "2", (ssize_t) BackgroundDispose, MagickFalse },
+    { "3", (ssize_t) PreviousDispose, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedDispose, MagickFalse }
   },
   DistortOptions[] =
   {
-    { "Undefined", (long) UndefinedDistortion, MagickTrue },
-    { "Affine", (long) AffineDistortion, MagickFalse },
-    { "AffineProjection", (long) AffineProjectionDistortion, MagickFalse },
-    { "ScaleRotateTranslate", (long) ScaleRotateTranslateDistortion, MagickFalse },
-    { "SRT", (long) ScaleRotateTranslateDistortion, MagickFalse },
-    { "Perspective", (long) PerspectiveDistortion, MagickFalse },
-    { "PerspectiveProjection", (long) PerspectiveProjectionDistortion, MagickFalse },
-    { "Bilinear", (long) BilinearForwardDistortion, MagickTrue },
-    { "BilinearForward", (long) BilinearForwardDistortion, MagickFalse },
-    { "BilinearReverse", (long) BilinearReverseDistortion, MagickFalse },
-    { "Polynomial", (long) PolynomialDistortion, MagickFalse },
-    { "Arc", (long) ArcDistortion, MagickFalse },
-    { "Polar", (long) PolarDistortion, MagickFalse },
-    { "DePolar", (long) DePolarDistortion, MagickFalse },
-    { "Barrel", (long) BarrelDistortion, MagickFalse },
-    { "BarrelInverse", (long) BarrelInverseDistortion, MagickFalse },
-    { "Shepards", (long) ShepardsDistortion, MagickFalse },
-    { (char *) NULL, (long) UndefinedDistortion, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedDistortion, MagickTrue },
+    { "Affine", (ssize_t) AffineDistortion, MagickFalse },
+    { "AffineProjection", (ssize_t) AffineProjectionDistortion, MagickFalse },
+    { "ScaleRotateTranslate", (ssize_t) ScaleRotateTranslateDistortion, MagickFalse },
+    { "SRT", (ssize_t) ScaleRotateTranslateDistortion, MagickFalse },
+    { "Perspective", (ssize_t) PerspectiveDistortion, MagickFalse },
+    { "PerspectiveProjection", (ssize_t) PerspectiveProjectionDistortion, MagickFalse },
+    { "Bilinear", (ssize_t) BilinearForwardDistortion, MagickTrue },
+    { "BilinearForward", (ssize_t) BilinearForwardDistortion, MagickFalse },
+    { "BilinearReverse", (ssize_t) BilinearReverseDistortion, MagickFalse },
+    { "Polynomial", (ssize_t) PolynomialDistortion, MagickFalse },
+    { "Arc", (ssize_t) ArcDistortion, MagickFalse },
+    { "Polar", (ssize_t) PolarDistortion, MagickFalse },
+    { "DePolar", (ssize_t) DePolarDistortion, MagickFalse },
+    { "Barrel", (ssize_t) BarrelDistortion, MagickFalse },
+    { "BarrelInverse", (ssize_t) BarrelInverseDistortion, MagickFalse },
+    { "Shepards", (ssize_t) ShepardsDistortion, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedDistortion, MagickFalse }
   },
   DitherOptions[] =
   {
-    { "Undefined", (long) UndefinedDitherMethod, MagickTrue },
-    { "None", (long) NoDitherMethod, MagickFalse },
-    { "FloydSteinberg", (long) FloydSteinbergDitherMethod, MagickFalse },
-    { "Riemersma", (long) RiemersmaDitherMethod, MagickFalse },
-    { (char *) NULL, (long) UndefinedEndian, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedDitherMethod, MagickTrue },
+    { "None", (ssize_t) NoDitherMethod, MagickFalse },
+    { "FloydSteinberg", (ssize_t) FloydSteinbergDitherMethod, MagickFalse },
+    { "Riemersma", (ssize_t) RiemersmaDitherMethod, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedEndian, MagickFalse }
   },
   EndianOptions[] =
   {
-    { "Undefined", (long) UndefinedEndian, MagickTrue },
-    { "LSB", (long) LSBEndian, MagickFalse },
-    { "MSB", (long) MSBEndian, MagickFalse },
-    { (char *) NULL, (long) UndefinedEndian, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedEndian, MagickTrue },
+    { "LSB", (ssize_t) LSBEndian, MagickFalse },
+    { "MSB", (ssize_t) MSBEndian, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedEndian, MagickFalse }
   },
   EvaluateOptions[] =
   {
-    { "Undefined", (long) UndefinedEvaluateOperator, MagickTrue },
-    { "Add", (long) AddEvaluateOperator, MagickFalse },
-    { "AddModulus", (long) AddModulusEvaluateOperator, MagickFalse },
-    { "And", (long) AndEvaluateOperator, MagickFalse },
-    { "Cos", (long) CosineEvaluateOperator, MagickFalse },
-    { "Cosine", (long) CosineEvaluateOperator, MagickFalse },
-    { "Divide", (long) DivideEvaluateOperator, MagickFalse },
-    { "GaussianNoise", (long) GaussianNoiseEvaluateOperator, MagickFalse },
-    { "ImpulseNoise", (long) ImpulseNoiseEvaluateOperator, MagickFalse },
-    { "LaplacianNoise", (long) LaplacianNoiseEvaluateOperator, MagickFalse },
-    { "LeftShift", (long) LeftShiftEvaluateOperator, MagickFalse },
-    { "Log", (long) LogEvaluateOperator, MagickFalse },
-    { "Max", (long) MaxEvaluateOperator, MagickFalse },
-    { "Mean", (long) MeanEvaluateOperator, MagickFalse },
-    { "Min", (long) MinEvaluateOperator, MagickFalse },
-    { "MultiplicativeNoise", (long) MultiplicativeNoiseEvaluateOperator, MagickFalse },
-    { "Multiply", (long) MultiplyEvaluateOperator, MagickFalse },
-    { "Or", (long) OrEvaluateOperator, MagickFalse },
-    { "PoissonNoise", (long) PoissonNoiseEvaluateOperator, MagickFalse },
-    { "Pow", (long) PowEvaluateOperator, MagickFalse },
-    { "RightShift", (long) RightShiftEvaluateOperator, MagickFalse },
-    { "Set", (long) SetEvaluateOperator, MagickFalse },
-    { "Sin", (long) SineEvaluateOperator, MagickFalse },
-    { "Sine", (long) SineEvaluateOperator, MagickFalse },
-    { "Subtract", (long) SubtractEvaluateOperator, MagickFalse },
-    { "Threshold", (long) ThresholdEvaluateOperator, MagickFalse },
-    { "ThresholdBlack", (long) ThresholdBlackEvaluateOperator, MagickFalse },
-    { "ThresholdWhite", (long) ThresholdWhiteEvaluateOperator, MagickFalse },
-    { "UniformNoise", (long) UniformNoiseEvaluateOperator, MagickFalse },
-    { "Xor", (long) XorEvaluateOperator, MagickFalse },
-    { (char *) NULL, (long) UndefinedEvaluateOperator, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedEvaluateOperator, MagickTrue },
+    { "Add", (ssize_t) AddEvaluateOperator, MagickFalse },
+    { "AddModulus", (ssize_t) AddModulusEvaluateOperator, MagickFalse },
+    { "And", (ssize_t) AndEvaluateOperator, MagickFalse },
+    { "Cos", (ssize_t) CosineEvaluateOperator, MagickFalse },
+    { "Cosine", (ssize_t) CosineEvaluateOperator, MagickFalse },
+    { "Divide", (ssize_t) DivideEvaluateOperator, MagickFalse },
+    { "GaussianNoise", (ssize_t) GaussianNoiseEvaluateOperator, MagickFalse },
+    { "ImpulseNoise", (ssize_t) ImpulseNoiseEvaluateOperator, MagickFalse },
+    { "LaplacianNoise", (ssize_t) LaplacianNoiseEvaluateOperator, MagickFalse },
+    { "LeftShift", (ssize_t) LeftShiftEvaluateOperator, MagickFalse },
+    { "Log", (ssize_t) LogEvaluateOperator, MagickFalse },
+    { "Max", (ssize_t) MaxEvaluateOperator, MagickFalse },
+    { "Mean", (ssize_t) MeanEvaluateOperator, MagickFalse },
+    { "Min", (ssize_t) MinEvaluateOperator, MagickFalse },
+    { "MultiplicativeNoise", (ssize_t) MultiplicativeNoiseEvaluateOperator, MagickFalse },
+    { "Multiply", (ssize_t) MultiplyEvaluateOperator, MagickFalse },
+    { "Or", (ssize_t) OrEvaluateOperator, MagickFalse },
+    { "PoissonNoise", (ssize_t) PoissonNoiseEvaluateOperator, MagickFalse },
+    { "Pow", (ssize_t) PowEvaluateOperator, MagickFalse },
+    { "RightShift", (ssize_t) RightShiftEvaluateOperator, MagickFalse },
+    { "Set", (ssize_t) SetEvaluateOperator, MagickFalse },
+    { "Sin", (ssize_t) SineEvaluateOperator, MagickFalse },
+    { "Sine", (ssize_t) SineEvaluateOperator, MagickFalse },
+    { "Subtract", (ssize_t) SubtractEvaluateOperator, MagickFalse },
+    { "Threshold", (ssize_t) ThresholdEvaluateOperator, MagickFalse },
+    { "ThresholdBlack", (ssize_t) ThresholdBlackEvaluateOperator, MagickFalse },
+    { "ThresholdWhite", (ssize_t) ThresholdWhiteEvaluateOperator, MagickFalse },
+    { "UniformNoise", (ssize_t) UniformNoiseEvaluateOperator, MagickFalse },
+    { "Xor", (ssize_t) XorEvaluateOperator, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedEvaluateOperator, MagickFalse }
   },
   FillRuleOptions[] =
   {
-    { "Undefined", (long) UndefinedRule, MagickTrue },
-    { "Evenodd", (long) EvenOddRule, MagickFalse },
-    { "NonZero", (long) NonZeroRule, MagickFalse },
-    { (char *) NULL, (long) UndefinedRule, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedRule, MagickTrue },
+    { "Evenodd", (ssize_t) EvenOddRule, MagickFalse },
+    { "NonZero", (ssize_t) NonZeroRule, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedRule, MagickFalse }
   },
   FilterOptions[] =
   {
-    { "Undefined", (long) UndefinedFilter, MagickTrue },
-    { "Bartlett", (long) BartlettFilter, MagickFalse },
-    { "Bessel", (long) BesselFilter, MagickFalse },
-    { "Blackman", (long) BlackmanFilter, MagickFalse },
-    { "Bohman", (long) BohmanFilter, MagickFalse },
-    { "Box", (long) BoxFilter, MagickFalse },
-    { "Catrom", (long) CatromFilter, MagickFalse },
-    { "Cubic", (long) CubicFilter, MagickFalse },
-    { "Gaussian", (long) GaussianFilter, MagickFalse },
-    { "Hamming", (long) HammingFilter, MagickFalse },
-    { "Hanning", (long) HanningFilter, MagickFalse },
-    { "Hermite", (long) HermiteFilter, MagickFalse },
-    { "Kaiser", (long) KaiserFilter, MagickFalse },
-    { "Lagrange", (long) LagrangeFilter, MagickFalse },
-    { "Lanczos", (long) LanczosFilter, MagickFalse },
-    { "Mitchell", (long) MitchellFilter, MagickFalse },
-    { "Parzen", (long) ParzenFilter, MagickFalse },
-    { "Point", (long) PointFilter, MagickFalse },
-    { "Quadratic", (long) QuadraticFilter, MagickFalse },
-    { "Sinc", (long) SincFilter, MagickFalse },
-    { "Triangle", (long) TriangleFilter, MagickFalse },
-    { "Welsh", (long) WelshFilter, MagickFalse },
-    { (char *) NULL, (long) UndefinedFilter, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedFilter, MagickTrue },
+    { "Bartlett", (ssize_t) BartlettFilter, MagickFalse },
+    { "Bessel", (ssize_t) BesselFilter, MagickFalse },
+    { "Blackman", (ssize_t) BlackmanFilter, MagickFalse },
+    { "Bohman", (ssize_t) BohmanFilter, MagickFalse },
+    { "Box", (ssize_t) BoxFilter, MagickFalse },
+    { "Catrom", (ssize_t) CatromFilter, MagickFalse },
+    { "Cubic", (ssize_t) CubicFilter, MagickFalse },
+    { "Gaussian", (ssize_t) GaussianFilter, MagickFalse },
+    { "Hamming", (ssize_t) HammingFilter, MagickFalse },
+    { "Hanning", (ssize_t) HanningFilter, MagickFalse },
+    { "Hermite", (ssize_t) HermiteFilter, MagickFalse },
+    { "Kaiser", (ssize_t) KaiserFilter, MagickFalse },
+    { "Lagrange", (ssize_t) LagrangeFilter, MagickFalse },
+    { "Lanczos", (ssize_t) LanczosFilter, MagickFalse },
+    { "Mitchell", (ssize_t) MitchellFilter, MagickFalse },
+    { "Parzen", (ssize_t) ParzenFilter, MagickFalse },
+    { "Point", (ssize_t) PointFilter, MagickFalse },
+    { "Quadratic", (ssize_t) QuadraticFilter, MagickFalse },
+    { "Sinc", (ssize_t) SincFilter, MagickFalse },
+    { "Triangle", (ssize_t) TriangleFilter, MagickFalse },
+    { "Welsh", (ssize_t) WelshFilter, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedFilter, MagickFalse }
   },
   FunctionOptions[] =
   {
-    { "Undefined", (long) UndefinedFunction, MagickTrue },
-    { "Polynomial", (long) PolynomialFunction, MagickFalse },
-    { "Sinusoid", (long) SinusoidFunction, MagickFalse },
-    { "ArcSin", (long) ArcsinFunction, MagickFalse },
-    { "ArcTan", (long) ArctanFunction, MagickFalse },
-    { (char *) NULL, (long) UndefinedFunction, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedFunction, MagickTrue },
+    { "Polynomial", (ssize_t) PolynomialFunction, MagickFalse },
+    { "Sinusoid", (ssize_t) SinusoidFunction, MagickFalse },
+    { "ArcSin", (ssize_t) ArcsinFunction, MagickFalse },
+    { "ArcTan", (ssize_t) ArctanFunction, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedFunction, MagickFalse }
   },
   GravityOptions[] =
   {
-    { "Undefined", (long) UndefinedGravity, MagickTrue },
-    { "None", (long) UndefinedGravity, MagickFalse },
-    { "Center", (long) CenterGravity, MagickFalse },
-    { "East", (long) EastGravity, MagickFalse },
-    { "Forget", (long) ForgetGravity, MagickFalse },
-    { "NorthEast", (long) NorthEastGravity, MagickFalse },
-    { "North", (long) NorthGravity, MagickFalse },
-    { "NorthWest", (long) NorthWestGravity, MagickFalse },
-    { "SouthEast", (long) SouthEastGravity, MagickFalse },
-    { "South", (long) SouthGravity, MagickFalse },
-    { "SouthWest", (long) SouthWestGravity, MagickFalse },
-    { "West", (long) WestGravity, MagickFalse },
-    { "Static", (long) StaticGravity, MagickFalse },
+    { "Undefined", (ssize_t) UndefinedGravity, MagickTrue },
+    { "None", (ssize_t) UndefinedGravity, MagickFalse },
+    { "Center", (ssize_t) CenterGravity, MagickFalse },
+    { "East", (ssize_t) EastGravity, MagickFalse },
+    { "Forget", (ssize_t) ForgetGravity, MagickFalse },
+    { "NorthEast", (ssize_t) NorthEastGravity, MagickFalse },
+    { "North", (ssize_t) NorthGravity, MagickFalse },
+    { "NorthWest", (ssize_t) NorthWestGravity, MagickFalse },
+    { "SouthEast", (ssize_t) SouthEastGravity, MagickFalse },
+    { "South", (ssize_t) SouthGravity, MagickFalse },
+    { "SouthWest", (ssize_t) SouthWestGravity, MagickFalse },
+    { "West", (ssize_t) WestGravity, MagickFalse },
+    { "Static", (ssize_t) StaticGravity, MagickFalse },
     { (char *) NULL, UndefinedGravity, MagickFalse }
   },
   ImageListOptions[] =
@@ -1018,490 +1018,490 @@ static const OptionInfo
   },
   IntentOptions[] =
   {
-    { "Undefined", (long) UndefinedIntent, MagickTrue },
-    { "Absolute", (long) AbsoluteIntent, MagickFalse },
-    { "Perceptual", (long) PerceptualIntent, MagickFalse },
-    { "Relative", (long) RelativeIntent, MagickFalse },
-    { "Saturation", (long) SaturationIntent, MagickFalse },
-    { (char *) NULL, (long) UndefinedIntent, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedIntent, MagickTrue },
+    { "Absolute", (ssize_t) AbsoluteIntent, MagickFalse },
+    { "Perceptual", (ssize_t) PerceptualIntent, MagickFalse },
+    { "Relative", (ssize_t) RelativeIntent, MagickFalse },
+    { "Saturation", (ssize_t) SaturationIntent, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedIntent, MagickFalse }
   },
   InterlaceOptions[] =
   {
-    { "Undefined", (long) UndefinedInterlace, MagickTrue },
-    { "Line", (long) LineInterlace, MagickFalse },
-    { "None", (long) NoInterlace, MagickFalse },
-    { "Plane", (long) PlaneInterlace, MagickFalse },
-    { "Partition", (long) PartitionInterlace, MagickFalse },
-    { "GIF", (long) GIFInterlace, MagickFalse },
-    { "JPEG", (long) JPEGInterlace, MagickFalse },
-    { "PNG", (long) PNGInterlace, MagickFalse },
-    { (char *) NULL, (long) UndefinedInterlace, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedInterlace, MagickTrue },
+    { "Line", (ssize_t) LineInterlace, MagickFalse },
+    { "None", (ssize_t) NoInterlace, MagickFalse },
+    { "Plane", (ssize_t) PlaneInterlace, MagickFalse },
+    { "Partition", (ssize_t) PartitionInterlace, MagickFalse },
+    { "GIF", (ssize_t) GIFInterlace, MagickFalse },
+    { "JPEG", (ssize_t) JPEGInterlace, MagickFalse },
+    { "PNG", (ssize_t) PNGInterlace, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedInterlace, MagickFalse }
   },
   InterpolateOptions[] =
   {
-    { "Undefined", (long) UndefinedInterpolatePixel, MagickTrue },
-    { "Average", (long) AverageInterpolatePixel, MagickFalse },
-    { "Bicubic", (long) BicubicInterpolatePixel, MagickFalse },
-    { "Bilinear", (long) BilinearInterpolatePixel, MagickFalse },
-    { "filter", (long) FilterInterpolatePixel, MagickFalse },
-    { "Integer", (long) IntegerInterpolatePixel, MagickFalse },
-    { "Mesh", (long) MeshInterpolatePixel, MagickFalse },
-    { "NearestNeighbor", (long) NearestNeighborInterpolatePixel, MagickFalse },
-    { "Spline", (long) SplineInterpolatePixel, MagickFalse },
-    { (char *) NULL, (long) UndefinedInterpolatePixel, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedInterpolatePixel, MagickTrue },
+    { "Average", (ssize_t) AverageInterpolatePixel, MagickFalse },
+    { "Bicubic", (ssize_t) BicubicInterpolatePixel, MagickFalse },
+    { "Bilinear", (ssize_t) BilinearInterpolatePixel, MagickFalse },
+    { "filter", (ssize_t) FilterInterpolatePixel, MagickFalse },
+    { "Integer", (ssize_t) IntegerInterpolatePixel, MagickFalse },
+    { "Mesh", (ssize_t) MeshInterpolatePixel, MagickFalse },
+    { "NearestNeighbor", (ssize_t) NearestNeighborInterpolatePixel, MagickFalse },
+    { "Spline", (ssize_t) SplineInterpolatePixel, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedInterpolatePixel, MagickFalse }
   },
   KernelOptions[] =
   {
-    { "Undefined", (long) UndefinedKernel, MagickTrue },
-    { "Unity", (long) UnityKernel, MagickFalse },
-    { "Gaussian", (long) GaussianKernel, MagickFalse },
-    { "DOG", (long) DOGKernel, MagickFalse },
-    { "LOG", (long) LOGKernel, MagickFalse },
-    { "Blur", (long) BlurKernel, MagickFalse },
-    { "DOB", (long) DOBKernel, MagickFalse },
-    { "Comet", (long) CometKernel, MagickFalse },
-    { "Laplacian", (long) LaplacianKernel, MagickFalse },
-    { "Sobel", (long) SobelKernel, MagickFalse },
-    { "FreiChen", (long) FreiChenKernel, MagickFalse },
-    { "Roberts", (long) RobertsKernel, MagickFalse },
-    { "Prewitt", (long) PrewittKernel, MagickFalse },
-    { "Compass", (long) CompassKernel, MagickFalse },
-    { "Kirsch", (long) KirschKernel, MagickFalse },
-    { "Rectangle", (long) RectangleKernel, MagickFalse },
-    { "Square", (long) SquareKernel, MagickFalse },
-    { "Diamond", (long) DiamondKernel, MagickFalse },
-    { "Disk", (long) DiskKernel, MagickFalse },
-    { "Plus", (long) PlusKernel, MagickFalse },
-    { "Cross", (long) CrossKernel, MagickFalse },
-    { "Ring", (long) RingKernel, MagickFalse },
-    { "Peaks", (long) PeaksKernel, MagickFalse },
-    { "Edges", (long) EdgesKernel, MagickFalse },
-    { "Corners", (long) CornersKernel, MagickFalse },
-    { "Ridges", (long) RidgesKernel, MagickFalse },
-    { "Ridges2", (long) Ridges2Kernel, MagickFalse },
-    { "LineEnds", (long) LineEndsKernel, MagickFalse },
-    { "LineJunctions", (long) LineJunctionsKernel, MagickFalse },
-    { "ConvexHull", (long) ConvexHullKernel, MagickFalse },
-    { "Skeleton", (long) SkeletonKernel, MagickFalse },
-    { "Mat", (long) MatKernel, MagickTrue },      /* experimental */
-    { "Chebyshev", (long) ChebyshevKernel, MagickFalse },
-    { "Manhatten", (long) ManhattenKernel, MagickFalse },
-    { "Euclidean", (long) EuclideanKernel, MagickFalse },
-    { "Test", (long) TestKernel, MagickTrue },    /* for experimental kernels */
-    { "User Defined", (long) UserDefinedKernel, MagickTrue }, /* internel */
-    { (char *) NULL, (long) UndefinedKernel, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedKernel, MagickTrue },
+    { "Unity", (ssize_t) UnityKernel, MagickFalse },
+    { "Gaussian", (ssize_t) GaussianKernel, MagickFalse },
+    { "DOG", (ssize_t) DOGKernel, MagickFalse },
+    { "LOG", (ssize_t) LOGKernel, MagickFalse },
+    { "Blur", (ssize_t) BlurKernel, MagickFalse },
+    { "DOB", (ssize_t) DOBKernel, MagickFalse },
+    { "Comet", (ssize_t) CometKernel, MagickFalse },
+    { "Laplacian", (ssize_t) LaplacianKernel, MagickFalse },
+    { "Sobel", (ssize_t) SobelKernel, MagickFalse },
+    { "FreiChen", (ssize_t) FreiChenKernel, MagickFalse },
+    { "Roberts", (ssize_t) RobertsKernel, MagickFalse },
+    { "Prewitt", (ssize_t) PrewittKernel, MagickFalse },
+    { "Compass", (ssize_t) CompassKernel, MagickFalse },
+    { "Kirsch", (ssize_t) KirschKernel, MagickFalse },
+    { "Rectangle", (ssize_t) RectangleKernel, MagickFalse },
+    { "Square", (ssize_t) SquareKernel, MagickFalse },
+    { "Diamond", (ssize_t) DiamondKernel, MagickFalse },
+    { "Disk", (ssize_t) DiskKernel, MagickFalse },
+    { "Plus", (ssize_t) PlusKernel, MagickFalse },
+    { "Cross", (ssize_t) CrossKernel, MagickFalse },
+    { "Ring", (ssize_t) RingKernel, MagickFalse },
+    { "Peaks", (ssize_t) PeaksKernel, MagickFalse },
+    { "Edges", (ssize_t) EdgesKernel, MagickFalse },
+    { "Corners", (ssize_t) CornersKernel, MagickFalse },
+    { "Ridges", (ssize_t) RidgesKernel, MagickFalse },
+    { "Ridges2", (ssize_t) Ridges2Kernel, MagickFalse },
+    { "LineEnds", (ssize_t) LineEndsKernel, MagickFalse },
+    { "LineJunctions", (ssize_t) LineJunctionsKernel, MagickFalse },
+    { "ConvexHull", (ssize_t) ConvexHullKernel, MagickFalse },
+    { "Skeleton", (ssize_t) SkeletonKernel, MagickFalse },
+    { "Mat", (ssize_t) MatKernel, MagickTrue },      /* experimental */
+    { "Chebyshev", (ssize_t) ChebyshevKernel, MagickFalse },
+    { "Manhatten", (ssize_t) ManhattenKernel, MagickFalse },
+    { "Euclidean", (ssize_t) EuclideanKernel, MagickFalse },
+    { "Test", (ssize_t) TestKernel, MagickTrue },    /* for experimental kernels */
+    { "User Defined", (ssize_t) UserDefinedKernel, MagickTrue }, /* internel */
+    { (char *) NULL, (ssize_t) UndefinedKernel, MagickFalse }
   },
   LayerOptions[] =
   {
-    { "Undefined", (long) UndefinedLayer, MagickTrue },
-    { "Coalesce", (long) CoalesceLayer, MagickFalse },
-    { "CompareAny", (long) CompareAnyLayer, MagickFalse },
-    { "CompareClear", (long) CompareClearLayer, MagickFalse },
-    { "CompareOverlay", (long) CompareOverlayLayer, MagickFalse },
-    { "Dispose", (long) DisposeLayer, MagickFalse },
-    { "Optimize", (long) OptimizeLayer, MagickFalse },
-    { "OptimizeFrame", (long) OptimizeImageLayer, MagickFalse },
-    { "OptimizePlus", (long) OptimizePlusLayer, MagickFalse },
-    { "OptimizeTransparency", (long) OptimizeTransLayer, MagickFalse },
-    { "RemoveDups", (long) RemoveDupsLayer, MagickFalse },
-    { "RemoveZero", (long) RemoveZeroLayer, MagickFalse },
-    { "Composite", (long) CompositeLayer, MagickFalse },
-    { "Merge", (long) MergeLayer, MagickFalse },
-    { "Flatten", (long) FlattenLayer, MagickFalse },
-    { "Mosaic", (long) MosaicLayer, MagickFalse },
-    { "TrimBounds", (long) TrimBoundsLayer, MagickFalse },
-    { (char *) NULL, (long) UndefinedLayer, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedLayer, MagickTrue },
+    { "Coalesce", (ssize_t) CoalesceLayer, MagickFalse },
+    { "CompareAny", (ssize_t) CompareAnyLayer, MagickFalse },
+    { "CompareClear", (ssize_t) CompareClearLayer, MagickFalse },
+    { "CompareOverlay", (ssize_t) CompareOverlayLayer, MagickFalse },
+    { "Dispose", (ssize_t) DisposeLayer, MagickFalse },
+    { "Optimize", (ssize_t) OptimizeLayer, MagickFalse },
+    { "OptimizeFrame", (ssize_t) OptimizeImageLayer, MagickFalse },
+    { "OptimizePlus", (ssize_t) OptimizePlusLayer, MagickFalse },
+    { "OptimizeTransparency", (ssize_t) OptimizeTransLayer, MagickFalse },
+    { "RemoveDups", (ssize_t) RemoveDupsLayer, MagickFalse },
+    { "RemoveZero", (ssize_t) RemoveZeroLayer, MagickFalse },
+    { "Composite", (ssize_t) CompositeLayer, MagickFalse },
+    { "Merge", (ssize_t) MergeLayer, MagickFalse },
+    { "Flatten", (ssize_t) FlattenLayer, MagickFalse },
+    { "Mosaic", (ssize_t) MosaicLayer, MagickFalse },
+    { "TrimBounds", (ssize_t) TrimBoundsLayer, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedLayer, MagickFalse }
   },
   LineCapOptions[] =
   {
-    { "Undefined", (long) UndefinedCap, MagickTrue },
-    { "Butt", (long) ButtCap, MagickFalse },
-    { "Round", (long) RoundCap, MagickFalse },
-    { "Square", (long) SquareCap, MagickFalse },
-    { (char *) NULL, (long) UndefinedCap, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedCap, MagickTrue },
+    { "Butt", (ssize_t) ButtCap, MagickFalse },
+    { "Round", (ssize_t) RoundCap, MagickFalse },
+    { "Square", (ssize_t) SquareCap, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedCap, MagickFalse }
   },
   LineJoinOptions[] =
   {
-    { "Undefined", (long) UndefinedJoin, MagickTrue },
-    { "Bevel", (long) BevelJoin, MagickFalse },
-    { "Miter", (long) MiterJoin, MagickFalse },
-    { "Round", (long) RoundJoin, MagickFalse },
-    { (char *) NULL, (long) UndefinedJoin, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedJoin, MagickTrue },
+    { "Bevel", (ssize_t) BevelJoin, MagickFalse },
+    { "Miter", (ssize_t) MiterJoin, MagickFalse },
+    { "Round", (ssize_t) RoundJoin, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedJoin, MagickFalse }
   },
   ListOptions[] =
   {
-    { "Align", (long) MagickAlignOptions, MagickFalse },
-    { "Alpha", (long) MagickAlphaOptions, MagickFalse },
-    { "Boolean", (long) MagickBooleanOptions, MagickFalse },
-    { "Channel", (long) MagickChannelOptions, MagickFalse },
-    { "Class", (long) MagickClassOptions, MagickFalse },
-    { "ClipPath", (long) MagickClipPathOptions, MagickFalse },
-    { "Coder", (long) MagickCoderOptions, MagickFalse },
-    { "Color", (long) MagickColorOptions, MagickFalse },
-    { "Colorspace", (long) MagickColorspaceOptions, MagickFalse },
-    { "Command", (long) MagickCommandOptions, MagickFalse },
-    { "Compose", (long) MagickComposeOptions, MagickFalse },
-    { "Compress", (long) MagickCompressOptions, MagickFalse },
-    { "Configure", (long) MagickConfigureOptions, MagickFalse },
-    { "DataType", (long) MagickDataTypeOptions, MagickFalse },
-    { "Debug", (long) MagickDebugOptions, MagickFalse },
-    { "Decoration", (long) MagickDecorateOptions, MagickFalse },
-    { "Delegate", (long) MagickDelegateOptions, MagickFalse },
-    { "Direction", (long) MagickDirectionOptions, MagickFalse },
-    { "Dispose", (long) MagickDisposeOptions, MagickFalse },
-    { "Distort", (long) MagickDistortOptions, MagickFalse },
-    { "Dither", (long) MagickDitherOptions, MagickFalse },
-    { "Endian", (long) MagickEndianOptions, MagickFalse },
-    { "Evaluate", (long) MagickEvaluateOptions, MagickFalse },
-    { "FillRule", (long) MagickFillRuleOptions, MagickFalse },
-    { "Filter", (long) MagickFilterOptions, MagickFalse },
-    { "Font", (long) MagickFontOptions, MagickFalse },
-    { "Format", (long) MagickFormatOptions, MagickFalse },
-    { "Function", (long) MagickFunctionOptions, MagickFalse },
-    { "Gravity", (long) MagickGravityOptions, MagickFalse },
-    { "ImageList", (long) MagickImageListOptions, MagickFalse },
-    { "Intent", (long) MagickIntentOptions, MagickFalse },
-    { "Interlace", (long) MagickInterlaceOptions, MagickFalse },
-    { "Interpolate", (long) MagickInterpolateOptions, MagickFalse },
-    { "Kernel", (long) MagickKernelOptions, MagickFalse },
-    { "Layers", (long) MagickLayerOptions, MagickFalse },
-    { "LineCap", (long) MagickLineCapOptions, MagickFalse },
-    { "LineJoin", (long) MagickLineJoinOptions, MagickFalse },
-    { "List", (long) MagickListOptions, MagickFalse },
-    { "Locale", (long) MagickLocaleOptions, MagickFalse },
-    { "LogEvent", (long) MagickLogEventOptions, MagickFalse },
-    { "Log", (long) MagickLogOptions, MagickFalse },
-    { "Magic", (long) MagickMagicOptions, MagickFalse },
-    { "Method", (long) MagickMethodOptions, MagickFalse },
-    { "Metric", (long) MagickMetricOptions, MagickFalse },
-    { "Mime", (long) MagickMimeOptions, MagickFalse },
-    { "Mode", (long) MagickModeOptions, MagickFalse },
-    { "Morphology", (long) MagickMorphologyOptions, MagickFalse },
-    { "Module", (long) MagickModuleOptions, MagickFalse },
-    { "Noise", (long) MagickNoiseOptions, MagickFalse },
-    { "Orientation", (long) MagickOrientationOptions, MagickFalse },
-    { "Policy", (long) MagickPolicyOptions, MagickFalse },
-    { "PolicyDomain", (long) MagickPolicyDomainOptions, MagickFalse },
-    { "PolicyRights", (long) MagickPolicyRightsOptions, MagickFalse },
-    { "Preview", (long) MagickPreviewOptions, MagickFalse },
-    { "Primitive", (long) MagickPrimitiveOptions, MagickFalse },
-    { "QuantumFormat", (long) MagickQuantumFormatOptions, MagickFalse },
-    { "Resource", (long) MagickResourceOptions, MagickFalse },
-    { "SparseColor", (long) MagickSparseColorOptions, MagickFalse },
-    { "Storage", (long) MagickStorageOptions, MagickFalse },
-    { "Stretch", (long) MagickStretchOptions, MagickFalse },
-    { "Style", (long) MagickStyleOptions, MagickFalse },
-    { "Threshold", (long) MagickThresholdOptions, MagickFalse },
-    { "Type", (long) MagickTypeOptions, MagickFalse },
-    { "Units", (long) MagickResolutionOptions, MagickFalse },
-    { "Undefined", (long) MagickUndefinedOptions, MagickTrue },
-    { "Validate", (long) MagickValidateOptions, MagickFalse },
-    { "VirtualPixel", (long) MagickVirtualPixelOptions, MagickFalse },
-    { (char *) NULL, (long) MagickUndefinedOptions, MagickFalse }
+    { "Align", (ssize_t) MagickAlignOptions, MagickFalse },
+    { "Alpha", (ssize_t) MagickAlphaOptions, MagickFalse },
+    { "Boolean", (ssize_t) MagickBooleanOptions, MagickFalse },
+    { "Channel", (ssize_t) MagickChannelOptions, MagickFalse },
+    { "Class", (ssize_t) MagickClassOptions, MagickFalse },
+    { "ClipPath", (ssize_t) MagickClipPathOptions, MagickFalse },
+    { "Coder", (ssize_t) MagickCoderOptions, MagickFalse },
+    { "Color", (ssize_t) MagickColorOptions, MagickFalse },
+    { "Colorspace", (ssize_t) MagickColorspaceOptions, MagickFalse },
+    { "Command", (ssize_t) MagickCommandOptions, MagickFalse },
+    { "Compose", (ssize_t) MagickComposeOptions, MagickFalse },
+    { "Compress", (ssize_t) MagickCompressOptions, MagickFalse },
+    { "Configure", (ssize_t) MagickConfigureOptions, MagickFalse },
+    { "DataType", (ssize_t) MagickDataTypeOptions, MagickFalse },
+    { "Debug", (ssize_t) MagickDebugOptions, MagickFalse },
+    { "Decoration", (ssize_t) MagickDecorateOptions, MagickFalse },
+    { "Delegate", (ssize_t) MagickDelegateOptions, MagickFalse },
+    { "Direction", (ssize_t) MagickDirectionOptions, MagickFalse },
+    { "Dispose", (ssize_t) MagickDisposeOptions, MagickFalse },
+    { "Distort", (ssize_t) MagickDistortOptions, MagickFalse },
+    { "Dither", (ssize_t) MagickDitherOptions, MagickFalse },
+    { "Endian", (ssize_t) MagickEndianOptions, MagickFalse },
+    { "Evaluate", (ssize_t) MagickEvaluateOptions, MagickFalse },
+    { "FillRule", (ssize_t) MagickFillRuleOptions, MagickFalse },
+    { "Filter", (ssize_t) MagickFilterOptions, MagickFalse },
+    { "Font", (ssize_t) MagickFontOptions, MagickFalse },
+    { "Format", (ssize_t) MagickFormatOptions, MagickFalse },
+    { "Function", (ssize_t) MagickFunctionOptions, MagickFalse },
+    { "Gravity", (ssize_t) MagickGravityOptions, MagickFalse },
+    { "ImageList", (ssize_t) MagickImageListOptions, MagickFalse },
+    { "Intent", (ssize_t) MagickIntentOptions, MagickFalse },
+    { "Interlace", (ssize_t) MagickInterlaceOptions, MagickFalse },
+    { "Interpolate", (ssize_t) MagickInterpolateOptions, MagickFalse },
+    { "Kernel", (ssize_t) MagickKernelOptions, MagickFalse },
+    { "Layers", (ssize_t) MagickLayerOptions, MagickFalse },
+    { "LineCap", (ssize_t) MagickLineCapOptions, MagickFalse },
+    { "LineJoin", (ssize_t) MagickLineJoinOptions, MagickFalse },
+    { "List", (ssize_t) MagickListOptions, MagickFalse },
+    { "Locale", (ssize_t) MagickLocaleOptions, MagickFalse },
+    { "LogEvent", (ssize_t) MagickLogEventOptions, MagickFalse },
+    { "Log", (ssize_t) MagickLogOptions, MagickFalse },
+    { "Magic", (ssize_t) MagickMagicOptions, MagickFalse },
+    { "Method", (ssize_t) MagickMethodOptions, MagickFalse },
+    { "Metric", (ssize_t) MagickMetricOptions, MagickFalse },
+    { "Mime", (ssize_t) MagickMimeOptions, MagickFalse },
+    { "Mode", (ssize_t) MagickModeOptions, MagickFalse },
+    { "Morphology", (ssize_t) MagickMorphologyOptions, MagickFalse },
+    { "Module", (ssize_t) MagickModuleOptions, MagickFalse },
+    { "Noise", (ssize_t) MagickNoiseOptions, MagickFalse },
+    { "Orientation", (ssize_t) MagickOrientationOptions, MagickFalse },
+    { "Policy", (ssize_t) MagickPolicyOptions, MagickFalse },
+    { "PolicyDomain", (ssize_t) MagickPolicyDomainOptions, MagickFalse },
+    { "PolicyRights", (ssize_t) MagickPolicyRightsOptions, MagickFalse },
+    { "Preview", (ssize_t) MagickPreviewOptions, MagickFalse },
+    { "Primitive", (ssize_t) MagickPrimitiveOptions, MagickFalse },
+    { "QuantumFormat", (ssize_t) MagickQuantumFormatOptions, MagickFalse },
+    { "Resource", (ssize_t) MagickResourceOptions, MagickFalse },
+    { "SparseColor", (ssize_t) MagickSparseColorOptions, MagickFalse },
+    { "Storage", (ssize_t) MagickStorageOptions, MagickFalse },
+    { "Stretch", (ssize_t) MagickStretchOptions, MagickFalse },
+    { "Style", (ssize_t) MagickStyleOptions, MagickFalse },
+    { "Threshold", (ssize_t) MagickThresholdOptions, MagickFalse },
+    { "Type", (ssize_t) MagickTypeOptions, MagickFalse },
+    { "Units", (ssize_t) MagickResolutionOptions, MagickFalse },
+    { "Undefined", (ssize_t) MagickUndefinedOptions, MagickTrue },
+    { "Validate", (ssize_t) MagickValidateOptions, MagickFalse },
+    { "VirtualPixel", (ssize_t) MagickVirtualPixelOptions, MagickFalse },
+    { (char *) NULL, (ssize_t) MagickUndefinedOptions, MagickFalse }
   },
   LogEventOptions[] =
   {
-    { "Undefined", (long) UndefinedEvents, MagickTrue },
-    { "All", (long) (AllEvents &~ TraceEvent), MagickFalse },
-    { "Annotate", (long) AnnotateEvent, MagickFalse },
-    { "Blob", (long) BlobEvent, MagickFalse },
-    { "Cache", (long) CacheEvent, MagickFalse },
-    { "Coder", (long) CoderEvent, MagickFalse },
-    { "Configure", (long) ConfigureEvent, MagickFalse },
-    { "Deprecate", (long) DeprecateEvent, MagickFalse },
-    { "Draw", (long) DrawEvent, MagickFalse },
-    { "Exception", (long) ExceptionEvent, MagickFalse },
-    { "Locale", (long) LocaleEvent, MagickFalse },
-    { "Module", (long) ModuleEvent, MagickFalse },
-    { "None", (long) NoEvents, MagickFalse },
-    { "Policy", (long) PolicyEvent, MagickFalse },
-    { "Resource", (long) ResourceEvent, MagickFalse },
-    { "Trace", (long) TraceEvent, MagickFalse },
-    { "Transform", (long) TransformEvent, MagickFalse },
-    { "User", (long) UserEvent, MagickFalse },
-    { "Wand", (long) WandEvent, MagickFalse },
-    { "X11", (long) X11Event, MagickFalse },
-    { (char *) NULL, (long) UndefinedEvents, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedEvents, MagickTrue },
+    { "All", (ssize_t) (AllEvents &~ TraceEvent), MagickFalse },
+    { "Annotate", (ssize_t) AnnotateEvent, MagickFalse },
+    { "Blob", (ssize_t) BlobEvent, MagickFalse },
+    { "Cache", (ssize_t) CacheEvent, MagickFalse },
+    { "Coder", (ssize_t) CoderEvent, MagickFalse },
+    { "Configure", (ssize_t) ConfigureEvent, MagickFalse },
+    { "Deprecate", (ssize_t) DeprecateEvent, MagickFalse },
+    { "Draw", (ssize_t) DrawEvent, MagickFalse },
+    { "Exception", (ssize_t) ExceptionEvent, MagickFalse },
+    { "Locale", (ssize_t) LocaleEvent, MagickFalse },
+    { "Module", (ssize_t) ModuleEvent, MagickFalse },
+    { "None", (ssize_t) NoEvents, MagickFalse },
+    { "Policy", (ssize_t) PolicyEvent, MagickFalse },
+    { "Resource", (ssize_t) ResourceEvent, MagickFalse },
+    { "Trace", (ssize_t) TraceEvent, MagickFalse },
+    { "Transform", (ssize_t) TransformEvent, MagickFalse },
+    { "User", (ssize_t) UserEvent, MagickFalse },
+    { "Wand", (ssize_t) WandEvent, MagickFalse },
+    { "X11", (ssize_t) X11Event, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedEvents, MagickFalse }
   },
   MetricOptions[] =
   {
-    { "Undefined", (long) UndefinedMetric, MagickTrue },
-    { "AE", (long) AbsoluteErrorMetric, MagickFalse },
-    { "MAE", (long) MeanAbsoluteErrorMetric, MagickFalse },
-    { "MEPP", (long) MeanErrorPerPixelMetric, MagickFalse },
-    { "MSE", (long) MeanSquaredErrorMetric, MagickFalse },
-    { "PAE", (long) PeakAbsoluteErrorMetric, MagickFalse },
-    { "PSNR", (long) PeakSignalToNoiseRatioMetric, MagickFalse },
-    { "RMSE", (long) RootMeanSquaredErrorMetric, MagickFalse },
-    { (char *) NULL, (long) UndefinedMetric, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedMetric, MagickTrue },
+    { "AE", (ssize_t) AbsoluteErrorMetric, MagickFalse },
+    { "MAE", (ssize_t) MeanAbsoluteErrorMetric, MagickFalse },
+    { "MEPP", (ssize_t) MeanErrorPerPixelMetric, MagickFalse },
+    { "MSE", (ssize_t) MeanSquaredErrorMetric, MagickFalse },
+    { "PAE", (ssize_t) PeakAbsoluteErrorMetric, MagickFalse },
+    { "PSNR", (ssize_t) PeakSignalToNoiseRatioMetric, MagickFalse },
+    { "RMSE", (ssize_t) RootMeanSquaredErrorMetric, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedMetric, MagickFalse }
   },
   MethodOptions[] =
   {
-    { "Undefined", (long) UndefinedMethod, MagickTrue },
-    { "FillToBorder", (long) FillToBorderMethod, MagickFalse },
-    { "Floodfill", (long) FloodfillMethod, MagickFalse },
-    { "Point", (long) PointMethod, MagickFalse },
-    { "Replace", (long) ReplaceMethod, MagickFalse },
-    { "Reset", (long) ResetMethod, MagickFalse },
-    { (char *) NULL, (long) UndefinedMethod, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedMethod, MagickTrue },
+    { "FillToBorder", (ssize_t) FillToBorderMethod, MagickFalse },
+    { "Floodfill", (ssize_t) FloodfillMethod, MagickFalse },
+    { "Point", (ssize_t) PointMethod, MagickFalse },
+    { "Replace", (ssize_t) ReplaceMethod, MagickFalse },
+    { "Reset", (ssize_t) ResetMethod, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedMethod, MagickFalse }
   },
   ModeOptions[] =
   {
-    { "Undefined", (long) UndefinedMode, MagickTrue },
-    { "Concatenate", (long) ConcatenateMode, MagickFalse },
-    { "Frame", (long) FrameMode, MagickFalse },
-    { "Unframe", (long) UnframeMode, MagickFalse },
-    { (char *) NULL, (long) UndefinedMode, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedMode, MagickTrue },
+    { "Concatenate", (ssize_t) ConcatenateMode, MagickFalse },
+    { "Frame", (ssize_t) FrameMode, MagickFalse },
+    { "Unframe", (ssize_t) UnframeMode, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedMode, MagickFalse }
   },
   MorphologyOptions[] =
   {
-    { "Undefined", (long) UndefinedMorphology, MagickTrue },
-    { "Correlate", (long) CorrelateMorphology, MagickFalse },
-    { "Convolve", (long) ConvolveMorphology, MagickFalse },
-    { "Dilate", (long) DilateMorphology, MagickFalse },
-    { "Erode", (long) ErodeMorphology, MagickFalse },
-    { "Close", (long) CloseMorphology, MagickFalse },
-    { "Open", (long) OpenMorphology, MagickFalse },
-    { "DilateIntensity", (long) DilateIntensityMorphology, MagickFalse },
-    { "ErodeIntensity", (long) ErodeIntensityMorphology, MagickFalse },
-    { "CloseIntensity", (long) CloseIntensityMorphology, MagickFalse },
-    { "OpenIntensity", (long) OpenIntensityMorphology, MagickFalse },
-    { "DilateI", (long) DilateIntensityMorphology, MagickFalse },
-    { "ErodeI", (long) ErodeIntensityMorphology, MagickFalse },
-    { "CloseI", (long) CloseIntensityMorphology, MagickFalse },
-    { "OpenI", (long) OpenIntensityMorphology, MagickFalse },
-    { "Smooth", (long) SmoothMorphology, MagickFalse },
-    { "EdgeOut", (long) EdgeOutMorphology, MagickFalse },
-    { "EdgeIn", (long) EdgeInMorphology, MagickFalse },
-    { "Edge", (long) EdgeMorphology, MagickFalse },
-    { "TopHat", (long) TopHatMorphology, MagickFalse },
-    { "BottomHat", (long) BottomHatMorphology, MagickFalse },
-    { "Distance", (long) DistanceMorphology, MagickFalse },
-    { "HitAndMiss", (long) HitAndMissMorphology, MagickFalse },
-    { "Thinning", (long) ThinningMorphology, MagickFalse },
-    { "Thicken", (long) ThickenMorphology, MagickFalse },
-    { (char *) NULL, (long) UndefinedMorphology, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedMorphology, MagickTrue },
+    { "Correlate", (ssize_t) CorrelateMorphology, MagickFalse },
+    { "Convolve", (ssize_t) ConvolveMorphology, MagickFalse },
+    { "Dilate", (ssize_t) DilateMorphology, MagickFalse },
+    { "Erode", (ssize_t) ErodeMorphology, MagickFalse },
+    { "Close", (ssize_t) CloseMorphology, MagickFalse },
+    { "Open", (ssize_t) OpenMorphology, MagickFalse },
+    { "DilateIntensity", (ssize_t) DilateIntensityMorphology, MagickFalse },
+    { "ErodeIntensity", (ssize_t) ErodeIntensityMorphology, MagickFalse },
+    { "CloseIntensity", (ssize_t) CloseIntensityMorphology, MagickFalse },
+    { "OpenIntensity", (ssize_t) OpenIntensityMorphology, MagickFalse },
+    { "DilateI", (ssize_t) DilateIntensityMorphology, MagickFalse },
+    { "ErodeI", (ssize_t) ErodeIntensityMorphology, MagickFalse },
+    { "CloseI", (ssize_t) CloseIntensityMorphology, MagickFalse },
+    { "OpenI", (ssize_t) OpenIntensityMorphology, MagickFalse },
+    { "Smooth", (ssize_t) SmoothMorphology, MagickFalse },
+    { "EdgeOut", (ssize_t) EdgeOutMorphology, MagickFalse },
+    { "EdgeIn", (ssize_t) EdgeInMorphology, MagickFalse },
+    { "Edge", (ssize_t) EdgeMorphology, MagickFalse },
+    { "TopHat", (ssize_t) TopHatMorphology, MagickFalse },
+    { "BottomHat", (ssize_t) BottomHatMorphology, MagickFalse },
+    { "Distance", (ssize_t) DistanceMorphology, MagickFalse },
+    { "HitAndMiss", (ssize_t) HitAndMissMorphology, MagickFalse },
+    { "Thinning", (ssize_t) ThinningMorphology, MagickFalse },
+    { "Thicken", (ssize_t) ThickenMorphology, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedMorphology, MagickFalse }
   },
   NoiseOptions[] =
   {
-    { "Undefined", (long) UndefinedNoise, MagickTrue },
-    { "Gaussian", (long) (long) GaussianNoise, MagickFalse },
-    { "Impulse", (long) ImpulseNoise, MagickFalse },
-    { "Laplacian", (long) LaplacianNoise, MagickFalse },
-    { "Multiplicative", (long) MultiplicativeGaussianNoise, MagickFalse },
-    { "Poisson", (long) PoissonNoise, MagickFalse },
-    { "Random", (long) RandomNoise, MagickFalse },
-    { "Uniform", (long) UniformNoise, MagickFalse },
-    { (char *) NULL, (long) UndefinedNoise, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedNoise, MagickTrue },
+    { "Gaussian", (ssize_t) (ssize_t) GaussianNoise, MagickFalse },
+    { "Impulse", (ssize_t) ImpulseNoise, MagickFalse },
+    { "Laplacian", (ssize_t) LaplacianNoise, MagickFalse },
+    { "Multiplicative", (ssize_t) MultiplicativeGaussianNoise, MagickFalse },
+    { "Poisson", (ssize_t) PoissonNoise, MagickFalse },
+    { "Random", (ssize_t) RandomNoise, MagickFalse },
+    { "Uniform", (ssize_t) UniformNoise, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedNoise, MagickFalse }
   },
   OrientationOptions[] =
   {
-    { "Undefined", (long) UndefinedOrientation, MagickTrue },
-    { "TopLeft", (long) TopLeftOrientation, MagickFalse },
-    { "TopRight", (long) TopRightOrientation, MagickFalse },
-    { "BottomRight", (long) BottomRightOrientation, MagickFalse },
-    { "BottomLeft", (long) BottomLeftOrientation, MagickFalse },
-    { "LeftTop", (long) LeftTopOrientation, MagickFalse },
-    { "RightTop", (long) RightTopOrientation, MagickFalse },
-    { "RightBottom", (long) RightBottomOrientation, MagickFalse },
-    { "LeftBottom", (long) LeftBottomOrientation, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedOrientation, MagickTrue },
+    { "TopLeft", (ssize_t) TopLeftOrientation, MagickFalse },
+    { "TopRight", (ssize_t) TopRightOrientation, MagickFalse },
+    { "BottomRight", (ssize_t) BottomRightOrientation, MagickFalse },
+    { "BottomLeft", (ssize_t) BottomLeftOrientation, MagickFalse },
+    { "LeftTop", (ssize_t) LeftTopOrientation, MagickFalse },
+    { "RightTop", (ssize_t) RightTopOrientation, MagickFalse },
+    { "RightBottom", (ssize_t) RightBottomOrientation, MagickFalse },
+    { "LeftBottom", (ssize_t) LeftBottomOrientation, MagickFalse }
   },
   PolicyDomainOptions[] =
   {
-    { "Undefined", (long) UndefinedPolicyDomain, MagickTrue },
-    { "Coder", (long) CoderPolicyDomain, MagickFalse },
-    { "Delegate", (long) DelegatePolicyDomain, MagickFalse },
-    { "Filter", (long) FilterPolicyDomain, MagickFalse },
-    { "Path", (long) PathPolicyDomain, MagickFalse },
-    { "Resource", (long) ResourcePolicyDomain, MagickFalse },
-    { "System", (long) SystemPolicyDomain, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedPolicyDomain, MagickTrue },
+    { "Coder", (ssize_t) CoderPolicyDomain, MagickFalse },
+    { "Delegate", (ssize_t) DelegatePolicyDomain, MagickFalse },
+    { "Filter", (ssize_t) FilterPolicyDomain, MagickFalse },
+    { "Path", (ssize_t) PathPolicyDomain, MagickFalse },
+    { "Resource", (ssize_t) ResourcePolicyDomain, MagickFalse },
+    { "System", (ssize_t) SystemPolicyDomain, MagickFalse }
   },
   PolicyRightsOptions[] =
   {
-    { "Undefined", (long) UndefinedPolicyRights, MagickTrue },
-    { "None", (long) NoPolicyRights, MagickFalse },
-    { "Read", (long) ReadPolicyRights, MagickFalse },
-    { "Write", (long) WritePolicyRights, MagickFalse },
-    { "Execute", (long) ExecutePolicyRights, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedPolicyRights, MagickTrue },
+    { "None", (ssize_t) NoPolicyRights, MagickFalse },
+    { "Read", (ssize_t) ReadPolicyRights, MagickFalse },
+    { "Write", (ssize_t) WritePolicyRights, MagickFalse },
+    { "Execute", (ssize_t) ExecutePolicyRights, MagickFalse }
   },
   PreviewOptions[] =
   {
-    { "Undefined", (long) UndefinedPreview, MagickTrue },
-    { "AddNoise", (long) AddNoisePreview, MagickFalse },
-    { "Blur", (long) BlurPreview, MagickFalse },
-    { "Brightness", (long) BrightnessPreview, MagickFalse },
-    { "Charcoal", (long) CharcoalDrawingPreview, MagickFalse },
-    { "Despeckle", (long) DespecklePreview, MagickFalse },
-    { "Dull", (long) DullPreview, MagickFalse },
-    { "EdgeDetect", (long) EdgeDetectPreview, MagickFalse },
-    { "Gamma", (long) GammaPreview, MagickFalse },
-    { "Grayscale", (long) GrayscalePreview, MagickFalse },
-    { "Hue", (long) HuePreview, MagickFalse },
-    { "Implode", (long) ImplodePreview, MagickFalse },
-    { "JPEG", (long) JPEGPreview, MagickFalse },
-    { "OilPaint", (long) OilPaintPreview, MagickFalse },
-    { "Quantize", (long) QuantizePreview, MagickFalse },
-    { "Raise", (long) RaisePreview, MagickFalse },
-    { "ReduceNoise", (long) ReduceNoisePreview, MagickFalse },
-    { "Roll", (long) RollPreview, MagickFalse },
-    { "Rotate", (long) RotatePreview, MagickFalse },
-    { "Saturation", (long) SaturationPreview, MagickFalse },
-    { "Segment", (long) SegmentPreview, MagickFalse },
-    { "Shade", (long) ShadePreview, MagickFalse },
-    { "Sharpen", (long) SharpenPreview, MagickFalse },
-    { "Shear", (long) ShearPreview, MagickFalse },
-    { "Solarize", (long) SolarizePreview, MagickFalse },
-    { "Spiff", (long) SpiffPreview, MagickFalse },
-    { "Spread", (long) SpreadPreview, MagickFalse },
-    { "Swirl", (long) SwirlPreview, MagickFalse },
-    { "Threshold", (long) ThresholdPreview, MagickFalse },
-    { "Wave", (long) WavePreview, MagickFalse },
-    { (char *) NULL, (long) UndefinedPreview, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedPreview, MagickTrue },
+    { "AddNoise", (ssize_t) AddNoisePreview, MagickFalse },
+    { "Blur", (ssize_t) BlurPreview, MagickFalse },
+    { "Brightness", (ssize_t) BrightnessPreview, MagickFalse },
+    { "Charcoal", (ssize_t) CharcoalDrawingPreview, MagickFalse },
+    { "Despeckle", (ssize_t) DespecklePreview, MagickFalse },
+    { "Dull", (ssize_t) DullPreview, MagickFalse },
+    { "EdgeDetect", (ssize_t) EdgeDetectPreview, MagickFalse },
+    { "Gamma", (ssize_t) GammaPreview, MagickFalse },
+    { "Grayscale", (ssize_t) GrayscalePreview, MagickFalse },
+    { "Hue", (ssize_t) HuePreview, MagickFalse },
+    { "Implode", (ssize_t) ImplodePreview, MagickFalse },
+    { "JPEG", (ssize_t) JPEGPreview, MagickFalse },
+    { "OilPaint", (ssize_t) OilPaintPreview, MagickFalse },
+    { "Quantize", (ssize_t) QuantizePreview, MagickFalse },
+    { "Raise", (ssize_t) RaisePreview, MagickFalse },
+    { "ReduceNoise", (ssize_t) ReduceNoisePreview, MagickFalse },
+    { "Roll", (ssize_t) RollPreview, MagickFalse },
+    { "Rotate", (ssize_t) RotatePreview, MagickFalse },
+    { "Saturation", (ssize_t) SaturationPreview, MagickFalse },
+    { "Segment", (ssize_t) SegmentPreview, MagickFalse },
+    { "Shade", (ssize_t) ShadePreview, MagickFalse },
+    { "Sharpen", (ssize_t) SharpenPreview, MagickFalse },
+    { "Shear", (ssize_t) ShearPreview, MagickFalse },
+    { "Solarize", (ssize_t) SolarizePreview, MagickFalse },
+    { "Spiff", (ssize_t) SpiffPreview, MagickFalse },
+    { "Spread", (ssize_t) SpreadPreview, MagickFalse },
+    { "Swirl", (ssize_t) SwirlPreview, MagickFalse },
+    { "Threshold", (ssize_t) ThresholdPreview, MagickFalse },
+    { "Wave", (ssize_t) WavePreview, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedPreview, MagickFalse }
   },
   PrimitiveOptions[] =
   {
-    { "Undefined", (long) UndefinedPrimitive, MagickTrue },
-    { "Arc", (long) ArcPrimitive, MagickFalse },
-    { "Bezier", (long) BezierPrimitive, MagickFalse },
-    { "Circle", (long) CirclePrimitive, MagickFalse },
-    { "Color", (long) ColorPrimitive, MagickFalse },
-    { "Ellipse", (long) EllipsePrimitive, MagickFalse },
-    { "Image", (long) ImagePrimitive, MagickFalse },
-    { "Line", (long) LinePrimitive, MagickFalse },
-    { "Matte", (long) MattePrimitive, MagickFalse },
-    { "Path", (long) PathPrimitive, MagickFalse },
-    { "Point", (long) PointPrimitive, MagickFalse },
-    { "Polygon", (long) PolygonPrimitive, MagickFalse },
-    { "Polyline", (long) PolylinePrimitive, MagickFalse },
-    { "Rectangle", (long) RectanglePrimitive, MagickFalse },
-    { "roundRectangle", (long) RoundRectanglePrimitive, MagickFalse },
-    { "Text", (long) TextPrimitive, MagickFalse },
-    { (char *) NULL, (long) UndefinedPrimitive, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedPrimitive, MagickTrue },
+    { "Arc", (ssize_t) ArcPrimitive, MagickFalse },
+    { "Bezier", (ssize_t) BezierPrimitive, MagickFalse },
+    { "Circle", (ssize_t) CirclePrimitive, MagickFalse },
+    { "Color", (ssize_t) ColorPrimitive, MagickFalse },
+    { "Ellipse", (ssize_t) EllipsePrimitive, MagickFalse },
+    { "Image", (ssize_t) ImagePrimitive, MagickFalse },
+    { "Line", (ssize_t) LinePrimitive, MagickFalse },
+    { "Matte", (ssize_t) MattePrimitive, MagickFalse },
+    { "Path", (ssize_t) PathPrimitive, MagickFalse },
+    { "Point", (ssize_t) PointPrimitive, MagickFalse },
+    { "Polygon", (ssize_t) PolygonPrimitive, MagickFalse },
+    { "Polyline", (ssize_t) PolylinePrimitive, MagickFalse },
+    { "Rectangle", (ssize_t) RectanglePrimitive, MagickFalse },
+    { "roundRectangle", (ssize_t) RoundRectanglePrimitive, MagickFalse },
+    { "Text", (ssize_t) TextPrimitive, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedPrimitive, MagickFalse }
   },
   QuantumFormatOptions[] =
   {
-    { "Undefined", (long) UndefinedQuantumFormat, MagickTrue },
-    { "FloatingPoint", (long) FloatingPointQuantumFormat, MagickFalse },
-    { "Signed", (long) SignedQuantumFormat, MagickFalse },
-    { "Unsigned", (long) UnsignedQuantumFormat, MagickFalse },
-    { (char *) NULL, (long) FloatingPointQuantumFormat, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedQuantumFormat, MagickTrue },
+    { "FloatingPoint", (ssize_t) FloatingPointQuantumFormat, MagickFalse },
+    { "Signed", (ssize_t) SignedQuantumFormat, MagickFalse },
+    { "Unsigned", (ssize_t) UnsignedQuantumFormat, MagickFalse },
+    { (char *) NULL, (ssize_t) FloatingPointQuantumFormat, MagickFalse }
   },
   ResolutionOptions[] =
   {
-    { "Undefined", (long) UndefinedResolution, MagickTrue },
-    { "PixelsPerInch", (long) PixelsPerInchResolution, MagickFalse },
-    { "PixelsPerCentimeter", (long) PixelsPerCentimeterResolution, MagickFalse },
-    { (char *) NULL, (long) UndefinedResolution, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedResolution, MagickTrue },
+    { "PixelsPerInch", (ssize_t) PixelsPerInchResolution, MagickFalse },
+    { "PixelsPerCentimeter", (ssize_t) PixelsPerCentimeterResolution, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedResolution, MagickFalse }
   },
   ResourceOptions[] =
   {
-    { "Undefined", (long) UndefinedResource, MagickTrue },
-    { "Area", (long) AreaResource, MagickFalse },
-    { "Disk", (long) DiskResource, MagickFalse },
-    { "File", (long) FileResource, MagickFalse },
-    { "Map", (long) MapResource, MagickFalse },
-    { "Memory", (long) MemoryResource, MagickFalse },
-    { "Thread", (long) ThreadResource, MagickFalse },
-    { "Time", (long) TimeResource, MagickFalse },
-    { (char *) NULL, (long) UndefinedResource, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedResource, MagickTrue },
+    { "Area", (ssize_t) AreaResource, MagickFalse },
+    { "Disk", (ssize_t) DiskResource, MagickFalse },
+    { "File", (ssize_t) FileResource, MagickFalse },
+    { "Map", (ssize_t) MapResource, MagickFalse },
+    { "Memory", (ssize_t) MemoryResource, MagickFalse },
+    { "Thread", (ssize_t) ThreadResource, MagickFalse },
+    { "Time", (ssize_t) TimeResource, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedResource, MagickFalse }
   },
   SparseColorOptions[] =
   {
-    { "Undefined", (long) UndefinedDistortion, MagickTrue },
-    { "Barycentric", (long) BarycentricColorInterpolate, MagickFalse },
-    { "Bilinear", (long) BilinearColorInterpolate, MagickFalse },
-    { "Shepards", (long) ShepardsColorInterpolate, MagickFalse },
-    { "Voronoi", (long) VoronoiColorInterpolate, MagickFalse },
-    { (char *) NULL, (long) UndefinedResource, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedDistortion, MagickTrue },
+    { "Barycentric", (ssize_t) BarycentricColorInterpolate, MagickFalse },
+    { "Bilinear", (ssize_t) BilinearColorInterpolate, MagickFalse },
+    { "Shepards", (ssize_t) ShepardsColorInterpolate, MagickFalse },
+    { "Voronoi", (ssize_t) VoronoiColorInterpolate, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedResource, MagickFalse }
   },
   StorageOptions[] =
   {
-    { "Undefined", (long) UndefinedPixel, MagickTrue },
-    { "Char", (long) CharPixel, MagickFalse },
-    { "Double", (long) DoublePixel, MagickFalse },
-    { "Float", (long) FloatPixel, MagickFalse },
-    { "Integer", (long) IntegerPixel, MagickFalse },
-    { "Long", (long) LongPixel, MagickFalse },
-    { "Quantum", (long) QuantumPixel, MagickFalse },
-    { "Short", (long) ShortPixel, MagickFalse },
-    { (char *) NULL, (long) UndefinedResource, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedPixel, MagickTrue },
+    { "Char", (ssize_t) CharPixel, MagickFalse },
+    { "Double", (ssize_t) DoublePixel, MagickFalse },
+    { "Float", (ssize_t) FloatPixel, MagickFalse },
+    { "Integer", (ssize_t) IntegerPixel, MagickFalse },
+    { "Long", (ssize_t) LongPixel, MagickFalse },
+    { "Quantum", (ssize_t) QuantumPixel, MagickFalse },
+    { "Short", (ssize_t) ShortPixel, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedResource, MagickFalse }
   },
   StretchOptions[] =
   {
-    { "Undefined", (long) UndefinedStretch, MagickTrue },
-    { "Any", (long) AnyStretch, MagickFalse },
-    { "Condensed", (long) CondensedStretch, MagickFalse },
-    { "Expanded", (long) ExpandedStretch, MagickFalse },
-    { "ExtraCondensed", (long) ExtraCondensedStretch, MagickFalse },
-    { "ExtraExpanded", (long) ExtraExpandedStretch, MagickFalse },
-    { "Normal", (long) NormalStretch, MagickFalse },
-    { "SemiCondensed", (long) SemiCondensedStretch, MagickFalse },
-    { "SemiExpanded", (long) SemiExpandedStretch, MagickFalse },
-    { "UltraCondensed", (long) UltraCondensedStretch, MagickFalse },
-    { "UltraExpanded", (long) UltraExpandedStretch, MagickFalse },
-    { (char *) NULL, (long) UndefinedStretch, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedStretch, MagickTrue },
+    { "Any", (ssize_t) AnyStretch, MagickFalse },
+    { "Condensed", (ssize_t) CondensedStretch, MagickFalse },
+    { "Expanded", (ssize_t) ExpandedStretch, MagickFalse },
+    { "ExtraCondensed", (ssize_t) ExtraCondensedStretch, MagickFalse },
+    { "ExtraExpanded", (ssize_t) ExtraExpandedStretch, MagickFalse },
+    { "Normal", (ssize_t) NormalStretch, MagickFalse },
+    { "SemiCondensed", (ssize_t) SemiCondensedStretch, MagickFalse },
+    { "SemiExpanded", (ssize_t) SemiExpandedStretch, MagickFalse },
+    { "UltraCondensed", (ssize_t) UltraCondensedStretch, MagickFalse },
+    { "UltraExpanded", (ssize_t) UltraExpandedStretch, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedStretch, MagickFalse }
   },
   StyleOptions[] =
   {
-    { "Undefined", (long) UndefinedStyle, MagickTrue },
-    { "Any", (long) AnyStyle, MagickFalse },
-    { "Italic", (long) ItalicStyle, MagickFalse },
-    { "Normal", (long) NormalStyle, MagickFalse },
-    { "Oblique", (long) ObliqueStyle, MagickFalse },
-    { (char *) NULL, (long) UndefinedStyle, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedStyle, MagickTrue },
+    { "Any", (ssize_t) AnyStyle, MagickFalse },
+    { "Italic", (ssize_t) ItalicStyle, MagickFalse },
+    { "Normal", (ssize_t) NormalStyle, MagickFalse },
+    { "Oblique", (ssize_t) ObliqueStyle, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedStyle, MagickFalse }
   },
   TypeOptions[] =
   {
-    { "Undefined", (long) UndefinedType, MagickTrue },
-    { "Bilevel", (long) BilevelType, MagickFalse },
-    { "ColorSeparation", (long) ColorSeparationType, MagickFalse },
-    { "ColorSeparationMatte", (long) ColorSeparationMatteType, MagickFalse },
-    { "Grayscale", (long) GrayscaleType, MagickFalse },
-    { "GrayscaleMatte", (long) GrayscaleMatteType, MagickFalse },
-    { "Optimize", (long) OptimizeType, MagickFalse },
-    { "Palette", (long) PaletteType, MagickFalse },
-    { "PaletteBilevelMatte", (long) PaletteBilevelMatteType, MagickFalse },
-    { "PaletteMatte", (long) PaletteMatteType, MagickFalse },
-    { "TrueColorMatte", (long) TrueColorMatteType, MagickFalse },
-    { "TrueColor", (long) TrueColorType, MagickFalse },
-    { (char *) NULL, (long) UndefinedType, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedType, MagickTrue },
+    { "Bilevel", (ssize_t) BilevelType, MagickFalse },
+    { "ColorSeparation", (ssize_t) ColorSeparationType, MagickFalse },
+    { "ColorSeparationMatte", (ssize_t) ColorSeparationMatteType, MagickFalse },
+    { "Grayscale", (ssize_t) GrayscaleType, MagickFalse },
+    { "GrayscaleMatte", (ssize_t) GrayscaleMatteType, MagickFalse },
+    { "Optimize", (ssize_t) OptimizeType, MagickFalse },
+    { "Palette", (ssize_t) PaletteType, MagickFalse },
+    { "PaletteBilevelMatte", (ssize_t) PaletteBilevelMatteType, MagickFalse },
+    { "PaletteMatte", (ssize_t) PaletteMatteType, MagickFalse },
+    { "TrueColorMatte", (ssize_t) TrueColorMatteType, MagickFalse },
+    { "TrueColor", (ssize_t) TrueColorType, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedType, MagickFalse }
   },
   ValidateOptions[] =
   {
-    { "Undefined", (long) UndefinedValidate, MagickTrue },
-    { "All", (long) AllValidate, MagickFalse },
-    { "Compare", (long) CompareValidate, MagickFalse },
-    { "Composite", (long) CompositeValidate, MagickFalse },
-    { "Convert", (long) ConvertValidate, MagickFalse },
-    { "FormatsInMemory", (long) FormatsInMemoryValidate, MagickFalse },
-    { "FormatsOnDisk", (long) FormatsOnDiskValidate, MagickFalse },
-    { "Identify", (long) IdentifyValidate, MagickFalse },
-    { "ImportExport", (long) ImportExportValidate, MagickFalse },
-    { "Montage", (long) MontageValidate, MagickFalse },
-    { "Stream", (long) StreamValidate, MagickFalse },
-    { "None", (long) NoValidate, MagickFalse },
-    { (char *) NULL, (long) UndefinedValidate, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedValidate, MagickTrue },
+    { "All", (ssize_t) AllValidate, MagickFalse },
+    { "Compare", (ssize_t) CompareValidate, MagickFalse },
+    { "Composite", (ssize_t) CompositeValidate, MagickFalse },
+    { "Convert", (ssize_t) ConvertValidate, MagickFalse },
+    { "FormatsInMemory", (ssize_t) FormatsInMemoryValidate, MagickFalse },
+    { "FormatsOnDisk", (ssize_t) FormatsOnDiskValidate, MagickFalse },
+    { "Identify", (ssize_t) IdentifyValidate, MagickFalse },
+    { "ImportExport", (ssize_t) ImportExportValidate, MagickFalse },
+    { "Montage", (ssize_t) MontageValidate, MagickFalse },
+    { "Stream", (ssize_t) StreamValidate, MagickFalse },
+    { "None", (ssize_t) NoValidate, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedValidate, MagickFalse }
   },
   VirtualPixelOptions[] =
   {
-    { "Undefined", (long) UndefinedVirtualPixelMethod, MagickTrue },
-    { "Background", (long) BackgroundVirtualPixelMethod, MagickFalse },
-    { "Black", (long) BlackVirtualPixelMethod, MagickFalse },
-    { "Constant", (long) BackgroundVirtualPixelMethod, MagickTrue }, /* deprecated */
-    { "CheckerTile", (long) CheckerTileVirtualPixelMethod, MagickFalse },
-    { "Dither", (long) DitherVirtualPixelMethod, MagickFalse },
-    { "Edge", (long) EdgeVirtualPixelMethod, MagickFalse },
-    { "Gray", (long) GrayVirtualPixelMethod, MagickFalse },
-    { "HorizontalTile", (long) HorizontalTileVirtualPixelMethod, MagickFalse },
-    { "HorizontalTileEdge", (long) HorizontalTileEdgeVirtualPixelMethod, MagickFalse },
-    { "Mirror", (long) MirrorVirtualPixelMethod, MagickFalse },
-    { "Random", (long) RandomVirtualPixelMethod, MagickFalse },
-    { "Tile", (long) TileVirtualPixelMethod, MagickFalse },
-    { "Transparent", (long) TransparentVirtualPixelMethod, MagickFalse },
-    { "VerticalTile", (long) VerticalTileVirtualPixelMethod, MagickFalse },
-    { "VerticalTileEdge", (long) VerticalTileEdgeVirtualPixelMethod, MagickFalse },
-    { "White", (long) WhiteVirtualPixelMethod, MagickFalse },
-    { (char *) NULL, (long) UndefinedVirtualPixelMethod, MagickFalse }
+    { "Undefined", (ssize_t) UndefinedVirtualPixelMethod, MagickTrue },
+    { "Background", (ssize_t) BackgroundVirtualPixelMethod, MagickFalse },
+    { "Black", (ssize_t) BlackVirtualPixelMethod, MagickFalse },
+    { "Constant", (ssize_t) BackgroundVirtualPixelMethod, MagickTrue }, /* deprecated */
+    { "CheckerTile", (ssize_t) CheckerTileVirtualPixelMethod, MagickFalse },
+    { "Dither", (ssize_t) DitherVirtualPixelMethod, MagickFalse },
+    { "Edge", (ssize_t) EdgeVirtualPixelMethod, MagickFalse },
+    { "Gray", (ssize_t) GrayVirtualPixelMethod, MagickFalse },
+    { "HorizontalTile", (ssize_t) HorizontalTileVirtualPixelMethod, MagickFalse },
+    { "HorizontalTileEdge", (ssize_t) HorizontalTileEdgeVirtualPixelMethod, MagickFalse },
+    { "Mirror", (ssize_t) MirrorVirtualPixelMethod, MagickFalse },
+    { "Random", (ssize_t) RandomVirtualPixelMethod, MagickFalse },
+    { "Tile", (ssize_t) TileVirtualPixelMethod, MagickFalse },
+    { "Transparent", (ssize_t) TransparentVirtualPixelMethod, MagickFalse },
+    { "VerticalTile", (ssize_t) VerticalTileVirtualPixelMethod, MagickFalse },
+    { "VerticalTileEdge", (ssize_t) VerticalTileEdgeVirtualPixelMethod, MagickFalse },
+    { "White", (ssize_t) WhiteVirtualPixelMethod, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedVirtualPixelMethod, MagickFalse }
   };
 
 /*
@@ -1800,7 +1800,7 @@ MagickExport char **GetMagickOptions(const MagickOption value)
   const OptionInfo
     *option_info;
 
-  register long
+  register ssize_t
     i;
 
   option_info=GetOptionInfo(value);
@@ -1902,7 +1902,7 @@ MagickExport MagickBooleanType IsMagickOption(const char *option)
 %  The format of the MagickOptionToMnemonic method is:
 %
 %      const char *MagickOptionToMnemonic(const MagickOption option,
-%        const long type)
+%        const ssize_t type)
 %
 %  A description of each parameter follows:
 %
@@ -1912,12 +1912,12 @@ MagickExport MagickBooleanType IsMagickOption(const char *option)
 %
 */
 MagickExport const char *MagickOptionToMnemonic(const MagickOption option,
-  const long type)
+  const ssize_t type)
 {
   const OptionInfo
     *option_info;
 
-  register long
+  register ssize_t
     i;
 
   option_info=GetOptionInfo(option);
@@ -1964,7 +1964,7 @@ MagickExport MagickBooleanType ListMagickOptions(FILE *file,
   const OptionInfo
     *option_info;
 
-  register long
+  register ssize_t
     i;
 
   if (file == (FILE *) NULL)
@@ -1997,26 +1997,26 @@ MagickExport MagickBooleanType ListMagickOptions(FILE *file,
 %
 %  The format of the ParseChannelOption method is:
 %
-%      long ParseChannelOption(const char *channels)
+%      ssize_t ParseChannelOption(const char *channels)
 %
 %  A description of each parameter follows:
 %
 %    o options: One or more values separated by commas.
 %
 */
-MagickExport long ParseChannelOption(const char *channels)
+MagickExport ssize_t ParseChannelOption(const char *channels)
 {
-  long
+  ssize_t
     channel;
 
-  register long
+  register ssize_t
     i;
 
   channel=ParseMagickOption(MagickChannelOptions,MagickTrue,channels);
   if (channel >= 0)
     return(channel);
   channel=0;
-  for (i=0; i < (long) strlen(channels); i++)
+  for (i=0; i < (ssize_t) strlen(channels); i++)
   {
     switch (channels[i])
     {
@@ -2086,7 +2086,7 @@ MagickExport long ParseChannelOption(const char *channels)
           More channel flags follow shorthand.  For example "RGB,sync"
           Gather the additional channel flags and merge with shorthand
         */
-        long
+        ssize_t
           more_channel;
         more_channel=ParseMagickOption(MagickChannelOptions,MagickTrue,
                              channels+i+1);
@@ -2117,7 +2117,7 @@ MagickExport long ParseChannelOption(const char *channels)
 %
 %  The format of the ParseMagickOption method is:
 %
-%      long ParseMagickOption(const MagickOption option,
+%      ssize_t ParseMagickOption(const MagickOption option,
 %        const MagickBooleanType list,const char *options)
 %
 %  A description of each parameter follows:
@@ -2130,7 +2130,7 @@ MagickExport long ParseChannelOption(const char *channels)
 %    o options: One or more options separated by commas.
 %
 */
-MagickExport long ParseMagickOption(const MagickOption option,
+MagickExport ssize_t ParseMagickOption(const MagickOption option,
   const MagickBooleanType list,const char *options)
 {
   char
@@ -2142,7 +2142,7 @@ MagickExport long ParseMagickOption(const MagickOption option,
   int
     sentinel;
 
-  long
+  ssize_t
     option_types;
 
   MagickBooleanType
@@ -2154,7 +2154,7 @@ MagickExport long ParseMagickOption(const MagickOption option,
   register const char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   option_info=GetOptionInfo(option);

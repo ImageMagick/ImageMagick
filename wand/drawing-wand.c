@@ -89,7 +89,7 @@ typedef enum
 
 struct _DrawingWand
 {
-  unsigned long
+  size_t
     id;
 
   char
@@ -110,7 +110,7 @@ struct _DrawingWand
     mvg_alloc,          /* total allocated memory */
     mvg_length;         /* total MVG length */
 
-  unsigned long
+  size_t
     mvg_width;          /* current line width */
 
   /* Pattern support */
@@ -124,7 +124,7 @@ struct _DrawingWand
     pattern_offset;
 
   /* Graphic wand */
-  unsigned long
+  size_t
     index;              /* array index */
 
   DrawInfo
@@ -134,7 +134,7 @@ struct _DrawingWand
     filter_off;         /* true if not filtering attributes */
 
   /* Pretty-printing depth */
-  unsigned long
+  size_t
     indent_depth;       /* number of left-hand pad characters */
 
   /* Path operation support */
@@ -148,7 +148,7 @@ struct _DrawingWand
     destroy,
     debug;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -160,7 +160,7 @@ struct _DrawVTable
     const unsigned char *);
   void (*DrawArc)(DrawingWand *,const double,const double,const double,
     const double,const double,const double);
-  void (*DrawBezier)(DrawingWand *,const unsigned long,const PointInfo *);
+  void (*DrawBezier)(DrawingWand *,const size_t,const PointInfo *);
   void (*DrawCircle)(DrawingWand *,const double,const double,const double,
     const double);
   void (*DrawColor)(DrawingWand *,const double,const double,const PaintMethod);
@@ -206,8 +206,8 @@ struct _DrawVTable
   void (*DrawPathMoveToRelative)(DrawingWand *,const double,const double);
   void (*DrawPathStart)(DrawingWand *);
   void (*DrawPoint)(DrawingWand *,const double,const double);
-  void (*DrawPolygon)(DrawingWand *,const unsigned long,const PointInfo *);
-  void (*DrawPolyline)(DrawingWand *,const unsigned long,const PointInfo *);
+  void (*DrawPolygon)(DrawingWand *,const size_t,const PointInfo *);
+  void (*DrawPolyline)(DrawingWand *,const size_t,const PointInfo *);
   void (*DrawPopClipPath)(DrawingWand *);
   void (*DrawPopDefs)(DrawingWand *);
   MagickBooleanType (*DrawPopPattern)(DrawingWand *);
@@ -236,7 +236,7 @@ struct _DrawVTable
   void (*DrawSetFontSize)(DrawingWand *,const double);
   void (*DrawSetFontStretch)(DrawingWand *,const StretchType);
   void (*DrawSetFontStyle)(DrawingWand *,const StyleType);
-  void (*DrawSetFontWeight)(DrawingWand *,const unsigned long);
+  void (*DrawSetFontWeight)(DrawingWand *,const size_t);
   void (*DrawSetGravity)(DrawingWand *,const GravityType);
   void (*DrawRotate)(DrawingWand *,const double);
   void (*DrawScale)(DrawingWand *,const double,const double);
@@ -248,15 +248,15 @@ struct _DrawVTable
   void (*DrawSetStrokeDashOffset)(DrawingWand *,const double);
   void (*DrawSetStrokeLineCap)(DrawingWand *,const LineCap);
   void (*DrawSetStrokeLineJoin)(DrawingWand *,const LineJoin);
-  void (*DrawSetStrokeMiterLimit)(DrawingWand *,const unsigned long);
+  void (*DrawSetStrokeMiterLimit)(DrawingWand *,const size_t);
   MagickBooleanType (*DrawSetStrokePatternURL)(DrawingWand *,const char *);
   void (*DrawSetStrokeWidth)(DrawingWand *,const double);
   void (*DrawSetTextAntialias)(DrawingWand *,const MagickBooleanType);
   void (*DrawSetTextDecoration)(DrawingWand *,const DecorationType);
   void (*DrawSetTextUnderColor)(DrawingWand *,const PixelWand *);
   void (*DrawTranslate)(DrawingWand *,const double,const double);
-  void (*DrawSetViewbox)(DrawingWand *,unsigned long,unsigned long,
-    unsigned long,unsigned long);
+  void (*DrawSetViewbox)(DrawingWand *,size_t,size_t,
+    size_t,size_t);
   void (*PeekDrawingWand)(DrawingWand *);
   MagickBooleanType (*PopDrawingWand)(DrawingWand *);
   MagickBooleanType (*PushDrawingWand)(DrawingWand *);
@@ -411,12 +411,12 @@ static void MvgAppendColor(DrawingWand *wand,const PixelPacket *color)
 }
 
 static void MvgAppendPointsCommand(DrawingWand *wand,const char *command,
-  const unsigned long number_coordinates,const PointInfo *coordinates)
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
   const PointInfo
     *coordinate;
 
-  unsigned long
+  size_t
     i;
 
   (void) MvgPrintf(wand,"%s",command);
@@ -549,7 +549,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
   DrawingWand
     *clone_wand;
 
-  register long
+  register ssize_t
     i;
 
   assert(wand != (DrawingWand *) NULL);
@@ -579,7 +579,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
   if (clone_wand->graphic_context == (DrawInfo **) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  for (i=0; i <= (long) wand->index; i++)
+  for (i=0; i <= (ssize_t) wand->index; i++)
     clone_wand->graphic_context[i]=
       CloneDrawInfo((ImageInfo *) NULL,wand->graphic_context[i]);
   clone_wand->filter_off=wand->filter_off;
@@ -837,7 +837,7 @@ WandExport void DrawArc(DrawingWand *wand,const double sx,const double sy,
 %  The format of the DrawBezier method is:
 %
 %      void DrawBezier(DrawingWand *wand,
-%        const unsigned long number_coordinates,const PointInfo *coordinates)
+%        const size_t number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
@@ -849,7 +849,7 @@ WandExport void DrawArc(DrawingWand *wand,const double sx,const double sy,
 %
 */
 WandExport void DrawBezier(DrawingWand *wand,
-  const unsigned long number_coordinates,const PointInfo *coordinates)
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -995,7 +995,7 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
   register char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -1039,12 +1039,12 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
         wand->name);
       return(MagickFalse);
     }
-  mode=MagickOptionToMnemonic(MagickComposeOptions,(long) compose);
+  mode=MagickOptionToMnemonic(MagickComposeOptions,(ssize_t) compose);
   media_type=MagickToMime(image->magick);
   (void) MvgPrintf(wand,"image %s %g,%g %g,%g 'data:%s;base64,\n",
     mode,x,y,width,height,media_type);
   p=base64;
-  for (i=(long) encoded_length; i > 0; i-=76)
+  for (i=(ssize_t) encoded_length; i > 0; i-=76)
   {
     (void) MvgPrintf(wand,"%.76s",p);
     p+=76;
@@ -1101,7 +1101,7 @@ WandExport void DrawColor(DrawingWand *wand,const double x,const double y,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"color %g,%g '%s'\n",x,y,MagickOptionToMnemonic(
-    MagickMethodOptions,(long) paint_method));
+    MagickMethodOptions,(ssize_t) paint_method));
 }
 
 /*
@@ -1228,7 +1228,7 @@ WandExport void DrawGetBorderColor(const DrawingWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawGetClipPath() obtains the current clipping path ID. The value returned
-%  must be deallocated by the user when it is no longer needed.
+%  must be deallocated by the user when it is no ssize_ter needed.
 %
 %  The format of the DrawGetClipPath method is:
 %
@@ -1519,7 +1519,7 @@ WandExport FillRule DrawGetFillRule(const DrawingWand *wand)
 %
 %  DrawGetFont() returns a null-terminaged string specifying the font used
 %  when annotating with text. The value returned must be freed by the user
-%  when no longer needed.
+%  when no ssize_ter needed.
 %
 %  The format of the DrawGetFont method is:
 %
@@ -1553,7 +1553,7 @@ WandExport char *DrawGetFont(const DrawingWand *wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawGetFontFamily() returns the font family to use when annotating with text.
-%  The value returned must be freed by the user when it is no longer needed.
+%  The value returned must be freed by the user when it is no ssize_ter needed.
 %
 %  The format of the DrawGetFontFamily method is:
 %
@@ -1683,14 +1683,14 @@ WandExport StyleType DrawGetFontStyle(const DrawingWand *wand)
 %
 %  The format of the DrawGetFontWeight method is:
 %
-%      unsigned long DrawGetFontWeight(const DrawingWand *wand)
+%      size_t DrawGetFontWeight(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
 */
-WandExport unsigned long DrawGetFontWeight(const DrawingWand *wand)
+WandExport size_t DrawGetFontWeight(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -1850,12 +1850,12 @@ WandExport void DrawGetStrokeColor(const DrawingWand *wand,
 %
 %  DrawGetStrokeDashArray() returns an array representing the pattern of
 %  dashes and gaps used to stroke paths (see DrawSetStrokeDashArray). The
-%  array must be freed once it is no longer required by the user.
+%  array must be freed once it is no ssize_ter required by the user.
 %
 %  The format of the DrawGetStrokeDashArray method is:
 %
 %      double *DrawGetStrokeDashArray(const DrawingWand *wand,
-%        unsigned long *number_elements)
+%        size_t *number_elements)
 %
 %  A description of each parameter follows:
 %
@@ -1865,7 +1865,7 @@ WandExport void DrawGetStrokeColor(const DrawingWand *wand,
 %
 */
 WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
-  unsigned long *number_elements)
+  size_t *number_elements)
 {
   double
     *dash_array;
@@ -1876,17 +1876,17 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
   register double
     *q;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     n;
 
   assert(wand != (const DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  assert(number_elements != (unsigned long *) NULL);
+  assert(number_elements != (size_t *) NULL);
   n=0;
   p=CurrentContext->dash_pattern;
   if (p != (const double *) NULL)
@@ -1900,7 +1900,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
         sizeof(*dash_array));
       p=CurrentContext->dash_pattern;
       q=dash_array;
-      for (i=0; i < (long) n; i++)
+      for (i=0; i < (ssize_t) n; i++)
         *q++=(*p++);
     }
   return(dash_array);
@@ -2024,14 +2024,14 @@ WandExport LineJoin DrawGetStrokeLineJoin(const DrawingWand *wand)
 %
 %  The format of the DrawGetStrokeMiterLimit method is:
 %
-%      unsigned long DrawGetStrokeMiterLimit(const DrawingWand *wand)
+%      size_t DrawGetStrokeMiterLimit(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
 */
-WandExport unsigned long DrawGetStrokeMiterLimit(const DrawingWand *wand)
+WandExport size_t DrawGetStrokeMiterLimit(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -2216,7 +2216,7 @@ WandExport DecorationType DrawGetTextDecoration(const DrawingWand *wand)
 %
 %  DrawGetTextEncoding() returns a null-terminated string which specifies the
 %  code set used for text annotations. The string must be freed by the user
-%  once it is no longer required.
+%  once it is no ssize_ter required.
 %
 %  The format of the DrawGetTextEncoding method is:
 %
@@ -2345,7 +2345,7 @@ WandExport double DrawGetTextInterwordSpacing(DrawingWand *wand)
 %
 %  DrawGetVectorGraphics() returns a null-terminated string which specifies the
 %  vector graphics generated by any graphics calls made since the wand was
-%  instantiated.  The string must be freed by the user once it is no longer
+%  instantiated.  The string must be freed by the user once it is no ssize_ter
 %  required.
 %
 %  The format of the DrawGetVectorGraphics method is:
@@ -2381,7 +2381,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   MagickPixelPacket
     pixel;
 
-  register long
+  register ssize_t
     i;
 
   XMLTreeInfo
@@ -2403,14 +2403,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickClipPathOptions,(long) CurrentContext->clip_units),MaxTextExtent);
+        MagickClipPathOptions,(ssize_t) CurrentContext->clip_units),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"decorate",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickDecorateOptions,(long) CurrentContext->decorate),MaxTextExtent);
+        MagickDecorateOptions,(ssize_t) CurrentContext->decorate),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"encoding",0);
@@ -2438,7 +2438,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickFillRuleOptions,(long) CurrentContext->fill_rule),MaxTextExtent);
+        MagickFillRuleOptions,(ssize_t) CurrentContext->fill_rule),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font",0);
@@ -2458,14 +2458,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickStretchOptions,(long) CurrentContext->stretch),MaxTextExtent);
+        MagickStretchOptions,(ssize_t) CurrentContext->stretch),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font-style",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickStyleOptions,(long) CurrentContext->style),MaxTextExtent);
+        MagickStyleOptions,(ssize_t) CurrentContext->style),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font-weight",0);
@@ -2479,7 +2479,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(MagickGravityOptions,
-        (long) CurrentContext->gravity),MaxTextExtent);
+        (ssize_t) CurrentContext->gravity),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke",0);
@@ -2530,14 +2530,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(MagickLineCapOptions,
-        (long) CurrentContext->linecap),MaxTextExtent);
+        (ssize_t) CurrentContext->linecap),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-linejoin",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickLineJoinOptions,(long) CurrentContext->linejoin),MaxTextExtent);
+        MagickLineJoinOptions,(ssize_t) CurrentContext->linejoin),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-miterlimit",0);
@@ -2565,7 +2565,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(MagickAlignOptions,
-        (long) CurrentContext->align),MaxTextExtent);
+        (ssize_t) CurrentContext->align),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"text-antialias",0);
@@ -2720,7 +2720,7 @@ WandExport void DrawMatte(DrawingWand *wand,const double x,const double y,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"matte %g,%g '%s'\n",x,y,MagickOptionToMnemonic(
-    MagickMethodOptions,(long) paint_method));
+    MagickMethodOptions,(ssize_t) paint_method));
 }
 
 /*
@@ -3859,7 +3859,7 @@ WandExport void DrawPoint(DrawingWand *wand,const double x,const double y)
 %  The format of the DrawPolygon method is:
 %
 %      void DrawPolygon(DrawingWand *wand,
-%        const unsigned long number_coordinates,const PointInfo *coordinates)
+%        const size_t number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
@@ -3871,7 +3871,7 @@ WandExport void DrawPoint(DrawingWand *wand,const double x,const double y)
 %
 */
 WandExport void DrawPolygon(DrawingWand *wand,
-  const unsigned long number_coordinates,const PointInfo *coordinates)
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -3897,7 +3897,7 @@ WandExport void DrawPolygon(DrawingWand *wand,
 %  The format of the DrawPolyline method is:
 %
 %      void DrawPolyline(DrawingWand *wand,
-%        const unsigned long number_coordinates,const PointInfo *coordinates)
+%        const size_t number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
@@ -3909,7 +3909,7 @@ WandExport void DrawPolygon(DrawingWand *wand,
 %
 */
 WandExport void DrawPolyline(DrawingWand *wand,
-  const unsigned long number_coordinates,const PointInfo *coordinates)
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -4173,10 +4173,10 @@ WandExport MagickBooleanType DrawPushPattern(DrawingWand *wand,
     x,y,width,height);
   wand->indent_depth++;
   wand->pattern_id=AcquireString(pattern_id);
-  wand->pattern_bounds.x=(long) ceil(x-0.5);
-  wand->pattern_bounds.y=(long) ceil(y-0.5);
-  wand->pattern_bounds.width=(unsigned long) floor(width+0.5);
-  wand->pattern_bounds.height=(unsigned long) floor(height+0.5);
+  wand->pattern_bounds.x=(ssize_t) ceil(x-0.5);
+  wand->pattern_bounds.y=(ssize_t) ceil(y-0.5);
+  wand->pattern_bounds.width=(size_t) floor(width+0.5);
+  wand->pattern_bounds.height=(size_t) floor(height+0.5);
   wand->pattern_offset=wand->mvg_length;
   return(MagickTrue);
 }
@@ -4509,7 +4509,7 @@ WandExport void DrawSetBorderColor(DrawingWand *wand,const PixelWand *border_wan
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawSetClipPath() associates a named clipping path with the image.  Only
-%  the areas drawn on by the clipping path will be modified as long as it
+%  the areas drawn on by the clipping path will be modified as ssize_t as it
 %  remains in effect.
 %
 %  The format of the DrawSetClipPath method is:
@@ -4582,7 +4582,7 @@ WandExport void DrawSetClipRule(DrawingWand *wand,const FillRule fill_rule)
     {
       CurrentContext->fill_rule=fill_rule;
       (void) MvgPrintf(wand, "clip-rule '%s'\n",MagickOptionToMnemonic(
-        MagickFillRuleOptions,(long) fill_rule));
+        MagickFillRuleOptions,(ssize_t) fill_rule));
     }
 }
 
@@ -4636,7 +4636,7 @@ WandExport void DrawSetClipUnits(DrawingWand *wand,
           AdjustAffine(wand,&affine);
         }
       (void) MvgPrintf(wand, "clip-units '%s'\n",MagickOptionToMnemonic(
-        MagickClipPathOptions,(long) clip_units));
+        MagickClipPathOptions,(ssize_t) clip_units));
     }
 }
 
@@ -4874,7 +4874,7 @@ WandExport void DrawSetFillRule(DrawingWand *wand,const FillRule fill_rule)
     {
       CurrentContext->fill_rule=fill_rule;
       (void) MvgPrintf(wand, "fill-rule '%s'\n",MagickOptionToMnemonic(
-        MagickFillRuleOptions,(long) fill_rule));
+        MagickFillRuleOptions,(ssize_t) fill_rule));
     }
 }
 
@@ -5043,7 +5043,7 @@ WandExport void DrawSetFontStretch(DrawingWand *wand,
     {
       CurrentContext->stretch=font_stretch;
       (void) MvgPrintf(wand, "font-stretch '%s'\n",MagickOptionToMnemonic(
-        MagickStretchOptions,(long) font_stretch));
+        MagickStretchOptions,(ssize_t) font_stretch));
     }
 }
 
@@ -5083,7 +5083,7 @@ WandExport void DrawSetFontStyle(DrawingWand *wand,const StyleType style)
     {
       CurrentContext->style=style;
       (void) MvgPrintf(wand, "font-style '%s'\n",MagickOptionToMnemonic(
-        MagickStyleOptions,(long) style));
+        MagickStyleOptions,(ssize_t) style));
     }
 }
 
@@ -5103,7 +5103,7 @@ WandExport void DrawSetFontStyle(DrawingWand *wand,const StyleType style)
 %  The format of the DrawSetFontWeight method is:
 %
 %      void DrawSetFontWeight(DrawingWand *wand,
-%        const unsigned long font_weight)
+%        const size_t font_weight)
 %
 %  A description of each parameter follows:
 %
@@ -5113,7 +5113,7 @@ WandExport void DrawSetFontStyle(DrawingWand *wand,const StyleType style)
 %
 */
 WandExport void DrawSetFontWeight(DrawingWand *wand,
-  const unsigned long font_weight)
+  const size_t font_weight)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -5166,7 +5166,7 @@ WandExport void DrawSetGravity(DrawingWand *wand,const GravityType gravity)
     {
       CurrentContext->gravity=gravity;
       (void) MvgPrintf(wand,"gravity '%s'\n",MagickOptionToMnemonic(
-        MagickGravityOptions,(long) gravity));
+        MagickGravityOptions,(ssize_t) gravity));
     }
 }
 
@@ -5345,7 +5345,7 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *wand,
 %  The format of the DrawSetStrokeDashArray method is:
 %
 %      MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
-%        const unsigned long number_elements,const double *dash_array)
+%        const size_t number_elements,const double *dash_array)
 %
 %  A description of each parameter follows:
 %
@@ -5357,7 +5357,7 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *wand,
 %
 */
 WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
-  const unsigned long number_elements,const double *dash_array)
+  const size_t number_elements,const double *dash_array)
 {
   MagickBooleanType
     update;
@@ -5368,10 +5368,10 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
   register double
     *q;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     n_new,
     n_old;
 
@@ -5397,7 +5397,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
         {
           p=dash_array;
           q=CurrentContext->dash_pattern;
-          for (i=0; i < (long) n_new; i++)
+          for (i=0; i < (ssize_t) n_new; i++)
           {
             if (fabs((*p)-(*q)) > MagickEpsilon)
               {
@@ -5425,7 +5425,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
             }
           q=CurrentContext->dash_pattern;
           p=dash_array;
-          for (i=0; i < (long) n_new; i++)
+          for (i=0; i < (ssize_t) n_new; i++)
             *q++=(*p++);
           *q=0;
         }
@@ -5436,7 +5436,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
         {
           p=dash_array;
           (void) MvgPrintf(wand,"%g",*p++);
-          for (i=1; i < (long) n_new; i++)
+          for (i=1; i < (ssize_t) n_new; i++)
             (void) MvgPrintf(wand,",%g",*p++);
           (void) MvgPrintf(wand,"\n");
         }
@@ -5523,7 +5523,7 @@ WandExport void DrawSetStrokeLineCap(DrawingWand *wand,const LineCap linecap)
     {
       CurrentContext->linecap=linecap;
       (void) MvgPrintf(wand,"stroke-linecap '%s'\n",MagickOptionToMnemonic(
-        MagickLineCapOptions,(long) linecap));
+        MagickLineCapOptions,(ssize_t) linecap));
     }
 }
 
@@ -5565,7 +5565,7 @@ WandExport void DrawSetStrokeLineJoin(DrawingWand *wand,const LineJoin linejoin)
     {
       CurrentContext->linejoin=linejoin;
       (void) MvgPrintf(wand, "stroke-linejoin '%s'\n",MagickOptionToMnemonic(
-        MagickLineJoinOptions,(long) linejoin));
+        MagickLineJoinOptions,(ssize_t) linejoin));
     }
 }
 
@@ -5589,7 +5589,7 @@ WandExport void DrawSetStrokeLineJoin(DrawingWand *wand,const LineJoin linejoin)
 %  The format of the DrawSetStrokeMiterLimit method is:
 %
 %      void DrawSetStrokeMiterLimit(DrawingWand *wand,
-%        const unsigned long miterlimit)
+%        const size_t miterlimit)
 %
 %  A description of each parameter follows:
 %
@@ -5599,7 +5599,7 @@ WandExport void DrawSetStrokeLineJoin(DrawingWand *wand,const LineJoin linejoin)
 %
 */
 WandExport void DrawSetStrokeMiterLimit(DrawingWand *wand,
-  const unsigned long miterlimit)
+  const size_t miterlimit)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -5734,7 +5734,7 @@ WandExport void DrawSetTextAlignment(DrawingWand *wand,
     {
       CurrentContext->align=alignment;
       (void) MvgPrintf(wand,"text-align '%s'\n",MagickOptionToMnemonic(
-        MagickAlignOptions,(long) alignment));
+        MagickAlignOptions,(ssize_t) alignment));
     }
 }
 
@@ -5819,7 +5819,7 @@ WandExport void DrawSetTextDecoration(DrawingWand *wand,
     {
       CurrentContext->decorate=decoration;
       (void) MvgPrintf(wand,"decorate '%s'\n",MagickOptionToMnemonic(
-        MagickDecorateOptions,(long) decoration));
+        MagickDecorateOptions,(ssize_t) decoration));
     }
 }
 
@@ -6070,7 +6070,7 @@ static inline MagickBooleanType IsPoint(const char *point)
   char
     *p;
 
-  long
+  ssize_t
     value;
 
   value=strtol(point,&p,10);
@@ -6212,10 +6212,10 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       const char
         *q;
 
-      long
+      ssize_t
         j;
 
-      register long
+      register ssize_t
         x;
 
       value=GetXMLTreeContent(child);
@@ -6484,8 +6484,8 @@ WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
 %
 %  The format of the DrawSetViewbox method is:
 %
-%      void DrawSetViewbox(DrawingWand *wand,unsigned long x1,
-%        unsigned long y1,unsigned long x2,unsigned long y2)
+%      void DrawSetViewbox(DrawingWand *wand,size_t x1,
+%        size_t y1,size_t x2,size_t y2)
 %
 %  A description of each parameter follows:
 %
@@ -6500,8 +6500,8 @@ WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
 %    o y2: bottom y ordinate
 %
 */
-WandExport void DrawSetViewbox(DrawingWand *wand,unsigned long x1,
-  unsigned long y1,unsigned long x2,unsigned long y2)
+WandExport void DrawSetViewbox(DrawingWand *wand,size_t x1,
+  size_t y1,size_t x2,size_t y2)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -6570,7 +6570,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   DrawingWand
     *wand;
 
-  unsigned long
+  size_t
     depth;
 
   quantum=GetMagickQuantumDepth(&depth);

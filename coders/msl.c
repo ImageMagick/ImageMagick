@@ -113,7 +113,7 @@
 */
 typedef struct _MSLGroupInfo
 {
-  unsigned long
+  size_t
     numImages;  /* how many images are in this group */
 } MSLGroupInfo;
 
@@ -122,7 +122,7 @@ typedef struct _MSLInfo
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     n,
     number_groups;
 
@@ -545,7 +545,7 @@ static void MSLEndDocument(void *context)
 
 static void MSLPushImage(MSLInfo *msl_info,Image *image)
 {
-  long
+  ssize_t
     n;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -629,7 +629,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   int
     flags;
 
-  long
+  ssize_t
     option,
     j,
     n,
@@ -642,10 +642,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   RectangleInfo
     geometry;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -1902,11 +1902,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"opacity") == 0)
                     {
-                      long
+                      ssize_t
                         opacity,
                         y;
 
-                      register long
+                      register ssize_t
                         x;
 
                       register PixelPacket
@@ -1927,11 +1927,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if (composite_image->matte != MagickTrue)
                         (void) SetImageOpacity(composite_image,OpaqueOpacity);
                       composite_view=AcquireCacheView(composite_image);
-                      for (y=0; y < (long) composite_image->rows ; y++)
+                      for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
-                        q=GetCacheViewAuthenticPixels(composite_view,0,y,(long)
+                        q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)
                           composite_image->columns,1,&exception);
-                        for (x=0; x < (long) composite_image->columns; x++)
+                        for (x=0; x < (ssize_t) composite_image->columns; x++)
                         {
                           if (q->opacity == OpaqueOpacity)
                             q->opacity=ClampToQuantum(opacity);
@@ -1983,8 +1983,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                        image=msl_info->image[n];
                        height=composite_image->rows;
                        width=composite_image->columns;
-                       for (y=0; y < (long) image->rows; y+=height)
-                         for (x=0; x < (long) image->columns; x+=width)
+                       for (y=0; y < (ssize_t) image->rows; y+=height)
+                         for (x=0; x < (ssize_t) image->columns; x+=width)
                          {
                            if (rotate_image != (Image *) NULL)
                              (void) CompositeImage(image,compose,rotate_image,
@@ -2051,9 +2051,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               /*
                 Rotate image.
               */
-              geometry.x-=(long) (rotate_image->columns-
+              geometry.x-=(ssize_t) (rotate_image->columns-
                 composite_image->columns)/2;
-              geometry.y-=(long) (rotate_image->rows-composite_image->rows)/2;
+              geometry.y-=(ssize_t) (rotate_image->rows-composite_image->rows)/2;
               CompositeImageChannel(image,channel,compose,rotate_image,
                 geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
@@ -2218,7 +2218,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag,"cycle-colormap") == 0)
         {
-          long
+          ssize_t
             display;
 
           /*
@@ -3097,8 +3097,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          frame_info.x=(long) frame_info.width;
-          frame_info.y=(long) frame_info.height;
+          frame_info.x=(ssize_t) frame_info.width;
+          frame_info.y=(ssize_t) frame_info.height;
           frame_info.width=msl_info->image[n]->columns+2*frame_info.x;
           frame_info.height=msl_info->image[n]->rows+2*frame_info.y;
           frame_image=FrameImage(msl_info->image[n],&frame_info,
@@ -4345,7 +4345,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (profile != (StringInfo *) NULL)
                     {
                       (void) ProfileImage(msl_info->image[n],name,
-                        GetStringInfoDatum(profile),(unsigned long)
+                        GetStringInfoDatum(profile),(size_t)
                         GetStringInfoLength(profile),MagickFalse);
                       profile=DestroyStringInfo(profile);
                     }
@@ -4358,7 +4358,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 profile=GetImageProfile(profile_image,name);
                 if (profile != (StringInfo *) NULL)
                   (void) ProfileImage(msl_info->image[n],name,
-                    GetStringInfoDatum(profile),(unsigned long)
+                    GetStringInfoDatum(profile),(size_t)
                     GetStringInfoLength(profile),MagickFalse);
                 name=GetNextImageProfile(profile_image);
               }
@@ -5206,7 +5206,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
             if (LocaleCompare(keyword,"geometry") == 0)
               {
-                long
+                ssize_t
                   flags;
 
                 flags=ParseGeometry(value,&geometry_info);
@@ -5261,10 +5261,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         factor=1.0;
         if (msl_info->image[n]->units == PixelsPerCentimeterResolution)
           factor=2.54;
-        width=(unsigned long) (x_resolution*msl_info->image[n]->columns/
+        width=(size_t) (x_resolution*msl_info->image[n]->columns/
           (factor*(msl_info->image[n]->x_resolution == 0.0 ? DefaultResolution :
           msl_info->image[n]->x_resolution))+0.5);
-        height=(unsigned long) (y_resolution*msl_info->image[n]->rows/
+        height=(size_t) (y_resolution*msl_info->image[n]->rows/
           (factor*(msl_info->image[n]->y_resolution == 0.0 ? DefaultResolution :
           msl_info->image[n]->y_resolution))+0.5);
         resample_image=ResizeImage(msl_info->image[n],width,height,
@@ -5970,7 +5970,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               if (LocaleCompare(keyword,"colorspace") == 0)
                 {
-                  long
+                  ssize_t
                     colorspace;
 
                   colorspace=(ColorspaceType) ParseMagickOption(
@@ -6006,8 +6006,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword, "opacity") == 0)
                 {
-                  long  opac = OpaqueOpacity,
-                  len = (long) strlen( value );
+                  ssize_t  opac = OpaqueOpacity,
+                  len = (ssize_t) strlen( value );
 
                   if (value[len-1] == '%') {
                     char  tmp[100];
@@ -6248,7 +6248,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           shadow_image=ShadowImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,(long) ceil(geometry_info.xi-0.5),(long)
+            geometry_info.sigma,(ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
             ceil(geometry_info.psi-0.5),&msl_info->image[n]->exception);
           if (shadow_image == (Image *) NULL)
             break;
@@ -6790,7 +6790,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             *q,
             *swap;
 
-          long
+          ssize_t
             index,
             swap_index;
 
@@ -6817,9 +6817,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"indexes") == 0)
                     {
                       flags=ParseGeometry(value,&geometry_info);
-                      index=(long) geometry_info.rho;
+                      index=(ssize_t) geometry_info.rho;
                       if ((flags & SigmaValue) == 0)
-                        swap_index=(long) geometry_info.sigma;
+                        swap_index=(ssize_t) geometry_info.sigma;
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -7050,7 +7050,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         */
         {
         BilevelImageChannel(msl_info->image[n],
-          (ChannelType) ((long) (AllChannels &~ (long) OpacityChannel)),
+          (ChannelType) ((ssize_t) (AllChannels &~ (ssize_t) OpacityChannel)),
           threshold);
         break;
         }
@@ -7187,7 +7187,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
 static void MSLEndElement(void *context,const xmlChar *tag)
 {
-  long
+  ssize_t
     n;
 
   MSLInfo
@@ -7224,7 +7224,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
       {
         if (msl_info->group_info[msl_info->number_groups-1].numImages > 0 )
         {
-          long  i = (long)
+          ssize_t  i = (ssize_t)
             (msl_info->group_info[msl_info->number_groups-1].numImages);
           while ( i-- )
           {
@@ -7289,7 +7289,7 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   register char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -7549,7 +7549,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
   int
     status;
 
-  long
+  ssize_t
     n;
 
   MSLInfo
@@ -7644,7 +7644,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
     msl_image->filename);
   while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
-    n=(long) strlen(message);
+    n=(ssize_t) strlen(message);
     if (n == 0)
       continue;
     status=xmlParseChunk(msl_info.parser,message,(int) n,MagickFalse);
@@ -7709,10 +7709,10 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterMSLImage method is:
 %
-%      unsigned long RegisterMSLImage(void)
+%      size_t RegisterMSLImage(void)
 %
 */
-ModuleExport unsigned long RegisterMSLImage(void)
+ModuleExport size_t RegisterMSLImage(void)
 {
   MagickInfo
     *entry;
@@ -7780,7 +7780,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   int
     flags;
 
-  long
+  ssize_t
     n;
 
   assert(msl_info != (MSLInfo *) NULL);
@@ -7801,7 +7801,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"adjoin") == 0)
         {
-          long
+          ssize_t
             adjoin;
 
           adjoin=ParseMagickOption(MagickBooleanOptions,MagickFalse,value);
@@ -7812,7 +7812,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"alpha") == 0)
         {
-          long
+          ssize_t
             alpha;
 
           alpha=ParseMagickOption(MagickAlphaOptions,MagickFalse,value);
@@ -7824,7 +7824,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"antialias") == 0)
         {
-          long
+          ssize_t
             antialias;
 
           antialias=ParseMagickOption(MagickBooleanOptions,MagickFalse,value);
@@ -7928,7 +7928,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"gravity") == 0)
         {
-          long
+          ssize_t
             gravity;
 
           gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,value);

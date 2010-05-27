@@ -24,7 +24,7 @@ extern "C" {
 
 #include "magick/draw.h"
 
-extern MagickExport long
+extern MagickExport ssize_t
   FormatMagickCaption(Image *,DrawInfo *,TypeMetric *,char **);
 
 extern MagickExport MagickBooleanType

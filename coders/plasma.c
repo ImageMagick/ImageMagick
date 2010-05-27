@@ -109,16 +109,16 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
     *q;
 
   exception=(&image->exception);
-  q=GetAuthenticPixels(image,(long) ceil(x-0.5),(long) ceil(y-0.5),1,1,
+  q=GetAuthenticPixels(image,(ssize_t) ceil(x-0.5),(ssize_t) ceil(y-0.5),1,1,
     exception);
   if (q == (PixelPacket *) NULL)
     return;
   range=GetQuantumRange(16UL);
-  q->red=ScaleAnyToQuantum((unsigned long) (65535.0*
+  q->red=ScaleAnyToQuantum((size_t) (65535.0*
     GetPseudoRandomValue(random_info)+0.5),range);
-  q->green=ScaleAnyToQuantum((unsigned long) (65535.0*
+  q->green=ScaleAnyToQuantum((size_t) (65535.0*
     GetPseudoRandomValue(random_info)+0.5),range);
-  q->blue=ScaleAnyToQuantum((unsigned long) (65535.0*
+  q->blue=ScaleAnyToQuantum((size_t) (65535.0*
     GetPseudoRandomValue(random_info)+0.5),range);
   (void) SyncAuthenticPixels(image,exception);
 }
@@ -132,25 +132,25 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
     *q;
 
-  register unsigned long
+  register size_t
     i;
 
   SegmentInfo
     segment_info;
 
-  unsigned long
+  size_t
     depth,
     max_depth;
 
@@ -166,12 +166,12 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   if (image == (Image *) NULL)
     return((Image *) NULL);
   image->storage_class=DirectClass;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->opacity=(Quantum) (QuantumRange/2);
       q++;
@@ -208,7 +208,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       PlasmaPixel(image,random_info,segment_info.x2,segment_info.y2);
       random_info=DestroyRandomInfo(random_info);
     }
-  i=(unsigned long) MagickMax(image->columns,image->rows)/2;
+  i=(size_t) MagickMax(image->columns,image->rows)/2;
   for (max_depth=0; i != 0; max_depth++)
     i>>=1;
   for (depth=1; ; depth++)
@@ -244,10 +244,10 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterPLASMAImage method is:
 %
-%      unsigned long RegisterPLASMAImage(void)
+%      size_t RegisterPLASMAImage(void)
 %
 */
-ModuleExport unsigned long RegisterPLASMAImage(void)
+ModuleExport size_t RegisterPLASMAImage(void)
 {
   MagickInfo
     *entry;

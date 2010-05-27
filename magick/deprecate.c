@@ -151,8 +151,8 @@ MagickExport const IndexPacket *AcquireCacheViewIndexes(
 %  The format of the AcquireCacheViewPixels method is:
 %
 %      const PixelPacket *AcquireCacheViewPixels(const CacheView *cache_view,
-%        const long x,const long y,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -165,8 +165,8 @@ MagickExport const IndexPacket *AcquireCacheViewIndexes(
 %
 */
 MagickExport const PixelPacket *AcquireCacheViewPixels(
-  const CacheView *cache_view,const long x,const long y,
-  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,
+  const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
   return(GetCacheViewVirtualPixels(cache_view,x,y,columns,rows,exception));
 }
@@ -208,8 +208,8 @@ MagickExport const PixelPacket *AcquireCacheViewPixels(
 %
 %  The format of the AcquireImagePixels() method is:
 %
-%      const PixelPacket *AcquireImagePixels(const Image *image,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows,
+%      const PixelPacket *AcquireImagePixels(const Image *image,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -223,8 +223,8 @@ MagickExport const PixelPacket *AcquireCacheViewPixels(
 %
 */
 MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
   return(GetVirtualPixels(image,x,y,columns,rows,exception));
 }
@@ -322,7 +322,7 @@ MagickExport void *AcquireMemory(const size_t size)
 %  The format of the AcquireOneCacheViewPixel method is:
 %
 %      MagickBooleanType AcquireOneCacheViewPixel(const CacheView *cache_view,
-%        const long x,const long y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -336,7 +336,7 @@ MagickExport void *AcquireMemory(const size_t size)
 %
 */
 MagickExport MagickBooleanType AcquireOneCacheViewPixel(
-  const CacheView *cache_view,const long x,const long y,PixelPacket *pixel,
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
   ExceptionInfo *exception)
 {
   return(GetOneCacheViewVirtualPixel(cache_view,x,y,pixel,exception));
@@ -366,8 +366,8 @@ MagickExport MagickBooleanType AcquireOneCacheViewPixel(
 %
 %      MagickBooleanType AcquireOneCacheViewVirtualPixel(
 %        const CacheView *cache_view,
-%        const VirtualPixelMethod virtual_pixel_method,const long x,
-%        const long y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -384,7 +384,7 @@ MagickExport MagickBooleanType AcquireOneCacheViewPixel(
 */
 MagickExport MagickBooleanType AcquireOneCacheViewVirtualPixel(
   const CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method,
-  const long x,const long y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -416,8 +416,8 @@ MagickExport MagickBooleanType AcquireOneCacheViewVirtualPixel(
 %
 %  The format of the AcquireOneMagickPixel() method is:
 %
-%      MagickPixelPacket AcquireOneMagickPixel(const Image image,const long x,
-%        const long y,ExceptionInfo exception)
+%      MagickPixelPacket AcquireOneMagickPixel(const Image image,const ssize_t x,
+%        const ssize_t y,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
@@ -429,7 +429,7 @@ MagickExport MagickBooleanType AcquireOneCacheViewVirtualPixel(
 %
 */
 MagickExport MagickPixelPacket AcquireOneMagickPixel(const Image *image,
-  const long x,const long y,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,ExceptionInfo *exception)
 {
   MagickPixelPacket
     pixel;
@@ -460,8 +460,8 @@ MagickExport MagickPixelPacket AcquireOneMagickPixel(const Image *image,
 %
 %  The format of the AcquireOnePixel() method is:
 %
-%      PixelPacket AcquireOnePixel(const Image image,const long x,
-%        const long y,ExceptionInfo exception)
+%      PixelPacket AcquireOnePixel(const Image image,const ssize_t x,
+%        const ssize_t y,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
@@ -472,8 +472,8 @@ MagickExport MagickPixelPacket AcquireOneMagickPixel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
-  const long y,ExceptionInfo *exception)
+MagickExport PixelPacket AcquireOnePixel(const Image *image,const ssize_t x,
+  const ssize_t y,ExceptionInfo *exception)
 {
   PixelPacket
     pixel;
@@ -506,8 +506,8 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %  The format of the AcquireOneVirtualPixel() method is:
 %
 %      PixelPacket AcquireOneVirtualPixel(const Image image,
-%        const VirtualPixelMethod virtual_pixel_method,const long x,
-%        const long y,ExceptionInfo exception)
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
@@ -521,7 +521,7 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %
 */
 MagickExport PixelPacket AcquireOneVirtualPixel(const Image *image,
-  const VirtualPixelMethod virtual_pixel_method,const long x,const long y,
+  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
   ExceptionInfo *exception)
 {
   PixelPacket
@@ -697,7 +697,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %  The format of the AllocateImageColormap method is:
 %
 %      MagickBooleanType AllocateImageColormap(Image *image,
-%        const unsigned long colors)
+%        const size_t colors)
 %
 %  A description of each parameter follows:
 %
@@ -707,7 +707,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %
 */
 MagickExport MagickBooleanType AllocateImageColormap(Image *image,
-  const unsigned long colors)
+  const size_t colors)
 {
   return(AcquireImageColormap(image,colors));
 }
@@ -1037,7 +1037,7 @@ MagickExport void *CloneMemory(void *destination,const void *source,
   register unsigned char
     *q;
 
-  register long
+  register ssize_t
     i;
 
   assert(destination != (void *) NULL);
@@ -1052,7 +1052,7 @@ MagickExport void *CloneMemory(void *destination,const void *source,
   */
   p+=size;
   q+=size;
-  for (i=(long) (size-1); i >= 0; i--)
+  for (i=(ssize_t) (size-1); i >= 0; i--)
     *--q=(*--p);
   return(destination);
 }
@@ -1116,7 +1116,7 @@ MagickExport CacheView *CloseCacheView(CacheView *view_info)
 %
 %      MagickBooleanType ColorFloodfillImage(Image *image,
 %        const DrawInfo *draw_info,const PixelPacket target,
-%        const long x_offset,const long y_offset,const PaintMethod method)
+%        const ssize_t x_offset,const ssize_t y_offset,const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -1139,7 +1139,7 @@ MagickExport CacheView *CloseCacheView(CacheView *view_info)
     ThrowBinaryException(DrawError,"SegmentStackOverflow",image->filename) \
   else \
     { \
-      if ((((up)+(delta)) >= 0) && (((up)+(delta)) < (long) image->rows)) \
+      if ((((up)+(delta)) >= 0) && (((up)+(delta)) < (ssize_t) image->rows)) \
         { \
           s->x1=(double) (left); \
           s->y1=(double) (up); \
@@ -1151,13 +1151,13 @@ MagickExport CacheView *CloseCacheView(CacheView *view_info)
 }
 
 MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
-  const DrawInfo *draw_info,const PixelPacket target,const long x_offset,
-  const long y_offset,const PaintMethod method)
+  const DrawInfo *draw_info,const PixelPacket target,const ssize_t x_offset,
+  const ssize_t y_offset,const PaintMethod method)
 {
   Image
     *floodplane_image;
 
-  long
+  ssize_t
     offset,
     start,
     x,
@@ -1186,9 +1186,9 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
-  if ((x_offset < 0) || (x_offset >= (long) image->columns))
+  if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
     return(MagickFalse);
-  if ((y_offset < 0) || (y_offset >= (long) image->rows))
+  if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
@@ -1224,7 +1224,7 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -1234,15 +1234,15 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
       Pop segment off stack.
     */
     s--;
-    x1=(long) s->x1;
-    x2=(long) s->x2;
-    offset=(long) s->y2;
-    y=(long) s->y1+offset;
+    x1=(ssize_t) s->x1;
+    x2=(ssize_t) s->x2;
+    offset=(ssize_t) s->y2;
+    y=(ssize_t) s->y1+offset;
     /*
       Recolor neighboring pixels.
     */
-    p=GetVirtualPixels(image,0,y,(unsigned long) (x1+1),1,&image->exception);
-    q=GetAuthenticPixels(floodplane_image,0,y,(unsigned long) (x1+1),1,
+    p=GetVirtualPixels(image,0,y,(size_t) (x1+1),1,&image->exception);
+    q=GetAuthenticPixels(floodplane_image,0,y,(size_t) (x1+1),1,
       &image->exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1278,7 +1278,7 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
     {
       if (skip == MagickFalse)
         {
-          if (x < (long) image->columns)
+          if (x < (ssize_t) image->columns)
             {
               p=GetVirtualPixels(image,x,y,image->columns-x,1,
                 &image->exception);
@@ -1287,7 +1287,7 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
               if ((p == (const PixelPacket *) NULL) ||
                   (q == (PixelPacket *) NULL))
                 break;
-              for ( ; x < (long) image->columns; x++)
+              for ( ; x < (ssize_t) image->columns; x++)
               {
                 if (q->opacity == (Quantum) TransparentOpacity)
                   break;
@@ -1314,9 +1314,9 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
       x++;
       if (x <= x2)
         {
-          p=GetVirtualPixels(image,x,y,(unsigned long) (x2-x+1),1,
+          p=GetVirtualPixels(image,x,y,(size_t) (x2-x+1),1,
             &image->exception);
-          q=GetAuthenticPixels(floodplane_image,x,y,(unsigned long) (x2-x+1),1,
+          q=GetAuthenticPixels(floodplane_image,x,y,(size_t) (x2-x+1),1,
             &image->exception);
           if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
@@ -1339,12 +1339,12 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -1358,7 +1358,7 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
     q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (p->opacity != OpaqueOpacity)
         {
@@ -1374,7 +1374,7 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
   }
   segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
   floodplane_image=DestroyImage(floodplane_image);
-  return(y == (long) image->rows ? MagickTrue : MagickFalse);
+  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1426,7 +1426,7 @@ MagickExport MagickBooleanType DeleteImageAttribute(Image *image,
 %
 %  The format of the DeleteImageList method is:
 %
-%      unsigned int DeleteImageList(Image *images,const long offset)
+%      unsigned int DeleteImageList(Image *images,const ssize_t offset)
 %
 %  A description of each parameter follows:
 %
@@ -1435,9 +1435,9 @@ MagickExport MagickBooleanType DeleteImageAttribute(Image *image,
 %    o offset: the position within the list.
 %
 */
-MagickExport unsigned int DeleteImageList(Image *images,const long offset)
+MagickExport unsigned int DeleteImageList(Image *images,const ssize_t offset)
 {
-  register long
+  register ssize_t
     i;
 
   if (images->debug != MagickFalse)
@@ -1477,14 +1477,14 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
 %
 %  The format of the DeleteMagickRegistry method is:
 %
-%      MagickBooleanType DeleteMagickRegistry(const long id)
+%      MagickBooleanType DeleteMagickRegistry(const ssize_t id)
 %
 %  A description of each parameter follows:
 %
 %    o id: the registry id.
 %
 */
-MagickExport MagickBooleanType DeleteMagickRegistry(const long id)
+MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
 {
   char
     key[MaxTextExtent];
@@ -1668,7 +1668,7 @@ MagickExport void DestroyMagick(void)
 %
 %  DispatchImage() extracts pixel data from an image and returns it to you.
 %  The method returns MagickFalse on success otherwise MagickTrue if an error is
-%  encountered.  The data is returned as char, short int, int, long, float,
+%  encountered.  The data is returned as char, short int, int, ssize_t, float,
 %  or double in the order specified by map.
 %
 %  Suppose you want to extract the first scanline of a 640x480 image as
@@ -1683,9 +1683,9 @@ MagickExport void DestroyMagick(void)
 %
 %  The format of the DispatchImage method is:
 %
-%      unsigned int DispatchImage(const Image *image,const long x_offset,
-%        const long y_offset,const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType type,
+%      unsigned int DispatchImage(const Image *image,const ssize_t x_offset,
+%        const ssize_t y_offset,const size_t columns,
+%        const size_t rows,const char *map,const StorageType type,
 %        void *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1712,8 +1712,8 @@ MagickExport void DestroyMagick(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
-  const long y_offset,const unsigned long columns,const unsigned long rows,
+MagickExport unsigned int DispatchImage(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
   const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
 {
   unsigned int
@@ -1756,14 +1756,14 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 */
 
 static double GetSimilarityMetric(const Image *image,const Image *reference,
-  const long x_offset,const long y_offset,const double similarity_threshold,
+  const ssize_t x_offset,const ssize_t y_offset,const double similarity_threshold,
   ExceptionInfo *exception)
 {
   CacheView
     *image_view,
     *reference_view;
 
-  long
+  ssize_t
     y;
 
   double
@@ -1784,7 +1784,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
     channels++;
   image_view=AcquireCacheView(image);
   reference_view=AcquireCacheView(reference);
-  for (y=0; y < (long) reference->rows; y++)
+  for (y=0; y < (ssize_t) reference->rows; y++)
   {
     register const IndexPacket
       *indexes,
@@ -1794,7 +1794,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       *p,
       *q;
 
-    register long
+    register ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset+y,
@@ -1805,7 +1805,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       continue;
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reference_indexes=GetCacheViewVirtualIndexQueue(reference_view);
-    for (x=0; x < (long) reference->columns; x++)
+    for (x=0; x < (ssize_t) reference->columns; x++)
     {
       MagickRealType
         pixel;
@@ -1843,7 +1843,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
 MagickExport Image *ExtractSubimageFromImage(Image *image,
   const Image *reference,ExceptionInfo *exception)
 {
-  long
+  ssize_t
     y;
 
   double
@@ -1862,15 +1862,15 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
 #endif
-  for (y=0; y < (long) (image->rows-reference->rows); y++)
+  for (y=0; y < (ssize_t) (image->rows-reference->rows); y++)
   {
     double
       similarity;
 
-    register long
+    register ssize_t
       x;
 
-    for (x=0; x < (long) (image->columns-reference->columns); x++)
+    for (x=0; x < (ssize_t) (image->columns-reference->columns); x++)
     {
       similarity=GetSimilarityMetric(image,reference,x,y,similarity_threshold,
         exception);
@@ -2349,8 +2349,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %
 %  The format of the GetCacheView method is:
 %
-%      PixelPacket *GetCacheView(CacheView *cache_view,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows)
+%      PixelPacket *GetCacheView(CacheView *cache_view,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -2360,8 +2360,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %      pixels.
 %
 */
-MagickExport PixelPacket *GetCacheView(CacheView *cache_view,const long x,
-  const long y,const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *GetCacheView(CacheView *cache_view,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows)
 {
   PixelPacket
     *pixels;
@@ -2425,8 +2425,8 @@ MagickExport IndexPacket *GetCacheViewIndexes(CacheView *cache_view)
 %
 %  The format of the GetCacheViewPixels method is:
 %
-%      PixelPacket *GetCacheViewPixels(CacheView *cache_view,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows)
+%      PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -2436,8 +2436,8 @@ MagickExport IndexPacket *GetCacheViewIndexes(CacheView *cache_view)
 %      pixels.
 %
 */
-MagickExport PixelPacket *GetCacheViewPixels(CacheView *cache_view,const long x,
-  const long y,const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows)
 {
   PixelPacket
     *pixels;
@@ -2578,7 +2578,7 @@ MagickExport const ImageAttribute *GetImageClippingPathAttribute(Image *image)
 %
 %  The format of the GetImageFromMagickRegistry method is:
 %
-%      Image *GetImageFromMagickRegistry(const char *name,long *id,
+%      Image *GetImageFromMagickRegistry(const char *name,ssize_t *id,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2590,7 +2590,7 @@ MagickExport const ImageAttribute *GetImageClippingPathAttribute(Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
+MagickExport Image *GetImageFromMagickRegistry(const char *name,ssize_t *id,
   ExceptionInfo *exception)
 {
   *id=0L;
@@ -2613,7 +2613,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
 %
 %  The format of the GetMagickRegistry method is:
 %
-%      const void *GetMagickRegistry(const long id,RegistryType *type,
+%      const void *GetMagickRegistry(const ssize_t id,RegistryType *type,
 %        size_t *length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2627,7 +2627,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
+MagickExport void *GetMagickRegistry(const ssize_t id,RegistryType *type,
   size_t *length,ExceptionInfo *exception)
 {
   char
@@ -2712,12 +2712,12 @@ MagickExport int GetImageGeometry(Image *image,const char *geometry,
 %
 %  Deprecated, replace with:
 %
-%    CloneImage(GetImageFromList(images,(long) offset),0,0,MagickTrue,
+%    CloneImage(GetImageFromList(images,(ssize_t) offset),0,0,MagickTrue,
 %      exception);
 %
 %  The format of the GetImageList method is:
 %
-%      Image *GetImageList(const Image *images,const long offset,
+%      Image *GetImageList(const Image *images,const ssize_t offset,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2729,7 +2729,7 @@ MagickExport int GetImageGeometry(Image *image,const char *geometry,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *GetImageList(const Image *images,const long offset,
+MagickExport Image *GetImageList(const Image *images,const ssize_t offset,
   ExceptionInfo *exception)
 {
   Image
@@ -2737,7 +2737,7 @@ MagickExport Image *GetImageList(const Image *images,const long offset,
 
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  image=CloneImage(GetImageFromList(images,(long) offset),0,0,MagickTrue,
+  image=CloneImage(GetImageFromList(images,(ssize_t) offset),0,0,MagickTrue,
     exception);
   return(image);
 }
@@ -2762,14 +2762,14 @@ MagickExport Image *GetImageList(const Image *images,const long offset,
 %
 %  The format of the GetImageListIndex method is:
 %
-%      long GetImageListIndex(const Image *images)
+%      ssize_t GetImageListIndex(const Image *images)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image list.
 %
 */
-MagickExport long GetImageListIndex(const Image *images)
+MagickExport ssize_t GetImageListIndex(const Image *images)
 {
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
@@ -2795,14 +2795,14 @@ MagickExport long GetImageListIndex(const Image *images)
 %
 %  The format of the GetImageListSize method is:
 %
-%      unsigned long GetImageListSize(const Image *images)
+%      size_t GetImageListSize(const Image *images)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image list.
 %
 */
-MagickExport unsigned long GetImageListSize(const Image *images)
+MagickExport size_t GetImageListSize(const Image *images)
 {
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
@@ -2845,8 +2845,8 @@ MagickExport unsigned long GetImageListSize(const Image *images)
 %
 %  The format of the GetImagePixels() method is:
 %
-%      PixelPacket *GetImagePixels(Image *image,const long x,const long y,
-%        const unsigned long columns,const unsigned long rows)
+%      PixelPacket *GetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+%        const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -2856,8 +2856,8 @@ MagickExport unsigned long GetImageListSize(const Image *images)
 %      pixels.
 %
 */
-MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *GetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+  const size_t columns,const size_t rows)
 {
   return(GetAuthenticPixels(image,x,y,columns,rows,&image->exception));
 }
@@ -2919,8 +2919,8 @@ MagickExport IndexPacket *GetIndexes(const Image *image)
 %
 %  The format of the GetMagickGeometry method is:
 %
-%      unsigned int GetMagickGeometry(const char *geometry,long *x,long *y,
-%        unsigned long *width,unsigned long *height)
+%      unsigned int GetMagickGeometry(const char *geometry,ssize_t *x,ssize_t *y,
+%        size_t *width,size_t *height)
 %
 %  A description of each parameter follows:
 %
@@ -2934,8 +2934,8 @@ MagickExport IndexPacket *GetIndexes(const Image *image)
 %      as determined by the geometry specification is returned here.
 %
 */
-MagickExport unsigned int GetMagickGeometry(const char *geometry,long *x,
-  long *y,unsigned long *width,unsigned long *height)
+MagickExport unsigned int GetMagickGeometry(const char *geometry,ssize_t *x,
+  ssize_t *y,size_t *width,size_t *height)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.3");
   return(ParseMetaGeometry(geometry,x,y,width,height));
@@ -3067,7 +3067,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 %
 %  The format of the GetOnePixel() method is:
 %
-%      PixelPacket GetOnePixel(const Image image,const long x,const long y)
+%      PixelPacket GetOnePixel(const Image image,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -3076,7 +3076,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 %    o x,y:  These values define the location of the pixel to return.
 %
 */
-MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
+MagickExport PixelPacket GetOnePixel(Image *image,const ssize_t x,const ssize_t y)
 {
   PixelPacket
     pixel;
@@ -3394,11 +3394,11 @@ static inline double MeshInterpolate(const PointInfo *delta,const double p,
   return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
 }
 
-static inline long NearestNeighbor(MagickRealType x)
+static inline ssize_t NearestNeighbor(MagickRealType x)
 {
   if (x >= 0.0)
-    return((long) (x+0.5));
-  return((long) (x-0.5));
+    return((ssize_t) (x+0.5));
+  return((ssize_t) (x-0.5));
 }
 
 MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
@@ -3414,7 +3414,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i;
 
   assert(image != (Image *) NULL);
@@ -3432,7 +3432,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[16],
         gamma;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t) floor(y)-
         1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
@@ -3475,7 +3475,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t) floor(y)-
         1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
@@ -3516,7 +3516,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),2,
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t) floor(y),2,
         2,exception);
       if (p == (const PixelPacket *) NULL)
         break;
@@ -3574,8 +3574,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
 
       geometry.width=4L;
       geometry.height=4L;
-      geometry.x=(long) floor(x)-1L;
-      geometry.y=(long) floor(y)-1L;
+      geometry.x=(ssize_t) floor(x)-1L;
+      geometry.y=(ssize_t) floor(y)-1L;
       excerpt_image=ExcerptImage(image,&geometry,exception);
       if (excerpt_image == (Image *) NULL)
         break;
@@ -3601,7 +3601,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       MagickPixelPacket
         pixels[1];
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),1,
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t) floor(y),1,
         1,exception);
       if (p == (const PixelPacket *) NULL)
         break;
@@ -3623,7 +3623,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         delta,
         luminance;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x),(long) floor(y),
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t) floor(y),
         2,2,exception);
       if (p == (const PixelPacket *) NULL)
         break;
@@ -3758,7 +3758,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
     }
     case SplineInterpolatePixel:
     {
-      long
+      ssize_t
         j,
         n;
 
@@ -3774,7 +3774,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(long) floor(x)-1,(long) floor(y)-
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t) floor(y)-
         1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
@@ -4238,8 +4238,8 @@ MagickExport MagickBooleanType MapImages(Image *images,const Image *map_image,
 %  The format of the MatteFloodfillImage method is:
 %
 %      MagickBooleanType MatteFloodfillImage(Image *image,
-%        const PixelPacket target,const Quantum opacity,const long x_offset,
-%        const long y_offset,const PaintMethod method)
+%        const PixelPacket target,const Quantum opacity,const ssize_t x_offset,
+%        const ssize_t y_offset,const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -4256,13 +4256,13 @@ MagickExport MagickBooleanType MapImages(Image *images,const Image *map_image,
 %
 */
 MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
-  const PixelPacket target,const Quantum opacity,const long x_offset,
-  const long y_offset,const PaintMethod method)
+  const PixelPacket target,const Quantum opacity,const ssize_t x_offset,
+  const ssize_t y_offset,const PaintMethod method)
 {
   Image
     *floodplane_image;
 
-  long
+  ssize_t
     offset,
     start,
     x,
@@ -4286,9 +4286,9 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((x_offset < 0) || (x_offset >= (long) image->columns))
+  if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
     return(MagickFalse);
-  if ((y_offset < 0) || (y_offset >= (long) image->rows))
+  if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
@@ -4324,7 +4324,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -4334,15 +4334,15 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
       Pop segment off stack.
     */
     s--;
-    x1=(long) s->x1;
-    x2=(long) s->x2;
-    offset=(long) s->y2;
-    y=(long) s->y1+offset;
+    x1=(ssize_t) s->x1;
+    x2=(ssize_t) s->x2;
+    offset=(ssize_t) s->y2;
+    y=(ssize_t) s->y1+offset;
     /*
       Recolor neighboring pixels.
     */
-    p=GetVirtualPixels(image,0,y,(unsigned long) (x1+1),1,&image->exception);
-    q=GetAuthenticPixels(floodplane_image,0,y,(unsigned long) (x1+1),1,
+    p=GetVirtualPixels(image,0,y,(size_t) (x1+1),1,&image->exception);
+    q=GetAuthenticPixels(floodplane_image,0,y,(size_t) (x1+1),1,
       &image->exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -4378,7 +4378,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
     {
       if (skip == MagickFalse)
         {
-          if (x < (long) image->columns)
+          if (x < (ssize_t) image->columns)
             {
               p=GetVirtualPixels(image,x,y,image->columns-x,1,
                 &image->exception);
@@ -4387,7 +4387,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
               if ((p == (const PixelPacket *) NULL) ||
                   (q == (PixelPacket *) NULL))
                 break;
-              for ( ; x < (long) image->columns; x++)
+              for ( ; x < (ssize_t) image->columns; x++)
               {
                 if (q->opacity == (Quantum) TransparentOpacity)
                   break;
@@ -4414,9 +4414,9 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
       x++;
       if (x <= x2)
         {
-          p=GetVirtualPixels(image,x,y,(unsigned long) (x2-x+1),1,
+          p=GetVirtualPixels(image,x,y,(size_t) (x2-x+1),1,
             &image->exception);
-          q=GetAuthenticPixels(floodplane_image,x,y,(unsigned long) (x2-x+1),1,
+          q=GetAuthenticPixels(floodplane_image,x,y,(size_t) (x2-x+1),1,
             &image->exception);
           if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
@@ -4439,12 +4439,12 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -4458,7 +4458,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
     q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (p->opacity != OpaqueOpacity)
         q->opacity=opacity;
@@ -4470,7 +4470,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   }
   segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
   floodplane_image=DestroyImage(floodplane_image);
-  return(y == (long) image->rows ? MagickTrue : MagickFalse);
+  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -4611,13 +4611,13 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
 {
 #define OpaqueImageTag  "Opaque/Image"
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     proceed;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -4636,9 +4636,9 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
       /*
         Make DirectClass image opaque.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
-        register long
+        register ssize_t
           x;
 
         register PixelPacket
@@ -4647,7 +4647,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
         q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (IsColorSimilar(image,q,&target) != MagickFalse)
             *q=fill;
@@ -4666,16 +4666,16 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
       /*
         Make PseudoClass image opaque.
       */
-      for (i=0; i < (long) image->colors; i++)
+      for (i=0; i < (ssize_t) image->colors; i++)
       {
         if (IsColorSimilar(image,&image->colormap[i],&target) != MagickFalse)
           image->colormap[i]=fill;
       }
       if (fill.opacity != OpaqueOpacity)
         {
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register long
+            register ssize_t
               x;
 
             register PixelPacket
@@ -4684,7 +4684,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
             q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (IsColorSimilar(image,q,&target) != MagickFalse)
                 q->opacity=fill.opacity;
@@ -4766,8 +4766,8 @@ MagickExport CacheView *OpenCacheView(const Image *image)
 %  The format of the PaintFloodfillImage method is:
 %
 %      MagickBooleanType PaintFloodfillImage(Image *image,
-%        const ChannelType channel,const MagickPixelPacket target,const long x,
-%        const long y,const DrawInfo *draw_info,const PaintMethod method)
+%        const ChannelType channel,const MagickPixelPacket target,const ssize_t x,
+%        const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -4785,8 +4785,8 @@ MagickExport CacheView *OpenCacheView(const Image *image)
 %
 */
 MagickExport MagickBooleanType PaintFloodfillImage(Image *image,
-  const ChannelType channel,const MagickPixelPacket *target,const long x,
-  const long y,const DrawInfo *draw_info,const PaintMethod method)
+  const ChannelType channel,const MagickPixelPacket *target,const ssize_t x,
+  const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
 {
   MagickBooleanType
     status;
@@ -4921,8 +4921,8 @@ MagickExport MagickBooleanType PaintTransparentImage(Image *image,
 %
 %  The format of the ParseImageGeometry method is:
 %
-%      int ParseImageGeometry(char *geometry,long *x,long *y,
-%        unsigned long *width,unsigned long *height)
+%      int ParseImageGeometry(char *geometry,ssize_t *x,ssize_t *y,
+%        size_t *width,size_t *height)
 %
 %  A description of each parameter follows:
 %
@@ -4939,8 +4939,8 @@ MagickExport MagickBooleanType PaintTransparentImage(Image *image,
 %      as determined by the geometry specification is returned here.
 %
 */
-MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
-  unsigned long *width,unsigned long *height)
+MagickExport int ParseImageGeometry(const char *geometry,ssize_t *x,ssize_t *y,
+  size_t *width,size_t *height)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
   return((int) ParseMetaGeometry(geometry,x,y,width,height));
@@ -5286,7 +5286,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     lower_threshold,
     upper_threshold;
 
-  long
+  ssize_t
     count,
     y;
 
@@ -5300,7 +5300,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
       1.2f, 0.4f, 0.9f, 1.3f, 0.2f},
     threshold=128;
 
-  unsigned long
+  size_t
     order;
 
   /*
@@ -5351,9 +5351,9 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
   random_info=AcquireRandomInfo();
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register long
+    register ssize_t
       x;
 
     register IndexPacket
@@ -5370,7 +5370,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
         LocaleCompare(channel,"intensity") == 0)
       {
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           {
             MagickRealType
               intensity;
@@ -5396,7 +5396,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
                threshold ? 0 : QuantumRange);
             index=(IndexPacket) (intensity <= threshold ? 0 : 1);
             *indexes++=index;
-            q->red=q->green=q->blue=image->colormap[(long) index].red;
+            q->red=q->green=q->blue=image->colormap[(ssize_t) index].red;
             q++;
           }
       }
@@ -5405,7 +5405,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
         LocaleCompare(channel,"matte") == 0)
       {
         if (image->matte != MagickFalse)
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (order == 1)
                 {
@@ -5508,7 +5508,7 @@ MagickExport void ReacquireMemory(void **memory,const size_t size)
 %
 %  The format of the RecolorImage method is:
 %
-%      Image *RecolorImage(const Image *image,const unsigned long order,
+%      Image *RecolorImage(const Image *image,const size_t order,
 %        const double *color_matrix,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -5522,7 +5522,7 @@ MagickExport void ReacquireMemory(void **memory,const size_t size)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *RecolorImage(const Image *image,const unsigned long order,
+MagickExport Image *RecolorImage(const Image *image,const size_t order,
   const double *color_matrix,ExceptionInfo *exception)
 {
   KernelInfo
@@ -5598,8 +5598,8 @@ MagickExport void ResetImageAttributeIterator(const Image *image)
 %
 %  The format of the SetCacheViewPixels method is:
 %
-%      PixelPacket *SetCacheViewPixels(CacheView *cache_view,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows)
+%      PixelPacket *SetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -5609,8 +5609,8 @@ MagickExport void ResetImageAttributeIterator(const Image *image)
 %      pixels.
 %
 */
-MagickExport PixelPacket *SetCacheViewPixels(CacheView *cache_view,const long x,
-  const long y,const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *SetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows)
 {
   PixelPacket
     *pixels;
@@ -5645,7 +5645,7 @@ MagickExport PixelPacket *SetCacheViewPixels(CacheView *cache_view,const long x,
 %      cache.
 %
 */
-MagickExport void SetCacheThreshold(const unsigned long size)
+MagickExport void SetCacheThreshold(const size_t size)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
   (void) SetMagickResourceLimit(MemoryResource,size*1024*1024);
@@ -5715,7 +5715,7 @@ MagickExport MagickBooleanType SetExceptionInfo(ExceptionInfo *exception,
 */
 MagickExport void SetImage(Image *image,const Quantum opacity)
 {
-  long
+  ssize_t
     y;
 
   PixelPacket
@@ -5740,12 +5740,12 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       /*
         Set colormapped or CMYK image.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         register IndexPacket
           *restrict indexes;
 
-        register long
+        register ssize_t
           x;
 
         register PixelPacket
@@ -5754,10 +5754,10 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           *q++=background_color;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           indexes[x]=(IndexPacket) 0;
         if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
           break;
@@ -5767,9 +5767,9 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   /*
     Set DirectClass image.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -5778,7 +5778,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
       *q++=background_color;
     if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
       break;
@@ -5841,7 +5841,7 @@ MagickExport MagickBooleanType SetImageAttribute(Image *image,const char *key,
 %  The format of the SetImageList method is:
 %
 %      unsigned int SetImageList(Image *images,const Image *image,
-%        const long offset,ExceptionInfo *exception)
+%        const ssize_t offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5855,12 +5855,12 @@ MagickExport MagickBooleanType SetImageAttribute(Image *image,const char *key,
 %
 */
 MagickExport unsigned int SetImageList(Image **images,const Image *image,
-  const long offset,ExceptionInfo *exception)
+  const ssize_t offset,ExceptionInfo *exception)
 {
   Image
     *clone;
 
-  register long
+  register ssize_t
     i;
 
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
@@ -5923,8 +5923,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 %
 %  The format of the SetImagePixels() method is:
 %
-%      PixelPacket *SetImagePixels(Image *image,const long x,const long y,
-%        const unsigned long columns,const unsigned long rows)
+%      PixelPacket *SetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+%        const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -5937,8 +5937,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 %      pixels.
 %
 */
-MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *SetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+  const size_t columns,const size_t rows)
 {
   return(QueueAuthenticPixels(image,x,y,columns,rows,&image->exception));
 }
@@ -5959,7 +5959,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %  The format of the SetMagickRegistry method is:
 %
-%      long SetMagickRegistry(const RegistryType type,const void *blob,
+%      ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
 %        const size_t length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -5974,7 +5974,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
+MagickExport ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
   const size_t magick_unused(length),ExceptionInfo *exception)
 {
   char
@@ -5983,7 +5983,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   MagickBooleanType
     status;
 
-  static long
+  static ssize_t
     id = 0;
 
   (void) FormatMagickString(key,MaxTextExtent,"%ld\n",id);
@@ -6116,8 +6116,8 @@ MagickExport MagickOffsetType SizeBlob(Image *image)
 %
 %  The format of the SpliceImageList method is:
 %
-%      Image *SpliceImageList(Image *images,const long offset,
-%        const unsigned long length,const Image *splices,
+%      Image *SpliceImageList(Image *images,const ssize_t offset,
+%        const size_t length,const Image *splices,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -6133,13 +6133,13 @@ MagickExport MagickOffsetType SizeBlob(Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SpliceImageList(Image *images,const long offset,
-  const unsigned long length,const Image *splices,ExceptionInfo *exception)
+MagickExport Image *SpliceImageList(Image *images,const ssize_t offset,
+  const size_t length,const Image *splices,ExceptionInfo *exception)
 {
   Image
     *clone;
 
-  register long
+  register ssize_t
     i;
 
   if (images->debug != MagickFalse)
@@ -6381,7 +6381,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   IndexPacket
     index;
 
-  long
+  ssize_t
     y;
 
   /*
@@ -6396,12 +6396,12 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   if (!AcquireImageColormap(image,2))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToThresholdImage");
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -6411,14 +6411,14 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(IndexPacket) ((MagickRealType)
         PixelIntensityToQuantum(q) <= threshold ? 0 : 1);
       indexes[x]=index;
-      q->red=image->colormap[(long) index].red;
-      q->green=image->colormap[(long) index].green;
-      q->blue=image->colormap[(long) index].blue;
+      q->red=image->colormap[(ssize_t) index].red;
+      q->green=image->colormap[(ssize_t) index].green;
+      q->blue=image->colormap[(ssize_t) index].blue;
       q++;
     }
     if (!SyncAuthenticPixels(image,&image->exception))
@@ -6466,7 +6466,7 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
   IndexPacket
     index;
 
-  long
+  ssize_t
     y;
 
   unsigned int
@@ -6512,12 +6512,12 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
       if (pixel.red == 0)
         (void) GetImageDynamicThreshold(image,2.0,2.0,&pixel,&image->exception);
     }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -6528,18 +6528,18 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
       break;
     indexes=GetAuthenticIndexQueue(image);
     if (IsMagickGray(&pixel) != MagickFalse)
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         index=(IndexPacket) ((MagickRealType)
           PixelIntensityToQuantum(q) <= pixel.red ? 0 : 1);
         indexes[x]=index;
-        q->red=image->colormap[(long) index].red;
-        q->green=image->colormap[(long) index].green;
-        q->blue=image->colormap[(long) index].blue;
+        q->red=image->colormap[(ssize_t) index].red;
+        q->green=image->colormap[(ssize_t) index].green;
+        q->blue=image->colormap[(ssize_t) index].blue;
         q++;
       }
     else
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         q->red=(Quantum) ((MagickRealType)
           q->red <= pixel.red ? 0 : QuantumRange);
@@ -6759,7 +6759,7 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
 {
 #define TransparentImageTag  "Transparent/Image"
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -6775,9 +6775,9 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -6786,7 +6786,7 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
     q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (IsColorSimilar(image,q,&target) != MagickFalse)
         q->opacity=opacity;
@@ -6874,7 +6874,7 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
 %
 */
 MagickExport IndexPacket ValidateColormapIndex(Image *image,
-  const unsigned long index)
+  const size_t index)
 {
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.4.4");

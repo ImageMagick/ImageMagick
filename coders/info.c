@@ -87,10 +87,10 @@ static MagickBooleanType
 %
 %  The format of the RegisterINFOImage method is:
 %
-%      unsigned long RegisterINFOImage(void)
+%      size_t RegisterINFOImage(void)
 %
 */
-ModuleExport unsigned long RegisterINFOImage(void)
+ModuleExport size_t RegisterINFOImage(void)
 {
   MagickInfo
     *entry;

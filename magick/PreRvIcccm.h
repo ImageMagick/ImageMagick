@@ -65,7 +65,7 @@ typedef struct _XTextProperty
   int
     format;
 
-  unsigned long
+  size_t
     nitems;
 } XTextProperty;
 

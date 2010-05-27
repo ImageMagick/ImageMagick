@@ -155,7 +155,7 @@ struct _Image
   CompressionType
     compression;
 
-  unsigned long
+  size_t
     quality;
 
   OrientationType
@@ -165,7 +165,7 @@ struct _Image
     taint,
     matte;
 
-  unsigned long
+  size_t
     columns,
     rows,
     depth,
@@ -197,7 +197,7 @@ struct _Image
     *directory,
     *geometry;
 
-  long
+  ssize_t
     offset;
 
   double
@@ -235,18 +235,18 @@ struct _Image
   struct _Image
     *clip_mask;
 
-  unsigned long
+  size_t
     scene,
     delay;
 
-  long
+  ssize_t
     ticks_per_second;
 
-  unsigned long
+  size_t
     iterations,
     total_colors;
 
-  long
+  ssize_t
     start_loop;
 
   ErrorInfo
@@ -274,7 +274,7 @@ struct _Image
     magick_filename[MaxTextExtent],
     magick[MaxTextExtent];
 
-  unsigned long
+  size_t
     magick_columns,
     magick_rows;
 
@@ -284,7 +284,7 @@ struct _Image
   MagickBooleanType
     debug;
 
-  volatile long
+  volatile ssize_t
     reference_count;
 
   SemaphoreInfo
@@ -295,10 +295,10 @@ struct _Image
     iptc_profile,
     *generic_profile;
 
-  unsigned long
+  size_t
     generic_profiles;  /* this & ProfileInfo is deprecated */
 
-  unsigned long
+  size_t
     signature;
 
   struct _Image
@@ -358,7 +358,7 @@ struct _ImageInfo
     *page,
     *scenes;
 
-  unsigned long
+  size_t
     scene,
     number_scenes,
     depth;
@@ -372,7 +372,7 @@ struct _ImageInfo
   ResolutionType
     units;
 
-  unsigned long
+  size_t
     quality;
 
   char
@@ -395,7 +395,7 @@ struct _ImageInfo
     dither,
     monochrome;
 
-  unsigned long
+  size_t
     colors;
 
   ColorspaceType
@@ -407,7 +407,7 @@ struct _ImageInfo
   PreviewType
     preview_type;
 
-  long
+  ssize_t
     group;
 
   MagickBooleanType
@@ -458,14 +458,14 @@ struct _ImageInfo
   char
     *tile;  /* deprecated */
 
-  unsigned long
+  size_t
     subimage,  /* deprecated */
     subrange;  /* deprecated */
 
   PixelPacket
     pen;  /* deprecated */
 
-  unsigned long
+  size_t
     signature;
 
   VirtualPixelMethod
@@ -490,13 +490,13 @@ extern MagickExport FILE
 extern MagickExport Image
   *AcquireImage(const ImageInfo *),
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),
-  *CloneImage(const Image *,const unsigned long,const unsigned long,
+  *CloneImage(const Image *,const size_t,const size_t,
     const MagickBooleanType,ExceptionInfo *),
   *CombineImages(const Image *,const ChannelType,ExceptionInfo *),
   *DestroyImage(Image *),
   *GetImageClipMask(const Image *,ExceptionInfo *),
   *GetImageMask(const Image *,ExceptionInfo *),
-  *NewMagickImage(const ImageInfo *,const unsigned long,const unsigned long,
+  *NewMagickImage(const ImageInfo *,const size_t,const size_t,
     const MagickPixelPacket *),
   *ReferenceImage(Image *),
   *SeparateImages(const Image *,const ChannelType,ExceptionInfo *);
@@ -506,7 +506,7 @@ extern MagickExport ImageInfo
   *CloneImageInfo(const ImageInfo *),
   *DestroyImageInfo(ImageInfo *);
 
-extern MagickExport long
+extern MagickExport ssize_t
   GetImageReferenceCount(Image *);
 
 extern MagickExport MagickBooleanType
@@ -525,7 +525,7 @@ extern MagickExport MagickBooleanType
   SetImageBackgroundColor(Image *),
   SetImageClipMask(Image *,const Image *),
   SetImageColor(Image *,const MagickPixelPacket *),
-  SetImageExtent(Image *,const unsigned long,const unsigned long),
+  SetImageExtent(Image *,const size_t,const size_t),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SetImageMask(Image *,const Image *),
   SetImageOpacity(Image *,const Quantum),

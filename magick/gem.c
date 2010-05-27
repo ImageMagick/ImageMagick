@@ -276,7 +276,7 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
     r,
     v;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -293,7 +293,7 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
       *blue=ClampToQuantum((MagickRealType) QuantumRange*v);
       return;
     }
-  i=(long) floor(6.0*hue);
+  i=(ssize_t) floor(6.0*hue);
   f=6.0*hue-i;
   if ((i & 0x01) != 0)
     f=1.0-f;
@@ -508,13 +508,13 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
 MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *whiteness,double *blackness)
 {
+  long
+    i;
+
   MagickRealType
     f,
     v,
     w;
-
-  register long
-    i;
 
   /*
     Convert RGB to HWB colorspace.
@@ -693,7 +693,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       double
         poisson;
 
-      register long
+      register ssize_t
         i;
 
       poisson=exp(-SigmaPoisson*ScaleQuantumToChar(pixel));
@@ -731,7 +731,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 %
 %  The format of the GetOptimalKernelWidth method is:
 %
-%      unsigned long GetOptimalKernelWidth(const double radius,
+%      size_t GetOptimalKernelWidth(const double radius,
 %        const double sigma)
 %
 %  A description of each parameter follows:
@@ -745,7 +745,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
+MagickExport size_t GetOptimalKernelWidth1D(const double radius,
   const double sigma)
 {
   double
@@ -755,18 +755,18 @@ MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
     normalize,
     value;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     width;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (radius > MagickEpsilon)
-    return((unsigned long) (2.0*ceil(radius)+1.0));
+    return((size_t) (2.0*ceil(radius)+1.0));
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
@@ -775,7 +775,7 @@ MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
   for (width=5; ; )
   {
     normalize=0.0;
-    j=(long) width/2;
+    j=(ssize_t) width/2;
     for (i=(-j); i <= j; i++)
       normalize+=exp(-((double) (i*i))*alpha)*beta;
     value=exp(-((double) (j*j))*alpha)*beta/normalize;
@@ -783,10 +783,10 @@ MagickExport unsigned long GetOptimalKernelWidth1D(const double radius,
       break;
     width+=2;
   }
-  return((unsigned long) (width-2));
+  return((size_t) (width-2));
 }
 
-MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
+MagickExport size_t GetOptimalKernelWidth2D(const double radius,
   const double sigma)
 {
   double
@@ -796,17 +796,17 @@ MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
     normalize,
     value;
 
-  long
+  ssize_t
     j,
     u,
     v;
 
-  unsigned long
+  size_t
     width;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (radius > MagickEpsilon)
-    return((unsigned long) (2.0*ceil(radius)+1.0));
+    return((size_t) (2.0*ceil(radius)+1.0));
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
@@ -815,7 +815,7 @@ MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
   for (width=5; ; )
   {
     normalize=0.0;
-    j=(long) width/2;
+    j=(ssize_t) width/2;
     for (v=(-j); v <= j; v++)
       for (u=(-j); u <= j; u++)
         normalize+=exp(-((double) (u*u+v*v))*alpha)*beta;
@@ -824,10 +824,10 @@ MagickExport unsigned long GetOptimalKernelWidth2D(const double radius,
       break;
     width+=2;
   }
-  return((unsigned long) (width-2));
+  return((size_t) (width-2));
 }
 
-MagickExport unsigned long  GetOptimalKernelWidth(const double radius,
+MagickExport size_t  GetOptimalKernelWidth(const double radius,
   const double sigma)
 {
   return(GetOptimalKernelWidth1D(radius,sigma));

@@ -44,9 +44,9 @@ int main( int /*argc*/, char ** argv)
 
     // Create histogram vector
 #if defined(USE_MAP)
-    std::map<Color,unsigned long> histogram;
+    std::map<Color,size_t> histogram;
 #elif defined(USE_VECTOR)
-    std::vector<std::pair<Color,unsigned long> > histogram;
+    std::vector<std::pair<Color,size_t> > histogram;
 #endif
 
     colorHistogram( &histogram, image );
@@ -64,9 +64,9 @@ int main( int /*argc*/, char ** argv)
          << histogram.size() << " entries:" << endl;
 
 #if defined(USE_MAP)
-    std::map<Color,unsigned long>::const_iterator p=histogram.begin();
+    std::map<Color,size_t>::const_iterator p=histogram.begin();
 #elif defined(USE_VECTOR)
-    std::vector<std::pair<Color,unsigned long> >::const_iterator p=histogram.begin();
+    std::vector<std::pair<Color,size_t> >::const_iterator p=histogram.begin();
 #endif
     while (p != histogram.end())
       {

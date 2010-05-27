@@ -193,7 +193,7 @@ static pascal void StandardPixmap(PixMapPtr source,Rect *source_rectangle,
 {
 #pragma unused (source_rectangle,matrix,mode,mask,matte,matte_rectangle,flags)
 
-  long
+  ssize_t
     size;
 
   Ptr
@@ -218,7 +218,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   int
     status;
 
-  long
+  ssize_t
     version;
 
   Rect
@@ -408,7 +408,7 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 */
 
 static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
-  unsigned long *free_bytes,unsigned long *total_bytes)
+  size_t *free_bytes,size_t *total_bytes)
 {
   HParamBlockRec
     pb;
@@ -416,7 +416,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
   OSErr
     result;
 
-  unsigned long
+  size_t
     blocksize;
 
   unsigned short
@@ -433,7 +433,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
   if (result != noErr)
     return(result);
   *volume=pb.volumeParam.ioVRefNum;
-  blocksize=(unsigned long) pb.volumeParam.ioVAlBlkSiz;
+  blocksize=(size_t) pb.volumeParam.ioVAlBlkSiz;
   allocation_blocks=(unsigned short) pb.volumeParam.ioVNmAlBlks;
   free_blocks=(unsigned short) pb.volumeParam.ioVFrBlk;
   *free_bytes=free_blocks*blocksize;
@@ -443,7 +443,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
 
 MagickExport MagickBooleanType MACIsMagickConflict(const char *magick)
 {
-  unsigned long
+  size_t
     free_bytes,
     number_bytes;
 
@@ -594,7 +594,7 @@ static void MACFatalErrorHandler(const ExceptionType severity,
 %
 %
 */
-static OSErr MacGSExecuteCommand(const char *command,long length)
+static OSErr MacGSExecuteCommand(const char *command,ssize_t length)
 {
   AEAddressDesc
     event_descriptor;
@@ -653,7 +653,7 @@ static OSErr MacGSExecuteCommand(const char *command,long length)
 %
 %
 */
-static OSErr MacGSLaunchApplicationCore(long flags)
+static OSErr MacGSLaunchApplicationCore(ssize_t flags)
 {
   FSSpec
     file_info;
@@ -1206,7 +1206,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     depth,
     status;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -1306,7 +1306,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   image->rows=picture_info.sourceRect.bottom-picture_info.sourceRect.top;
   if ((depth <= 8) && ((*(picture_info.theColorTable))->ctSize != 0))
     {
-      unsigned long
+      size_t
         number_colors;
 
       /*
@@ -1351,7 +1351,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -1417,7 +1417,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
   HParamBlockRec
     parameter_info;
 
-  long
+  ssize_t
     buffer_size = 16384;
 
   OSErr
@@ -1491,7 +1491,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 %
 %  The format of the seekdir method is:
 %
-%      void seekdir(DIR *entry,long position)
+%      void seekdir(DIR *entry,ssize_t position)
 %
 %  A description of each parameter follows:
 %
@@ -1503,7 +1503,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 %
 %
 */
-MagickExport void seekdir(DIR *entry,long position)
+MagickExport void seekdir(DIR *entry,ssize_t position)
 {
   assert(entry != (DIR *) NULL);
   entry->d_index=position;
@@ -1596,7 +1596,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
 %
 %
 */
-MagickExport long telldir(DIR *entry)
+MagickExport ssize_t telldir(DIR *entry)
 {
   return(entry->d_index);
 }

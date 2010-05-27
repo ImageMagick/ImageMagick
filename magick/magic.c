@@ -297,7 +297,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 %  The magic of the GetMagicInfoList function is:
 %
 %      const MagicInfo **GetMagicInfoList(const char *pattern,
-%        unsigned long *number_aliases,ExceptionInfo *exception)
+%        size_t *number_aliases,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -331,7 +331,7 @@ static int MagicInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
-  unsigned long *number_aliases,ExceptionInfo *exception)
+  size_t *number_aliases,ExceptionInfo *exception)
 {
   const MagicInfo
     **aliases;
@@ -339,7 +339,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   register const MagicInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -347,7 +347,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_aliases != (unsigned long *) NULL);
+  assert(number_aliases != (size_t *) NULL);
   *number_aliases=0;
   p=GetMagicInfo((const unsigned char *) NULL,0,exception);
   if (p == (const MagicInfo *) NULL)
@@ -372,7 +372,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   UnlockSemaphoreInfo(magic_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
   aliases[i]=(MagicInfo *) NULL;
-  *number_aliases=(unsigned long) i;
+  *number_aliases=(size_t) i;
   return(aliases);
 }
 
@@ -392,7 +392,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
 %
 %  The format of the GetMagicList function is:
 %
-%      char **GetMagicList(const char *pattern,unsigned long *number_aliases,
+%      char **GetMagicList(const char *pattern,size_t *number_aliases,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -426,7 +426,7 @@ static int MagicCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetMagicList(const char *pattern,
-  unsigned long *number_aliases,ExceptionInfo *exception)
+  size_t *number_aliases,ExceptionInfo *exception)
 {
   char
     **aliases;
@@ -434,7 +434,7 @@ MagickExport char **GetMagicList(const char *pattern,
   register const MagicInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -442,7 +442,7 @@ MagickExport char **GetMagicList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_aliases != (unsigned long *) NULL);
+  assert(number_aliases != (size_t *) NULL);
   *number_aliases=0;
   p=GetMagicInfo((const unsigned char *) NULL,0,exception);
   if (p == (const MagicInfo *) NULL)
@@ -464,7 +464,7 @@ MagickExport char **GetMagicList(const char *pattern,
   UnlockSemaphoreInfo(magic_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
   aliases[i]=(char *) NULL;
-  *number_aliases=(unsigned long) i;
+  *number_aliases=(size_t) i;
   return(aliases);
 }
 
@@ -572,13 +572,13 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   const MagicInfo
     **magic_info;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_aliases;
 
   if (file == (const FILE *) NULL)
@@ -588,7 +588,7 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
     return(MagickFalse);
   j=0;
   path=(const char *) NULL;
-  for (i=0; i < (long) number_aliases; i++)
+  for (i=0; i < (ssize_t) number_aliases; i++)
   {
     if (magic_info[i]->stealth != MagickFalse)
       continue;
@@ -603,12 +603,12 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
       }
     path=magic_info[i]->path;
     (void) fprintf(file,"%s",magic_info[i]->name);
-    for (j=(long) strlen(magic_info[i]->name); j <= 9; j++)
+    for (j=(ssize_t) strlen(magic_info[i]->name); j <= 9; j++)
       (void) fprintf(file," ");
-    (void) fprintf(file,"%6ld ",(long) magic_info[i]->offset);
+    (void) fprintf(file,"%6ld ",(ssize_t) magic_info[i]->offset);
     if (magic_info[i]->target != (char *) NULL)
       {
-        register long
+        register ssize_t
           j;
 
         for (j=0; magic_info[i]->target[j] != '\0'; j++)
@@ -642,7 +642,7 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %  The format of the LoadMagicList method is:
 %
 %      MagickBooleanType LoadMagicList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -656,7 +656,7 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %
 */
 static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -931,7 +931,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -948,7 +948,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
           return(MagickFalse);
         }
     }
-  for (i=0; i < (long) (sizeof(MagicMap)/sizeof(*MagicMap)); i++)
+  for (i=0; i < (ssize_t) (sizeof(MagicMap)/sizeof(*MagicMap)); i++)
   {
     MagicInfo
       *magic_info;

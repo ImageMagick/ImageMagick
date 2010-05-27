@@ -206,10 +206,10 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
         }
     }
 
-  long x = 0;
-  long y = 0;
-  unsigned long width_val = 0;
-  unsigned long height_val = 0;
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width_val = 0;
+  size_t height_val = 0;
   int flags = GetGeometry (geom, &x, &y, &width_val, &height_val );
 
   if (flags == NoValue)
@@ -353,7 +353,7 @@ Magick::Geometry::operator MagickCore::RectangleInfo() const
   RectangleInfo rectangle;
   rectangle.width = _width;
   rectangle.height = _height;
-  _xNegative ? rectangle.x = static_cast<long>(0-_xOff) : rectangle.x = static_cast<long>(_xOff);
-  _yNegative ? rectangle.y = static_cast<long>(0-_yOff) : rectangle.y = static_cast<long>(_yOff);
+  _xNegative ? rectangle.x = static_cast<ssize_t>(0-_xOff) : rectangle.x = static_cast<ssize_t>(_xOff);
+  _yNegative ? rectangle.y = static_cast<ssize_t>(0-_yOff) : rectangle.y = static_cast<ssize_t>(_yOff);
   return rectangle;
 }

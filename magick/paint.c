@@ -88,7 +88,7 @@ static inline double MagickMax(const double x,const double y)
 %
 %      MagickBooleanType FloodfillPaintImage(Image *image,
 %        const ChannelType channel,const DrawInfo *draw_info,
-%        const MagickPixelPacket target,const long x_offset,const long y_offset,
+%        const MagickPixelPacket target,const ssize_t x_offset,const ssize_t y_offset,
 %        const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
@@ -108,7 +108,7 @@ static inline double MagickMax(const double x,const double y)
 */
 MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   const ChannelType channel,const DrawInfo *draw_info,
-  const MagickPixelPacket *target,const long x_offset,const long y_offset,
+  const MagickPixelPacket *target,const ssize_t x_offset,const ssize_t y_offset,
   const MagickBooleanType invert)
 {
 #define MaxStacksize  (1UL << 15)
@@ -118,7 +118,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     ThrowBinaryException(DrawError,"SegmentStackOverflow",image->filename) \
   else \
     { \
-      if ((((up)+(delta)) >= 0) && (((up)+(delta)) < (long) image->rows)) \
+      if ((((up)+(delta)) >= 0) && (((up)+(delta)) < (ssize_t) image->rows)) \
         { \
           s->x1=(double) (left); \
           s->y1=(double) (up); \
@@ -135,7 +135,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   Image
     *floodplane_image;
 
-  long
+  ssize_t
     offset,
     start,
     x,
@@ -168,9 +168,9 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
-  if ((x_offset < 0) || (x_offset >= (long) image->columns))
+  if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
     return(MagickFalse);
-  if ((y_offset < 0) || (y_offset >= (long) image->rows))
+  if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
@@ -211,7 +211,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -221,15 +221,15 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       Pop segment off stack.
     */
     s--;
-    x1=(long) s->x1;
-    x2=(long) s->x2;
-    offset=(long) s->y2;
-    y=(long) s->y1+offset;
+    x1=(ssize_t) s->x1;
+    x2=(ssize_t) s->x2;
+    offset=(ssize_t) s->y2;
+    y=(ssize_t) s->y1+offset;
     /*
       Recolor neighboring pixels.
     */
-    p=GetVirtualPixels(image,0,y,(unsigned long) (x1+1),1,exception);
-    q=GetAuthenticPixels(floodplane_image,0,y,(unsigned long) (x1+1),1,
+    p=GetVirtualPixels(image,0,y,(size_t) (x1+1),1,exception);
+    q=GetAuthenticPixels(floodplane_image,0,y,(size_t) (x1+1),1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -261,7 +261,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     {
       if (skip == MagickFalse)
         {
-          if (x < (long) image->columns)
+          if (x < (ssize_t) image->columns)
             {
               p=GetVirtualPixels(image,x,y,image->columns-x,1,exception);
               q=GetAuthenticPixels(floodplane_image,x,y,image->columns-x,1,
@@ -270,7 +270,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
                   (q == (PixelPacket *) NULL))
                 break;
               indexes=GetVirtualIndexQueue(image);
-              for ( ; x < (long) image->columns; x++)
+              for ( ; x < (ssize_t) image->columns; x++)
               {
                 if (q->opacity == (Quantum) TransparentOpacity)
                   break;
@@ -292,8 +292,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       x++;
       if (x <= x2)
         {
-          p=GetVirtualPixels(image,x,y,(unsigned long) (x2-x+1),1,exception);
-          q=GetAuthenticPixels(floodplane_image,x,y,(unsigned long) (x2-x+1),1,
+          p=GetVirtualPixels(image,x,y,(size_t) (x2-x+1),1,exception);
+          q=GetAuthenticPixels(floodplane_image,x,y,(size_t) (x2-x+1),1,
             exception);
           if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
@@ -312,7 +312,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
       *restrict p;
@@ -320,7 +320,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -334,7 +334,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (p->opacity != OpaqueOpacity)
         {
@@ -362,7 +362,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   }
   segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
   floodplane_image=DestroyImage(floodplane_image);
-  return(y == (long) image->rows ? MagickTrue : MagickFalse);
+  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -376,7 +376,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GradientImage() applies a continuously smooth color transitions along a
+%  GradientImage() applies a continuously smooth color transitions assize_t a
 %  vector from one color to another.
 %
 %  Note, the interface of this method will change in the future to support
@@ -416,7 +416,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -452,7 +452,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
       image->filename);
   (void) ResetMagickMemory(gradient->stops,0,gradient->number_stops*
     sizeof(*gradient->stops));
-  for (i=0; i < (long) gradient->number_stops; i++)
+  for (i=0; i < (ssize_t) gradient->number_stops; i++)
     GetMagickPixelPacket(image,&gradient->stops[i].color);
   SetMagickPixelPacket(image,start_color,(IndexPacket *) NULL,
     &gradient->stops[0].color);
@@ -504,39 +504,39 @@ MagickExport MagickBooleanType GradientImage(Image *image,
 %
 */
 
-static unsigned long **DestroyHistogramThreadSet(unsigned long **histogram)
+static size_t **DestroyHistogramThreadSet(size_t **histogram)
 {
-  register long
+  register ssize_t
     i;
 
-  assert(histogram != (unsigned long **) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
-    if (histogram[i] != (unsigned long *) NULL)
-      histogram[i]=(unsigned long *) RelinquishMagickMemory(histogram[i]);
-  histogram=(unsigned long **) RelinquishAlignedMemory(histogram);
+  assert(histogram != (size_t **) NULL);
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+    if (histogram[i] != (size_t *) NULL)
+      histogram[i]=(size_t *) RelinquishMagickMemory(histogram[i]);
+  histogram=(size_t **) RelinquishAlignedMemory(histogram);
   return(histogram);
 }
 
-static unsigned long **AcquireHistogramThreadSet(const size_t count)
+static size_t **AcquireHistogramThreadSet(const size_t count)
 {
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     **histogram,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  histogram=(unsigned long **) AcquireAlignedMemory(number_threads,
+  histogram=(size_t **) AcquireAlignedMemory(number_threads,
     sizeof(*histogram));
-  if (histogram == (unsigned long **) NULL)
-    return((unsigned long **) NULL);
+  if (histogram == (size_t **) NULL)
+    return((size_t **) NULL);
   (void) ResetMagickMemory(histogram,0,number_threads*sizeof(*histogram));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
-    histogram[i]=(unsigned long *) AcquireQuantumMemory(count,
+    histogram[i]=(size_t *) AcquireQuantumMemory(count,
       sizeof(**histogram));
-    if (histogram[i] == (unsigned long *) NULL)
+    if (histogram[i] == (size_t *) NULL)
       return(DestroyHistogramThreadSet(histogram));
   }
   return(histogram);
@@ -555,16 +555,18 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   Image
     *paint_image;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
-  unsigned long
+  MagickOffsetType
+    progress;
+
+  size_t
     **restrict histograms,
     width;
+
+  ssize_t
+    y;
 
   /*
     Initialize painted image attributes.
@@ -588,7 +590,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   histograms=AcquireHistogramThreadSet(NumberPaintBins);
-  if (histograms == (unsigned long **) NULL)
+  if (histograms == (size_t **) NULL)
     {
       paint_image=DestroyImage(paint_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -603,7 +605,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -614,18 +616,18 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     register IndexPacket
       *restrict paint_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
       *restrict q;
 
-    register unsigned long
+    register size_t
       *histogram;
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((long) width/2L),y-(long) (width/
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t) (width/
       2L),image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(paint_view,0,y,paint_image->columns,1,
       exception);
@@ -637,18 +639,18 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     paint_indexes=GetCacheViewAuthenticIndexQueue(paint_view);
     histogram=histograms[GetOpenMPThreadId()];
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      long
+      ssize_t
         j,
         k,
         v;
 
-      register long
+      register ssize_t
         i,
         u;
 
-      unsigned long
+      size_t
         count;
 
       /*
@@ -658,11 +660,11 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       j=0;
       count=0;
       (void) ResetMagickMemory(histogram,0,NumberPaintBins*sizeof(*histogram));
-      for (v=0; v < (long) width; v++)
+      for (v=0; v < (ssize_t) width; v++)
       {
-        for (u=0; u < (long) width; u++)
+        for (u=0; u < (ssize_t) width; u++)
         {
-          k=(long) ScaleQuantumToChar(PixelIntensityToQuantum(p+u+i));
+          k=(ssize_t) ScaleQuantumToChar(PixelIntensityToQuantum(p+u+i));
           histogram[k]++;
           if (histogram[k] > count)
             {
@@ -763,15 +765,17 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   ExceptionInfo
     *exception;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   MagickPixelPacket
     zero;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -792,7 +796,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickPixelPacket
       pixel;
@@ -800,7 +804,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -816,7 +820,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     pixel=zero;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
       if (IsMagickColorSimilar(&pixel,target) != invert)
@@ -904,15 +908,17 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   ExceptionInfo
     *exception;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   MagickPixelPacket
     zero;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -934,7 +940,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickPixelPacket
       pixel;
@@ -942,7 +948,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -958,7 +964,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     pixel=zero;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
       if (IsMagickColorSimilar(&pixel,target) != invert)
@@ -1037,12 +1043,14 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   ExceptionInfo
     *exception;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1064,7 +1072,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickBooleanType
       match;
@@ -1075,7 +1083,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -1091,7 +1099,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     GetMagickPixelPacket(image,&pixel);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
       match=((pixel.red >= low->red) && (pixel.red <= high->red) &&

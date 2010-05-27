@@ -61,12 +61,12 @@ static inline int StringToInteger(const char *value)
   return((int) strtol(value,(char **) NULL,10));
 }
 
-static inline long StringToLong(const char *value)
+static inline ssize_t StringToLong(const char *value)
 {
-  return(strtol(value,(char **) NULL,10));
+  return((ssize_t) strtol(value,(char **) NULL,10));
 }
 
-static inline unsigned long StringToUnsignedLong(const char *value)
+static inline size_t StringToUnsignedLong(const char *value)
 {
   return(strtoul(value,(char **) NULL,10));
 }

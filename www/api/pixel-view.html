@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -140,9 +140,6 @@
 </div>
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
-</div>
-<div  class="sponsor">
-   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
 </div>
 </div>
 </div>
@@ -182,7 +179,7 @@ _8c.html" target="source" name="DestroyPixelView">DestroyPixelView</a></h2>
 
 <pre class="code">
   PixelView *DestroyPixelView(PixelView *pixel_view,
-    const unsigned long number_wands,const unsigned long number_threads)
+    const size_t number_wands,const size_t number_threads)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -268,7 +265,7 @@ _8c.html" target="source" name="GetPixelViewHeight">GetPixelViewHeight</a></h2>
 <p>The format of the GetPixelViewHeight method is:</p>
 
 <pre class="code">
-  unsigned long GetPixelViewHeight(const PixelView *pixel_view)
+  size_t GetPixelViewHeight(const PixelView *pixel_view)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -355,7 +352,7 @@ _8c.html" target="source" name="GetPixelViewWidth">GetPixelViewWidth</a></h2>
 <p>The format of the GetPixelViewWidth method is:</p>
 
 <pre class="code">
-  unsigned long GetPixelViewWidth(const PixelView *pixel_view)
+  size_t GetPixelViewWidth(const PixelView *pixel_view)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -373,7 +370,7 @@ _8c.html" target="source" name="GetPixelViewX">GetPixelViewX</a></h2>
 <p>The format of the GetPixelViewX method is:</p>
 
 <pre class="code">
-  long GetPixelViewX(const PixelView *pixel_view)
+  ssize_t GetPixelViewX(const PixelView *pixel_view)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -391,7 +388,7 @@ _8c.html" target="source" name="GetPixelViewY">GetPixelViewY</a></h2>
 <p>The format of the GetPixelViewY method is:</p>
 
 <pre class="code">
-  long GetPixelViewY(const PixelView *pixel_view)
+  ssize_t GetPixelViewY(const PixelView *pixel_view)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -445,8 +442,8 @@ _8c.html" target="source" name="NewPixelViewRegion">NewPixelViewRegion</a></h2>
 <p>The format of the NewPixelViewRegion method is:</p>
 
 <pre class="code">
-  PixelView *NewPixelViewRegion(MagickWand *wand,const long x,
-    const long y,const unsigned long width,const unsigned long height)
+  PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
+    const ssize_t y,const size_t width,const size_t height)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

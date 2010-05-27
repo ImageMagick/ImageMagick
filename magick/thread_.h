@@ -35,7 +35,7 @@ typedef pthread_key_t MagickThreadKey;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
 typedef DWORD MagickThreadKey;
 #else
-typedef unsigned long *MagickThreadKey;
+typedef size_t *MagickThreadKey;
 #endif
 
 extern MagickExport MagickBooleanType

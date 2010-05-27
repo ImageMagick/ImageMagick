@@ -90,10 +90,10 @@
 %
 %      MagickBooleanType CompositeImage(Image *image,
 %        const CompositeOperator compose,Image *composite_image,
-%        const long x_offset,const long y_offset)
+%        const ssize_t x_offset,const ssize_t y_offset)
 %      MagickBooleanType CompositeImageChannel(Image *image,
 %        const ChannelType channel,const CompositeOperator compose,
-%        Image *composite_image,const long x_offset,const long y_offset)
+%        Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
 %
 %  A description of each parameter follows:
 %
@@ -1500,7 +1500,7 @@ static void HSBComposite(const double hue,const double saturation,
 
 MagickExport MagickBooleanType CompositeImage(Image *image,
   const CompositeOperator compose,const Image *composite_image,
-  const long x_offset,const long y_offset)
+  const ssize_t x_offset,const ssize_t y_offset)
 {
   MagickBooleanType
     status;
@@ -1512,7 +1512,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
 MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   const ChannelType channel,const CompositeOperator compose,
-  const Image *composite_image,const long x_offset,const long y_offset)
+  const Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
 {
 #define CompositeImageTag  "Composite/Image"
 
@@ -1535,7 +1535,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   Image
     *destination_image;
 
-  long
+  ssize_t
     progress,
     y;
 
@@ -1606,9 +1606,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     {
       if ((x_offset < 0) || (y_offset < 0))
         break;
-      if ((x_offset+(long) composite_image->columns) >= (long) image->columns)
+      if ((x_offset+(ssize_t) composite_image->columns) >= (ssize_t) image->columns)
         break;
-      if ((y_offset+(long) composite_image->rows) >= (long) image->rows)
+      if ((y_offset+(ssize_t) composite_image->rows) >= (ssize_t) image->rows)
         break;
       status=MagickTrue;
       exception=(&image->exception);
@@ -1617,7 +1617,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-      for (y=0; y < (long) composite_image->rows; y++)
+      for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -1761,7 +1761,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       SetResampleFilter(resample_filter,GaussianFilter,1.0);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
-      for (y=0; y < (long) composite_image->rows; y++)
+      for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -1775,10 +1775,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         register IndexPacket
           *restrict destination_indexes;
 
-        register long
+        register ssize_t
           x;
 
-        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
           continue;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
@@ -1787,9 +1787,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         if ((p == (const PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
           break;
         destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
-        for (x=0; x < (long) composite_image->columns; x++)
+        for (x=0; x < (ssize_t) composite_image->columns; x++)
         {
-          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
               p++;
               continue;
@@ -1943,7 +1943,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       resample_filter=AcquireResampleFilter(image,&image->exception);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
-      for (y=0; y < (long) composite_image->rows; y++)
+      for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -1951,10 +1951,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         register const PixelPacket
           *restrict p;
 
-        register long
+        register ssize_t
           x;
 
-        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
           continue;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
@@ -1963,9 +1963,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         if ((p == (const PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
           break;
         destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
-        for (x=0; x < (long) composite_image->columns; x++)
+        for (x=0; x < (ssize_t) composite_image->columns; x++)
         {
-          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
               p++;
               continue;
@@ -2115,7 +2115,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     const PixelPacket
       *pixels;
@@ -2139,7 +2139,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2151,7 +2151,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       {
         if (y < y_offset)
           continue;
-        if ((y-y_offset) >= (long) composite_image->rows)
+        if ((y-y_offset) >= (ssize_t) composite_image->rows)
           continue;
       }
     /*
@@ -2159,7 +2159,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     */
     pixels=(PixelPacket *) NULL;
     p=(PixelPacket *) NULL;
-    if ((y >= y_offset) && ((y-y_offset) < (long) composite_image->rows))
+    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) composite_image->rows))
       {
         p=GetCacheViewVirtualPixels(composite_view,0,y-y_offset,
           composite_image->columns,1,exception);
@@ -2186,7 +2186,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     hue=0.0;
     saturation=0.0;
     brightness=0.0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (modify_outside_overlay == MagickFalse)
         {
@@ -2195,7 +2195,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               q++;
               continue;
             }
-          if ((x-x_offset) >= (long) composite_image->columns)
+          if ((x-x_offset) >= (ssize_t) composite_image->columns)
             break;
         }
       destination.red=(MagickRealType) q->red;
@@ -2215,7 +2215,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       */
       composite=destination;
       if ((pixels == (PixelPacket *) NULL) || (x < x_offset) ||
-          ((x-x_offset) >= (long) composite_image->columns))
+          ((x-x_offset) >= (ssize_t) composite_image->columns))
         {
           switch (compose)
           {
@@ -2511,12 +2511,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
         case ModulateCompositeOp:
         {
-          long
+          ssize_t
             offset;
 
           if (source.opacity == TransparentOpacity)
             break;
-          offset=(long) (MagickPixelIntensityToQuantum(&source)-midpoint);
+          offset=(ssize_t) (MagickPixelIntensityToQuantum(&source)-midpoint);
           if (offset == 0)
             break;
           CompositeHSB(destination.red,destination.green,destination.blue,&hue,
@@ -2726,7 +2726,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -2752,14 +2752,14 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-      for (y=0; y < (long) image->rows; y+=texture->rows)
+      for (y=0; y < (ssize_t) image->rows; y+=texture->rows)
       {
-        register long
+        register ssize_t
           x;
 
         if (status == MagickFalse)
           continue;
-        for (x=0; x < (long) image->columns; x+=texture->columns)
+        for (x=0; x < (ssize_t) image->columns; x+=texture->columns)
         {
           MagickBooleanType
             thread_status;
@@ -2799,7 +2799,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickBooleanType
       sync;
@@ -2813,13 +2813,13 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     register IndexPacket
       *indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
       *q;
 
-    unsigned long
+    size_t
       width;
 
     if (status == MagickFalse)
@@ -2835,10 +2835,10 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       }
     texture_indexes=GetCacheViewVirtualIndexQueue(texture_view);
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x+=texture->columns)
+    for (x=0; x < (ssize_t) image->columns; x+=texture->columns)
     {
       width=texture->columns;
-      if ((x+(long) width) > (long) image->columns)
+      if ((x+(ssize_t) width) > (ssize_t) image->columns)
         width=image->columns-x;
       (void) CopyMagickMemory(q,p,width*sizeof(*p));
       if ((image->colorspace == CMYKColorspace) &&

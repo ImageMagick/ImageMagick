@@ -25,9 +25,9 @@ extern "C" {
 #include <time.h>
 #include "magick/version.h"
 
-#define MagickImageCoderSignature  ((unsigned long) \
+#define MagickImageCoderSignature  ((size_t) \
   (((MagickLibVersion) << 8) | MAGICKCORE_QUANTUM_DEPTH))
-#define MagickImageFilterSignature  ((unsigned long) \
+#define MagickImageFilterSignature  ((size_t) \
   (((MagickLibVersion) << 8) | MAGICKCORE_QUANTUM_DEPTH))
 
 typedef enum
@@ -46,7 +46,7 @@ typedef struct _ModuleInfo
     *handle,
     (*unregister_module)(void);
 
-  unsigned long
+  size_t
     (*register_module)(void);
 
   time_t
@@ -59,18 +59,18 @@ typedef struct _ModuleInfo
     *previous,
     *next;  /* deprecated, use GetModuleInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } ModuleInfo;
 
-typedef ModuleExport unsigned long
+typedef ModuleExport size_t
   ImageFilterHandler(Image **,const int,const char **,ExceptionInfo *);
 
 extern MagickExport char
-  **GetModuleList(const char *,unsigned long *,ExceptionInfo *);
+  **GetModuleList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const ModuleInfo
-  **GetModuleInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetModuleInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   InitializeModuleList(ExceptionInfo *),

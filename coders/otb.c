@@ -102,7 +102,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     byte;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -111,7 +111,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -145,13 +145,13 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   info=(unsigned char) ReadBlobByte(image);
   if (GetBit(info,4) == 0)
     {
-      image->columns=(unsigned long) ReadBlobByte(image);
-      image->rows=(unsigned long) ReadBlobByte(image);
+      image->columns=(size_t) ReadBlobByte(image);
+      image->rows=(size_t) ReadBlobByte(image);
     }
   else
     {
-      image->columns=(unsigned long) ReadBlobMSBShort(image);
-      image->rows=(unsigned long) ReadBlobMSBShort(image);
+      image->columns=(size_t) ReadBlobMSBShort(image);
+      image->rows=(size_t) ReadBlobMSBShort(image);
     }
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -168,7 +168,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert bi-level image to pixel packets.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -176,7 +176,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
         {
@@ -226,10 +226,10 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterOTBImage method is:
 %
-%      unsigned long RegisterOTBImage(void)
+%      size_t RegisterOTBImage(void)
 %
 */
-ModuleExport unsigned long RegisterOTBImage(void)
+ModuleExport size_t RegisterOTBImage(void)
 {
   MagickInfo
     *entry;
@@ -299,7 +299,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
 #define SetBit(a,i,set) \
   a=(unsigned char) ((set) ? (a) | (1L << (i)) : (a) & ~(1L << (i)))
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -308,7 +308,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   unsigned char
@@ -349,14 +349,14 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobByte(image,(unsigned char) image->rows);
     }
   (void) WriteBlobByte(image,1);  /* depth */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (PixelIntensity(p) < ((Quantum) QuantumRange/2.0))
         byte|=0x1 << (7-bit);

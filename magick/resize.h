@@ -23,23 +23,23 @@ extern "C" {
 #endif
 
 extern MagickExport Image
-  *AdaptiveResizeImage(const Image *,const unsigned long,const unsigned long,
+  *AdaptiveResizeImage(const Image *,const size_t,const size_t,
     ExceptionInfo *),
-  *LiquidRescaleImage(const Image *,const unsigned long,const unsigned long,
+  *LiquidRescaleImage(const Image *,const size_t,const size_t,
     const double,const double,ExceptionInfo *),
   *MagnifyImage(const Image *,ExceptionInfo *),
   *MinifyImage(const Image *,ExceptionInfo *),
   *ResampleImage(const Image *,const double,const double,const FilterTypes,
     const double,ExceptionInfo *),
-  *ResizeImage(const Image *,const unsigned long,const unsigned long,
+  *ResizeImage(const Image *,const size_t,const size_t,
     const FilterTypes,const double,ExceptionInfo *),
-  *SampleImage(const Image *,const unsigned long,const unsigned long,
+  *SampleImage(const Image *,const size_t,const size_t,
     ExceptionInfo *),
-  *ScaleImage(const Image *,const unsigned long,const unsigned long,
+  *ScaleImage(const Image *,const size_t,const size_t,
     ExceptionInfo *),
-  *ThumbnailImage(const Image *,const unsigned long,const unsigned long,
+  *ThumbnailImage(const Image *,const size_t,const size_t,
     ExceptionInfo *),
-  *ZoomImage(const Image *,const unsigned long,const unsigned long,
+  *ZoomImage(const Image *,const size_t,const size_t,
     ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

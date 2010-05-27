@@ -49,7 +49,7 @@ extern MagickExport StringInfo
 
 extern MagickExport void
   RandomComponentTerminus(void),
-  SeedPseudoRandomGenerator(const unsigned long),
+  SeedPseudoRandomGenerator(const size_t),
   SetRandomKey(RandomInfo *,const size_t,unsigned char *),
   SetRandomTrueRandom(const MagickBooleanType);
 

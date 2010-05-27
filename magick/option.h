@@ -115,7 +115,7 @@ typedef struct _OptionInfo
   const char
     *mnemonic;
 
-  long
+  ssize_t
     type;
 
   MagickBooleanType
@@ -129,9 +129,9 @@ extern MagickExport char
 
 extern MagickExport const char
   *GetImageOption(const ImageInfo *,const char *),
-  *MagickOptionToMnemonic(const MagickOption,const long);
+  *MagickOptionToMnemonic(const MagickOption,const ssize_t);
 
-extern MagickExport long
+extern MagickExport ssize_t
   ParseChannelOption(const char *),
   ParseMagickOption(const MagickOption,const MagickBooleanType,const char *);
 

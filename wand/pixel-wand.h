@@ -56,11 +56,11 @@ extern WandExport MagickBooleanType
 
 extern WandExport PixelWand
   *ClonePixelWand(const PixelWand *),
-  **ClonePixelWands(const PixelWand **,const unsigned long),
+  **ClonePixelWands(const PixelWand **,const size_t),
   *DestroyPixelWand(PixelWand *),
-  **DestroyPixelWands(PixelWand **,const unsigned long),
+  **DestroyPixelWands(PixelWand **,const size_t),
   *NewPixelWand(void),
-  **NewPixelWands(const unsigned long);
+  **NewPixelWands(const size_t);
 
 extern WandExport Quantum
   PixelGetAlphaQuantum(const PixelWand *),
@@ -73,7 +73,7 @@ extern WandExport Quantum
   PixelGetRedQuantum(const PixelWand *),
   PixelGetYellowQuantum(const PixelWand *);
 
-extern WandExport unsigned long
+extern WandExport size_t
   PixelGetColorCount(const PixelWand *);
 
 extern WandExport void
@@ -87,7 +87,7 @@ extern WandExport void
   PixelSetBlue(PixelWand *,const double),
   PixelSetBlueQuantum(PixelWand *,const Quantum),
   PixelSetColorFromWand(PixelWand *,const PixelWand *),
-  PixelSetColorCount(PixelWand *,const unsigned long),
+  PixelSetColorCount(PixelWand *,const size_t),
   PixelSetCyan(PixelWand *,const double),
   PixelSetCyanQuantum(PixelWand *,const Quantum),
   PixelSetFuzz(PixelWand *,const double),

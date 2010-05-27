@@ -92,7 +92,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -120,11 +120,11 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
     level=8;
   status=MagickTrue;
   cube_size=level*level;
-  image->columns=(unsigned long) (level*cube_size);
-  image->rows=(unsigned long) (level*cube_size);
-  for (y=0; y < (long) image->rows; y+=(long) level)
+  image->columns=(size_t) (level*cube_size);
+  image->rows=(size_t) (level*cube_size);
+  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) level)
   {
-    long
+    ssize_t
       blue,
       green,
       red;
@@ -134,17 +134,17 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
 
     if (status == MagickFalse)
       continue;
-    q=QueueAuthenticPixels(image,0,y,image->columns,(unsigned long) level,
+    q=QueueAuthenticPixels(image,0,y,image->columns,(size_t) level,
       exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    blue=y/(long) level;
-    for (green=0; green < (long) cube_size; green++)
+    blue=y/(ssize_t) level;
+    for (green=0; green < (ssize_t) cube_size; green++)
     {
-      for (red=0; red < (long) cube_size; red++)
+      for (red=0; red < (ssize_t) cube_size; red++)
       {
         q->red=ClampToQuantum(QuantumRange*red/(cube_size-1.0));
         q->green=ClampToQuantum(QuantumRange*green/(cube_size-1.0));
@@ -179,10 +179,10 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterHALDImage method is:
 %
-%      unsigned long RegisterHALDImage(void)
+%      size_t RegisterHALDImage(void)
 %
 */
-ModuleExport unsigned long RegisterHALDImage(void)
+ModuleExport size_t RegisterHALDImage(void)
 {
   MagickInfo
     *entry;

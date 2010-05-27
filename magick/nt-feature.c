@@ -97,7 +97,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 {
 #define CropImageTag  "Crop/Image"
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -134,15 +134,15 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (((geometry->x+(long) geometry->width) < 0) ||
-      ((geometry->y+(long) geometry->height) < 0) ||
-      (geometry->x >= (long) image->columns) ||
-      (geometry->y >= (long) image->rows))
+  if (((geometry->x+(ssize_t) geometry->width) < 0) ||
+      ((geometry->y+(ssize_t) geometry->height) < 0) ||
+      (geometry->x >= (ssize_t) image->columns) ||
+      (geometry->y >= (ssize_t) image->rows))
     ThrowImageException(OptionError,"GeometryDoesNotContainImage");
   page=(*geometry);
-  if ((page.x+(long) page.width) > (long) image->columns)
+  if ((page.x+(ssize_t) page.width) > (ssize_t) image->columns)
     page.width=image->columns-page.x;
-  if ((page.y+(long) page.height) > (long) image->rows)
+  if ((page.y+(ssize_t) page.height) > (ssize_t) image->rows)
     page.height=image->rows-page.y;
   if (page.x < 0)
     {
@@ -181,7 +181,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     Extract crop image.
   */
   q=bitmap_bits;
-  for (y=0; y < (long) page.height; y++)
+  for (y=0; y < (ssize_t) page.height; y++)
   {
     p=GetVirtualPixels(image,page.x,page.y+y,page.width,1,exception);
     if (p == (const PixelPacket *) NULL)
@@ -194,7 +194,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 
 #else  /* 16 or 32 bit Quantum */
       {
-        long
+        ssize_t
           x;
 
         /* Transfer pixels, scaling to Quantum */
@@ -213,7 +213,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     if (proceed == MagickFalse)
       break;
   }
-  if (y < (long) page.height)
+  if (y < (ssize_t) page.height)
     {
       GlobalUnlock((HGLOBAL) bitmap_bitsH);
       GlobalFree((HGLOBAL) bitmap_bitsH);
@@ -592,10 +592,10 @@ MagickExport void *ImageToHBITMAP(Image *image)
   HBITMAP
     bitmapH;
 
-  long
+  ssize_t
     y;
 
-  register long
+  register ssize_t
     x;
 
   register const PixelPacket
@@ -637,12 +637,12 @@ MagickExport void *ImageToHBITMAP(Image *image)
     bitmap.bmBits=bitmap_bits;
   (void) TransformImageColorspace(image,RGBColorspace);
   exception=(&image->exception);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->rgbRed=ScaleQuantumToChar(GetRedPixelComponent(p));
       q->rgbGreen=ScaleQuantumToChar(GetGreenPixelComponent(p));

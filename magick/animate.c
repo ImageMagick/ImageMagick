@@ -630,7 +630,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case VersionCommand:
     {
-      XNoticeWidget(display,windows,GetMagickVersion((unsigned long *) NULL),
+      XNoticeWidget(display,windows,GetMagickVersion((size_t *) NULL),
         GetMagickCopyright());
       break;
     }
@@ -694,7 +694,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 */
 
-static inline long MagickMax(const long x,const long y)
+static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 {
   if (x > y)
     return(x);
@@ -741,7 +741,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   RectangleInfo
     geometry_info;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -763,7 +763,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     height,
     width;
 
-  unsigned long
+  size_t
     delay;
 
   Window
@@ -829,7 +829,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
           images->filename);
       map_info->colormap=(Colormap) NULL;
-      pixel.pixels=(unsigned long *) NULL;
+      pixel.pixels=(size_t *) NULL;
       /*
         Initialize visual info.
       */
@@ -872,12 +872,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
           next->matte=MagickFalse;
           if ((next->storage_class == DirectClass) ||
               (next->colors != images->colors) ||
-              (next->colors > (unsigned long) visual_info->colormap_size))
+              (next->colors > (size_t) visual_info->colormap_size))
             break;
-          for (i=0; i < (long) images->colors; i++)
+          for (i=0; i < (ssize_t) images->colors; i++)
             if (IsColorEqual(next->colormap+i,images->colormap+i) == MagickFalse)
               break;
-          if (i < (long) images->colors)
+          if (i < (ssize_t) images->colors)
             break;
           next=GetNextImageInList(next);
         }
@@ -892,10 +892,10 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if (image_list == (Image **) NULL)
     ThrowXWindowFatalException(ResourceLimitFatalError,
       "MemoryAllocationFailed",images->filename);
-  for (i=0; i < (long) number_scenes; i++)
+  for (i=0; i < (ssize_t) number_scenes; i++)
     if (image_list[i]->scene == 0)
       break;
-  if (i == (long) number_scenes)
+  if (i == (ssize_t) number_scenes)
     qsort((void *) image_list,number_scenes,sizeof(Image *),SceneCompare);
   /*
     Initialize Standard Colormap.
@@ -924,7 +924,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   context_values.background=pixel.background_color.pixel;
   context_values.foreground=pixel.foreground_color.pixel;
-  pixel.annotate_context=XCreateGC(display,window_info.id,(unsigned long)
+  pixel.annotate_context=XCreateGC(display,window_info.id,(size_t)
     GCBackground | GCForeground,&context_values);
   if (pixel.annotate_context == (GC) NULL)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateGraphicContext",
@@ -1308,7 +1308,7 @@ MagickExport Image *XAnimateImages(Display *display,
   int
     status;
 
-  long
+  ssize_t
     first_scene,
     iterations,
     scene;
@@ -1326,13 +1326,13 @@ MagickExport Image *XAnimateImages(Display *display,
   register char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   static char
     working_directory[MaxTextExtent];
 
-  static unsigned long
+  static size_t
     number_windows;
 
   static XWindowInfo
@@ -1341,7 +1341,7 @@ MagickExport Image *XAnimateImages(Display *display,
   time_t
     timestamp;
 
-  unsigned long
+  size_t
     delay,
     number_scenes;
 
@@ -1443,7 +1443,7 @@ MagickExport Image *XAnimateImages(Display *display,
       magick_windows[number_windows++]=(&windows->command);
       magick_windows[number_windows++]=(&windows->widget);
       magick_windows[number_windows++]=(&windows->popup);
-      for (i=0; i < (long) number_windows; i++)
+      for (i=0; i < (ssize_t) number_windows; i++)
         magick_windows[i]->id=(Window) NULL;
     }
   /*
@@ -1489,12 +1489,12 @@ MagickExport Image *XAnimateImages(Display *display,
           next->matte=MagickFalse;
           if ((next->storage_class == DirectClass) ||
               (next->colors != images->colors) ||
-              (next->colors > (unsigned long) visual_info->colormap_size))
+              (next->colors > (size_t) visual_info->colormap_size))
             break;
-          for (i=0; i < (long) images->colors; i++)
+          for (i=0; i < (ssize_t) images->colors; i++)
             if (IsColorEqual(next->colormap+i,images->colormap+i) == MagickFalse)
               break;
-          if (i < (long) images->colors)
+          if (i < (ssize_t) images->colors)
             break;
           next=GetNextImageInList(next);
         }
@@ -1510,17 +1510,17 @@ MagickExport Image *XAnimateImages(Display *display,
   if (image_list == (Image **) NULL)
     ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       images->filename);
-  for (scene=0; scene < (long) number_scenes; scene++)
+  for (scene=0; scene < (ssize_t) number_scenes; scene++)
     if (image_list[scene]->scene == 0)
       break;
-  if (scene == (long) number_scenes)
+  if (scene == (ssize_t) number_scenes)
     qsort((void *) image_list,number_scenes,sizeof(Image *),SceneCompare);
   /*
     Initialize Standard Colormap.
   */
   nexus=NewImageList();
   display_image=image_list[0];
-  for (scene=0; scene < (long) number_scenes; scene++)
+  for (scene=0; scene < (ssize_t) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->klass == TrueColor) ||
@@ -1589,7 +1589,7 @@ MagickExport Image *XAnimateImages(Display *display,
   if (pixel->highlight_context != (GC) NULL)
     (void) XFreeGC(display,pixel->highlight_context);
   pixel->highlight_context=XCreateGC(display,windows->context.id,
-    (unsigned long) (context_mask | GCPlaneMask),&context_values);
+    (size_t) (context_mask | GCPlaneMask),&context_values);
   if (pixel->highlight_context == (GC) NULL)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateGraphicContext",
       images->filename);
@@ -1620,7 +1620,7 @@ MagickExport Image *XAnimateImages(Display *display,
   context_values.background=icon_pixel->background_color.pixel;
   context_values.foreground=icon_pixel->foreground_color.pixel;
   icon_pixel->annotate_context=XCreateGC(display,windows->icon.id,
-    (unsigned long) (GCBackground | GCForeground),&context_values);
+    (size_t) (GCBackground | GCForeground),&context_values);
   if (icon_pixel->annotate_context == (GC) NULL)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateGraphicContext",
       images->filename);
@@ -1687,7 +1687,7 @@ MagickExport Image *XAnimateImages(Display *display,
       windows->backdrop.x=0;
       windows->backdrop.y=0;
       (void) CloneString(&windows->backdrop.name,"ImageMagick Backdrop");
-      windows->backdrop.flags=(unsigned long) (USSize | USPosition);
+      windows->backdrop.flags=(size_t) (USSize | USPosition);
       windows->backdrop.width=(unsigned int)
         XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=(unsigned int)
@@ -1901,7 +1901,7 @@ MagickExport Image *XAnimateImages(Display *display,
       (windows->backdrop.id != (Window) NULL))
     (void) XMapWindow(display,windows->image.id);
   XSetCursorState(display,windows,MagickTrue);
-  for (scene=0; scene < (long) number_scenes; scene++)
+  for (scene=0; scene < (ssize_t) number_scenes; scene++)
   {
     unsigned int
       columns,
@@ -2011,12 +2011,12 @@ MagickExport Image *XAnimateImages(Display *display,
               /*
                 Forward animation:  increment scene number.
               */
-              if (scene < ((long) number_scenes-1))
+              if (scene < ((ssize_t) number_scenes-1))
                 scene++;
               else
                 {
                   iterations++;
-                  if (iterations == (long) image_list[0]->iterations)
+                  if (iterations == (ssize_t) image_list[0]->iterations)
                     {
                       iterations=0;
                       state|=ExitState;
@@ -2045,7 +2045,7 @@ MagickExport Image *XAnimateImages(Display *display,
               else
                 {
                   iterations++;
-                  if (iterations == (long) image_list[0]->iterations)
+                  if (iterations == (ssize_t) image_list[0]->iterations)
                     {
                       iterations=0;
                       state&=(~RepeatAnimationState);
@@ -2060,7 +2060,7 @@ MagickExport Image *XAnimateImages(Display *display,
                     {
                       if ((state & RepeatAnimationState) == MagickFalse)
                         state&=(~PlayAnimationState);
-                      scene=(long) number_scenes-1;
+                      scene=(ssize_t) number_scenes-1;
                     }
                 }
             }
@@ -2119,7 +2119,7 @@ MagickExport Image *XAnimateImages(Display *display,
             }
           state&=(~StepAnimationState);
           if (pause != MagickFalse)
-            for (i=0; i < (long) resource_info->pause; i++)
+            for (i=0; i < (ssize_t) resource_info->pause; i++)
             {
               int
                 status;
@@ -2244,16 +2244,16 @@ MagickExport Image *XAnimateImages(Display *display,
         if (display_image->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Client Message: 0x%lx 0x%lx %d 0x%lx",event.xclient.window,
-            event.xclient.message_type,event.xclient.format,(unsigned long)
+            event.xclient.message_type,event.xclient.format,(size_t)
             event.xclient.data.l[0]);
         if (event.xclient.message_type == windows->im_protocols)
           {
-            if (*event.xclient.data.l == (long) windows->im_update_colormap)
+            if (*event.xclient.data.l == (ssize_t) windows->im_update_colormap)
               {
                 /*
                   Update graphic context and window colormap.
                 */
-                for (i=0; i < (long) number_windows; i++)
+                for (i=0; i < (ssize_t) number_windows; i++)
                 {
                   if (magick_windows[i]->id == windows->icon.id)
                     continue;
@@ -2268,7 +2268,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   context_values.plane_mask=
                     context_values.background ^ context_values.foreground;
                   (void) XChangeGC(display,magick_windows[i]->highlight_context,
-                    (unsigned long) (context_mask | GCPlaneMask),
+                    (size_t) (context_mask | GCPlaneMask),
                     &context_values);
                   magick_windows[i]->attributes.background_pixel=
                     pixel->background_color.pixel;
@@ -2282,7 +2282,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   (void) XInstallColormap(display,map_info->colormap);
                 break;
               }
-            if (*event.xclient.data.l == (long) windows->im_exit)
+            if (*event.xclient.data.l == (ssize_t) windows->im_exit)
               {
                 state|=ExitState;
                 break;
@@ -2302,7 +2302,7 @@ MagickExport Image *XAnimateImages(Display *display,
             unsigned char
               *data;
 
-            unsigned long
+            size_t
               after,
               length;
 
@@ -2350,13 +2350,13 @@ MagickExport Image *XAnimateImages(Display *display,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == (long) windows->wm_take_focus)
+        if (*event.xclient.data.l == (ssize_t) windows->wm_take_focus)
           {
             (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               (Time) event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != (long) windows->wm_delete_window)
+        if (*event.xclient.data.l != (ssize_t) windows->wm_delete_window)
           break;
         (void) XWithdrawWindow(display,event.xclient.window,
           visual_info->screen);
@@ -2493,7 +2493,7 @@ MagickExport Image *XAnimateImages(Display *display,
         *(command+length)='\0';
         if (display_image->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
-            "Key press: 0x%lx (%c)",(unsigned long) key_symbol,*command);
+            "Key press: 0x%lx (%c)",(size_t) key_symbol,*command);
         command_type=NullCommand;
         switch (key_symbol)
         {
@@ -2562,7 +2562,7 @@ MagickExport Image *XAnimateImages(Display *display,
           sizeof(command),&key_symbol,(XComposeStatus *) NULL);
         if (display_image->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
-            "Key release: 0x%lx (%c)",(unsigned long) key_symbol,*command);
+            "Key release: 0x%lx (%c)",(size_t) key_symbol,*command);
         break;
       }
       case LeaveNotify:
@@ -2660,7 +2660,7 @@ MagickExport Image *XAnimateImages(Display *display,
         unsigned char
           *data;
 
-        unsigned long
+        size_t
           after,
           length;
 
@@ -2674,7 +2674,7 @@ MagickExport Image *XAnimateImages(Display *display,
           Display image named by the remote command protocol.
         */
         status=XGetWindowProperty(display,event.xproperty.window,
-          event.xproperty.atom,0L,(long) MaxTextExtent,MagickFalse,(Atom)
+          event.xproperty.atom,0L,(ssize_t) MaxTextExtent,MagickFalse,(Atom)
           AnyPropertyType,&type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;
@@ -2786,7 +2786,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  for (scene=1; scene < (long) number_scenes; scene++)
+  for (scene=1; scene < (ssize_t) number_scenes; scene++)
   {
     if (windows->image.pixmaps[scene] != (Pixmap) NULL)
       (void) XFreePixmap(display,windows->image.pixmaps[scene]);

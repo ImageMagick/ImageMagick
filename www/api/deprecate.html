@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
 </div>
 </div>
 </div>
@@ -194,8 +194,8 @@ _8c.html" target="source" name="AcquireCacheViewPixels">AcquireCacheViewPixels</
 
 <pre class="code">
   const PixelPacket *AcquireCacheViewPixels(const CacheView *cache_view,
-    const long x,const long y,const unsigned long columns,
-    const unsigned long rows,ExceptionInfo *exception)
+    const ssize_t x,const ssize_t y,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -231,8 +231,8 @@ _8c.html" target="source" name="AcquireImagePixels">AcquireImagePixels</a></h2>
 <p>The format of the AcquireImagePixels() method is:</p>
 
 <pre class="code">
-  const PixelPacket *AcquireImagePixels(const Image *image,const long x,
-    const long y,const unsigned long columns,const unsigned long rows,
+  const PixelPacket *AcquireImagePixels(const Image *image,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
 
@@ -309,7 +309,7 @@ _8c.html" target="source" name="AcquireOneCacheViewPixel">AcquireOneCacheViewPix
 
 <pre class="code">
   MagickBooleanType AcquireOneCacheViewPixel(const CacheView *cache_view,
-    const long x,const long y,PixelPacket *pixel,ExceptionInfo *exception)
+    const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -345,8 +345,8 @@ _8c.html" target="source" name="AcquireOneCacheViewVirtualPixel">AcquireOneCache
 <pre class="code">
   MagickBooleanType AcquireOneCacheViewVirtualPixel(
     const CacheView *cache_view,
-    const VirtualPixelMethod virtual_pixel_method,const long x,
-    const long y,PixelPacket *pixel,ExceptionInfo *exception)
+    const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+    const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -383,8 +383,8 @@ _8c.html" target="source" name="AcquireOneMagickPixel">AcquireOneMagickPixel</a>
 <p>The format of the AcquireOneMagickPixel() method is:</p>
 
 <pre class="code">
-  MagickPixelPacket AcquireOneMagickPixel(const Image image,const long x,
-    const long y,ExceptionInfo exception)
+  MagickPixelPacket AcquireOneMagickPixel(const Image image,const ssize_t x,
+    const ssize_t y,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -415,8 +415,8 @@ _8c.html" target="source" name="AcquireOnePixel">AcquireOnePixel</a></h2>
 <p>The format of the AcquireOnePixel() method is:</p>
 
 <pre class="code">
-  PixelPacket AcquireOnePixel(const Image image,const long x,
-    const long y,ExceptionInfo exception)
+  PixelPacket AcquireOnePixel(const Image image,const ssize_t x,
+    const ssize_t y,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -448,8 +448,8 @@ _8c.html" target="source" name="AcquireOneVirtualPixel">AcquireOneVirtualPixel</
 
 <pre class="code">
   PixelPacket AcquireOneVirtualPixel(const Image image,
-    const VirtualPixelMethod virtual_pixel_method,const long x,
-    const long y,ExceptionInfo exception)
+    const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+    const ssize_t y,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -593,7 +593,7 @@ _8c.html" target="source" name="AllocateImageColormap">AllocateImageColormap</a>
 
 <pre class="code">
   MagickBooleanType AllocateImageColormap(Image *image,
-    const unsigned long colors)
+    const size_t colors)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -819,7 +819,7 @@ _8c.html" target="source" name="ColorFloodfill">ColorFloodfill</a></h2>
 <pre class="code">
   MagickBooleanType ColorFloodfillImage(Image *image,
     const DrawInfo *draw_info,const PixelPacket target,
-    const long x_offset,const long y_offset,const PaintMethod method)
+    const ssize_t x_offset,const ssize_t y_offset,const PaintMethod method)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -876,7 +876,7 @@ _8c.html" target="source" name="DeleteImageList">DeleteImageList</a></h2>
 <p>The format of the DeleteImageList method is:</p>
 
 <pre class="code">
-  unsigned int DeleteImageList(Image *images,const long offset)
+  unsigned int DeleteImageList(Image *images,const ssize_t offset)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -905,7 +905,7 @@ _8c.html" target="source" name="DeleteMagickRegistry">DeleteMagickRegistry</a></
 <p>The format of the DeleteMagickRegistry method is:</p>
 
 <pre class="code">
-  MagickBooleanType DeleteMagickRegistry(const long id)
+  MagickBooleanType DeleteMagickRegistry(const ssize_t id)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1010,7 +1010,7 @@ _8c.html" target="source" name="DestroyMagick">DestroyMagick</a></h2>
 _8c.html" target="source" name="DispatchImage">DispatchImage</a></h2>
 <div class="doc-section">
 
-<p>DispatchImage() extracts pixel data from an image and returns it to you. The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The data is returned as char, short int, int, long, float, or double in the order specified by map.</p></ol>
+<p>DispatchImage() extracts pixel data from an image and returns it to you. The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The data is returned as char, short int, int, ssize_t, float, or double in the order specified by map.</p></ol>
 
 <p>Suppose you want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</p>
 
@@ -1028,9 +1028,9 @@ _8c.html" target="source" name="DispatchImage">DispatchImage</a></h2>
 <p>The format of the DispatchImage method is:</p>
 
 <pre class="code">
-  unsigned int DispatchImage(const Image *image,const long x_offset,
-    const long y_offset,const unsigned long columns,
-    const unsigned long rows,const char *map,const StorageType type,
+  unsigned int DispatchImage(const Image *image,const ssize_t x_offset,
+    const ssize_t y_offset,const size_t columns,
+    const size_t rows,const char *map,const StorageType type,
     void *pixels,ExceptionInfo *exception)
 </pre>
 
@@ -1196,8 +1196,8 @@ _8c.html" target="source" name="GetCacheView">GetCacheView</a></h2>
 <p>The format of the GetCacheView method is:</p>
 
 <pre class="code">
-  PixelPacket *GetCacheView(CacheView *cache_view,const long x,
-    const long y,const unsigned long columns,const unsigned long rows)
+  PixelPacket *GetCacheView(CacheView *cache_view,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1249,8 +1249,8 @@ _8c.html" target="source" name="GetCacheViewPixels">GetCacheViewPixels</a></h2>
 <p>The format of the GetCacheViewPixels method is:</p>
 
 <pre class="code">
-  PixelPacket *GetCacheViewPixels(CacheView *cache_view,const long x,
-    const long y,const unsigned long columns,const unsigned long rows)
+  PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1326,7 +1326,7 @@ _8c.html" target="source" name="GetImageFromMagickRegistry">GetImageFromMagickRe
 <p>The format of the GetImageFromMagickRegistry method is:</p>
 
 <pre class="code">
-  Image *GetImageFromMagickRegistry(const char *name,long *id,
+  Image *GetImageFromMagickRegistry(const char *name,ssize_t *id,
     ExceptionInfo *exception)
 </pre>
 
@@ -1351,7 +1351,7 @@ _8c.html" target="source" name="GetMagickRegistry">GetMagickRegistry</a></h2>
 <p>The format of the GetMagickRegistry method is:</p>
 
 <pre class="code">
-  const void *GetMagickRegistry(const long id,RegistryType *type,
+  const void *GetMagickRegistry(const ssize_t id,RegistryType *type,
     size_t *length,ExceptionInfo *exception)
 </pre>
 
@@ -1415,14 +1415,14 @@ _8c.html" target="source" name="GetImageList">GetImageList</a></h2>
 <p>Deprecated, replace with:</p>
 
 <pre class="text">
-      CloneImage(GetImageFromList(images,(long) offset),0,0,MagickTrue,
+      CloneImage(GetImageFromList(images,(ssize_t) offset),0,0,MagickTrue,
   exception);
 </pre>
 
 <p>The format of the GetImageList method is:</p>
 
 <pre class="code">
-  Image *GetImageList(const Image *images,const long offset,
+  Image *GetImageList(const Image *images,const ssize_t offset,
     ExceptionInfo *exception)
 </pre>
 
@@ -1453,7 +1453,7 @@ _8c.html" target="source" name="GetImageListIndex">GetImageListIndex</a></h2>
 <p>The format of the GetImageListIndex method is:</p>
 
 <pre class="code">
-  long GetImageListIndex(const Image *images)
+  ssize_t GetImageListIndex(const Image *images)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1477,7 +1477,7 @@ _8c.html" target="source" name="GetImageListSize">GetImageListSize</a></h2>
 <p>The format of the GetImageListSize method is:</p>
 
 <pre class="code">
-  unsigned long GetImageListSize(const Image *images)
+  size_t GetImageListSize(const Image *images)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1505,8 +1505,8 @@ _8c.html" target="source" name="GetImagePixels">GetImagePixels</a></h2>
 <p>The format of the GetImagePixels() method is:</p>
 
 <pre class="code">
-  PixelPacket *GetImagePixels(Image *image,const long x,const long y,
-    const unsigned long columns,const unsigned long rows)
+  PixelPacket *GetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1635,7 +1635,7 @@ _8c.html" target="source" name="GetOnePixel">GetOnePixel</a></h2>
 <p>The format of the GetOnePixel() method is:</p>
 
 <pre class="code">
-  PixelPacket GetOnePixel(const Image image,const long x,const long y)
+  PixelPacket GetOnePixel(const Image image,const ssize_t x,const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2037,8 +2037,8 @@ _8c.html" target="source" name="MatteFloodfill">MatteFloodfill</a></h2>
 
 <pre class="code">
   MagickBooleanType MatteFloodfillImage(Image *image,
-    const PixelPacket target,const Quantum opacity,const long x_offset,
-    const long y_offset,const PaintMethod method)
+    const PixelPacket target,const Quantum opacity,const ssize_t x_offset,
+    const ssize_t y_offset,const PaintMethod method)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2210,8 +2210,8 @@ _8c.html" target="source" name="PaintFloodfill">PaintFloodfill</a></h2>
 
 <pre class="code">
   MagickBooleanType PaintFloodfillImage(Image *image,
-    const ChannelType channel,const MagickPixelPacket target,const long x,
-    const long y,const DrawInfo *draw_info,const PaintMethod method)
+    const ChannelType channel,const MagickPixelPacket target,const ssize_t x,
+    const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2560,7 +2560,7 @@ _8c.html" target="source" name="RecolorImage">RecolorImage</a></h2>
 <p>The format of the RecolorImage method is:</p>
 
 <pre class="code">
-  Image *RecolorImage(const Image *image,const unsigned long order,
+  Image *RecolorImage(const Image *image,const size_t order,
     const double *color_matrix,ExceptionInfo *exception)
 </pre>
 
@@ -2619,8 +2619,8 @@ _8c.html" target="source" name="SetCacheViewPixels">SetCacheViewPixels</a></h2>
 <p>The format of the SetCacheViewPixels method is:</p>
 
 <pre class="code">
-  PixelPacket *SetCacheViewPixels(CacheView *cache_view,const long x,
-    const long y,const unsigned long columns,const unsigned long rows)
+  PixelPacket *SetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2716,7 +2716,7 @@ _8c.html" target="source" name="SetImageList">SetImageList</a></h2>
 
 <pre class="code">
   unsigned int SetImageList(Image *images,const Image *image,
-    const long offset,ExceptionInfo *exception)
+    const ssize_t offset,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2755,8 +2755,8 @@ _8c.html" target="source" name="SetImagePixels">SetImagePixels</a></h2>
 <p>The format of the SetImagePixels() method is:</p>
 
 <pre class="code">
-  PixelPacket *SetImagePixels(Image *image,const long x,const long y,
-    const unsigned long columns,const unsigned long rows)
+  PixelPacket *SetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2780,7 +2780,7 @@ _8c.html" target="source" name="SetMagickRegistry">SetMagickRegistry</a></h2>
 <p>The format of the SetMagickRegistry method is:</p>
 
 <pre class="code">
-  long SetMagickRegistry(const RegistryType type,const void *blob,
+  ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
     const size_t length,ExceptionInfo *exception)
 </pre>
 
@@ -2850,8 +2850,8 @@ _8c.html" target="source" name="SpliceImageList">SpliceImageList</a></h2>
 <p>The format of the SpliceImageList method is:</p>
 
 <pre class="code">
-  Image *SpliceImageList(Image *images,const long offset,
-    const unsigned long length,const Image *splices,
+  Image *SpliceImageList(Image *images,const ssize_t offset,
+    const size_t length,const Image *splices,
     ExceptionInfo *exception)
 </pre>
 
@@ -3144,7 +3144,7 @@ _8c.html" target="source" name="UnshiftImageList">UnshiftImageList</a></h2>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

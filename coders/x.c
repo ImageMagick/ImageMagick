@@ -130,10 +130,10 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterXImage method is:
 %
-%      unsigned long RegisterXImage(void)
+%      size_t RegisterXImage(void)
 %
 */
-ModuleExport unsigned long RegisterXImage(void)
+ModuleExport size_t RegisterXImage(void)
 {
   MagickInfo
     *entry;

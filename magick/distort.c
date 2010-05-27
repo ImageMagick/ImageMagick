@@ -132,8 +132,8 @@ static inline double MagickRound(double x)
     Round the fraction to nearest integer.
   */
   if (x >= 0.0)
-    return((double) ((long) (x+0.5)));
-  return((double) ((long) (x-0.5)));
+    return((double) ((ssize_t) (x+0.5)));
+  return((double) ((ssize_t) (x-0.5)));
 }
 
 /*
@@ -155,16 +155,16 @@ static inline double MagickRound(double x)
  * which is to allow the use of a bi-linear (order=1.5) polynomial.
  * All the later polynomials are ordered simply from x^N to y^N
  */
-static unsigned long poly_number_terms(double order)
+static size_t poly_number_terms(double order)
 {
  /* Return the number of terms for a 2d polynomial */
   if ( order < 1 || order > 5 ||
        ( order != floor(order) && (order-1.5) > MagickEpsilon) )
     return 0; /* invalid polynomial order */
-  return((unsigned long) floor((order+1)*(order+2)/2));
+  return((size_t) floor((order+1)*(order+2)/2));
 }
 
-static double poly_basis_fn(long n, double x, double y)
+static double poly_basis_fn(ssize_t n, double x, double y)
 {
   /* Return the result for this polynomial term */
   switch(n) {
@@ -192,7 +192,7 @@ static double poly_basis_fn(long n, double x, double y)
   }
   return( 0 ); /* should never happen */
 }
-static const char *poly_basis_str(long n)
+static const char *poly_basis_str(ssize_t n)
 {
   /* return the result for this polynomial term */
   switch(n) {
@@ -220,7 +220,7 @@ static const char *poly_basis_str(long n)
   }
   return( "UNKNOWN" ); /* should never happen */
 }
-static double poly_basis_dx(long n, double x, double y)
+static double poly_basis_dx(ssize_t n, double x, double y)
 {
   /* polynomial term for x derivative */
   switch(n) {
@@ -248,7 +248,7 @@ static double poly_basis_dx(long n, double x, double y)
   }
   return( 0.0 ); /* should never happen */
 }
-static double poly_basis_dy(long n, double x, double y)
+static double poly_basis_dy(ssize_t n, double x, double y)
 {
   /* polynomial term for y derivative */
   switch(n) {
@@ -284,8 +284,8 @@ static double poly_basis_dy(long n, double x, double y)
 %  The format of the GenerateCoefficients() method is:
 %
 %    Image *GenerateCoefficients(const Image *image,DistortImageMethod method,
-%        const unsigned long number_arguments,const double *arguments,
-%        unsigned long number_values, ExceptionInfo *exception)
+%        const size_t number_arguments,const double *arguments,
+%        size_t number_values, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -316,16 +316,16 @@ static double poly_basis_dy(long n, double x, double y)
 */
 
 static double *GenerateCoefficients(const Image *image,
-  DistortImageMethod *method,const unsigned long number_arguments,
-  const double *arguments,unsigned long number_values,ExceptionInfo *exception)
+  DistortImageMethod *method,const size_t number_arguments,
+  const double *arguments,size_t number_values,ExceptionInfo *exception)
 {
   double
     *coeff;
 
-  register unsigned long
+  register size_t
     i;
 
-  unsigned long
+  size_t
     number_coeff, /* number of coefficients to return (array size) */
     cp_size,      /* number floating point numbers per control point */
     cp_x,cp_y,    /* the x,y indexes for control point */
@@ -730,7 +730,7 @@ static double *GenerateCoefficients(const Image *image,
         *vectors[1],
         terms[8];
 
-      unsigned long
+      size_t
         cp_u = cp_values,
         cp_v = cp_values+1;
 
@@ -987,10 +987,10 @@ static double *GenerateCoefficients(const Image *image,
         **vectors,
         *terms;
 
-      unsigned long
+      size_t
         nterms;   /* number of polynomial terms per number_values */
 
-      register long
+      register ssize_t
         j;
 
       MagickBooleanType
@@ -999,7 +999,7 @@ static double *GenerateCoefficients(const Image *image,
       /* first two coefficients hold polynomial order information */
       coeff[0] = arguments[0];
       coeff[1] = (double) poly_number_terms(arguments[0]);
-      nterms = (unsigned long) coeff[1];
+      nterms = (size_t) coeff[1];
 
       /* create matrix, a fake vectors matrix, and least sqs terms */
       matrix = AcquireMagickMatrix(nterms,nterms);
@@ -1023,7 +1023,7 @@ static double *GenerateCoefficients(const Image *image,
         vectors[i] = &(coeff[2+i*nterms]);
       /* Add given control point pairs for least squares solving */
       for (i=1; i < number_arguments; i+=cp_size) { /* NB: start = 1 not 0 */
-        for (j=0; j < (long) nterms; j++)
+        for (j=0; j < (ssize_t) nterms; j++)
           terms[j] = poly_basis_fn(j,arguments[i+cp_x],arguments[i+cp_y]);
         LeastSquaresAddTerms(matrix,vectors,terms,
              &(arguments[i+cp_values]),nterms,number_values);
@@ -1341,7 +1341,7 @@ static double *GenerateCoefficients(const Image *image,
 %  The format of the DistortImage() method is:
 %
 %      Image *DistortImage(const Image *image,const DistortImageMethod method,
-%        const unsigned long number_arguments,const double *arguments,
+%        const size_t number_arguments,const double *arguments,
 %        MagickBooleanType bestfit, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1402,7 +1402,7 @@ static double *GenerateCoefficients(const Image *image,
 %
 */
 MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
-  const unsigned long number_arguments,const double *arguments,
+  const size_t number_arguments,const double *arguments,
   MagickBooleanType bestfit,ExceptionInfo *exception)
 {
 #define DistortImageTag  "Distort/Image"
@@ -1555,7 +1555,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         d.x = (coeff[2]-coeff[3])*ca;
         d.y = (coeff[2]-coeff[3])*sa;
         ExpandBounds(d);
-        /* Orthogonal points along top of arc */
+        /* Orthogonal points assize_t top of arc */
         for( a=ceil((coeff[0]-coeff[1]/2.0)/MagickPI2)*MagickPI2;
                a<(coeff[0]+coeff[1]/2.0); a+=MagickPI2 ) {
           ca = cos(a); sa = sin(a);
@@ -1589,8 +1589,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         /* direct calculation as it needs to tile correctly
          * for reversibility in a DePolar-Polar cycle */
         geometry.x = geometry.y = 0;
-        geometry.height = (unsigned long) ceil(coeff[0]-coeff[1]);
-        geometry.width = (unsigned long)
+        geometry.height = (size_t) ceil(coeff[0]-coeff[1]);
+        geometry.width = (size_t)
                   ceil((coeff[0]-coeff[1])*(coeff[5]-coeff[4])*0.5);
         break;
       }
@@ -1614,10 +1614,10 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
        Do not do this for DePolar which needs to be exact for virtual tiling.
     */
     if ( bestfit && method != DePolarDistortion ) {
-      geometry.x = (long) floor(min.x-0.5);
-      geometry.y = (long) floor(min.y-0.5);
-      geometry.width=(unsigned long) ceil(max.x-geometry.x+0.5);
-      geometry.height=(unsigned long) ceil(max.y-geometry.y+0.5);
+      geometry.x = (ssize_t) floor(min.x-0.5);
+      geometry.y = (ssize_t) floor(min.y-0.5);
+      geometry.width=(size_t) ceil(max.x-geometry.x+0.5);
+      geometry.height=(size_t) ceil(max.y-geometry.y+0.5);
     }
 
     /* Now that we have a new size lets some distortions to it exactly
@@ -1643,7 +1643,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
   /* Verbose output */
   if ( GetImageArtifact(image,"verbose") != (const char *) NULL ) {
-    register long
+    register ssize_t
        i;
     char image_gen[MaxTextExtent];
     const char *lookup;
@@ -1787,19 +1787,19 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
       case PolynomialDistortion:
       {
-        unsigned long nterms = (unsigned long) coeff[1];
+        size_t nterms = (size_t) coeff[1];
         fprintf(stderr, "Polynomial (order %lg, terms %lu), FX Equivelent\n",
                        coeff[0], nterms);
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
         fprintf(stderr, "       xx =");
-        for (i=0; i<(long) nterms; i++) {
+        for (i=0; i<(ssize_t) nterms; i++) {
           if ( i != 0 && i%4 == 0 ) fprintf(stderr, "\n         ");
           fprintf(stderr, " %+lf%s", coeff[2+i],
                poly_basis_str(i));
         }
         fprintf(stderr, ";\n       yy =");
-        for (i=0; i<(long) nterms; i++) {
+        for (i=0; i<(ssize_t) nterms; i++) {
           if ( i != 0 && i%4 == 0 ) fprintf(stderr, "\n         ");
           fprintf(stderr, " %+lf%s", coeff[2+i+nterms],
                poly_basis_str(i));
@@ -1942,7 +1942,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     CacheView
       *distort_view;
 
-    long
+    ssize_t
       j,
       progress,
       status;
@@ -1962,7 +1962,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-    for (j=0; j < (long) distort_image->rows; j++)
+    for (j=0; j < (ssize_t) distort_image->rows; j++)
     {
       double
         validity;  /* how mathematically valid is this the mapping */
@@ -1981,7 +1981,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       register IndexPacket
         *restrict indexes;
 
-      register long
+      register ssize_t
         i,
         id;
 
@@ -2026,7 +2026,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       if (distort_image->colorspace == CMYKColorspace)
         ConvertRGBToCMYK(&invalid);   /* what about other color spaces? */
 
-      for (i=0; i < (long) distort_image->columns; i++)
+      for (i=0; i < (ssize_t) distort_image->columns; i++)
       {
         /* map pixel coordinate to distortion space coordinate */
         d.x = (double) (geometry.x+i+0.5)*output_scaling;
@@ -2130,10 +2130,10 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           case PolynomialDistortion:
           {
             /* multi-ordered polynomial */
-            register long
+            register ssize_t
               k;
-            long
-              nterms=(long)coeff[1];
+            ssize_t
+              nterms=(ssize_t)coeff[1];
 
             PointInfo
               du,dv; /* the du,dv vectors from unit dx,dy -- derivatives */
@@ -2258,7 +2258,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
               This is more of a 'displacement' function rather than an
               absolute distortion function.
             */
-            unsigned long
+            size_t
               i;
             double
               denominator;
@@ -2371,7 +2371,7 @@ fprintf(stderr, "\n");
 %  The format of the SparseColorImage() method is:
 %
 %      Image *SparseColorImage(const Image *image,const ChannelType channel,
-%        const SparseColorMethod method,const unsigned long number_arguments,
+%        const SparseColorMethod method,const size_t number_arguments,
 %        const double *arguments,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2398,7 +2398,7 @@ fprintf(stderr, "\n");
 */
 MagickExport Image *SparseColorImage(const Image *image,
   const ChannelType channel,const SparseColorMethod method,
-  const unsigned long number_arguments,const double *arguments,
+  const size_t number_arguments,const double *arguments,
   ExceptionInfo *exception)
 {
 #define SparseColorTag  "Distort/SparseColor"
@@ -2415,7 +2415,7 @@ MagickExport Image *SparseColorImage(const Image *image,
   MagickPixelPacket
     zero;
 
-  unsigned long
+  size_t
     number_colors;
 
   assert(image != (Image *) NULL);
@@ -2449,7 +2449,7 @@ MagickExport Image *SparseColorImage(const Image *image,
     switch (method) {
       case BarycentricColorInterpolate:
       {
-        register long x=0;
+        register ssize_t x=0;
         fprintf(stderr, "Barycentric Sparse Color:\n");
         if ( channel & RedChannel )
           fprintf(stderr, "  -channel R -fx '%+lf*i %+lf*j %+lf' \\\n",
@@ -2470,7 +2470,7 @@ MagickExport Image *SparseColorImage(const Image *image,
       }
       case BilinearColorInterpolate:
       {
-        register long x=0;
+        register ssize_t x=0;
         fprintf(stderr, "Bilinear Sparse Color\n");
         if ( channel & RedChannel )
           fprintf(stderr, "   -channel R -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
@@ -2517,7 +2517,7 @@ MagickExport Image *SparseColorImage(const Image *image,
       return((Image *) NULL);
     }
   { /* ----- MAIN CODE ----- */
-    long
+    ssize_t
       j,
       progress;
 
@@ -2534,7 +2534,7 @@ MagickExport Image *SparseColorImage(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-    for (j=0; j < (long) sparse_image->rows; j++)
+    for (j=0; j < (ssize_t) sparse_image->rows; j++)
     {
       MagickBooleanType
         sync;
@@ -2545,7 +2545,7 @@ MagickExport Image *SparseColorImage(const Image *image,
       register IndexPacket
         *restrict indexes;
 
-      register long
+      register ssize_t
         i;
 
       register PixelPacket
@@ -2561,13 +2561,13 @@ MagickExport Image *SparseColorImage(const Image *image,
 /* FUTURE: get pixel from source image - so channel can replace parts */
       indexes=GetCacheViewAuthenticIndexQueue(sparse_view);
       pixel=zero;
-      for (i=0; i < (long) sparse_image->columns; i++)
+      for (i=0; i < (ssize_t) sparse_image->columns; i++)
       {
         switch (method)
         {
           case BarycentricColorInterpolate:
           {
-            register long x=0;
+            register ssize_t x=0;
             if ( channel & RedChannel )
               pixel.red     = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
@@ -2587,7 +2587,7 @@ MagickExport Image *SparseColorImage(const Image *image,
           }
           case BilinearColorInterpolate:
           {
-            register long x=0;
+            register ssize_t x=0;
             if ( channel & RedChannel )
               pixel.red     = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
@@ -2608,7 +2608,7 @@ MagickExport Image *SparseColorImage(const Image *image,
           case ShepardsColorInterpolate:
           { /* Shepards Method,uses its own input arguments as coefficients.
             */
-            unsigned long
+            size_t
               k;
             double
               denominator;
@@ -2620,7 +2620,7 @@ MagickExport Image *SparseColorImage(const Image *image,
             if ( channel & OpacityChannel ) pixel.opacity = 0.0;
             denominator = 0.0;
             for(k=0; k<number_arguments; k+=2+number_colors) {
-              register long x=(long) k+2;
+              register ssize_t x=(ssize_t) k+2;
               double weight =
                   ((double)i-arguments[ k ])*((double)i-arguments[ k ])
                 + ((double)j-arguments[k+1])*((double)j-arguments[k+1]);
@@ -2650,7 +2650,7 @@ MagickExport Image *SparseColorImage(const Image *image,
           case VoronoiColorInterpolate:
           default:
           { /* Just use the closest control point you can find! */
-            unsigned long
+            size_t
               k;
             double
               minimum = MagickHuge;
@@ -2660,7 +2660,7 @@ MagickExport Image *SparseColorImage(const Image *image,
                   ((double)i-arguments[ k ])*((double)i-arguments[ k ])
                 + ((double)j-arguments[k+1])*((double)j-arguments[k+1]);
               if ( distance < minimum ) {
-                register long x=(long) k+2;
+                register ssize_t x=(ssize_t) k+2;
                 if ( channel & RedChannel     ) pixel.red     = arguments[x++];
                 if ( channel & GreenChannel   ) pixel.green   = arguments[x++];
                 if ( channel & BlueChannel    ) pixel.blue    = arguments[x++];

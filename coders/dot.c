@@ -176,10 +176,10 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterDOTImage method is:
 %
-%      unsigned long RegisterDOTImage(void)
+%      size_t RegisterDOTImage(void)
 %
 */
-ModuleExport unsigned long RegisterDOTImage(void)
+ModuleExport size_t RegisterDOTImage(void)
 {
   MagickInfo
     *entry;

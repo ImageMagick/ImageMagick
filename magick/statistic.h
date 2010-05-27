@@ -24,7 +24,7 @@ extern "C" {
 
 typedef struct _ChannelStatistics
 {
-  unsigned long
+  size_t
     depth;
 
   double
@@ -87,19 +87,19 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   EvaluateImageChannel(Image *,const ChannelType,const MagickEvaluateOperator,
     const double,ExceptionInfo *),
-  FunctionImage(Image *,const MagickFunction,const unsigned long,const double *,
+  FunctionImage(Image *,const MagickFunction,const size_t,const double *,
     ExceptionInfo *),
   FunctionImageChannel(Image *,const ChannelType,const MagickFunction,
-    const unsigned long,const double *,ExceptionInfo *),
-  GetImageChannelExtrema(const Image *,const ChannelType,unsigned long *,
-    unsigned long *,ExceptionInfo *),
+    const size_t,const double *,ExceptionInfo *),
+  GetImageChannelExtrema(const Image *,const ChannelType,size_t *,
+    size_t *,ExceptionInfo *),
   GetImageChannelMean(const Image *,const ChannelType,double *,double *,
     ExceptionInfo *),
   GetImageChannelKurtosis(const Image *,const ChannelType,double *,double *,
     ExceptionInfo *),
   GetImageChannelRange(const Image *,const ChannelType,double *,double *,
     ExceptionInfo *),
-  GetImageExtrema(const Image *,unsigned long *,unsigned long *,
+  GetImageExtrema(const Image *,size_t *,size_t *,
     ExceptionInfo *),
   GetImageRange(const Image *,double *,double *,ExceptionInfo *),
   GetImageMean(const Image *,double *,double *,ExceptionInfo *),

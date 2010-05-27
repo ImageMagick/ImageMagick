@@ -341,25 +341,25 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
   length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
   strip_offset=10+(12*14)+4+8;
-  length=WriteLSBLong(file,(unsigned long) strip_offset);
+  length=WriteLSBLong(file,(size_t) strip_offset);
   length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(unsigned long) image_info->orientation);
+  length=WriteLSBLong(file,(size_t) image_info->orientation);
   length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
   length=WriteLSBLong(file,image->rows);
   length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
   offset=(ssize_t) ftell(file)-4;
   length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(unsigned long) (strip_offset-8));
+  length=WriteLSBLong(file,(size_t) (strip_offset-8));
   length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(unsigned long) (strip_offset-8));
+  length=WriteLSBLong(file,(size_t) (strip_offset-8));
   length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
   length=fwrite("\000\000\000\000",1,4,file);
   length=WriteLSBLong(file,image->x_resolution);
   length=WriteLSBLong(file,1);
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
     (void) fputc(c,file);
-  offset=(ssize_t) fseek(file,(long) offset,SEEK_SET);
+  offset=(ssize_t) fseek(file,(ssize_t) offset,SEEK_SET);
   length=WriteLSBLong(file,(unsigned int) length);
   (void) fclose(file);
   (void) CloseBlob(image);
@@ -421,7 +421,7 @@ static inline size_t MagickMax(const size_t x,const size_t y)
   return(y);
 }
 
-static inline long MagickMin(const long x,const long y)
+static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 {
   if (x < y)
     return(x);
@@ -429,12 +429,12 @@ static inline long MagickMin(const long x,const long y)
 }
 
 static MagickBooleanType ReadProfile(Image *image,const char *name,
-  unsigned char *datum,long length)
+  unsigned char *datum,ssize_t length)
 {
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   StringInfo
@@ -506,30 +506,30 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
 #if defined(TIFFTAG_ICCPROFILE)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1)
-    (void) ReadProfile(image,"icc",profile,(long) length);
+    (void) ReadProfile(image,"icc",profile,(ssize_t) length);
 #endif
 #if defined(TIFFTAG_PHOTOSHOP)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1)
-    (void) ReadProfile(image,"8bim",profile,(long) length);
+    (void) ReadProfile(image,"8bim",profile,(ssize_t) length);
 #endif
 #if defined(TIFFTAG_RICHTIFFIPTC)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1)
     {
       if (TIFFIsByteSwapped(tiff) != 0)
-        TIFFSwabArrayOfLong((uint32 *) profile,(unsigned long) length);
+        TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
       (void) ReadProfile(image,"iptc",profile,4L*length);
     }
 #endif
 #if defined(TIFFTAG_XMLPACKET)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1)
-    (void) ReadProfile(image,"xmp",profile,(long) length);
+    (void) ReadProfile(image,"xmp",profile,(ssize_t) length);
 #endif
   length=0;
   if (TIFFGetField(tiff,37724,&length,&profile) == 1)
-    (void) ReadProfile(image,"tiff:37724",profile,(long) length);
+    (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image)
@@ -565,7 +565,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
   char
     value[MaxTextExtent];
 
-  register long
+  register ssize_t
     i;
 
   tdir_t
@@ -608,10 +608,10 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
       case TIFF_LONG:
       {
         uint32
-          longy;
+          ssize_ty;
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&longy) != 0)
-          (void) FormatMagickString(value,MaxTextExtent,"%d",longy);
+        if (TIFFGetField(tiff,exif_info[i].tag,&ssize_ty) != 0)
+          (void) FormatMagickString(value,MaxTextExtent,"%d",ssize_ty);
         break;
       }
       case TIFF_RATIONAL:
@@ -657,8 +657,8 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static int32 TIFFReadPixels(TIFF *tiff,unsigned long bits_per_sample,
-  tsample_t sample,long row,tdata_t scanline)
+static int32 TIFFReadPixels(TIFF *tiff,size_t bits_per_sample,
+  tsample_t sample,ssize_t row,tdata_t scanline)
 {
   int32
     status;
@@ -745,7 +745,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -762,7 +762,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -804,7 +804,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   unsigned char
     *pixels;
 
-  unsigned long
+  size_t
     lsb_first;
 
   /*
@@ -843,7 +843,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       /*
         Generate blank images for subimage specification (e.g. image.tif[4].
       */
-      for (i=0; i < (long) image_info->scene; i++)
+      for (i=0; i < (ssize_t) image_info->scene; i++)
       {
         (void) TIFFReadDirectory(tiff);
         AcquireNextImage(image_info,image);
@@ -923,9 +923,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Photometric "
           "interpretation: %s",GetImageProperty(image,"tiff:photometric"));
       }
-    image->columns=(unsigned long) width;
-    image->rows=(unsigned long) height;
-    image->depth=(unsigned long) bits_per_sample;
+    image->columns=(size_t) width;
+    image->rows=(size_t) height;
+    image->depth=(size_t) bits_per_sample;
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %lu",
         image->depth);
@@ -950,8 +950,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     y_position=(float) image->page.y/y_resolution;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position);
-    image->page.x=(long) ceil(x_position*x_resolution-0.5);
-    image->page.y=(long) ceil(y_position*y_resolution-0.5);
+    image->page.x=(ssize_t) ceil(x_position*x_resolution-0.5);
+    image->page.y=(ssize_t) ceil(y_position*y_resolution-0.5);
     image->orientation=(OrientationType) orientation;
     chromaticity=(float *) NULL;
     (void) TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
@@ -1088,10 +1088,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
-        unsigned long
+        size_t
           colors;
 
-        colors=(unsigned long) GetQuantumRange(bits_per_sample)+1;
+        colors=(size_t) GetQuantumRange(bits_per_sample)+1;
         if (AcquireImageColormap(image,colors) == MagickFalse)
           {
             TIFFClose(tiff);
@@ -1153,7 +1153,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if ((image->storage_class == PseudoClass) &&
             (photometric == PHOTOMETRIC_PALETTE))
           {
-            unsigned long
+            size_t
               range;
 
             uint16
@@ -1167,14 +1167,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
               &green_colormap,&blue_colormap);
             range=255;  /* might be old style 8-bit colormap */
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < (ssize_t) image->colors; i++)
               if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
                   (blue_colormap[i] >= 256))
                 {
                   range=65535;
                   break;
                 }
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < (ssize_t) image->colors; i++)
             {
               image->colormap[i].red=ClampToQuantum(((double) QuantumRange*
                 red_colormap[i])/range);
@@ -1213,7 +1213,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
         pixels=GetQuantumPixels(quantum_info);
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
             status;
@@ -1269,7 +1269,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
         pixels=GetQuantumPixels(quantum_info);
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
             status;
@@ -1301,9 +1301,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        for (i=0; i < (long) samples_per_pixel; i++)
+        for (i=0; i < (ssize_t) samples_per_pixel; i++)
         {
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
               *restrict q;
@@ -1361,9 +1361,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         i=0;
         p=(unsigned char *) NULL;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register long
+          register ssize_t
             x;
 
           register PixelPacket
@@ -1376,11 +1376,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             {
               if (TIFFReadRGBAStrip(tiff,(tstrip_t) y,(uint32 *) pixels) == 0)
                 break;
-              i=(long) MagickMin((long) rows_per_strip,(long) image->rows-y);
+              i=(ssize_t) MagickMin((ssize_t) rows_per_strip,(ssize_t) image->rows-y);
             }
           i--;
           p=pixels+image->columns*i;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             q->red=ScaleCharToQuantum((unsigned char) (TIFFGetR(*p)));
             q->green=ScaleCharToQuantum((unsigned char) (TIFFGetG(*p)));
@@ -1411,7 +1411,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           columns,
           rows;
 
-        unsigned long
+        size_t
           number_pixels;
 
         /*
@@ -1432,38 +1432,38 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        for (y=0; y < (long) image->rows; y+=rows)
+        for (y=0; y < (ssize_t) image->rows; y+=rows)
         {
           PixelPacket
             *tile;
 
-          register long
+          register ssize_t
             x;
 
           register PixelPacket
             *restrict q;
 
-          unsigned long
+          size_t
             columns_remaining,
             rows_remaining;
 
           rows_remaining=image->rows-y;
-          if ((long) (y+rows) < (long) image->rows)
+          if ((ssize_t) (y+rows) < (ssize_t) image->rows)
             rows_remaining=rows;
           tile=QueueAuthenticPixels(image,0,y,image->columns,rows_remaining,
             exception);
           if (tile == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x+=columns)
+          for (x=0; x < (ssize_t) image->columns; x+=columns)
           {
-            unsigned long
+            size_t
               column,
               row;
 
             if (TIFFReadRGBATile(tiff,(uint32) x,(uint32) y,tile_pixels) == 0)
               break;
             columns_remaining=image->columns-x;
-            if ((long) (x+columns) < (long) image->columns)
+            if ((ssize_t) (x+columns) < (ssize_t) image->columns)
               columns_remaining=columns;
             p=tile_pixels+(rows-rows_remaining)*columns;
             q=tile+(image->columns*(rows_remaining-1)+x);
@@ -1537,9 +1537,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           Convert image to DirectClass pixel packets.
         */
         p=pixels+number_pixels-1;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register long
+          register ssize_t
             x;
 
           register PixelPacket
@@ -1549,7 +1549,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           q+=image->columns-1;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             q->red=ScaleCharToQuantum((unsigned char) TIFFGetR(*p));
             q->green=ScaleCharToQuantum((unsigned char) TIFFGetG(*p));
@@ -1648,10 +1648,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterTIFFImage method is:
 %
-%      unsigned long RegisterTIFFImage(void)
+%      size_t RegisterTIFFImage(void)
 %
 */
-ModuleExport unsigned long RegisterTIFFImage(void)
+ModuleExport size_t RegisterTIFFImage(void)
 {
 #define TIFFDescription  "Tagged Image File Format"
 
@@ -1680,7 +1680,7 @@ ModuleExport unsigned long RegisterTIFFImage(void)
     const char
       *p;
 
-    register long int
+    register ssize_t
       i;
 
     p=TIFFGetVersion();
@@ -1843,7 +1843,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -1929,7 +1929,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
       return(MagickFalse);
     }
   strip_size=byte_count[0];
-  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
+  for (i=1; i < (ssize_t) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
   buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
@@ -1946,7 +1946,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
-  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
+  for (i=0; i < (ssize_t) TIFFNumberOfStrips(tiff); i++)
   {
     count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,strip_size);
     if (WriteBlob(image,(size_t) count,buffer) != count)
@@ -2003,7 +2003,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  unsigned long
+  size_t
     columns,
     rows;
 
@@ -2122,26 +2122,26 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
   return(MagickTrue);
 }
 
-static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,long row,
+static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   tsample_t sample,Image *image)
 {
   int32
     status;
 
-  long
+  ssize_t
     bytes_per_pixel,
     j,
     k,
     l;
 
-  register long
+  register ssize_t
     i;
 
   register unsigned char
     *p,
     *q;
 
-  unsigned long
+  size_t
     number_tiles,
     tile_width;
 
@@ -2150,26 +2150,26 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,long row,
   /*
     Fill scanlines to tile height.
   */
-  i=(long) (row % tiff_info->tile_geometry.height)*TIFFScanlineSize(tiff);
+  i=(ssize_t) (row % tiff_info->tile_geometry.height)*TIFFScanlineSize(tiff);
   (void) CopyMagickMemory(tiff_info->scanlines+i,(char *) tiff_info->scanline,
     (size_t) TIFFScanlineSize(tiff));
-  if (((unsigned long) (row % tiff_info->tile_geometry.height) !=
-      (tiff_info->tile_geometry.height-1)) && (row != (long) (image->rows-1)))
+  if (((size_t) (row % tiff_info->tile_geometry.height) !=
+      (tiff_info->tile_geometry.height-1)) && (row != (ssize_t) (image->rows-1)))
     return(0);
   /*
     Write tile to TIFF image.
   */
   status=0;
-  bytes_per_pixel=TIFFTileSize(tiff)/(long) (tiff_info->tile_geometry.height*
+  bytes_per_pixel=TIFFTileSize(tiff)/(ssize_t) (tiff_info->tile_geometry.height*
     tiff_info->tile_geometry.width);
   number_tiles=(image->columns+tiff_info->tile_geometry.width)/
     tiff_info->tile_geometry.width;
-  for (i=0; i < (long) number_tiles; i++)
+  for (i=0; i < (ssize_t) number_tiles; i++)
   {
-    tile_width=(i == (long) (number_tiles-1)) ? image->columns-(i*
+    tile_width=(i == (ssize_t) (number_tiles-1)) ? image->columns-(i*
       tiff_info->tile_geometry.width) : tiff_info->tile_geometry.width;
-    for (j=0; j < (long) ((row % tiff_info->tile_geometry.height)+1); j++)
-      for (k=0; k < (long) tile_width; k++)
+    for (j=0; j < (ssize_t) ((row % tiff_info->tile_geometry.height)+1); j++)
+      for (k=0; k < (ssize_t) tile_width; k++)
       {
         if (bytes_per_pixel == 0)
           {
@@ -2234,7 +2234,7 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
         SetStringInfoLength(iptc_profile,length);
         if (TIFFIsByteSwapped(tiff))
           TIFFSwabArrayOfLong((uint32 *) GetStringInfoDatum(iptc_profile),
-            (unsigned long) (length/4));
+            (size_t) (length/4));
         (void) TIFFSetField(tiff,TIFFTAG_RICHTIFFIPTC,(uint32)
           GetStringInfoLength(iptc_profile)/4,GetStringInfoDatum(iptc_profile));
         iptc_profile=DestroyStringInfo(iptc_profile);
@@ -2272,7 +2272,7 @@ static void TIFFSetProperties(TIFF *tiff,Image *image)
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_MODEL,value);
   (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
-    GetMagickVersion((unsigned long *) NULL));
+    GetMagickVersion((size_t *) NULL));
   (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
   value=GetImageProperty(image,"tiff:copyright");
   if (value != (const char *) NULL)
@@ -2297,7 +2297,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
   const char
     *value;
 
-  register long
+  register ssize_t
     i;
 
   uint32
@@ -2332,10 +2332,10 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
       case TIFF_LONG:
       {
         uint16
-          longy;
+          ssize_ty;
 
-        longy=(uint16) StringToLong(value);
-        (void) TIFFSetField(tiff,exif_info[i].tag,longy);
+        ssize_ty=(uint16) StringToLong(value);
+        (void) TIFFSetField(tiff,exif_info[i].tag,ssize_ty);
         break;
       }
       case TIFF_RATIONAL:
@@ -2373,7 +2373,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   CompressionType
     compression;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -2389,7 +2389,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -2417,7 +2417,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   unsigned char
     *pixels;
 
-  unsigned long
+  size_t
     lsb_first;
 
   /*
@@ -2538,7 +2538,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       {
         (void) ThrowMagickException(&image->exception,GetMagickModule(),
           CoderError,"CompressionNotSupported","`%s'",MagickOptionToMnemonic(
-          MagickCompressOptions,(long) compression));
+          MagickCompressOptions,(ssize_t) compression));
         compress_tag=COMPRESSION_NONE;
         compression=NoCompression;
       }
@@ -2567,7 +2567,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         {
           (void) ThrowMagickException(&image->exception,GetMagickModule(),
             CoderError,"CompressionNotSupported","`%s'",MagickOptionToMnemonic(
-              MagickCompressOptions,(long) compression));
+              MagickCompressOptions,(ssize_t) compression));
           compress_tag=COMPRESSION_NONE;
           compression=NoCompression;
           break;
@@ -2640,7 +2640,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             else
               if (image->storage_class == PseudoClass)
                 {
-                  unsigned long
+                  size_t
                     depth;
 
                   /*
@@ -2752,11 +2752,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
     rows_per_strip=1;
     if (TIFFScanlineSize(tiff) != 0)
-      rows_per_strip=(unsigned long) MagickMax((size_t)
+      rows_per_strip=(size_t) MagickMax((size_t)
         TIFFDefaultStripSize(tiff,0),1);
     option=GetImageOption(image_info,"tiff:rows-per-strip");
     if (option != (const char *) NULL)
-      rows_per_strip=(unsigned long) strtol(option,(char **) NULL,10);
+      rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
     switch (compress_tag)
     {
       case COMPRESSION_JPEG:
@@ -2944,7 +2944,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             quantum_type=RGBQuantum;
             if (image->matte != MagickFalse)
               quantum_type=RGBAQuantum;
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
                 *restrict p;
@@ -2972,7 +2972,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             /*
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
                 *restrict p;
@@ -2992,7 +2992,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 if (status == MagickFalse)
                   break;
               }
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
                 *restrict p;
@@ -3012,7 +3012,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 if (status == MagickFalse)
                   break;
               }
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
                 *restrict p;
@@ -3033,7 +3033,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   break;
               }
             if (image->matte != MagickFalse)
-              for (y=0; y < (long) image->rows; y++)
+              for (y=0; y < (ssize_t) image->rows; y++)
               {
                 register const PixelPacket
                   *restrict p;
@@ -3068,7 +3068,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           quantum_type=CMYKAQuantum;
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace);
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
             *restrict p;
@@ -3111,7 +3111,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) ResetMagickMemory(red,0,65536*sizeof(*red));
         (void) ResetMagickMemory(green,0,65536*sizeof(*green));
         (void) ResetMagickMemory(blue,0,65536*sizeof(*blue));
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < (ssize_t) image->colors; i++)
         {
           red[i]=ScaleQuantumToShort(image->colormap[i].red);
           green[i]=ScaleQuantumToShort(image->colormap[i].green);
@@ -3138,7 +3138,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
          else
            if (photometric != PHOTOMETRIC_PALETTE)
              quantum_type=GrayQuantum;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
             *restrict p;

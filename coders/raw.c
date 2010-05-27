@@ -100,7 +100,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
     *canvas_image,
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -115,7 +115,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -172,7 +172,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
       */
       image->scene++;
       length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         count=ReadBlob(image,length,pixels);
         if (count != (ssize_t) length)
@@ -195,12 +195,12 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
         count=ReadBlob(image,length,pixels);
       }
-    for (y=0; y < (long) image->extract_info.height; y++)
+    for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
       register const PixelPacket
         *restrict p;
 
-      register long
+      register ssize_t
         x;
 
       register PixelPacket
@@ -220,7 +220,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
       if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
         break;
       if (((y-image->extract_info.y) >= 0) && 
-          ((y-image->extract_info.y) < (long) image->rows))
+          ((y-image->extract_info.y) < (ssize_t) image->rows))
         {
           p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
             image->columns,1,exception);
@@ -228,7 +228,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
             1,exception);
           if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetRedPixelComponent(q,GetRedPixelComponent(p));
             SetGreenPixelComponent(q,GetGreenPixelComponent(p));
@@ -299,10 +299,10 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterRAWImage method is:
 %
-%      unsigned long RegisterRAWImage(void)
+%      size_t RegisterRAWImage(void)
 %
 */
-ModuleExport unsigned long RegisterRAWImage(void)
+ModuleExport size_t RegisterRAWImage(void)
 {
   MagickInfo
     *entry;
@@ -448,7 +448,7 @@ ModuleExport void UnregisterRAWImage(void)
 */
 static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
 {
-  long
+  ssize_t
     y;
 
   MagickOffsetType
@@ -573,7 +573,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=GetQuantumPixels(quantum_info);
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)

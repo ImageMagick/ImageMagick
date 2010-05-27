@@ -65,9 +65,9 @@
 %
 %  The format of the ValidateCompareCommand method is:
 %
-%      unsigned long ValidateCompareCommand(ImageInfo *image_info,
+%      size_t ValidateCompareCommand(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -82,9 +82,9 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateCompareCommand(ImageInfo *image_info,
+static size_t ValidateCompareCommand(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -96,11 +96,11 @@ static unsigned long ValidateCompareCommand(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -152,9 +152,9 @@ static unsigned long ValidateCompareCommand(ImageInfo *image_info,
 %
 %  The format of the ValidateCompositeCommand method is:
 %
-%      unsigned long ValidateCompositeCommand(ImageInfo *image_info,
+%      size_t ValidateCompositeCommand(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -169,9 +169,9 @@ static unsigned long ValidateCompareCommand(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateCompositeCommand(ImageInfo *image_info,
+static size_t ValidateCompositeCommand(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -183,11 +183,11 @@ static unsigned long ValidateCompositeCommand(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -240,9 +240,9 @@ static unsigned long ValidateCompositeCommand(ImageInfo *image_info,
 %
 %  The format of the ValidateConvertCommand method is:
 %
-%      unsigned long ValidateConvertCommand(ImageInfo *image_info,
+%      size_t ValidateConvertCommand(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -257,9 +257,9 @@ static unsigned long ValidateCompositeCommand(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateConvertCommand(ImageInfo *image_info,
+static size_t ValidateConvertCommand(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -271,11 +271,11 @@ static unsigned long ValidateConvertCommand(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -327,9 +327,9 @@ static unsigned long ValidateConvertCommand(ImageInfo *image_info,
 %
 %  The format of the ValidateIdentifyCommand method is:
 %
-%      unsigned long ValidateIdentifyCommand(ImageInfo *image_info,
+%      size_t ValidateIdentifyCommand(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -344,9 +344,9 @@ static unsigned long ValidateConvertCommand(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateIdentifyCommand(ImageInfo *image_info,
+static size_t ValidateIdentifyCommand(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -358,11 +358,11 @@ static unsigned long ValidateIdentifyCommand(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   (void) output_filename;
@@ -415,9 +415,9 @@ static unsigned long ValidateIdentifyCommand(ImageInfo *image_info,
 %
 %  The format of the ValidateImageFormatsInMemory method is:
 %
-%      unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
+%      size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -432,9 +432,9 @@ static unsigned long ValidateIdentifyCommand(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
+static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     size[MaxTextExtent];
@@ -454,7 +454,7 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
@@ -464,7 +464,7 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
   unsigned char
     *blob;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -631,9 +631,9 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
 %
 %  The format of the ValidateImageFormatsOnDisk method is:
 %
-%      unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
+%      size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -648,9 +648,9 @@ static unsigned long ValidateImageFormatsInMemory(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
+static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     size[MaxTextExtent];
@@ -670,11 +670,11 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -838,9 +838,9 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
 %
 %  The format of the ValidateImportExportPixels method is:
 %
-%      unsigned long ValidateImportExportPixels(ImageInfo *image_info,
+%      size_t ValidateImportExportPixels(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -855,9 +855,9 @@ static unsigned long ValidateImageFormatsOnDisk(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateImportExportPixels(ImageInfo *image_info,
+static size_t ValidateImportExportPixels(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   double
     distortion;
@@ -870,7 +870,7 @@ static unsigned long ValidateImportExportPixels(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
@@ -880,7 +880,7 @@ static unsigned long ValidateImportExportPixels(ImageInfo *image_info,
   unsigned char
     *pixels;
 
-  unsigned long
+  size_t
     test;
 
   (void) output_filename;
@@ -1008,9 +1008,9 @@ static unsigned long ValidateImportExportPixels(ImageInfo *image_info,
 %
 %  The format of the ValidateMontageCommand method is:
 %
-%      unsigned long ValidateMontageCommand(ImageInfo *image_info,
+%      size_t ValidateMontageCommand(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1025,9 +1025,9 @@ static unsigned long ValidateImportExportPixels(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateMontageCommand(ImageInfo *image_info,
+static size_t ValidateMontageCommand(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -1039,11 +1039,11 @@ static unsigned long ValidateMontageCommand(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -1096,9 +1096,9 @@ static unsigned long ValidateMontageCommand(ImageInfo *image_info,
 %
 %  The format of the ValidateStreamCommand method is:
 %
-%      unsigned long ValidateStreamCommand(ImageInfo *image_info,
+%      size_t ValidateStreamCommand(ImageInfo *image_info,
 %        const char *reference_filename,const char *output_filename,
-%        unsigned long *fail,ExceptionInfo *exception)
+%        size_t *fail,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1113,9 +1113,9 @@ static unsigned long ValidateMontageCommand(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static unsigned long ValidateStreamCommand(ImageInfo *image_info,
+static size_t ValidateStreamCommand(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,
-  unsigned long *fail,ExceptionInfo *exception)
+  size_t *fail,ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -1127,11 +1127,11 @@ static unsigned long ValidateStreamCommand(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i,
     j;
 
-  unsigned long
+  size_t
     test;
 
   test=0;
@@ -1203,7 +1203,7 @@ static MagickBooleanType ValidateUsage(void)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Version: %s\n",GetMagickVersion((size_t *) NULL));
   (void) printf("Copyright: %s\n\n",GetMagickCopyright());
   (void) printf("Features: %s\n",GetMagickFeatures());
   (void) printf("Usage: %s [options ...] reference-file\n",GetClientName());
@@ -1254,13 +1254,13 @@ int main(int argc,char **argv)
     regard_warnings,
     status;
 
-  register long
+  register ssize_t
     i;
 
   TimerInfo
     *timer;
 
-  unsigned long
+  size_t
     fail,
     iterations,
     tests;
@@ -1279,7 +1279,7 @@ int main(int argc,char **argv)
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   (void) CopyMagickString(image_info->filename,ReferenceFilename,MaxTextExtent);
-  for (i=1; i < (long) argc; i++)
+  for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
     if (IsMagickOption(option) == MagickFalse)
@@ -1339,13 +1339,13 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("validate",option+1) == 0)
           {
-            long
+            ssize_t
               validate;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowValidateException(OptionError,"MissingArgument",option);
             validate=ParseMagickOption(MagickValidateOptions,MagickFalse,
               argv[i]);
@@ -1359,7 +1359,7 @@ int main(int argc,char **argv)
             (LocaleCompare("-version",option+1) == 0))
           {
             (void) fprintf(stdout,"Version: %s\n",
-              GetMagickVersion((unsigned long *) NULL));
+              GetMagickVersion((size_t *) NULL));
             (void) fprintf(stdout,"Copyright: %s\n\n",GetMagickCopyright());
             (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
             return(0);
@@ -1395,11 +1395,11 @@ int main(int argc,char **argv)
       else
         {
           (void) fprintf(stdout,"Version: %s\n",
-            GetMagickVersion((unsigned long *) NULL));
+            GetMagickVersion((size_t *) NULL));
           (void) fprintf(stdout,"Copyright: %s\n\n",
             GetMagickCopyright());
           (void) fprintf(stdout,"ImageMagick Validation Suite (%s)\n\n",
-            MagickOptionToMnemonic(MagickValidateOptions,(long) type));
+            MagickOptionToMnemonic(MagickValidateOptions,(ssize_t) type));
           if ((type & CompareValidate) != 0)
             tests+=ValidateCompareCommand(image_info,reference_filename,
               output_filename,&fail,exception);
@@ -1441,9 +1441,9 @@ int main(int argc,char **argv)
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,
         "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
-        iterations,1.0*iterations/elapsed_time,user_time,(long)
-        (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),
-        (long) (1000.0*(elapsed_time-floor(elapsed_time))));
+        iterations,1.0*iterations/elapsed_time,user_time,(ssize_t)
+        (elapsed_time/60.0),(ssize_t) ceil(fmod(elapsed_time,60.0)),
+        (ssize_t) (1000.0*(elapsed_time-floor(elapsed_time))));
       timer=DestroyTimerInfo(timer);
     }
   DestroyValidate();

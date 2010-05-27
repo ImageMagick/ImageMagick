@@ -37,7 +37,7 @@ typedef struct _StringInfo
   size_t
     length;
 
-  unsigned long
+  size_t
     signature;
 } StringInfo;
 
@@ -64,7 +64,7 @@ extern MagickExport int
   LocaleCompare(const char *,const char *),
   LocaleNCompare(const char *,const char *,const size_t);
 
-extern MagickExport long
+extern MagickExport ssize_t
   FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
   FormatMagickString(char *,const size_t,const char *,...)
     magick_attribute((format (printf,3,4))),

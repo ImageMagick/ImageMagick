@@ -338,11 +338,11 @@ MagickExport char *GetNextImageProfile(const Image *image)
 
 static unsigned short **DestroyPixelThreadSet(unsigned short **pixels)
 {
-  register long
+  register ssize_t
     i;
 
   assert(pixels != (unsigned short **) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (pixels[i] != (unsigned short *) NULL)
       pixels[i]=(unsigned short *) RelinquishMagickMemory(pixels[i]);
   pixels=(unsigned short **) RelinquishAlignedMemory(pixels);
@@ -352,13 +352,13 @@ static unsigned short **DestroyPixelThreadSet(unsigned short **pixels)
 static unsigned short **AcquirePixelThreadSet(const size_t columns,
   const size_t channels)
 {
-  register long
+  register ssize_t
     i;
 
   unsigned short
     **pixels;
 
-  unsigned long
+  size_t
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -367,7 +367,7 @@ static unsigned short **AcquirePixelThreadSet(const size_t columns,
   if (pixels == (unsigned short **) NULL)
     return((unsigned short **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     pixels[i]=(unsigned short *) AcquireQuantumMemory(columns,channels*
       sizeof(**pixels));
@@ -379,11 +379,11 @@ static unsigned short **AcquirePixelThreadSet(const size_t columns,
 
 static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
 {
-  register long
+  register ssize_t
     i;
 
   assert(transform != (cmsHTRANSFORM *) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (transform[i] != (cmsHTRANSFORM) NULL)
       cmsDeleteTransform(transform[i]);
   transform=(cmsHTRANSFORM *) RelinquishAlignedMemory(transform);
@@ -398,10 +398,10 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(
   cmsHTRANSFORM
     *transform;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -410,7 +410,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(
   if (transform == (cmsHTRANSFORM *) NULL)
     return((cmsHTRANSFORM *) NULL);
   (void) ResetMagickMemory(transform,0,number_threads*sizeof(*transform));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     transform[i]=cmsCreateTransform(source_profile,source_type,target_profile,
       target_type,intent,flags);
@@ -861,7 +861,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
       int
         number_arguments;
 
-      register long
+      register ssize_t
         i;
 
       /*
@@ -991,7 +991,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             int
               intent;
 
-            long
+            ssize_t
               progress,
               y;
 
@@ -1218,7 +1218,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < (ssize_t) image->rows; y++)
             {
               MagickBooleanType
                 sync;
@@ -1226,7 +1226,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               register IndexPacket
                 *restrict indexes;
 
-              register long
+              register ssize_t
                 id,
                 x;
 
@@ -1248,7 +1248,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               indexes=GetCacheViewAuthenticIndexQueue(image_view);
               id=GetOpenMPThreadId();
               p=source_pixels[id];
-              for (x=0; x < (long) image->columns; x++)
+              for (x=0; x < (ssize_t) image->columns; x++)
               {
                 *p++=ScaleQuantumToShort(q->red);
                 if (source_channels > 1)
@@ -1264,7 +1264,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 (unsigned int) image->columns);
               p=target_pixels[id];
               q-=image->columns;
-              for (x=0; x < (long) image->columns; x++)
+              for (x=0; x < (ssize_t) image->columns; x++)
               {
                 q->red=ScaleShortToQuantum(*p);
                 q->green=q->red;
@@ -1489,12 +1489,12 @@ static inline const unsigned char *ReadResourceBytes(const unsigned char *p,
 }
 
 static inline const unsigned char *ReadResourceLong(const unsigned char *p,
-  unsigned long *quantum)
+  size_t *quantum)
 {
-  *quantum=(unsigned long) (*p++ << 24);
-  *quantum|=(unsigned long) (*p++ << 16);
-  *quantum|=(unsigned long) (*p++ << 8);
-  *quantum|=(unsigned long) (*p++ << 0);
+  *quantum=(size_t) (*p++ << 24);
+  *quantum|=(size_t) (*p++ << 16);
+  *quantum|=(size_t) (*p++ << 8);
+  *quantum|=(size_t) (*p++ << 0);
   return(p);
 }
 
@@ -1524,7 +1524,7 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
   unsigned char
     length_byte;
 
-  unsigned long
+  size_t
     count;
 
   unsigned short
@@ -1744,25 +1744,25 @@ static inline unsigned short ReadProfileShort(const EndianType endian,
   return((unsigned short) (value & 0xffff));
 }
 
-static inline unsigned long ReadProfileLong(const EndianType endian,
+static inline size_t ReadProfileLong(const EndianType endian,
   unsigned char *buffer)
 {
-  unsigned long
+  size_t
     value;
 
   if (endian == MSBEndian)
     {
-      value=(unsigned long) ((buffer[0] << 24) | (buffer[1] << 16) |
+      value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
         (buffer[2] << 8) | buffer[3]);
-      return((unsigned long) (value & 0xffffffff));
+      return((size_t) (value & 0xffffffff));
     }
-  value=(unsigned long) ((buffer[3] << 24) | (buffer[2] << 16) |
+  value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
     (buffer[1] << 8 ) | (buffer[0]));
-  return((unsigned long) (value & 0xffffffff));
+  return((size_t) (value & 0xffffffff));
 }
 
 static inline void WriteProfileLong(const EndianType endian,
-  const unsigned long value,unsigned char *p)
+  const size_t value,unsigned char *p)
 {
   unsigned char
     buffer[4];
@@ -1814,7 +1814,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     unsigned char
       *directory;
 
-    unsigned long
+    size_t
       entry;
   } DirectoryInfo;
 
@@ -1824,7 +1824,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   EndianType
     endian;
 
-  long
+  ssize_t
     id,
     level;
 
@@ -1844,7 +1844,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     *directory,
     *exif;
 
-  unsigned long
+  size_t
     entry,
     number_entries;
 
@@ -1908,7 +1908,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     number_entries=ReadProfileShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
-      long
+      ssize_t
         components,
         format,
         tag_value;
@@ -1921,11 +1921,11 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         number_bytes;
 
       q=(unsigned char *) (directory+2+(12*entry));
-      tag_value=(long) ReadProfileShort(endian,q);
-      format=(long) ReadProfileShort(endian,q+2);
+      tag_value=(ssize_t) ReadProfileShort(endian,q);
+      format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format-1) >= EXIF_NUM_FORMATS)
         break;
-      components=(long) ReadProfileLong(endian,q+4);
+      components=(ssize_t) ReadProfileLong(endian,q+4);
       number_bytes=(size_t) components*format_bytes[format];
       if (number_bytes <= 4)
         p=q+8;
@@ -1946,14 +1946,14 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
       {
         case 0x011a:
         {
-          (void) WriteProfileLong(endian,(unsigned long)
+          (void) WriteProfileLong(endian,(size_t)
             (image->x_resolution+0.5),p);
           (void) WriteProfileLong(endian,1UL,p+4);
           break;
         }
         case 0x011b:
         {
-          (void) WriteProfileLong(endian,(unsigned long)
+          (void) WriteProfileLong(endian,(size_t)
             (image->y_resolution+0.5),p);
           (void) WriteProfileLong(endian,1UL,p+4);
           break;

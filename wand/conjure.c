@@ -112,7 +112,7 @@ static MagickBooleanType ConjureUsage(void)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Version: %s\n",GetMagickVersion((size_t *) NULL));
   (void) printf("Copyright: %s\n",GetMagickCopyright());
   (void) printf("Features: %s\n\n",GetMagickFeatures());
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...]\n",
@@ -135,7 +135,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
 #define DestroyConjure() \
 { \
   image=DestroyImageList(image); \
-  for (i=0; i < (long) argc; i++) \
+  for (i=0; i < (ssize_t) argc; i++) \
     argv[i]=DestroyString(argv[i]); \
   argv=(char **) RelinquishMagickMemory(argv); \
 }
@@ -160,13 +160,13 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     number_images;
 
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -191,7 +191,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   if (status == MagickFalse)
     ThrowConjureException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  for (i=1; i < (long) argc; i++)
+  for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
     if (IsMagickOption(option) != MagickFalse)
@@ -200,13 +200,13 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("debug",option+1) == 0)
           {
-            long
+            ssize_t
               event;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowConjureException(OptionError,"MissingArgument",option);
             event=ParseMagickOption(MagickLogEventOptions,MagickFalse,argv[i]);
             if (event < 0)
@@ -220,7 +220,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowConjureException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConjureInvalidArgumentException(option,argv[i]);
@@ -238,7 +238,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if (i == (long) argc)
+                if (i == (ssize_t) argc)
                   ThrowConjureException(OptionError,"MissingLogFormat",option);
                 (void) SetLogFormat(argv[i]);
               }
@@ -255,7 +255,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowConjureException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConjureInvalidArgumentException(option,argv[i]);
@@ -270,7 +270,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             (LocaleCompare("-version",option+1) == 0))
           {
             (void) fprintf(stdout,"Version: %s\n",
-              GetMagickVersion((unsigned long *) NULL));
+              GetMagickVersion((size_t *) NULL));
             (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
             (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
             return(MagickFalse);
@@ -307,7 +307,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     ThrowConjureException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   if (image != (Image *) NULL)
     image=DestroyImageList(image);
-  for (i=0; i < (long) argc; i++)
+  for (i=0; i < (ssize_t) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
   return(status != 0 ? MagickTrue : MagickFalse);

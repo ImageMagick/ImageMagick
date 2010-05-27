@@ -48,7 +48,7 @@ typedef enum
 
 typedef struct _TypeInfo
 {
-  unsigned long
+  size_t
     face;
 
   char
@@ -63,7 +63,7 @@ typedef struct _TypeInfo
   StretchType
     stretch;
 
-  unsigned long
+  size_t
     weight;
 
   char
@@ -80,12 +80,12 @@ typedef struct _TypeInfo
     *previous,
     *next;  /* deprecated, use GetTypeInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } TypeInfo;
 
 extern MagickExport char
-  **GetTypeList(const char *,unsigned long *,ExceptionInfo *);
+  **GetTypeList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   ListTypeInfo(FILE *,ExceptionInfo *),
@@ -94,8 +94,8 @@ extern MagickExport MagickBooleanType
 extern MagickExport const TypeInfo
   *GetTypeInfo(const char *,ExceptionInfo *),
   *GetTypeInfoByFamily(const char *,const StyleType,const StretchType,
-    const unsigned long,ExceptionInfo *),
-  **GetTypeInfoList(const char *,unsigned long *,ExceptionInfo *);
+    const size_t,ExceptionInfo *),
+  **GetTypeInfoList(const char *,size_t *,ExceptionInfo *);
 
 MagickExport void
   TypeComponentTerminus(void);

@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -200,7 +200,7 @@ _8c.html" target="source" name="ClonePixelWands">ClonePixelWands</a></h2>
 
 <pre class="code">
   PixelWand **ClonePixelWands(const PixelWand **wands,
-    const unsigned long number_wands)
+    const size_t number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -240,7 +240,7 @@ _8c.html" target="source" name="DestroyPixelWands">DestroyPixelWands</a></h2>
 
 <pre class="code">
   PixelWand **DestroyPixelWands(PixelWand **wand,
-    const unsigned long number_wands)
+    const size_t number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -317,7 +317,7 @@ _8c.html" target="source" name="NewPixelWands">NewPixelWands</a></h2>
 <p>The format of the NewPixelWands method is:</p>
 
 <pre class="code">
-  PixelWand **NewPixelWands(const unsigned long number_wands)
+  PixelWand **NewPixelWands(const size_t number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -497,7 +497,7 @@ _8c.html" target="source" name="PixelGetColorCount">PixelGetColorCount</a></h2>
 <p>The format of the PixelGetColorCount method is:</p>
 
 <pre class="code">
-  unsigned long PixelGetColorCount(const PixelWand *wand)
+  size_t PixelGetColorCount(const PixelWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -997,7 +997,7 @@ _8c.html" target="source" name="PixelSetColorCount">PixelSetColorCount</a></h2>
 <p>The format of the PixelSetColorCount method is:</p>
 
 <pre class="code">
-  void PixelSetColorCount(PixelWand *wand,const unsigned long count)
+  void PixelSetColorCount(PixelWand *wand,const size_t count)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

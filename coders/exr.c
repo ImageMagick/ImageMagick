@@ -151,10 +151,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     min_x,
     min_y;
 
-  long
+  ssize_t
     y;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -214,7 +214,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ImfCloseInputFile(file);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -222,7 +222,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ImfInputSetFrameBuffer(file,scanline-min_x-image->columns*(min_y+y),1,
       image->columns);
     ImfInputReadPixels(file,min_y+y,min_y+y);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->red=HDRIClampToQuantum((MagickRealType) QuantumRange*ImfHalfToFloat(
         scanline[x].r));
@@ -267,10 +267,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterEXRImage method is:
 %
-%      unsigned long RegisterEXRImage(void)
+%      size_t RegisterEXRImage(void)
 %
 */
-ModuleExport unsigned long RegisterEXRImage(void)
+ModuleExport size_t RegisterEXRImage(void)
 {
   MagickInfo
     *entry;
@@ -359,7 +359,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   int
     compression;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -368,7 +368,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   /*
@@ -424,12 +424,12 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
       (void) ImfCloseOutputFile(file);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       ImfFloatToHalf(QuantumScale*p->red,&half_quantum);
       scanline[x].r=half_quantum;

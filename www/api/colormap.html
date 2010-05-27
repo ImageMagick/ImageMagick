@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -164,7 +164,7 @@ _8c.html" target="source" name="AcquireImageColormap">AcquireImageColormap</a></
 
 <pre class="code">
   MagickBooleanType AcquireImageColormap(Image *image,
-    const unsigned long colors)
+    const size_t colors)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -185,7 +185,7 @@ _8c.html" target="source" name="CycleColormap">CycleColormap</a></h2>
 <p>The format of the CycleColormapImage method is:</p>
 
 <pre class="code">
-  MagickBooleanType CycleColormapImage(Image *image,const long displace)
+  MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

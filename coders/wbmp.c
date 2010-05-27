@@ -95,7 +95,7 @@ static MagickBooleanType
 %
 */
 
-static MagickBooleanType WBMPReadInteger(Image *image,unsigned long *value)
+static MagickBooleanType WBMPReadInteger(Image *image,size_t *value)
 {
   int
     byte;
@@ -121,7 +121,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   int
     byte;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -130,13 +130,13 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
     *q;
 
-  register long
+  register ssize_t
     i;
 
   unsigned char
@@ -192,7 +192,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   /*
     Convert bi-level image to pixel packets.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -200,7 +200,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
         {
@@ -247,10 +247,10 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterWBMPImage method is:
 %
-%      unsigned long RegisterWBMPImage(void)
+%      size_t RegisterWBMPImage(void)
 %
 */
-ModuleExport unsigned long RegisterWBMPImage(void)
+ModuleExport size_t RegisterWBMPImage(void)
 {
   MagickInfo
     *entry;
@@ -319,14 +319,14 @@ ModuleExport void UnregisterWBMPImage(void)
 %
 */
 
-static void WBMPWriteInteger(Image *image,const unsigned long value)
+static void WBMPWriteInteger(Image *image,const size_t value)
 {
   int
     bits,
     flag,
     n;
 
-  register long
+  register ssize_t
     i;
 
   unsigned char
@@ -353,7 +353,7 @@ static void WBMPWriteInteger(Image *image,const unsigned long value)
 static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   Image *image)
 {
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -365,7 +365,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   unsigned char
@@ -393,7 +393,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   (void) WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);
   WBMPWriteInteger(image,image->rows);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
@@ -401,7 +401,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
     indexes=GetVirtualIndexQueue(image);
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (PixelIntensity(p) >= ((MagickRealType) QuantumRange/2.0))
         byte|=0x1 << (7-bit);

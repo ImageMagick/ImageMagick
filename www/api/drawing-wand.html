@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
 </div>
 </div>
 </div>
@@ -304,7 +304,7 @@ _8c.html" target="source" name="DrawBezier">DrawBezier</a></h2>
 
 <pre class="code">
   void DrawBezier(DrawingWand *wand,
-    const unsigned long number_coordinates,const PointInfo *coordinates)
+    const size_t number_coordinates,const PointInfo *coordinates)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -526,7 +526,7 @@ _8c.html" target="source" name="DrawGetBorderColor">DrawGetBorderColor</a></h2>
 _8c.html" target="source" name="DrawGetClipPath">DrawGetClipPath</a></h2>
 <div class="doc-section">
 
-<p>DrawGetClipPath() obtains the current clipping path ID. The value returned must be deallocated by the user when it is no longer needed.</p></ol>
+<p>DrawGetClipPath() obtains the current clipping path ID. The value returned must be deallocated by the user when it is no ssize_ter needed.</p></ol>
 
 <p>The format of the DrawGetClipPath method is:</p>
 
@@ -678,7 +678,7 @@ _8c.html" target="source" name="DrawGetFillRule">DrawGetFillRule</a></h2>
 _8c.html" target="source" name="DrawGetFont">DrawGetFont</a></h2>
 <div class="doc-section">
 
-<p>DrawGetFont() returns a null-terminaged string specifying the font used when annotating with text. The value returned must be freed by the user when no longer needed.</p></ol>
+<p>DrawGetFont() returns a null-terminaged string specifying the font used when annotating with text. The value returned must be freed by the user when no ssize_ter needed.</p></ol>
 
 <p>The format of the DrawGetFont method is:</p>
 
@@ -696,7 +696,7 @@ _8c.html" target="source" name="DrawGetFont">DrawGetFont</a></h2>
 _8c.html" target="source" name="DrawGetFontFamily">DrawGetFontFamily</a></h2>
 <div class="doc-section">
 
-<p>DrawGetFontFamily() returns the font family to use when annotating with text. The value returned must be freed by the user when it is no longer needed.</p></ol>
+<p>DrawGetFontFamily() returns the font family to use when annotating with text. The value returned must be freed by the user when it is no ssize_ter needed.</p></ol>
 
 <p>The format of the DrawGetFontFamily method is:</p>
 
@@ -773,7 +773,7 @@ _8c.html" target="source" name="DrawGetFontWeight">DrawGetFontWeight</a></h2>
 <p>The format of the DrawGetFontWeight method is:</p>
 
 <pre class="code">
-  unsigned long DrawGetFontWeight(const DrawingWand *wand)
+  size_t DrawGetFontWeight(const DrawingWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -862,13 +862,13 @@ _8c.html" target="source" name="DrawGetStrokeColor">DrawGetStrokeColor</a></h2>
 _8c.html" target="source" name="DrawGetStrokeDashArray">DrawGetStrokeDashArray</a></h2>
 <div class="doc-section">
 
-<p>DrawGetStrokeDashArray() returns an array representing the pattern of dashes and gaps used to stroke paths (see DrawSetStrokeDashArray). The array must be freed once it is no longer required by the user.</p></ol>
+<p>DrawGetStrokeDashArray() returns an array representing the pattern of dashes and gaps used to stroke paths (see DrawSetStrokeDashArray). The array must be freed once it is no ssize_ter required by the user.</p></ol>
 
 <p>The format of the DrawGetStrokeDashArray method is:</p>
 
 <pre class="code">
   double *DrawGetStrokeDashArray(const DrawingWand *wand,
-    unsigned long *number_elements)
+    size_t *number_elements)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -943,7 +943,7 @@ _8c.html" target="source" name="DrawGetStrokeMiterLimit">DrawGetStrokeMiterLimit
 <p>The format of the DrawGetStrokeMiterLimit method is:</p>
 
 <pre class="code">
-  unsigned long DrawGetStrokeMiterLimit(const DrawingWand *wand)
+  size_t DrawGetStrokeMiterLimit(const DrawingWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1046,7 +1046,7 @@ _8c.html" target="source" name="DrawGetTextDecoration">DrawGetTextDecoration</a>
 _8c.html" target="source" name="DrawGetTextEncoding">DrawGetTextEncoding</a></h2>
 <div class="doc-section">
 
-<p>DrawGetTextEncoding() returns a null-terminated string which specifies the code set used for text annotations. The string must be freed by the user once it is no longer required.</p></ol>
+<p>DrawGetTextEncoding() returns a null-terminated string which specifies the code set used for text annotations. The string must be freed by the user once it is no ssize_ter required.</p></ol>
 
 <p>The format of the DrawGetTextEncoding method is:</p>
 
@@ -1118,7 +1118,7 @@ _8c.html" target="source" name="DrawGetTextInterwordSpacing">DrawGetTextInterwor
 _8c.html" target="source" name="DrawGetVectorGraphics">DrawGetVectorGraphics</a></h2>
 <div class="doc-section">
 
-<p>DrawGetVectorGraphics() returns a null-terminated string which specifies the vector graphics generated by any graphics calls made since the wand was instantiated.  The string must be freed by the user once it is no longer required.</p></ol>
+<p>DrawGetVectorGraphics() returns a null-terminated string which specifies the vector graphics generated by any graphics calls made since the wand was instantiated.  The string must be freed by the user once it is no ssize_ter required.</p></ol>
 
 <p>The format of the DrawGetVectorGraphics method is:</p>
 
@@ -1821,7 +1821,7 @@ _8c.html" target="source" name="DrawPolygon">DrawPolygon</a></h2>
 
 <pre class="code">
   void DrawPolygon(DrawingWand *wand,
-    const unsigned long number_coordinates,const PointInfo *coordinates)
+    const size_t number_coordinates,const PointInfo *coordinates)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1846,7 +1846,7 @@ _8c.html" target="source" name="DrawPolyline">DrawPolyline</a></h2>
 
 <pre class="code">
   void DrawPolyline(DrawingWand *wand,
-    const unsigned long number_coordinates,const PointInfo *coordinates)
+    const size_t number_coordinates,const PointInfo *coordinates)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2142,7 +2142,7 @@ _8c.html" target="source" name="DrawSetBorderColor">DrawSetBorderColor</a></h2>
 _8c.html" target="source" name="DrawSetClipPath">DrawSetClipPath</a></h2>
 <div class="doc-section">
 
-<p>DrawSetClipPath() associates a named clipping path with the image.  Only the areas drawn on by the clipping path will be modified as long as it remains in effect.</p></ol>
+<p>DrawSetClipPath() associates a named clipping path with the image.  Only the areas drawn on by the clipping path will be modified as ssize_t as it remains in effect.</p></ol>
 
 <p>The format of the DrawSetClipPath method is:</p>
 
@@ -2426,7 +2426,7 @@ _8c.html" target="source" name="DrawSetFontWeight">DrawSetFontWeight</a></h2>
 
 <pre class="code">
   void DrawSetFontWeight(DrawingWand *wand,
-    const unsigned long font_weight)
+    const size_t font_weight)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2535,7 +2535,7 @@ _8c.html" target="source" name="DrawSetStrokeDashArray">DrawSetStrokeDashArray</
 
 <pre class="code">
   MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
-    const unsigned long number_elements,const double *dash_array)
+    const size_t number_elements,const double *dash_array)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2626,7 +2626,7 @@ _8c.html" target="source" name="DrawSetStrokeMiterLimit">DrawSetStrokeMiterLimit
 
 <pre class="code">
   void DrawSetStrokeMiterLimit(DrawingWand *wand,
-    const unsigned long miterlimit)
+    const size_t miterlimit)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2953,8 +2953,8 @@ _8c.html" target="source" name="DrawSetViewbox">DrawSetViewbox</a></h2>
 <p>The format of the DrawSetViewbox method is:</p>
 
 <pre class="code">
-  void DrawSetViewbox(DrawingWand *wand,unsigned long x1,
-    unsigned long y1,unsigned long x2,unsigned long y2)
+  void DrawSetViewbox(DrawingWand *wand,size_t x1,
+    size_t y1,size_t x2,size_t y2)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -3067,7 +3067,7 @@ _8c.html" target="source" name="PushDrawingWand">PushDrawingWand</a></h2>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

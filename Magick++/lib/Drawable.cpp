@@ -276,7 +276,7 @@ Magick::DrawableBezier::~DrawableBezier( void )
 }
 void Magick::DrawableBezier::operator()( MagickCore::DrawingWand * context_ ) const
 {
-  unsigned long num_coords = (unsigned long) _coordinates.size();
+  size_t num_coords = (size_t) _coordinates.size();
   PointInfo *coordinates = new PointInfo[num_coords];
 
   PointInfo *q = coordinates;
@@ -633,7 +633,7 @@ Magick::DrawableFont::DrawableFont ( const std::string &font_ )
 }
 Magick::DrawableFont::DrawableFont ( const std::string &family_,
                                      Magick::StyleType style_,
-                                     const unsigned long weight_,
+                                     const size_t weight_,
                                      Magick::StretchType stretch_ )
   : _font(),
     _family(family_),
@@ -794,7 +794,7 @@ Magick::DrawablePolygon::~DrawablePolygon ( void )
 void Magick::DrawablePolygon::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  unsigned long num_coords = (unsigned long) _coordinates.size();
+  size_t num_coords = (size_t) _coordinates.size();
   PointInfo *coordinates = new PointInfo[num_coords];
 
   PointInfo *q = coordinates;
@@ -834,7 +834,7 @@ Magick::DrawablePolyline::~DrawablePolyline ( void )
 void Magick::DrawablePolyline::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  unsigned long num_coords = (unsigned long) _coordinates.size();
+  size_t num_coords = (size_t) _coordinates.size();
   PointInfo *coordinates = new PointInfo[num_coords];
 
   PointInfo *q = coordinates;
@@ -900,8 +900,8 @@ Magick::DrawableBase* Magick::DrawablePopPattern::copy() const
 
 // Push Pattern definition
 Magick::DrawablePushPattern::DrawablePushPattern
-( const std::string &id_, long x_, long y_,
-  long width_, long height_ )
+( const std::string &id_, ssize_t x_, ssize_t y_,
+  ssize_t width_, ssize_t height_ )
   : _id(id_),
     _x(x_),
     _y(y_),
@@ -1058,7 +1058,7 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
 void Magick::DrawableDashArray::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  (void) DrawSetStrokeDashArray( context_, (unsigned long) _size, _dasharray );
+  (void) DrawSetStrokeDashArray( context_, (size_t) _size, _dasharray );
 }
 Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 {

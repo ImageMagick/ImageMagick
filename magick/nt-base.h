@@ -359,7 +359,7 @@ extern MagickExport int
   NTUnmapMemory(void *,size_t),
   NTSystemCommand(const char *);
 
-extern MagickExport long
+extern MagickExport ssize_t
   NTSystemConfiguration(int),
   NTTellDirectory(DIR *);
 
@@ -382,7 +382,7 @@ extern MagickExport void
   *NTGetLibrarySymbol(void *,const char *),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),
   *NTOpenLibrary(const char *),
-  NTSeekDirectory(DIR *,long),
+  NTSeekDirectory(DIR *,ssize_t),
   NTWarningHandler(const ExceptionType,const char *,const char *);
 
 #endif /* !XS_VERSION */

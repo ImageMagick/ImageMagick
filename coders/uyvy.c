@@ -99,19 +99,19 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
     *q;
 
-  register long
+  register ssize_t
     i;
 
   unsigned char
@@ -155,12 +155,12 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   /*
     Accumulate UYVY, then unpack into two pixels.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) (image->columns >> 1); x++)
+    for (x=0; x < (ssize_t) (image->columns >> 1); x++)
     {
       u=(unsigned char) ReadBlobByte(image);
       y1=(unsigned char) ReadBlobByte(image);
@@ -209,10 +209,10 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterUYVYImage method is:
 %
-%      unsigned long RegisterUYVYImage(void)
+%      size_t RegisterUYVYImage(void)
 %
 */
-ModuleExport unsigned long RegisterUYVYImage(void)
+ModuleExport size_t RegisterUYVYImage(void)
 {
   MagickInfo
     *entry;
@@ -300,7 +300,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   Image
     *uyvy_image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -310,7 +310,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   /*
@@ -336,12 +336,12 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   (void) TransformImageColorspace(uyvy_image,YCbCrColorspace);
   full=MagickFalse;
   (void) ResetMagickMemory(&pixel,0,sizeof(MagickPixelPacket));
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(uyvy_image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (full != MagickFalse)
         {

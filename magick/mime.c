@@ -70,7 +70,7 @@ struct _MimeInfo
     *description,
     *pattern;
 
-  long
+  ssize_t
     priority;
 
   MagickOffsetType
@@ -82,7 +82,7 @@ struct _MimeInfo
   DataType
     data_type;
 
-  long
+  ssize_t
     mask,
     value;
 
@@ -98,7 +98,7 @@ struct _MimeInfo
   MagickBooleanType
     stealth;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -168,7 +168,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   EndianType
     endian;
 
-  long
+  ssize_t
     value;
 
   register const MimeInfo
@@ -177,10 +177,10 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   register const unsigned char
     *q;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     lsb_first;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -306,7 +306,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
       case StringData:
       default:
       {
-        for (i=0; i <= (long) p->extent; i++)
+        for (i=0; i <= (ssize_t) p->extent; i++)
         {
           if ((size_t) (p->offset+i+p->length) > length)
             break;
@@ -345,7 +345,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
 %  The magic of the GetMimeInfoList function is:
 %
 %      const MimeInfo **GetMimeInfoList(const char *pattern,
-%        unsigned long *number_aliases,ExceptionInfo *exception)
+%        size_t *number_aliases,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -380,7 +380,7 @@ static int MimeInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
-  unsigned long *number_aliases,ExceptionInfo *exception)
+  size_t *number_aliases,ExceptionInfo *exception)
 {
   const MimeInfo
     **aliases;
@@ -388,7 +388,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   register const MimeInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -396,7 +396,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_aliases != (unsigned long *) NULL);
+  assert(number_aliases != (size_t *) NULL);
   *number_aliases=0;
   p=GetMimeInfo((char *) NULL,(unsigned char *) "*",0,exception);
   if (p == (const MimeInfo *) NULL)
@@ -421,7 +421,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   UnlockSemaphoreInfo(mime_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeInfoCompare);
   aliases[i]=(MimeInfo *) NULL;
-  *number_aliases=(unsigned long) i;
+  *number_aliases=(size_t) i;
   return(aliases);
 }
 
@@ -441,7 +441,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
 %
 %  The format of the GetMimeList function is:
 %
-%      char **GetMimeList(const char *pattern,unsigned long *number_aliases,
+%      char **GetMimeList(const char *pattern,size_t *number_aliases,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -475,7 +475,7 @@ static int MimeCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetMimeList(const char *pattern,
-  unsigned long *number_aliases,ExceptionInfo *exception)
+  size_t *number_aliases,ExceptionInfo *exception)
 {
   char
     **aliases;
@@ -483,7 +483,7 @@ MagickExport char **GetMimeList(const char *pattern,
   register const MimeInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -491,7 +491,7 @@ MagickExport char **GetMimeList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_aliases != (unsigned long *) NULL);
+  assert(number_aliases != (size_t *) NULL);
   *number_aliases=0;
   p=GetMimeInfo((char *) NULL,(unsigned char *) "*",0,exception);
   if (p == (const MimeInfo *) NULL)
@@ -513,7 +513,7 @@ MagickExport char **GetMimeList(const char *pattern,
   UnlockSemaphoreInfo(mime_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeCompare);
   aliases[i]=(char *) NULL;
-  *number_aliases=(unsigned long) i;
+  *number_aliases=(size_t) i;
   return(aliases);
 }
 
@@ -650,13 +650,13 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
   const MimeInfo
     **mime_info;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_aliases;
 
   if (file == (const FILE *) NULL)
@@ -666,7 +666,7 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
     return(MagickFalse);
   j=0;
   path=(const char *) NULL;
-  for (i=0; i < (long) number_aliases; i++)
+  for (i=0; i < (ssize_t) number_aliases; i++)
   {
     if (mime_info[i]->stealth != MagickFalse)
       continue;
@@ -683,7 +683,7 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"%s",mime_info[i]->type);
     if (strlen(mime_info[i]->type) <= 25)
       {
-        for (j=(long) strlen(mime_info[i]->type); j <= 27; j++)
+        for (j=(ssize_t) strlen(mime_info[i]->type); j <= 27; j++)
           (void) fprintf(file," ");
       }
     else
@@ -718,7 +718,7 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %  The format of the LoadMimeList method is:
 %
 %      MagickBooleanType LoadMimeList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -732,7 +732,7 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %
 */
 static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   const char
     *attribute;

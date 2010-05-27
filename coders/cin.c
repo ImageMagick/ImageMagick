@@ -81,7 +81,7 @@ typedef struct _CINDataFormatInfo
     sign,
     sense;
 
-  unsigned long
+  size_t
     line_pad,
     channel_pad;
 
@@ -91,7 +91,7 @@ typedef struct _CINDataFormatInfo
 
 typedef struct _CINFileInfo
 {
-  unsigned long
+  size_t
     magic,
     image_offset,
     generic_length,
@@ -115,14 +115,14 @@ typedef struct _CINFilmInfo
     offset,
     reserve1;
 
-  unsigned long
+  size_t
     prefix,
     count;
 
   char
     format[32];
 
-  unsigned long
+  size_t
     frame_position;
 
   float
@@ -141,7 +141,7 @@ typedef struct _CINImageChannel
     bits_per_pixel,
     reserve;
 
-  unsigned long
+  size_t
     pixels_per_line,
     lines_per_image;
 
@@ -175,7 +175,7 @@ typedef struct _CINImageInfo
 
 typedef struct _CINOriginationInfo
 {
-  long
+  ssize_t
     x_offset,
     y_offset;
 
@@ -291,8 +291,8 @@ static MagickBooleanType IsCIN(const unsigned char *magick,const size_t length)
 %
 */
 
-static size_t GetBytesPerRow(unsigned long columns,
-  unsigned long samples_per_pixel,unsigned long bits_per_pixel,
+static size_t GetBytesPerRow(size_t columns,
+  size_t samples_per_pixel,size_t bits_per_pixel,
   MagickBooleanType pad)
 {
   size_t
@@ -361,7 +361,7 @@ static inline MagickBooleanType IsFloatDefined(const float value)
 {
   union
   {
-    unsigned long
+    size_t
       unsigned_value;
 
     double
@@ -390,7 +390,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -405,7 +405,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register long
+  register ssize_t
     i;
 
   register PixelPacket
@@ -420,7 +420,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   unsigned char
     *pixels;
 
-  unsigned long
+  size_t
     lsb_first;
 
   /*
@@ -581,14 +581,14 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   /*
     Image origination information.
   */
-  cin.origination.x_offset=(long) ReadBlobLong(image);
+  cin.origination.x_offset=(ssize_t) ReadBlobLong(image);
   offset+=4;
-  if ((unsigned long) cin.origination.x_offset != ~0UL)
+  if ((size_t) cin.origination.x_offset != ~0UL)
     (void) FormatImageProperty(image,"cin:origination.x_offset","%ld",
       cin.origination.x_offset);
-  cin.origination.y_offset=(long) ReadBlobLong(image);
+  cin.origination.y_offset=(ssize_t) ReadBlobLong(image);
   offset+=4;
-  if ((unsigned long) cin.origination.y_offset != ~0UL)
+  if ((size_t) cin.origination.y_offset != ~0UL)
     (void) FormatImageProperty(image,"cin:origination.y_offset","%ld",
       cin.origination.y_offset);
   offset+=ReadBlob(image,sizeof(cin.origination.filename),(unsigned char *)
@@ -631,15 +631,15 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       */
       cin.film.id=ReadBlobByte(image);
       offset++;
-      if (((unsigned long) cin.film.id) != ~0UL)
+      if (((size_t) cin.film.id) != ~0UL)
         (void) FormatImageProperty(image,"cin:film.id","%d",cin.film.id);
       cin.film.type=ReadBlobByte(image);
       offset++;
-      if (((unsigned long) cin.film.type) != ~0UL)
+      if (((size_t) cin.film.type) != ~0UL)
         (void) FormatImageProperty(image,"cin:film.type","%d",cin.film.type);
       cin.film.offset=ReadBlobByte(image);
       offset++;
-      if (((unsigned long) cin.film.offset) != ~0UL)
+      if (((size_t) cin.film.offset) != ~0UL)
         (void) FormatImageProperty(image,"cin:film.offset","%d",
           cin.film.offset);
       cin.film.reserve1=ReadBlobByte(image);
@@ -687,7 +687,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       (void) SetImageProfile(image,"cin:user.data",profile);
       profile=DestroyStringInfo(profile);
     }
-  for ( ; offset < (long) cin.file.image_offset; offset++)
+  for ( ; offset < (ssize_t) cin.file.image_offset; offset++)
     (void) ReadBlobByte(image);
   image->depth=cin.image.channel[0].bits_per_pixel;
   image->columns=cin.image.channel[0].pixels_per_line;
@@ -714,7 +714,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -762,10 +762,10 @@ static Image *ReadCINImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterCINImage method is:
 %
-%      unsigned long RegisterCINImage(void)
+%      size_t RegisterCINImage(void)
 %
 */
-ModuleExport unsigned long RegisterCINImage(void)
+ModuleExport size_t RegisterCINImage(void)
 {
   MagickInfo
     *entry;
@@ -852,7 +852,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   const StringInfo
     *profile;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -870,7 +870,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -913,7 +913,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   profile=GetImageProfile(image,"cin:user.data");
   if (profile != (StringInfo *) NULL)
     {
-      cin.file.image_offset+=(unsigned long) GetStringInfoLength(profile);
+      cin.file.image_offset+=(size_t) GetStringInfoLength(profile);
       cin.file.image_offset=(((cin.file.image_offset+0x2000-1)/0x2000)*0x2000);
     }
   offset+=WriteBlobLong(image,cin.file.image_offset);
@@ -924,7 +924,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.file.user_length=0x00;
   if (profile != (StringInfo *) NULL)
     {
-      cin.file.user_length+=(unsigned long) GetStringInfoLength(profile);
+      cin.file.user_length+=(size_t) GetStringInfoLength(profile);
       cin.file.user_length=(((cin.file.user_length+0x2000-1)/0x2000)*0x2000);
     }
   offset+=WriteBlobLong(image,cin.file.user_length);
@@ -1006,7 +1006,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   */
   cin.data_format.interleave=0; /* pixel interleave (rgbrgbr...) */
   offset+=WriteBlobByte(image,cin.data_format.interleave);
-  cin.data_format.packing=5; /* packing longword (32bit) boundaries */
+  cin.data_format.packing=5; /* packing ssize_tword (32bit) boundaries */
   offset+=WriteBlobByte(image,cin.data_format.packing);
   cin.data_format.sign=0; /* unsigned data */
   offset+=WriteBlobByte(image,cin.data_format.sign);
@@ -1025,12 +1025,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   value=GetCINProperty(image_info,image,"cin:origination.x_offset");
   if (value != (const char *) NULL)
     cin.origination.x_offset=StringToLong(value);
-  offset+=WriteBlobLong(image,(unsigned long) cin.origination.x_offset);
+  offset+=WriteBlobLong(image,(size_t) cin.origination.x_offset);
   cin.origination.y_offset=0UL;
   value=GetCINProperty(image_info,image,"cin:origination.y_offset");
   if (value != (const char *) NULL)
     cin.origination.y_offset=StringToLong(value);
-  offset+=WriteBlobLong(image,(unsigned long) cin.origination.y_offset);
+  offset+=WriteBlobLong(image,(size_t) cin.origination.y_offset);
   value=GetCINProperty(image_info,image,"cin:origination.filename");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.filename,value,
@@ -1159,7 +1159,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
     }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

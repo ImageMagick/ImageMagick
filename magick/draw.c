@@ -99,16 +99,16 @@ typedef struct _EdgeInfo
   PointInfo
     *points;
 
-  unsigned long
+  size_t
     number_points;
 
-  long
+  ssize_t
     direction;
 
   MagickBooleanType
     ghostline;
 
-  unsigned long
+  size_t
     highwater;
 } EdgeInfo;
 
@@ -127,7 +127,7 @@ typedef struct _PolygonInfo
   EdgeInfo
     *edges;
 
-  unsigned long
+  size_t
     number_edges;
 } PolygonInfo;
 
@@ -158,21 +158,21 @@ static MagickBooleanType
 static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
-static unsigned long
+static size_t
   TracePath(PrimitiveInfo *,const char *);
 
 static void
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
   TraceArcPath(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const MagickRealType,const MagickBooleanType,const MagickBooleanType),
-  TraceBezier(PrimitiveInfo *,const unsigned long),
+  TraceBezier(PrimitiveInfo *,const size_t),
   TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
   TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
     PointInfo),
-  TraceSquareLinecap(PrimitiveInfo *,const unsigned long,const MagickRealType);
+  TraceSquareLinecap(PrimitiveInfo *,const size_t,const MagickRealType);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -300,7 +300,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     (void) CloneString(&clone_info->server_name,draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
     {
-      register long
+      register ssize_t
         x;
 
       for (x=0; draw_info->dash_pattern[x] != 0.0; x++) ;
@@ -315,7 +315,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->gradient=draw_info->gradient;
   if (draw_info->gradient.stops != (StopInfo *) NULL)
     {
-      unsigned long
+      size_t
         number_stops;
 
       number_stops=clone_info->gradient.number_stops;
@@ -408,13 +408,13 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
   register EdgeInfo
     *p;
 
-  register long
+  register ssize_t
     i,
     j;
 
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin active-edge");
   p=polygon_info->edges;
-  for (i=0; i < (long) polygon_info->number_edges; i++)
+  for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
   {
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      edge %lu:",i);
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      direction: %s",
@@ -424,7 +424,7 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
       "      bounds: %g,%g - %g,%g",p->bounds.x1,p->bounds.y1,
       p->bounds.x2,p->bounds.y2);
-    for (j=0; j < (long) p->number_points; j++)
+    for (j=0; j < (ssize_t) p->number_points; j++)
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),"        %g,%g",
         p->points[j].x,p->points[j].y);
     p++;
@@ -432,15 +432,15 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end active-edge");
 }
 
-static void ReversePoints(PointInfo *points,const unsigned long number_points)
+static void ReversePoints(PointInfo *points,const size_t number_points)
 {
   PointInfo
     point;
 
-  register long
+  register ssize_t
     i;
 
-  for (i=0; i < (long) (number_points >> 1); i++)
+  for (i=0; i < (ssize_t) (number_points >> 1); i++)
   {
     point=points[i];
     points[i]=points[number_points-(i+1)];
@@ -451,7 +451,7 @@ static void ReversePoints(PointInfo *points,const unsigned long number_points)
 static PolygonInfo *ConvertPathToPolygon(
   const DrawInfo *magick_unused(draw_info),const PathInfo *path_info)
 {
-  long
+  ssize_t
     direction,
     next_direction;
 
@@ -465,14 +465,14 @@ static PolygonInfo *ConvertPathToPolygon(
   SegmentInfo
     bounds;
 
-  register long
+  register ssize_t
     i,
     n;
 
   MagickBooleanType
     ghostline;
 
-  unsigned long
+  size_t
     edge,
     number_edges,
     number_points;
@@ -515,13 +515,13 @@ static PolygonInfo *ConvertPathToPolygon(
                 if (polygon_info->edges == (EdgeInfo *) NULL)
                   return((PolygonInfo *) NULL);
               }
-            polygon_info->edges[edge].number_points=(unsigned long) n;
+            polygon_info->edges[edge].number_points=(size_t) n;
             polygon_info->edges[edge].scanline=(-1.0);
             polygon_info->edges[edge].highwater=0;
             polygon_info->edges[edge].ghostline=ghostline;
-            polygon_info->edges[edge].direction=(long) (direction > 0);
+            polygon_info->edges[edge].direction=(ssize_t) (direction > 0);
             if (direction < 0)
-              ReversePoints(points,(unsigned long) n);
+              ReversePoints(points,(size_t) n);
             polygon_info->edges[edge].points=points;
             polygon_info->edges[edge].bounds=bounds;
             polygon_info->edges[edge].bounds.y1=points[0].y;
@@ -568,13 +568,13 @@ static PolygonInfo *ConvertPathToPolygon(
             if (polygon_info->edges == (EdgeInfo *) NULL)
               return((PolygonInfo *) NULL);
           }
-        polygon_info->edges[edge].number_points=(unsigned long) n;
+        polygon_info->edges[edge].number_points=(size_t) n;
         polygon_info->edges[edge].scanline=(-1.0);
         polygon_info->edges[edge].highwater=0;
         polygon_info->edges[edge].ghostline=ghostline;
-        polygon_info->edges[edge].direction=(long) (direction > 0);
+        polygon_info->edges[edge].direction=(ssize_t) (direction > 0);
         if (direction < 0)
-          ReversePoints(points,(unsigned long) n);
+          ReversePoints(points,(size_t) n);
         polygon_info->edges[edge].points=points;
         polygon_info->edges[edge].bounds=bounds;
         polygon_info->edges[edge].bounds.y1=points[0].y;
@@ -594,7 +594,7 @@ static PolygonInfo *ConvertPathToPolygon(
     direction=next_direction;
     if (points == (PointInfo *) NULL)
       continue;
-    if (n == (long) number_points)
+    if (n == (ssize_t) number_points)
       {
         number_points<<=1;
         points=(PointInfo *) ResizeQuantumMemory(points,(size_t) number_points,
@@ -625,13 +625,13 @@ static PolygonInfo *ConvertPathToPolygon(
               if (polygon_info->edges == (EdgeInfo *) NULL)
                 return((PolygonInfo *) NULL);
             }
-          polygon_info->edges[edge].number_points=(unsigned long) n;
+          polygon_info->edges[edge].number_points=(size_t) n;
           polygon_info->edges[edge].scanline=(-1.0);
           polygon_info->edges[edge].highwater=0;
           polygon_info->edges[edge].ghostline=ghostline;
-          polygon_info->edges[edge].direction=(long) (direction > 0);
+          polygon_info->edges[edge].direction=(ssize_t) (direction > 0);
           if (direction < 0)
-            ReversePoints(points,(unsigned long) n);
+            ReversePoints(points,(size_t) n);
           polygon_info->edges[edge].points=points;
           polygon_info->edges[edge].bounds=bounds;
           polygon_info->edges[edge].bounds.y1=points[0].y;
@@ -697,7 +697,7 @@ static void LogPathInfo(const PathInfo *path_info)
 static PathInfo *ConvertPrimitiveToPath(
   const DrawInfo *magick_unused(draw_info),const PrimitiveInfo *primitive_info)
 {
-  long
+  ssize_t
     coordinates,
     start;
 
@@ -711,7 +711,7 @@ static PathInfo *ConvertPrimitiveToPath(
     p,
     q;
 
-  register long
+  register ssize_t
     i,
     n;
 
@@ -746,7 +746,7 @@ static PathInfo *ConvertPrimitiveToPath(
     code=LineToCode;
     if (coordinates <= 0)
       {
-        coordinates=(long) primitive_info[i].coordinates;
+        coordinates=(ssize_t) primitive_info[i].coordinates;
         p=primitive_info[i].point;
         start=n;
         code=MoveToCode;
@@ -869,7 +869,7 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 %
 %  The format of the DestroyEdge method is:
 %
-%      long DestroyEdge(PolygonInfo *polygon_info,const int edge)
+%      ssize_t DestroyEdge(PolygonInfo *polygon_info,const int edge)
 %
 %  A description of each parameter follows:
 %
@@ -878,8 +878,8 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 %    o edge: the polygon edge number to destroy.
 %
 */
-static unsigned long DestroyEdge(PolygonInfo *polygon_info,
-  const unsigned long edge)
+static size_t DestroyEdge(PolygonInfo *polygon_info,
+  const size_t edge)
 {
   assert(edge < polygon_info->number_edges);
   polygon_info->edges[edge].points=(PointInfo *) RelinquishMagickMemory(
@@ -915,10 +915,10 @@ static unsigned long DestroyEdge(PolygonInfo *polygon_info,
 */
 static PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
 {
-  register long
+  register ssize_t
     i;
 
-  for (i=0; i < (long) polygon_info->number_edges; i++)
+  for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
     polygon_info->edges[i].points=(PointInfo *)
       RelinquishMagickMemory(polygon_info->edges[i].points);
   polygon_info->edges=(EdgeInfo *) RelinquishMagickMemory(polygon_info->edges);
@@ -998,7 +998,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
           inverse_edge.x2=x;
       }
     else
-      if ((z < 0.0) || ((unsigned long) floor(z+0.5) >= image->columns))
+      if ((z < 0.0) || ((size_t) floor(z+0.5) >= image->columns))
         {
           inverse_edge.x2=edge->x1;
           return(inverse_edge);
@@ -1031,7 +1031,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
           inverse_edge.x2=x;
       }
     else
-      if ((z < 0.0) || ((unsigned long) floor(z+0.5) >= image->rows))
+      if ((z < 0.0) || ((size_t) floor(z+0.5) >= image->rows))
         {
           inverse_edge.x2=edge->x2;
           return(inverse_edge);
@@ -1059,7 +1059,7 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   return(inverse_affine);
 }
 
-static inline long MagickAbsoluteValue(const long x)
+static inline ssize_t MagickAbsoluteValue(const ssize_t x)
 {
   if (x < 0)
     return(-x);
@@ -1093,7 +1093,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -1108,7 +1108,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     max,
     point;
 
-  register long
+  register ssize_t
     i;
 
   ResampleFilter
@@ -1174,9 +1174,9 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=(long) ceil(edge.y1-0.5); y <= (long) floor(edge.y2+0.5); y++)
+  for (y=(ssize_t) ceil(edge.y1-0.5); y <= (ssize_t) floor(edge.y2+0.5); y++)
   {
-    long
+    ssize_t
       x_offset;
 
     MagickPixelPacket
@@ -1189,7 +1189,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       id,
       x;
 
@@ -1202,8 +1202,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     inverse_edge=AffineEdge(source,&inverse_affine,(double) y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,(long) ceil(inverse_edge.x1-0.5),y,
-      (unsigned long) ((long) floor(inverse_edge.x2+0.5)-(long) floor(
+    q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-0.5),y,
+      (size_t) ((ssize_t) floor(inverse_edge.x2+0.5)-(ssize_t) floor(
       inverse_edge.x1+0.5)+1),1,exception);
     if (q == (PixelPacket *) NULL)
       continue;
@@ -1212,7 +1212,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     pixel=zero;
     composite=zero;
     x_offset=0;
-    for (x=(long) ceil(inverse_edge.x1-0.5); x <= (long) floor(inverse_edge.x2+0.5); x++)
+    for (x=(ssize_t) ceil(inverse_edge.x1-0.5); x <= (ssize_t) floor(inverse_edge.x2+0.5); x++)
     {
       point.x=(double) x*inverse_affine.sx+y*inverse_affine.ry+
         inverse_affine.tx;
@@ -1269,7 +1269,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *clone_info;
 
-  long
+  ssize_t
     coordinates;
 
   MagickRealType
@@ -1283,7 +1283,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   PrimitiveInfo
     primitive_info[6];
 
-  register long
+  register ssize_t
     i;
 
   SegmentInfo
@@ -1316,7 +1316,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   if (polygon_info != (PolygonInfo *) NULL)
     {
       bounds=polygon_info->edges[0].bounds;
-      for (i=1; i < (long) polygon_info->number_edges; i++)
+      for (i=1; i < (ssize_t) polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].bounds.x1 < (double) bounds.x1)
           bounds.x1=polygon_info->edges[i].bounds.x1;
@@ -1339,7 +1339,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       bounds.y2+=mid;
       bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= (double)
         image->rows ? (double) image->rows-1 : bounds.y2;
-      for (i=0; i < (long) polygon_info->number_edges; i++)
+      for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction != 0)
           (void) QueryColorDatabase("red",&clone_info->stroke,
@@ -1354,7 +1354,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
         primitive_info[0].primitive=RectanglePrimitive;
         TraceRectangle(primitive_info,start,end);
         primitive_info[0].method=ReplaceMethod;
-        coordinates=(long) primitive_info[0].coordinates;
+        coordinates=(ssize_t) primitive_info[0].coordinates;
         primitive_info[coordinates].primitive=UndefinedPrimitive;
         (void) DrawPrimitive(image,clone_info,primitive_info);
       }
@@ -1367,7 +1367,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   primitive_info[0].primitive=RectanglePrimitive;
   TraceRectangle(primitive_info,start,end);
   primitive_info[0].method=ReplaceMethod;
-  coordinates=(long) primitive_info[0].coordinates;
+  coordinates=(ssize_t) primitive_info[0].coordinates;
   primitive_info[coordinates].primitive=UndefinedPrimitive;
   (void) DrawPrimitive(image,clone_info,primitive_info);
   clone_info=DestroyDrawInfo(clone_info);
@@ -1490,7 +1490,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   DrawInfo
     *clone_info;
 
-  long
+  ssize_t
     j,
     n;
 
@@ -1507,14 +1507,14 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   PrimitiveInfo
     *dash_polygon;
 
-  register long
+  register ssize_t
     i;
 
   register MagickRealType
     dx,
     dy;
 
-  unsigned long
+  size_t
     number_vertices;
 
   assert(draw_info != (const DrawInfo *) NULL);
@@ -1523,7 +1523,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++) ;
-  number_vertices=(unsigned long) i;
+  number_vertices=(size_t) i;
   dash_polygon=(PrimitiveInfo *) AcquireQuantumMemory((size_t)
     (2UL*number_vertices+1UL),sizeof(*dash_polygon));
   if (dash_polygon == (PrimitiveInfo *) NULL)
@@ -1557,7 +1557,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   status=MagickTrue;
   maximum_length=0.0;
   total_length=0.0;
-  for (i=1; i < (long) number_vertices; i++)
+  for (i=1; i < (ssize_t) number_vertices; i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
@@ -1583,7 +1583,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
         }
       else
         {
-          if ((j+1) > (long) (2*number_vertices))
+          if ((j+1) > (ssize_t) (2*number_vertices))
             break;
           dash_polygon[j]=primitive_info[i-1];
           dash_polygon[j].point.x=(double) (primitive_info[i-1].point.x+dx*
@@ -1592,7 +1592,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
             total_length/maximum_length);
           dash_polygon[j].coordinates=1;
           j++;
-          dash_polygon[0].coordinates=(unsigned long) j;
+          dash_polygon[0].coordinates=(size_t) j;
           dash_polygon[j].primitive=UndefinedPrimitive;
           status|=DrawStrokePolygon(image,clone_info,dash_polygon);
         }
@@ -1615,7 +1615,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
       dash_polygon[j].point.y+=MagickEpsilon;
       dash_polygon[j].coordinates=1;
       j++;
-      dash_polygon[0].coordinates=(unsigned long) j;
+      dash_polygon[0].coordinates=(size_t) j;
       dash_polygon[j].primitive=UndefinedPrimitive;
       status|=DrawStrokePolygon(image,clone_info,dash_polygon);
     }
@@ -1697,7 +1697,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   DrawInfo
     **graphic_context;
 
-  long
+  ssize_t
     j,
     k,
     n;
@@ -1726,7 +1726,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   register const char
     *p;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -1736,7 +1736,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   size_t
     length;
 
-  unsigned long
+  size_t
     number_points;
 
   /*
@@ -1895,7 +1895,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
           {
-            long
+            ssize_t
               fill_rule;
 
             GetMagickToken(q,&q,token);
@@ -1911,7 +1911,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("clip-units",keyword) == 0)
           {
-            long
+            ssize_t
               clip_units;
 
             GetMagickToken(q,&q,token);
@@ -1952,7 +1952,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("decorate",keyword) == 0)
           {
-            long
+            ssize_t
               decorate;
 
             GetMagickToken(q,&q,token);
@@ -2026,7 +2026,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
-            long
+            ssize_t
               fill_rule;
 
             GetMagickToken(q,&q,token);
@@ -2063,7 +2063,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("font-stretch",keyword) == 0)
           {
-            long
+            ssize_t
               stretch;
 
             GetMagickToken(q,&q,token);
@@ -2078,7 +2078,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("font-style",keyword) == 0)
           {
-            long
+            ssize_t
               style;
 
             GetMagickToken(q,&q,token);
@@ -2122,7 +2122,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("gravity",keyword) == 0)
           {
-            long
+            ssize_t
               gravity;
 
             GetMagickToken(q,&q,token);
@@ -2143,7 +2143,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("image",keyword) == 0)
           {
-            long
+            ssize_t
               compose;
 
             primitive_type=ImagePrimitive;
@@ -2393,19 +2393,19 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 GetMagickToken(q,&q,token);
                 (void) CopyMagickString(name,token,MaxTextExtent);
                 GetMagickToken(q,&q,token);
-                bounds.x=(long) ceil(StringToDouble(token)-0.5);
+                bounds.x=(ssize_t) ceil(StringToDouble(token)-0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.y=(long) ceil(StringToDouble(token)-0.5);
+                bounds.y=(ssize_t) ceil(StringToDouble(token)-0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.width=(unsigned long) floor(StringToDouble(token)+0.5);
+                bounds.width=(size_t) floor(StringToDouble(token)+0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.height=(unsigned long) floor(StringToDouble(token)+0.5);
+                bounds.height=(size_t) floor(StringToDouble(token)+0.5);
                 for (p=q; *q != '\0'; )
                 {
                   GetMagickToken(q,&q,token);
@@ -2606,7 +2606,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
           {
-            long
+            ssize_t
               linecap;
 
             GetMagickToken(q,&q,token);
@@ -2621,7 +2621,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
-            long
+            ssize_t
               linejoin;
 
             GetMagickToken(q,&q,token);
@@ -2667,7 +2667,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("text-align",keyword) == 0)
           {
-            long
+            ssize_t
               align;
 
             GetMagickToken(q,&q,token);
@@ -2682,7 +2682,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("text-anchor",keyword) == 0)
           {
-            long
+            ssize_t
               align;
 
             GetMagickToken(q,&q,token);
@@ -2728,22 +2728,22 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("viewbox",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.x=(long) ceil(StringToDouble(token)-
+            graphic_context[n]->viewbox.x=(ssize_t) ceil(StringToDouble(token)-
               0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.y=(long) ceil(StringToDouble(token)-
+            graphic_context[n]->viewbox.y=(ssize_t) ceil(StringToDouble(token)-
               0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.width=(unsigned long) floor(
+            graphic_context[n]->viewbox.width=(size_t) floor(
               StringToDouble(token)+0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.height=(unsigned long) floor(
+            graphic_context[n]->viewbox.height=(size_t) floor(
               StringToDouble(token)+0.5);
             break;
           }
@@ -2805,7 +2805,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (long) number_points)
+      if (i < (ssize_t) number_points)
         continue;
       number_points<<=1;
       primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
@@ -2818,7 +2818,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         }
     }
     primitive_info[j].primitive=primitive_type;
-    primitive_info[j].coordinates=(unsigned long) x;
+    primitive_info[j].coordinates=(size_t) x;
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
     /*
@@ -2828,7 +2828,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y1=primitive_info[j].point.y;
     bounds.x2=primitive_info[j].point.x;
     bounds.y2=primitive_info[j].point.y;
-    for (k=1; k < (long) primitive_info[j].coordinates; k++)
+    for (k=1; k < (ssize_t) primitive_info[j].coordinates; k++)
     {
       point=primitive_info[j+k].point;
       if (point.x < bounds.x1)
@@ -2906,7 +2906,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       default:
         break;
     }
-    if ((unsigned long) (i+length) >= number_points)
+    if ((size_t) (i+length) >= number_points)
       {
         /*
           Resize based on speculative points required by primitive.
@@ -2933,7 +2933,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         TracePoint(primitive_info+j,primitive_info[j].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case LinePrimitive:
@@ -2945,7 +2945,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         TraceLine(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case RectanglePrimitive:
@@ -2957,7 +2957,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         TraceRectangle(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case RoundRectanglePrimitive:
@@ -2969,7 +2969,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         TraceRoundRectangle(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case ArcPrimitive:
@@ -2981,7 +2981,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         TraceArc(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case EllipsePrimitive:
@@ -2993,7 +2993,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         TraceEllipse(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case CirclePrimitive:
@@ -3005,7 +3005,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         TraceCircle(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case PolylinePrimitive:
@@ -3026,18 +3026,18 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         TraceBezier(primitive_info+j,primitive_info[j].coordinates);
-        i=(long) (j+primitive_info[j].coordinates);
+        i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case PathPrimitive:
       {
-        i=(long) (j+TracePath(primitive_info+j,token));
+        i=(ssize_t) (j+TracePath(primitive_info+j,token));
         break;
       }
       case ColorPrimitive:
       case MattePrimitive:
       {
-        long
+        ssize_t
           method;
 
         if (primitive_info[j].coordinates != 1)
@@ -3109,7 +3109,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         graphic_context[n]->bounds.y2=point.y;
       if (primitive_info[i].primitive == ImagePrimitive)
         break;
-      if (i >= (long) number_points)
+      if (i >= (ssize_t) number_points)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     }
     if (graphic_context[n]->render != MagickFalse)
@@ -3174,7 +3174,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
 */
 
 static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
-  const long x,const long y)
+  const ssize_t x,const ssize_t y)
 {
   switch (gradient->type)
   {
@@ -3242,7 +3242,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -3281,9 +3281,9 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=bounding_box.y; y < (long) bounding_box.height; y++)
+  for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
-    long
+    ssize_t
       j;
 
     MagickPixelPacket
@@ -3297,7 +3297,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       i,
       x;
 
@@ -3318,7 +3318,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     offset=GetStopColorOffset(gradient,0,y);
     if (gradient->type != RadialGradient)
       offset/=length;
-    for (x=bounding_box.x; x < (long) bounding_box.width; x++)
+    for (x=bounding_box.x; x < (ssize_t) bounding_box.width; x++)
     {
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
       switch (gradient->spread)
@@ -3326,20 +3326,20 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
         case UndefinedSpread:
         case PadSpread:
         {
-          if ((x != (long) ceil(gradient_vector->x1-0.5)) ||
-              (y != (long) ceil(gradient_vector->y1-0.5)))
+          if ((x != (ssize_t) ceil(gradient_vector->x1-0.5)) ||
+              (y != (ssize_t) ceil(gradient_vector->y1-0.5)))
             {
               offset=GetStopColorOffset(gradient,x,y);
               if (gradient->type != RadialGradient)
                 offset/=length;
             }
-          for (i=0; i < (long) gradient->number_stops; i++)
+          for (i=0; i < (ssize_t) gradient->number_stops; i++)
             if (offset < gradient->stops[i].offset)
               break;
           if ((offset < 0.0) || (i == 0))
             composite=gradient->stops[0].color;
           else
-            if ((offset > 1.0) || (i == (long) gradient->number_stops))
+            if ((offset > 1.0) || (i == (ssize_t) gradient->number_stops))
               composite=gradient->stops[gradient->number_stops-1].color;
             else
               {
@@ -3354,8 +3354,8 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
         }
         case ReflectSpread:
         {
-          if ((x != (long) ceil(gradient_vector->x1-0.5)) ||
-              (y != (long) ceil(gradient_vector->y1-0.5)))
+          if ((x != (ssize_t) ceil(gradient_vector->x1-0.5)) ||
+              (y != (ssize_t) ceil(gradient_vector->y1-0.5)))
             {
               offset=GetStopColorOffset(gradient,x,y);
               if (gradient->type != RadialGradient)
@@ -3363,17 +3363,17 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
             }
           if (offset < 0.0)
             offset=(-offset);
-          if ((long) fmod(offset,2.0) == 0)
+          if ((ssize_t) fmod(offset,2.0) == 0)
             offset=fmod(offset,1.0);
           else
             offset=1.0-fmod(offset,1.0);
-          for (i=0; i < (long) gradient->number_stops; i++)
+          for (i=0; i < (ssize_t) gradient->number_stops; i++)
             if (offset < gradient->stops[i].offset)
               break;
           if (i == 0)
             composite=gradient->stops[0].color;
           else
-            if (i == (long) gradient->number_stops)
+            if (i == (ssize_t) gradient->number_stops)
               composite=gradient->stops[gradient->number_stops-1].color;
             else
               {
@@ -3396,8 +3396,8 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 
           antialias=MagickFalse;
           repeat=0.0;
-          if ((x != (long) ceil(gradient_vector->x1-0.5)) ||
-              (y != (long) ceil(gradient_vector->y1-0.5)))
+          if ((x != (ssize_t) ceil(gradient_vector->x1-0.5)) ||
+              (y != (ssize_t) ceil(gradient_vector->y1-0.5)))
             {
               offset=GetStopColorOffset(gradient,x,y);
               if (gradient->type == LinearGradient)
@@ -3423,13 +3423,13 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
                   offset=repeat/gradient->radius;
                 }
             }
-          for (i=0; i < (long) gradient->number_stops; i++)
+          for (i=0; i < (ssize_t) gradient->number_stops; i++)
             if (offset < gradient->stops[i].offset)
               break;
           if (i == 0)
             composite=gradient->stops[0].color;
           else
-            if (i == (long) gradient->number_stops)
+            if (i == (ssize_t) gradient->number_stops)
               composite=gradient->stops[gradient->number_stops-1].color;
             else
               {
@@ -3444,7 +3444,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
                     else
                       alpha=gradient->radius-repeat;
                     i=0;
-                    j=(long) gradient->number_stops-1L;
+                    j=(ssize_t) gradient->number_stops-1L;
                   }
                 MagickPixelCompositeBlend(&gradient->stops[i].color,1.0-alpha,
                   &gradient->stops[j].color,alpha,&composite);
@@ -3579,11 +3579,11 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
 
 static PolygonInfo **DestroyPolygonThreadSet(PolygonInfo **polygon_info)
 {
-  register long
+  register ssize_t
     i;
 
   assert(polygon_info != (PolygonInfo **) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (polygon_info[i] != (PolygonInfo *) NULL)
       polygon_info[i]=DestroyPolygonInfo(polygon_info[i]);
   polygon_info=(PolygonInfo **) RelinquishAlignedMemory(polygon_info);
@@ -3596,13 +3596,13 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   PathInfo
     *restrict path_info;
 
-  register long
+  register ssize_t
     i;
 
   PolygonInfo
     **polygon_info;
 
-  unsigned long
+  size_t
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -3615,7 +3615,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
   if (path_info == (PathInfo *) NULL)
     return(DestroyPolygonThreadSet(polygon_info));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     polygon_info[i]=ConvertPathToPolygon(draw_info,path_info);
     if (polygon_info[i] == (PolygonInfo *) NULL)
@@ -3633,7 +3633,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   int
     winding_number;
 
-  long
+  ssize_t
     j;
 
   MagickRealType
@@ -3651,7 +3651,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   register const PointInfo
     *q;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -3660,19 +3660,19 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   *stroke_opacity=0.0;
   subpath_opacity=0.0;
   p=polygon_info->edges;
-  for (j=0; j < (long) polygon_info->number_edges; j++, p++)
+  for (j=0; j < (ssize_t) polygon_info->number_edges; j++, p++)
   {
     if (y <= (p->bounds.y1-mid-0.5))
       break;
     if (y > (p->bounds.y2+mid+0.5))
       {
-        (void) DestroyEdge(polygon_info,(unsigned long) j);
+        (void) DestroyEdge(polygon_info,(size_t) j);
         continue;
       }
     if ((x <= (p->bounds.x1-mid-0.5)) || (x > (p->bounds.x2+mid+0.5)))
       continue;
-    i=(long) MagickMax((double) p->highwater,1.0);
-    for ( ; i < (long) p->number_points; i++)
+    i=(ssize_t) MagickMax((double) p->highwater,1.0);
+    for ( ; i < (ssize_t) p->number_points; i++)
     {
       if (y <= (p->points[i-1].y-mid-0.5))
         break;
@@ -3681,7 +3681,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
       if (p->scanline != y)
         {
           p->scanline=y;
-          p->highwater=(unsigned long) i;
+          p->highwater=(size_t) i;
         }
       /*
         Compute distance between a point and an edge.
@@ -3768,7 +3768,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   */
   winding_number=0;
   p=polygon_info->edges;
-  for (j=0; j < (long) polygon_info->number_edges; j++, p++)
+  for (j=0; j < (ssize_t) polygon_info->number_edges; j++, p++)
   {
     if (y <= p->bounds.y1)
       break;
@@ -3779,8 +3779,8 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
         winding_number+=p->direction ? 1 : -1;
         continue;
       }
-    i=(long) MagickMax((double) p->highwater,1.0);
-    for ( ; i < (long) p->number_points; i++)
+    i=(ssize_t) MagickMax((double) p->highwater,1.0);
+    for ( ; i < (ssize_t) p->number_points; i++)
       if (y <= p->points[i].y)
         break;
     q=p->points+i-1;
@@ -3807,7 +3807,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     start,
     stop,
     y;
@@ -3825,7 +3825,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   register EdgeInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   SegmentInfo
@@ -3854,7 +3854,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     (primitive_info->method == FloodfillMethod) ? MagickTrue : MagickFalse;
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info[0]->edges[0].bounds;
-  for (i=1; i < (long) polygon_info[0]->number_edges; i++)
+  for (i=1; i < (ssize_t) polygon_info[0]->number_edges; i++)
   {
     p=polygon_info[0]->edges+i;
     if (p->bounds.x1 < bounds.x1)
@@ -3867,21 +3867,21 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       bounds.y2=p->bounds.y2;
   }
   bounds.x1-=(mid+1.0);
-  bounds.x1=bounds.x1 < 0.0 ? 0.0 : (unsigned long) ceil(bounds.x1-0.5) >=
+  bounds.x1=bounds.x1 < 0.0 ? 0.0 : (size_t) ceil(bounds.x1-0.5) >=
     image->columns ? (double) image->columns-1.0 : bounds.x1;
   bounds.y1-=(mid+1.0);
-  bounds.y1=bounds.y1 < 0.0 ? 0.0 : (unsigned long) ceil(bounds.y1-0.5) >=
+  bounds.y1=bounds.y1 < 0.0 ? 0.0 : (size_t) ceil(bounds.y1-0.5) >=
     image->rows ? (double) image->rows-1.0 : bounds.y1;
   bounds.x2+=(mid+1.0);
-  bounds.x2=bounds.x2 < 0.0 ? 0.0 : (unsigned long) floor(bounds.x2+0.5) >=
+  bounds.x2=bounds.x2 < 0.0 ? 0.0 : (size_t) floor(bounds.x2+0.5) >=
     image->columns ? (double) image->columns-1.0 : bounds.x2;
   bounds.y2+=(mid+1.0);
-  bounds.y2=bounds.y2 < 0.0 ? 0.0 : (unsigned long) floor(bounds.y2+0.5) >=
+  bounds.y2=bounds.y2 < 0.0 ? 0.0 : (size_t) floor(bounds.y2+0.5) >=
     image->rows ? (double) image->rows-1.0 : bounds.y2;
   status=MagickTrue;
   exception=(&image->exception);
-  start=(long) ceil(bounds.x1-0.5);
-  stop=(long) floor(bounds.x2+0.5);
+  start=(ssize_t) ceil(bounds.x1-0.5);
+  stop=(ssize_t) floor(bounds.x2+0.5);
   image_view=AcquireCacheView(image);
   if (primitive_info->coordinates == 1)
     {
@@ -3891,12 +3891,12 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-      for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
+      for (y=(ssize_t) ceil(bounds.y1-0.5); y <= (ssize_t) floor(bounds.y2+0.5); y++)
       {
         MagickBooleanType
           sync;
 
-        register long
+        register ssize_t
           x;
 
         register PixelPacket
@@ -3905,7 +3905,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         if (status == MagickFalse)
           continue;
         x=start;
-        q=GetCacheViewAuthenticPixels(image_view,x,y,(unsigned long) (stop-x+1),
+        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),
           1,exception);
         if (q == (PixelPacket *) NULL)
           {
@@ -3914,8 +3914,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
           }
         for ( ; x <= stop; x++)
         {
-          if ((x == (long) ceil(primitive_info->point.x-0.5)) &&
-              (y == (long) ceil(primitive_info->point.y-0.5)))
+          if ((x == (ssize_t) ceil(primitive_info->point.x-0.5)) &&
+              (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             (void) GetStrokeColor(draw_info,x,y,q);
           q++;
         }
@@ -3938,7 +3938,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
+  for (y=(ssize_t) ceil(bounds.y1-0.5); y <= (ssize_t) floor(bounds.y2+0.5); y++)
   {
     MagickRealType
       fill_opacity,
@@ -3948,7 +3948,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       fill_color,
       stroke_color;
 
-    register long
+    register ssize_t
       id,
       x;
 
@@ -3957,7 +3957,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,start,y,(unsigned long) (stop-
+    q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-
       start+1),1,exception);
     if (q == (PixelPacket *) NULL)
       {
@@ -4040,7 +4040,7 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
       "?"
     };
 
-  long
+  ssize_t
     coordinates,
     y;
 
@@ -4049,12 +4049,12 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     q,
     point;
 
-  register long
+  register ssize_t
     i,
     x;
 
-  x=(long) ceil(primitive_info->point.x-0.5);
-  y=(long) ceil(primitive_info->point.y-0.5);
+  x=(ssize_t) ceil(primitive_info->point.x-0.5);
+  y=(ssize_t) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
   {
     case PointPrimitive:
@@ -4099,7 +4099,7 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     point=primitive_info[i].point;
     if (coordinates <= 0)
       {
-        coordinates=(long) primitive_info[i].coordinates;
+        coordinates=(ssize_t) primitive_info[i].coordinates;
         (void) LogMagickEvent(DrawEvent,GetMagickModule(),
           "    begin open (%ld)",coordinates);
         p=point;
@@ -4135,13 +4135,13 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -4156,8 +4156,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     }
   status=MagickTrue;
   exception=(&image->exception);
-  x=(long) ceil(primitive_info->point.x-0.5);
-  y=(long) ceil(primitive_info->point.y-0.5);
+  x=(ssize_t) ceil(primitive_info->point.x-0.5);
+  y=(ssize_t) ceil(primitive_info->point.y-0.5);
   image_view=AcquireCacheView(image);
   switch (primitive_info->primitive)
   {
@@ -4169,9 +4169,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       PixelPacket
         *q;
 
-      if ((y < 0) || (y >= (long) image->rows))
+      if ((y < 0) || (y >= (ssize_t) image->rows))
         break;
-      if ((x < 0) || (x >= (long) image->columns))
+      if ((x < 0) || (x >= (ssize_t) image->columns))
         break;
       q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
       if (q == (PixelPacket *) NULL)
@@ -4208,7 +4208,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             target;
 
           (void) GetOneCacheViewVirtualPixel(image_view,x,y,&target,exception);
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
               *restrict q;
@@ -4217,7 +4217,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (IsColorSimilar(image,q,&target) == MagickFalse)
                 {
@@ -4256,9 +4256,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           MagickBooleanType
             sync;
 
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register long
+            register ssize_t
               x;
 
             register PixelPacket
@@ -4268,7 +4268,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,q);
               q++;
@@ -4315,9 +4315,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             target;
 
           (void) GetOneCacheViewVirtualPixel(image_view,x,y,&target,exception);
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register long
+            register ssize_t
               x;
 
             register PixelPacket
@@ -4327,7 +4327,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (IsColorSimilar(image,q,&target) == MagickFalse)
                 {
@@ -4370,9 +4370,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           PixelPacket
             pixel;
 
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register long
+            register ssize_t
               x;
 
             register PixelPacket
@@ -4382,7 +4382,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,&pixel);
               q->opacity=pixel.opacity;
@@ -4430,7 +4430,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       ImageInfo
         *clone_info;
 
-      long
+      ssize_t
         x1,
         y1;
 
@@ -4454,10 +4454,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         break;
       (void) SetImageProgressMonitor(composite_image,(MagickProgressMonitor)
         NULL,(void *) NULL);
-      x1=(long) ceil(primitive_info[1].point.x-0.5);
-      y1=(long) ceil(primitive_info[1].point.y-0.5);
-      if (((x1 != 0L) && (x1 != (long) composite_image->columns)) ||
-          ((y1 != 0L) && (y1 != (long) composite_image->rows)))
+      x1=(ssize_t) ceil(primitive_info[1].point.x-0.5);
+      y1=(ssize_t) ceil(primitive_info[1].point.y-0.5);
+      if (((x1 != 0L) && (x1 != (ssize_t) composite_image->columns)) ||
+          ((y1 != 0L) && (y1 != (ssize_t) composite_image->rows)))
         {
           char
             geometry[MaxTextExtent];
@@ -4538,7 +4538,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (primitive_info[i-1].point.x == primitive_info[0].point.x) &&
             (primitive_info[i-1].point.y == primitive_info[0].point.y) ?
             MagickTrue : MagickFalse;
-          i=(long) primitive_info[0].coordinates;
+          i=(ssize_t) primitive_info[0].coordinates;
           if ((((draw_info->linecap == RoundCap) ||
                 (closed_path != MagickFalse)) &&
                (draw_info->linejoin == RoundJoin)) ||
@@ -4601,7 +4601,7 @@ static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
   PrimitiveInfo
     linecap[5];
 
-  register long
+  register ssize_t
     i;
 
   for (i=0; i < 4; i++)
@@ -4819,7 +4819,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %  The format of the Permutate method is:
 %
-%      void Permutate(long n,long k)
+%      void Permutate(ssize_t n,ssize_t k)
 %
 %  A description of each parameter follows:
 %
@@ -4829,12 +4829,12 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %
 */
-static inline MagickRealType Permutate(const long n,const long k)
+static inline MagickRealType Permutate(const ssize_t n,const ssize_t k)
 {
   MagickRealType
     r;
 
-  register long
+  register ssize_t
     i;
 
   r=1.0;
@@ -4899,10 +4899,10 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     arc_segments;
 
   if ((start.x == end.x) && (start.y == end.y))
@@ -4957,10 +4957,10 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   else
     if ((theta > 0.0) && (sweep == MagickFalse))
       theta-=(MagickRealType) (2.0*MagickPI);
-  arc_segments=(unsigned long) ceil(fabs((double) (theta/(0.5*MagickPI+
+  arc_segments=(size_t) ceil(fabs((double) (theta/(0.5*MagickPI+
     MagickEpsilon)))-0.5);
   p=primitive_info;
-  for (i=0; i < (long) arc_segments; i++)
+  for (i=0; i < (ssize_t) arc_segments; i++)
   {
     beta=0.5*((alpha+(i+1)*theta/arc_segments)-(alpha+i*theta/arc_segments));
     gamma=(8.0/3.0)*sin(fmod((double) (0.5*beta),DegreesToRadians(360.0)))*
@@ -4994,13 +4994,13 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
       points[2].y);
     (p+3)->point.y=(double) (sine*radii.x*points[2].x+cosine*radii.y*
       points[2].y);
-    if (i == (long) (arc_segments-1))
+    if (i == (ssize_t) (arc_segments-1))
       (p+3)->point=end;
     TraceBezier(p,4);
     p+=p->coordinates;
   }
-  primitive_info->coordinates=(unsigned long) (p-primitive_info);
-  for (i=0; i < (long) primitive_info->coordinates; i++)
+  primitive_info->coordinates=(size_t) (p-primitive_info);
+  for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -5008,7 +5008,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
 }
 
 static void TraceBezier(PrimitiveInfo *primitive_info,
-  const unsigned long number_coordinates)
+  const size_t number_coordinates)
 {
   MagickRealType
     alpha,
@@ -5020,14 +5020,14 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     point,
     *points;
 
-  register long
+  register ssize_t
     i,
     j;
 
   register PrimitiveInfo
     *p;
 
-  unsigned long
+  size_t
     control_points,
     quantum;
 
@@ -5035,19 +5035,19 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     Allocate coeficients.
   */
   quantum=number_coordinates;
-  for (i=0; i < (long) number_coordinates; i++)
+  for (i=0; i < (ssize_t) number_coordinates; i++)
   {
-    for (j=i+1; j < (long) number_coordinates; j++)
+    for (j=i+1; j < (ssize_t) number_coordinates; j++)
     {
       alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
       if (alpha > (MagickRealType) quantum)
-        quantum=(unsigned long) alpha;
+        quantum=(size_t) alpha;
       alpha=fabs(primitive_info[j].point.y-primitive_info[i].point.y);
       if (alpha > (MagickRealType) quantum)
-        quantum=(unsigned long) alpha;
+        quantum=(size_t) alpha;
     }
   }
-  quantum=(unsigned long) MagickMin((double) quantum/number_coordinates,
+  quantum=(size_t) MagickMin((double) quantum/number_coordinates,
     (double) BezierQuantum);
   control_points=quantum*number_coordinates;
   coefficients=(MagickRealType *) AcquireQuantumMemory((size_t)
@@ -5061,16 +5061,16 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     Compute bezier points.
   */
   end=primitive_info[number_coordinates-1].point;
-  for (i=0; i < (long) number_coordinates; i++)
-    coefficients[i]=Permutate((long) number_coordinates-1,i);
+  for (i=0; i < (ssize_t) number_coordinates; i++)
+    coefficients[i]=Permutate((ssize_t) number_coordinates-1,i);
   weight=0.0;
-  for (i=0; i < (long) control_points; i++)
+  for (i=0; i < (ssize_t) control_points; i++)
   {
     p=primitive_info;
     point.x=0.0;
     point.y=0.0;
     alpha=pow((double) (1.0-weight),(double) number_coordinates-1.0);
-    for (j=0; j < (long) number_coordinates; j++)
+    for (j=0; j < (ssize_t) number_coordinates; j++)
     {
       point.x+=alpha*coefficients[j]*p->point.x;
       point.y+=alpha*coefficients[j]*p->point.y;
@@ -5084,15 +5084,15 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     Bezier curves are just short segmented polys.
   */
   p=primitive_info;
-  for (i=0; i < (long) control_points; i++)
+  for (i=0; i < (ssize_t) control_points; i++)
   {
     TracePoint(p,points[i]);
     p+=p->coordinates;
   }
   TracePoint(p,end);
   p+=p->coordinates;
-  primitive_info->coordinates=(unsigned long) (p-primitive_info);
-  for (i=0; i < (long) primitive_info->coordinates; i++)
+  primitive_info->coordinates=(size_t) (p-primitive_info);
+  for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -5138,7 +5138,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -5169,8 +5169,8 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   point.y=sin(fmod(angle.y,DegreesToRadians(360.0)))*stop.y+start.y;
   TracePoint(p,point);
   p+=p->coordinates;
-  primitive_info->coordinates=(unsigned long) (p-primitive_info);
-  for (i=0; i < (long) primitive_info->coordinates; i++)
+  primitive_info->coordinates=(size_t) (p-primitive_info);
+  for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -5193,7 +5193,7 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   primitive_info->coordinates=2;
 }
 
-static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
+static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
 {
   char
     token[MaxTextExtent];
@@ -5221,10 +5221,10 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
   register PrimitiveInfo
     *q;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_coordinates,
     z_count;
 
@@ -5372,7 +5372,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
       {
         if (q != primitive_info)
           {
-            primitive_info->coordinates=(unsigned long) (q-primitive_info);
+            primitive_info->coordinates=(size_t) (q-primitive_info);
             number_coordinates+=primitive_info->coordinates;
             primitive_info=q;
           }
@@ -5534,7 +5534,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         point=start;
         TracePoint(q,point);
         q+=q->coordinates;
-        primitive_info->coordinates=(unsigned long) (q-primitive_info);
+        primitive_info->coordinates=(size_t) (q-primitive_info);
         number_coordinates+=primitive_info->coordinates;
         primitive_info=q;
         z_count++;
@@ -5548,9 +5548,9 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
       }
     }
   }
-  primitive_info->coordinates=(unsigned long) (q-primitive_info);
+  primitive_info->coordinates=(size_t) (q-primitive_info);
   number_coordinates+=primitive_info->coordinates;
-  for (i=0; i < (long) number_coordinates; i++)
+  for (i=0; i < (ssize_t) number_coordinates; i++)
   {
     q--;
     q->primitive=primitive_type;
@@ -5570,7 +5570,7 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   p=primitive_info;
@@ -5588,8 +5588,8 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   p+=p->coordinates;
   TracePoint(p,start);
   p+=p->coordinates;
-  primitive_info->coordinates=(unsigned long) (p-primitive_info);
-  for (i=0; i < (long) primitive_info->coordinates; i++)
+  primitive_info->coordinates=(size_t) (p-primitive_info);
+  for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -5607,7 +5607,7 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   register PrimitiveInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   p=primitive_info;
@@ -5643,8 +5643,8 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   p+=p->coordinates;
   TracePoint(p,primitive_info->point);
   p+=p->coordinates;
-  primitive_info->coordinates=(unsigned long) (p-primitive_info);
-  for (i=0; i < (long) primitive_info->coordinates; i++)
+  primitive_info->coordinates=(size_t) (p-primitive_info);
+  for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -5652,24 +5652,24 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
 }
 
 static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
-  const unsigned long number_vertices,const MagickRealType offset)
+  const size_t number_vertices,const MagickRealType offset)
 {
   MagickRealType
     distance;
 
-  long
+  ssize_t
     j;
 
   register MagickRealType
     dx,
     dy;
 
-  register long
+  register ssize_t
     i;
 
   dx=0.0;
   dy=0.0;
-  for (i=1; i < (long) number_vertices; i++)
+  for (i=1; i < (ssize_t) number_vertices; i++)
   {
     dx=primitive_info[0].point.x-primitive_info[i].point.x;
     dy=primitive_info[0].point.y-primitive_info[i].point.y;
@@ -5677,14 +5677,14 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
         (fabs((double) dy) >= MagickEpsilon))
       break;
   }
-  if (i == (long) number_vertices)
-    i=(long) number_vertices-1L;
+  if (i == (ssize_t) number_vertices)
+    i=(ssize_t) number_vertices-1L;
   distance=hypot((double) dx,(double) dy);
   primitive_info[0].point.x=(double) (primitive_info[i].point.x+
     dx*(distance+offset)/distance);
   primitive_info[0].point.y=(double) (primitive_info[i].point.y+
     dy*(distance+offset)/distance);
-  for (j=(long) number_vertices-2; j >= 0;  j--)
+  for (j=(ssize_t) number_vertices-2; j >= 0;  j--)
   {
     dx=primitive_info[number_vertices-1].point.x-primitive_info[j].point.x;
     dy=primitive_info[number_vertices-1].point.y-primitive_info[j].point.y;
@@ -5716,7 +5716,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     slope,
     theta;
 
-  long
+  ssize_t
     j,
     n,
     p,
@@ -5743,10 +5743,10 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     *polygon_primitive,
     *stroke_polygon;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     arc_segments,
     max_strokes,
     number_vertices;
@@ -5783,15 +5783,15 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   */
   dx.p=0.0;
   dy.p=0.0;
-  for (n=1; n < (long) number_vertices; n++)
+  for (n=1; n < (ssize_t) number_vertices; n++)
   {
     dx.p=polygon_primitive[n].point.x-polygon_primitive[0].point.x;
     dy.p=polygon_primitive[n].point.y-polygon_primitive[0].point.y;
     if ((fabs(dx.p) >= MagickEpsilon) || (fabs(dy.p) >= MagickEpsilon))
       break;
   }
-  if (n == (long) number_vertices)
-    n=(long) number_vertices-1L;
+  if (n == (ssize_t) number_vertices)
+    n=(ssize_t) number_vertices-1L;
   slope.p=0.0;
   inverse_slope.p=0.0;
   if (fabs(dx.p) <= MagickEpsilon)
@@ -5850,7 +5850,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   q=0;
   path_q[p++]=box_q[0];
   path_p[q++]=box_p[0];
-  for (i=(long) n+1; i < (long) number_vertices; i++)
+  for (i=(ssize_t) n+1; i < (ssize_t) number_vertices; i++)
   {
     /*
       Compute the slope for this line segment, q.
@@ -5921,7 +5921,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           box_q[3].y)/(slope.p-slope.q));
         box_q[4].y=(double) (slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y);
       }
-    if (q >= (long) (max_strokes-6*BezierQuantum-360))
+    if (q >= (ssize_t) (max_strokes-6*BezierQuantum-360))
       {
          max_strokes+=6*BezierQuantum+360;
          path_p=(PointInfo *) ResizeQuantumMemory(path_p,(size_t) max_strokes,
@@ -5988,12 +5988,12 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=(MagickRealType) (2.0*MagickPI);
-          arc_segments=(unsigned long) ceil((double) ((theta.q-theta.p)/
+          arc_segments=(size_t) ceil((double) ((theta.q-theta.p)/
             (2.0*sqrt((double) (1.0/mid)))));
           path_q[q].x=box_q[1].x;
           path_q[q].y=box_q[1].y;
           q++;
-          for (j=1; j < (long) arc_segments; j++)
+          for (j=1; j < (ssize_t) arc_segments; j++)
           {
             delta_theta=(MagickRealType) (j*(theta.q-theta.p)/arc_segments);
             path_q[q].x=(double) (center.x+mid*cos(fmod((double)
@@ -6060,10 +6060,10 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(box_p[2].y-center.y,box_p[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=(MagickRealType) (2.0*MagickPI);
-          arc_segments=(unsigned long) ceil((double) ((theta.p-theta.q)/
+          arc_segments=(size_t) ceil((double) ((theta.p-theta.q)/
             (2.0*sqrt((double) (1.0/mid)))));
           path_p[p++]=box_p[1];
-          for (j=1; j < (long) arc_segments; j++)
+          for (j=1; j < (ssize_t) arc_segments; j++)
           {
             delta_theta=(MagickRealType) (j*(theta.q-theta.p)/arc_segments);
             path_p[p].x=(double) (center.x+mid*cos(fmod((double)
@@ -6097,7 +6097,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     (p+q+2UL*closed_path+2UL),sizeof(*stroke_polygon));
   if (stroke_polygon != (PrimitiveInfo *) NULL)
     {
-      for (i=0; i < (long) p; i++)
+      for (i=0; i < (ssize_t) p; i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
         stroke_polygon[i].point=path_p[i];
@@ -6108,7 +6108,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           stroke_polygon[i].point=stroke_polygon[0].point;
           i++;
         }
-      for ( ; i < (long) (p+q+closed_path); i++)
+      for ( ; i < (ssize_t) (p+q+closed_path); i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
         stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];
@@ -6123,7 +6123,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       stroke_polygon[i].point=stroke_polygon[0].point;
       i++;
       stroke_polygon[i].primitive=UndefinedPrimitive;
-      stroke_polygon[0].coordinates=(unsigned long) (p+q+2*closed_path+1);
+      stroke_polygon[0].coordinates=(size_t) (p+q+2*closed_path+1);
     }
   path_p=(PointInfo *) RelinquishMagickMemory(path_p);
   path_q=(PointInfo *) RelinquishMagickMemory(path_q);

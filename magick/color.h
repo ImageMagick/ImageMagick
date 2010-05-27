@@ -55,7 +55,7 @@ typedef struct _ColorInfo
     *previous,
     *next;  /* deprecated, use GetColorInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } ColorInfo;
 
@@ -68,17 +68,17 @@ typedef struct _ErrorInfo
 } ErrorInfo;
 
 extern MagickExport char
-  **GetColorList(const char *,unsigned long *,ExceptionInfo *);
+  **GetColorList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *),
-  **GetColorInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetColorInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   ColorComponentGenesis(void),
   IsColorSimilar(const Image *,const PixelPacket *,const PixelPacket *),
   IsGrayImage(const Image *,ExceptionInfo *),
-  IsImageSimilar(const Image *,const Image *,long *x,long *y,ExceptionInfo *),
+  IsImageSimilar(const Image *,const Image *,ssize_t *x,ssize_t *y,ExceptionInfo *),
   IsMagickColorSimilar(const MagickPixelPacket *,const MagickPixelPacket *),
   IsMonochromeImage(const Image *,ExceptionInfo *),
   IsOpacitySimilar(const Image *,const PixelPacket *,const PixelPacket *),

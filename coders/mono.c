@@ -99,7 +99,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -108,16 +108,16 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
     *q;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     bit,
     byte;
 
@@ -161,7 +161,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   /*
     Convert bi-level image to pixel packets.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -169,10 +169,10 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
-        byte=(unsigned long) ReadBlobByte(image);
+        byte=(size_t) ReadBlobByte(image);
       if (image_info->endian == LSBEndian)
         indexes[x]=(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01);
       else
@@ -216,10 +216,10 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterMONOImage method is:
 %
-%      unsigned long RegisterMONOImage(void)
+%      size_t RegisterMONOImage(void)
 %
 */
-ModuleExport unsigned long RegisterMONOImage(void)
+ModuleExport size_t RegisterMONOImage(void)
 {
   MagickInfo
     *entry;
@@ -288,7 +288,7 @@ ModuleExport void UnregisterMONOImage(void)
 static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   Image *image)
 {
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -300,10 +300,10 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
-  unsigned long
+  size_t
     bit,
     byte;
 
@@ -325,7 +325,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
     Convert image to a bi-level image.
   */
   (void) SetImageType(image,BilevelType);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
@@ -333,7 +333,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
     indexes=GetVirtualIndexQueue(image);
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
       if (image->endian == LSBEndian)

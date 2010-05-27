@@ -95,10 +95,10 @@ typedef enum
 #define SubtractCompositeOp  ModulusSubtractCompositeOp
 
 extern MagickExport MagickBooleanType
-  CompositeImage(Image *,const CompositeOperator,const Image *,const long,
-    const long),
+  CompositeImage(Image *,const CompositeOperator,const Image *,const ssize_t,
+    const ssize_t),
   CompositeImageChannel(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const long,const long),
+    const Image *,const ssize_t,const ssize_t),
   TextureImage(Image *,const Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -118,7 +118,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       blue_primary[24],
       white_point[24];
 
-    long
+    ssize_t
       job_number;
 
     char
@@ -150,7 +150,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       auxiliary[32],
       space[36];
 
-    long
+    ssize_t
       next;
   } RLAInfo;
 
@@ -162,10 +162,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length,
     runlength;
 
-  long
+  ssize_t
     y;
 
-  long
+  ssize_t
     *scanlines;
 
   MagickBooleanType
@@ -174,7 +174,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickOffsetType
     offset;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -229,7 +229,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,24,(unsigned char *) rla_info.green_primary);
   count=ReadBlob(image,24,(unsigned char *) rla_info.blue_primary);
   count=ReadBlob(image,24,(unsigned char *) rla_info.white_point);
-  rla_info.job_number=(long) ReadBlobMSBLong(image);
+  rla_info.job_number=(ssize_t) ReadBlobMSBLong(image);
   count=ReadBlob(image,128,(unsigned char *) rla_info.name);
   count=ReadBlob(image,128,(unsigned char *) rla_info.description);
   count=ReadBlob(image,64,(unsigned char *) rla_info.program);
@@ -251,7 +251,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,36,(unsigned char *) rla_info.space);
   if ((size_t) count != 36)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-  rla_info.next=(long) ReadBlobMSBLong(image);
+  rla_info.next=(ssize_t) ReadBlobMSBLong(image);
   /*
     Initialize image structure.
   */
@@ -263,21 +263,21 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  scanlines=(long *) AcquireQuantumMemory(image->rows,sizeof(*scanlines));
-  if (scanlines == (long *) NULL)
+  scanlines=(ssize_t *) AcquireQuantumMemory(image->rows,sizeof(*scanlines));
+  if (scanlines == (ssize_t *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (*rla_info.description != '\0')
     (void) SetImageProperty(image,"comment",rla_info.description);
   /*
     Read offsets to each scanline data.
   */
-  for (i=0; i < (long) image->rows; i++)
-    scanlines[i]=(long) ReadBlobMSBLong(image);
+  for (i=0; i < (ssize_t) image->rows; i++)
+    scanlines[i]=(ssize_t) ReadBlobMSBLong(image);
   /*
     Read image data.
   */
   x=0;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     offset=SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
     if (offset < 0)
@@ -298,8 +298,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             while (runlength < 0)
             {
-              q=GetAuthenticPixels(image,(long) (x % image->columns),
-                (long) (y % image->rows),1,1,exception);
+              q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
+                (ssize_t) (y % image->rows),1,1,exception);
               if (q == (PixelPacket *) NULL)
                 break;
               byte=(unsigned char) ReadBlobByte(image);
@@ -340,8 +340,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         runlength++;
         do
         {
-          q=GetAuthenticPixels(image,(long) (x % image->columns),
-            (long) (y % image->rows),1,1,exception);
+          q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
+            (ssize_t) (y % image->rows),1,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
           switch (channel)
@@ -407,10 +407,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterRLAImage method is:
 %
-%      unsigned long RegisterRLAImage(void)
+%      size_t RegisterRLAImage(void)
 %
 */
-ModuleExport unsigned long RegisterRLAImage(void)
+ModuleExport size_t RegisterRLAImage(void)
 {
   MagickInfo
     *entry;

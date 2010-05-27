@@ -37,16 +37,16 @@ typedef struct _CoderInfo
     *previous,
     *next;  /* deprecated, use GetCoderInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } CoderInfo;
 
 extern MagickExport char
-  **GetCoderList(const char *,unsigned long *,ExceptionInfo *);
+  **GetCoderList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const CoderInfo
   *GetCoderInfo(const char *,ExceptionInfo *),
-  **GetCoderInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetCoderInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   CoderComponentGenesis(void),

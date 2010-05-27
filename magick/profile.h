@@ -35,7 +35,7 @@ typedef struct _ProfileInfo
   unsigned char
     *info;
 
-  unsigned long
+  size_t
     signature;
 } ProfileInfo;
 

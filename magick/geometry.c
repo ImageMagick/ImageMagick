@@ -69,8 +69,8 @@
 %
 %  The format of the GetGeometry method is:
 %
-%      MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
-%        unsigned long *width,unsigned long *height)
+%      MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_t *y,
+%        size_t *width,size_t *height)
 %
 %  A description of each parameter follows:
 %
@@ -82,8 +82,8 @@
 %      specification.
 %
 */
-MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
-  unsigned long *width,unsigned long *height)
+MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_t *y,
+  size_t *width,size_t *height)
 {
   char
     *p,
@@ -198,9 +198,9 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
       */
       q=p;
       if (LocaleNCompare(p,"0x",2) == 0)
-        *width=(unsigned long) strtol(p,&p,10);
+        *width=(size_t) strtol(p,&p,10);
       else
-        *width=(unsigned long) floor(strtod(p,&p)+0.5);
+        *width=(size_t) floor(strtod(p,&p)+0.5);
       if (p != q)
         flags|=WidthValue;
     }
@@ -213,7 +213,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
             Parse height.
           */
           q=p;
-          *height=(unsigned long) floor(strtod(p,&p)+0.5);
+          *height=(size_t) floor(strtod(p,&p)+0.5);
           if (p != q)
             flags|=HeightValue;
         }
@@ -226,7 +226,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
       if (*p == '-')
         flags|=XNegative;
       q=p;
-      *x=(long) ceil(strtod(p,&p)-0.5);
+      *x=(ssize_t) ceil(strtod(p,&p)-0.5);
       if (p != q)
         flags|=XValue;
       if ((*p == '+') || (*p == '-'))
@@ -237,7 +237,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,long *x,long *y,
           if (*p == '-')
             flags|=YNegative;
           q=p;
-          *y=(long) ceil(strtod(p,&p)-0.5);
+          *y=(ssize_t) ceil(strtod(p,&p)-0.5);
           if (p != q)
             flags|=YValue;
         }
@@ -356,7 +356,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   char
     *page;
 
-  register long
+  register ssize_t
     i;
 
   assert(page_geometry != (char *) NULL);
@@ -405,8 +405,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %
 %  The format of the GravityAdjustGeometry method is:
 %
-%      void GravityAdjustGeometry(const unsigned long width,
-%        const unsigned long height,const GravityType gravity,
+%      void GravityAdjustGeometry(const size_t width,
+%        const size_t height,const GravityType gravity,
 %        RectangleInfo *region);
 %
 %  A description of each parameter follows:
@@ -418,8 +418,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %    o region:  The region requiring a offset adjustment relative to gravity
 %
 */
-MagickExport void GravityAdjustGeometry(const unsigned long width,
-  const unsigned long height,const GravityType gravity,RectangleInfo *region)
+MagickExport void GravityAdjustGeometry(const size_t width,
+  const size_t height,const GravityType gravity,RectangleInfo *region)
 {
   if (region->height == 0)
     region->height=height;
@@ -431,7 +431,7 @@ MagickExport void GravityAdjustGeometry(const unsigned long width,
     case EastGravity:
     case SouthEastGravity:
     {
-      region->x=(long) (width-region->width-region->x);
+      region->x=(ssize_t) (width-region->width-region->x);
       break;
     }
     case NorthGravity:
@@ -439,7 +439,7 @@ MagickExport void GravityAdjustGeometry(const unsigned long width,
     case CenterGravity:
     case StaticGravity:
     {
-      region->x+=(long) (width/2-region->width/2);
+      region->x+=(ssize_t) (width/2-region->width/2);
       break;
     }
     case ForgetGravity:
@@ -455,7 +455,7 @@ MagickExport void GravityAdjustGeometry(const unsigned long width,
     case SouthGravity:
     case SouthEastGravity:
     {
-      region->y=(long) (height-region->height-region->y);
+      region->y=(ssize_t) (height-region->height-region->y);
       break;
     }
     case EastGravity:
@@ -463,7 +463,7 @@ MagickExport void GravityAdjustGeometry(const unsigned long width,
     case CenterGravity:
     case StaticGravity:
     {
-      region->y+=(long) (height/2-region->height/2);
+      region->y+=(ssize_t) (height/2-region->height/2);
       break;
     }
     case ForgetGravity:
@@ -643,7 +643,7 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
   MagickStatusType
     flags;
 
-  register long
+  register ssize_t
     i;
 
   GetAffineMatrix(affine_matrix);
@@ -975,7 +975,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
   MagickStatusType
     flags;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -1014,9 +1014,9 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       scale.y=geometry_info.sigma;
       if ((status & SigmaValue) == 0)
         scale.y=scale.x;
-      region_info->width=(unsigned long) floor((scale.x*image->columns/100.0)+
+      region_info->width=(size_t) floor((scale.x*image->columns/100.0)+
         0.5);
-      region_info->height=(unsigned long) floor((scale.y*image->rows/100.0)+
+      region_info->height=(size_t) floor((scale.y*image->rows/100.0)+
         0.5);
     }
   /*
@@ -1051,8 +1051,8 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %
 %  The format of the ParseMetaGeometry method is:
 %
-%      MagickStatusType ParseMetaGeometry(const char *geometry,long *x,long *y,
-%        unsigned long *width,unsigned long *height)
+%      MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,ssize_t *y,
+%        size_t *width,size_t *height)
 %
 %  A description of each parameter follows:
 %
@@ -1065,16 +1065,16 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %
 */
 
-static inline unsigned long MagickMax(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMax(const size_t x,
+  const size_t y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
-  long *y,unsigned long *width,unsigned long *height)
+MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
+  ssize_t *y,size_t *width,size_t *height)
 {
   GeometryInfo
     geometry_info;
@@ -1082,17 +1082,17 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
   MagickStatusType
     flags;
 
-  unsigned long
+  size_t
     former_height,
     former_width;
 
   /*
     Ensure the image geometry is valid.
   */
-  assert(x != (long *) NULL);
-  assert(y != (long *) NULL);
-  assert(width != (unsigned long *) NULL);
-  assert(height != (unsigned long *) NULL);
+  assert(x != (ssize_t *) NULL);
+  assert(y != (ssize_t *) NULL);
+  assert(width != (size_t *) NULL);
+  assert(height != (size_t *) NULL);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
@@ -1121,10 +1121,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
       scale.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
         scale.y=scale.x;
-      *width=(unsigned long) floor(scale.x*former_width/100.0+0.5);
+      *width=(size_t) floor(scale.x*former_width/100.0+0.5);
       if (*width == 0)
         *width=1;
-      *height=(unsigned long) floor(scale.y*former_height/100.0+0.5);
+      *height=(size_t) floor(scale.y*former_height/100.0+0.5);
       if (*height == 0)
         *height=1;
       former_width=(*width);
@@ -1179,9 +1179,9 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
                 scale_factor=(MagickRealType) *height/(MagickRealType)
                   former_width;
             }
-      *width=MagickMax((unsigned long) floor(scale_factor*former_width+0.5),
+      *width=MagickMax((size_t) floor(scale_factor*former_width+0.5),
         1UL);
-      *height=MagickMax((unsigned long) floor(scale_factor*former_height+0.5),
+      *height=MagickMax((size_t) floor(scale_factor*former_height+0.5),
         1UL);
     }
   if ((flags & GreaterValue) != 0)
@@ -1217,8 +1217,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,long *x,
       scale.y=(double) former_height/(double) (distance/sqrt((double) area));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=(unsigned long) (former_width/(distance/sqrt((double) area)));
-          *height=(unsigned long) (former_height/(distance/
+          *width=(size_t) (former_width/(distance/sqrt((double) area)));
+          *height=(size_t) (former_height/(distance/
             sqrt((double) area)));
         }
       former_width=(*width);

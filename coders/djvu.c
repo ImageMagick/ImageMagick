@@ -163,14 +163,14 @@ pump_data(Image *image, LoadContext* lc)
 static ddjvu_message_t*
 pump_data_until_message(LoadContext *lc,Image *image) /* ddjvu_context_t *context, type ddjvu_document_type_t */
 {
-        unsigned long blocksize = BLOCKSIZE;
+        size_t blocksize = BLOCKSIZE;
         unsigned char data[BLOCKSIZE];
-        unsigned long size;
+        size_t size;
         ddjvu_message_t *message;
 
         /* i might check for a condition! */
         while (!(message = ddjvu_message_peek(lc->context))
-               && (size = (unsigned long) ReadBlob(image,(size_t) blocksize,data)) == blocksize) {
+               && (size = (size_t) ReadBlob(image,(size_t) blocksize,data)) == blocksize) {
                 ddjvu_stream_write(lc->document, lc->streamid, (char *) data, size);
         }
         if (message)
@@ -390,9 +390,9 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                 printf("%s: expanding BITONAL page/image\n", __FUNCTION__);
 #endif
                 register IndexPacket *indexes;
-                unsigned long bit, byte;
+                size_t bit, byte;
 
-                for (y=0; y < (long) image->rows; y++)
+                for (y=0; y < (ssize_t) image->rows; y++)
                         {
                                 PixelPacket * o = QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
                                 if (o == (PixelPacket *) NULL)
@@ -402,9 +402,9 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                 byte=0;
 
                                 /* fixme:  the non-aligned, last =<7 bits ! that's ok!!!*/
-                                for (x= 0; x < (long) image->columns; x++)
+                                for (x= 0; x < (ssize_t) image->columns; x++)
                                         {
-                                                if (bit == 0) byte= (unsigned long) q[(y * stride) + (x / 8)];
+                                                if (bit == 0) byte= (size_t) q[(y * stride) + (x / 8)];
 
                                                 indexes[x]=(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01);
                                                 bit++;
@@ -421,7 +421,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                 printf("%s: expanding PHOTO page/image\n", __FUNCTION__);
 #endif
                 /* now transfer line-wise: */
-                long i;
+                ssize_t i;
 #if 0
                 /* old: */
                 char* r;
@@ -429,7 +429,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                 register PixelPacket *r;
 #endif
 
-                for (i = 0;i< (long) lc->image->rows; i++)
+                for (i = 0;i< (ssize_t) lc->image->rows; i++)
                         {
 #if DEBUG
                                if (i % 1000 == 0) printf("%d\n",i);
@@ -627,7 +627,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
               image->y_resolution=image->x_resolution;
             info.width*=image->x_resolution/info.dpi;
             info.height*=image->y_resolution/info.dpi;
-            info.dpi=(long) MagickMax(image->x_resolution,image->y_resolution);
+            info.dpi=(ssize_t) MagickMax(image->x_resolution,image->y_resolution);
           }
         type = ddjvu_page_get_type(lc->page);
 
@@ -637,8 +637,8 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
         /* mmc:  set  image->depth  */
         /* mmc:  This from the type */
 
-        image->columns=(unsigned long) info.width;
-        image->rows=(unsigned long) info.height;
+        image->columns=(size_t) info.width;
+        image->rows=(size_t) info.height;
 
         /* mmc: bitonal should be palettized, and compressed! */
         if (type == DDJVU_PAGETYPE_BITONAL){
@@ -756,7 +756,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -858,7 +858,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   i=0;
   if (image_info->number_scenes != 0)
     i=image_info->scene;
-  for ( ; i < (long) lc->pages; i++)
+  for ( ; i < (ssize_t) lc->pages; i++)
   {
     image=ReadOneDJVUImage(lc,i,image_info,exception);
     if (image == (Image *) NULL)
@@ -916,10 +916,10 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterDJVUImage method is:
 %
-%      unsigned long RegisterDJVUImage(void)
+%      size_t RegisterDJVUImage(void)
 %
 */
-ModuleExport unsigned long RegisterDJVUImage(void)
+ModuleExport size_t RegisterDJVUImage(void)
 {
   char
     version[MaxTextExtent];

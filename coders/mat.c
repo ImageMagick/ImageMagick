@@ -92,20 +92,20 @@ typedef struct
   char identific[124];
   unsigned short Version;
   char EndianIndicator[2];
-  unsigned long DataType;
-  unsigned long ObjectSize;
-  unsigned long unknown1;
-  unsigned long unknown2;
+  size_t DataType;
+  size_t ObjectSize;
+  size_t unknown1;
+  size_t unknown2;
 
   unsigned short unknown5;
   unsigned char StructureFlag;
   unsigned char StructureClass;
-  unsigned long unknown3;
-  unsigned long unknown4;
-  unsigned long DimFlag;
+  size_t unknown3;
+  size_t unknown4;
+  size_t DimFlag;
 
-  unsigned long SizeX;
-  unsigned long SizeY;
+  size_t SizeX;
+  size_t SizeY;
   unsigned short Flag1;
   unsigned short NameFlag;
 }
@@ -192,7 +192,7 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
   q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
   if (q == (PixelPacket *) NULL)
     return;
-  for (x = 0; x < (long) image->columns; x++)
+  for (x = 0; x < (ssize_t) image->columns; x++)
   {
     if (*p > 0)
     {
@@ -246,7 +246,7 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
   q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
   if (q == (PixelPacket *) NULL)
     return;
-  for (x = 0; x < (long) image->columns; x++)
+  for (x = 0; x < (ssize_t) image->columns; x++)
   {
     if (*p > 0)
     {
@@ -330,7 +330,7 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 }
 
 /* Calculate minimum and maximum from a given block of data */
-static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, unsigned long CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
 {
 MagickOffsetType filepos;
 int i, x;
@@ -378,7 +378,7 @@ float *fltrow;
       {
         *Min = *Max = *fltrow;
       }
-    for (x = 0; x < (long) SizeX; x++)
+    for (x = 0; x < (ssize_t) SizeX; x++)
       {
         if (*Min > *fltrow)
           *Min = *fltrow;
@@ -588,15 +588,15 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int status;
   MATHeader MATLAB_HDR;
-  unsigned long size;  
-  unsigned long CellType;
+  size_t size;  
+  size_t CellType;
   QuantumInfo *quantum_info;
   ImageInfo *clone_info;
   int i;
-  long ldblk;
+  ssize_t ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
-  unsigned long Unknown6;
+  size_t Unknown6;
   unsigned z;
   int logging;
   int sample_size;
@@ -732,7 +732,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     {
       case 0:
         size = ReadBlobXXXLong(image2);  /* Object name string size */
-        size = 4 * (long) ((size + 3 + 1) / 4);
+        size = 4 * (ssize_t) ((size + 3 + 1) / 4);
         (void) SeekBlob(image2, size, SEEK_CUR);
         break;
       case 1:
@@ -765,25 +765,25 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           image->depth = 1;
         else
           image->depth = 8;         /* Byte type cell */
-        ldblk = (long) MATLAB_HDR.SizeX;      
+        ldblk = (ssize_t) MATLAB_HDR.SizeX;      
         break;
       case miINT16:
       case miUINT16:
         sample_size = 16;
         image->depth = 16;        /* Word type cell */
-        ldblk = (long) (2 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (2 * MATLAB_HDR.SizeX);
         break;
       case miINT32:
       case miUINT32:
         sample_size = 32;
         image->depth = 32;        /* Dword type cell */
-        ldblk = (long) (4 * MATLAB_HDR.SizeX);      
+        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);      
         break;
       case miINT64:
       case miUINT64:
         sample_size = 64;
         image->depth = 64;        /* Qword type cell */
-        ldblk = (long) (8 * MATLAB_HDR.SizeX);      
+        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);      
         break;   
       case miSINGLE:
         sample_size = 32;
@@ -792,7 +792,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
   {              /* complex float type cell */
   }
-        ldblk = (long) (4 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
         break;
       case miDOUBLE:
         sample_size = 64; 
@@ -803,7 +803,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
   {                         /* complex double type cell */        
   }
-        ldblk = (long) (8 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
         break;
       default:
         ThrowReaderException(CoderError, "UnsupportedCellTypeInTheMatrix");
@@ -834,7 +834,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     */
     if (image_info->ping)
     {
-      unsigned long temp = image->columns;
+      size_t temp = image->columns;
       image->columns = image->rows;
       image->rows = temp;
       goto done_reading; /* !!!!!! BAD  !!!! */
@@ -857,7 +857,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     /* else read color scanlines */
     do
     {
-      for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
+      for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
       {
         q=QueueAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
         if (q == (PixelPacket *)NULL)
@@ -917,14 +917,14 @@ ExitLoop:
       }
 
       if (CellType==miDOUBLE)
-        for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
+        for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
   {
           ReadBlobDoublesXXX(image2, ldblk, (double *)BImgBuff);
           InsertComplexDoubleRow((double *)BImgBuff, i, image, MinVal, MaxVal);
   }
 
       if (CellType==miSINGLE)
-        for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
+        for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
   {
           ReadBlobFloatsXXX(image2, ldblk, (float *)BImgBuff);
           InsertComplexFloatRow((float *)BImgBuff, i, image, MinVal, MaxVal);
@@ -981,7 +981,7 @@ done_reading:
     image->columns=image->rows=0;
     image->colors=0;    
 
-      /* row scan buffer is no longer needed */
+      /* row scan buffer is no ssize_ter needed */
     RelinquishMagickMemory(BImgBuff);
     BImgBuff = NULL;
   }
@@ -993,7 +993,7 @@ done_reading:
 
   {
     Image *p;    
-    long scene=0;
+    ssize_t scene=0;
     
     /*
       Rewind list, removing any empty images while rewinding.
@@ -1056,10 +1056,10 @@ done_reading:
 %
 %  The format of the RegisterMATImage method is:
 %
-%      unsigned long RegisterMATImage(void)
+%      size_t RegisterMATImage(void)
 %
 */
-ModuleExport unsigned long RegisterMATImage(void)
+ModuleExport size_t RegisterMATImage(void)
 {
   MagickInfo
     *entry;
@@ -1132,13 +1132,13 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
   ExceptionInfo
     *exception;
 
-  long y;
+  ssize_t y;
   unsigned z;
   const PixelPacket *p;
 
   unsigned int status;
   int logging;
-  unsigned long DataSize;
+  size_t DataSize;
   char padding;
   char MATLAB_HDR[0x80];
   time_t current_time;
@@ -1228,7 +1228,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     pixels=GetQuantumPixels(quantum_info);
     do
     {
-      for (y=0; y < (long)image->columns; y++)
+      for (y=0; y < (ssize_t)image->columns; y++)
       {
         p=GetVirtualPixels(image,y,0,1,image->rows,&image->exception);
         if (p == (const PixelPacket *) NULL)

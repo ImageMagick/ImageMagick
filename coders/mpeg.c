@@ -83,7 +83,7 @@ static MagickBooleanType
 %
 %  The format of the IsAVI method is:
 %
-%      unsigned long IsAVI(const unsigned char *magick,const size_t length)
+%      size_t IsAVI(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -231,10 +231,10 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterMPEGImage method is:
 %
-%      unsigned long RegisterMPEGImage(void)
+%      size_t RegisterMPEGImage(void)
 %
 */
-ModuleExport unsigned long RegisterMPEGImage(void)
+ModuleExport size_t RegisterMPEGImage(void)
 {
   MagickInfo
     *entry;
@@ -479,7 +479,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
   register Image
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -488,7 +488,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
   unsigned char
     *blob;
 
-  unsigned long
+  size_t
     count,
     scene;
 
@@ -527,7 +527,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
     length=0;
     scene=p->scene;
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
-    for (i=0; i < (long) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
+    for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
     {
       p->scene=count;
       count++;
@@ -609,7 +609,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
   for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
-    for (i=0; i < (long) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
+    for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
     {
       (void) FormatMagickString(p->filename,MaxTextExtent,"%s%lu.%s",
         basename,count++,WriteMPEGIntermediateFormat);

@@ -911,7 +911,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
   ImageInfo
     *blob_info;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -971,10 +971,10 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterPATTERNImage method is:
 %
-%      unsigned long RegisterPATTERNImage(void)
+%      size_t RegisterPATTERNImage(void)
 %
 */
-ModuleExport unsigned long RegisterPATTERNImage(void)
+ModuleExport size_t RegisterPATTERNImage(void)
 {
   MagickInfo
     *entry;

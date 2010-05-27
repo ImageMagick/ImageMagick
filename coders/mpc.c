@@ -172,7 +172,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickStatusType
     flags;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -184,7 +184,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   StringInfo
     *profile;
 
-  unsigned long
+  size_t
     depth,
     quantum_depth;
 
@@ -356,7 +356,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"class") == 0)
                   {
-                    long
+                    ssize_t
                       storage_class;
 
                     storage_class=ParseMagickOption(MagickClassOptions,
@@ -373,7 +373,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
                   {
-                    long
+                    ssize_t
                       colorspace;
 
                     colorspace=ParseMagickOption(MagickColorspaceOptions,
@@ -385,7 +385,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
                   {
-                    long
+                    ssize_t
                       compression;
 
                     compression=ParseMagickOption(MagickCompressOptions,
@@ -418,7 +418,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
                   {
-                    long
+                    ssize_t
                       dispose;
 
                     dispose=ParseMagickOption(MagickDisposeOptions,MagickFalse,
@@ -436,7 +436,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"endian") == 0)
                   {
-                    long
+                    ssize_t
                       endian;
 
                     endian=ParseMagickOption(MagickEndianOptions,MagickFalse,
@@ -496,7 +496,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"matte") == 0)
                   {
-                    long
+                    ssize_t
                       matte;
 
                     matte=ParseMagickOption(MagickBooleanOptions,MagickFalse,
@@ -535,7 +535,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"opaque") == 0)
                   {
-                    long
+                    ssize_t
                       matte;
 
                     matte=ParseMagickOption(MagickBooleanOptions,MagickFalse,
@@ -547,7 +547,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"orientation") == 0)
                   {
-                    long
+                    ssize_t
                       orientation;
 
                     orientation=ParseMagickOption(MagickOrientationOptions,
@@ -617,7 +617,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"rendering-intent") == 0)
                   {
-                    long
+                    ssize_t
                       rendering_intent;
 
                     rendering_intent=ParseMagickOption(MagickIntentOptions,
@@ -660,7 +660,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"ticks-per-second") == 0)
                   {
-                    image->ticks_per_second=(long) StringToLong(options);
+                    image->ticks_per_second=(ssize_t) StringToLong(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"tile-offset") == 0)
@@ -674,7 +674,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"type") == 0)
                   {
-                    long
+                    ssize_t
                       type;
 
                     type=ParseMagickOption(MagickTypeOptions,MagickFalse,
@@ -692,7 +692,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"units") == 0)
                   {
-                    long
+                    ssize_t
                       units;
 
                     units=ParseMagickOption(MagickResolutionOptions,MagickFalse,
@@ -842,7 +842,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 unsigned char
                   pixel;
 
-                for (i=0; i < (long) image->colors; i++)
+                for (i=0; i < (ssize_t) image->colors; i++)
                 {
                   p=PushCharPixel(p,&pixel);
                   image->colormap[i].red=ScaleCharToQuantum(pixel);
@@ -858,7 +858,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 unsigned short
                   pixel;
 
-                for (i=0; i < (long) image->colors; i++)
+                for (i=0; i < (ssize_t) image->colors; i++)
                 {
                   p=PushShortPixel(MSBEndian,p,&pixel);
                   image->colormap[i].red=ScaleShortToQuantum(pixel);
@@ -871,10 +871,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               case 32:
               {
-                unsigned long
+                size_t
                   pixel;
 
-                for (i=0; i < (long) image->colors; i++)
+                for (i=0; i < (ssize_t) image->colors; i++)
                 {
                   p=PushLongPixel(MSBEndian,p,&pixel);
                   image->colormap[i].red=ScaleLongToQuantum(pixel);
@@ -953,10 +953,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterMPCImage method is:
 %
-%      unsigned long RegisterMPCImage(void)
+%      size_t RegisterMPCImage(void)
 %
 */
-ModuleExport unsigned long RegisterMPCImage(void)
+ModuleExport size_t RegisterMPCImage(void)
 {
   MagickInfo
     *entry;
@@ -1042,10 +1042,10 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     offset,
     scene;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     depth;
 
   /*
@@ -1080,7 +1080,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     (void) FormatMagickString(buffer,MaxTextExtent,
       "class=%s  colors=%lu  matte=%s\n",MagickOptionToMnemonic(
       MagickClassOptions,image->storage_class),image->colors,
-      MagickOptionToMnemonic(MagickBooleanOptions,(long) image->matte));
+      MagickOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,
       "columns=%lu  rows=%lu  depth=%lu\n",image->columns,image->rows,
@@ -1251,7 +1251,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
           if (profile != (StringInfo *) NULL)
             {
               (void) FormatMagickString(buffer,MaxTextExtent,"profile:%s=%lu\n",
-                name,(unsigned long) GetStringInfoLength(profile));
+                name,(size_t) GetStringInfoLength(profile));
               (void) WriteBlobString(image,buffer);
             }
           name=GetNextImageProfile(image);
@@ -1272,13 +1272,13 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       value=GetImageProperty(image,property);
       if (value != (const char *) NULL)
         {
-          for (i=0; i < (long) strlen(value); i++)
+          for (i=0; i < (ssize_t) strlen(value); i++)
             if (isspace((int) ((unsigned char) value[i])) != 0)
               break;
-          if (i <= (long) strlen(value))
+          if (i <= (ssize_t) strlen(value))
             (void) WriteBlobByte(image,'{');
           (void) WriteBlob(image,strlen(value),(unsigned char *) value);
-          if (i <= (long) strlen(value))
+          if (i <= (ssize_t) strlen(value))
             (void) WriteBlobByte(image,'}');
         }
       (void) WriteBlobByte(image,'\n');
@@ -1337,7 +1337,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
           Write colormap to file.
         */
         q=colormap;
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < (ssize_t) image->colors; i++)
         {
           switch (depth)
           {
@@ -1345,7 +1345,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(CorruptImageError,"ImageDepthNotSupported");
             case 32:
             {
-              unsigned long
+              size_t
                 pixel;
 
               pixel=ScaleQuantumToLong(image->colormap[i].red);

@@ -150,9 +150,9 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #endif
 
 extern MagickExport MagickBooleanType
-  SetQuantumDepth(const Image *,QuantumInfo *,const unsigned long),
+  SetQuantumDepth(const Image *,QuantumInfo *,const size_t),
   SetQuantumFormat(const Image *,QuantumInfo *,const QuantumFormatType),
-  SetQuantumPad(const Image *,QuantumInfo *,const unsigned long);
+  SetQuantumPad(const Image *,QuantumInfo *,const size_t);
 
 extern MagickExport QuantumInfo
   *AcquireQuantumInfo(const ImageInfo *,Image *),
@@ -177,7 +177,7 @@ extern MagickExport void
   SetQuantumImageType(Image *,const QuantumType),
   SetQuantumMinIsWhite(QuantumInfo *,const MagickBooleanType),
   SetQuantumPack(QuantumInfo *,const MagickBooleanType),
-  SetQuantumQuantum(QuantumInfo *,const unsigned long),
+  SetQuantumQuantum(QuantumInfo *,const size_t),
   SetQuantumScale(QuantumInfo *,const double);
 
 #if defined(__cplusplus) || defined(c_plusplus)

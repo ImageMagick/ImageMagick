@@ -83,10 +83,10 @@ static MagickBooleanType
 %
 %  The format of the RegisterMATTEImage method is:
 %
-%      unsigned long RegisterMATTEImage(void)
+%      size_t RegisterMATTEImage(void)
 %
 */
-ModuleExport unsigned long RegisterMATTEImage(void)
+ModuleExport size_t RegisterMATTEImage(void)
 {
   MagickInfo
     *entry;
@@ -159,7 +159,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   Image
     *matte_image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -168,7 +168,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -186,13 +186,13 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
     Convert image to matte pixels.
   */
   exception=(&image->exception);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     q=QueueAuthenticPixels(matte_image,0,y,matte_image->columns,1,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->red=GetOpacityPixelComponent(p);
       q->green=GetOpacityPixelComponent(p);

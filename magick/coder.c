@@ -351,7 +351,7 @@ MagickExport const CoderInfo *GetCoderInfo(const char *name,
 %  The format of the GetCoderInfoList function is:
 %
 %      const CoderInfo **GetCoderInfoList(const char *pattern,
-%        unsigned long *number_coders,ExceptionInfo *exception)
+%        size_t *number_coders,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -377,7 +377,7 @@ static int CoderInfoCompare(const void *x,const void *y)
 }
 
 MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
-  unsigned long *number_coders,ExceptionInfo *exception)
+  size_t *number_coders,ExceptionInfo *exception)
 {
   const CoderInfo
     **coder_map;
@@ -385,7 +385,7 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
   register const CoderInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -393,7 +393,7 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_coders != (unsigned long *) NULL);
+  assert(number_coders != (size_t *) NULL);
   *number_coders=0;
   p=GetCoderInfo("*",exception);
   if (p == (const CoderInfo *) NULL)
@@ -418,7 +418,7 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
   UnlockSemaphoreInfo(coder_semaphore);
   qsort((void *) coder_map,(size_t) i,sizeof(*coder_map),CoderInfoCompare);
   coder_map[i]=(CoderInfo *) NULL;
-  *number_coders=(unsigned long) i;
+  *number_coders=(size_t) i;
   return(coder_map);
 }
 
@@ -437,7 +437,7 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
 %
 %  The format of the GetCoderList function is:
 %
-%      char **GetCoderList(const char *pattern,unsigned long *number_coders,
+%      char **GetCoderList(const char *pattern,size_t *number_coders,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -462,7 +462,7 @@ static int CoderCompare(const void *x,const void *y)
 }
 
 MagickExport char **GetCoderList(const char *pattern,
-  unsigned long *number_coders,ExceptionInfo *exception)
+  size_t *number_coders,ExceptionInfo *exception)
 {
   char
     **coder_map;
@@ -470,7 +470,7 @@ MagickExport char **GetCoderList(const char *pattern,
   register const CoderInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -478,7 +478,7 @@ MagickExport char **GetCoderList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_coders != (unsigned long *) NULL);
+  assert(number_coders != (size_t *) NULL);
   *number_coders=0;
   p=GetCoderInfo("*",exception);
   if (p == (const CoderInfo *) NULL)
@@ -503,7 +503,7 @@ MagickExport char **GetCoderList(const char *pattern,
   UnlockSemaphoreInfo(coder_semaphore);
   qsort((void *) coder_map,(size_t) i,sizeof(*coder_map),CoderCompare);
   coder_map[i]=(char *) NULL;
-  *number_coders=(unsigned long) i;
+  *number_coders=(size_t) i;
   return(coder_map);
 }
 
@@ -581,13 +581,13 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
   const CoderInfo
     **coder_info;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_coders;
 
   if (file == (const FILE *) NULL)
@@ -596,7 +596,7 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
   if (coder_info == (const CoderInfo **) NULL)
     return(MagickFalse);
   path=(const char *) NULL;
-  for (i=0; i < (long) number_coders; i++)
+  for (i=0; i < (ssize_t) number_coders; i++)
   {
     if (coder_info[i]->stealth != MagickFalse)
       continue;
@@ -611,7 +611,7 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
       }
     path=coder_info[i]->path;
     (void) fprintf(file,"%s",coder_info[i]->magick);
-    for (j=(long) strlen(coder_info[i]->magick); j <= 11; j++)
+    for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 11; j++)
       (void) fprintf(file," ");
     if (coder_info[i]->name != (char *) NULL)
       (void) fprintf(file,"%s",coder_info[i]->name);
@@ -639,7 +639,7 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
 %  The format of the LoadCoderList coder is:
 %
 %      MagickBooleanType LoadCoderList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -672,7 +672,7 @@ static void *DestroyCoderNode(void *coder_info)
 }
 
 static MagickBooleanType LoadCoderList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -886,7 +886,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -904,7 +904,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
           return(MagickFalse);
         }
     }
-  for (i=0; i < (long) (sizeof(CoderMap)/sizeof(*CoderMap)); i++)
+  for (i=0; i < (ssize_t) (sizeof(CoderMap)/sizeof(*CoderMap)); i++)
   {
     CoderInfo
       *coder_info;

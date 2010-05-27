@@ -26,8 +26,8 @@ typedef struct _ThresholdMap
   ThresholdMap;
 
 extern MagickExport Image
-  *AdaptiveThresholdImage(const Image *,const unsigned long,const unsigned long,
-    const long,ExceptionInfo *);
+  *AdaptiveThresholdImage(const Image *,const size_t,const size_t,
+    const ssize_t,ExceptionInfo *);
 
 extern MagickExport ThresholdMap
   *DestroyThresholdMap(ThresholdMap *),

@@ -162,7 +162,7 @@ static html_code html_codes[] = {
 
 static int stringnicmp(const char *p,const char *q,size_t n)
 {
-  register long
+  register ssize_t
     i,
     j;
 
@@ -288,7 +288,7 @@ static char *super_fgets(char **b, int *blen, Image *file)
 #define IPTC_ID 1028
 #define THUMBNAIL_ID 1033
 
-static long parse8BIM(Image *ifile, Image *ofile)
+static ssize_t parse8BIM(Image *ifile, Image *ofile)
 {
   char
     brkused,
@@ -311,7 +311,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
   int
     inputlen = BUFFER_SZ;
 
-  long
+  ssize_t
     savedolen = 0L,
     outputlen = 0L;
 
@@ -380,7 +380,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
             int
               next;
 
-            long
+            ssize_t
               len;
 
             char
@@ -388,7 +388,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
               quoted;
 
             next=0;
-            len = (long) strlen(token);
+            len = (ssize_t) strlen(token);
             while (Tokenizer(token_info,0,newstr,(size_t) inputlen,token,"","&",
               "",0,&brkused,&next,&quoted)==0)
             {
@@ -397,7 +397,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   char
                     *s = &token[next-1];
 
-                  len -= (long) convertHTMLcodes(s,(int) strlen(s));
+                  len -= (ssize_t) convertHTMLcodes(s,(int) strlen(s));
                 }
             }
 
@@ -414,12 +414,12 @@ static long parse8BIM(Image *ifile, Image *ofile)
                     MagickOffsetType
                       offset;
 
-                    long diff = outputlen - savedolen;
+                    ssize_t diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
-                    (void) WriteBlobMSBLong(ofile,(unsigned long) diff);
+                    (void) WriteBlobMSBLong(ofile,(size_t) diff);
                     offset=SeekBlob(ofile,currentpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
@@ -447,7 +447,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   }
                 if (recnum != IPTC_ID)
                   {
-                    (void) WriteBlobMSBLong(ofile, (unsigned long) len);
+                    (void) WriteBlobMSBLong(ofile, (size_t) len);
                     outputlen += 4;
 
                     next=0;
@@ -500,13 +500,13 @@ static long parse8BIM(Image *ifile, Image *ofile)
       MagickOffsetType
         offset;
 
-      long diff = outputlen - savedolen;
+      ssize_t diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
       offset=SeekBlob(ofile,savedpos,SEEK_SET);
       if (offset < 0)
         return(-1);
-      (void) WriteBlobMSBLong(ofile,(unsigned long) diff);
+      (void) WriteBlobMSBLong(ofile,(size_t) diff);
       offset=SeekBlob(ofile,currentpos,SEEK_SET);
       if (offset < 0)
         return(-1);
@@ -564,7 +564,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
   return((char *) p);
 }
 
-static long parse8BIMW(Image *ifile, Image *ofile)
+static ssize_t parse8BIMW(Image *ifile, Image *ofile)
 {
   char
     brkused,
@@ -587,7 +587,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
   int
     inputlen = BUFFER_SZ;
 
-  long
+  ssize_t
     savedolen = 0L,
     outputlen = 0L;
 
@@ -656,7 +656,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
             int
               next;
 
-            long
+            ssize_t
               len;
 
             char
@@ -664,7 +664,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
               quoted;
 
             next=0;
-            len = (long) strlen(token);
+            len = (ssize_t) strlen(token);
             while (Tokenizer(token_info,0,newstr,(size_t) inputlen,token,"","&",
               "",0,&brkused,&next,&quoted)==0)
             {
@@ -673,7 +673,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   char
                     *s = &token[next-1];
 
-                  len -= (long) convertHTMLcodes(s,(int) strlen(s));
+                  len -= (ssize_t) convertHTMLcodes(s,(int) strlen(s));
                 }
             }
 
@@ -690,12 +690,12 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                     MagickOffsetType
                       offset;
 
-                    long diff = outputlen - savedolen;
+                    ssize_t diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
-                    (void) WriteBlobMSBLong(ofile,(unsigned long) diff);
+                    (void) WriteBlobMSBLong(ofile,(size_t) diff);
                     offset=SeekBlob(ofile,currentpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
@@ -723,7 +723,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   }
                 if (recnum != IPTC_ID)
                   {
-                    (void) WriteBlobMSBLong(ofile,(unsigned long) len);
+                    (void) WriteBlobMSBLong(ofile,(size_t) len);
                     outputlen += 4;
 
                     next=0;
@@ -775,13 +775,13 @@ static long parse8BIMW(Image *ifile, Image *ofile)
       MagickOffsetType
         offset;
 
-      long diff = outputlen - savedolen;
+      ssize_t diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
       offset=SeekBlob(ofile,savedpos,SEEK_SET);
       if (offset < 0)
         return(-1);
-      (void) WriteBlobMSBLong(ofile,(unsigned long) diff);
+      (void) WriteBlobMSBLong(ofile,(size_t) diff);
       offset=SeekBlob(ofile,currentpos,SEEK_SET);
       if (offset < 0)
         return(-1);
@@ -1222,7 +1222,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             (void) WriteBlobByte(buff,c);
           }
 #else
-          long
+          ssize_t
             i;
 
           unsigned char
@@ -1240,13 +1240,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               while ((length=ReadBlob(image,MagickMaxBufferExtent,buffer)) != 0)
               {
                 count=0;
-                for (i=0; i < (long) length; i+=count)
+                for (i=0; i < (ssize_t) length; i+=count)
                 {
                   count=WriteBlob(buff,(size_t) (length-i),buffer+i);
                   if (count <= 0)
                     break;
                 }
-                if (i < (long) length)
+                if (i < (ssize_t) length)
                   break;
               }
               buffer=(unsigned char *) RelinquishMagickMemory(buffer);
@@ -1394,10 +1394,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterMETAImage method is:
 %
-%      unsigned long RegisterMETAImage(void)
+%      size_t RegisterMETAImage(void)
 %
 */
-ModuleExport unsigned long RegisterMETAImage(void)
+ModuleExport size_t RegisterMETAImage(void)
 {
   MagickInfo
     *entry;
@@ -1593,7 +1593,7 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
   int
     c;
 
-  register long
+  register ssize_t
     i;
 
   register unsigned char
@@ -1609,7 +1609,7 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
   unsigned int
     marker;
 
-  unsigned long
+  size_t
     tag_length;
 
   p=(*info);
@@ -1637,8 +1637,8 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
     extent-=c;
     if (extent < 4)
       break;
-    tag_length=(((unsigned long) *p) << 24) | (((unsigned long) *(p+1)) << 16) |
-      (((unsigned long) *(p+2)) << 8) | ((unsigned long) *(p+3));
+    tag_length=(((size_t) *p) << 24) | (((size_t) *(p+1)) << 16) |
+      (((size_t) *(p+2)) << 8) | ((size_t) *(p+3));
     p+=4;
     extent-=4;
     if (tag_length > extent)
@@ -1709,7 +1709,7 @@ iptc_find:
       goto iptc_find;
     info_length++;
     /*
-      Decode the length of the block that follows - long or short format.
+      Decode the length of the block that follows - ssize_t or short format.
     */
     c=(*p++);
     length--;
@@ -1726,13 +1726,13 @@ iptc_find:
             break;
           info_length++;
         }
-        tag_length=(((unsigned long) buffer[0]) << 24) |
-          (((unsigned long) buffer[1]) << 16) |
-          (((unsigned long) buffer[2]) << 8) | (((unsigned long) buffer[3])); 
+        tag_length=(((size_t) buffer[0]) << 24) |
+          (((size_t) buffer[1]) << 16) |
+          (((size_t) buffer[2]) << 8) | (((size_t) buffer[3])); 
       }
     else
       {
-        tag_length=(unsigned long) (c << 8);
+        tag_length=(size_t) (c << 8);
         c=(*p++);
         length--;
         if (length == 0)
@@ -1878,7 +1878,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     *readable,
     *str;
 
-  long
+  ssize_t
     tagindx,
     taglen;
 
@@ -1923,7 +1923,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     else
       readable = (unsigned char *) "";
     /*
-      We decode the length of the block that follows - long or short fmt.
+      We decode the length of the block that follows - ssize_t or short fmt.
     */
     c=ReadBlobByte(ifile);
     if (c == EOF) return -1;
@@ -1973,7 +1973,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
   return((int) tagsfound);
 }
 
-static int readWordFromBuffer(char **s, long *len)
+static int readWordFromBuffer(char **s, ssize_t *len)
 {
   unsigned char
     buffer[2];
@@ -1992,7 +1992,7 @@ static int readWordFromBuffer(char **s, long *len)
          (((int) buffer[ 1 ]));
 }
 
-static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
+static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
 {
   char
     temp[MaxTextExtent];
@@ -2009,7 +2009,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     *readable,
     *str;
 
-  long
+  ssize_t
     tagindx,
     taglen;
 
@@ -2053,7 +2053,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     else
       readable=(unsigned char *) "";
     /*
-      We decode the length of the block that follows - long or short fmt.
+      We decode the length of the block that follows - ssize_t or short fmt.
     */
     c=(*s++);
     len--;
@@ -2196,7 +2196,7 @@ static int format8BIM(Image *ifile, Image *ofile)
         printf("MemoryAllocationFailed");
         return 0;
       }
-    for (i=0; i < (long) count; i++)
+    for (i=0; i < (ssize_t) count; i++)
     {
       c=ReadBlobByte(ifile);
       if (c == EOF)
@@ -2221,10 +2221,10 @@ static int format8BIM(Image *ifile, Image *ofile)
         if (ID == IPTC_ID)
           {
             formatString(ofile, "IPTC", 4);
-            formatIPTCfromBuffer(ofile, (char *)str, (long) count);
+            formatIPTCfromBuffer(ofile, (char *)str, (ssize_t) count);
           }
         else
-          formatString(ofile, (char *)str, (long) count);
+          formatString(ofile, (char *)str, (ssize_t) count);
       }
     str=(unsigned char *) RelinquishMagickMemory(str);
     PString=(unsigned char *) RelinquishMagickMemory(PString);

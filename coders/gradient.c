@@ -157,10 +157,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterGRADIENTImage method is:
 %
-%      unsigned long RegisterGRADIENTImage(void)
+%      size_t RegisterGRADIENTImage(void)
 %
 */
-ModuleExport unsigned long RegisterGRADIENTImage(void)
+ModuleExport size_t RegisterGRADIENTImage(void)
 {
   MagickInfo
     *entry;

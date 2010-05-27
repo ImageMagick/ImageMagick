@@ -150,10 +150,10 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterTILEImage method is:
 %
-%      unsigned long RegisterTILEImage(void)
+%      size_t RegisterTILEImage(void)
 %
 */
-ModuleExport unsigned long RegisterTILEImage(void)
+ModuleExport size_t RegisterTILEImage(void)
 {
   MagickInfo
     *entry;

@@ -359,14 +359,14 @@ WandExport ExceptionType MagickGetExceptionType(const MagickWand *wand)
 %
 %  The format of the MagickGetIteratorIndex method is:
 %
-%      long MagickGetIteratorIndex(MagickWand *wand)
+%      ssize_t MagickGetIteratorIndex(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport long MagickGetIteratorIndex(MagickWand *wand)
+WandExport ssize_t MagickGetIteratorIndex(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -415,7 +415,7 @@ WandExport char *MagickQueryConfigureOption(const char *option)
   ExceptionInfo
     *exception;
 
-  unsigned long
+  size_t
     number_options;
 
   exception=AcquireExceptionInfo();
@@ -447,7 +447,7 @@ WandExport char *MagickQueryConfigureOption(const char *option)
 %  The format of the MagickQueryConfigureOptions function is:
 %
 %      char **MagickQueryConfigureOptions(const char *pattern,
-%        unsigned long *number_options)
+%        size_t *number_options)
 %
 %  A description of each parameter follows:
 %
@@ -458,7 +458,7 @@ WandExport char *MagickQueryConfigureOption(const char *option)
 %
 */
 WandExport char **MagickQueryConfigureOptions(const char *pattern,
-  unsigned long *number_options)
+  size_t *number_options)
 {
   char
     **options;
@@ -701,7 +701,7 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
 %
 %  The format of the MagickQueryFonts function is:
 %
-%      char **MagickQueryFonts(const char *pattern,unsigned long *number_fonts)
+%      char **MagickQueryFonts(const char *pattern,size_t *number_fonts)
 %
 %  A description of each parameter follows:
 %
@@ -712,7 +712,7 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
 %
 */
 WandExport char **MagickQueryFonts(const char *pattern,
-  unsigned long *number_fonts)
+  size_t *number_fonts)
 {
   char
     **fonts;
@@ -743,7 +743,7 @@ WandExport char **MagickQueryFonts(const char *pattern,
 %  The format of the MagickQueryFonts function is:
 %
 %      char **MagickQueryFonts(const char *pattern,
-%        unsigned long *number_formats)
+%        size_t *number_formats)
 %
 %  A description of each parameter follows:
 %
@@ -754,7 +754,7 @@ WandExport char **MagickQueryFonts(const char *pattern,
 %
 */
 WandExport char **MagickQueryFormats(const char *pattern,
-  unsigned long *number_formats)
+  size_t *number_formats)
 {
   char
     **formats;
@@ -882,7 +882,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %  The format of the MagickSetIteratorIndex method is:
 %
 %      MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
-%        const long index)
+%        const ssize_t index)
 %
 %  A description of each parameter follows:
 %
@@ -892,7 +892,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %
 */
 WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
-  const long index)
+  const ssize_t index)
 {
   Image
     *image;
@@ -1021,7 +1021,7 @@ WandExport MagickWand *NewMagickWand(void)
   MagickWand
     *wand;
 
-  unsigned long
+  size_t
     depth;
 
   depth=MAGICKCORE_QUANTUM_DEPTH;

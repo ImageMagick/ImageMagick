@@ -61,7 +61,7 @@
 %
 %  The format of the analyzeImage method is:
 %
-%      unsigned long analyzeImage(Image *images,const int argc,
+%      size_t analyzeImage(Image *images,const int argc,
 %        char **argv,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -77,7 +77,7 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-ModuleExport unsigned long analyzeImage(Image **images,const int argc,
+ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
   char
@@ -119,7 +119,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     CacheView
       *image_view;
 
-    long
+    ssize_t
       y;
 
     MagickBooleanType
@@ -147,12 +147,12 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const PixelPacket
         *p;
 
-      register long
+      register ssize_t
         x;
 
       if (status == MagickFalse)
@@ -163,7 +163,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
           status=MagickFalse;
           continue;
         }
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         ConvertRGBToHSB(p->red,p->green,p->blue,&hue,&saturation,&brightness);
         brightness*=QuantumRange;

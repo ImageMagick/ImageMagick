@@ -144,13 +144,13 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       key;
   } PCDTable;
 
-  long
+  ssize_t
     quantum;
 
   PCDTable
     *pcd_table[3];
 
-  register long
+  register ssize_t
     i,
     j;
 
@@ -170,7 +170,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   unsigned char
     *buffer;
 
-  unsigned long
+  size_t
     bits,
     plane,
     pcd_length[3],
@@ -207,7 +207,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
           image->filename);
       }
     r=pcd_table[i];
-    for (j=0; j < (long) length; j++)
+    for (j=0; j < (ssize_t) length; j++)
     {
       PCDGetBits(8);
       r->length=(unsigned int) (sum & 0xff)+1;
@@ -223,7 +223,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       r->mask=(~((1U << (32-r->length))-1));
       r++;
     }
-    pcd_length[i]=(unsigned long) length;
+    pcd_length[i]=(size_t) length;
   }
   /*
     Search for Sync byte.
@@ -293,7 +293,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       Decode luminance or chrominance deltas.
     */
     r=pcd_table[plane];
-    for (i=0; ((i < (long) length) && ((sum & r->mask) != r->sequence)); i++)
+    for (i=0; ((i < (ssize_t) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
     if ((row > image->rows) || (r == (PCDTable *) NULL))
       {
@@ -306,9 +306,9 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
         continue;
       }
     if (r->key < 128)
-      quantum=(long) (*q)+r->key;
+      quantum=(ssize_t) (*q)+r->key;
     else
-      quantum=(long) (*q)+r->key-256;
+      quantum=(ssize_t) (*q)+r->key-256;
     *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255 : quantum);
     q++;
     PCDGetBits(r->length);
@@ -423,10 +423,10 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   return(montage_image);
 }
 
-static void Upsample(const unsigned long width,const unsigned long height,
-  const unsigned long scaled_width,unsigned char *pixels)
+static void Upsample(const size_t width,const size_t height,
+  const size_t scaled_width,unsigned char *pixels)
 {
-  register long
+  register ssize_t
     x,
     y;
 
@@ -439,39 +439,39 @@ static void Upsample(const unsigned long width,const unsigned long height,
     Create a new image that is a integral size greater than an existing one.
   */
   assert(pixels != (unsigned char *) NULL);
-  for (y=0; y < (long) height; y++)
+  for (y=0; y < (ssize_t) height; y++)
   {
     p=pixels+(height-1-y)*scaled_width+(width-1);
     q=pixels+((height-1-y) << 1)*scaled_width+((width-1) << 1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < (long) width; x++)
+    for (x=1; x < (ssize_t) width; x++)
     {
       p--;
       q-=2;
       *q=(*p);
-      *(q+1)=(unsigned char) ((((unsigned long) *p)+
-        ((unsigned long) *(p+1))+1) >> 1);
+      *(q+1)=(unsigned char) ((((size_t) *p)+
+        ((size_t) *(p+1))+1) >> 1);
     }
   }
-  for (y=0; y < (long) (height-1); y++)
+  for (y=0; y < (ssize_t) (height-1); y++)
   {
-    p=pixels+((unsigned long) y << 1)*scaled_width;
+    p=pixels+((size_t) y << 1)*scaled_width;
     q=p+scaled_width;
     r=q+scaled_width;
-    for (x=0; x < (long) (width-1); x++)
+    for (x=0; x < (ssize_t) (width-1); x++)
     {
-      *q=(unsigned char) ((((unsigned long) *p)+((unsigned long) *r)+1) >> 1);
-      *(q+1)=(unsigned char) ((((unsigned long) *p)+((unsigned long) *(p+2))+
-        ((unsigned long) *r)+((unsigned long) *(r+2))+2) >> 2);
+      *q=(unsigned char) ((((size_t) *p)+((size_t) *r)+1) >> 1);
+      *(q+1)=(unsigned char) ((((size_t) *p)+((size_t) *(p+2))+
+        ((size_t) *r)+((size_t) *(r+2))+2) >> 2);
       q+=2;
       p+=2;
       r+=2;
     }
-    *q++=(unsigned char) ((((unsigned long) *p++)+
-      ((unsigned long) *r++)+1) >> 1);
-    *q++=(unsigned char) ((((unsigned long) *p++)+
-      ((unsigned long) *r++)+1) >> 1);
+    *q++=(unsigned char) ((((size_t) *p++)+
+      ((size_t) *r++)+1) >> 1);
+    *q++=(unsigned char) ((((size_t) *p++)+
+      ((size_t) *r++)+1) >> 1);
   }
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;
@@ -483,7 +483,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     x;
 
   MagickBooleanType
@@ -495,7 +495,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
-  register long
+  register ssize_t
     i,
     y;
 
@@ -519,7 +519,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     overview;
 
-  unsigned long
+  size_t
     height,
     number_images,
     rotate,
@@ -575,7 +575,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   if (image_info->number_scenes != 0)
-    scene=(unsigned long) MagickMin(image_info->scene,6);
+    scene=(size_t) MagickMin(image_info->scene,6);
   if (overview)
     scene=1;
   /*
@@ -583,7 +583,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   width=192;
   height=128;
-  for (i=1; i < (long) MagickMin(scene,3); i++)
+  for (i=1; i < (ssize_t) MagickMin(scene,3); i++)
   {
     width<<=1;
     height<<=1;
@@ -591,7 +591,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=width;
   image->rows=height;
   image->depth=8;
-  for ( ; i < (long) scene; i++)
+  for ( ; i < (ssize_t) scene; i++)
   {
     image->columns<<=1;
     image->rows<<=1;
@@ -623,7 +623,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     else
       if (scene <= 1)
         offset=1;
-  for (i=0; i < (long) (offset*0x800); i++)
+  for (i=0; i < (ssize_t) (offset*0x800); i++)
     (void) ReadBlobByte(image);
   if (overview)
     {
@@ -633,13 +633,13 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickProgressMonitor
         progress_monitor;
 
-      register long
+      register ssize_t
         j;
 
       /*
         Read thumbnails from overview image.
       */
-      for (j=1; j <= (long) number_images; j++)
+      for (j=1; j <= (ssize_t) number_images; j++)
       {
         progress_monitor=SetImageProgressMonitor(image,
           (MagickProgressMonitor) NULL,image->client_data);
@@ -647,14 +647,14 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "images/img%04ld.pcd",j);
         (void) FormatMagickString(image->magick_filename,MaxTextExtent,
           "images/img%04ld.pcd",j);
-        image->scene=(unsigned long) j;
+        image->scene=(size_t) j;
         image->columns=width;
         image->rows=height;
         image->depth=8;
         yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (y=0; y < (long) height; y+=2)
+        for (y=0; y < (ssize_t) height; y+=2)
         {
           count=ReadBlob(image,width,yy);
           yy+=image->columns;
@@ -673,12 +673,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             q->red=ScaleCharToQuantum(*yy++);
             q->green=ScaleCharToQuantum(*c1++);
@@ -691,7 +691,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colorspace=YCCColorspace;
         if (LocaleCompare(image_info->magick,"PCDS") == 0)
           image->colorspace=sRGBColorspace;
-        if (j < (long) number_images)
+        if (j < (ssize_t) number_images)
           {
             /*
               Allocate next image structure.
@@ -726,7 +726,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   yy=luma;
   c1=chroma1;
   c2=chroma2;
-  for (y=0; y < (long) height; y+=2)
+  for (y=0; y < (ssize_t) height; y+=2)
   {
     count=ReadBlob(image,width,yy);
     yy+=image->columns;
@@ -781,12 +781,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   yy=luma;
   c1=chroma1;
   c2=chroma2;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->red=ScaleCharToQuantum(*yy++);
       q->green=ScaleCharToQuantum(*c1++);
@@ -867,10 +867,10 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterPCDImage method is:
 %
-%      unsigned long RegisterPCDImage(void)
+%      size_t RegisterPCDImage(void)
 %
 */
-ModuleExport unsigned long RegisterPCDImage(void)
+ModuleExport size_t RegisterPCDImage(void)
 {
   MagickInfo
     *entry;
@@ -953,7 +953,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     *downsample_image,
     *tile_image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -969,7 +969,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     *p,
     *q;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -988,8 +988,8 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   if (tile_image == (Image *) NULL)
     return(MagickFalse);
   flags=ParseGeometry(page_geometry,&geometry_info);
-  geometry.width=(unsigned long) geometry_info.rho;
-  geometry.height=(unsigned long) geometry_info.sigma;
+  geometry.width=(size_t) geometry_info.rho;
+  geometry.height=(size_t) geometry_info.sigma;
   if ((flags & SigmaValue) == 0)
     geometry.height=geometry.width;
   if ((tile_image->columns != geometry.width) ||
@@ -1022,13 +1022,13 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   /*
     Write tile to PCD file.
   */
-  for (y=0; y < (long) tile_image->rows; y+=2)
+  for (y=0; y < (ssize_t) tile_image->rows; y+=2)
   {
     p=GetVirtualPixels(tile_image,0,y,tile_image->columns,2,
       &tile_image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) (tile_image->columns << 1); x++)
+    for (x=0; x < (ssize_t) (tile_image->columns << 1); x++)
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
       p++;
@@ -1037,7 +1037,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       1,&downsample_image->exception);
     if (q == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) downsample_image->columns; x++)
+    for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(q->green));
       q++;
@@ -1046,7 +1046,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       1,&downsample_image->exception);
     if (q == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) downsample_image->columns; x++)
+    for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(q->blue));
       q++;
@@ -1070,7 +1070,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   assert(image_info != (const ImageInfo *) NULL);

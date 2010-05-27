@@ -63,7 +63,7 @@
 */
 struct _PixelIterator
 {
-  unsigned long
+  size_t
     id;
 
   char
@@ -81,7 +81,7 @@ struct _PixelIterator
   MagickBooleanType
     active;
 
-  long
+  ssize_t
     y;
 
   PixelWand
@@ -90,7 +90,7 @@ struct _PixelIterator
   MagickBooleanType
     debug;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -295,7 +295,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   PixelIterator
     *iterator;
 
-  unsigned long
+  size_t
     depth;
 
   CacheView
@@ -385,8 +385,8 @@ WandExport MagickBooleanType PixelClearIteratorException(
 %
 %  The format of the NewPixelRegionIterator method is:
 %
-%      PixelIterator NewPixelRegionIterator(MagickWand *wand,const long x,
-%        const long y,const unsigned long width,const unsigned long height)
+%      PixelIterator NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+%        const ssize_t y,const size_t width,const size_t height)
 %
 %  A description of each parameter follows:
 %
@@ -396,8 +396,8 @@ WandExport MagickBooleanType PixelClearIteratorException(
 %      pixels.
 %
 */
-WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const long x,
-  const long y,const unsigned long width,const unsigned long height)
+WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+  const ssize_t y,const size_t width,const size_t height)
 {
   const char
     *quantum;
@@ -408,7 +408,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const long x,
   PixelIterator
     *iterator;
 
-  unsigned long
+  size_t
     depth;
 
   CacheView
@@ -468,7 +468,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const long x,
 %  The format of the PixelGetCurrentIteratorRow method is:
 %
 %      PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
-%        unsigned long *number_wands)
+%        size_t *number_wands)
 %
 %  A description of each parameter follows:
 %
@@ -478,7 +478,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const long x,
 %
 */
 WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
-  unsigned long *number_wands)
+  size_t *number_wands)
 {
   register const IndexPacket
     *indexes;
@@ -486,7 +486,7 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
   register const PixelPacket
     *pixels;
 
-  register long
+  register ssize_t
     x;
 
   assert(iterator != (PixelIterator *) NULL);
@@ -505,13 +505,13 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
       return((PixelWand **) NULL);
     }
   indexes=GetCacheViewVirtualIndexQueue(iterator->view);
-  for (x=0; x < (long) iterator->region.width; x++)
+  for (x=0; x < (ssize_t) iterator->region.width; x++)
     PixelSetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
       PixelSetBlackQuantum(iterator->pixel_wands[x],indexes[x]);
   if (GetCacheViewStorageClass(iterator->view) == PseudoClass)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
       PixelSetIndex(iterator->pixel_wands[x],indexes[x]);
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -630,7 +630,7 @@ WandExport ExceptionType PixelGetIteratorExceptionType(
 %    o iterator: the pixel iterator.
 %
 */
-WandExport long PixelGetIteratorRow(PixelIterator *iterator)
+WandExport ssize_t PixelGetIteratorRow(PixelIterator *iterator)
 {
   assert(iterator != (const PixelIterator *) NULL);
   assert(iterator->signature == WandSignature);
@@ -656,7 +656,7 @@ WandExport long PixelGetIteratorRow(PixelIterator *iterator)
 %  The format of the PixelGetNextIteratorRow method is:
 %
 %      PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
-%        unsigned long *number_wands)
+%        size_t *number_wands)
 %
 %  A description of each parameter follows:
 %
@@ -666,7 +666,7 @@ WandExport long PixelGetIteratorRow(PixelIterator *iterator)
 %
 */
 WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
-  unsigned long *number_wands)
+  size_t *number_wands)
 {
   register const IndexPacket
     *indexes;
@@ -674,7 +674,7 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
   register const PixelPacket
     *pixels;
 
-  register long
+  register ssize_t
     x;
 
   assert(iterator != (PixelIterator *) NULL);
@@ -696,13 +696,13 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
       return((PixelWand **) NULL);
     }
   indexes=GetCacheViewVirtualIndexQueue(iterator->view);
-  for (x=0; x < (long) iterator->region.width; x++)
+  for (x=0; x < (ssize_t) iterator->region.width; x++)
     PixelSetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
       PixelSetBlackQuantum(iterator->pixel_wands[x],indexes[x]);
   if (GetCacheViewStorageClass(iterator->view) == PseudoClass)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
         PixelSetIndex(iterator->pixel_wands[x],indexes[x]);
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -725,7 +725,7 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
 %  The format of the PixelGetPreviousIteratorRow method is:
 %
 %      PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
-%        unsigned long *number_wands)
+%        size_t *number_wands)
 %
 %  A description of each parameter follows:
 %
@@ -737,14 +737,14 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
 
 WandExport PixelWand **PixelGetPreviousRow(PixelIterator *iterator)
 {
-  unsigned long
+  size_t
     number_wands;
 
   return(PixelGetPreviousIteratorRow(iterator,&number_wands));
 }
 
 WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
-  unsigned long *number_wands)
+  size_t *number_wands)
 {
   register const IndexPacket
     *indexes;
@@ -752,7 +752,7 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
   register const PixelPacket
     *pixels;
 
-  register long
+  register ssize_t
     x;
 
   assert(iterator != (PixelIterator *) NULL);
@@ -774,13 +774,13 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
       return((PixelWand **) NULL);
     }
   indexes=GetCacheViewVirtualIndexQueue(iterator->view);
-  for (x=0; x < (long) iterator->region.width; x++)
+  for (x=0; x < (ssize_t) iterator->region.width; x++)
     PixelSetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
       PixelSetBlackQuantum(iterator->pixel_wands[x],indexes[x]);
   if (GetCacheViewStorageClass(iterator->view) == PseudoClass)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
       PixelSetIndex(iterator->pixel_wands[x],indexes[x]);
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -868,7 +868,7 @@ WandExport void PixelSetFirstIteratorRow(PixelIterator *iterator)
 %  The format of the PixelSetIteratorRow method is:
 %
 %      MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
-%        const long row)
+%        const ssize_t row)
 %
 %  A description of each parameter follows:
 %
@@ -876,13 +876,13 @@ WandExport void PixelSetFirstIteratorRow(PixelIterator *iterator)
 %
 */
 WandExport MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
-  const long row)
+  const ssize_t row)
 {
   assert(iterator != (const PixelIterator *) NULL);
   assert(iterator->signature == WandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  if ((row < 0) || (row >= (long) iterator->region.height))
+  if ((row < 0) || (row >= (ssize_t) iterator->region.height))
     return(MagickFalse);
   iterator->active=MagickTrue;
   iterator->y=row;
@@ -918,7 +918,7 @@ WandExport void PixelSetLastIteratorRow(PixelIterator *iterator)
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   iterator->active=MagickFalse;
-  iterator->y=(long) iterator->region.height-1;
+  iterator->y=(ssize_t) iterator->region.height-1;
 }
 
 /*
@@ -951,7 +951,7 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
   register IndexPacket
     *restrict indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -973,10 +973,10 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
       return(MagickFalse);
     }
   indexes=GetCacheViewAuthenticIndexQueue(iterator->view);
-  for (x=0; x < (long) iterator->region.width; x++)
+  for (x=0; x < (ssize_t) iterator->region.width; x++)
     PixelGetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
-    for (x=0; x < (long) iterator->region.width; x++)
+    for (x=0; x < (ssize_t) iterator->region.width; x++)
       indexes[x]=PixelGetBlackQuantum(iterator->pixel_wands[x]);
   if (SyncCacheViewAuthenticPixels(iterator->view,exception) == MagickFalse)
     {

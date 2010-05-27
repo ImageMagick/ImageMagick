@@ -148,7 +148,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
     c&=0xff;
     if (isxdigit(c) != MagickFalse)
       {
-        value=(int) ((unsigned long) value << 4)+hex_digits[c];
+        value=(int) ((size_t) value << 4)+hex_digits[c];
         flag++;
         continue;
       }
@@ -167,7 +167,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -176,7 +176,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -195,7 +195,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *data;
 
-  unsigned long
+  size_t
     bit,
     byte,
     bytes_per_line,
@@ -328,24 +328,24 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   p=data;
   if (version == 10)
-    for (i=0; i < (long) (bytes_per_line*image->rows); (i+=2))
+    for (i=0; i < (ssize_t) (bytes_per_line*image->rows); (i+=2))
     {
-      value=(unsigned long) XBMInteger(image,hex_digits);
+      value=(size_t) XBMInteger(image,hex_digits);
       *p++=(unsigned char) value;
       if ((padding == 0) || (((i+2) % bytes_per_line) != 0))
         *p++=(unsigned char) (value >> 8);
     }
   else
-    for (i=0; i < (long) (bytes_per_line*image->rows); i++)
+    for (i=0; i < (ssize_t) (bytes_per_line*image->rows); i++)
     {
-      value=(unsigned long) XBMInteger(image,hex_digits);
+      value=(size_t) XBMInteger(image,hex_digits);
       *p++=(unsigned char) value;
     }
   /*
     Convert X bitmap image to pixel packets.
   */
   p=data;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -353,10 +353,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
-        byte=(unsigned long) (*p++);
+        byte=(size_t) (*p++);
       indexes[x]=(IndexPacket) ((byte & 0x01) != 0 ? 0x01 : 0x00);
       bit++;
       byte>>=1;
@@ -395,10 +395,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterXBMImage method is:
 %
-%      unsigned long RegisterXBMImage(void)
+%      size_t RegisterXBMImage(void)
 %
 */
-ModuleExport unsigned long RegisterXBMImage(void)
+ModuleExport size_t RegisterXBMImage(void)
 {
   MagickInfo
     *entry;
@@ -470,7 +470,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
     basename[MaxTextExtent],
     buffer[MaxTextExtent];
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -479,13 +479,13 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   ssize_t
     count;
 
-  unsigned long
+  size_t
     bit,
     byte;
 
@@ -529,12 +529,12 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   y=0;
   (void) CopyMagickString(buffer," ",MaxTextExtent);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
       if (PixelIntensity(p) < ((MagickRealType) QuantumRange/2.0))

@@ -134,7 +134,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
-  register long
+  register ssize_t
     c;
 
   SegmentInfo
@@ -143,7 +143,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -248,8 +248,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set XPS render geometry.
     */
-    width=(unsigned long) floor(bounds.x2-bounds.x1+0.5);
-    height=(unsigned long) floor(bounds.y2-bounds.y1+0.5);
+    width=(size_t) floor(bounds.x2-bounds.x1+0.5);
+    height=(size_t) floor(bounds.y2-bounds.y1+0.5);
     if (width > page.width)
       page.width=width;
     if (height > page.height)
@@ -279,8 +279,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  page.width=(unsigned long) floor(page.width*image->y_resolution/delta.x+0.5);
-  page.height=(unsigned long) floor(page.height*image->y_resolution/delta.y+
+  page.width=(size_t) floor(page.width*image->y_resolution/delta.x+0.5);
+  page.height=(size_t) floor(page.height*image->y_resolution/delta.y+
     0.5);
   (void) FormatMagickString(options,MaxTextExtent,"-g%lux%lu ",
     page.width,page.height);
@@ -361,10 +361,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterXPSImage method is:
 %
-%      unsigned long RegisterXPSImage(void)
+%      size_t RegisterXPSImage(void)
 %
 */
-ModuleExport unsigned long RegisterXPSImage(void)
+ModuleExport size_t RegisterXPSImage(void)
 {
   MagickInfo
     *entry;
