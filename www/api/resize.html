@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -141,6 +141,9 @@
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
+<div  class="sponsor">
+   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+</div>
 </div>
 </div>
 
@@ -161,7 +164,7 @@ _8c.html" target="source" name="AdaptiveResizeImage">AdaptiveResizeImage</a></h2
 
 <pre class="code">
   Image *AdaptiveResizeImage(const Image *image,
-    const unsigned long columns,const unsigned long rows,
+    const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
 
@@ -264,7 +267,7 @@ _8c.html" target="source" name="LiquidRescaleImage">LiquidRescaleImage</a></h2>
 
 <pre class="code">
   Image *LiquidRescaleImage(const Image *image,
-    const unsigned long columns,const unsigned long rows,
+    const size_t columns,const size_t rows,
     const double delta_x,const double rigidity,ExceptionInfo *exception)
 </pre>
 
@@ -302,8 +305,8 @@ _8c.html" target="source" name="ResizeImage">ResizeImage</a></h2>
 <p>The format of the ResizeImage method is:</p>
 
 <pre class="code">
-  Image *ResizeImage(Image *image,const unsigned long columns,
-    const unsigned long rows,const FilterTypes filter,const double blur,
+  Image *ResizeImage(Image *image,const size_t columns,
+    const size_t rows,const FilterTypes filter,const double blur,
     ExceptionInfo *exception)
 </pre>
 
@@ -337,8 +340,8 @@ _8c.html" target="source" name="SampleImage">SampleImage</a></h2>
 <p>The format of the SampleImage method is:</p>
 
 <pre class="code">
-  Image *SampleImage(const Image *image,const unsigned long columns,
-    const unsigned long rows,ExceptionInfo *exception)
+  Image *SampleImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -365,8 +368,8 @@ _8c.html" target="source" name="ScaleImage">ScaleImage</a></h2>
 <p>The format of the ScaleImage method is:</p>
 
 <pre class="code">
-  Image *ScaleImage(const Image *image,const unsigned long columns,
-    const unsigned long rows,ExceptionInfo *exception)
+  Image *ScaleImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -393,8 +396,8 @@ _8c.html" target="source" name="ThumbnailImage">ThumbnailImage</a></h2>
 <p>The format of the ThumbnailImage method is:</p>
 
 <pre class="code">
-  Image *ThumbnailImage(const Image *image,const unsigned long columns,
-    const unsigned long rows,ExceptionInfo *exception)
+  Image *ThumbnailImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -423,8 +426,8 @@ _8c.html" target="source" name="ZoomImage">ZoomImage</a></h2>
 <p>The format of the ZoomImage method is:</p>
 
 <pre class="code">
-  Image *ZoomImage(const Image *image,const unsigned long columns,
-    const unsigned long rows,ExceptionInfo *exception)
+  Image *ZoomImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

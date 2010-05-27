@@ -286,8 +286,8 @@ MagickExport int gettimeofday (struct timeval *time_value,
       time=date_time.QuadPart;
       time-=EpochFiletime;
       time/=10;
-      time_value->tv_sec=(long) (time / 1000000);
-      time_value->tv_usec=(long) (time % 1000000);
+      time_value->tv_sec=(ssize_t) (time / 1000000);
+      time_value->tv_usec=(ssize_t) (time % 1000000);
     }
   if (time_zone != (struct timezone *) NULL)
     {
@@ -786,7 +786,7 @@ MagickExport MagickBooleanType NTGetModulePath(const char *module,char *path)
   HMODULE
     handle;
 
-  long
+  ssize_t
     length;
 
   *path='\0';
@@ -892,7 +892,7 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
   *product_family=NULL;
   *major_version=5;
   *minor_version=49; /* min version of Ghostscript is 5.50 */
-  for (i=0; i < (long) (sizeof(products)/sizeof(products[0])); i++)
+  for (i=0; i < (ssize_t) (sizeof(products)/sizeof(products[0])); i++)
   {
     char
       key[MaxTextExtent];
@@ -996,7 +996,7 @@ static int NTGhostscriptGetString(const char *name,char *value,
     return(FALSE);
   (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
-  for (i=0; i < (long) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
+  for (i=0; i < (ssize_t) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
   {
     extent=(int) length;
     if (NTGetRegistryValue(hkeys[i].hkey,key,name,value,&extent) == 0)
@@ -1778,7 +1778,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
 %
 %  The format of the NTSeekDirectory method is:
 %
-%      void NTSeekDirectory(DIR *entry,long position)
+%      void NTSeekDirectory(DIR *entry,ssize_t position)
 %
 %  A description of each parameter follows:
 %
@@ -1788,7 +1788,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
 %      stream.
 %
 */
-MagickExport void NTSeekDirectory(DIR *entry,long position)
+MagickExport void NTSeekDirectory(DIR *entry,ssize_t position)
 {
   (void) position;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -1958,14 +1958,14 @@ MagickExport int NTSystemCommand(const char *command)
 %
 %  The format of the exit method is:
 %
-%      long NTSystemConfiguration(int name)
+%      ssize_t NTSystemConfiguration(int name)
 %
 %  A description of each parameter follows:
 %
 %    o name: _SC_PAGE_SIZE or _SC_PHYS_PAGES.
 %
 */
-MagickExport long NTSystemConfiguration(int name)
+MagickExport ssize_t NTSystemConfiguration(int name)
 {
   switch (name)
   {
@@ -2002,12 +2002,12 @@ MagickExport long NTSystemConfiguration(int name)
             status;
 
           GlobalMemoryStatus(&status);
-          return((long) status.dwTotalPhys/system_info.dwPageSize);
+          return((ssize_t) status.dwTotalPhys/system_info.dwPageSize);
         }
       status.dwLength=sizeof(status);
       if (module(&status) == 0)
         return(0L);
-      return((long) status.ullTotalPhys/system_info.dwPageSize);
+      return((ssize_t) status.ullTotalPhys/system_info.dwPageSize);
     }
     case _SC_OPEN_MAX:
       return(2048);
@@ -2033,14 +2033,14 @@ MagickExport long NTSystemConfiguration(int name)
 %
 %  The format of the NTTellDirectory method is:
 %
-%      long NTTellDirectory(DIR *entry)
+%      ssize_t NTTellDirectory(DIR *entry)
 %
 %  A description of each parameter follows:
 %
 %    o entry: Specifies a pointer to a DIR structure.
 %
 */
-MagickExport long NTTellDirectory(DIR *entry)
+MagickExport ssize_t NTTellDirectory(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   return(0);
@@ -2075,7 +2075,7 @@ MagickExport int NTTruncateFile(int file,off_t length)
   DWORD
     file_pointer;
 
-  long
+  ssize_t
     file_handle,
     high,
     low;
@@ -2083,8 +2083,8 @@ MagickExport int NTTruncateFile(int file,off_t length)
   file_handle=_get_osfhandle(file);
   if (file_handle == -1L)
     return(-1);
-  low=(long) (length & 0xffffffffUL);
-  high=(long) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);
+  low=(ssize_t) (length & 0xffffffffUL);
+  high=(ssize_t) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);
   file_pointer=SetFilePointer((HANDLE) file_handle,low,&high,FILE_BEGIN);
   if ((file_pointer == 0xFFFFFFFF) && (GetLastError() != NO_ERROR))
     return(-1);

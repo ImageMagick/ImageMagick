@@ -46,27 +46,27 @@ typedef IndexPacket
   *(*GetAuthenticIndexesFromHandler)(const Image *);
 
 typedef MagickBooleanType
-  (*GetOneAuthenticPixelFromHandler)(Image *,const long,const long,
+  (*GetOneAuthenticPixelFromHandler)(Image *,const ssize_t,const ssize_t,
     PixelPacket *,ExceptionInfo *),
   (*GetOneVirtualPixelFromHandler)(const Image *,const VirtualPixelMethod,
-    const long,const long,PixelPacket *,ExceptionInfo *),
+    const ssize_t,const ssize_t,PixelPacket *,ExceptionInfo *),
   (*SyncAuthenticPixelsHandler)(Image *,ExceptionInfo *);
 
 typedef const PixelPacket
-  *(*GetVirtualPixelHandler)(const Image *,const VirtualPixelMethod,const long,
-    const long,const unsigned long,const unsigned long,ExceptionInfo *),
+  *(*GetVirtualPixelHandler)(const Image *,const VirtualPixelMethod,const ssize_t,
+    const ssize_t,const size_t,const size_t,ExceptionInfo *),
   *(*GetVirtualPixelsHandler)(const Image *);
 
 typedef PixelPacket
-  *(*GetAuthenticPixelsHandler)(Image *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *);
+  *(*GetAuthenticPixelsHandler)(Image *,const ssize_t,const ssize_t,
+    const size_t,const size_t,ExceptionInfo *);
 
 typedef PixelPacket
   *(*GetAuthenticPixelsFromHandler)(const Image *);
 
 typedef PixelPacket
-  *(*QueueAuthenticPixelsHandler)(Image *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *);
+  *(*QueueAuthenticPixelsHandler)(Image *,const ssize_t,const ssize_t,
+    const size_t,const size_t,ExceptionInfo *);
 
 typedef void
   (*DestroyPixelHandler)(Image *);
@@ -127,7 +127,7 @@ typedef struct _CacheInfo
   MagickBooleanType
     mapped;
 
-  unsigned long
+  size_t
     columns,
     rows;
 
@@ -143,7 +143,7 @@ typedef struct _CacheInfo
   MagickPixelPacket
     virtual_pixel_color;
 
-  unsigned long
+  size_t
     number_threads;
 
   NexusInfo
@@ -177,7 +177,7 @@ typedef struct _CacheInfo
   MagickThreadType
     id;
 
-  long
+  ssize_t
     reference_count;
 
   SemaphoreInfo
@@ -187,12 +187,12 @@ typedef struct _CacheInfo
   time_t
     timestamp;
 
-  unsigned long
+  size_t
     signature;
 } CacheInfo;
 
 extern MagickExport Cache
-  AcquirePixelCache(const unsigned long),
+  AcquirePixelCache(const size_t),
   ClonePixelCache(const Cache),
   DestroyPixelCache(Cache),
   GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *),
@@ -211,8 +211,8 @@ extern MagickExport const IndexPacket
   *GetVirtualIndexesFromNexus(const Cache,NexusInfo *);
 
 extern MagickExport const PixelPacket
-  *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,const long,
-    const long,const unsigned long,const unsigned long,NexusInfo *,
+  *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,const ssize_t,
+    const ssize_t,const size_t,const size_t,NexusInfo *,
     ExceptionInfo *),
   *GetVirtualPixelsNexus(const Cache,NexusInfo *);
 
@@ -226,19 +226,19 @@ extern MagickExport MagickSizeType
   GetPixelCacheNexusExtent(const Cache,NexusInfo *);
 
 extern MagickExport NexusInfo
-  **AcquirePixelCacheNexus(const unsigned long),
-  **DestroyPixelCacheNexus(NexusInfo **,const unsigned long);
+  **AcquirePixelCacheNexus(const size_t),
+  **DestroyPixelCacheNexus(NexusInfo **,const size_t);
 
 extern MagickExport PixelPacket
-  *GetAuthenticPixelCacheNexus(Image *,const long,const long,
-    const unsigned long,const unsigned long,NexusInfo *,ExceptionInfo *),
+  *GetAuthenticPixelCacheNexus(Image *,const ssize_t,const ssize_t,
+    const size_t,const size_t,NexusInfo *,ExceptionInfo *),
   *GetPixelCacheNexusPixels(const Cache,NexusInfo *),
-  *QueueAuthenticNexus(Image *,const long,const long,const unsigned long,
-    const unsigned long,NexusInfo *,ExceptionInfo *);
+  *QueueAuthenticNexus(Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t,NexusInfo *,ExceptionInfo *);
 
 extern MagickExport void
   ClonePixelCacheMethods(Cache,const Cache),
-  GetPixelCacheTileSize(const Image *,unsigned long *,unsigned long *),
+  GetPixelCacheTileSize(const Image *,size_t *,size_t *),
   GetPixelCacheMethods(CacheMethods *),
   SetPixelCacheMethods(Cache,CacheMethods *);
 

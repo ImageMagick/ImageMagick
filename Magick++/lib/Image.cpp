@@ -667,10 +667,10 @@ void Magick::Image::composite ( const Image &compositeImage_,
 {
   modifyImage();
 
-  long x = offset_.xOff();
-  long y = offset_.yOff();
-  unsigned long width = columns();
-  unsigned long height = rows();
+  ssize_t x = offset_.xOff();
+  ssize_t y = offset_.yOff();
+  size_t width = columns();
+  size_t height = rows();
 
   ParseMetaGeometry (static_cast<std::string>(offset_).c_str(),
 		      &x, &y,
@@ -770,7 +770,7 @@ void Magick::Image::display( void )
 // usally of the same size as the source image, unless 'bestfit' is set to
 // true.
 void Magick::Image::distort ( const DistortImageMethod method_,
-                              const unsigned long number_arguments_,
+                              const size_t number_arguments_,
                               const double *arguments_,
                               const bool bestfit_ )
 {
@@ -978,7 +978,7 @@ void Magick::Image::floodFillOpacity( const unsigned int x_,
                         DefaultChannels,
                         options()->drawInfo(), // const DrawInfo *draw_info
                         &target,
-                  			static_cast<long>(x_), static_cast<long>(y_),
+                  			static_cast<ssize_t>(x_), static_cast<ssize_t>(y_),
                         method_  == FloodfillMethod ? MagickFalse : MagickTrue);
   throwImageException();
 }
@@ -1009,8 +1009,8 @@ void Magick::Image::floodFillTexture( const unsigned int x_,
                           DefaultChannels,
                           options()->drawInfo(), // const DrawInfo *draw_info
                           &target, // const MagickPacket target
-                          static_cast<long>(x_), // const long x_offset
-                          static_cast<long>(y_), // const long y_offset
+                          static_cast<ssize_t>(x_), // const ssize_t x_offset
+                          static_cast<ssize_t>(y_), // const ssize_t y_offset
                           MagickFalse // const PaintMethod method
       );
 
@@ -1044,8 +1044,8 @@ void Magick::Image::floodFillTexture( const unsigned int x_,
                         DefaultChannels,
                         options()->drawInfo(),
                         &target,
-                        static_cast<long>(x_),
-                        static_cast<long>(y_),
+                        static_cast<ssize_t>(x_),
+                        static_cast<ssize_t>(y_),
                         MagickTrue);
 
   throwImageException();
@@ -1097,10 +1097,10 @@ void Magick::Image::frame ( const Geometry &geometry_ )
 {
   FrameInfo info;
 
-  info.x           = static_cast<long>(geometry_.width());
-  info.y           = static_cast<long>(geometry_.height());
-  info.width       = columns() + ( static_cast<unsigned long>(info.x) << 1 );
-  info.height      = rows() + ( static_cast<unsigned long>(info.y) << 1 );
+  info.x           = static_cast<ssize_t>(geometry_.width());
+  info.y           = static_cast<ssize_t>(geometry_.height());
+  info.width       = columns() + ( static_cast<size_t>(info.x) << 1 );
+  info.height      = rows() + ( static_cast<size_t>(info.y) << 1 );
   info.outer_bevel = geometry_.xOff();
   info.inner_bevel = geometry_.yOff();
 
@@ -1117,12 +1117,12 @@ void Magick::Image::frame ( const unsigned int width_,
 			    const int outerBevel_, const int innerBevel_ )
 {
   FrameInfo info;
-  info.x           = static_cast<long>(width_);
-  info.y           = static_cast<long>(height_);
-  info.width       = columns() + ( static_cast<unsigned long>(info.x) << 1 );
-  info.height      = rows() + ( static_cast<unsigned long>(info.y) << 1 );
-  info.outer_bevel = static_cast<long>(outerBevel_);
-  info.inner_bevel = static_cast<long>(innerBevel_);
+  info.x           = static_cast<ssize_t>(width_);
+  info.y           = static_cast<ssize_t>(height_);
+  info.width       = columns() + ( static_cast<size_t>(info.x) << 1 );
+  info.height      = rows() + ( static_cast<size_t>(info.y) << 1 );
+  info.outer_bevel = static_cast<ssize_t>(outerBevel_);
+  info.inner_bevel = static_cast<ssize_t>(innerBevel_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1743,10 +1743,10 @@ void Magick::Image::resize( const Geometry &geometry_ )
 {
   // Calculate new size.  This code should be supported using binary arguments
   // in the ImageMagick library.
-  long x = 0;
-  long y = 0;
-  unsigned long width = columns();
-  unsigned long height = rows();
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width = columns();
+  size_t height = rows();
 
   ParseMetaGeometry (static_cast<std::string>(geometry_).c_str(),
                      &x, &y,
@@ -1769,10 +1769,10 @@ void Magick::Image::resize( const Geometry &geometry_ )
 // Roll image
 void Magick::Image::roll ( const Geometry &roll_ )
 {
-  long xOff = roll_.xOff();
+  ssize_t xOff = roll_.xOff();
   if ( roll_.xNegative() )
     xOff = 0 - xOff;
-  long yOff = roll_.yOff();
+  ssize_t yOff = roll_.yOff();
   if ( roll_.yNegative() )
     yOff = 0 - yOff;
 
@@ -1791,8 +1791,8 @@ void Magick::Image::roll ( const unsigned int columns_,
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
     RollImage( image(),
-               static_cast<long>(columns_),
-               static_cast<long>(rows_), &exceptionInfo );
+               static_cast<ssize_t>(columns_),
+               static_cast<ssize_t>(rows_), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1813,10 +1813,10 @@ void Magick::Image::rotate ( const double degrees_ )
 // Sample image
 void Magick::Image::sample ( const Geometry &geometry_ )
 {
-  long x = 0;
-  long y = 0;
-  unsigned long width = columns();
-  unsigned long height = rows();
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width = columns();
+  size_t height = rows();
 
   ParseMetaGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
@@ -1834,10 +1834,10 @@ void Magick::Image::sample ( const Geometry &geometry_ )
 // Scale image
 void Magick::Image::scale ( const Geometry &geometry_ )
 {
-  long x = 0;
-  long y = 0;
-  unsigned long width = columns();
-  unsigned long height = rows();
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width = columns();
+  size_t height = rows();
 
   ParseMetaGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
@@ -1971,7 +1971,7 @@ void Magick::Image::solarize ( const double factor_ )
 //
 void Magick::Image::sparseColor ( const ChannelType channel,
                                   const SparseColorMethod method,
-                                  const unsigned long number_arguments,
+                                  const size_t number_arguments,
                                   const double *arguments )
 {
   ExceptionInfo exceptionInfo;
@@ -2282,10 +2282,10 @@ void Magick::Image::zoom( const Geometry &geometry_ )
 {
   // Calculate new size.  This code should be supported using binary arguments
   // in the ImageMagick library.
-  long x = 0;
-  long y = 0;
-  unsigned long width = columns();
-  unsigned long height = rows();
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width = columns();
+  size_t height = rows();
 
   ParseMetaGeometry (static_cast<std::string>(geometry_).c_str(),
                      &x, &y,
@@ -3430,7 +3430,7 @@ Magick::Color Magick::Image::pixelColor ( const unsigned int x_,
     {
       const IndexPacket* indexes = getConstIndexes();
       if ( indexes )
-        return colorMap( (unsigned long) *indexes );
+        return colorMap( (size_t) *indexes );
     }
 
   return Color(); // invalid
@@ -3837,11 +3837,11 @@ std::string Magick::Image::tileName ( void ) const
   return constOptions()->tileName( );
 }
 
-unsigned long Magick::Image::totalColors ( void )
+size_t Magick::Image::totalColors ( void )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  unsigned long colors = GetNumberColors( image(), 0, &exceptionInfo);
+  size_t colors = GetNumberColors( image(), 0, &exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
   return colors;
@@ -4264,7 +4264,7 @@ void Magick::Image::throwImageException( void ) const
 }
 
 // Register image with image registry or obtain registration id
-long Magick::Image::registerId( void )
+ssize_t Magick::Image::registerId( void )
 {
   Lock( &_imgRef->_mutexLock );
   if( _imgRef->id() < 0 )

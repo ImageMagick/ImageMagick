@@ -169,7 +169,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -178,7 +178,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -203,7 +203,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     tile_height,
     width;
 
-  unsigned long
+  size_t
     scene;
 
   /*
@@ -282,7 +282,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       fpx_status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
       if (fpx_status != FPX_OK)
         ThrowReaderException(DelegateError,"UnableToReadAspectRatio");
-      if (width != (unsigned long) floor((aspect_ratio*height)+0.5))
+      if (width != (size_t) floor((aspect_ratio*height)+0.5))
         Swap(width,height);
     }
   fpx_status=FPX_GetSummaryInformation(flashpix,&summary_info);
@@ -421,7 +421,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image pixels.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -438,8 +438,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           fpx_status=FPX_ReadImageTransformRectangle(flashpix,0.0F,
             (float) y/image->rows,(float) image->columns/image->rows,
-            (float) (y+tile_height-1)/image->rows,(long) image->columns,
-            (long) tile_height,&fpx_info);
+            (float) (y+tile_height-1)/image->rows,(ssize_t) image->columns,
+            (ssize_t) tile_height,&fpx_info);
         if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
@@ -455,7 +455,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     g=green_component->theData+(y % tile_height)*green_component->lineStride;
     b=blue_component->theData+(y % tile_height)*blue_component->lineStride;
     a=alpha_component->theData+(y % tile_height)*alpha_component->lineStride;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (fpx_info.numberOfComponents > 2)
         {
@@ -513,10 +513,10 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterFPXImage method is:
 %
-%      unsigned long RegisterFPXImage(void)
+%      size_t RegisterFPXImage(void)
 %
 */
-ModuleExport unsigned long RegisterFPXImage(void)
+ModuleExport size_t RegisterFPXImage(void)
 {
   MagickInfo
     *entry;
@@ -804,7 +804,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPXSummaryInformation
     summary_info;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -819,7 +819,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -963,7 +963,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
   fpx_info.numberOfComponents=colorspace.numberOfComponents;
-  for (i=0; i < (long) fpx_info.numberOfComponents; i++)
+  for (i=0; i < (ssize_t) fpx_info.numberOfComponents; i++)
   {
     fpx_info.components[i].myColorType.myDataType=DATA_TYPE_UNSIGNED_BYTE;
     fpx_info.components[i].horzSubSampFactor=1;
@@ -986,7 +986,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     quantum_type=RGBAQuantum;
   if (fpx_info.numberOfComponents == 1)
     quantum_type=GrayQuantum;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

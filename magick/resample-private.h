@@ -27,11 +27,11 @@ extern "C" {
 static inline ResampleFilter **DestroyResampleFilterThreadSet(
   ResampleFilter **filter)
 {
-  register long
+  register ssize_t
     i;
 
   assert(filter != (ResampleFilter **) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (filter[i] != (ResampleFilter *) NULL)
       filter[i]=DestroyResampleFilter(filter[i]);
   filter=(ResampleFilter **) RelinquishAlignedMemory(filter);
@@ -42,13 +42,13 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
   const Image *image,const VirtualPixelMethod method,
   const MagickBooleanType interpolate,ExceptionInfo *exception)
 {
-  register long
+  register ssize_t
     i;
 
   ResampleFilter
     **filter;
 
-  unsigned long
+  size_t
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -57,7 +57,7 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
   if (filter == (ResampleFilter **) NULL)
     return((ResampleFilter **) NULL);
   (void) ResetMagickMemory(filter,0,number_threads*sizeof(*filter));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     filter[i]=AcquireResampleFilter(image,exception);
     if (filter[i] == (ResampleFilter *) NULL)

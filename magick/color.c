@@ -85,7 +85,7 @@ typedef struct _ColorMapInfo
     blue,
     alpha;
 
-  const long
+  const ssize_t
     compliance;
 } ColorMapInfo;
 
@@ -1026,7 +1026,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       if (pixel->depth > 16)
         {
           (void) FormatMagickString(component,MaxTextExtent,"%10lu",
-            (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
+            (size_t) ScaleQuantumToLong(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
           return;
         }
@@ -1085,7 +1085,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
 %  The format of the GetColorInfoList function is:
 %
 %      const ColorInfo **GetColorInfoList(const char *pattern,
-%        unsigned long *number_colors,ExceptionInfo *exception)
+%        size_t *number_colors,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1119,7 +1119,7 @@ static int ColorInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
-  unsigned long *number_colors,ExceptionInfo *exception)
+  size_t *number_colors,ExceptionInfo *exception)
 {
   const ColorInfo
     **colors;
@@ -1127,7 +1127,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   register const ColorInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -1135,7 +1135,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_colors != (unsigned long *) NULL);
+  assert(number_colors != (size_t *) NULL);
   *number_colors=0;
   p=GetColorInfo("*",exception);
   if (p == (const ColorInfo *) NULL)
@@ -1160,7 +1160,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   UnlockSemaphoreInfo(color_semaphore);
   qsort((void *) colors,(size_t) i,sizeof(*colors),ColorInfoCompare);
   colors[i]=(ColorInfo *) NULL;
-  *number_colors=(unsigned long) i;
+  *number_colors=(size_t) i;
   return(colors);
 }
 
@@ -1179,7 +1179,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
 %
 %  The format of the GetColorList function is:
 %
-%      char **GetColorList(const char *pattern,unsigned long *number_colors,
+%      char **GetColorList(const char *pattern,size_t *number_colors,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1212,7 +1212,7 @@ static int ColorCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetColorList(const char *pattern,
-  unsigned long *number_colors,ExceptionInfo *exception)
+  size_t *number_colors,ExceptionInfo *exception)
 {
   char
     **colors;
@@ -1220,7 +1220,7 @@ MagickExport char **GetColorList(const char *pattern,
   register const ColorInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -1228,7 +1228,7 @@ MagickExport char **GetColorList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_colors != (unsigned long *) NULL);
+  assert(number_colors != (size_t *) NULL);
   *number_colors=0;
   p=GetColorInfo("*",exception);
   if (p == (const ColorInfo *) NULL)
@@ -1253,7 +1253,7 @@ MagickExport char **GetColorList(const char *pattern,
   UnlockSemaphoreInfo(color_semaphore);
   qsort((void *) colors,(size_t) i,sizeof(*colors),ColorCompare);
   colors[i]=(char *) NULL;
-  *number_colors=(unsigned long) i;
+  *number_colors=(size_t) i;
   return(colors);
 }
 
@@ -1404,7 +1404,7 @@ MagickExport void GetColorTuple(const MagickPixelPacket *pixel,
         color.depth=8;
     }
   (void) ConcatenateMagickString(tuple,MagickOptionToMnemonic(
-    MagickColorspaceOptions,(long) color.colorspace),MaxTextExtent);
+    MagickColorspaceOptions,(ssize_t) color.colorspace),MaxTextExtent);
   if (color.matte != MagickFalse)
     (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
@@ -1562,7 +1562,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
 %  The format of the IsImageSimilar method is:
 %
 %      MagickBooleanType IsImageSimilar(const Image *image,
-%        const Image *target_image,long *x_offset,long *y_offset,
+%        const Image *target_image,ssize_t *x_offset,ssize_t *y_offset,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1581,7 +1581,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
 %
 */
 MagickExport MagickBooleanType IsImageSimilar(const Image *image,
-  const Image *target_image,long *x_offset,long *y_offset,
+  const Image *target_image,ssize_t *x_offset,ssize_t *y_offset,
   ExceptionInfo *exception)
 {
 #define SearchImageText  "  Searching image...  "
@@ -1590,7 +1590,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
     *image_view,
     *target_view;
 
-  long
+  ssize_t
     j,
     y;
 
@@ -1609,7 +1609,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
     *indexes,
     *target_indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -1619,21 +1619,21 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(target_image != (Image *) NULL);
   assert(target_image->signature == MagickSignature);
-  assert(x_offset != (long *) NULL);
-  assert(y_offset != (long *) NULL);
+  assert(x_offset != (ssize_t *) NULL);
+  assert(y_offset != (ssize_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   x=0;
   GetMagickPixelPacket(image,&pixel);
   GetMagickPixelPacket(image,&target);
   image_view=AcquireCacheView(image);
   target_view=AcquireCacheView(target_image);
-  for (y=(*y_offset); y < (long) image->rows; y++)
+  for (y=(*y_offset); y < (ssize_t) image->rows; y++)
   {
-    for (x=y == 0 ? *x_offset : 0; x < (long) image->columns; x++)
+    for (x=y == 0 ? *x_offset : 0; x < (ssize_t) image->columns; x++)
     {
-      for (j=0; j < (long) target_image->rows; j++)
+      for (j=0; j < (ssize_t) target_image->rows; j++)
       {
-        for (i=0; i < (long) target_image->columns; i++)
+        for (i=0; i < (ssize_t) target_image->columns; i++)
         {
           p=GetCacheViewVirtualPixels(image_view,x+i,y+j,1,1,exception);
           indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -1644,20 +1644,21 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
           if (IsMagickColorSimilar(&pixel,&target) == MagickFalse)
             break;
         }
-        if (i < (long) target_image->columns)
+        if (i < (ssize_t) target_image->columns)
           break;
       }
-      if (j == (long) target_image->rows)
+      if (j == (ssize_t) target_image->rows)
         break;
     }
-    if (x < (long) image->columns)
+    if (x < (ssize_t) image->columns)
       break;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SearchImageText,y,image->rows);
+        proceed=SetImageProgress(image,SearchImageText,(MagickOffsetType) y,
+          image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1666,7 +1667,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
   image_view=DestroyCacheView(image_view);
   *x_offset=x;
   *y_offset=y;
-  return(y < (long) image->rows ? MagickTrue : MagickFalse);
+  return(y < (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1850,10 +1851,10 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
   const ColorInfo
     **color_info;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_colors;
 
   /*
@@ -1865,7 +1866,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
   if (color_info == (const ColorInfo **) NULL)
     return(MagickFalse);
   path=(const char *) NULL;
-  for (i=0; i < (long) number_colors; i++)
+  for (i=0; i < (ssize_t) number_colors; i++)
   {
     if (color_info[i]->stealth != MagickFalse)
       continue;
@@ -1913,7 +1914,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %  The format of the LoadColorList method is:
 %
 %      MagickBooleanType LoadColorList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1927,7 +1928,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %
 */
 static MagickBooleanType LoadColorList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -2073,7 +2074,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
           }
         if (LocaleCompare((char *) keyword,"compliance") == 0)
           {
-            long
+            ssize_t
               compliance;
 
             compliance=color_info->compliance;
@@ -2157,7 +2158,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -2175,7 +2176,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
         }
     }
   scale=(MagickRealType) ScaleCharToQuantum(1);
-  for (i=0; i < (long) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
+  for (i=0; i < (ssize_t) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
   {
     ColorInfo
       *color_info;
@@ -2370,7 +2371,7 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
   GeometryInfo
     geometry_info;
 
-  long
+  ssize_t
     type;
 
   MagickRealType
@@ -2382,7 +2383,7 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
   register const ColorInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -2407,7 +2408,7 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
       QuantumAny
         range;
 
-      unsigned long
+      size_t
         depth,
         n;
 
@@ -2424,7 +2425,7 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
             pixel.red=pixel.green;
             pixel.green=pixel.blue;
             pixel.blue=0;
-            for (i=(long) (n/3-1); i >= 0; i--)
+            for (i=(ssize_t) (n/3-1); i >= 0; i--)
             {
               c=(*name++);
               pixel.blue<<=4;
@@ -2456,7 +2457,7 @@ MagickExport MagickBooleanType QueryMagickColor(const char *name,
             pixel.green=pixel.blue;
             pixel.blue=pixel.opacity;
             pixel.opacity=0;
-            for (i=(long) (n/4-1); i >= 0; i--)
+            for (i=(ssize_t) (n/4-1); i >= 0; i--)
             {
               c=(*name++);
               pixel.opacity<<=4;
@@ -2656,7 +2657,7 @@ MagickExport MagickBooleanType QueryMagickColorname(const Image *image,
   if (compliance == XPMCompliance)
     {
       pixel.matte=MagickFalse;
-      pixel.depth=(unsigned long) MagickMin(1.0*image->depth,16.0);
+      pixel.depth=(size_t) MagickMin(1.0*image->depth,16.0);
       GetColorTuple(&pixel,MagickTrue,name);
       return(MagickTrue);
     }

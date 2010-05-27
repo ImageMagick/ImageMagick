@@ -389,16 +389,13 @@ MagickExport Image *AppendImages(const Image *image,
   Image
     *append_image;
 
-  long
-    n,
-    x_offset,
-    y,
-    y_offset;
-
   MagickBooleanType
     matte,
     proceed,
     status;
+
+  MagickOffsetType
+    n;
 
   RectangleInfo
     geometry;
@@ -406,10 +403,15 @@ MagickExport Image *AppendImages(const Image *image,
   register const Image
     *next;
 
-  unsigned long
+  size_t
     height,
     number_images,
     width;
+
+  ssize_t
+    x_offset,
+    y,
+    y_offset;
 
   /*
     Ensure the image have the same column width.
@@ -459,7 +461,7 @@ MagickExport Image *AppendImages(const Image *image,
   x_offset=0;
   y_offset=0;
   append_view=AcquireCacheView(append_image);
-  for (n=0; n < (long) number_images; n++)
+  for (n=0; n < (MagickOffsetType) number_images; n++)
   {
     SetGeometry(append_image,&geometry);
     GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
@@ -471,7 +473,7 @@ MagickExport Image *AppendImages(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       MagickBooleanType
         sync;
@@ -485,7 +487,7 @@ MagickExport Image *AppendImages(const Image *image,
       register IndexPacket
         *restrict append_indexes;
 
-      register long
+      register ssize_t
         x;
 
       register PixelPacket
@@ -503,7 +505,7 @@ MagickExport Image *AppendImages(const Image *image,
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       append_indexes=GetCacheViewAuthenticIndexQueue(append_view);
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetRedPixelComponent(q,GetRedPixelComponent(p));
         SetGreenPixelComponent(q,GetGreenPixelComponent(p));
@@ -697,8 +699,8 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 %
 %  The format of the CloneImage method is:
 %
-%      Image *CloneImage(const Image *image,const unsigned long columns,
-%        const unsigned long rows,const MagickBooleanType orphan,
+%      Image *CloneImage(const Image *image,const size_t columns,
+%        const size_t rows,const MagickBooleanType orphan,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -715,8 +717,8 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,const MagickBooleanType detach,
+MagickExport Image *CloneImage(const Image *image,const size_t columns,
+  const size_t rows,const MagickBooleanType detach,
   ExceptionInfo *exception)
 {
   Image
@@ -807,13 +809,13 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       return(clone_image);
     }
   scale=(MagickRealType) columns/(MagickRealType) image->columns;
-  clone_image->page.width=(unsigned long) floor(scale*image->page.width+0.5);
-  clone_image->page.x=(long) ceil(scale*image->page.x-0.5);
-  clone_image->tile_offset.x=(long) ceil(scale*image->tile_offset.x-0.5);
+  clone_image->page.width=(size_t) floor(scale*image->page.width+0.5);
+  clone_image->page.x=(ssize_t) ceil(scale*image->page.x-0.5);
+  clone_image->tile_offset.x=(ssize_t) ceil(scale*image->tile_offset.x-0.5);
   scale=(MagickRealType) rows/(MagickRealType) image->rows;
-  clone_image->page.height=(unsigned long) floor(scale*image->page.height+0.5);
-  clone_image->page.y=(long) ceil(scale*image->page.y-0.5);
-  clone_image->tile_offset.y=(long) ceil(scale*image->tile_offset.y-0.5);
+  clone_image->page.height=(size_t) floor(scale*image->page.height+0.5);
+  clone_image->page.y=(ssize_t) ceil(scale*image->page.y-0.5);
+  clone_image->tile_offset.y=(ssize_t) ceil(scale*image->tile_offset.y-0.5);
   clone_image->columns=columns;
   clone_image->rows=rows;
   clone_image->cache=ClonePixelCache(image->cache);
@@ -971,12 +973,14 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
   Image
     *combine_image;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   /*
     Ensure the image are the same size.
@@ -1013,7 +1017,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) combine_image->rows; y++)
+  for (y=0; y < (ssize_t) combine_image->rows; y++)
   {
     CacheView
       *image_view;
@@ -1027,7 +1031,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
     register const PixelPacket
       *restrict p;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -1050,7 +1054,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         if (p == (const PixelPacket *) NULL)
           continue;
         q=pixels;
-        for (x=0; x < (long) combine_image->columns; x++)
+        for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
           SetRedPixelComponent(q,PixelIntensityToQuantum(p));
           p++;
@@ -1066,7 +1070,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         if (p == (const PixelPacket *) NULL)
           continue;
         q=pixels;
-        for (x=0; x < (long) combine_image->columns; x++)
+        for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
           SetGreenPixelComponent(q,PixelIntensityToQuantum(p));
           p++;
@@ -1082,7 +1086,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         if (p == (const PixelPacket *) NULL)
           continue;
         q=pixels;
-        for (x=0; x < (long) combine_image->columns; x++)
+        for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
           SetBluePixelComponent(q,PixelIntensityToQuantum(p));
           p++;
@@ -1098,7 +1102,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         if (p == (const PixelPacket *) NULL)
           continue;
         q=pixels;
-        for (x=0; x < (long) combine_image->columns; x++)
+        for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
           SetOpacityPixelComponent(q,PixelIntensityToQuantum(p));
           p++;
@@ -1118,7 +1122,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         if (p == (const PixelPacket *) NULL)
           continue;
         indexes=GetCacheViewAuthenticIndexQueue(combine_view);
-        for (x=0; x < (long) combine_image->columns; x++)
+        for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
           indexes[x]=PixelIntensityToQuantum(p);
           p++;
@@ -1557,16 +1561,16 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 %
 %  The format of the GetReferenceCount method is:
 %
-%      long GetImageReferenceCount(Image *image)
+%      ssize_t GetImageReferenceCount(Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 */
-MagickExport long GetImageReferenceCount(Image *image)
+MagickExport ssize_t GetImageReferenceCount(Image *image)
 {
-  long
+  ssize_t
     reference_count;
 
   assert(image != (Image *) NULL);
@@ -1672,10 +1676,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
       }
     if (*q == '0')
       {
-        long
+        ssize_t
           value;
 
-        value=strtol(q,&q,10);
+        value=(ssize_t) strtol(q,&q,10);
       }
     switch (*q)
     {
@@ -1704,13 +1708,13 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         const char
           *value;
 
-        long
+        ssize_t
           depth;
 
         register char
           *r;
 
-        register long
+        register ssize_t
           i;
 
         /*
@@ -1808,7 +1812,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
   CacheView
     *image_view;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -1827,7 +1831,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickPixelPacket
       pixel;
@@ -1838,7 +1842,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
     register const PixelPacket
       *p;
 
-    register long
+    register ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1851,7 +1855,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     pixel=zero;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,p,indexes+x,&pixel);
       if ((pixel.red < 0.0) || (pixel.red > QuantumRange) ||
@@ -1877,7 +1881,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         }
       p++;
     }
-    if (x < (long) image->columns)
+    if (x < (ssize_t) image->columns)
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
@@ -2036,7 +2040,7 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %  The format of the NewMagickImage method is:
 %
 %      Image *NewMagickImage(const ImageInfo *image_info,
-%        const unsigned long width,const unsigned long height,
+%        const size_t width,const size_t height,
 %        const MagickPixelPacket *background)
 %
 %  A description of each parameter follows:
@@ -2051,7 +2055,7 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %
 */
 MagickExport Image *NewMagickImage(const ImageInfo *image_info,
-  const unsigned long width,const unsigned long height,
+  const size_t width,const size_t height,
   const MagickPixelPacket *background)
 {
   CacheView
@@ -2063,7 +2067,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -2087,12 +2091,12 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2107,7 +2111,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelPacket(image,background,q,indexes+x);
       q++;
@@ -2265,12 +2269,14 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   ExceptionInfo
     *exception;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2290,12 +2296,12 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2314,7 +2320,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     {
       case RedChannel:
       {
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->green=q->red;
           q->blue=q->red;
@@ -2324,7 +2330,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       }
       case GreenChannel:
       {
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=q->green;
           q->blue=q->green;
@@ -2334,7 +2340,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       }
       case BlueChannel:
       {
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=q->blue;
           q->green=q->blue;
@@ -2344,7 +2350,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       }
       case OpacityChannel:
       {
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=q->opacity;
           q->green=q->opacity;
@@ -2358,7 +2364,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
         if ((image->storage_class != PseudoClass) &&
             (image->colorspace != CMYKColorspace))
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=indexes[x];
           q->green=indexes[x];
@@ -2369,7 +2375,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       }
       case TrueAlphaChannel:
       {
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=(Quantum) GetAlphaPixelComponent(q);
           q->green=(Quantum) GetAlphaPixelComponent(q);
@@ -2380,7 +2386,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       }
       case GrayChannels:
       {
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->opacity=(Quantum) (QuantumRange-PixelIntensityToQuantum(q));
           q++;
@@ -2545,7 +2551,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       IndexPacket
         index;
 
-      long
+      ssize_t
         y;
 
       MagickBooleanType
@@ -2577,12 +2583,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp parallel for schedule(dynamic,4) shared(status)
       #endif
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         register IndexPacket
           *restrict indexes;
 
-        register long
+        register ssize_t
           x;
 
         register PixelPacket
@@ -2597,7 +2603,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
             status=MagickFalse;
             continue;
           }
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (q->opacity == TransparentOpacity)
             {
@@ -2610,7 +2616,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         if (image->colorspace == CMYKColorspace)
           {
             indexes=GetCacheViewAuthenticIndexQueue(image_view);
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
               indexes[x]=index;
           }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2717,7 +2723,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   IndexPacket
     index;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -2753,12 +2759,12 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2772,12 +2778,12 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
       *q++=pixel;
     if (image->colorspace == CMYKColorspace)
       {
         indexes=GetCacheViewAuthenticIndexQueue(image_view);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           indexes[x]=index;
       }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2821,7 +2827,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -2842,12 +2848,12 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2862,7 +2868,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelPacket(image,color,q,indexes+x);
       q++;
@@ -2980,7 +2986,7 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 %  The format of the SetImageExtent method is:
 %
 %      MagickBooleanType SetImageExtent(Image *image,
-%        const unsigned long columns,const unsigned long rows)
+%        const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -2992,7 +2998,7 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 %
 */
 MagickExport MagickBooleanType SetImageExtent(Image *image,
-  const unsigned long columns,const unsigned long rows)
+  const size_t columns,const size_t rows)
 {
   Cache
     cache;
@@ -3098,7 +3104,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
             }
           else
             {
-              unsigned long
+              size_t
                 first,
                 last;
 
@@ -3111,12 +3117,12 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
                 while ((isspace((int) ((unsigned char) *p)) != 0) ||
                        (*p == ','))
                   p++;
-                first=(unsigned long) strtol(p,&q,10);
+                first=(size_t) strtol(p,&q,10);
                 last=first;
                 while (isspace((int) ((unsigned char) *q)) != 0)
                   q++;
                 if (*q == '-')
-                  last=(unsigned long) strtol(q+1,&q,10);
+                  last=(size_t) strtol(q+1,&q,10);
                 if (first > last)
                   Swap(first,last);
                 if (first < image_info->scene)
@@ -3166,7 +3172,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       MagickFormatType
         format_type;
 
-      register long
+      register ssize_t
         i;
 
       static const char
@@ -3501,7 +3507,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -3518,9 +3524,9 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -3534,7 +3540,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetOpacityPixelComponent(q,opacity);
       q++;
@@ -3818,7 +3824,7 @@ MagickExport MagickBooleanType StripImage(Image *image)
 */
 
 static inline IndexPacket PushColormapIndex(Image *image,
-  const unsigned long index,MagickBooleanType *range_exception)
+  const size_t index,MagickBooleanType *range_exception)
 {
   if (index < image->colors)
     return((IndexPacket) index);
@@ -3834,7 +3840,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -3854,7 +3860,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     IndexPacket
       index;
@@ -3865,7 +3871,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     register IndexPacket
       *restrict indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -3880,11 +3886,11 @@ MagickExport MagickBooleanType SyncImage(Image *image)
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=PushColormapIndex(image,(unsigned long) indexes[x],
+      index=PushColormapIndex(image,(size_t) indexes[x],
         &range_exception);
-      pixel=image->colormap[(long) index];
+      pixel=image->colormap[(ssize_t) index];
       q->red=pixel.red;
       q->green=pixel.green;
       q->blue=pixel.blue;
@@ -4024,19 +4030,19 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       flags=ParseGeometry(option,&geometry_info);
       if ((flags & GreaterValue) != 0)
         {
-          if (image->delay > (unsigned long) floor(geometry_info.rho+0.5))
-            image->delay=(unsigned long) floor(geometry_info.rho+0.5);
+          if (image->delay > (size_t) floor(geometry_info.rho+0.5))
+            image->delay=(size_t) floor(geometry_info.rho+0.5);
         }
       else
         if ((flags & LessValue) != 0)
           {
-            if (image->delay < (unsigned long) floor(geometry_info.rho+0.5))
-              image->ticks_per_second=(long) floor(geometry_info.sigma+0.5);
+            if (image->delay < (size_t) floor(geometry_info.rho+0.5))
+              image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
           }
         else
-          image->delay=(unsigned long) floor(geometry_info.rho+0.5);
+          image->delay=(size_t) floor(geometry_info.rho+0.5);
       if ((flags & SigmaValue) != 0)
-        image->ticks_per_second=(long) floor(geometry_info.sigma+0.5);
+        image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
     }
   option=GetImageOption(image_info,"density");
   if (option != (const char *) NULL)
@@ -4181,9 +4187,9 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
           {
             if (units == PixelsPerInchResolution)
               {
-                image->x_resolution=(double) ((unsigned long) (100.0*2.54*
+                image->x_resolution=(double) ((size_t) (100.0*2.54*
                   image->x_resolution+0.5))/100.0;
-                image->y_resolution=(double) ((unsigned long) (100.0*2.54*
+                image->y_resolution=(double) ((size_t) (100.0*2.54*
                   image->y_resolution+0.5))/100.0;
               }
             break;

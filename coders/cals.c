@@ -163,10 +163,10 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     density,
     direction,
     height,
@@ -303,10 +303,10 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterCALSImage method is:
 %
-%      unsigned long RegisterCALSImage(void)
+%      size_t RegisterCALSImage(void)
 %
 */
-ModuleExport unsigned long RegisterCALSImage(void)
+ModuleExport size_t RegisterCALSImage(void)
 {
   MagickInfo
     *entry;
@@ -410,7 +410,7 @@ static ssize_t WriteCALSRecord(Image *image,const char *data)
   register const char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   i=0;
@@ -444,7 +444,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -456,7 +456,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   unsigned char
     *group4;
 
-  unsigned long
+  size_t
     density,
     orient_x,
     orient_y;
@@ -544,7 +544,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
         geometry_info;
 
       (void) ParseGeometry(image_info->density,&geometry_info);
-      density=(unsigned long) floor(geometry_info.rho+0.5);
+      density=(size_t) floor(geometry_info.rho+0.5);
     }
   (void) FormatMagickString(header,MaxTextExtent,"rdensty: %04lu",density);
   count=WriteCALSRecord(image,header);

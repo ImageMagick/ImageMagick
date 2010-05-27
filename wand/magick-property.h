@@ -29,16 +29,16 @@ extern WandExport char
   *MagickGetFont(MagickWand *),
   *MagickGetHomeURL(void),
   *MagickGetImageArtifact(MagickWand *,const char *),
-  **MagickGetImageArtifacts(MagickWand *,const char *,unsigned long *),
-  **MagickGetImageProfiles(MagickWand *,const char *,unsigned long *),
+  **MagickGetImageArtifacts(MagickWand *,const char *,size_t *),
+  **MagickGetImageProfiles(MagickWand *,const char *,size_t *),
   *MagickGetImageProperty(MagickWand *,const char *),
-  **MagickGetImageProperties(MagickWand *,const char *,unsigned long *),
+  **MagickGetImageProperties(MagickWand *,const char *,size_t *),
   *MagickGetOption(MagickWand *,const char *),
-  **MagickGetOptions(MagickWand *,const char *,unsigned long *),
+  **MagickGetOptions(MagickWand *,const char *,size_t *),
   *MagickQueryConfigureOption(const char *),
-  **MagickQueryConfigureOptions(const char *,unsigned long *),
-  **MagickQueryFonts(const char *,unsigned long *),
-  **MagickQueryFormats(const char *,unsigned long *);
+  **MagickQueryConfigureOptions(const char *,size_t *),
+  **MagickQueryFonts(const char *,size_t *),
+  **MagickQueryFormats(const char *,size_t *);
 
 extern WandExport ColorspaceType
   MagickGetColorspace(MagickWand *);
@@ -49,14 +49,14 @@ extern WandExport CompressionType
 extern WandExport const char
   *MagickGetCopyright(void),
   *MagickGetPackageName(void),
-  *MagickGetQuantumDepth(unsigned long *),
-  *MagickGetQuantumRange(unsigned long *),
+  *MagickGetQuantumDepth(size_t *),
+  *MagickGetQuantumRange(size_t *),
   *MagickGetReleaseDate(void),
-  *MagickGetVersion(unsigned long *);
+  *MagickGetVersion(size_t *);
 
 extern WandExport double
   MagickGetPointsize(MagickWand *),
-  *MagickGetSamplingFactors(MagickWand *,unsigned long *),
+  *MagickGetSamplingFactors(MagickWand *,size_t *),
   *MagickQueryFontMetrics(MagickWand *,const DrawingWand *,const char *),
   *MagickQueryMultilineFontMetrics(MagickWand *,const DrawingWand *,
     const char *);
@@ -81,17 +81,17 @@ extern WandExport MagickBooleanType
   MagickDeleteImageProperty(MagickWand *,const char *),
   MagickDeleteOption(MagickWand *,const char *),
   MagickGetAntialias(const MagickWand *),
-  MagickGetPage(const MagickWand *,unsigned long *,unsigned long *,long *,
-    long *),
-  MagickGetSize(const MagickWand *,unsigned long *,unsigned long *),
-  MagickGetSizeOffset(const MagickWand *,long *),
+  MagickGetPage(const MagickWand *,size_t *,size_t *,ssize_t *,
+    ssize_t *),
+  MagickGetSize(const MagickWand *,size_t *,size_t *),
+  MagickGetSizeOffset(const MagickWand *,ssize_t *),
   MagickProfileImage(MagickWand *,const char *,const void *,const size_t),
   MagickSetAntialias(MagickWand *,const MagickBooleanType),
   MagickSetBackgroundColor(MagickWand *,const PixelWand *),
   MagickSetColorspace(MagickWand *,const ColorspaceType),
   MagickSetCompression(MagickWand *,const CompressionType),
-  MagickSetCompressionQuality(MagickWand *,const unsigned long),
-  MagickSetDepth(MagickWand *,const unsigned long),
+  MagickSetCompressionQuality(MagickWand *,const size_t),
+  MagickSetDepth(MagickWand *,const size_t),
   MagickSetExtract(MagickWand *,const char *),
   MagickSetFilename(MagickWand *,const char *),
   MagickSetFormat(MagickWand *,const char *),
@@ -104,16 +104,16 @@ extern WandExport MagickBooleanType
   MagickSetInterpolateMethod(MagickWand *,const InterpolatePixelMethod),
   MagickSetOption(MagickWand *,const char *,const char *),
   MagickSetOrientation(MagickWand *,const OrientationType),
-  MagickSetPage(MagickWand *,const unsigned long,const unsigned long,
-    const long,const long),
+  MagickSetPage(MagickWand *,const size_t,const size_t,
+    const ssize_t,const ssize_t),
   MagickSetPassphrase(MagickWand *,const char *),
   MagickSetPointsize(MagickWand *,const double),
   MagickSetResolution(MagickWand *,const double,const double),
   MagickSetResourceLimit(const ResourceType type,const MagickSizeType limit),
-  MagickSetSamplingFactors(MagickWand *,const unsigned long,const double *),
-  MagickSetSize(MagickWand *,const unsigned long,const unsigned long),
-  MagickSetSizeOffset(MagickWand *,const unsigned long,const unsigned long,
-    const long),
+  MagickSetSamplingFactors(MagickWand *,const size_t,const double *),
+  MagickSetSize(MagickWand *,const size_t,const size_t),
+  MagickSetSizeOffset(MagickWand *,const size_t,const size_t,
+    const ssize_t),
   MagickSetType(MagickWand *,const ImageType);
 
 extern WandExport MagickProgressMonitor
@@ -133,7 +133,7 @@ extern WandExport unsigned char
   *MagickGetImageProfile(MagickWand *,const char *,size_t *),
   *MagickRemoveImageProfile(MagickWand *,const char *,size_t *);
 
-extern WandExport unsigned long
+extern WandExport size_t
   MagickGetCompressionQuality(MagickWand *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

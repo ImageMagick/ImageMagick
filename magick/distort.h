@@ -66,10 +66,10 @@ typedef enum
 } SparseColorMethod;
 
 extern MagickExport Image
-  *DistortImage(const Image *,const DistortImageMethod,const unsigned long,
+  *DistortImage(const Image *,const DistortImageMethod,const size_t,
     const double *,MagickBooleanType,ExceptionInfo *exception),
   *SparseColorImage(const Image *,const ChannelType,const SparseColorMethod,
-    const unsigned long,const double *,ExceptionInfo *);
+    const size_t,const double *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

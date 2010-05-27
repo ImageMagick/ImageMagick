@@ -95,13 +95,13 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -119,7 +119,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *pixels;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -165,7 +165,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixels == (unsigned char *) NULL) 
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     length=(size_t) 4*image->columns;
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       count=ReadBlob(image,length,pixels);
       if ((size_t) count != length)
@@ -174,7 +174,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p++));
         q->red=ScaleCharToQuantum(*p++);
@@ -246,10 +246,10 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterAVSImage method is:
 %
-%      unsigned long RegisterAVSImage(void)
+%      size_t RegisterAVSImage(void)
 %
 */
-ModuleExport unsigned long RegisterAVSImage(void)
+ModuleExport size_t RegisterAVSImage(void)
 {
   MagickInfo
     *entry;
@@ -313,7 +313,7 @@ ModuleExport void UnregisterAVSImage(void)
 */
 static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -325,7 +325,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *restrict p;
 
-  register long
+  register ssize_t
     x;
 
   register unsigned char
@@ -369,13 +369,13 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to AVS raster pixels.
     */
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (PixelPacket *) NULL)
         break;
       q=pixels;
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
           (image->matte != MagickFalse ? p->opacity : OpaqueOpacity)));

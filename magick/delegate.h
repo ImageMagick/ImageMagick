@@ -30,7 +30,7 @@ typedef struct _DelegateInfo
     *encode,
     *commands;
                                                                                 
-  long
+  ssize_t
     mode;
                                                                                 
   MagickBooleanType
@@ -42,23 +42,23 @@ typedef struct _DelegateInfo
     *previous,
     *next;  /* deprecated, use GetDelegateInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } DelegateInfo;
 
 extern MagickExport char
   *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *,
     ExceptionInfo *),
-  **GetDelegateList(const char *,unsigned long *,ExceptionInfo *);
+  **GetDelegateList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
   *GetDelegateCommands(const DelegateInfo *);
 
 extern MagickExport const DelegateInfo
   *GetDelegateInfo(const char *,const char *,ExceptionInfo *exception),
-  **GetDelegateInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetDelegateInfoList(const char *,size_t *,ExceptionInfo *);
 
-extern MagickExport long
+extern MagickExport ssize_t
   GetDelegateMode(const DelegateInfo *);
 
 extern MagickExport MagickBooleanType

@@ -46,12 +46,12 @@ typedef struct _MagicInfo
     *previous,
     *next;  /* deprecated, use GetMagicInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } MagicInfo;
 
 extern MagickExport char
-  **GetMagicList(const char *,unsigned long *,ExceptionInfo *);
+  **GetMagicList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
   *GetMagicName(const MagicInfo *);
@@ -62,7 +62,7 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport const MagicInfo
   *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *),
-  **GetMagicInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetMagicInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport void
   MagicComponentTerminus(void);

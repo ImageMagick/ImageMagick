@@ -164,7 +164,7 @@ typedef struct _GradientInfo
   StopInfo
     *stops;
 
-  unsigned long
+  size_t
     number_stops;
 
   SpreadMethod
@@ -173,7 +173,7 @@ typedef struct _GradientInfo
   MagickBooleanType
     debug;
 
-  unsigned long
+  size_t
     signature;
 
   PointInfo
@@ -194,7 +194,7 @@ typedef struct _ElementReference
   GradientInfo
     gradient;
 
-  unsigned long
+  size_t
     signature;
 
   struct _ElementReference
@@ -245,7 +245,7 @@ typedef struct _DrawInfo
   LineJoin
     linejoin;
 
-  unsigned long
+  size_t
     miterlimit;
 
   double
@@ -260,7 +260,7 @@ typedef struct _DrawInfo
   char
     *text;
 
-  unsigned long
+  size_t
     face;
 
   char
@@ -274,7 +274,7 @@ typedef struct _DrawInfo
   StretchType
     stretch;
 
-  unsigned long
+  size_t
     weight;
 
   char
@@ -320,7 +320,7 @@ typedef struct _DrawInfo
   MagickBooleanType
     debug;
 
-  unsigned long
+  size_t
     signature;
 
   double
@@ -337,7 +337,7 @@ typedef struct _PrimitiveInfo
   PointInfo
     point;
 
-  unsigned long
+  size_t
     coordinates;
 
   PrimitiveType

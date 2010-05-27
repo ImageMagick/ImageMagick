@@ -140,10 +140,10 @@ struct _BlobInfo
   SemaphoreInfo
     *semaphore;
 
-  long
+  ssize_t
     reference_count;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -1777,7 +1777,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -2416,7 +2416,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                   count=fread(magick,1,sizeof(magick),image->blob->file);
                   (void) rewind(image->blob->file);
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                     "  read %ld magic header bytes",(long) count);
+                     "  read %ld magic header bytes",(ssize_t) count);
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
                   if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
                       ((int) magick[2] == 0x08))
@@ -2860,7 +2860,7 @@ MagickExport float ReadBlobFloat(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobLong() reads a long value as a 32-bit quantity in the byte-order
+%  ReadBlobLong() reads a ssize_t value as a 32-bit quantity in the byte-order
 %  specified by the endian member of the image structure.
 %
 %  The format of the ReadBlobLong method is:
@@ -2918,7 +2918,7 @@ MagickExport unsigned int ReadBlobLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobLongLong() reads a long value as a 64-bit quantity in the byte-order
+%  ReadBlobLongLong() reads a ssize_t value as a 64-bit quantity in the byte-order
 %  specified by the endian member of the image structure.
 %
 %  The format of the ReadBlobLong method is:
@@ -3038,7 +3038,7 @@ MagickExport unsigned short ReadBlobShort(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobLSBLong() reads a long value as a 32-bit quantity in
+%  ReadBlobLSBLong() reads a ssize_t value as a 32-bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the ReadBlobLSBLong method is:
@@ -3136,7 +3136,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobMSBLong() reads a long value as a 32-bit quantity in
+%  ReadBlobMSBLong() reads a ssize_t value as a 32-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the ReadBlobMSBLong method is:
@@ -3186,7 +3186,7 @@ MagickExport unsigned int ReadBlobMSBLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobMSBLongLong() reads a long value as a 64-bit quantity in
+%  ReadBlobMSBLongLong() reads a ssize_t value as a 64-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the ReadBlobMSBLongLong method is:
@@ -3307,7 +3307,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   register const unsigned char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   ssize_t
@@ -4068,7 +4068,7 @@ MagickExport ssize_t WriteBlobFloat(Image *image,const float value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobLong() writes a long value as a 32-bit quantity in the byte-order
+%  WriteBlobLong() writes a ssize_t value as a 32-bit quantity in the byte-order
 %  specified by the endian member of the image structure.
 %
 %  The format of the WriteBlobLong method is:
@@ -4158,7 +4158,7 @@ MagickExport ssize_t WriteBlobShort(Image *image,const unsigned short value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobLSBLong() writes a long value as a 32-bit quantity in
+%  WriteBlobLSBLong() writes a ssize_t value as a 32-bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the WriteBlobLSBLong method is:
@@ -4197,7 +4197,7 @@ MagickExport ssize_t WriteBlobLSBLong(Image *image,const unsigned int value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobLSBShort() writes a long value as a 16-bit quantity in
+%  WriteBlobLSBShort() writes a ssize_t value as a 16-bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the WriteBlobLSBShort method is:
@@ -4234,7 +4234,7 @@ MagickExport ssize_t WriteBlobLSBShort(Image *image,const unsigned short value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobMSBLong() writes a long value as a 32-bit quantity in
+%  WriteBlobMSBLong() writes a ssize_t value as a 32-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the WriteBlobMSBLong method is:
@@ -4317,7 +4317,7 @@ MagickExport ssize_t WriteBlobMSBLongLong(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobMSBShort() writes a long value as a 16-bit quantity in
+%  WriteBlobMSBShort() writes a ssize_t value as a 16-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the WriteBlobMSBShort method is:

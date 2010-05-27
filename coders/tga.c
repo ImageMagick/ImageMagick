@@ -134,7 +134,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -146,7 +146,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -164,7 +164,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     k,
     runlength;
 
-  unsigned long
+  size_t
     base,
     flag,
     offset,
@@ -226,12 +226,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->matte=tga_info.bits_per_pixel == 32 ? MagickTrue : MagickFalse;
     if ((tga_info.image_type != TGAColormap) &&
         (tga_info.image_type != TGARLEColormap))
-      image->depth=(unsigned long) ((tga_info.bits_per_pixel <= 8) ? 8 :
+      image->depth=(size_t) ((tga_info.bits_per_pixel <= 8) ? 8 :
         (tga_info.bits_per_pixel <= 16) ? 5 :
         (tga_info.bits_per_pixel == 24) ? 8 :
         (tga_info.bits_per_pixel == 32) ? 8 : 8);
     else
-      image->depth=(unsigned long) ((tga_info.colormap_size <= 8) ? 8 :
+      image->depth=(size_t) ((tga_info.colormap_size <= 8) ? 8 :
         (tga_info.colormap_size <= 16) ? 5 :
         (tga_info.colormap_size == 24) ? 8 :
         (tga_info.colormap_size == 32) ? 8 : 8);
@@ -287,7 +287,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (AcquireImageColormap(image,image->colors) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < (ssize_t) image->colors; i++)
         {
           switch (tga_info.colormap_size)
           {
@@ -351,16 +351,16 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index=(IndexPacket) 0;
     runlength=0;
     offset=0;
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       real=offset;
       if (((unsigned char) (tga_info.attributes & 0x20) >> 5) == 0)
         real=image->rows-real-1;
-      q=QueueAuthenticPixels(image,0,(long) real,image->columns,1,exception);
+      q=QueueAuthenticPixels(image,0,(ssize_t) real,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         if ((tga_info.image_type == TGARLEColormap) ||
             (tga_info.image_type == TGARLERGB) ||
@@ -394,7 +394,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               index=(IndexPacket) ReadBlobByte(image);
               if (tga_info.colormap_type != 0)
-                pixel=image->colormap[(long) ConstrainColormapIndex(image,
+                pixel=image->colormap[(ssize_t) ConstrainColormapIndex(image,
                   1UL*index)];
               else
                 {
@@ -424,7 +424,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixel.opacity=(k & 0x80) != 0 ? (Quantum) OpaqueOpacity :
                   (Quantum) TransparentOpacity; 
               if (image->storage_class == PseudoClass)
-                index=ConstrainColormapIndex(image,((unsigned long) k << 8)+j);
+                index=ConstrainColormapIndex(image,((size_t) k << 8)+j);
               break;
             }
             case 24:
@@ -539,10 +539,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterTGAImage method is:
 %
-%      unsigned long RegisterTGAImage(void)
+%      size_t RegisterTGAImage(void)
 %
 */
-ModuleExport unsigned long RegisterTGAImage(void)
+ModuleExport size_t RegisterTGAImage(void)
 {
   MagickInfo
     *entry;
@@ -671,7 +671,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
   const char
     *value;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -686,10 +686,10 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
-  register long
+  register ssize_t
     i;
 
   register unsigned char
@@ -801,7 +801,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
         if (targa_colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         q=targa_colormap;
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < (ssize_t) image->colors; i++)
         {
           *q++=ScaleQuantumToChar(image->colormap[i].blue);
           *q++=ScaleQuantumToChar(image->colormap[i].green);
@@ -819,14 +819,14 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
       sizeof(*targa_pixels));
     if (targa_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    for (y=(long) (image->rows-1); y >= 0; y--)
+    for (y=(ssize_t) (image->rows-1); y >= 0; y--)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
       q=targa_pixels;
       indexes=GetVirtualIndexQueue(image);
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (targa_info.image_type == TargaColormap)
           *q++=(unsigned char) indexes[x];

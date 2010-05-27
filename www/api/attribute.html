@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
 </div>
 </div>
 </div>
@@ -163,8 +163,8 @@ _8c.html" target="source" name="GetImageChannelDepth">GetImageChannelDepth</a></
 <p>The format of the GetImageChannelDepth method is:</p>
 
 <pre class="code">
-  unsigned long GetImageDepth(const Image *image,ExceptionInfo *exception)
-  unsigned long GetImageChannelDepth(const Image *image,
+  size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
+  size_t GetImageChannelDepth(const Image *image,
     const ChannelType channel,ExceptionInfo *exception)
 </pre>
 
@@ -189,7 +189,7 @@ _8c.html" target="source" name="GetImageQuantumDepth">GetImageQuantumDepth</a></
 <p>The format of the GetImageQuantumDepth method is:</p>
 
 <pre class="code">
-  unsigned long GetImageQuantumDepth(const Image *image,
+  size_t GetImageQuantumDepth(const Image *image,
     const MagickBooleanType constrain)
 </pre>
 
@@ -306,9 +306,9 @@ _8c.html" target="source" name="SetImageChannelDepth">SetImageChannelDepth</a></
 <p>The format of the SetImageChannelDepth method is:</p>
 
 <pre class="code">
-  MagickBooleanType SetImageDepth(Image *image,const unsigned long depth)
+  MagickBooleanType SetImageDepth(Image *image,const size_t depth)
   MagickBooleanType SetImageChannelDepth(Image *image,
-    const ChannelType channel,const unsigned long depth)
+    const ChannelType channel,const size_t depth)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

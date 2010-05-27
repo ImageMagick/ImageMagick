@@ -116,7 +116,7 @@
 */
 typedef struct _DDSPixelFormat
 {
-  unsigned long
+  size_t
     flags,
     fourcc,
     rgb_bitcount,
@@ -128,7 +128,7 @@ typedef struct _DDSPixelFormat
 
 typedef struct _DDSInfo
 {
-  unsigned long
+  size_t
     flags,
     height,
     width,
@@ -225,7 +225,7 @@ static void
 %
 */
 
-static inline unsigned long Min(unsigned long one, unsigned long two)
+static inline size_t Min(size_t one, size_t two)
 {
   if (one < two)
     return one;
@@ -252,7 +252,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DDSDecoder
     *decoder;
   
-  unsigned long
+  size_t
     n, num_images;
   
   /*
@@ -408,7 +408,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
 {
-  unsigned long
+  size_t
     hdr_size,
     required;
   
@@ -424,7 +424,7 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   dds_info->flags = ReadBlobLSBLong(image);
   
   /* Check required flags */
-  required=(unsigned long) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
+  required=(size_t) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
   if ((dds_info->flags & required) != required)
     return MagickFalse;
   
@@ -498,14 +498,14 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     j,
     y;
   
   PixelPacket
     *q;
   
-  register long
+  register ssize_t
     i,
     x;
   
@@ -516,13 +516,13 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
     c0,
     c1;
   
-  unsigned long
+  size_t
     bits;
 
   exception=(&image->exception);
-  for (y = 0; y < (long) dds_info->height; y += 4)
+  for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
-    for (x = 0; x < (long) dds_info->width; x += 4)
+    for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
@@ -543,7 +543,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
       {
         for (i = 0; i < 4; i++)
         {
-          if ((x + i) < (long) dds_info->width && (y + j) < (long) dds_info->height)
+          if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
               q->red     = ScaleCharToQuantum( colors.r[code] );
@@ -576,21 +576,21 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     j,
     y;
 
   PixelPacket
     *q;
   
-  register long
+  register ssize_t
     i,
     x;
   
   unsigned char
     alpha;
   
-  unsigned long
+  size_t
     a0,
     a1,
     bits,
@@ -601,9 +601,9 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
     c1;
   
   exception=(&image->exception);
-  for (y = 0; y < (long) dds_info->height; y += 4)
+  for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
-    for (x = 0; x < (long) dds_info->width; x += 4)
+    for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
@@ -628,7 +628,7 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
       {
         for (i = 0; i < 4; i++)
         {
-          if ((x + i) < (long) dds_info->width && (y + j) < (long) dds_info->height)
+          if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
               q->red   = ScaleCharToQuantum( colors.r[code] );
@@ -668,7 +668,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     j,
     y;
 
@@ -678,7 +678,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
   PixelPacket
     *q;
   
-  register long
+  register ssize_t
     i,
     x;
 
@@ -686,7 +686,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
     a0,
     a1;
   
-  unsigned long
+  size_t
     alpha,
     bits,
     code,
@@ -697,9 +697,9 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
     c1;
   
   exception=(&image->exception);
-  for (y = 0; y < (long) dds_info->height; y += 4)
+  for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
-    for (x = 0; x < (long) dds_info->width; x += 4)
+    for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
@@ -727,7 +727,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
       {
         for (i = 0; i < 4; i++)
         {
-          if ((x + i) < (long) dds_info->width && (y + j) < (long) dds_info->height)
+          if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
               q->red   = ScaleCharToQuantum( colors.r[code] );
@@ -735,7 +735,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
               q->blue  = ScaleCharToQuantum( colors.b[code] );
               
               /* Extract alpha value */
-              alpha_code = (unsigned long) (alpha_bits >> (3*(4*j+i))) & 0x7;
+              alpha_code = (size_t) (alpha_bits >> (3*(4*j+i))) & 0x7;
               if (alpha_code == 0)
                 alpha = a0;
               else if (alpha_code == 1)
@@ -771,21 +771,21 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     x, y;
   
   PixelPacket
     *q;
   
   exception=(&image->exception);
-  for (y = 0; y < (long) dds_info->height; y++)
+  for (y = 0; y < (ssize_t) dds_info->height; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, dds_info->width, 1,exception);
     
     if (q == (PixelPacket *) NULL)
       return MagickFalse;
     
-    for (x = 0; x < (long) dds_info->width; x++)
+    for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
       q->blue  = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
       q->green = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
@@ -807,21 +807,21 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     x, y;
   
   PixelPacket
     *q;
   
   exception=(&image->exception);
-  for (y = 0; y < (long) dds_info->height; y++)
+  for (y = 0; y < (ssize_t) dds_info->height; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, dds_info->width, 1,exception);
     
     if (q == (PixelPacket *) NULL)
       return MagickFalse;
     
-    for (x = 0; x < (long) dds_info->width; x++)
+    for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
       q->blue    = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
       q->green   = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
@@ -844,13 +844,13 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
 */
 static void SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size)
 {
-  register long
+  register ssize_t
     i;
 
   MagickOffsetType
     offset;
 
-  unsigned long
+  size_t
     h,
     w;
   
@@ -867,7 +867,7 @@ static void SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size)
       /*
         Mipmapcount includes the main image, so start from one
       */
-      for (i = 1; (i < (long) dds_info->mipmapcount) && w && h; i++)
+      for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
         offset = (MagickOffsetType) ((w + 3) / 4) * ((h + 3) / 4) * texel_size;
         (void) SeekBlob(image, offset, SEEK_CUR);
@@ -886,10 +886,10 @@ static void SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size)
   MagickOffsetType
     offset;
   
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     h,
     w;
 
@@ -906,7 +906,7 @@ static void SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size)
       /*
         Mipmapcount includes the main image, so start from one
       */
-      for (i=1; (i < (long) dds_info->mipmapcount) && w && h; i++)
+      for (i=1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
         offset = (MagickOffsetType) w * h * pixel_size;
         (void) SeekBlob(image, offset, SEEK_CUR);
@@ -974,7 +974,7 @@ static MagickBooleanType IsDDS(const unsigned char *magick,const size_t length)
 %      RegisterDDSImage(void)
 %
 */
-ModuleExport unsigned long RegisterDDSImage(void)
+ModuleExport size_t RegisterDDSImage(void)
 {
   MagickInfo
     *entry;

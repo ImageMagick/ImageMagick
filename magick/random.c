@@ -84,7 +84,7 @@ struct _RandomInfo
   size_t
     i;
 
-  unsigned long
+  size_t
     seed[4];
 
   double
@@ -97,10 +97,10 @@ struct _RandomInfo
   SemaphoreInfo
     *semaphore;
 
-  long
+  ssize_t
     timestamp;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -121,7 +121,7 @@ extern char
 static SemaphoreInfo
   *random_semaphore = (SemaphoreInfo *) NULL;
 
-static unsigned long
+static size_t
   random_seed = ~0UL;
 
 static MagickBooleanType
@@ -187,7 +187,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->semaphore=AllocateSemaphoreInfo();
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
-  random_info->timestamp=(long) time(0);
+  random_info->timestamp=(ssize_t) time(0);
   random_info->signature=MagickSignature;
   /*
     Seed random nonce.
@@ -347,7 +347,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 {
 #define MaxEntropyExtent  64
 
-  long
+  ssize_t
     pid;
 
   MagickThreadType
@@ -357,7 +357,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     *chaos,
     *entropy;
 
-  unsigned long
+  size_t
     nanoseconds,
     seconds;
 
@@ -371,7 +371,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   ConcatenateStringInfo(entropy,chaos);
   SetStringInfoDatum(chaos,(unsigned char *) entropy);
   ConcatenateStringInfo(entropy,chaos);
-  pid=(long) getpid();
+  pid=(ssize_t) getpid();
   SetStringInfoLength(chaos,sizeof(pid));
   SetStringInfoDatum(chaos,(unsigned char *) &pid);
   ConcatenateStringInfo(entropy,chaos);
@@ -511,7 +511,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     */
     if (environ != (char **) NULL)
       {
-        register long
+        register ssize_t
           i;
 
         /*
@@ -596,16 +596,16 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 */
 MagickExport double GetPseudoRandomValue(RandomInfo *random_info)
 {
-  register unsigned long
+  register size_t
     *seed;
 
-  unsigned long
+  size_t
     alpha;
 
   seed=random_info->seed;
   do
   {
-    alpha=(unsigned long) (seed[1] ^ (seed[1] << 11));
+    alpha=(size_t) (seed[1] ^ (seed[1] << 11));
     seed[1]=seed[2];
     seed[2]=seed[3];
     seed[3]=seed[0];
@@ -672,7 +672,7 @@ MagickExport StringInfo *GetRandomKey(RandomInfo *random_info,
 */
 MagickExport double GetRandomValue(RandomInfo *random_info)
 {
-  unsigned long
+  size_t
     key,
     range;
 
@@ -749,14 +749,14 @@ MagickExport void RandomComponentTerminus(void)
 %
 %  The format of the SeedPseudoRandomGenerator method is:
 %
-%      void SeedPseudoRandomGenerator(const unsigned long seed)
+%      void SeedPseudoRandomGenerator(const size_t seed)
 %
 %  A description of each parameter follows:
 %
 %    o seed: the seed.
 %
 */
-MagickExport void SeedPseudoRandomGenerator(const unsigned long seed)
+MagickExport void SeedPseudoRandomGenerator(const size_t seed)
 {
   random_seed=seed;
 }
@@ -791,14 +791,14 @@ MagickExport void SeedPseudoRandomGenerator(const unsigned long seed)
 
 static inline void IncrementRandomNonce(StringInfo *nonce)
 {
-  register long
+  register ssize_t
     i;
 
   unsigned char
     *datum;
 
   datum=GetStringInfoDatum(nonce);
-  for (i=(long) (GetStringInfoLength(nonce)-1); i != 0; i--)
+  for (i=(ssize_t) (GetStringInfoLength(nonce)-1); i != 0; i--)
   {
     datum[i]++;
     if (datum[i] != 0)

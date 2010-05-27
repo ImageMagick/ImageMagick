@@ -230,10 +230,10 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterDNGImage method is:
 %
-%      unsigned long RegisterDNGImage(void)
+%      size_t RegisterDNGImage(void)
 %
 */
-ModuleExport unsigned long RegisterDNGImage(void)
+ModuleExport size_t RegisterDNGImage(void)
 {
   MagickInfo
     *entry;

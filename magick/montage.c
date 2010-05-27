@@ -268,31 +268,31 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 %
 */
 
-static void GetMontageGeometry(char *geometry,const unsigned long number_images,
-  long *x_offset,long *y_offset,unsigned long *tiles_per_column,
-  unsigned long *tiles_per_row)
+static void GetMontageGeometry(char *geometry,const size_t number_images,
+  ssize_t *x_offset,ssize_t *y_offset,size_t *tiles_per_column,
+  size_t *tiles_per_row)
 {
   *tiles_per_column=0;
   *tiles_per_row=0;
   (void) GetGeometry(geometry,x_offset,y_offset,tiles_per_row,tiles_per_column);
   if ((*tiles_per_column == 0) && (*tiles_per_row == 0))
-    *tiles_per_column=(unsigned long) sqrt((double) number_images);
+    *tiles_per_column=(size_t) sqrt((double) number_images);
   if (*tiles_per_column == 0)
-    *tiles_per_column=(unsigned long)
+    *tiles_per_column=(size_t)
       ceil((double) number_images/(*tiles_per_row));
   if (*tiles_per_row == 0)
-    *tiles_per_row=(unsigned long)
+    *tiles_per_row=(size_t)
       ceil((double) number_images/(*tiles_per_column));
 }
 
-static inline long MagickMax(const long x,const long y)
+static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-static inline long MagickMin(const long x,const long y)
+static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 {
   if (x < y)
     return(x);
@@ -364,7 +364,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  long
+  ssize_t
     tile,
     x,
     x_offset,
@@ -385,7 +385,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   MagickProgressMonitor
     progress_monitor;
 
-  register long
+  register ssize_t
     i;
 
   RectangleInfo
@@ -399,7 +399,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   TypeMetric
     metrics;
 
-  unsigned long
+  size_t
     bevel_width,
     border_width,
     height,
@@ -433,7 +433,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   if (master_list == (Image **) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   thumbnail=NewImageList();
-  for (i=0; i < (long) number_images; i++)
+  for (i=0; i < (ssize_t) number_images; i++)
   {
     image=CloneImage(image_list[i],0,0,MagickTrue,exception);
     if (image == (Image *) NULL)
@@ -447,16 +447,17 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       break;
     image_list[i]=thumbnail;
     (void) SetImageProgressMonitor(image,progress_monitor,image->client_data);
-    proceed=SetImageProgress(image,TileImageTag,i,number_images);
+    proceed=SetImageProgress(image,TileImageTag,(MagickOffsetType) i,
+      number_images);
     if (proceed == MagickFalse)
       break;
     image=DestroyImage(image);
   }
-  if (i < (long) number_images)
+  if (i < (ssize_t) number_images)
     {
       if (thumbnail == (Image *) NULL)
         i--;
-      for (tile=0; (long) tile <= i; tile++)
+      for (tile=0; (ssize_t) tile <= i; tile++)
         if (image_list[tile] != (Image *) NULL)
           image_list[tile]=DestroyImage(image_list[tile]);
       master_list=(Image **) RelinquishMagickMemory(master_list);
@@ -465,17 +466,17 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   /*
     Sort image list by increasing tile number.
   */
-  for (i=0; i < (long) number_images; i++)
+  for (i=0; i < (ssize_t) number_images; i++)
     if (image_list[i]->scene == 0)
       break;
-  if (i == (long) number_images)
+  if (i == (ssize_t) number_images)
     qsort((void *) image_list,(size_t) number_images,sizeof(*image_list),
       SceneCompare);
   /*
     Determine tiles per row and column.
   */
-  tiles_per_column=(unsigned long) sqrt((double) number_images);
-  tiles_per_row=(unsigned long) ceil((double) number_images/tiles_per_column);
+  tiles_per_column=(size_t) sqrt((double) number_images);
+  tiles_per_row=(size_t) ceil((double) number_images/tiles_per_column);
   x_offset=0;
   y_offset=0;
   if (montage_info->tile != (char *) NULL)
@@ -486,8 +487,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   */
   concatenate=MagickFalse;
   SetGeometry(image_list[0],&extract_info);
-  extract_info.x=(long) montage_info->border_width;
-  extract_info.y=(long) montage_info->border_width;
+  extract_info.x=(ssize_t) montage_info->border_width;
+  extract_info.y=(ssize_t) montage_info->border_width;
   if (montage_info->geometry != (char *) NULL)
     {
       /*
@@ -516,17 +517,17 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
       if ((flags & XiValue) == 0)
-        frame_info.outer_bevel=(long) frame_info.width/2;
+        frame_info.outer_bevel=(ssize_t) frame_info.width/2;
       if ((flags & PsiValue) == 0)
         frame_info.inner_bevel=frame_info.outer_bevel;
-      frame_info.x=(long) frame_info.width;
-      frame_info.y=(long) frame_info.height;
-      bevel_width=(unsigned long) MagickMax(frame_info.inner_bevel,
+      frame_info.x=(ssize_t) frame_info.width;
+      frame_info.y=(ssize_t) frame_info.height;
+      bevel_width=(size_t) MagickMax(frame_info.inner_bevel,
         frame_info.outer_bevel);
-      border_width=(unsigned long) MagickMax((long) frame_info.width,
-        (long) frame_info.height);
+      border_width=(size_t) MagickMax((ssize_t) frame_info.width,
+        (ssize_t) frame_info.height);
     }
-  for (i=0; i < (long) number_images; i++)
+  for (i=0; i < (ssize_t) number_images; i++)
   {
     if (image_list[i]->columns > extract_info.width)
       extract_info.width=image_list[i]->columns;
@@ -562,10 +563,10 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   title=InterpretImageProperties(clone_info,image_list[0],montage_info->title);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
-    title_offset=(unsigned long) (2*(metrics.ascent-metrics.descent)*
+    title_offset=(size_t) (2*(metrics.ascent-metrics.descent)*
       MultilineCensus(title)+2*extract_info.y);
   number_lines=0;
-  for (i=0; i < (long) number_images; i++)
+  for (i=0; i < (ssize_t) number_images; i++)
   {
     value=GetImageProperty(image_list[i],"label");
     if (value == (const char *) NULL)
@@ -581,8 +582,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   montage->scene=0;
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
-  total_tiles=(unsigned long) number_images;
-  for (i=0; i < (long) images_per_page; i++)
+  total_tiles=(size_t) number_images;
+  for (i=0; i < (ssize_t) images_per_page; i++)
   {
     /*
       Determine bounding box.
@@ -594,14 +595,14 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y_offset,
         &sans,&sans);
     tiles_per_page=tiles_per_row*tiles_per_column;
-    y_offset+=(long) title_offset;
+    y_offset+=(ssize_t) title_offset;
     max_height=0;
     bounds.width=0;
     bounds.height=0;
     width=0;
-    for (tile=0; tile < (long) tiles_per_page; tile++)
+    for (tile=0; tile < (ssize_t) tiles_per_page; tile++)
     {
-      if (tile < (long) number_images)
+      if (tile < (ssize_t) number_images)
         {
           width=concatenate != MagickFalse ? image_list[tile]->columns :
             extract_info.width;
@@ -609,9 +610,9 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             max_height=image_list[tile]->rows;
         }
       x_offset+=width+(extract_info.x+border_width)*2;
-      if (x_offset > (long) bounds.width)
-        bounds.width=(unsigned long) x_offset;
-      if (((tile+1) == (long) tiles_per_page) ||
+      if (x_offset > (ssize_t) bounds.width)
+        bounds.width=(size_t) x_offset;
+      if (((tile+1) == (ssize_t) tiles_per_page) ||
           (((tile+1) % tiles_per_row) == 0))
         {
           x_offset=0;
@@ -619,11 +620,11 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y,
               &sans,&sans);
           height=concatenate != MagickFalse ? max_height : extract_info.height;
-          y_offset+=(unsigned long) (height+(extract_info.y+border_width)*2+
+          y_offset+=(size_t) (height+(extract_info.y+border_width)*2+
             (metrics.ascent-metrics.descent+4)*number_lines+
             (montage_info->shadow != MagickFalse ? 4 : 0));
-          if (y_offset > (long) bounds.height)
-            bounds.height=(unsigned long) y_offset;
+          if (y_offset > (ssize_t) bounds.height)
+            bounds.height=(size_t) y_offset;
           max_height=0;
         }
     }
@@ -643,7 +644,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     montage->montage=AcquireString((char *) NULL);
     tile=0;
     extent=1;
-    while (tile < MagickMin((long) tiles_per_page,(long) number_images))
+    while (tile < MagickMin((ssize_t) tiles_per_page,(ssize_t) number_images))
     {
       extent+=strlen(image_list[tile]->filename)+1;
       tile++;
@@ -658,15 +659,15 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     if (montage_info->tile != (char *) NULL)
       GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y_offset,
         &sans,&sans);
-    y_offset+=(long) title_offset;
+    y_offset+=(ssize_t) title_offset;
     (void) FormatMagickString(montage->montage,MaxTextExtent,"%ldx%ld%+ld%+ld",
-      (long) (extract_info.width+(extract_info.x+border_width)*2),
-      (long) (extract_info.height+(extract_info.y+border_width)*2+
+      (ssize_t) (extract_info.width+(extract_info.x+border_width)*2),
+      (ssize_t) (extract_info.height+(extract_info.y+border_width)*2+
       (metrics.ascent-metrics.descent+4)*number_lines+
       (montage_info->shadow != MagickFalse ? 4 : 0)),x_offset,y_offset);
     *montage->directory='\0';
     tile=0;
-    while (tile < MagickMin((long) tiles_per_page,(long) number_images))
+    while (tile < MagickMin((ssize_t) tiles_per_page,(ssize_t) number_images))
     {
       (void) ConcatenateMagickString(montage->directory,
         image_list[tile]->filename,extent);
@@ -696,8 +697,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         clone_info->pointsize*=2.0;
         (void) GetTypeMetrics(image_list[0],clone_info,&metrics);
         (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-          montage->columns,(unsigned long) (metrics.ascent-metrics.descent),
-          0L,(long) extract_info.y+4);
+          montage->columns,(size_t) (metrics.ascent-metrics.descent),
+          0L,(ssize_t) extract_info.y+4);
         (void) CloneString(&clone_info->geometry,geometry);
         (void) CloneString(&clone_info->text,title);
         (void) AnnotateImage(montage,clone_info);
@@ -714,9 +715,9 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y_offset,
         &sans,&sans);
     x_offset+=extract_info.x;
-    y_offset+=(long) title_offset+extract_info.y;
+    y_offset+=(ssize_t) title_offset+extract_info.y;
     max_height=0;
-    for (tile=0; tile < MagickMin((long) tiles_per_page,(long) number_images); tile++)
+    for (tile=0; tile < MagickMin((ssize_t) tiles_per_page,(ssize_t) number_images); tile++)
     {
       /*
         Copy this tile to the composite.
@@ -767,8 +768,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       (void) FormatMagickString(tile_geometry,MaxTextExtent,"%lux%lu+0+0",
         image->columns,image->rows);
       flags=ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
-      x=(long) (geometry.x+border_width);
-      y=(long) (geometry.y+border_width);
+      x=(ssize_t) (geometry.x+border_width);
+      y=(ssize_t) (geometry.y+border_width);
       if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))
         {
           FrameInfo
@@ -785,7 +786,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           extract_info.height=height+2*frame_info.height;
           value=GetImageProperty(image,"label");
           if (value != (const char *) NULL)
-            extract_info.height+=(unsigned long) ((metrics.ascent-
+            extract_info.height+=(size_t) ((metrics.ascent-
               metrics.descent+4)*MultilineCensus(value));
           frame_image=FrameImage(image,&extract_info,exception);
           if (frame_image != (Image *) NULL)
@@ -833,7 +834,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               */
               (void) FormatMagickString(geometry,MaxTextExtent,
                 "%lux%lu%+ld%+ld",(montage_info->frame ? image->columns :
-                width)-2*border_width,(unsigned long) (metrics.ascent-
+                width)-2*border_width,(size_t) (metrics.ascent-
                 metrics.descent+4)*MultilineCensus(value),x_offset+
                 border_width,(montage_info->frame ? y_offset+height+
                 border_width+4 : y_offset+extract_info.height+border_width+
@@ -844,11 +845,11 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             }
         }
       x_offset+=width+(extract_info.x+border_width)*2;
-      if (((tile+1) == (long) tiles_per_page) ||
+      if (((tile+1) == (ssize_t) tiles_per_page) ||
           (((tile+1) % tiles_per_row) == 0))
         {
           x_offset=extract_info.x;
-          y_offset+=(unsigned long) (height+(extract_info.y+border_width)*2+
+          y_offset+=(size_t) (height+(extract_info.y+border_width)*2+
             (metrics.ascent-metrics.descent+4)*number_lines+
             (montage_info->shadow != MagickFalse ? 4 : 0));
           max_height=0;
@@ -866,7 +867,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       image=DestroyImage(image);
       tiles++;
     }
-    if ((i+1) < (long) images_per_page)
+    if ((i+1) < (ssize_t) images_per_page)
       {
         /*
           Allocate next image structure.

@@ -27,7 +27,7 @@ extern "C" {
 #include <magick/exception-private.h>
 
 static inline IndexPacket ConstrainColormapIndex(Image *image,
-  const unsigned long index)
+  const size_t index)
 {
   if (index < image->colors)
     return((IndexPacket) index);

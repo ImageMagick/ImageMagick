@@ -3,7 +3,7 @@
 // Copyright Bob Friesenhahn, 2000, 2001, 2003
 //
 // Demo of text annotation with gravity.  Produces an animation showing
-// the effect of rotated text along with various gravity specifications.
+// the effect of rotated text assize_t with various gravity specifications.
 //
 // After running demo program, run 'animate gravity_out.miff' if you
 // are using X-Windows to see an animated result.

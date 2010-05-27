@@ -80,7 +80,7 @@ typedef struct _DoublePixelPacket
 
 typedef struct _LongPixelPacket
 {
-  unsigned long
+  size_t
     red,
     green,
     blue,
@@ -102,7 +102,7 @@ typedef struct _MagickPixelPacket
   double
     fuzz;
 
-  unsigned long
+  size_t
     depth;
 
   MagickRealType
@@ -135,10 +135,10 @@ typedef struct _PixelPacket
 } PixelPacket;
 
 extern MagickExport MagickBooleanType
-  ExportImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
-  ImportImagePixels(Image *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,const void *);
+  ExportImagePixels(const Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t,const char *,const StorageType,void *,ExceptionInfo *),
+  ImportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t,const char *,const StorageType,const void *);
 
 extern MagickExport void
   GetMagickPixelPacket(const Image *,MagickPixelPacket *);

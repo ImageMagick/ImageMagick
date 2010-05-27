@@ -77,11 +77,11 @@ typedef struct _FourierInfo
   MagickBooleanType
     modulus;
 
-  unsigned long
+  size_t
     width,
     height;
 
-  long
+  ssize_t
     center;
 } FourierInfo;
 
@@ -118,19 +118,19 @@ typedef struct _FourierInfo
 
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 
-static MagickBooleanType RollFourier(const unsigned long width,
-  const unsigned long height,const long x_offset,const long y_offset,
+static MagickBooleanType RollFourier(const size_t width,
+  const size_t height,const ssize_t x_offset,const ssize_t y_offset,
   double *fourier)
 {
   double
     *roll;
 
-  long
+  ssize_t
     u,
     v,
     y;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -141,19 +141,19 @@ static MagickBooleanType RollFourier(const unsigned long width,
   if (roll == (double *) NULL)
     return(MagickFalse);
   i=0L;
-  for (y=0L; y < (long) height; y++)
+  for (y=0L; y < (ssize_t) height; y++)
   {
     if (y_offset < 0L)
-      v=((y+y_offset) < 0L) ? y+y_offset+(long) height : y+y_offset;
+      v=((y+y_offset) < 0L) ? y+y_offset+(ssize_t) height : y+y_offset;
     else
-      v=((y+y_offset) > ((long) height-1L)) ? y+y_offset-(long) height :
+      v=((y+y_offset) > ((ssize_t) height-1L)) ? y+y_offset-(ssize_t) height :
         y+y_offset;
-    for (x=0L; x < (long) width; x++)
+    for (x=0L; x < (ssize_t) width; x++)
     {
       if (x_offset < 0L)
-        u=((x+x_offset) < 0L) ? x+x_offset+(long) width : x+x_offset;
+        u=((x+x_offset) < 0L) ? x+x_offset+(ssize_t) width : x+x_offset;
       else
-        u=((x+x_offset) > ((long) width-1L)) ? x+x_offset-(long) width :
+        u=((x+x_offset) > ((ssize_t) width-1L)) ? x+x_offset-(ssize_t) width :
           x+x_offset;
       roll[v*width+u]=fourier[i++];
    }
@@ -163,48 +163,48 @@ static MagickBooleanType RollFourier(const unsigned long width,
   return(MagickTrue);
 }
 
-static MagickBooleanType ForwardQuadrantSwap(const unsigned long width,
-  const unsigned long height,double *source,double *destination)
+static MagickBooleanType ForwardQuadrantSwap(const size_t width,
+  const size_t height,double *source,double *destination)
 {
-  long
+  ssize_t
     center,
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     x;
 
   /*
     Swap quadrants.
   */
-  center=(long) floor((double) width/2L)+1L;
-  status=RollFourier((unsigned long) center,height,0L,(long) height/2L,source);
+  center=(ssize_t) floor((double) width/2L)+1L;
+  status=RollFourier((size_t) center,height,0L,(ssize_t) height/2L,source);
   if (status == MagickFalse)
     return(MagickFalse);
-  for (y=0L; y < (long) height; y++)
-    for (x=0L; x < (long) (width/2L-1L); x++)
+  for (y=0L; y < (ssize_t) height; y++)
+    for (x=0L; x < (ssize_t) (width/2L-1L); x++)
       destination[width*y+x+width/2L]=source[center*y+x];
-  for (y=1; y < (long) height; y++)
-    for (x=0L; x < (long) (width/2L-1L); x++)
+  for (y=1; y < (ssize_t) height; y++)
+    for (x=0L; x < (ssize_t) (width/2L-1L); x++)
       destination[width*(height-y)+width/2L-x-1L]=source[center*y+x+1L];
-  for (x=0L; x < (long) (width/2L); x++)
+  for (x=0L; x < (ssize_t) (width/2L); x++)
     destination[-x+width/2L-1L]=destination[x+width/2L+1L];
   return(MagickTrue);
 }
 
-static void CorrectPhaseLHS(const unsigned long width,
-  const unsigned long height,double *fourier)
+static void CorrectPhaseLHS(const size_t width,
+  const size_t height,double *fourier)
 {
-  long
+  ssize_t
     y;
 
-  register long
+  register ssize_t
     x;
 
-  for (y=0L; y < (long) height; y++)
-    for (x=0L; x < (long) (width/2L); x++)
+  for (y=0L; y < (ssize_t) height; y++)
+    for (x=0L; x < (ssize_t) (width/2L); x++)
       fourier[y*width+x]*=(-1.0);
 }
 
@@ -223,7 +223,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     *magnitude_image,
     *phase_image;
 
-  long
+  ssize_t
     i,
     y;
 
@@ -233,7 +233,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -274,8 +274,8 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   if (fourier_info->modulus != MagickFalse)
     {
       i=0L;
-      for (y=0L; y < (long) fourier_info->height; y++)
-        for (x=0L; x < (long) fourier_info->width; x++)
+      for (y=0L; y < (ssize_t) fourier_info->height; y++)
+        for (x=0L; x < (ssize_t) fourier_info->width; x++)
         {
           phase_source[i]/=(2.0*MagickPI);
           phase_source[i]+=0.5;
@@ -285,14 +285,14 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   magnitude_view=AcquireCacheView(magnitude_image);
   phase_view=AcquireCacheView(phase_image);
   i=0L;
-  for (y=0L; y < (long) fourier_info->height; y++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     q=GetCacheViewAuthenticPixels(magnitude_view,0L,y,fourier_info->height,1UL,
       exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetCacheViewAuthenticIndexQueue(magnitude_view);
-    for (x=0L; x < (long) fourier_info->width; x++)
+    for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
       switch (fourier_info->channel)
       {
@@ -338,14 +338,14 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
       break;
   }
   i=0L;
-  for (y=0L; y < (long) fourier_info->height; y++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     q=GetCacheViewAuthenticPixels(phase_view,0L,y,fourier_info->height,1UL,
       exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetCacheViewAuthenticIndexQueue(phase_view);
-    for (x=0L; x < (long) fourier_info->width; x++)
+    for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
       switch (fourier_info->channel)
       {
@@ -413,7 +413,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   fftw_plan
     fftw_r2c_plan;
 
-  long
+  ssize_t
     y;
 
   register const IndexPacket
@@ -422,7 +422,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -441,14 +441,14 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     sizeof(*source));
   i=0L;
   image_view=AcquireCacheView(image);
-  for (y=0L; y < (long) fourier_info->height; y++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0L,y,fourier_info->width,1UL,
       exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetCacheViewVirtualIndexQueue(image_view);
-    for (x=0L; x < (long) fourier_info->width; x++)
+    for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
       switch (fourier_info->channel)
       {
@@ -511,8 +511,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   */
   n=(double) fourier_info->width*(double) fourier_info->width;
   i=0L;
-  for (y=0L; y < (long) fourier_info->height; y++)
-    for (x=0L; x < (long) fourier_info->center; x++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
+    for (x=0L; x < (ssize_t) fourier_info->center; x++)
     {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
       fourier[i]/=n;
@@ -527,16 +527,16 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   */
   i=0L;
   if (fourier_info->modulus != MagickFalse)
-    for (y=0L; y < (long) fourier_info->height; y++)
-      for (x=0L; x < (long) fourier_info->center; x++)
+    for (y=0L; y < (ssize_t) fourier_info->height; y++)
+      for (x=0L; x < (ssize_t) fourier_info->center; x++)
       {
         magnitude[i]=cabs(fourier[i]);
         phase[i]=carg(fourier[i]);
         i++;
       }
   else
-    for (y=0L; y < (long) fourier_info->height; y++)
-      for (x=0L; x < (long) fourier_info->center; x++)
+    for (y=0L; y < (ssize_t) fourier_info->height; y++)
+      for (x=0L; x < (ssize_t) fourier_info->center; x++)
       {
         magnitude[i]=creal(fourier[i]);
         phase[i]=cimag(fourier[i]);
@@ -574,7 +574,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
       fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
     }
   fourier_info.height=fourier_info.width;
-  fourier_info.center=(long) floor((double) fourier_info.width/2.0)+1L;
+  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2.0)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
@@ -632,7 +632,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
     Image
       *magnitude_image;
 
-    unsigned long
+    size_t
       extent,
       width;
 
@@ -660,7 +660,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
               is_gray,
               status;
 
-            register long
+            register ssize_t
               i;
 
             phase_image->storage_class=DirectClass;
@@ -769,28 +769,28 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 */
 
 #if defined(MAGICKCORE_FFTW_DELEGATE)
-static MagickBooleanType InverseQuadrantSwap(const unsigned long width,
-  const unsigned long height,const double *source,double *destination)
+static MagickBooleanType InverseQuadrantSwap(const size_t width,
+  const size_t height,const double *source,double *destination)
 {
-  long
+  ssize_t
     center,
     y;
 
-  register long
+  register ssize_t
     x;
 
   /*
     Swap quadrants.
   */
-  center=(long) floor((double) width/2.0)+1L;
-  for (y=1L; y < (long) height; y++)
-    for (x=0L; x < (long) (width/2L+1L); x++)
+  center=(ssize_t) floor((double) width/2.0)+1L;
+  for (y=1L; y < (ssize_t) height; y++)
+    for (x=0L; x < (ssize_t) (width/2L+1L); x++)
       destination[center*(height-y)-x+width/2L]=source[y*width+x];
-  for (y=0L; y < (long) height; y++)
+  for (y=0L; y < (ssize_t) height; y++)
     destination[center*y]=source[y*width+width/2L];
   for (x=0L; x < center; x++)
     destination[x]=source[center-x-1L];
-  return(RollFourier(center,height,0L,(long) height/-2L,destination));
+  return(RollFourier(center,height,0L,(ssize_t) height/-2L,destination));
 }
 
 static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
@@ -807,7 +807,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     *magnitude_source,
     *phase_source;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -819,7 +819,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -847,14 +847,14 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     }
   i=0L;
   magnitude_view=AcquireCacheView(magnitude_image);
-  for (y=0L; y < (long) fourier_info->height; y++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(magnitude_view,0L,y,fourier_info->width,1UL,
       exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetCacheViewAuthenticIndexQueue(magnitude_view);
-    for (x=0L; x < (long) fourier_info->width; x++)
+    for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
       switch (fourier_info->channel)
       {
@@ -896,14 +896,14 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   }
   i=0L;
   phase_view=AcquireCacheView(phase_image);
-  for (y=0L; y < (long) fourier_info->height; y++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(phase_view,0,y,fourier_info->width,1,
       exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetCacheViewAuthenticIndexQueue(phase_view);
-    for (x=0L; x < (long) fourier_info->width; x++)
+    for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
       switch (fourier_info->channel)
       {
@@ -946,8 +946,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   if (fourier_info->modulus != MagickFalse)
     {
       i=0L;
-      for (y=0L; y < (long) fourier_info->height; y++)
-        for (x=0L; x < (long) fourier_info->width; x++)
+      for (y=0L; y < (ssize_t) fourier_info->height; y++)
+        for (x=0L; x < (ssize_t) fourier_info->width; x++)
         {
           phase_source[i]-=0.5;
           phase_source[i]*=(2.0*MagickPI);
@@ -990,8 +990,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   */
   i=0L;
   if (fourier_info->modulus != MagickFalse)
-    for (y=0L; y < (long) fourier_info->height; y++)
-       for (x=0L; x < (long) fourier_info->center; x++)
+    for (y=0L; y < (ssize_t) fourier_info->height; y++)
+       for (x=0L; x < (ssize_t) fourier_info->center; x++)
        {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
          fourier[i]=magnitude[i]*cos(phase[i])+I*magnitude[i]*sin(phase[i]);
@@ -1002,8 +1002,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
          i++;
       }
   else
-    for (y=0L; y < (long) fourier_info->height; y++)
-      for (x=0L; x < (long) fourier_info->center; x++)
+    for (y=0L; y < (ssize_t) fourier_info->height; y++)
+      for (x=0L; x < (ssize_t) fourier_info->center; x++)
       {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
         fourier[i]=magnitude[i]+I*phase[i];
@@ -1030,13 +1030,13 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   fftw_plan
     fftw_c2r_plan;
 
-  long
+  ssize_t
     y;
 
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -1060,14 +1060,14 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   fftw_destroy_plan(fftw_c2r_plan);
   i=0L;
   image_view=AcquireCacheView(image);
-  for (y=0L; y < (long) fourier_info->height; y++)
+  for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     q=GetCacheViewAuthenticPixels(image_view,0L,y,fourier_info->width,1UL,
       exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0L; x < (long) fourier_info->width; x++)
+    for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
       switch (fourier_info->channel)
       {
@@ -1147,7 +1147,7 @@ static MagickBooleanType InverseFourierTransformChannel(
       fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
     }
   fourier_info.height=fourier_info.width;
-  fourier_info.center=(long) floor((double) fourier_info.width/2.0)+1L;
+  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2.0)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
@@ -1226,7 +1226,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
           is_gray,
           status;
 
-        register long
+        register ssize_t
           i;
 
         status=MagickTrue;

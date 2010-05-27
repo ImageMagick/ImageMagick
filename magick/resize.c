@@ -86,7 +86,7 @@ struct _ResizeFilter
     blur,           /* x-scale (blur-sharpen) */
     cubic[8];       /* cubic coefficents for smooth Cubic filters */
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -254,14 +254,14 @@ static MagickRealType Kaiser(const MagickRealType x,
 static MagickRealType Lagrange(const MagickRealType x,
   const ResizeFilter *resize_filter)
 {
-  long
+  ssize_t
     n,
     order;
 
   MagickRealType
     value;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -277,8 +277,8 @@ static MagickRealType Lagrange(const MagickRealType x,
   */
   if (x > resize_filter->support)
     return(0.0);
-  order=(long) (2.0*resize_filter->window_support);  /* number of pieces */
-  n=(long) ((1.0*order)/2.0+x);  /* which piece does x belong to */
+  order=(ssize_t) (2.0*resize_filter->window_support);  /* number of pieces */
+  n=(ssize_t) ((1.0*order)/2.0+x);  /* which piece does x bessize_t to */
   value=1.0f;
   for (i=0; i < order; i++)
     if (i != n)
@@ -464,7 +464,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     filter_type,
     window_type;
 
-  long
+  ssize_t
     option;
 
   MagickRealType
@@ -712,7 +712,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
     {
-      long
+      ssize_t
         lobes;
 
       lobes=StringToLong(artifact);
@@ -822,7 +822,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 %  The format of the AdaptiveResizeImage method is:
 %
 %      Image *AdaptiveResizeImage(const Image *image,
-%        const unsigned long columns,const unsigned long rows,
+%        const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -837,7 +837,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 %
 */
 MagickExport Image *AdaptiveResizeImage(const Image *image,
-  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
+  const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
 #define AdaptiveResizeImageTag  "Resize/Image"
 
@@ -847,7 +847,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
   Image
     *resize_image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -890,12 +890,12 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     (void) SetResampleFilterInterpolateMethod(resample_filter,
       MeshInterpolatePixel);
   resize_view=AcquireCacheView(resize_image);
-  for (y=0; y < (long) resize_image->rows; y++)
+  for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
     register IndexPacket
       *restrict resize_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -907,7 +907,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
       break;
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
     offset.y=((MagickRealType) y*image->rows/resize_image->rows);
-    for (x=0; x < (long) resize_image->columns; x++)
+    for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       offset.x=((MagickRealType) x*image->columns/resize_image->columns);
       (void) ResamplePixelColor(resample_filter,offset.x-0.5,offset.y-0.5,
@@ -973,7 +973,7 @@ static MagickRealType I0(MagickRealType x)
     t,
     y;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -997,7 +997,7 @@ static MagickRealType J1(MagickRealType x)
     p,
     q;
 
-  register long
+  register ssize_t
     i;
 
   static const double
@@ -1043,7 +1043,7 @@ static MagickRealType P1(MagickRealType x)
     p,
     q;
 
-  register long
+  register ssize_t
     i;
 
   static const double
@@ -1083,7 +1083,7 @@ static MagickRealType Q1(MagickRealType x)
     p,
     q;
 
-  register long
+  register ssize_t
     i;
 
   static const double
@@ -1375,7 +1375,7 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
   Image
     *resample_image;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -1388,9 +1388,9 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=(unsigned long) (x_resolution*image->columns/
+  width=(size_t) (x_resolution*image->columns/
     (image->x_resolution == 0.0 ? 72.0 : image->x_resolution)+0.5);
-  height=(unsigned long) (y_resolution*image->rows/
+  height=(size_t) (y_resolution*image->rows/
     (image->y_resolution == 0.0 ? 72.0 : image->y_resolution)+0.5);
   resample_image=ResizeImage(image,width,height,filter,blur,exception);
   if (resample_image != (Image *) NULL)
@@ -1418,7 +1418,7 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
 %  The format of the LiquidRescaleImage method is:
 %
 %      Image *LiquidRescaleImage(const Image *image,
-%        const unsigned long columns,const unsigned long rows,
+%        const size_t columns,const size_t rows,
 %        const double delta_x,const double rigidity,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1437,7 +1437,7 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
 %
 */
 MagickExport Image *LiquidRescaleImage(const Image *image,
-  const unsigned long columns,const unsigned long rows,
+  const size_t columns,const size_t rows,
   const double delta_x,const double rigidity,ExceptionInfo *exception)
 {
 #define LiquidRescaleImageTag  "Rescale/Image"
@@ -1490,7 +1490,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
       Image
         *resize_image;
 
-      unsigned long
+      size_t
         height,
         width;
 
@@ -1589,8 +1589,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 }
 #else
 MagickExport Image *LiquidRescaleImage(const Image *image,
-  const unsigned long magick_unused(columns),
-  const unsigned long magick_unused(rows),const double magick_unused(delta_x),
+  const size_t magick_unused(columns),
+  const size_t magick_unused(rows),const double magick_unused(delta_x),
   const double magick_unused(rigidity),ExceptionInfo *exception)
 {
   assert(image != (const Image *) NULL);
@@ -1627,8 +1627,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 %
 %  The format of the ResizeImage method is:
 %
-%      Image *ResizeImage(Image *image,const unsigned long columns,
-%        const unsigned long rows,const FilterTypes filter,const double blur,
+%      Image *ResizeImage(Image *image,const size_t columns,
+%        const size_t rows,const FilterTypes filter,const double blur,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1653,18 +1653,18 @@ typedef struct _ContributionInfo
   MagickRealType
     weight;
 
-  long
+  ssize_t
     pixel;
 } ContributionInfo;
 
 static ContributionInfo **DestroyContributionThreadSet(
   ContributionInfo **contribution)
 {
-  register long
+  register ssize_t
     i;
 
   assert(contribution != (ContributionInfo **) NULL);
-  for (i=0; i < (long) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (contribution[i] != (ContributionInfo *) NULL)
       contribution[i]=(ContributionInfo *) RelinquishMagickMemory(
         contribution[i]);
@@ -1674,13 +1674,13 @@ static ContributionInfo **DestroyContributionThreadSet(
 
 static ContributionInfo **AcquireContributionThreadSet(const size_t count)
 {
-  register long
+  register ssize_t
     i;
 
   ContributionInfo
     **contribution;
 
-  unsigned long
+  size_t
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -1689,7 +1689,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   if (contribution == (ContributionInfo **) NULL)
     return((ContributionInfo **) NULL);
   (void) ResetMagickMemory(contribution,0,number_threads*sizeof(*contribution));
-  for (i=0; i < (long) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     contribution[i]=(ContributionInfo *) AcquireQuantumMemory(count,
       sizeof(**contribution));
@@ -1729,7 +1729,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   ContributionInfo
     **restrict contributions;
 
-  long
+  ssize_t
     x;
 
   MagickBooleanType
@@ -1776,9 +1776,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for shared(status)
 #endif
-  for (x=0; x < (long) resize_image->columns; x++)
+  for (x=0; x < (ssize_t) resize_image->columns; x++)
   {
-    long
+    ssize_t
       n,
       start,
       stop;
@@ -1799,7 +1799,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     register IndexPacket
       *restrict resize_indexes;
 
-    register long
+    register ssize_t
       y;
 
     register PixelPacket
@@ -1808,8 +1808,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     if (status == MagickFalse)
       continue;
     center=(MagickRealType) (x+0.5)/x_factor;
-    start=(long) MagickMax(center-support+0.5,0.0);
-    stop=(long) MagickMin(center+support+0.5,(double) image->columns);
+    start=(ssize_t) MagickMax(center-support+0.5,0.0);
+    stop=(ssize_t) MagickMin(center+support+0.5,(double) image->columns);
     density=0.0;
     contribution=contributions[GetOpenMPThreadId()];
     for (n=0; n < (stop-start); n++)
@@ -1821,7 +1821,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     }
     if ((density != 0.0) && (density != 1.0))
       {
-        register long
+        register ssize_t
           i;
 
         /*
@@ -1832,7 +1832,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           contribution[i].weight*=density;
       }
     p=GetCacheViewVirtualPixels(image_view,contribution[0].pixel,0,
-      (unsigned long) (contribution[n-1].pixel-contribution[0].pixel+1),
+      (size_t) (contribution[n-1].pixel-contribution[0].pixel+1),
       image->rows,exception);
     q=QueueCacheViewAuthenticPixels(resize_view,x,0,1,resize_image->rows,
       exception);
@@ -1843,9 +1843,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
-    for (y=0; y < (long) resize_image->rows; y++)
+    for (y=0; y < (ssize_t) resize_image->rows; y++)
     {
-      long
+      ssize_t
         j;
 
       MagickPixelPacket
@@ -1854,7 +1854,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       MagickRealType
         alpha;
 
-      register long
+      register ssize_t
         i;
 
       pixel=zero;
@@ -1928,7 +1928,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       if ((resize_image->storage_class == PseudoClass) &&
           (image->storage_class == PseudoClass))
         {
-          i=(long) (MagickMin(MagickMax(center,(double) start),(double) stop-
+          i=(ssize_t) (MagickMin(MagickMax(center,(double) start),(double) stop-
             1.0)+0.5);
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
             (contribution[i-start].pixel-contribution[0].pixel);
@@ -1971,7 +1971,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   ContributionInfo
     **restrict contributions;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -2018,9 +2018,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for shared(status)
 #endif
-  for (y=0; y < (long) resize_image->rows; y++)
+  for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
-    long
+    ssize_t
       n,
       start,
       stop;
@@ -2041,7 +2041,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     register IndexPacket
       *restrict resize_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2050,8 +2050,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     if (status == MagickFalse)
       continue;
     center=(MagickRealType) (y+0.5)/y_factor;
-    start=(long) MagickMax(center-support+0.5,0.0);
-    stop=(long) MagickMin(center+support+0.5,(double) image->rows);
+    start=(ssize_t) MagickMax(center-support+0.5,0.0);
+    stop=(ssize_t) MagickMin(center+support+0.5,(double) image->rows);
     density=0.0;
     contribution=contributions[GetOpenMPThreadId()];
     for (n=0; n < (stop-start); n++)
@@ -2063,7 +2063,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     }
     if ((density != 0.0) && (density != 1.0))
       {
-        register long
+        register ssize_t
           i;
 
         /*
@@ -2074,7 +2074,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           contribution[i].weight*=density;
       }
     p=GetCacheViewVirtualPixels(image_view,0,contribution[0].pixel,
-      image->columns,(unsigned long) (contribution[n-1].pixel-
+      image->columns,(size_t) (contribution[n-1].pixel-
       contribution[0].pixel+1),exception);
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
@@ -2085,9 +2085,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
-    for (x=0; x < (long) resize_image->columns; x++)
+    for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      long
+      ssize_t
         j;
 
       MagickPixelPacket
@@ -2096,7 +2096,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       MagickRealType
         alpha;
 
-      register long
+      register ssize_t
         i;
 
       pixel=zero;
@@ -2104,7 +2104,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         {
           for (i=0; i < n; i++)
           {
-            j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+            j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
               image->columns+x);
             alpha=contribution[i].weight;
             pixel.red+=alpha*(p+j)->red;
@@ -2121,7 +2121,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             {
               for (i=0; i < n; i++)
               {
-                j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+                j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
                   image->columns+x);
                 alpha=contribution[i].weight;
                 pixel.index+=alpha*indexes[j];
@@ -2137,7 +2137,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           gamma=0.0;
           for (i=0; i < n; i++)
           {
-            j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+            j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
               image->columns+x);
             alpha=contribution[i].weight*QuantumScale*
               GetAlphaPixelComponent(p+j);
@@ -2157,7 +2157,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             {
               for (i=0; i < n; i++)
               {
-                j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+                j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
                   image->columns+x);
                 alpha=contribution[i].weight*QuantumScale*
                   GetAlphaPixelComponent(p+j);
@@ -2170,9 +2170,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       if ((resize_image->storage_class == PseudoClass) &&
           (image->storage_class == PseudoClass))
         {
-          i=(long) (MagickMin(MagickMax(center,(double) start),(double) stop-
+          i=(ssize_t) (MagickMin(MagickMax(center,(double) start),(double) stop-
             1.0)+0.5);
-          j=(long) ((contribution[i-start].pixel-contribution[0].pixel)*
+          j=(ssize_t) ((contribution[i-start].pixel-contribution[0].pixel)*
             image->columns+x);
           resize_indexes[x]=indexes[j];
         }
@@ -2199,8 +2199,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   return(status);
 }
 
-MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,const FilterTypes filter,const double blur,
+MagickExport Image *ResizeImage(const Image *image,const size_t columns,
+  const size_t rows,const FilterTypes filter,const double blur,
   ExceptionInfo *exception)
 {
 #define WorkLoadFactor  0.265
@@ -2316,8 +2316,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
 %
 %  The format of the SampleImage method is:
 %
-%      Image *SampleImage(const Image *image,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%      Image *SampleImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2330,8 +2330,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport Image *SampleImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
 #define SampleImageTag  "Sample/Image"
 
@@ -2342,7 +2342,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   Image
     *sample_image;
 
-  long
+  ssize_t
     progress,
     *x_offset,
     y;
@@ -2350,7 +2350,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     x;
 
   /*
@@ -2372,15 +2372,15 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   /*
     Allocate scan line buffer and column offset buffers.
   */
-  x_offset=(long *) AcquireQuantumMemory((size_t) sample_image->columns,
+  x_offset=(ssize_t *) AcquireQuantumMemory((size_t) sample_image->columns,
     sizeof(*x_offset));
-  if (x_offset == (long *) NULL)
+  if (x_offset == (ssize_t *) NULL)
     {
       sample_image=DestroyImage(sample_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (x=0; x < (long) sample_image->columns; x++)
-    x_offset[x]=(long) (((MagickRealType) x+0.5)*image->columns/
+  for (x=0; x < (ssize_t) sample_image->columns; x++)
+    x_offset[x]=(ssize_t) (((MagickRealType) x+0.5)*image->columns/
       sample_image->columns);
   /*
     Sample each row.
@@ -2392,9 +2392,9 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) sample_image->rows; y++)
+  for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
-    long
+    ssize_t
       y_offset;
 
     register const IndexPacket
@@ -2406,7 +2406,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     register IndexPacket
       *restrict sample_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -2414,7 +2414,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
 
     if (status == MagickFalse)
       continue;
-    y_offset=(long) (((MagickRealType) y+0.5)*image->rows/sample_image->rows);
+    y_offset=(ssize_t) (((MagickRealType) y+0.5)*image->rows/sample_image->rows);
     p=GetCacheViewVirtualPixels(image_view,0,y_offset,image->columns,1,
       exception);
     q=QueueCacheViewAuthenticPixels(sample_view,0,y,sample_image->columns,1,
@@ -2429,11 +2429,11 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     /*
       Sample each column.
     */
-    for (x=0; x < (long) sample_image->columns; x++)
+    for (x=0; x < (ssize_t) sample_image->columns; x++)
       *q++=p[x_offset[x]];
     if ((image->storage_class == PseudoClass) ||
         (image->colorspace == CMYKColorspace))
-      for (x=0; x < (long) sample_image->columns; x++)
+      for (x=0; x < (ssize_t) sample_image->columns; x++)
         sample_indexes[x]=indexes[x_offset[x]];
     if (SyncCacheViewAuthenticPixels(sample_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2452,7 +2452,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   }
   image_view=DestroyCacheView(image_view);
   sample_view=DestroyCacheView(sample_view);
-  x_offset=(long *) RelinquishMagickMemory(x_offset);
+  x_offset=(ssize_t *) RelinquishMagickMemory(x_offset);
   sample_image->type=image->type;
   return(sample_image);
 }
@@ -2472,8 +2472,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
 %
 %  The format of the ScaleImage method is:
 %
-%      Image *ScaleImage(const Image *image,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%      Image *ScaleImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2486,8 +2486,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport Image *ScaleImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
 #define ScaleImageTag  "Scale/Image"
 
@@ -2498,7 +2498,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   Image
     *scale_image;
 
-  long
+  ssize_t
     number_rows,
     y;
 
@@ -2519,7 +2519,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     scale,
     span;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -2579,7 +2579,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   i=0;
   image_view=AcquireCacheView(image);
   scale_view=AcquireCacheView(scale_image);
-  for (y=0; y < (long) scale_image->rows; y++)
+  for (y=0; y < (ssize_t) scale_image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -2590,7 +2590,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     register IndexPacket
       *restrict scale_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register MagickPixelPacket
@@ -2615,7 +2615,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetCacheViewVirtualIndexQueue(image_view);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
           x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
@@ -2634,7 +2634,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         */
         while (scale.y < span.y)
         {
-          if ((next_row != MagickFalse) && (number_rows < (long) image->rows))
+          if ((next_row != MagickFalse) && (number_rows < (ssize_t) image->rows))
             {
               /*
                 Read a new scanline.
@@ -2644,7 +2644,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
               if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetCacheViewVirtualIndexQueue(image_view);
-              for (x=0; x < (long) image->columns; x++)
+              for (x=0; x < (ssize_t) image->columns; x++)
               {
                 x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
                 x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
@@ -2658,7 +2658,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
               }
               number_rows++;
             }
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             y_vector[x].red+=scale.y*x_vector[x].red;
             y_vector[x].green+=scale.y*x_vector[x].green;
@@ -2672,7 +2672,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
           scale.y=(double) scale_image->rows/(double) image->rows;
           next_row=MagickTrue;
         }
-        if ((next_row != MagickFalse) && (number_rows < (long) image->rows))
+        if ((next_row != MagickFalse) && (number_rows < (ssize_t) image->rows))
           {
             /*
               Read a new scanline.
@@ -2682,7 +2682,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
             if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetCacheViewVirtualIndexQueue(image_view);
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
               x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
@@ -2698,7 +2698,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
             next_row=MagickFalse;
           }
         s=scanline;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel.red=y_vector[x].red+span.y*x_vector[x].red;
           pixel.green=y_vector[x].green+span.y*x_vector[x].green;
@@ -2731,7 +2731,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
           Transfer scanline to scaled image.
         */
         s=scanline;
-        for (x=0; x < (long) scale_image->columns; x++)
+        for (x=0; x < (ssize_t) scale_image->columns; x++)
         {
           q->red=ClampToQuantum(s->red);
           q->green=ClampToQuantum(s->green);
@@ -2754,7 +2754,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         span.x=1.0;
         s=scanline;
         t=scale_scanline;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           scale.x=(double) scale_image->columns/(double) image->columns;
           while (scale.x >= span.x)
@@ -2813,7 +2813,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
             pixel.index+=span.x*s->index;
         }
       if ((next_column == MagickFalse) &&
-          ((long) (t-scale_scanline) < (long) scale_image->columns))
+          ((ssize_t) (t-scale_scanline) < (ssize_t) scale_image->columns))
         {
           t->red=pixel.red;
           t->green=pixel.green;
@@ -2827,7 +2827,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         Transfer scanline to scaled image.
       */
       t=scale_scanline;
-      for (x=0; x < (long) scale_image->columns; x++)
+      for (x=0; x < (ssize_t) scale_image->columns; x++)
       {
         q->red=ClampToQuantum(t->red);
         q->green=ClampToQuantum(t->green);
@@ -2910,8 +2910,8 @@ MagickExport void SetResizeFilterSupport(ResizeFilter *resize_filter,
 %
 %  The format of the ThumbnailImage method is:
 %
-%      Image *ThumbnailImage(const Image *image,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%      Image *ThumbnailImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2925,7 +2925,7 @@ MagickExport void SetResizeFilterSupport(ResizeFilter *resize_filter,
 %
 */
 MagickExport Image *ThumbnailImage(const Image *image,
-  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
+  const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
 #define SampleFactor  5
 
@@ -2945,7 +2945,7 @@ MagickExport Image *ThumbnailImage(const Image *image,
   struct stat
     attributes;
 
-  unsigned long
+  size_t
     version;
 
   assert(image != (Image *) NULL);
@@ -3002,11 +3002,11 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
+      (void) FormatMagickString(value,MaxTextExtent,"%ld",(ssize_t)
         attributes.st_mtime);
       (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value);
     }
-  (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
+  (void) FormatMagickString(value,MaxTextExtent,"%ld",(ssize_t)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
   (void) ConcatenateMagickString(value,"B",MaxTextExtent);
@@ -3049,8 +3049,8 @@ MagickExport Image *ThumbnailImage(const Image *image,
 %
 %  The format of the ZoomImage method is:
 %
-%      Image *ZoomImage(const Image *image,const unsigned long columns,
-%        const unsigned long rows,ExceptionInfo *exception)
+%      Image *ZoomImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3065,8 +3065,8 @@ MagickExport Image *ThumbnailImage(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ZoomImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport Image *ZoomImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
   Image
     *zoom_image;

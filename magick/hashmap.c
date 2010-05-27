@@ -75,7 +75,7 @@ typedef struct _EntryInfo
 
 struct _LinkedListInfo
 {
-  unsigned long
+  size_t
     capacity,
     elements;
 
@@ -90,7 +90,7 @@ struct _LinkedListInfo
   SemaphoreInfo
     *semaphore;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -106,7 +106,7 @@ struct _HashmapInfo
     *(*relinquish_key)(void *),
     *(*relinquish_value)(void *);
 
-  unsigned long
+  size_t
     capacity,
     entries,
     next;
@@ -123,7 +123,7 @@ struct _HashmapInfo
   SemaphoreInfo
     *semaphore;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -345,7 +345,7 @@ MagickExport HashmapInfo *DestroyHashmap(HashmapInfo *hashmap_info)
   register EntryInfo
     *entry;
 
-  register long
+  register ssize_t
     i;
 
   assert(hashmap_info != (HashmapInfo *) NULL);
@@ -353,7 +353,7 @@ MagickExport HashmapInfo *DestroyHashmap(HashmapInfo *hashmap_info)
   if (hashmap_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(hashmap_info->semaphore);
-  for (i=0; i < (long) hashmap_info->capacity; i++)
+  for (i=0; i < (ssize_t) hashmap_info->capacity; i++)
   {
     list_info=hashmap_info->map[i];
     if (list_info != (LinkedListInfo *) NULL)
@@ -659,14 +659,14 @@ MagickExport void *GetNextValueInLinkedList(LinkedListInfo *list_info)
 %
 %  The format of the GetNumberOfEntriesInHashmap method is:
 %
-%      unsigned long GetNumberOfEntriesInHashmap(const HashmapInfo *hashmap_info)
+%      size_t GetNumberOfEntriesInHashmap(const HashmapInfo *hashmap_info)
 %
 %  A description of each parameter follows:
 %
 %    o hashmap_info: the hashmap info.
 %
 */
-MagickExport unsigned long GetNumberOfEntriesInHashmap(
+MagickExport size_t GetNumberOfEntriesInHashmap(
   const HashmapInfo *hashmap_info)
 {
   assert(hashmap_info != (HashmapInfo *) NULL);
@@ -692,7 +692,7 @@ MagickExport unsigned long GetNumberOfEntriesInHashmap(
 %
 %  The format of the GetNumberOfElementsInLinkedList method is:
 %
-%      unsigned long GetNumberOfElementsInLinkedList(
+%      size_t GetNumberOfElementsInLinkedList(
 %        const LinkedListInfo *list_info)
 %
 %  A description of each parameter follows:
@@ -700,7 +700,7 @@ MagickExport unsigned long GetNumberOfEntriesInHashmap(
 %    o list_info: the linked-list info.
 %
 */
-MagickExport unsigned long GetNumberOfElementsInLinkedList(
+MagickExport size_t GetNumberOfElementsInLinkedList(
   const LinkedListInfo *list_info)
 {
   assert(list_info != (LinkedListInfo *) NULL);
@@ -804,7 +804,7 @@ MagickExport void *GetValueFromHashmap(HashmapInfo *hashmap_info,
 %  The format of the GetValueFromLinkedList method is:
 %
 %      void *GetValueFromLinkedList(LinkedListInfo *list_info,
-%        const unsigned long index)
+%        const size_t index)
 %
 %  A description of each parameter follows:
 %
@@ -814,12 +814,12 @@ MagickExport void *GetValueFromHashmap(HashmapInfo *hashmap_info,
 %
 */
 MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
-  const unsigned long index)
+  const size_t index)
 {
   register ElementInfo
     *next;
 
-  register long
+  register ssize_t
     i;
 
   void
@@ -845,7 +845,7 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
       return(value);
     }
   next=list_info->head;
-  for (i=0; i < (long) index; i++)
+  for (i=0; i < (ssize_t) index; i++)
     next=next->next;
   value=next->value;
   UnlockSemaphoreInfo(list_info->semaphore);
@@ -916,7 +916,7 @@ MagickExport size_t HashStringType(const void *string)
   const unsigned char
     *digest;
 
-  register long
+  register ssize_t
     i;
 
   SignatureInfo
@@ -969,7 +969,7 @@ MagickExport size_t HashStringInfoType(const void *string_info)
   const unsigned char
     *digest;
 
-  register long
+  register ssize_t
     i;
 
   SignatureInfo
@@ -1006,7 +1006,7 @@ MagickExport size_t HashStringInfoType(const void *string_info)
 %  The format of the InsertValueInLinkedList method is:
 %
 %      MagickBooleanType InsertValueInLinkedList(ListInfo *list_info,
-%        const unsigned long index,const void *value)
+%        const size_t index,const void *value)
 %
 %  A description of each parameter follows:
 %
@@ -1018,12 +1018,12 @@ MagickExport size_t HashStringInfoType(const void *string_info)
 %
 */
 MagickExport MagickBooleanType InsertValueInLinkedList(
-  LinkedListInfo *list_info,const unsigned long index,const void *value)
+  LinkedListInfo *list_info,const size_t index,const void *value)
 {
   register ElementInfo
     *next;
 
-  register long
+  register ssize_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -1072,7 +1072,7 @@ MagickExport MagickBooleanType InsertValueInLinkedList(
 
             element=list_info->head;
             next->next=element->next;
-            for (i=1; i < (long) index; i++)
+            for (i=1; i < (ssize_t) index; i++)
             {
               element=element->next;
               next->next=element->next;
@@ -1130,7 +1130,7 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
   register ElementInfo
     *next;
 
-  register long
+  register ssize_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -1279,7 +1279,7 @@ MagickExport MagickBooleanType LinkedListToArray(LinkedListInfo *list_info,
   register ElementInfo
     *next;
 
-  register long
+  register ssize_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -1316,7 +1316,7 @@ MagickExport MagickBooleanType LinkedListToArray(LinkedListInfo *list_info,
 %
 %  The format of the NewHashmap method is:
 %
-%      HashmapInfo *NewHashmap(const unsigned long capacity,
+%      HashmapInfo *NewHashmap(const size_t capacity,
 %        size_t (*hash)(const void *),
 %        MagickBooleanType (*compare)(const void *,const void *),
 %        void *(*relinquish_key)(void *),void *(*relinquish_value)(void *))
@@ -1342,7 +1342,7 @@ MagickExport MagickBooleanType LinkedListToArray(LinkedListInfo *list_info,
 %      the hash-map.
 %
 */
-MagickExport HashmapInfo *NewHashmap(const unsigned long capacity,
+MagickExport HashmapInfo *NewHashmap(const size_t capacity,
   size_t (*hash)(const void *),
   MagickBooleanType (*compare)(const void *,const void *),
   void *(*relinquish_key)(void *),void *(*relinquish_value)(void *))
@@ -1394,14 +1394,14 @@ MagickExport HashmapInfo *NewHashmap(const unsigned long capacity,
 %
 %  The format of the NewLinkedList method is:
 %
-%      LinkedListInfo *NewLinkedList(const unsigned long capacity)
+%      LinkedListInfo *NewLinkedList(const size_t capacity)
 %
 %  A description of each parameter follows:
 %
 %    o capacity: the maximum number of elements in the list.
 %
 */
-MagickExport LinkedListInfo *NewLinkedList(const unsigned long capacity)
+MagickExport LinkedListInfo *NewLinkedList(const size_t capacity)
 {
   LinkedListInfo
     *list_info;
@@ -1410,7 +1410,7 @@ MagickExport LinkedListInfo *NewLinkedList(const unsigned long capacity)
   if (list_info == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(list_info,0,sizeof(*list_info));
-  list_info->capacity=capacity == 0 ? (unsigned long) (~0) : capacity;
+  list_info->capacity=capacity == 0 ? (size_t) (~0) : capacity;
   list_info->elements=0;
   list_info->head=(ElementInfo *) NULL;
   list_info->tail=(ElementInfo *) NULL;
@@ -1454,7 +1454,7 @@ static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
 {
 #define MaxCapacities  20
 
-  const unsigned long
+  const size_t
     capacities[MaxCapacities] =
     {
       17, 31, 61, 131, 257, 509, 1021, 2053, 4099, 8191, 16381, 32771,
@@ -1475,10 +1475,10 @@ static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
   register ElementInfo
     *next;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     capacity;
 
   /*
@@ -1498,7 +1498,7 @@ static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
   /*
     Copy entries to new hashmap with increased capacity.
   */
-  for (i=0; i < (long) hashmap_info->capacity; i++)
+  for (i=0; i < (ssize_t) hashmap_info->capacity; i++)
   {
     list_info=hashmap_info->map[i];
     if (list_info == (LinkedListInfo *) NULL)
@@ -1542,7 +1542,7 @@ MagickExport MagickBooleanType PutEntryInHashmap(HashmapInfo *hashmap_info,
   LinkedListInfo
     *list_info;
 
-  register unsigned long
+  register size_t
     i;
 
   assert(hashmap_info != (HashmapInfo *) NULL);
@@ -1701,7 +1701,7 @@ MagickExport void *RemoveElementByValueFromLinkedList(LinkedListInfo *list_info,
 %  The format of the RemoveElementFromLinkedList method is:
 %
 %      void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
-%        const unsigned long index)
+%        const size_t index)
 %
 %  A description of each parameter follows:
 %
@@ -1711,12 +1711,12 @@ MagickExport void *RemoveElementByValueFromLinkedList(LinkedListInfo *list_info,
 %
 */
 MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
-  const unsigned long index)
+  const size_t index)
 {
   ElementInfo
     *next;
 
-  register long
+  register ssize_t
     i;
 
   void
@@ -1744,7 +1744,7 @@ MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
         *element;
 
       next=list_info->head;
-      for (i=1; i < (long) index; i++)
+      for (i=1; i < (ssize_t) index; i++)
         next=next->next;
       element=next->next;
       next->next=element->next;
@@ -1793,7 +1793,7 @@ MagickExport void *RemoveEntryFromHashmap(HashmapInfo *hashmap_info,
   LinkedListInfo
     *list_info;
 
-  register unsigned long
+  register size_t
     i;
 
   size_t

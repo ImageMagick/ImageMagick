@@ -103,8 +103,8 @@ static void
 %
 */
 
-static inline unsigned long MagickMax(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMax(const size_t x,
+  const size_t y)
 {
   if (x > y)
     return(x);
@@ -161,7 +161,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
 static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
   const size_t extent)
 {
-  register long
+  register ssize_t
     i;
 
   assert(quantum_info != (QuantumInfo *) NULL);
@@ -174,7 +174,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
   quantum_info->extent=extent;
   (void) ResetMagickMemory(quantum_info->pixels,0,
     sizeof(*quantum_info->pixels));
-  for (i=0; i < (long) quantum_info->number_threads; i++)
+  for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
   {
     quantum_info->pixels[i]=(unsigned char *) AcquireQuantumMemory(extent+1,
       sizeof(**quantum_info->pixels));
@@ -247,13 +247,13 @@ MagickExport QuantumInfo *DestroyQuantumInfo(QuantumInfo *quantum_info)
 */
 static void DestroyQuantumPixels(QuantumInfo *quantum_info)
 {
-  register long
+  register ssize_t
     i;
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickSignature);
   assert(quantum_info->pixels != (unsigned char **) NULL);
-  for (i=0; i < (long) quantum_info->number_threads; i++)
+  for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
   {
     /*
       Did we overrun our quantum buffer?
@@ -415,7 +415,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
 */
 MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
 {
-  long
+  ssize_t
     id;
 
   assert(quantum_info != (QuantumInfo *) NULL);
@@ -529,7 +529,7 @@ MagickExport void SetQuantumAlphaType(QuantumInfo *quantum_info,
 %  The format of the SetQuantumDepth method is:
 %
 %      MagickBooleanType SetQuantumDepth(const Image *image,
-%        QuantumInfo *quantum_info,const unsigned long depth)
+%        QuantumInfo *quantum_info,const size_t depth)
 %
 %  A description of each parameter follows:
 %
@@ -541,7 +541,7 @@ MagickExport void SetQuantumAlphaType(QuantumInfo *quantum_info,
 %
 */
 MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
-  QuantumInfo *quantum_info,const unsigned long depth)
+  QuantumInfo *quantum_info,const size_t depth)
 {
   MagickBooleanType
     status;
@@ -730,7 +730,7 @@ MagickExport void SetQuantumPack(QuantumInfo *quantum_info,
 %  The format of the SetQuantumPad method is:
 %
 %      MagickBooleanType SetQuantumPad(const Image *image,
-%        QuantumInfo *quantum_info,const unsigned long pad)
+%        QuantumInfo *quantum_info,const size_t pad)
 %
 %  A description of each parameter follows:
 %
@@ -742,7 +742,7 @@ MagickExport void SetQuantumPack(QuantumInfo *quantum_info,
 %
 */
 MagickExport MagickBooleanType SetQuantumPad(const Image *image,
-  QuantumInfo *quantum_info,const unsigned long pad)
+  QuantumInfo *quantum_info,const size_t pad)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -803,7 +803,7 @@ MagickExport void SetQuantumMinIsWhite(QuantumInfo *quantum_info,
 %  The format of the SetQuantumQuantum method is:
 %
 %      void SetQuantumQuantum(QuantumInfo *quantum_info,
-%        const unsigned long quantum)
+%        const size_t quantum)
 %
 %  A description of each parameter follows:
 %
@@ -813,7 +813,7 @@ MagickExport void SetQuantumMinIsWhite(QuantumInfo *quantum_info,
 %
 */
 MagickExport void SetQuantumQuantum(QuantumInfo *quantum_info,
-  const unsigned long quantum)
+  const size_t quantum)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickSignature);

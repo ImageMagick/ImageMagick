@@ -124,10 +124,10 @@ static Image *ReadMPRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterMPRImage method is:
 %
-%      unsigned long RegisterMPRImage(void)
+%      size_t RegisterMPRImage(void)
 %
 */
-ModuleExport unsigned long RegisterMPRImage(void)
+ModuleExport size_t RegisterMPRImage(void)
 {
   MagickInfo
     *entry;

@@ -89,7 +89,7 @@ struct _StreamInfo
   RectangleInfo
     extract_info;
 
-  long
+  ssize_t
     y;
 
   ExceptionInfo
@@ -98,7 +98,7 @@ struct _StreamInfo
   const void
     *client_data;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -110,16 +110,16 @@ extern "C" {
 #endif
 
 static const PixelPacket
-  *GetVirtualPixelStream(const Image *,const VirtualPixelMethod,const long,
-    const long,const unsigned long,const unsigned long,ExceptionInfo *);
+  *GetVirtualPixelStream(const Image *,const VirtualPixelMethod,const ssize_t,
+    const ssize_t,const size_t,const size_t,ExceptionInfo *);
 
 static MagickBooleanType
   StreamImagePixels(const StreamInfo *,const Image *,ExceptionInfo *),
   SyncAuthenticPixelsStream(Image *,ExceptionInfo *);
 
 static PixelPacket
-  *QueueAuthenticPixelsStream(Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+  *QueueAuthenticPixelsStream(Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -336,8 +336,8 @@ static IndexPacket *GetAuthenticIndexesFromStream(const Image *image)
 %
 %  The format of the GetAuthenticPixelsStream() method is:
 %
-%      PixelPacket *GetAuthenticPixelsStream(Image *image,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows,
+%      PixelPacket *GetAuthenticPixelsStream(Image *image,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -350,8 +350,8 @@ static IndexPacket *GetAuthenticIndexesFromStream(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static PixelPacket *GetAuthenticPixelsStream(Image *image,const long x,
-  const long y,const unsigned long columns,const unsigned long rows,
+static PixelPacket *GetAuthenticPixelsStream(Image *image,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
   PixelPacket
@@ -419,7 +419,7 @@ static PixelPacket *GetAuthenticPixelsFromStream(const Image *image)
 %  The format of the GetOneAuthenticPixelFromStream() method is:
 %
 %      MagickBooleanType GetOneAuthenticPixelFromStream(const Image image,
-%        const long x,const long y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -433,7 +433,7 @@ static PixelPacket *GetAuthenticPixelsFromStream(const Image *image)
 %
 */
 static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
-  const long x,const long y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
   register PixelPacket
     *pixels;
@@ -465,8 +465,8 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
 %  The format of the GetOneVirtualPixelFromStream() method is:
 %
 %      MagickBooleanType GetOneVirtualPixelFromStream(const Image image,
-%        const VirtualPixelMethod virtual_pixel_method,const long x,
-%        const long y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -482,7 +482,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
 %
 */
 static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
-  const VirtualPixelMethod virtual_pixel_method,const long x,const long y,
+  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
   const PixelPacket
@@ -623,8 +623,8 @@ static const IndexPacket *GetVirtualIndexesFromStream(const Image *image)
 %  The format of the GetVirtualPixelStream() method is:
 %
 %      const PixelPacket *GetVirtualPixelStream(const Image *image,
-%        const VirtualPixelMethod virtual_pixel_method,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows,
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -665,8 +665,8 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
 }
 
 static const PixelPacket *GetVirtualPixelStream(const Image *image,
-  const VirtualPixelMethod magick_unused(virtual_pixel_method),const long x,
-  const long y,const unsigned long columns,const unsigned long rows,
+  const VirtualPixelMethod magick_unused(virtual_pixel_method),const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
   CacheInfo
@@ -688,8 +688,8 @@ static const PixelPacket *GetVirtualPixelStream(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
-      ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) || ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
+      ((y+(ssize_t) rows) > (ssize_t) image->rows) || (columns == 0) || (rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
@@ -787,8 +787,8 @@ MagickExport MagickBooleanType OpenStream(const ImageInfo *image_info,
 %
 %  The format of the QueueAuthenticPixelsStream() method is:
 %
-%      PixelPacket *QueueAuthenticPixelsStream(Image *image,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows,
+%      PixelPacket *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -799,8 +799,8 @@ MagickExport MagickBooleanType OpenStream(const ImageInfo *image_info,
 %      pixels.
 %
 */
-static PixelPacket *QueueAuthenticPixelsStream(Image *image,const long x,
-  const long y,const unsigned long columns,const unsigned long rows,
+static PixelPacket *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
   CacheInfo
@@ -819,8 +819,8 @@ static PixelPacket *QueueAuthenticPixelsStream(Image *image,const long x,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
-  if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
-      ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) || ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
+      ((y+(ssize_t) rows) > (ssize_t) image->rows) || (columns == 0) || (rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
@@ -1108,7 +1108,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
     case DoublePixel: packet_size=sizeof(double); break;
     case FloatPixel: packet_size=sizeof(float); break;
     case IntegerPixel: packet_size=sizeof(int); break;
-    case LongPixel: packet_size=sizeof(long); break;
+    case LongPixel: packet_size=sizeof(ssize_t); break;
     case QuantumPixel: packet_size=sizeof(Quantum); break;
     case ShortPixel: packet_size=sizeof(unsigned short); break;
   }
@@ -1150,7 +1150,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
       return(count == 0 ? 0 : columns);
     }
   if ((stream_info->y < extract_info.y) ||
-      (stream_info->y >= (long) (extract_info.y+extract_info.height)))
+      (stream_info->y >= (ssize_t) (extract_info.y+extract_info.height)))
     {
       stream_info->y++;
       return(columns);
@@ -1237,7 +1237,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
   QuantumType
     *quantum_map;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -1264,7 +1264,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  for (i=0; i < (long) length; i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     switch (stream_info->map[i])
     {
@@ -1377,7 +1377,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -1391,7 +1391,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -1406,7 +1406,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
               break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -1421,7 +1421,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             p++;
@@ -1433,7 +1433,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -1447,7 +1447,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -1462,7 +1462,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -1476,9 +1476,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=0;
           switch (quantum_map[i])
@@ -1542,7 +1542,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*GetBluePixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1559,7 +1559,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*GetBluePixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1578,7 +1578,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*GetBluePixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1596,7 +1596,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*PixelIntensityToQuantum(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1609,7 +1609,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*GetRedPixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1626,7 +1626,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*GetRedPixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1645,7 +1645,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(double) ((QuantumScale*GetRedPixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1662,9 +1662,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=0;
           switch (quantum_map[i])
@@ -1735,7 +1735,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*GetBluePixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1752,7 +1752,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*GetBluePixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1771,7 +1771,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*GetBluePixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1789,7 +1789,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*PixelIntensityToQuantum(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1802,7 +1802,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*GetRedPixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1819,7 +1819,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*GetRedPixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1838,7 +1838,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(float) ((QuantumScale*GetRedPixelComponent(p))*
               quantum_info->scale+quantum_info->minimum);
@@ -1855,9 +1855,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=0;
           switch (quantum_map[i])
@@ -1928,7 +1928,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
             *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1942,7 +1942,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
             *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1958,7 +1958,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
             *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1973,7 +1973,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(
               PixelIntensityToQuantum(p));
@@ -1986,7 +1986,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(GetRedPixelComponent(p));
             *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2000,7 +2000,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(GetRedPixelComponent(p));
             *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2016,7 +2016,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=(unsigned int) ScaleQuantumToLong(GetRedPixelComponent(p));
             *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2030,9 +2030,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=0;
           switch (quantum_map[i])
@@ -2089,16 +2089,16 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
     }
     case LongPixel:
     {
-      register unsigned long
+      register size_t
         *q;
 
-      q=(unsigned long *) stream_info->pixels;
+      q=(size_t *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
             *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2112,7 +2112,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
             *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2127,7 +2127,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
             *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2142,7 +2142,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
             p++;
@@ -2154,7 +2154,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
             *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2168,7 +2168,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
             *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2183,7 +2183,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
             *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -2197,9 +2197,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=0;
           switch (quantum_map[i])
@@ -2263,7 +2263,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=GetBluePixelComponent(p);
             *q++=GetGreenPixelComponent(p);
@@ -2277,7 +2277,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=GetBluePixelComponent(p);
             *q++=GetGreenPixelComponent(p);
@@ -2292,7 +2292,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=GetBluePixelComponent(p);
             *q++=GetGreenPixelComponent(p);
@@ -2307,7 +2307,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=PixelIntensityToQuantum(p);
             p++;
@@ -2319,7 +2319,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=GetRedPixelComponent(p);
             *q++=GetGreenPixelComponent(p);
@@ -2333,7 +2333,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=GetRedPixelComponent(p);
             *q++=GetGreenPixelComponent(p);
@@ -2348,7 +2348,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=GetRedPixelComponent(p);
             *q++=GetGreenPixelComponent(p);
@@ -2362,9 +2362,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=(Quantum) 0;
           switch (quantum_map[i])
@@ -2428,7 +2428,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
             *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -2442,7 +2442,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
             *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -2457,7 +2457,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
             if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
             *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -2472,7 +2472,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
             p++;
@@ -2484,7 +2484,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
             *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -2498,7 +2498,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
             *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -2513,7 +2513,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) GetImageExtent(image); x++)
+          for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
             *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
             *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -2527,9 +2527,9 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) GetImageExtent(image); x++)
+      for (x=0; x < (ssize_t) GetImageExtent(image); x++)
       {
-        for (i=0; i < (long) length; i++)
+        for (i=0; i < (ssize_t) length; i++)
         {
           *q=0;
           switch (quantum_map[i])

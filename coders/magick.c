@@ -5545,7 +5545,7 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
   ImageInfo
     *blob_info;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -5593,10 +5593,10 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterMAGICKImage method is:
 %
-%      unsigned long RegisterMAGICKImage(void)
+%      size_t RegisterMAGICKImage(void)
 %
 */
-ModuleExport unsigned long RegisterMAGICKImage(void)
+ModuleExport size_t RegisterMAGICKImage(void)
 {
   MagickInfo
     *entry;
@@ -5726,7 +5726,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   register char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   void
@@ -5772,7 +5772,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   (void) WriteBlobString(image,"  {\n");
   (void) WriteBlobString(image,"    ");
   p=(char *) blob;
-  for (i=0; i < (long) length ; i++)
+  for (i=0; i < (ssize_t) length ; i++)
   {
     (void) FormatMagickString(buffer,MaxTextExtent,"0x%02X, ",*p & 0xff);
     (void) WriteBlobString(image,buffer);

@@ -120,10 +120,10 @@ static MagickBooleanType IsHTML(const unsigned char *magick,const size_t length)
 %
 %  The format of the RegisterHTMLImage method is:
 %
-%      unsigned long RegisterHTMLImage(void)
+%      size_t RegisterHTMLImage(void)
 %
 */
-ModuleExport unsigned long RegisterHTMLImage(void)
+ModuleExport size_t RegisterHTMLImage(void)
 {
   MagickInfo
     *entry;
@@ -352,8 +352,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
             {
               (void) FormatMagickString(buffer,MaxTextExtent,
                 "\" shape=\"rect\" coords=\"%ld,%ld,%ld,%ld\" alt=\"\" />\n",
-                geometry.x,geometry.y,geometry.x+(long) geometry.width-1,
-                geometry.y+(long) geometry.height-1);
+                geometry.x,geometry.y,geometry.x+(ssize_t) geometry.width-1,
+                geometry.y+(ssize_t) geometry.height-1);
               (void) WriteBlobString(image,buffer);
               if (*(p+1) != '\0')
                 {
@@ -362,7 +362,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
                   (void) WriteBlobString(image,buffer);
                 }
               geometry.x+=geometry.width;
-              if ((geometry.x+4) >= (long) image->columns)
+              if ((geometry.x+4) >= (ssize_t) image->columns)
                 {
                   geometry.x=0;
                   geometry.y+=geometry.height;
@@ -427,8 +427,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         {
           (void) FormatMagickString(buffer,MaxTextExtent,
             "\" shape=\"rect\" coords=\"%ld,%ld,%ld,%ld\" alt=\"\" />\n",
-            geometry.x,geometry.y,geometry.x+(long) geometry.width-1,
-            geometry.y+(long) geometry.height-1);
+            geometry.x,geometry.y,geometry.x+(ssize_t) geometry.width-1,
+            geometry.y+(ssize_t) geometry.height-1);
           (void) WriteBlobString(image,buffer);
           if (*(p+1) != '\0')
             {
@@ -437,7 +437,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
               (void) WriteBlobString(image,buffer);
             }
           geometry.x+=geometry.width;
-          if ((geometry.x+4) >= (long) image->columns)
+          if ((geometry.x+4) >= (ssize_t) image->columns)
             {
               geometry.x=0;
               geometry.y+=geometry.height;

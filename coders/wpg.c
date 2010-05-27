@@ -239,7 +239,7 @@ static unsigned int IsWPG(const unsigned char *magick,const size_t length)
 }
 
 
-static void Rd_WP_DWORD(Image *image,unsigned long *d)
+static void Rd_WP_DWORD(Image *image,size_t *d)
 {
   unsigned char
     b;
@@ -249,20 +249,20 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
   if (b < 0xFFU)
     return;
   b=ReadBlobByte(image);
-  *d=(unsigned long) b;
+  *d=(size_t) b;
   b=ReadBlobByte(image);
-  *d+=(unsigned long) b*256l;
+  *d+=(size_t) b*256l;
   if (*d < 0x8000)
     return;
   *d=(*d & 0x7FFF) << 16;
   b=ReadBlobByte(image);
-  *d+=(unsigned long) b;
+  *d+=(size_t) b;
   b=ReadBlobByte(image);
-  *d+=(unsigned long) b*256l;
+  *d+=(size_t) b*256l;
   return;
 }
 
-static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
+static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
 {
   ExceptionInfo
     *exception;
@@ -270,7 +270,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
   int
     bit;
 
-  long
+  ssize_t
     x;
 
   register PixelPacket
@@ -291,7 +291,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < ((long) image->columns-7); x+=8)
+        for (x=0; x < ((ssize_t) image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
               {
@@ -303,7 +303,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
           }
         if ((image->columns % 8) != 0)
           {
-            for (bit=0; bit < (long) (image->columns % 8); bit++)
+            for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
               {
                 index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 indexes[x+bit]=index;
@@ -321,39 +321,39 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < ((long) image->columns-1); x+=2)
+        for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             index=ConstrainColormapIndex(image,(*p) & 0x3);
             indexes[x+1]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             p++;
         }
        if ((image->columns % 4) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             if ((image->columns % 4) >= 1)
 
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
                 indexes[x]=index;
-                *q++=image->colormap[(long) index];
+                *q++=image->colormap[(ssize_t) index];
                 if ((image->columns % 4) >= 2)
 
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
                     indexes[x]=index;
-                    *q++=image->colormap[(long) index];
+                    *q++=image->colormap[(ssize_t) index];
                   }
               }
             p++;
@@ -369,21 +369,21 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < ((long) image->columns-1); x+=2)
+        for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           { 
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             index=ConstrainColormapIndex(image,(*p) & 0x0f);
             indexes[x+1]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             p++;
           }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             p++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -396,11 +396,11 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
         if (q == (PixelPacket *) NULL) break;
         indexes=GetAuthenticIndexQueue(image);
 
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           {
             index=ConstrainColormapIndex(image,*p);
             indexes[x]=index;
-            *q++=image->colormap[(long) index];
+            *q++=image->colormap[(ssize_t) index];
             p++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -412,7 +412,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
         {
           q->red=ScaleCharToQuantum(*p++);
           q->green=ScaleCharToQuantum(*p++);
@@ -431,9 +431,9 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
 { \
   BImgBuff[x]=b; \
   x++; \
-  if((long) x>=ldblk) \
+  if((ssize_t) x>=ldblk) \
   { \
-    InsertRow(BImgBuff,(long) y,image,bpp); \
+    InsertRow(BImgBuff,(ssize_t) y,image,bpp); \
     x=0; \
     y++; \
     } \
@@ -451,18 +451,18 @@ static int UnpackWPGRaster(Image *image,int bpp)
     *BImgBuff,
     RunCount;
 
-  long
+  ssize_t
     ldblk;
 
   x=0;
   y=0;
 
-  ldblk=(long) ((bpp*image->columns+7)/8);
+  ldblk=(ssize_t) ((bpp*image->columns+7)/8);
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
     sizeof(*BImgBuff));
   if(BImgBuff==NULL) return(-2);
 
-  while(y<(long) image->rows)
+  while(y<(ssize_t) image->rows)
     {
       bbuf=ReadBlobByte(image);
 
@@ -500,7 +500,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
               x=0;
               y++;    /* Here I need to duplicate previous row RUNCOUNT* */
               if(y<2) continue;
-              if(y>(long) image->rows)
+              if(y>(ssize_t) image->rows)
                 {
                   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                   return(-4);
@@ -523,9 +523,9 @@ static int UnpackWPGRaster(Image *image,int bpp)
   else\
     BImgBuff[x] = b;\
   x++; \
-  if((long) x >= ldblk) \
+  if((ssize_t) x >= ldblk) \
   { \
-    InsertRow(BImgBuff,(long) y,image,bpp); \
+    InsertRow(BImgBuff,(ssize_t) y,image,bpp); \
     x=0; \
     y++; \
    } \
@@ -542,21 +542,21 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     RunCount,
     SampleBuffer[8];
 
-  unsigned long
+  size_t
     x,
     y;
 
   unsigned int
     i;
 
-  long
+  ssize_t
     ldblk;
 
   int XorMe = 0;
 
   x=0;
   y=0;
-  ldblk=(long) ((bpp*image->columns+7)/8);
+  ldblk=(ssize_t) ((bpp*image->columns+7)/8);
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
     sizeof(*BImgBuff));
   if(BImgBuff==NULL)
@@ -605,7 +605,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {      
-                InsertRow(BImgBuff,(long) (image->rows >= y ? y : image->rows-1),
+                InsertRow(BImgBuff,(ssize_t) (image->rows >= y ? y : image->rows-1),
                           image,bpp);
                 y++;
               }    
@@ -648,7 +648,7 @@ typedef float tCTM[3][3];
 static unsigned LoadWPG2Flags(Image *image,char Precision,float *Angle,tCTM *CTM)
 {
 const unsigned char TPR=1,TRN=2,SKW=4,SCL=8,ROT=0x10,OID=0x20,LCK=0x80;
-long x;
+ssize_t x;
 unsigned DenX;
 unsigned Flags;
 
@@ -707,7 +707,7 @@ unsigned Flags;
 
 
 static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
-  MagickOffsetType PS_Offset,long PS_Size,ExceptionInfo *exception)
+  MagickOffsetType PS_Offset,ssize_t PS_Size,ExceptionInfo *exception)
 {
   char
     postscript_file[MaxTextExtent];
@@ -825,7 +825,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 {
   typedef struct
   {
-    unsigned long FileId;
+    size_t FileId;
     MagickOffsetType DataOffset;
     unsigned int ProductType;
     unsigned int FileType;
@@ -838,15 +838,15 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   typedef struct
   {
     unsigned char RecType;
-    unsigned long RecordLength;
+    size_t RecordLength;
   } WPGRecord;
 
   typedef struct
   {
     unsigned char Class;
     unsigned char RecType;
-    unsigned long Extension;
-    unsigned long RecordLength;
+    size_t Extension;
+    size_t RecordLength;
   } WPG2Record;
 
   typedef struct
@@ -894,7 +894,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   } WPGColorMapRec;
 
   typedef struct {
-    unsigned long PS_unknown1;
+    size_t PS_unknown1;
     unsigned int PS_unknown2;
     unsigned int PS_unknown3;
   } WPGPSl1Record;  
@@ -934,7 +934,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     bpp,
     WPG2Flags;
 
-  long
+  ssize_t
     ldblk;
 
   unsigned char
@@ -1042,7 +1042,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if(Rec.RecordLength > 8)
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+8,   /* skip PS header in the wpg */
-                  (long) Rec.RecordLength-8,exception);
+                  (ssize_t) Rec.RecordLength-8,exception);
               break;     
 
             case 0x14:  /* bitmap type 2 */
@@ -1168,7 +1168,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if(Rec.RecordLength>0x3C)
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+0x3C,   /* skip PS l2 header in the wpg */
-                  (long) Rec.RecordLength-0x3C,exception);
+                  (ssize_t) Rec.RecordLength-0x3C,exception);
               break;
             }
         }
@@ -1274,13 +1274,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 {
                 case 0:    /*Uncompressed raster*/
                   {
-                    ldblk=(long) ((bpp*image->columns+7)/8);
+                    ldblk=(ssize_t) ((bpp*image->columns+7)/8);
                     BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t)
                       ldblk,sizeof(*BImgBuff));
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 
-                    for(i=0; i< (long) image->rows; i++)
+                    for(i=0; i< (ssize_t) image->rows; i++)
                       {
                         (void) ReadBlob(image,ldblk,BImgBuff);
                         InsertRow(BImgBuff,i,image,bpp);
@@ -1342,7 +1342,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if(Rec2.RecordLength > (unsigned int) i)
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+i,    /*skip PS header in the wpg2*/
-                  (long) (Rec2.RecordLength-i-2),exception);
+                  (ssize_t) (Rec2.RecordLength-i-2),exception);
               break;
 
       case 0x1B:          /*bitmap rectangle*/
@@ -1366,7 +1366,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     Image
       *p;
 
-    long
+    ssize_t
       scene=0;
 
     /*
@@ -1389,7 +1389,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       Fix scene numbers.
     */
     for (p=image; p != (Image *) NULL; p=p->next)
-      p->scene=(unsigned long) scene++;
+      p->scene=(size_t) scene++;
   }
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageError,
@@ -1417,10 +1417,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterWPGImage method is:
 %
-%      unsigned long RegisterWPGImage(void)
+%      size_t RegisterWPGImage(void)
 %
 */
-ModuleExport unsigned long RegisterWPGImage(void)
+ModuleExport size_t RegisterWPGImage(void)
 {
   MagickInfo
     *entry;

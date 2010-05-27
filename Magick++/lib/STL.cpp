@@ -296,7 +296,7 @@ void Magick::despeckleImage::operator()( Magick::Image &image_ ) const
 // usally of the same size as the source image, unless 'bestfit' is set to
 // true.
 Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
-                                    const unsigned long number_arguments_,
+                                    const size_t number_arguments_,
                                     const double *arguments_,
                                     const bool bestfit_ )
   : _method ( method_ ),
@@ -306,7 +306,7 @@ Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
 {
 }
 Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
-                                    const unsigned long number_arguments_,
+                                    const size_t number_arguments_,
                                     const double *arguments_ )
   : _method ( method_ ),
     _number_arguments ( number_arguments_ ),

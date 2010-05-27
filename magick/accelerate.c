@@ -131,9 +131,9 @@
   "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_uint4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define CLOptions "-DCLQuantum=ulong -DCLPixelType=ulong4 " \
+#define CLOptions "-DCLQuantum=ussize_t -DCLPixelType=ussize_t4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_ulong4
+#define CLPixelPacket  cl_ussize_t4
 #endif
 #endif
 
@@ -158,7 +158,7 @@ typedef struct _ConvolveInfo
     pixels,
     convolve_pixels;
 
-  cl_ulong
+  cl_ussize_t
     width,
     height;
 
@@ -171,12 +171,12 @@ typedef struct _ConvolveInfo
 
 static char
   *ConvolveKernel =
-    "static inline long ClampToCanvas(const long offset,const ulong range)\n"
+    "static inline ssize_t ClampToCanvas(const ssize_t offset,const ussize_t range)\n"
     "{\n"
     "  if (offset < 0L)\n"
     "    return(0L);\n"
     "  if (offset >= range)\n"
-    "    return((long) (range-1L));\n"
+    "    return((ssize_t) (range-1L));\n"
     "  return(offset);\n"
     "}\n"
     "\n"
@@ -194,21 +194,21 @@ static char
     "}\n"
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
-    "  __constant double *filter,const ulong width,const ulong height,\n"
+    "  __constant double *filter,const ussize_t width,const ussize_t height,\n"
     "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
-    "  const ulong columns = get_global_size(0);\n"
-    "  const ulong rows = get_global_size(1);\n"
+    "  const ussize_t columns = get_global_size(0);\n"
+    "  const ussize_t rows = get_global_size(1);\n"
     "\n"
-    "  const long x = get_global_id(0);\n"
-    "  const long y = get_global_id(1);\n"
+    "  const ssize_t x = get_global_id(0);\n"
+    "  const ssize_t y = get_global_id(1);\n"
     "\n"
     "  const double scale = (1.0/QuantumRange);\n"
-    "  const long mid_width = (width-1)/2;\n"
-    "  const long mid_height = (height-1)/2;\n"
+    "  const ssize_t mid_width = (width-1)/2;\n"
+    "  const ssize_t mid_height = (height-1)/2;\n"
     "  double4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
     "  double gamma = 0.0;\n"
-    "  register ulong i = 0;\n"
+    "  register ussize_t i = 0;\n"
     "\n"
     "  int method = 0;\n"
     "  if (matte != false)\n"
@@ -224,11 +224,11 @@ static char
     "  {\n"
     "    case 0:\n"
     "    {\n"
-    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const long index=ClampToCanvas(y+v,rows)*columns+\n"
+    "          const ssize_t index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
     "          sum.x+=filter[i]*input[index].x;\n"
     "          sum.y+=filter[i]*input[index].y;\n"
@@ -241,11 +241,11 @@ static char
     "    }\n"
     "    case 1:\n"
     "    {\n"
-    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ulong index=ClampToCanvas(y+v,rows)*columns+\n"
+    "          const ussize_t index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
     "          const double alpha=scale*(QuantumRange-input[index].w);\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
@@ -260,11 +260,11 @@ static char
     "    }\n"
     "    case 2:\n"
     "    {\n"
-    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ulong index=(y+v)*columns+(x+u);\n"
+    "          const ussize_t index=(y+v)*columns+(x+u);\n"
     "          sum.x+=filter[i]*input[index].x;\n"
     "          sum.y+=filter[i]*input[index].y;\n"
     "          sum.z+=filter[i]*input[index].z;\n"
@@ -276,11 +276,11 @@ static char
     "    }\n"
     "    case 3:\n"
     "    {\n"
-    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ulong index=(y+v)*columns+(x+u);\n"
+    "          const ussize_t index=(y+v)*columns+(x+u);\n"
     "          const double alpha=scale*(QuantumRange-input[index].w);\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
     "          sum.y+=alpha*filter[i]*input[index].y;\n"
@@ -294,7 +294,7 @@ static char
     "    }\n"
     "  }\n"
     "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
-    "  const ulong index = y*columns+x;\n"
+    "  const ussize_t index = y*columns+x;\n"
     "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
     "  output[index].y=ClampToQuantum(gamma*sum.y);\n"
     "  output[index].z=ClampToQuantum(gamma*sum.z);\n"
@@ -319,7 +319,7 @@ static void ConvolveNotify(const char *message,const void *data,size_t length,
 
 static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
   const Image *image,const void *pixels,double *filter,
-  const unsigned long width,const unsigned long height,void *convolve_pixels)
+  const size_t width,const size_t height,void *convolve_pixels)
 {
   cl_int
     status;
@@ -362,13 +362,13 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
     &convolve_info->filter);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  convolve_info->width=(cl_ulong) width;
-  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ulong),(void *)
+  convolve_info->width=(cl_ussize_t) width;
+  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ussize_t),(void *)
     &convolve_info->width);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  convolve_info->height=(cl_ulong) height;
-  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ulong),(void *)
+  convolve_info->height=(cl_ussize_t) height;
+  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ussize_t),(void *)
     &convolve_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
@@ -419,7 +419,7 @@ static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
 
 static MagickBooleanType EnqueueConvolveKernel(ConvolveInfo *convolve_info,
   const Image *image,const void *pixels,double *filter,
-  const unsigned long width,const unsigned long height,void *convolve_pixels)
+  const size_t width,const size_t height,void *convolve_pixels)
 {
   cl_int
     status;

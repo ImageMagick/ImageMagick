@@ -62,10 +62,10 @@ struct SemaphoreInfo
   MagickThreadType
     id;
 
-  long
+  ssize_t
     reference_count;
 
-  unsigned long
+  size_t
     signature;
 };
 

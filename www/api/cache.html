@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -163,7 +163,7 @@ _8c.html" target="source" name="AcquirePixelCacheNexus">AcquirePixelCacheNexus</
 <p>The format of the AcquirePixelCacheNexus method is:</p>
 
 <pre class="code">
-  NexusInfo **AcquirePixelCacheNexus(const unsigned long number_threads)
+  NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -221,8 +221,8 @@ _8c.html" target="source" name="GetAuthenticPixels">GetAuthenticPixels</a></h2>
 <p>The format of the GetAuthenticPixels() method is:</p>
 
 <pre class="code">
-  PixelPacket *GetAuthenticPixels(Image *image,const long x,const long y,
-    const unsigned long columns,const unsigned long rows,
+  PixelPacket *GetAuthenticPixels(Image *image,const ssize_t x,const ssize_t y,
+    const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
 
@@ -247,8 +247,8 @@ _8c.html" target="source" name="GetOneAuthenticPixel">GetOneAuthenticPixel</a></
 <p>The format of the GetOneAuthenticPixel() method is:</p>
 
 <pre class="code">
-  MagickBooleanType GetOneAuthenticPixel(const Image image,const long x,
-    const long y,PixelPacket *pixel,ExceptionInfo *exception)
+  MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
+    const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -276,7 +276,7 @@ _8c.html" target="source" name="GetOneVirtualMagickPixel">GetOneVirtualMagickPix
 
 <pre class="code">
   MagickBooleanType GetOneVirtualMagickPixel(const Image image,
-    const long x,const long y,MagickPixelPacket *pixel,
+    const ssize_t x,const ssize_t y,MagickPixelPacket *pixel,
     ExceptionInfo exception)
 </pre>
 
@@ -305,8 +305,8 @@ _8c.html" target="source" name="GetOneVirtualMethodPixel">GetOneVirtualMethodPix
 
 <pre class="code">
   MagickBooleanType GetOneVirtualMethodPixel(const Image image,
-    const VirtualPixelMethod virtual_pixel_method,const long x,
-    const long y,Pixelpacket *pixel,ExceptionInfo exception)
+    const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+    const ssize_t y,Pixelpacket *pixel,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -336,8 +336,8 @@ _8c.html" target="source" name="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
 <p>The format of the GetOneVirtualPixel() method is:</p>
 
 <pre class="code">
-  MagickBooleanType GetOneVirtualPixel(const Image image,const long x,
-    const long y,PixelPacket *pixel,ExceptionInfo exception)
+  MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
+    const ssize_t y,PixelPacket *pixel,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -412,8 +412,8 @@ _8c.html" target="source" name="GetVirtualPixels">GetVirtualPixels</a></h2>
 <p>The format of the GetVirtualPixels() method is:</p>
 
 <pre class="code">
-  const PixelPacket *GetVirtualPixels(const Image *image,const long x,
-    const long y,const unsigned long columns,const unsigned long rows,
+  const PixelPacket *GetVirtualPixels(const Image *image,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
 
@@ -444,8 +444,8 @@ _8c.html" target="source" name="QueueAuthenticPixels">QueueAuthenticPixels</a></
 <p>The format of the QueueAuthenticPixels() method is:</p>
 
 <pre class="code">
-  PixelPacket *QueueAuthenticPixels(Image *image,const long x,const long y,
-    const unsigned long columns,const unsigned long rows,
+  PixelPacket *QueueAuthenticPixels(Image *image,const ssize_t x,const ssize_t y,
+    const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
 

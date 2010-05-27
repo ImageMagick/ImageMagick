@@ -117,8 +117,8 @@ static MagickBooleanType DisplayUsage(void)
     {
       "-auto-orient         automagically orient image",
       "-border geometry     surround image with a border of color",
-      "-clip                clip along the first path from the 8BIM profile",
-      "-clip-path id        clip along a named path from the 8BIM profile",
+      "-clip                clip assize_t the first path from the 8BIM profile",
+      "-clip-path id        clip assize_t a named path from the 8BIM profile",
       "-colors value        preferred number of colors in the image",
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
@@ -221,7 +221,7 @@ static MagickBooleanType DisplayUsage(void)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Version: %s\n",GetMagickVersion((size_t *) NULL));
   (void) printf("Copyright: %s\n",GetMagickCopyright());
   (void) printf("Features: %s\n\n",GetMagickFeatures());
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...]\n",
@@ -275,9 +275,9 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
     } \
   XDestroyResourceInfo(&resource_info); \
   DestroyImageStack(); \
-  if (image_marker != (unsigned long *) NULL) \
-    image_marker=(unsigned long *) RelinquishMagickMemory(image_marker); \
-  for (i=0; i < (long) argc; i++) \
+  if (image_marker != (size_t *) NULL) \
+    image_marker=(size_t *) RelinquishMagickMemory(image_marker); \
+  for (i=0; i < (ssize_t) argc; i++) \
     argv[i]=DestroyString(argv[i]); \
   argv=(char **) RelinquishMagickMemory(argv); \
 }
@@ -312,7 +312,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  long
+  ssize_t
     image_number,
     iteration,
     j,
@@ -329,10 +329,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   QuantizeInfo
     *quantize_info;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     *image_marker,
     iterations,
     last_image,
@@ -359,7 +359,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           (LocaleCompare("-version",option+1) == 0))
         {
           (void) fprintf(stdout,"Version: %s\n",
-            GetMagickVersion((unsigned long *) NULL));
+            GetMagickVersion((size_t *) NULL));
           (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
           (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
           return(MagickFalse);
@@ -369,7 +369,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   display=(Display *) NULL;
   j=1;
   k=0;
-  image_marker=(unsigned long *) NULL;
+  image_marker=(size_t *) NULL;
   image_number=0;
   last_image=0;
   NewImageStack();
@@ -385,17 +385,17 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   if (status == MagickFalse)
     ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  image_marker=(unsigned long *) AcquireQuantumMemory((size_t) argc+1UL,
+  image_marker=(size_t *) AcquireQuantumMemory((size_t) argc+1UL,
     sizeof(*image_marker));
-  if (image_marker == (unsigned long *) NULL)
+  if (image_marker == (size_t *) NULL)
     ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
   for (i=0; i <= argc; i++)
-    image_marker[i]=(unsigned long) argc;
+    image_marker[i]=(size_t) argc;
   /*
     Check for server name specified on the command line.
   */
-  for (i=1; i < (long) argc; i++)
+  for (i=1; i < (ssize_t) argc; i++)
   {
     /*
       Check command line for server name.
@@ -407,7 +407,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           User specified server name.
         */
         i++;
-        if (i == (long) argc)
+        if (i == (ssize_t) argc)
           ThrowDisplayException(OptionError,"MissingArgument",option);
         server_name=argv[i];
       }
@@ -450,9 +450,9 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
     Parse command line.
   */
   iteration=0;
-  for (i=1; ((i <= (long) argc) && ((state & ExitState) == 0)); i++)
+  for (i=1; ((i <= (ssize_t) argc) && ((state & ExitState) == 0)); i++)
   {
-    if (i < (long) argc)
+    if (i < (ssize_t) argc)
       option=argv[i];
     else
       if (image != (Image *) NULL)
@@ -620,8 +620,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         RemoveAllImageStack();
         if ((state & FormerImageState) == 0)
           {
-            last_image=(unsigned long) image_number;
-            image_marker[i]=(unsigned long) image_number++;
+            last_image=(size_t) image_number;
+            image_marker[i]=(size_t) image_number++;
           }
         else
           {
@@ -629,11 +629,11 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               Proceed to previous image.
             */
             for (i--; i > 0; i--)
-              if (image_marker[i] == (unsigned long) (image_number-2))
+              if (image_marker[i] == (size_t) (image_number-2))
                 break;
             image_number--;
           }
-        if ((i == (long) (argc-1)) && ((state & ExitState) == 0))
+        if ((i == (ssize_t) (argc-1)) && ((state & ExitState) == 0))
           i=0;
         if ((state & ExitState) != 0)
           break;
@@ -648,13 +648,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 for (i=1; i < (argc-2); i++)
                   if (last_image == image_marker[i])
                     break;
-                image_number=(long) image_marker[i]+1;
+                image_number=(ssize_t) image_marker[i]+1;
               }
             continue;
           }
         if (resource_info.window_id != (char *) NULL)
           state|=ExitState;
-        if ((iterations != 0) && (++iteration == (long) iterations))
+        if ((iterations != 0) && (++iteration == (ssize_t) iterations))
           state|=ExitState;
         if (LocaleCompare(filename,"-") == 0)
           state|=ExitState;
@@ -667,13 +667,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("alpha",option+1) == 0)
           {
-            long
+            ssize_t
               type;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             type=ParseMagickOption(MagickAlphaOptions,MagickFalse,argv[i]);
             if (type < 0)
@@ -688,7 +688,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -708,7 +708,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.background_color=argv[i];
             break;
@@ -718,7 +718,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -729,7 +729,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.border_color=argv[i];
             break;
@@ -740,7 +740,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -756,7 +756,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -764,13 +764,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("channel",option+1) == 0)
           {
-            long
+            ssize_t
               channel;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -783,7 +783,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("clip-path",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -795,7 +795,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.colormap=UndefinedColormap;
             if (LocaleCompare("private",argv[i]) == 0)
@@ -813,7 +813,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -822,13 +822,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("colorspace",option+1) == 0)
           {
-            long
+            ssize_t
               colorspace;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             colorspace=ParseMagickOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -842,19 +842,19 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("compress",option+1) == 0)
           {
-            long
+            ssize_t
               compress;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             compress=ParseMagickOption(MagickCompressOptions,MagickFalse,
               argv[i]);
@@ -872,7 +872,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -884,13 +884,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            long
+            ssize_t
               event;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             event=ParseMagickOption(MagickLogEventOptions,MagickFalse,argv[i]);
             if (event < 0)
@@ -904,14 +904,14 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("define",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (*option == '+')
               {
@@ -930,7 +930,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -941,7 +941,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -952,7 +952,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -963,7 +963,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -976,19 +976,19 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("dispose",option+1) == 0)
           {
-            long
+            ssize_t
               dispose;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             dispose=ParseMagickOption(MagickDisposeOptions,MagickFalse,argv[i]);
             if (dispose < 0)
@@ -998,14 +998,14 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("dither",option+1) == 0)
           {
-            long
+            ssize_t
               method;
 
             quantize_info->dither=MagickFalse;
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             method=ParseMagickOption(MagickDitherOptions,MagickFalse,argv[i]);
             if (method < 0)
@@ -1020,7 +1020,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1035,7 +1035,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1043,13 +1043,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("endian",option+1) == 0)
           {
-            long
+            ssize_t
               endian;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             endian=ParseMagickOption(MagickEndianOptions,MagickFalse,
               argv[i]);
@@ -1067,7 +1067,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1079,13 +1079,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("filter",option+1) == 0)
           {
-            long
+            ssize_t
               filter;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             filter=ParseMagickOption(MagickFilterOptions,MagickFalse,argv[i]);
             if (filter < 0)
@@ -1104,7 +1104,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.font=XGetResourceClass(resource_database,
               GetClientName(),"font",argv[i]);
@@ -1115,7 +1115,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.foreground_color=argv[i];
             break;
@@ -1125,7 +1125,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1134,7 +1134,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1145,7 +1145,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1158,7 +1158,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1171,7 +1171,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               break;
             (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1180,13 +1180,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("gravity",option+1) == 0)
           {
-            long
+            ssize_t
               gravity;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,
               argv[i]);
@@ -1214,7 +1214,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1233,13 +1233,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            long
+            ssize_t
               interlace;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             interlace=ParseMagickOption(MagickInterlaceOptions,MagickFalse,
               argv[i]);
@@ -1250,13 +1250,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("interpolate",option+1) == 0)
           {
-            long
+            ssize_t
               interpolate;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             interpolate=ParseMagickOption(MagickInterpolateOptions,MagickFalse,
               argv[i]);
@@ -1274,7 +1274,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1286,13 +1286,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             double
               value;
 
-            long
+            ssize_t
               resource;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource=ParseMagickOption(MagickResourceOptions,MagickFalse,
               argv[i]);
@@ -1300,7 +1300,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"UnrecognizedResourceType",
                 argv[i]);
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
@@ -1309,13 +1309,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("list",option+1) == 0)
           {
-            long
+            ssize_t
               list;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
@@ -1330,7 +1330,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (long) argc) ||
+            if ((i == (ssize_t) argc) ||
                 (strchr(argv[i],'%') == (char *) NULL))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
@@ -1340,7 +1340,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1357,7 +1357,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1371,7 +1371,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               break;
             (void) strcpy(argv[i]+1,"san");
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.map_type=argv[i];
             break;
@@ -1383,7 +1383,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.matte_color=argv[i];
             break;
@@ -1408,7 +1408,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.name=ConstantString(argv[i]);
             break;
@@ -1429,7 +1429,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.image_geometry=ConstantString(argv[i]);
             break;
@@ -1437,7 +1437,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("profile",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1450,7 +1450,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1458,13 +1458,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("quantize",option+1) == 0)
           {
-            long
+            ssize_t
               colorspace;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             colorspace=ParseMagickOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -1482,7 +1482,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("raise",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1493,7 +1493,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("remote",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (XRemoteCommand(display,resource_info.window_id,argv[i]) != 0)
               return(MagickFalse);
@@ -1505,7 +1505,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1516,7 +1516,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1527,7 +1527,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1543,7 +1543,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1552,7 +1552,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("rotate",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1567,7 +1567,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1578,7 +1578,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1589,7 +1589,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1600,7 +1600,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1611,7 +1611,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1620,12 +1620,12 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("set",option+1) == 0)
           {
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1634,7 +1634,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1651,7 +1651,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1674,7 +1674,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.text_font=XGetResourceClass(resource_database,
               GetClientName(),"font",argv[i]);
@@ -1685,7 +1685,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1694,7 +1694,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1705,7 +1705,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1717,7 +1717,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.title=argv[i];
             break;
@@ -1727,7 +1727,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1737,7 +1737,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1756,7 +1756,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1779,7 +1779,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             (LocaleCompare("-version",option+1) == 0))
           {
             (void) fprintf(stdout,"Version: %s\n",
-              GetMagickVersion((unsigned long *) NULL));
+              GetMagickVersion((size_t *) NULL));
             (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
             (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
             break;
@@ -1790,20 +1790,20 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.visual_type=argv[i];
             break;
           }
         if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
-            long
+            ssize_t
               method;
 
             if (*option == '+')
               break;
             i++;
-            if (i == (long) (argc-1))
+            if (i == (ssize_t) (argc-1))
               ThrowDisplayException(OptionError,"MissingArgument",option);
             method=ParseMagickOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
@@ -1822,7 +1822,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.window_id=argv[i];
             break;
@@ -1833,7 +1833,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (strtod(argv[i],(char **) NULL) != 0)
               resource_info.window_group=argv[i];
@@ -1845,7 +1845,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (long) argc)
+            if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             resource_info.write_filename=argv[i];
             if (IsPathAccessible(resource_info.write_filename) != MagickFalse)

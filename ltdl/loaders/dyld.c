@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
+License assize_t with GNU Libltdl; see the file COPYING.LIB.  If not, a
 copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
 or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -171,10 +171,10 @@ static const mach_header *lt__match_loadedlib (const char *name);
 static NSSymbol lt__linkedlib_symbol (const char *symname, const mach_header *mh);
 
 static const mach_header *(*lt__addimage)	(const char *image_name,
-						 unsigned long options) = 0;
+						 size_t options) = 0;
 static NSSymbol	(*lt__image_symbol)		(const mach_header *image,
 						 const char *symbolName,
-						 unsigned long options) = 0;
+						 size_t options) = 0;
 static enum DYLD_BOOL (*lt__image_symbol_p)	(const mach_header *image,
 						 const char *symbolName) = 0;
 static enum DYLD_BOOL (*lt__module_export)	(NSModule module) = 0;
@@ -183,7 +183,7 @@ static int dyld_cannot_close				  = 0;
 
 
 /* A function called through the vtable when this loader is no
-   longer needed by the application.  */
+   ssize_ter needed by the application.  */
 static int
 vl_exit (lt_user_data LT__UNUSED loader_data)
 {
@@ -206,13 +206,13 @@ vl_init (lt_user_data loader_data)
       else
 	{
 	  (void) _dyld_func_lookup ("__dyld_NSAddImage",
-				    (unsigned long*) &lt__addimage);
+				    (size_t*) &lt__addimage);
 	  (void) _dyld_func_lookup ("__dyld_NSLookupSymbolInImage",
-				    (unsigned long*)&lt__image_symbol);
+				    (size_t*)&lt__image_symbol);
 	  (void) _dyld_func_lookup ("__dyld_NSIsSymbolNameDefinedInImage",
-				    (unsigned long*) &lt__image_symbol_p);
+				    (size_t*) &lt__image_symbol_p);
 	  (void) _dyld_func_lookup ("__dyld_NSMakePrivateModulePublic",
-				    (unsigned long*) &lt__module_export);
+				    (size_t*) &lt__module_export);
 	  dyld_cannot_close = lt_dladderror ("can't close a dylib");
 	}
     }
@@ -328,7 +328,7 @@ vm_sym (lt_user_data loader_data, lt_module module, const char *name)
   if (module == (lt_module) -1)
     {
       void *address, *unused;
-      _dyld_lookup_and_bind (name, (unsigned long*) &address, &unused);
+      _dyld_lookup_and_bind (name, (size_t*) &address, &unused);
       return address;
     }
 
@@ -423,7 +423,7 @@ lt__nsmodule_get_header (NSModule module)
 static const char *
 lt__header_get_instnam (const mach_header *mh)
 {
-  unsigned long offset = sizeof(mach_header);
+  size_t offset = sizeof(mach_header);
   const char* result   = 0;
   int j;
 
@@ -431,11 +431,11 @@ lt__header_get_instnam (const mach_header *mh)
     {
       struct load_command *lc;
 
-      lc = (struct load_command*) (((unsigned long) mh) + offset);
+      lc = (struct load_command*) (((size_t) mh) + offset);
       if (LC_ID_DYLIB == lc->cmd)
 	{
 	  result=(char*)(((dylib_command*) lc)->dylib.name.offset +
-			 (unsigned long) lc);
+			 (size_t) lc);
 	}
       offset += lc->cmdsize;
     }
@@ -473,17 +473,17 @@ lt__linkedlib_symbol (const char *symname, const mach_header *mh)
 
   if (lt__image_symbol && NSIsSymbolNameDefined (symname))
     {
-      unsigned long offset = sizeof(mach_header);
+      size_t offset = sizeof(mach_header);
       struct load_command *lc;
       int j;
 
       for (j = 0; j < mh->ncmds; j++)
 	{
-	  lc = (struct load_command*) (((unsigned long) mh) + offset);
+	  lc = (struct load_command*) (((size_t) mh) + offset);
 	  if ((LC_LOAD_DYLIB == lc->cmd) || (LC_LOAD_WEAK_DYLIB == lc->cmd))
 	    {
-	      unsigned long base = ((dylib_command *) lc)->dylib.name.offset;
-	      char *name = (char *) (base + (unsigned long) lc);
+	      size_t base = ((dylib_command *) lc)->dylib.name.offset;
+	      char *name = (char *) (base + (size_t) lc);
 	      const mach_header *mh1 = lt__match_loadedlib (name);
 
 	      if (!mh1)

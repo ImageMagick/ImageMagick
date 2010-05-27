@@ -39,12 +39,12 @@ typedef struct _ConfigureInfo
     *previous,
     *next;  /* deprecated, use GetConfigureInfoList() */
 
-  unsigned long
+  size_t
     signature;
 } ConfigureInfo;
 
 extern MagickExport char
-  **GetConfigureList(const char *,unsigned long *,ExceptionInfo *),
+  **GetConfigureList(const char *,size_t *,ExceptionInfo *),
   *GetConfigureOption(const char *);
 
 extern MagickExport const char
@@ -52,7 +52,7 @@ extern MagickExport const char
 
 extern MagickExport const ConfigureInfo
   *GetConfigureInfo(const char *,ExceptionInfo *),
-  **GetConfigureInfoList(const char *,unsigned long *,ExceptionInfo *);
+  **GetConfigureInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport LinkedListInfo
   *DestroyConfigureOptions(LinkedListInfo *),

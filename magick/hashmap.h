@@ -35,19 +35,19 @@ typedef struct _LinkedListInfo
 
 extern MagickExport HashmapInfo
   *DestroyHashmap(HashmapInfo *),
-  *NewHashmap(const unsigned long,size_t (*)(const void *),
+  *NewHashmap(const size_t,size_t (*)(const void *),
     MagickBooleanType (*)(const void *,const void *),void *(*)(void *),
     void *(*)(void *));
 
 extern MagickExport LinkedListInfo
   *DestroyLinkedList(LinkedListInfo *,void *(*)(void *)),
-  *NewLinkedList(const unsigned long);
+  *NewLinkedList(const size_t);
 
 extern MagickExport MagickBooleanType
   AppendValueToLinkedList(LinkedListInfo *,const void *),
   CompareHashmapString(const void *,const void *),
   CompareHashmapStringInfo(const void *,const void *),
-  InsertValueInLinkedList(LinkedListInfo *,const unsigned long,const void *),
+  InsertValueInLinkedList(LinkedListInfo *,const size_t,const void *),
   InsertValueInSortedLinkedList(LinkedListInfo *,
     int (*)(const void *,const void *),void **,const void *),
   IsHashmapEmpty(const HashmapInfo *),
@@ -60,7 +60,7 @@ extern MagickExport size_t
   HashStringType(const void *),
   HashStringInfoType(const void *);
 
-extern MagickExport unsigned long
+extern MagickExport size_t
   GetNumberOfElementsInLinkedList(const LinkedListInfo *),
   GetNumberOfEntriesInHashmap(const HashmapInfo *);
 
@@ -71,9 +71,9 @@ extern MagickExport void
   *GetNextValueInHashmap(HashmapInfo *),
   *GetNextValueInLinkedList(LinkedListInfo *),
   *GetValueFromHashmap(HashmapInfo *,const void *),
-  *GetValueFromLinkedList(LinkedListInfo *,const unsigned long),
+  *GetValueFromLinkedList(LinkedListInfo *,const size_t),
   *RemoveElementByValueFromLinkedList(LinkedListInfo *,const void *),
-  *RemoveElementFromLinkedList(LinkedListInfo *,const unsigned long),
+  *RemoveElementFromLinkedList(LinkedListInfo *,const size_t),
   *RemoveEntryFromHashmap(HashmapInfo *,const void *),
   *RemoveLastElementFromLinkedList(LinkedListInfo *),
   ResetHashmapIterator(HashmapInfo *),

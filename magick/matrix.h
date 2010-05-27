@@ -23,16 +23,16 @@ extern "C" {
 #endif
 
 extern MagickExport double
-  **AcquireMagickMatrix(const unsigned long,const unsigned long),
-  **RelinquishMagickMatrix(double **,const unsigned long);
+  **AcquireMagickMatrix(const size_t,const size_t),
+  **RelinquishMagickMatrix(double **,const size_t);
 
 extern MagickExport MagickBooleanType
-  GaussJordanElimination(double **,double **,const unsigned long,
-       const unsigned long);
+  GaussJordanElimination(double **,double **,const size_t,
+       const size_t);
 
 extern MagickExport void
   LeastSquaresAddTerms(double **,double **,const double *,const double *,
-       const unsigned long, const unsigned long);
+       const size_t, const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -93,7 +93,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -107,7 +107,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -116,7 +116,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     length;
 
-  unsigned long
+  size_t
     bits_per_pixel,
     height,
     width;
@@ -170,13 +170,13 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     blue=(Quantum) 0;
     index=(IndexPacket) 0;
     length=0;
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (length == 0)
           {
@@ -270,10 +270,10 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterPIXImage method is:
 %
-%      unsigned long RegisterPIXImage(void)
+%      size_t RegisterPIXImage(void)
 %
 */
-ModuleExport unsigned long RegisterPIXImage(void)
+ModuleExport size_t RegisterPIXImage(void)
 {
   MagickInfo
     *entry;

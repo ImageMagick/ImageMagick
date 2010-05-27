@@ -112,8 +112,8 @@ MagickExport Image *BorderImage(const Image *image,
   assert(border_info != (RectangleInfo *) NULL);
   frame_info.width=image->columns+(border_info->width << 1);
   frame_info.height=image->rows+(border_info->height << 1);
-  frame_info.x=(long) border_info->width;
-  frame_info.y=(long) border_info->height;
+  frame_info.x=(ssize_t) border_info->width;
+  frame_info.y=(ssize_t) border_info->height;
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
@@ -170,12 +170,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   Image
     *frame_image;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickPixelPacket
     accentuate,
@@ -186,13 +185,16 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     shadow,
     trough;
 
-  register long
+  register ssize_t
     x;
 
-  unsigned long
+  size_t
     bevel_width,
     height,
     width;
+
+  ssize_t
+    y;
 
   /*
     Check frame geometry.
@@ -204,7 +206,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   assert(frame_info != (FrameInfo *) NULL);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionError,"FrameIsLessThanImageSize");
-  bevel_width=(unsigned long) (frame_info->outer_bevel+frame_info->inner_bevel);
+  bevel_width=(size_t) (frame_info->outer_bevel+frame_info->inner_bevel);
   width=frame_info->width-frame_info->x-bevel_width;
   height=frame_info->height-frame_info->y-bevel_width;
   if ((width < image->columns) || (height < image->rows))
@@ -284,14 +286,14 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   progress=0;
   image_view=AcquireCacheView(image);
   frame_view=AcquireCacheView(frame_image);
-  height=(unsigned long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+  height=(size_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel);
   if (height != 0)
     {
       register IndexPacket
         *restrict frame_indexes;
 
-      register long
+      register ssize_t
         x;
 
       register PixelPacket
@@ -308,9 +310,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           /*
             Draw top of ornamental border.
           */
-          for (y=0; y < (long) frame_info->outer_bevel; y++)
+          for (y=0; y < (ssize_t) frame_info->outer_bevel; y++)
           {
-            for (x=0; x < (long) (frame_image->columns-y); x++)
+            for (x=0; x < (ssize_t) (frame_image->columns-y); x++)
             {
               if (x < y)
                 SetPixelPacket(frame_image,&highlight,q,frame_indexes);
@@ -319,52 +321,52 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q++;
               frame_indexes++;
             }
-            for ( ; x < (long) frame_image->columns; x++)
+            for ( ; x < (ssize_t) frame_image->columns; x++)
             {
               SetPixelPacket(frame_image,&shadow,q,frame_indexes);
               q++;
               frame_indexes++;
             }
           }
-          for (y=0; y < (long) (frame_info->y-bevel_width); y++)
+          for (y=0; y < (ssize_t) (frame_info->y-bevel_width); y++)
           {
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&highlight,q,frame_indexes);
               q++;
               frame_indexes++;
             }
             width=frame_image->columns-2*frame_info->outer_bevel;
-            for (x=0; x < (long) width; x++)
+            for (x=0; x < (ssize_t) width; x++)
             {
               SetPixelPacket(frame_image,&matte,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&shadow,q,frame_indexes);
               q++;
               frame_indexes++;
             }
           }
-          for (y=0; y < (long) frame_info->inner_bevel; y++)
+          for (y=0; y < (ssize_t) frame_info->inner_bevel; y++)
           {
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&highlight,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            for (x=0; x < (long) (frame_info->x-bevel_width); x++)
+            for (x=0; x < (ssize_t) (frame_info->x-bevel_width); x++)
             {
               SetPixelPacket(frame_image,&matte,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            width=image->columns+((unsigned long) frame_info->inner_bevel << 1)-
+            width=image->columns+((size_t) frame_info->inner_bevel << 1)-
               y;
-            for (x=0; x < (long) width; x++)
+            for (x=0; x < (ssize_t) width; x++)
             {
               if (x < y)
                 SetPixelPacket(frame_image,&shadow,q,frame_indexes);
@@ -373,20 +375,20 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q++;
               frame_indexes++;
             }
-            for ( ; x < (long) (image->columns+2*frame_info->inner_bevel); x++)
+            for ( ; x < (ssize_t) (image->columns+2*frame_info->inner_bevel); x++)
             {
               SetPixelPacket(frame_image,&highlight,q,frame_indexes);
               q++;
               frame_indexes++;
             }
             width=frame_info->width-frame_info->x-image->columns-bevel_width;
-            for (x=0; x < (long) width; x++)
+            for (x=0; x < (ssize_t) width; x++)
             {
               SetPixelPacket(frame_image,&matte,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&shadow,q,frame_indexes);
               q++;
@@ -402,12 +404,12 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
       *restrict frame_indexes;
 
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -426,19 +428,19 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         continue;
       }
     frame_indexes=GetCacheViewAuthenticIndexQueue(frame_view);
-    for (x=0; x < (long) frame_info->outer_bevel; x++)
+    for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
     {
       SetPixelPacket(frame_image,&highlight,q,frame_indexes);
       q++;
       frame_indexes++;
     }
-    for (x=0; x < (long) (frame_info->x-bevel_width); x++)
+    for (x=0; x < (ssize_t) (frame_info->x-bevel_width); x++)
     {
       SetPixelPacket(frame_image,&matte,q,frame_indexes);
       q++;
       frame_indexes++;
     }
-    for (x=0; x < (long) frame_info->inner_bevel; x++)
+    for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
       SetPixelPacket(frame_image,&shadow,q,frame_indexes);
       q++;
@@ -449,7 +451,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     */
     if ((image->compose != CopyCompositeOp) &&
         ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetPixelPacket(frame_image,&interior,q,frame_indexes);
         q++;
@@ -480,20 +482,20 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           }
         q+=image->columns;
       }
-    for (x=0; x < (long) frame_info->inner_bevel; x++)
+    for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
       SetPixelPacket(frame_image,&highlight,q,frame_indexes);
       q++;
       frame_indexes++;
     }
     width=frame_info->width-frame_info->x-image->columns-bevel_width;
-    for (x=0; x < (long) width; x++)
+    for (x=0; x < (ssize_t) width; x++)
     {
       SetPixelPacket(frame_image,&matte,q,frame_indexes);
       q++;
       frame_indexes++;
     }
-    for (x=0; x < (long) frame_info->outer_bevel; x++)
+    for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
     {
       SetPixelPacket(frame_image,&shadow,q,frame_indexes);
       q++;
@@ -514,14 +516,14 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           status=MagickFalse;
       }
   }
-  height=(unsigned long) (frame_info->inner_bevel+frame_info->height-
+  height=(size_t) (frame_info->inner_bevel+frame_info->height-
     frame_info->y-image->rows-bevel_width+frame_info->outer_bevel);
   if (height != 0)
     {
       register IndexPacket
         *restrict frame_indexes;
 
-      register long
+      register ssize_t
         x;
 
       register PixelPacket
@@ -530,7 +532,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       /*
         Draw bottom of ornamental border.
       */
-      q=QueueCacheViewAuthenticPixels(frame_view,0,(long) (frame_image->rows-
+      q=QueueCacheViewAuthenticPixels(frame_view,0,(ssize_t) (frame_image->rows-
         height),frame_image->columns,height,exception);
       if (q != (PixelPacket *) NULL)
         {
@@ -540,13 +542,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           frame_indexes=GetCacheViewAuthenticIndexQueue(frame_view);
           for (y=frame_info->inner_bevel-1; y >= 0; y--)
           {
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&highlight,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            for (x=0; x < (long) (frame_info->x-bevel_width); x++)
+            for (x=0; x < (ssize_t) (frame_info->x-bevel_width); x++)
             {
               SetPixelPacket(frame_image,&matte,q,frame_indexes);
               q++;
@@ -558,9 +560,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q++;
               frame_indexes++;
             }
-            for ( ; x < (long) (image->columns+2*frame_info->inner_bevel); x++)
+            for ( ; x < (ssize_t) (image->columns+2*frame_info->inner_bevel); x++)
             {
-              if (x >= (long) (image->columns+2*frame_info->inner_bevel-y))
+              if (x >= (ssize_t) (image->columns+2*frame_info->inner_bevel-y))
                 SetPixelPacket(frame_image,&highlight,q,frame_indexes);
               else
                 SetPixelPacket(frame_image,&accentuate,q,frame_indexes);
@@ -568,13 +570,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               frame_indexes++;
             }
             width=frame_info->width-frame_info->x-image->columns-bevel_width;
-            for (x=0; x < (long) width; x++)
+            for (x=0; x < (ssize_t) width; x++)
             {
               SetPixelPacket(frame_image,&matte,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&shadow,q,frame_indexes);
               q++;
@@ -582,22 +584,22 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
             }
           }
           height=frame_info->height-frame_info->y-image->rows-bevel_width;
-          for (y=0; y < (long) height; y++)
+          for (y=0; y < (ssize_t) height; y++)
           {
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&highlight,q,frame_indexes);
               q++;
               frame_indexes++;
             }
             width=frame_image->columns-2*frame_info->outer_bevel;
-            for (x=0; x < (long) width; x++)
+            for (x=0; x < (ssize_t) width; x++)
             {
               SetPixelPacket(frame_image,&matte,q,frame_indexes);
               q++;
               frame_indexes++;
             }
-            for (x=0; x < (long) frame_info->outer_bevel; x++)
+            for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
               SetPixelPacket(frame_image,&shadow,q,frame_indexes);
               q++;
@@ -612,9 +614,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q++;
               frame_indexes++;
             }
-            for ( ; x < (long) frame_image->columns; x++)
+            for ( ; x < (ssize_t) frame_image->columns; x++)
             {
-              if (x >= (long) (frame_image->columns-y))
+              if (x >= (ssize_t) (frame_image->columns-y))
                 SetPixelPacket(frame_image,&shadow,q,frame_indexes);
               else
                 SetPixelPacket(frame_image,&trough,q,frame_indexes);
@@ -630,9 +632,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if ((image->compose != CopyCompositeOp) &&
       ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
     {
-      x=(long) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
+      x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
         frame_info->inner_bevel);
-      y=(long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+      y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
         frame_info->inner_bevel);
       (void) CompositeImage(frame_image,image->compose,image,x,y);
     }
@@ -685,16 +687,18 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   ExceptionInfo
     *exception;
 
-  long
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   Quantum
     foreground,
     background;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -724,9 +728,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (long) raise_info->height; y++)
+  for (y=0; y < (ssize_t) raise_info->height; y++)
   {
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -753,7 +757,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         HighlightFactor)));
       q++;
     }
-    for ( ; x < (long) (image->columns-y); x++)
+    for ( ; x < (ssize_t) (image->columns-y); x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
@@ -766,7 +770,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         AccentuateFactor)));
       q++;
     }
-    for ( ; x < (long) image->columns; x++)
+    for ( ; x < (ssize_t) image->columns; x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
         (MagickRealType) background*(QuantumRange-ShadowFactor)));
@@ -791,9 +795,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=(long) raise_info->height; y < (long) (image->rows-raise_info->height); y++)
+  for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -807,7 +811,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (long) raise_info->width; x++)
+    for (x=0; x < (ssize_t) raise_info->width; x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
@@ -820,9 +824,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         HighlightFactor)));
       q++;
     }
-    for ( ; x < (long) (image->columns-raise_info->width); x++)
+    for ( ; x < (ssize_t) (image->columns-raise_info->width); x++)
       q++;
-    for ( ; x < (long) image->columns; x++)
+    for ( ; x < (ssize_t) image->columns; x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
         (MagickRealType) background*(QuantumRange-ShadowFactor)));
@@ -847,9 +851,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=(long) (image->rows-raise_info->height); y < (long) image->rows; y++)
+  for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
-    register long
+    register ssize_t
       x;
 
     register PixelPacket
@@ -863,7 +867,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (long) (image->rows-y); x++)
+    for (x=0; x < (ssize_t) (image->rows-y); x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*
         HighlightFactor+(MagickRealType) foreground*(QuantumRange-
@@ -876,7 +880,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         HighlightFactor)));
       q++;
     }
-    for ( ; x < (long) (image->columns-(image->rows-y)); x++)
+    for ( ; x < (ssize_t) (image->columns-(image->rows-y)); x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*TroughFactor+
         (MagickRealType) background*(QuantumRange-TroughFactor)));
@@ -886,7 +890,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         TroughFactor+(MagickRealType) background*(QuantumRange-TroughFactor)));
       q++;
     }
-    for ( ; x < (long) image->columns; x++)
+    for ( ; x < (ssize_t) image->columns; x++)
     {
       q->red=ClampToQuantum(QuantumScale*((MagickRealType) q->red*ShadowFactor+
         (MagickRealType) background*(QuantumRange-ShadowFactor)));

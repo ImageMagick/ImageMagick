@@ -208,7 +208,7 @@ typedef struct _XAnnotateInfo
 
 typedef struct _XPixelInfo
 {
-  unsigned long
+  size_t
     colors,
     *pixels;
 
@@ -246,7 +246,7 @@ typedef struct _XResourceInfo
   QuantizeInfo
     *quantize_info;
 
-  unsigned long
+  size_t
     colors;
 
   MagickBooleanType
@@ -266,7 +266,7 @@ typedef struct _XResourceInfo
   unsigned int
     border_width;
 
-  unsigned long
+  size_t
     delay;
 
   MagickBooleanType
@@ -322,7 +322,7 @@ typedef struct _XResourceInfo
     use_pixmap,
     use_shared_memory;
 
-  unsigned long
+  size_t
     undo_cache;
 
   char
@@ -384,7 +384,7 @@ typedef struct _XWindowInfo
     *icon_geometry,
     *crop_geometry;
 
-  unsigned long
+  size_t
     data,
     flags;
 
@@ -431,7 +431,7 @@ typedef struct _XWindowInfo
   void
     *segment_info;
 
-  unsigned long
+  size_t
     mask;
 
   MagickBooleanType
@@ -536,7 +536,7 @@ extern MagickExport void
   XComponentTerminus(void),
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
-  XDelay(Display *,const unsigned long),
+  XDelay(Display *,const size_t),
   XDisplayImageInfo(Display *,const XResourceInfo *,XWindows *,Image *,Image *),
   XDestroyResourceInfo(XResourceInfo *),
   XDestroyWindowColors(Display *,Window),
@@ -567,7 +567,7 @@ extern MagickExport void
   XWarning(const ExceptionType,const char *,const char *);
 
 extern MagickExport Window
-  XWindowByID(Display *,const Window,const unsigned long),
+  XWindowByID(Display *,const Window,const size_t),
   XWindowByName(Display *,const Window,const char *),
   XWindowByProperty(Display *,const Window,const Atom);
 

@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 20106101000040 -->
 </div>
 </div>
 </div>
@@ -271,8 +271,8 @@ _8c.html" target="source" name="NewPixelRegionIterator">NewPixelRegionIterator</
 <p>The format of the NewPixelRegionIterator method is:</p>
 
 <pre class="code">
-  PixelIterator NewPixelRegionIterator(MagickWand *wand,const long x,
-    const long y,const unsigned long width,const unsigned long height)
+  PixelIterator NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+    const ssize_t y,const size_t width,const size_t height)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -294,7 +294,7 @@ _8c.html" target="source" name="PixelGetCurrentIteratorRow">PixelGetCurrentItera
 
 <pre class="code">
   PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
-    unsigned long *number_wands)
+    size_t *number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -374,7 +374,7 @@ _8c.html" target="source" name="PixelGetNextIteratorRow">PixelGetNextIteratorRow
 
 <pre class="code">
   PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
-    unsigned long *number_wands)
+    size_t *number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -396,7 +396,7 @@ _8c.html" target="source" name="PixelGetPreviousIteratorRow">PixelGetPreviousIte
 
 <pre class="code">
   PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
-    unsigned long *number_wands)
+    size_t *number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -454,7 +454,7 @@ _8c.html" target="source" name="PixelSetIteratorRow">PixelSetIteratorRow</a></h2
 
 <pre class="code">
   MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
-    const long row)
+    const ssize_t row)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

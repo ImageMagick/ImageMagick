@@ -949,7 +949,7 @@ struct dirent
 
 typedef struct _dirdesc
 {
-  long
+  ssize_t
     context;
 
   char

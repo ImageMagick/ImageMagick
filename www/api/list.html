@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -316,7 +316,7 @@ _8c.html" target="source" name="GetImageFromList">GetImageFromList</a></h2>
 <p>The format of the GetImageFromList method is:</p>
 
 <pre class="code">
-  Image *GetImageFromList(const Image *images,const long index)
+  Image *GetImageFromList(const Image *images,const ssize_t index)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -337,7 +337,7 @@ _8c.html" target="source" name="GetImageIndexInList">GetImageIndexInList</a></h2
 <p>The format of the GetImageIndexInList method is:</p>
 
 <pre class="code">
-  long GetImageIndexInList(const Image *images)
+  ssize_t GetImageIndexInList(const Image *images)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -355,7 +355,7 @@ _8c.html" target="source" name="GetImageListLength">GetImageListLength</a></h2>
 <p>The format of the GetImageListLength method is:</p>
 
 <pre class="code">
-  unsigned long GetImageListLength(const Image *images)
+  size_t GetImageListLength(const Image *images)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -604,7 +604,7 @@ _8c.html" target="source" name="SpliceImageIntoList">SpliceImageIntoList</a></h2
 <p>The format of the SpliceImageIntoList method is:</p>
 
 <pre class="code">
-  SpliceImageIntoList(Image **images,const unsigned long,
+  SpliceImageIntoList(Image **images,const size_t,
     const Image *splice)
 </pre>
 

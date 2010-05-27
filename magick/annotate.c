@@ -181,7 +181,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   RectangleInfo
     geometry;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -190,7 +190,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   TypeMetric
     metrics;
 
-  unsigned long
+  size_t
     height,
     number_lines;
 
@@ -211,7 +211,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   for (i=1; textlist[i] != (char *) NULL; i++)
     if (strlen(textlist[i]) > length)
       length=strlen(textlist[i]);
-  number_lines=(unsigned long) i;
+  number_lines=(size_t) i;
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   SetGeometry(image,&geometry);
@@ -234,7 +234,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.ty=geometry_info.psi-image->page.y;
     (void) CloneString(&annotate->text,textlist[i]);
     (void) GetTypeMetrics(image,annotate,&metrics);
-    height=(long) (metrics.ascent-metrics.descent+
+    height=(ssize_t) (metrics.ascent-metrics.descent+
       draw_info->interline_spacing+0.5);
     switch (annotate->gravity)
     {
@@ -460,7 +460,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %
 %  The format of the FormatMagickCaption method is:
 %
-%      long FormatMagickCaption(Image *image,DrawInfo *draw_info,
+%      ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 %        TypeMetric *metrics,char **caption)
 %
 %  A description of each parameter follows.
@@ -474,7 +474,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %    o metrics: Return the font metrics in this structure.
 %
 */
-MagickExport long FormatMagickCaption(Image *image,DrawInfo *draw_info,
+MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   TypeMetric *metrics,char **caption)
 {
   MagickBooleanType
@@ -485,10 +485,10 @@ MagickExport long FormatMagickCaption(Image *image,DrawInfo *draw_info,
     *q,
     *s;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     width;
 
   q=draw_info->text;
@@ -497,13 +497,13 @@ MagickExport long FormatMagickCaption(Image *image,DrawInfo *draw_info,
   {
     if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
       s=p;
-    for (i=0; i < (long) GetUTFOctets(p); i++)
+    for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
     *q='\0';
     status=GetTypeMetrics(image,draw_info,metrics);
     if (status == MagickFalse)
       break;
-    width=(unsigned long) floor(metrics->width+0.5);
+    width=(size_t) floor(metrics->width+0.5);
     if (GetUTFCode(p) != '\n')
       if (width <= image->columns)
         continue;
@@ -524,7 +524,7 @@ MagickExport long FormatMagickCaption(Image *image,DrawInfo *draw_info,
         char
           *target;
 
-        long
+        ssize_t
           n;
 
         /*
@@ -608,7 +608,7 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   TypeMetric
@@ -647,7 +647,7 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
     if (extent.width > metrics->width)
       *metrics=extent;
   }
-  metrics->height=(double) (i*(unsigned long) (metrics->ascent-
+  metrics->height=(double) (i*(size_t) (metrics->ascent-
     metrics->descent+0.5)+(i-1)*draw_info->interline_spacing);
   /*
     Relinquish resources.
@@ -1008,7 +1008,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     glyph,
     last_glyph;
 
-  long
+  ssize_t
     code,
     y;
 
@@ -1283,9 +1283,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         status=MagickTrue;
         exception=(&image->exception);
         image_view=AcquireCacheView(image);
-        for (y=0; y < (long) bitmap->bitmap.rows; y++)
+        for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
-          long
+          ssize_t
             x_offset,
             y_offset;
 
@@ -1299,7 +1299,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           PixelPacket
             fill_color;
 
-          register long
+          register ssize_t
             x;
 
           register PixelPacket
@@ -1310,12 +1310,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
           if (status == MagickFalse)
             continue;
-          x_offset=(long) ceil(point.x-0.5);
-          y_offset=(long) ceil(point.y+y-0.5);
-          if ((y_offset < 0) || (y_offset >= (long) image->rows))
+          x_offset=(ssize_t) ceil(point.x-0.5);
+          y_offset=(ssize_t) ceil(point.y+y-0.5);
+          if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
             continue;
           q=(PixelPacket *) NULL;
-          if ((x_offset < 0) || (x_offset >= (long) image->columns))
+          if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
             active=MagickFalse;
           else
             {
@@ -1324,11 +1324,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
               active=q != (PixelPacket *) NULL ? MagickTrue : MagickFalse;
             }
           p=bitmap->bitmap.buffer+y*bitmap->bitmap.width;
-          for (x=0; x < (long) bitmap->bitmap.width; x++)
+          for (x=0; x < (ssize_t) bitmap->bitmap.width; x++)
           {
             x_offset++;
             if ((*p == 0) || (x_offset < 0) ||
-                (x_offset >= (long) image->columns))
+                (x_offset >= (ssize_t) image->columns))
               {
                 p++;
                 q++;
@@ -1499,7 +1499,7 @@ static char *EscapeParenthesis(const char *text)
   register char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -1508,7 +1508,7 @@ static char *EscapeParenthesis(const char *text)
   escapes=0;
   buffer=AcquireString(text);
   p=buffer;
-  for (i=0; i < (long) MagickMin(strlen(text),MaxTextExtent-escapes-1); i++)
+  for (i=0; i < (ssize_t) MagickMin(strlen(text),MaxTextExtent-escapes-1); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -1541,7 +1541,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   int
     unique_file;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -1552,7 +1552,7 @@ static MagickBooleanType RenderPostscript(Image *image,
     point,
     resolution;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -1589,7 +1589,7 @@ static MagickBooleanType RenderPostscript(Image *image,
     MagickTrue : MagickFalse;
   extent.x=0.0;
   extent.y=0.0;
-  for (i=0; i <= (long) (strlen(draw_info->text)+2); i++)
+  for (i=0; i <= (ssize_t) (strlen(draw_info->text)+2); i++)
   {
     point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
       draw_info->affine.ry*2.0*draw_info->pointsize);
@@ -1621,8 +1621,8 @@ static MagickBooleanType RenderPostscript(Image *image,
   text=DestroyString(text);
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%ldx%ld+0+0!",(long)
-    floor(extent.x+0.5),(long) floor(extent.y+0.5));
+  (void) FormatMagickString(geometry,MaxTextExtent,"%ldx%ld+0+0!",(ssize_t)
+    floor(extent.x+0.5),(ssize_t) floor(extent.y+0.5));
   annotate_info=AcquireImageInfo();
   (void) FormatMagickString(annotate_info->filename,MaxTextExtent,"ps:%s",
     filename);
@@ -1660,9 +1660,9 @@ static MagickBooleanType RenderPostscript(Image *image,
         crop_info;
 
       crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
-      crop_info.height=(unsigned long) ((resolution.y/DefaultResolution)*
+      crop_info.height=(size_t) ((resolution.y/DefaultResolution)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
-      crop_info.y=(long) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
+      crop_info.y=(ssize_t) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
         0.5);
       (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
         crop_info.width,crop_info.height,crop_info.x,crop_info.y);
@@ -1712,9 +1712,9 @@ static MagickBooleanType RenderPostscript(Image *image,
       fill_color=draw_info->fill;
       exception=(&image->exception);
       annotate_view=AcquireCacheView(annotate_image);
-      for (y=0; y < (long) annotate_image->rows; y++)
+      for (y=0; y < (ssize_t) annotate_image->rows; y++)
       {
-        register long
+        register ssize_t
           x;
 
         register PixelPacket
@@ -1724,7 +1724,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) annotate_image->columns; x++)
+        for (x=0; x < (ssize_t) annotate_image->columns; x++)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color);
           q->opacity=ClampToQuantum(QuantumRange-(((QuantumRange-
@@ -1741,7 +1741,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       }
       annotate_view=DestroyCacheView(annotate_view);
       (void) CompositeImage(image,OverCompositeOp,annotate_image,
-        (long) ceil(offset->x-0.5),(long) ceil(offset->y-(metrics->ascent+
+        (ssize_t) ceil(offset->x-0.5),(ssize_t) ceil(offset->y-(metrics->ascent+
         metrics->descent)-0.5));
     }
   annotate_image=DestroyImage(annotate_image);
@@ -1812,7 +1812,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
   static XVisualInfo
     *visual_info;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -1865,7 +1865,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
           return(MagickFalse);
         }
       map_info->colormap=(Colormap) NULL;
-      pixel.pixels=(unsigned long *) NULL;
+      pixel.pixels=(size_t *) NULL;
       /*
         Initialize Standard Colormap info.
       */
@@ -1956,8 +1956,8 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
   (void) FormatMagickString(annotate_info.geometry,MaxTextExtent,
-    "%lux%lu+%ld+%ld",width,height,(long) ceil(offset->x-0.5),
-    (long) ceil(offset->y-metrics->ascent-metrics->descent+
+    "%lux%lu+%ld+%ld",width,height,(ssize_t) ceil(offset->x-0.5),
+    (ssize_t) ceil(offset->y-metrics->ascent-metrics->descent+
     draw_info->interline_spacing-0.5));
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
   pixel.pen_color.green=ScaleQuantumToShort(draw_info->fill.green);

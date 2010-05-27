@@ -188,17 +188,17 @@ MagickExport const char *GetMagickPackageName(void)
 %
 %  The format of the GetMagickQuantumDepth method is:
 %
-%      const char *GetMagickQuantumDepth(unsigned long *depth)
+%      const char *GetMagickQuantumDepth(size_t *depth)
 %
 %  A description of each parameter follows:
 %
 %    o depth: the quantum depth is returned as a number.
 %
 */
-MagickExport const char *GetMagickQuantumDepth(unsigned long *depth)
+MagickExport const char *GetMagickQuantumDepth(size_t *depth)
 {
-  if (depth != (unsigned long *) NULL)
-    *depth=(unsigned long) MAGICKCORE_QUANTUM_DEPTH;
+  if (depth != (size_t *) NULL)
+    *depth=(size_t) MAGICKCORE_QUANTUM_DEPTH;
   return(MagickQuantumDepth);
 }
 
@@ -217,17 +217,17 @@ MagickExport const char *GetMagickQuantumDepth(unsigned long *depth)
 %
 %  The format of the GetMagickQuantumRange method is:
 %
-%      const char *GetMagickQuantumRange(unsigned long *range)
+%      const char *GetMagickQuantumRange(size_t *range)
 %
 %  A description of each parameter follows:
 %
 %    o range: the quantum range is returned as a number.
 %
 */
-MagickExport const char *GetMagickQuantumRange(unsigned long *range)
+MagickExport const char *GetMagickQuantumRange(size_t *range)
 {
-  if (range != (unsigned long *) NULL)
-    *range=(unsigned long) QuantumRange;
+  if (range != (size_t *) NULL)
+    *range=(size_t) QuantumRange;
   return(MagickQuantumRange);
 }
 
@@ -272,16 +272,16 @@ MagickExport const char *GetMagickReleaseDate(void)
 %
 %  The format of the GetMagickVersion method is:
 %
-%      const char *GetMagickVersion(unsigned long *version)
+%      const char *GetMagickVersion(size_t *version)
 %
 %  A description of each parameter follows:
 %
 %    o version: the ImageMagick version is returned as a number.
 %
 */
-MagickExport const char *GetMagickVersion(unsigned long *version)
+MagickExport const char *GetMagickVersion(size_t *version)
 {
-  if (version != (unsigned long *) NULL)
+  if (version != (size_t *) NULL)
     *version=MagickLibVersion;
   return(MagickVersion);
 }

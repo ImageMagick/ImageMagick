@@ -30,7 +30,7 @@ extern "C" {
 
 typedef struct
 {
-  long
+  ssize_t
     code_mask,
     code_value,
     utf_mask,
@@ -89,15 +89,15 @@ static inline unsigned char *ConvertLatin1ToUTF8(const unsigned char *content)
   return(utf8);
 }
 
-static inline long GetNextUTFCode(const char *text,size_t *octets)
+static inline ssize_t GetNextUTFCode(const char *text,size_t *octets)
 {
-  long
+  ssize_t
     code;
 
-  register long
+  register ssize_t
     i;
 
-  register long
+  register ssize_t
     c,
     unicode;
 
@@ -107,7 +107,7 @@ static inline long GetNextUTFCode(const char *text,size_t *octets)
       errno=EINVAL;
       return(-1);
     }
-  code=(long) (*text++) & 0xff;
+  code=(ssize_t) (*text++) & 0xff;
   unicode=code;
   for (i=0; i < MaxMultibyteCodes; i++)
   {
@@ -122,7 +122,7 @@ static inline long GetNextUTFCode(const char *text,size_t *octets)
         *octets=(size_t) (i+1);
         return(unicode);
       }
-    c=(long) (*text++ ^ 0x80) & 0xff;
+    c=(ssize_t) (*text++ ^ 0x80) & 0xff;
     if ((c & 0xc0) != 0)
       {
         errno=EILSEQ;
@@ -134,7 +134,7 @@ static inline long GetNextUTFCode(const char *text,size_t *octets)
   return(-1);
 }
 
-static inline long GetUTFCode(const char *text)
+static inline ssize_t GetUTFCode(const char *text)
 {
   size_t
     octets;
@@ -151,7 +151,7 @@ static inline size_t GetUTFOctets(const char *text)
   return(octets);
 }
 
-static inline MagickBooleanType IsUTFSpace(long code)
+static inline MagickBooleanType IsUTFSpace(ssize_t code)
 {
   if (((code >= 0x0009) && (code <= 0x000d)) || (code == 0x0020) ||
       (code == 0x0085) || (code == 0x00a0) || (code == 0x1680) ||
@@ -162,24 +162,24 @@ static inline MagickBooleanType IsUTFSpace(long code)
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsUTFValid(long code)
+static inline MagickBooleanType IsUTFValid(ssize_t code)
 {
-  long
+  ssize_t
     mask;
 
-  mask=(long) 0x7fffffff;
+  mask=(ssize_t) 0x7fffffff;
   if (((code & ~mask) != 0) && ((code < 0xd800) || (code > 0xdfff)) &&
       (code != 0xfffe) && (code != 0xffff))
     return(MagickFalse);
   return(MagickTrue);
 }
 
-static inline MagickBooleanType IsUTFAscii(long code)
+static inline MagickBooleanType IsUTFAscii(ssize_t code)
 {
-  long
+  ssize_t
     mask;
 
-  mask=(long) 0x7f;
+  mask=(ssize_t) 0x7f;
   if ((code & ~mask) != 0)
     return(MagickFalse);
   return(MagickTrue);

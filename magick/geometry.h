@@ -112,18 +112,18 @@ typedef struct _GeometryInfo
 
 typedef struct _OffsetInfo
 {
-  long
+  ssize_t
     x,
     y;
 } OffsetInfo;
 
 typedef struct _RectangleInfo
 {
-  unsigned long
+  size_t
     width,
     height;
 
-  long
+  ssize_t
     x,
     y;
 } RectangleInfo;
@@ -136,19 +136,19 @@ extern MagickExport MagickBooleanType
   IsSceneGeometry(const char *,const MagickBooleanType);
 
 extern MagickExport MagickStatusType
-  GetGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
+  GetGeometry(const char *,ssize_t *,ssize_t *,size_t *,size_t *),
   ParseAbsoluteGeometry(const char *,RectangleInfo *),
   ParseAffineGeometry(const char *,AffineMatrix *,ExceptionInfo *),
   ParseGeometry(const char *,GeometryInfo *),
   ParseGravityGeometry(const Image *,const char *,RectangleInfo *,
     ExceptionInfo *),
-  ParseMetaGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
+  ParseMetaGeometry(const char *,ssize_t *,ssize_t *,size_t *,size_t *),
   ParsePageGeometry(const Image *,const char *,RectangleInfo *,ExceptionInfo *),
   ParseRegionGeometry(const Image *,const char *,RectangleInfo *,
     ExceptionInfo *);
 
 extern MagickExport void
-  GravityAdjustGeometry(const unsigned long,const unsigned long,
+  GravityAdjustGeometry(const size_t,const size_t,
     const GravityType,RectangleInfo *),
   SetGeometry(const Image *,RectangleInfo *),
   SetGeometryInfo(GeometryInfo *);

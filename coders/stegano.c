@@ -87,8 +87,8 @@
 %
 */
 
-static inline unsigned long MagickMin(const unsigned long x,
-  const unsigned long y)
+static inline size_t MagickMin(const size_t x,
+  const size_t y)
 {
   if (x < y)
     return(x);
@@ -98,11 +98,11 @@ static inline unsigned long MagickMin(const unsigned long x,
 static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define GetBit(alpha,i) MagickMin((((unsigned long) (alpha) >> (unsigned long) \
+#define GetBit(alpha,i) MagickMin((((size_t) (alpha) >> (size_t) \
   (i)) & 0x01),16)
 #define SetBit(alpha,i,set) (alpha)=(IndexPacket) ((set) != 0 ? \
-  (unsigned long) (alpha) | (1UL << (unsigned long) (i)) : (unsigned long) \
-  (alpha) & ~(1UL << (unsigned long) (i)))
+  (size_t) (alpha) | (1UL << (size_t) (i)) : (size_t) \
+  (alpha) & ~(1UL << (size_t) (i)))
 
   Image
     *image,
@@ -111,7 +111,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
-  long
+  ssize_t
     c,
     i,
     j,
@@ -127,13 +127,13 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
     *q;
 
-  unsigned long
+  size_t
     depth;
 
   /*
@@ -172,17 +172,17 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   j=0;
   i=MAGICKCORE_QUANTUM_DEPTH-1;
   depth=MAGICKCORE_QUANTUM_DEPTH;
-  for (k=image->offset; (i >= 0) && (j < (long) depth); i--)
+  for (k=image->offset; (i >= 0) && (j < (ssize_t) depth); i--)
   {
-    for (y=0; (y < (long) image->rows) && (j < (long) depth); y++)
+    for (y=0; (y < (ssize_t) image->rows) && (j < (ssize_t) depth); y++)
     {
       x=0;
-      for (; (x < (long) image->columns) && (j < (long) depth); x++)
+      for (; (x < (ssize_t) image->columns) && (j < (ssize_t) depth); x++)
       {
-        if ((k/(long) watermark->columns) >= (long) watermark->rows)
+        if ((k/(ssize_t) watermark->columns) >= (ssize_t) watermark->rows)
           break;
-        (void) GetOneVirtualPixel(watermark,k % (long) watermark->columns,
-          k/(long) watermark->columns,&pixel,exception);
+        (void) GetOneVirtualPixel(watermark,k % (ssize_t) watermark->columns,
+          k/(ssize_t) watermark->columns,&pixel,exception);
         q=GetAuthenticPixels(image,x,y,1,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
@@ -211,7 +211,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         if (c == 3)
           c=0;
         k++;
-        if (k == (long) (watermark->columns*watermark->columns))
+        if (k == (ssize_t) (watermark->columns*watermark->columns))
           k=0;
         if (k == image->offset)
           j++;
@@ -246,10 +246,10 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterSTEGANOImage method is:
 %
-%      unsigned long RegisterSTEGANOImage(void)
+%      size_t RegisterSTEGANOImage(void)
 %
 */
-ModuleExport unsigned long RegisterSTEGANOImage(void)
+ModuleExport size_t RegisterSTEGANOImage(void)
 {
   MagickInfo
     *entry;

@@ -34,26 +34,26 @@ extern WandExport char
 extern WandExport ExceptionType
   PixelGetIteratorExceptionType(const PixelIterator *);
 
-extern WandExport long
+extern WandExport ssize_t
   PixelGetIteratorRow(PixelIterator *);
 
 extern WandExport MagickBooleanType
   IsPixelIterator(const PixelIterator *),
   PixelClearIteratorException(PixelIterator *),
-  PixelSetIteratorRow(PixelIterator *,const long),
+  PixelSetIteratorRow(PixelIterator *,const ssize_t),
   PixelSyncIterator(PixelIterator *);
 
 extern WandExport PixelIterator
   *ClonePixelIterator(const PixelIterator *),
   *DestroyPixelIterator(PixelIterator *),
   *NewPixelIterator(MagickWand *),
-  *NewPixelRegionIterator(MagickWand *,const long,const long,
-    const unsigned long,const unsigned long);
+  *NewPixelRegionIterator(MagickWand *,const ssize_t,const ssize_t,
+    const size_t,const size_t);
 
 extern WandExport PixelWand
-  **PixelGetCurrentIteratorRow(PixelIterator *,unsigned long *),
-  **PixelGetNextIteratorRow(PixelIterator *,unsigned long *),
-  **PixelGetPreviousIteratorRow(PixelIterator *,unsigned long *);
+  **PixelGetCurrentIteratorRow(PixelIterator *,size_t *),
+  **PixelGetNextIteratorRow(PixelIterator *,size_t *),
+  **PixelGetPreviousIteratorRow(PixelIterator *,size_t *);
 
 extern WandExport void
   ClearPixelIterator(PixelIterator *),

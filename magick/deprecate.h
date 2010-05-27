@@ -109,67 +109,67 @@ extern MagickExport const IndexPacket
 
 extern MagickExport const PixelPacket
   *AcquirePixels(const Image *) magick_attribute((deprecated)),
-  *AcquireCacheViewPixels(const CacheView *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *)
+  *AcquireCacheViewPixels(const CacheView *,const ssize_t,const ssize_t,
+    const size_t,const size_t,ExceptionInfo *)
     magick_attribute((deprecated)),
-  *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *) magick_attribute((deprecated));
+  *AcquireImagePixels(const Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t,ExceptionInfo *) magick_attribute((deprecated));
 
 extern MagickExport Image
   *AllocateImage(const ImageInfo *) magick_attribute((deprecated)),
   *ExtractSubimageFromImage(Image *,const Image *,ExceptionInfo *)
     magick_attribute((deprecated)),
-  *GetImageFromMagickRegistry(const char *,long *id,ExceptionInfo *)
+  *GetImageFromMagickRegistry(const char *,ssize_t *id,ExceptionInfo *)
     magick_attribute((deprecated)),
-  *GetImageList(const Image *,const long,ExceptionInfo *)
+  *GetImageList(const Image *,const ssize_t,ExceptionInfo *)
     magick_attribute((deprecated)),
   *GetNextImage(const Image *) magick_attribute((deprecated)),
   *GetPreviousImage(const Image *) magick_attribute((deprecated)),
   *FlattenImages(Image *,ExceptionInfo *) magick_attribute((deprecated)),
   *MosaicImages(Image *,ExceptionInfo *) magick_attribute((deprecated)),
   *PopImageList(Image **) magick_attribute((deprecated)),
-  *RecolorImage(const Image *,const unsigned long,const double *,
+  *RecolorImage(const Image *,const size_t,const double *,
     ExceptionInfo *) magick_attribute((deprecated)),
   *ShiftImageList(Image **) magick_attribute((deprecated)),
-  *SpliceImageList(Image *,const long,const unsigned long,const Image *,
+  *SpliceImageList(Image *,const ssize_t,const size_t,const Image *,
     ExceptionInfo *) magick_attribute((deprecated));
 
 extern MagickExport IndexPacket
   *GetCacheViewIndexes(CacheView *) magick_attribute((deprecated)),
   *GetIndexes(const Image *) magick_attribute((deprecated)),
-  ValidateColormapIndex(Image *,const unsigned long)
+  ValidateColormapIndex(Image *,const size_t)
     magick_attribute((deprecated));
 
 extern MagickExport int
   GetImageGeometry(Image *,const char *,const unsigned int,RectangleInfo *)
     magick_attribute((deprecated)),
-  ParseImageGeometry(const char *,long *,long *,unsigned long *,
-    unsigned long *) magick_attribute((deprecated));
+  ParseImageGeometry(const char *,ssize_t *,ssize_t *,size_t *,
+    size_t *) magick_attribute((deprecated));
 
-extern MagickExport long
+extern MagickExport ssize_t
   GetImageListIndex(const Image *) magick_attribute((deprecated)),
   SetMagickRegistry(const RegistryType,const void *,const size_t,
     ExceptionInfo *) magick_attribute((deprecated));
 
 extern MagickExport MagickBooleanType
-  AcquireOneCacheViewPixel(const CacheView *,const long,const long,
+  AcquireOneCacheViewPixel(const CacheView *,const ssize_t,const ssize_t,
     PixelPacket *,ExceptionInfo *) magick_attribute((deprecated)),
   AcquireOneCacheViewVirtualPixel(const CacheView *,const VirtualPixelMethod,
-    const long,const long,PixelPacket *,ExceptionInfo *)
+    const ssize_t,const ssize_t,PixelPacket *,ExceptionInfo *)
     magick_attribute((deprecated)),
   AffinityImage(const QuantizeInfo *,Image *,const Image *)
     magick_attribute((deprecated)),
   AffinityImages(const QuantizeInfo *,Image *,const Image *)
     magick_attribute((deprecated)),
-  AllocateImageColormap(Image *,const unsigned long)
+  AllocateImageColormap(Image *,const size_t)
     magick_attribute((deprecated)),
   ClipPathImage(Image *,const char *,const MagickBooleanType)
     magick_attribute((deprecated)),
   CloneImageAttributes(Image *,const Image *) magick_attribute((deprecated)),
-  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
-    const long,const PaintMethod) magick_attribute((deprecated)),
+  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const ssize_t,
+    const ssize_t,const PaintMethod) magick_attribute((deprecated)),
   DeleteImageAttribute(Image *,const char *) magick_attribute((deprecated)),
-  DeleteMagickRegistry(const long) magick_attribute((deprecated)),
+  DeleteMagickRegistry(const ssize_t) magick_attribute((deprecated)),
   DescribeImage(Image *,FILE *,const MagickBooleanType)
     magick_attribute((deprecated)),
   FormatImageAttribute(Image *,const char *,const char *,...)
@@ -189,12 +189,12 @@ extern MagickExport MagickBooleanType
     magick_attribute((deprecated)),
   MapImages(Image *,const Image *,const MagickBooleanType)
     magick_attribute((deprecated)),
-  MatteFloodfillImage(Image *,const PixelPacket,const Quantum,const long,
-    const long,const PaintMethod) magick_attribute((deprecated)),
+  MatteFloodfillImage(Image *,const PixelPacket,const Quantum,const ssize_t,
+    const ssize_t,const PaintMethod) magick_attribute((deprecated)),
   OpaqueImage(Image *,const PixelPacket,const PixelPacket)
     magick_attribute((deprecated)),
   PaintFloodfillImage(Image *,const ChannelType,const MagickPixelPacket *,
-    const long,const long,const DrawInfo *,const PaintMethod)
+    const ssize_t,const ssize_t,const DrawInfo *,const PaintMethod)
     magick_attribute((deprecated)),
   PaintOpaqueImage(Image *,const MagickPixelPacket *,const MagickPixelPacket *)
     magick_attribute((deprecated)),
@@ -212,7 +212,7 @@ extern MagickExport MagickBooleanType
     magick_attribute((deprecated));
 
 extern MagickExport MagickPixelPacket
-  AcquireOneMagickPixel(const Image *,const long,const long,ExceptionInfo *)
+  AcquireOneMagickPixel(const Image *,const ssize_t,const ssize_t,ExceptionInfo *)
     magick_attribute((deprecated));
 
 extern MagickExport MonitorHandler
@@ -231,22 +231,22 @@ extern MagickExport MagickStatusType
     magick_attribute((deprecated));
 
 extern MagickExport PixelPacket
-  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *)
+  AcquireOnePixel(const Image *,const ssize_t,const ssize_t,ExceptionInfo *)
     magick_attribute((deprecated)),
-  AcquireOneVirtualPixel(const Image *,const VirtualPixelMethod,const long,
-    const long,ExceptionInfo *) magick_attribute((deprecated)),
-  *GetCacheView(CacheView *,const long,const long,const unsigned long,
-    const unsigned long) magick_attribute((deprecated)),
-  *GetCacheViewPixels(CacheView *,const long,const long,const unsigned long,
-    const unsigned long) magick_attribute((deprecated)),
-  *GetImagePixels(Image *,const long,const long,const unsigned long,
-    const unsigned long) magick_attribute((deprecated)),
-  GetOnePixel(Image *,const long,const long) magick_attribute((deprecated)),
+  AcquireOneVirtualPixel(const Image *,const VirtualPixelMethod,const ssize_t,
+    const ssize_t,ExceptionInfo *) magick_attribute((deprecated)),
+  *GetCacheView(CacheView *,const ssize_t,const ssize_t,const size_t,
+    const size_t) magick_attribute((deprecated)),
+  *GetCacheViewPixels(CacheView *,const ssize_t,const ssize_t,const size_t,
+    const size_t) magick_attribute((deprecated)),
+  *GetImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t) magick_attribute((deprecated)),
+  GetOnePixel(Image *,const ssize_t,const ssize_t) magick_attribute((deprecated)),
   *GetPixels(const Image *) magick_attribute((deprecated)),
-  *SetCacheViewPixels(CacheView *,const long,const long,const unsigned long,
-    const unsigned long) magick_attribute((deprecated)),
-  *SetImagePixels(Image *,const long,const long,const unsigned long,
-    const unsigned long) magick_attribute((deprecated));
+  *SetCacheViewPixels(CacheView *,const ssize_t,const ssize_t,const size_t,
+    const size_t) magick_attribute((deprecated)),
+  *SetImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t) magick_attribute((deprecated));
 
 extern MagickExport size_t
   PopImagePixels(Image *,const QuantumType,unsigned char *)
@@ -257,13 +257,13 @@ extern MagickExport size_t
 extern MagickExport unsigned int
   ChannelImage(Image *,const ChannelType) magick_attribute((deprecated)),
   ChannelThresholdImage(Image *,const char *) magick_attribute((deprecated)),
-  DispatchImage(const Image *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,void *,ExceptionInfo *)
+  DispatchImage(const Image *,const ssize_t,const ssize_t,const size_t,
+    const size_t,const char *,const StorageType,void *,ExceptionInfo *)
     magick_attribute((deprecated)),
   FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double)
     magick_attribute((deprecated)),
   GetNumberScenes(const Image *) magick_attribute((deprecated)),
-  GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *)
+  GetMagickGeometry(const char *,ssize_t *,ssize_t *,size_t *,size_t *)
     magick_attribute((deprecated)),
   IsSubimage(const char *,const unsigned int) magick_attribute((deprecated)),
   PushImageList(Image **,const Image *,ExceptionInfo *)
@@ -271,7 +271,7 @@ extern MagickExport unsigned int
   QuantizationError(Image *) magick_attribute((deprecated)),
   RandomChannelThresholdImage(Image *,const char *,const char *,
     ExceptionInfo *) magick_attribute((deprecated)),
-  SetImageList(Image **,const Image *,const long,ExceptionInfo *)
+  SetImageList(Image **,const Image *,const ssize_t,ExceptionInfo *)
     magick_attribute((deprecated)),
   TransformColorspace(Image *,const ColorspaceType)
     magick_attribute((deprecated)),
@@ -280,7 +280,7 @@ extern MagickExport unsigned int
   UnshiftImageList(Image **,const Image *,ExceptionInfo *)
     magick_attribute((deprecated));
 
-extern MagickExport unsigned long
+extern MagickExport size_t
   GetImageListSize(const Image *) magick_attribute((deprecated));
 
 extern MagickExport CacheView
@@ -297,7 +297,7 @@ extern MagickExport void
   DestroyMagickRegistry(void) magick_attribute((deprecated)),
   *GetConfigureBlob(const char *,char *,size_t *,ExceptionInfo *)
     magick_attribute((deprecated)),
-  *GetMagickRegistry(const long,RegistryType *,size_t *,ExceptionInfo *)
+  *GetMagickRegistry(const ssize_t,RegistryType *,size_t *,ExceptionInfo *)
     magick_attribute((deprecated)),
   IdentityAffine(AffineMatrix *) magick_attribute((deprecated)),
   LiberateMemory(void **) magick_attribute((deprecated)),
@@ -312,7 +312,7 @@ extern MagickExport void
   MagickIncarnate(const char *) magick_attribute((deprecated)),
   ReacquireMemory(void **,const size_t) magick_attribute((deprecated)),
   ResetImageAttributeIterator(const Image *) magick_attribute((deprecated)),
-  SetCacheThreshold(const unsigned long) magick_attribute((deprecated)),
+  SetCacheThreshold(const size_t) magick_attribute((deprecated)),
   SetImage(Image *,const Quantum) magick_attribute((deprecated)),
   Strip(char *) magick_attribute((deprecated)),
   TemporaryFilename(char *) magick_attribute((deprecated)),

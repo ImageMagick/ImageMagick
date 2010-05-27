@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
 </div>
 </div>
 </div>
@@ -301,7 +301,7 @@ _8c.html" target="source" name="MagickGetCompressionQuality">MagickGetCompressio
 <p>The format of the MagickGetCompressionQuality method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetCompressionQuality(MagickWand *wand)
+  size_t MagickGetCompressionQuality(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -439,7 +439,7 @@ _8c.html" target="source" name="MagickGetImageArtifacts">MagickGetImageArtifacts
 
 <pre class="code">
   char *MagickGetImageArtifacts(MagickWand *wand,
-    const char *pattern,unsigned long *number_artifacts)
+    const char *pattern,size_t *number_artifacts)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -489,7 +489,7 @@ _8c.html" target="source" name="MagickGetImageProfiles">MagickGetImageProfiles</
 
 <pre class="code">
   char *MagickGetImageProfiles(MagickWand *wand,
-    unsigned long *number_profiles)
+    size_t *number_profiles)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -535,7 +535,7 @@ _8c.html" target="source" name="MagickGetImageProperties">MagickGetImageProperti
 
 <pre class="code">
   char *MagickGetImageProperties(MagickWand *wand,
-    const char *pattern,unsigned long *number_properties)
+    const char *pattern,size_t *number_properties)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -616,7 +616,7 @@ _8c.html" target="source" name="MagickGetOptions">MagickGetOptions</a></h2>
 <p>The format of the MagickGetOptions method is:</p>
 
 <pre class="code">
-  char *MagickGetOptions(MagickWand *wand,unsigned long *number_options)
+  char *MagickGetOptions(MagickWand *wand,size_t *number_options)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -673,7 +673,7 @@ _8c.html" target="source" name="MagickGetPage">MagickGetPage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickGetPage(const MagickWand *wand,
-    unsigned long *width,unsigned long *height,long *x,long *y)
+    size_t *width,size_t *height,ssize_t *x,ssize_t *y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -721,7 +721,7 @@ _8c.html" target="source" name="MagickGetQuantumDepth">MagickGetQuantumDepth</a>
 <p>The format of the MagickGetQuantumDepth method is:</p>
 
 <pre class="code">
-  const char *MagickGetQuantumDepth(unsigned long *depth)
+  const char *MagickGetQuantumDepth(size_t *depth)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -739,7 +739,7 @@ _8c.html" target="source" name="MagickGetQuantumRange">MagickGetQuantumRange</a>
 <p>The format of the MagickGetQuantumRange method is:</p>
 
 <pre class="code">
-  const char *MagickGetQuantumRange(unsigned long *range)
+  const char *MagickGetQuantumRange(size_t *range)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -807,7 +807,7 @@ _8c.html" target="source" name="MagickGetSamplingFactors">MagickGetSamplingFacto
 
 <pre class="code">
   double *MagickGetSamplingFactor(MagickWand *wand,
-    unsigned long *number_factors)
+    size_t *number_factors)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -829,7 +829,7 @@ _8c.html" target="source" name="MagickGetSize">MagickGetSize</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickGetSize(const MagickWand *wand,
-    unsigned long *columns,unsigned long *rows)
+    size_t *columns,size_t *rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -854,7 +854,7 @@ _8c.html" target="source" name="MagickGetSizeOffset">MagickGetSizeOffset</a></h2
 
 <pre class="code">
   MagickBooleanType MagickGetSizeOffset(const MagickWand *wand,
-    long *offset)
+    ssize_t *offset)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -893,7 +893,7 @@ _8c.html" target="source" name="MagickGetVersion">MagickGetVersion</a></h2>
 <p>The format of the MagickGetVersion method is:</p>
 
 <pre class="code">
-  const char *MagickGetVersion(unsigned long *version)
+  const char *MagickGetVersion(size_t *version)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1053,7 +1053,7 @@ _8c.html" target="source" name="MagickSetCompressionQuality">MagickSetCompressio
 
 <pre class="code">
   MagickBooleanType MagickSetCompressionQuality(MagickWand *wand,
-    const unsigned long quality)
+    const size_t quality)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1075,7 +1075,7 @@ _8c.html" target="source" name="MagickSetDepth">MagickSetDepth</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickSetDepth(MagickWand *wand,
-    const unsigned long depth)
+    const size_t depth)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1374,8 +1374,8 @@ _8c.html" target="source" name="MagickSetPage">MagickSetPage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickSetPage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1529,7 +1529,7 @@ _8c.html" target="source" name="MagickSetSamplingFactors">MagickSetSamplingFacto
 
 <pre class="code">
   MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
-    const unsigned long number_factors,const double *sampling_factors)
+    const size_t number_factors,const double *sampling_factors)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1554,7 +1554,7 @@ _8c.html" target="source" name="MagickSetSize">MagickSetSize</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickSetSize(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows)
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1579,8 +1579,8 @@ _8c.html" target="source" name="MagickSetSizeOffset">MagickSetSizeOffset</a></h2
 
 <pre class="code">
   MagickBooleanType MagickSetSizeOffset(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows,
-    const long offset)
+    const size_t columns,const size_t rows,
+    const ssize_t offset)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1627,7 +1627,7 @@ _8c.html" target="source" name="MagickSetType">MagickSetType</a></h2>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

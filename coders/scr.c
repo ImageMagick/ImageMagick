@@ -253,10 +253,10 @@ static Image *ReadSCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterSCRImage method is:
 %
-%      unsigned long RegisterSCRImage(void)
+%      size_t RegisterSCRImage(void)
 %
 */
-ModuleExport unsigned long RegisterSCRImage(void)
+ModuleExport size_t RegisterSCRImage(void)
 {
   MagickInfo
     *entry;

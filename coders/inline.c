@@ -186,10 +186,10 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterINLINEImage method is:
 %
-%      unsigned long RegisterINLINEImage(void)
+%      size_t RegisterINLINEImage(void)
 %
 */
-ModuleExport unsigned long RegisterINLINEImage(void)
+ModuleExport size_t RegisterINLINEImage(void)
 {
   MagickInfo
     *entry;

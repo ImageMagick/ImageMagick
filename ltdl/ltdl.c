@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
+License assize_t with GNU Libltdl; see the file COPYING.LIB.  If not, a
 copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
 or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -1039,7 +1039,7 @@ parse_dotla_file(FILE *file, char **dlname, char **libdir, char **deplibs,
 	}
 
       /* Handle the case where we occasionally need to read a line
-	 that is longer than the initial buffer size.
+	 that is ssize_ter than the initial buffer size.
 	 Behave even if the file contains NUL bytes due to corruption. */
       while (line[line_len-2] != '\0' && line[line_len-2] != '\n' && !feof (file))
 	{
@@ -1844,7 +1844,7 @@ foreachfile_callback (char *dirname, void *data1, void *data2)
 }
 
 
-/* Call FUNC for each unique extensionless file in SEARCH_PATH, along
+/* Call FUNC for each unique extensionless file in SEARCH_PATH, assize_t
    with DATA.  The filenames passed to FUNC would be suitable for
    passing to lt_dlopenext.  The extensions are stripped so that
    individual modules do not generate several entries (e.g. libfoo.la,

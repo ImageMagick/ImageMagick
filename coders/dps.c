@@ -117,7 +117,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sans,
     status;
 
-  long
+  ssize_t
     x,
     y;
 
@@ -127,13 +127,13 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i;
 
   register PixelPacket
     *q;
 
-  register unsigned long
+  register size_t
     pixel;
 
   Screen
@@ -276,12 +276,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((visual_info->klass != DirectColor) && (visual_info->klass != TrueColor))
     for (i=0; i < visual_info->colormap_size; i++)
     {
-      colors[i].pixel=(unsigned long) i;
+      colors[i].pixel=(size_t) i;
       colors[i].pad=0;
     }
   else
     {
-      unsigned long
+      size_t
         blue,
         blue_bit,
         green,
@@ -320,8 +320,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if ((visual_info->klass != TrueColor) && (visual_info->klass != DirectColor))
     image->storage_class=PseudoClass;
-  image->columns=(unsigned long) dps_image->width;
-  image->rows=(unsigned long) dps_image->height;
+  image->columns=(size_t) dps_image->width;
+  image->rows=(size_t) dps_image->height;
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -332,11 +332,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case DirectClass:
     default:
     {
-      register unsigned long
+      register size_t
         color,
         index;
 
-      unsigned long
+      size_t
         blue_mask,
         blue_shift,
         green_mask,
@@ -373,12 +373,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if ((visual_info->colormap_size > 0) &&
           (visual_info->klass == DirectColor))
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
@@ -395,12 +395,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       else
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
@@ -426,7 +426,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create colormap.
       */
-      if (AcquireImageColormap(image,(unsigned long) visual_info->colormap_size) == MagickFalse)
+      if (AcquireImageColormap(image,(size_t) visual_info->colormap_size) == MagickFalse)
         {
           image=DestroyImage(image);
           colors=(XColor *) RelinquishMagickMemory(colors);
@@ -435,7 +435,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
           return((Image *) NULL);
         }
-      for (i=0; i < (long) image->colors; i++)
+      for (i=0; i < (ssize_t) image->colors; i++)
       {
         image->colormap[colors[i].pixel].red=ScaleShortToQuantum(colors[i].red);
         image->colormap[colors[i].pixel].green=
@@ -446,13 +446,13 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Convert X image to PseudoClass packets.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -491,12 +491,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               image->storage_class=DirectClass;
               image->matte=MagickTrue;
-              for (y=0; y < (long) image->rows; y++)
+              for (y=0; y < (ssize_t) image->rows; y++)
               {
                 q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (long) image->columns; x++)
+                for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   SetOpacityPixelComponent(q,OpaqueOpacity);
                   if (XGetPixel(matte_image,x,y) == 0)
@@ -540,10 +540,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterDPSImage method is:
 %
-%      unsigned long RegisterDPSImage(void)
+%      size_t RegisterDPSImage(void)
 %
 */
-ModuleExport unsigned long RegisterDPSImage(void)
+ModuleExport size_t RegisterDPSImage(void)
 {
   MagickInfo
     *entry;

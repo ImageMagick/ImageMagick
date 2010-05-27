@@ -95,13 +95,13 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -147,7 +147,7 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (pixels == (unsigned char *) NULL) 
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=(size_t) (3*image->columns);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     count=ReadBlob(image,length,pixels);
     if ((size_t) count != length)
@@ -156,7 +156,7 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->red=4*ScaleCharToQuantum(*p++);
       q->green=4*ScaleCharToQuantum(*p++);
@@ -196,10 +196,10 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterHRZImage method is:
 %
-%      unsigned long RegisterHRZImage(void)
+%      size_t RegisterHRZImage(void)
 %
 */
-ModuleExport unsigned long RegisterHRZImage(void)
+ModuleExport size_t RegisterHRZImage(void)
 {
   MagickInfo
     *entry;
@@ -273,7 +273,7 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x,
     y;
 
@@ -317,13 +317,13 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to HRZ raster pixels.
   */
-  for (y=0; y < (long) hrz_image->rows; y++)
+  for (y=0; y < (ssize_t) hrz_image->rows; y++)
   {
     p=GetVirtualPixels(hrz_image,0,y,hrz_image->columns,1,&image->exception);
     if (p == (PixelPacket *) NULL)
       break;
     q=pixels;
-    for (x=0; x < (long) hrz_image->columns; x++)
+    for (x=0; x < (ssize_t) hrz_image->columns; x++)
     {
       *q++=ScaleQuantumToChar(GetRedPixelComponent(p))/4;
       *q++=ScaleQuantumToChar(GetGreenPixelComponent(p))/4;

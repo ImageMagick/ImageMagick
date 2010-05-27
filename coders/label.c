@@ -107,7 +107,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   TypeMetric
     metrics;
 
-  unsigned long
+  size_t
     height,
     width;
 
@@ -138,8 +138,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       for ( ; status != MagickFalse; draw_info->pointsize*=2.0)
       {
-        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+
           0.5);
         if (((image->columns != 0) && (width > (image->columns+1))) ||
             ((image->rows != 0) && (height > (image->rows+1))))
@@ -148,8 +148,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       }
       for ( ; status != MagickFalse; draw_info->pointsize--)
       {
-        width=(unsigned long) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+
           0.5);
         if ((image->columns != 0) && (width <= (image->columns+1)) &&
            ((image->rows == 0) || (height <= (image->rows+1))))
@@ -170,9 +170,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   if (image->columns == 0)
-    image->columns=(unsigned long) (metrics.width+draw_info->stroke_width+1.5);
+    image->columns=(size_t) (metrics.width+draw_info->stroke_width+1.5);
   if (image->columns == 0)
-    image->columns=(unsigned long) (draw_info->pointsize+
+    image->columns=(size_t) (draw_info->pointsize+
       draw_info->stroke_width+1.5);
   if (draw_info->gravity == UndefinedGravity)
     {
@@ -182,10 +182,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       draw_info->geometry=AcquireString(geometry);
     }
   if (image->rows == 0)
-    image->rows=(unsigned long) floor(metrics.height+draw_info->stroke_width+
+    image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+
       0.5);
   if (image->rows == 0)
-    image->rows=(unsigned long) floor(draw_info->pointsize+
+    image->rows=(size_t) floor(draw_info->pointsize+
       draw_info->stroke_width+0.5);
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
@@ -218,10 +218,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterLABELImage method is:
 %
-%      unsigned long RegisterLABELImage(void)
+%      size_t RegisterLABELImage(void)
 %
 */
-ModuleExport unsigned long RegisterLABELImage(void)
+ModuleExport size_t RegisterLABELImage(void)
 {
   MagickInfo
     *entry;

@@ -112,14 +112,14 @@ struct _LogInfo
     *filename,
     *format;
 
-  unsigned long
+  size_t
     generations,
     limit;
 
   FILE
     *file;
 
-  unsigned long
+  size_t
     generation;
 
   MagickBooleanType
@@ -130,7 +130,7 @@ struct _LogInfo
   TimerInfo
     timer;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -311,7 +311,7 @@ static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
 %  The format of the GetLogInfoList function is:
 %
 %      const LogInfo **GetLogInfoList(const char *pattern,
-%        unsigned long *number_preferences,ExceptionInfo *exception)
+%        size_t *number_preferences,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -344,7 +344,7 @@ static int LogInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const LogInfo **GetLogInfoList(const char *pattern,
-  unsigned long *number_preferences,ExceptionInfo *exception)
+  size_t *number_preferences,ExceptionInfo *exception)
 {
   const LogInfo
     **preferences;
@@ -352,7 +352,7 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   register const LogInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -360,7 +360,7 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_preferences != (unsigned long *) NULL);
+  assert(number_preferences != (size_t *) NULL);
   *number_preferences=0;
   p=GetLogInfo("*",exception);
   if (p == (const LogInfo *) NULL)
@@ -385,7 +385,7 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   UnlockSemaphoreInfo(log_semaphore);
   qsort((void *) preferences,(size_t) i,sizeof(*preferences),LogInfoCompare);
   preferences[i]=(LogInfo *) NULL;
-  *number_preferences=(unsigned long) i;
+  *number_preferences=(size_t) i;
   return(preferences);
 }
 
@@ -404,7 +404,7 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
 %
 %  The format of the GetLogList function is:
 %
-%      char **GetLogList(const char *pattern,unsigned long *number_preferences,
+%      char **GetLogList(const char *pattern,size_t *number_preferences,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -437,7 +437,7 @@ static int LogCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetLogList(const char *pattern,
-  unsigned long *number_preferences,ExceptionInfo *exception)
+  size_t *number_preferences,ExceptionInfo *exception)
 {
   char
     **preferences;
@@ -445,7 +445,7 @@ MagickExport char **GetLogList(const char *pattern,
   register const LogInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -453,7 +453,7 @@ MagickExport char **GetLogList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_preferences != (unsigned long *) NULL);
+  assert(number_preferences != (size_t *) NULL);
   *number_preferences=0;
   p=GetLogInfo("*",exception);
   if (p == (const LogInfo *) NULL)
@@ -478,7 +478,7 @@ MagickExport char **GetLogList(const char *pattern,
   UnlockSemaphoreInfo(log_semaphore);
   qsort((void *) preferences,(size_t) i,sizeof(*preferences),LogCompare);
   preferences[i]=(char *) NULL;
-  *number_preferences=(unsigned long) i;
+  *number_preferences=(size_t) i;
   return(preferences);
 }
 
@@ -617,13 +617,13 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
   const LogInfo
     **log_info;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_aliases;
 
   if (file == (const FILE *) NULL)
@@ -633,7 +633,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
     return(MagickFalse);
   j=0;
   path=(const char *) NULL;
-  for (i=0; i < (long) number_aliases; i++)
+  for (i=0; i < (ssize_t) number_aliases; i++)
   {
     if (log_info[i]->stealth != MagickFalse)
       continue;
@@ -650,7 +650,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
     if (log_info[i]->filename != (char *) NULL)
       {
         (void) fprintf(file,"%s",log_info[i]->filename);
-        for (j=(long) strlen(log_info[i]->filename); j <= 16; j++)
+        for (j=(ssize_t) strlen(log_info[i]->filename); j <= 16; j++)
           (void) fprintf(file," ");
       }
     (void) fprintf(file,"%9lu  ",log_info[i]->generations);
@@ -764,7 +764,7 @@ MagickExport void LogComponentTerminus(void)
 %  The format of the LogMagickEvent method is:
 %
 %      MagickBooleanType LogMagickEvent(const LogEventType type,
-%        const char *module,const char *function,const unsigned long line,
+%        const char *module,const char *function,const size_t line,
 %        const char *format,...)
 %
 %  A description of each parameter follows:
@@ -781,7 +781,7 @@ MagickExport void LogComponentTerminus(void)
 %
 */
 static char *TranslateEvent(const LogEventType magick_unused(type),
-  const char *module,const char *function,const unsigned long line,
+  const char *module,const char *function,const size_t line,
   const char *domain,const char *event)
 {
   char
@@ -840,9 +840,9 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
         "  <line>%lu</line>\n"
         "  <domain>%s</domain>\n"
         "  <event>%s</event>\n"
-        "</entry>",timestamp,(long) (elapsed_time/60.0),(long)
-        floor(fmod(elapsed_time,60.0)),(long) (1000.0*(elapsed_time-
-        floor(elapsed_time))+0.5),user_time,(long) getpid(),
+        "</entry>",timestamp,(ssize_t) (elapsed_time/60.0),(ssize_t)
+        floor(fmod(elapsed_time,60.0)),(ssize_t) (1000.0*(elapsed_time-
+        floor(elapsed_time))+0.5),user_time,(ssize_t) getpid(),
         GetMagickThreadSignature(),module,function,line,domain,event);
       return(text);
     }
@@ -960,14 +960,14 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
       }
       case 'p':
       {
-        q+=FormatMagickString(q,extent,"%ld",(long) getpid());
+        q+=FormatMagickString(q,extent,"%ld",(ssize_t) getpid());
         break;
       }
       case 'r':
       {
-        q+=FormatMagickString(q,extent,"%ld:%02ld.%03ld",(long)
-          (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
-          (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+        q+=FormatMagickString(q,extent,"%ld:%02ld.%03ld",(ssize_t)
+          (elapsed_time/60.0),(ssize_t) floor(fmod(elapsed_time,60.0)),
+          (ssize_t) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
         break;
       }
       case 't':
@@ -1078,7 +1078,7 @@ static char *TranslateFilename(const LogInfo *log_info)
       }
       case 'p':
       {
-        q+=FormatMagickString(q,extent,"%ld",(long) getpid());
+        q+=FormatMagickString(q,extent,"%ld",(ssize_t) getpid());
         break;
       }
       case 'v':
@@ -1104,7 +1104,7 @@ static char *TranslateFilename(const LogInfo *log_info)
 }
 
 MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
-  const char *function,const unsigned long line,const char *format,
+  const char *function,const size_t line,const char *format,
   va_list operands)
 {
   char
@@ -1228,7 +1228,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
 }
 
 MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
-  const char *function,const unsigned long line,const char *format,...)
+  const char *function,const size_t line,const char *format,...)
 {
   va_list
     operands;
@@ -1259,7 +1259,7 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %  The format of the LoadLogList method is:
 %
 %      MagickBooleanType LoadLogList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1273,7 +1273,7 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %
 */
 static MagickBooleanType LoadLogList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1527,7 +1527,7 @@ static MagickBooleanType LoadLogLists(const char *filename,
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -1544,7 +1544,7 @@ static MagickBooleanType LoadLogLists(const char *filename,
           return(MagickFalse);
         }
     }
-  for (i=0; i < (long) (sizeof(LogMap)/sizeof(*LogMap)); i++)
+  for (i=0; i < (ssize_t) (sizeof(LogMap)/sizeof(*LogMap)); i++)
   {
     LogInfo
       *log_info;
@@ -1620,7 +1620,7 @@ static LogHandlerType ParseLogHandlers(const char *handlers)
   register const char
     *p;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -1679,7 +1679,7 @@ MagickExport LogEventType SetLogEventMask(const char *events)
   LogInfo
     *log_info;
 
-  long
+  ssize_t
     option;
 
   exception=AcquireExceptionInfo();

@@ -88,7 +88,7 @@ struct _PolicyInfo
   SemaphoreInfo
     *semaphore;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -224,7 +224,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
 %  The format of the GetPolicyInfoList function is:
 %
 %      const PolicyInfo **GetPolicyInfoList(const char *pattern,
-%        unsigned long *number_policies,ExceptionInfo *exception)
+%        size_t *number_policies,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -236,7 +236,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
 %
 */
 MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
-  unsigned long *number_policies,ExceptionInfo *exception)
+  size_t *number_policies,ExceptionInfo *exception)
 {
   const PolicyInfo
     **policies;
@@ -244,7 +244,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   register const PolicyInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -252,7 +252,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_policies != (unsigned long *) NULL);
+  assert(number_policies != (size_t *) NULL);
   *number_policies=0;
   p=GetPolicyInfo("*",exception);
   if (p == (const PolicyInfo *) NULL)
@@ -276,7 +276,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(policy_semaphore);
   policies[i]=(PolicyInfo *) NULL;
-  *number_policies=(unsigned long) i;
+  *number_policies=(size_t) i;
   return(policies);
 }
 
@@ -295,7 +295,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
 %
 %  The format of the GetPolicyList function is:
 %
-%      char **GetPolicyList(const char *pattern,unsigned long *number_policies,
+%      char **GetPolicyList(const char *pattern,size_t *number_policies,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -308,7 +308,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
 %
 */
 MagickExport char **GetPolicyList(const char *pattern,
-  unsigned long *number_policies,ExceptionInfo *exception)
+  size_t *number_policies,ExceptionInfo *exception)
 {
   char
     **policies;
@@ -316,7 +316,7 @@ MagickExport char **GetPolicyList(const char *pattern,
   register const PolicyInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -324,7 +324,7 @@ MagickExport char **GetPolicyList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_policies != (unsigned long *) NULL);
+  assert(number_policies != (size_t *) NULL);
   *number_policies=0;
   p=GetPolicyInfo("*",exception);
   if (p == (const PolicyInfo *) NULL)
@@ -348,7 +348,7 @@ MagickExport char **GetPolicyList(const char *pattern,
   }
   UnlockSemaphoreInfo(policy_semaphore);
   policies[i]=(char *) NULL;
-  *number_policies=(unsigned long) i;
+  *number_policies=(size_t) i;
   return(policies);
 }
 
@@ -550,10 +550,10 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
   const PolicyInfo
     **policy_info;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_policies;
 
   /*
@@ -565,7 +565,7 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
   if (policy_info == (const PolicyInfo **) NULL)
     return(MagickFalse);
   path=(const char *) NULL;
-  for (i=0; i < (long) number_policies; i++)
+  for (i=0; i < (ssize_t) number_policies; i++)
   {
     if (policy_info[i]->stealth != MagickFalse)
       continue;
@@ -624,7 +624,7 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
 %  The format of the LoadPolicyList method is:
 %
 %      MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -638,7 +638,7 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
 %
 */
 static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -882,7 +882,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
   MagickStatusType
     status;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -899,7 +899,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
           return(MagickFalse);
         }
     }
-  for (i=0; i < (long) (sizeof(PolicyMap)/sizeof(*PolicyMap)); i++)
+  for (i=0; i < (ssize_t) (sizeof(PolicyMap)/sizeof(*PolicyMap)); i++)
   {
     PolicyInfo
       *policy_info;

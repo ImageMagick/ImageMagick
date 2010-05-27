@@ -175,7 +175,7 @@ MagickExport MagickBooleanType MagickSetThreadValue(MagickThreadKey key,
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   return(TlsSetValue(key,(void *) value) != 0 ? MagickTrue : MagickFalse);
 #else
-  *key=(unsigned long) value;
+  *key=(size_t) value;
   return(MagickTrue);
 #endif
 }

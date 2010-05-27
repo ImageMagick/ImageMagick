@@ -265,7 +265,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   const DelegateInfo
     *delegate_info;
 
-  register long
+  register ssize_t
     i;
 
   assert(image_info != (ImageInfo *) NULL);
@@ -433,7 +433,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 %  The delegate of the GetDelegateInfoList function is:
 %
 %      const DelegateInfo **GetDelegateInfoList(const char *pattern,
-%        unsigned long *number_delegates,ExceptionInfo *exception)
+%        size_t *number_delegates,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -476,7 +476,7 @@ static int DelegateInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
-  unsigned long *number_delegates,ExceptionInfo *exception)
+  size_t *number_delegates,ExceptionInfo *exception)
 {
   const DelegateInfo
     **delegates;
@@ -484,7 +484,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   register const DelegateInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -492,7 +492,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_delegates != (unsigned long *) NULL);
+  assert(number_delegates != (size_t *) NULL);
   *number_delegates=0;
   p=GetDelegateInfo("*","*",exception);
   if (p == (const DelegateInfo *) NULL)
@@ -518,7 +518,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateInfoCompare);
   delegates[i]=(DelegateInfo *) NULL;
-  *number_delegates=(unsigned long) i;
+  *number_delegates=(size_t) i;
   return(delegates);
 }
 
@@ -539,7 +539,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
 %  The format of the GetDelegateList function is:
 %
 %      char **GetDelegateList(const char *pattern,
-%        unsigned long *number_delegates,ExceptionInfo *exception)
+%        size_t *number_delegates,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -572,7 +572,7 @@ static int DelegateCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetDelegateList(const char *pattern,
-  unsigned long *number_delegates,ExceptionInfo *exception)
+  size_t *number_delegates,ExceptionInfo *exception)
 {
   char
     **delegates;
@@ -580,7 +580,7 @@ MagickExport char **GetDelegateList(const char *pattern,
   register const DelegateInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -588,7 +588,7 @@ MagickExport char **GetDelegateList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_delegates != (unsigned long *) NULL);
+  assert(number_delegates != (size_t *) NULL);
   *number_delegates=0;
   p=GetDelegateInfo("*","*",exception);
   if (p == (const DelegateInfo *) NULL)
@@ -613,7 +613,7 @@ MagickExport char **GetDelegateList(const char *pattern,
   UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateCompare);
   delegates[i]=(char *) NULL;
-  *number_delegates=(unsigned long) i;
+  *number_delegates=(size_t) i;
   return(delegates);
 }
 
@@ -632,14 +632,14 @@ MagickExport char **GetDelegateList(const char *pattern,
 %
 %  The format of the GetDelegateMode method is:
 %
-%      long GetDelegateMode(const DelegateInfo *delegate_info)
+%      ssize_t GetDelegateMode(const DelegateInfo *delegate_info)
 %
 %  A description of each parameter follows:
 %
 %    o delegate_info:  The delegate info.
 %
 */
-MagickExport long GetDelegateMode(const DelegateInfo *delegate_info)
+MagickExport ssize_t GetDelegateMode(const DelegateInfo *delegate_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(delegate_info != (DelegateInfo *) NULL);
@@ -847,7 +847,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     status,
     temporary;
 
-  register long
+  register ssize_t
     i;
 
   PolicyRights
@@ -1114,13 +1114,13 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
   const char
     *path;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_delegates;
 
   if (file == (const FILE *) NULL)
@@ -1129,7 +1129,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
   if (delegate_info == (const DelegateInfo **) NULL)
     return(MagickFalse);
   path=(const char *) NULL;
-  for (i=0; i < (long) number_delegates; i++)
+  for (i=0; i < (ssize_t) number_delegates; i++)
   {
     if (delegate_info[i]->stealth != MagickFalse)
       continue;
@@ -1188,7 +1188,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %  The format of the LoadDelegateList method is:
 %
 %      MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1202,7 +1202,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %
 */
 static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],

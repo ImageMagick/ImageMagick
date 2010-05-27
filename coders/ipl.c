@@ -68,7 +68,7 @@ Tyedef declarations
 
 typedef struct _IPLInfo
 {
-  unsigned long
+  size_t
   tag,
   size,
   time,
@@ -181,8 +181,8 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket *q;
   unsigned char magick[12], *pixels;
   ssize_t count;
-  long y;
-  unsigned long t_count=0;
+  ssize_t y;
+  size_t t_count=0;
   size_t length;
   IPLInfo
     ipl_info;
@@ -314,7 +314,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
 /*
-   printf("Length: %lu, Memory size: %lu\n", length,(unsigned long)(image->depth));
+   printf("Length: %lu, Memory size: %lu\n", length,(size_t)(image->depth));
 */
      quantum_info=AcquireQuantumInfo(image_info,image);
      if (quantum_info == (QuantumInfo *) NULL)
@@ -335,7 +335,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
      */
     
   if(ipl_info.colors == 1){
-      for(y = 0; y < (long) image->rows; y++){
+      for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
@@ -347,7 +347,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   }
   else{
-      for(y = 0; y < (long) image->rows; y++){
+      for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
@@ -357,7 +357,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
-      for(y = 0; y < (long) image->rows; y++){
+      for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
@@ -367,7 +367,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
-      for(y = 0; y < (long) image->rows; y++){
+      for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
@@ -426,7 +426,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
  %
  %
  */
-ModuleExport unsigned long RegisterIPLImage(void)
+ModuleExport size_t RegisterIPLImage(void)
 {
   MagickInfo
     *entry;
@@ -509,7 +509,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   unsigned char
   *pixels;
  
-  long
+  ssize_t
     y;
   
   IPLInfo
@@ -618,7 +618,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
       pixels=GetQuantumPixels(quantum_info);
   if(ipl_info.colors == 1){
   /* Red frame */
-  for(y = 0; y < (long) ipl_info.height; y++){
+  for(y = 0; y < (ssize_t) ipl_info.height; y++){
     p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (p == (PixelPacket *) NULL)
       break;
@@ -630,7 +630,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
 }
   if(ipl_info.colors == 3){
   /* Red frame */
-  for(y = 0; y < (long) ipl_info.height; y++){
+  for(y = 0; y < (ssize_t) ipl_info.height; y++){
     p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (p == (PixelPacket *) NULL)
       break;
@@ -640,7 +640,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   }
 
     /* Green frame */
-    for(y = 0; y < (long) ipl_info.height; y++){
+    for(y = 0; y < (ssize_t) ipl_info.height; y++){
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (PixelPacket *) NULL)
         break;
@@ -649,7 +649,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image, image->columns*image->depth/8, pixels);
     }
     /* Blue frame */
-    for(y = 0; y < (long) ipl_info.height; y++){
+    for(y = 0; y < (ssize_t) ipl_info.height; y++){
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (PixelPacket *) NULL)
         break;

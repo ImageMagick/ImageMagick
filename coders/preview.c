@@ -90,10 +90,10 @@ static MagickBooleanType
 %
 %  The format of the RegisterPREVIEWImage method is:
 %
-%      unsigned long RegisterPREVIEWImage(void)
+%      size_t RegisterPREVIEWImage(void)
 %
 */
-ModuleExport unsigned long RegisterPREVIEWImage(void)
+ModuleExport size_t RegisterPREVIEWImage(void)
 {
   MagickInfo
     *entry;

@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -176,7 +176,7 @@ _8c.html" target="source" name="MagickAverageImages">MagickAverageImages</a></h2
 _8c.html" target="source" name="MagickClipPathImage">MagickClipPathImage</a></h2>
 <div class="doc-section">
 
-<p>MagickClipPathImage() clips along the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
+<p>MagickClipPathImage() clips assize_t the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
 
 <p>The format of the MagickClipPathImage method is:</p>
 
@@ -339,7 +339,7 @@ _8c.html" target="source" name="MagickColorFloodfillImage">MagickColorFloodfillI
 <pre class="code">
   MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
     const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
-    const long x,const long y)
+    const ssize_t x,const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -426,7 +426,7 @@ _8c.html" target="source" name="MagickGetImageMatte">MagickGetImageMatte</a></h2
 <p>The format of the MagickGetImageMatte method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageMatte(MagickWand *wand)
+  size_t MagickGetImageMatte(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -439,7 +439,7 @@ _8c.html" target="source" name="MagickGetImageMatte">MagickGetImageMatte</a></h2
 _8c.html" target="source" name="MagickGetImagePixels">MagickGetImagePixels</a></h2>
 <div class="doc-section">
 
-<p>MagickGetImagePixels() extracts pixel data from an image and returns it to you.  The method returns MagickTrue on success otherwise MagickFalse if an error is encountered.  The data is returned as char, short int, int, long, float, or double in the order specified by map.</p></ol>
+<p>MagickGetImagePixels() extracts pixel data from an image and returns it to you.  The method returns MagickTrue on success otherwise MagickFalse if an error is encountered.  The data is returned as char, short int, int, ssize_t, float, or double in the order specified by map.</p></ol>
 
 <p>Suppose you want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</p>
 
@@ -451,8 +451,8 @@ _8c.html" target="source" name="MagickGetImagePixels">MagickGetImagePixels</a></
 
 <pre class="code">
   MagickBooleanType MagickGetImagePixels(MagickWand *wand,
-    const long x,const long y,const unsigned long columns,
-    const unsigned long rows,const char *map,const StorageType storage,
+    const ssize_t x,const ssize_t y,const size_t columns,
+    const size_t rows,const char *map,const StorageType storage,
     void *pixels)
 </pre>
 
@@ -532,7 +532,7 @@ _8c.html" target="source" name="MagickMatteFloodfillImage">MagickMatteFloodfillI
 <pre class="code">
   MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
     const double alpha,const double fuzz,const PixelWand *bordercolor,
-    const long x,const long y)
+    const ssize_t x,const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -649,7 +649,7 @@ _8c.html" target="source" name="MagickPaintFloodfillImage">MagickPaintFloodfillI
 <pre class="code">
   MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
     const ChannelType channel,const PixelWand *fill,const double fuzz,
-    const PixelWand *bordercolor,const long x,const long y)
+    const PixelWand *bordercolor,const ssize_t x,const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -745,7 +745,7 @@ _8c.html" target="source" name="MagickRecolorImage">MagickRecolorImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickRecolorImage(MagickWand *wand,
-    const unsigned long order,const double *color_matrix)
+    const size_t order,const double *color_matrix)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -794,7 +794,7 @@ _8c.html" target="source" name="MagickSetImageIndex">MagickSetImageIndex</a></h2
 <p>The format of the MagickSetImageIndex method is:</p>
 
 <pre class="code">
-  MagickBooleanType MagickSetImageIndex(MagickWand *wand,const long index)
+  MagickBooleanType MagickSetImageIndex(MagickWand *wand,const ssize_t index)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -844,8 +844,8 @@ _8c.html" target="source" name="MagickRegionOfInterestImage">MagickRegionOfInter
 
 <pre class="code">
   MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -870,7 +870,7 @@ _8c.html" target="source" name="MagickRegionOfInterestImage">MagickRegionOfInter
 _8c.html" target="source" name="MagickSetImagePixels">MagickSetImagePixels</a></h2>
 <div class="doc-section">
 
-<p>MagickSetImagePixels() accepts pixel datand stores it in the image at the location you specify.  The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The pixel data can be either char, short int, int, long, float, or double in the order specified by map.</p></ol>
+<p>MagickSetImagePixels() accepts pixel datand stores it in the image at the location you specify.  The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The pixel data can be either char, short int, int, ssize_t, float, or double in the order specified by map.</p></ol>
 
 <p>Suppose your want to upload the first scanline of a 640x480 image from character data in red-green-blue order:</p>
 
@@ -882,8 +882,8 @@ _8c.html" target="source" name="MagickSetImagePixels">MagickSetImagePixels</a></
 
 <pre class="code">
   MagickBooleanType MagickSetImagePixels(MagickWand *wand,
-    const long x,const long y,const unsigned long columns,
-    const unsigned long rows,const char *map,const StorageType storage,
+    const ssize_t x,const ssize_t y,const size_t columns,
+    const size_t rows,const char *map,const StorageType storage,
     const void *pixels)
 </pre>
 
@@ -938,7 +938,7 @@ _8c.html" target="source" name="PixelGetNextRow">PixelGetNextRow</a></h2>
 
 <pre class="code">
   PixelWand **PixelGetNextRow(PixelIterator *iterator,
-    unsigned long *number_wands)
+    size_t *number_wands)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>

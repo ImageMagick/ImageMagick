@@ -248,10 +248,10 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterURLImage method is:
 %
-%      unsigned long RegisterURLImage(void)
+%      size_t RegisterURLImage(void)
 %
 */
-ModuleExport unsigned long RegisterURLImage(void)
+ModuleExport size_t RegisterURLImage(void)
 {
   MagickInfo
     *entry;

@@ -257,7 +257,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
   length=UTF8ToUTF16(source,(wchar_t *) NULL);
   if (length == 0)
     {
-      register long
+      register ssize_t
         i;
 
       /*
@@ -267,7 +267,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
       utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
       if (utf16 == (wchar_t *) NULL)
         return((wchar_t *) NULL);
-      for (i=0; i <= (long) length; i++)
+      for (i=0; i <= (ssize_t) length; i++)
         utf16[i]=source[i];
       return(utf16);
     }
@@ -285,8 +285,8 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
   metafile.  Width and height are returned in .01mm units.
 */
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
-static HENHMETAFILE ReadEnhMetaFile(const char *path,long *width,
-  long *height)
+static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
+  ssize_t *height)
 {
 #pragma pack( push, 2 )
   typedef struct
@@ -447,7 +447,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     height,
     width,
     y;
@@ -455,7 +455,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   RECT
     rect;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -489,14 +489,14 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
           if (image->units == PixelsPerCentimeterResolution)
             x_resolution*=CENTIMETERS_INCH;
         }
-      image->rows=(unsigned long) ((height/1000.0/CENTIMETERS_INCH)*
+      image->rows=(size_t) ((height/1000.0/CENTIMETERS_INCH)*
         y_resolution+0.5);
-      image->columns=(unsigned long) ((width/1000.0/CENTIMETERS_INCH)*
+      image->columns=(size_t) ((width/1000.0/CENTIMETERS_INCH)*
         x_resolution+0.5);
     }
   if (image_info->size != (char *) NULL)
     {
-      long
+      ssize_t
         x;
 
       image->columns=width;
@@ -510,7 +510,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       char
         *geometry;
 
-      long
+      ssize_t
         sans;
 
       register char
@@ -526,10 +526,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
           flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
-            image->columns=(unsigned long) floor((image->columns*
+            image->columns=(size_t) floor((image->columns*
               image->x_resolution)+0.5);
           if (image->y_resolution != 0.0)
-            image->rows=(unsigned long) floor((image->rows*image->y_resolution)+
+            image->rows=(size_t) floor((image->rows*image->y_resolution)+
               0.5);
         }
       else
@@ -538,10 +538,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
           flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
-            image->columns=(unsigned long) floor(((image->columns*
+            image->columns=(size_t) floor(((image->columns*
               image->x_resolution)/DefaultResolution)+0.5);
           if (image->y_resolution != 0.0)
-            image->rows=(unsigned long) floor(((image->rows*
+            image->rows=(size_t) floor(((image->rows*
               image->y_resolution)/DefaultResolution)+0.5);
         }
       geometry=DestroyString(geometry);
@@ -589,9 +589,9 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     Initialize the bitmap to the image background color.
   */
   pBits=ppBits;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       pBits->rgbRed=ScaleQuantumToChar(image->background_color.red);
       pBits->rgbGreen=ScaleQuantumToChar(image->background_color.green);
@@ -608,12 +608,12 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   */
   PlayEnhMetaFile(hDC,hemf,&rect);
   pBits=ppBits;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       q->red=ScaleCharToQuantum(pBits->rgbRed);
       q->green=ScaleCharToQuantum(pBits->rgbGreen);
@@ -653,10 +653,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterEMFImage method is:
 %
-%      unsigned long RegisterEMFImage(void)
+%      size_t RegisterEMFImage(void)
 %
 */
-ModuleExport unsigned long RegisterEMFImage(void)
+ModuleExport size_t RegisterEMFImage(void)
 {
   MagickInfo
     *entry;

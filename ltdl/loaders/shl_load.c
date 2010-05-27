@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
+License assize_t with GNU Libltdl; see the file COPYING.LIB.  If not, a
 copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
 or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -136,7 +136,7 @@ get_vtable (lt_user_data loader_data)
 
 
 /* A function called through the vtable when this loader is no
-   longer needed by the application.  */
+   ssize_ter needed by the application.  */
 static int
 vl_exit (lt_user_data LT__UNUSED loader_data)
 {

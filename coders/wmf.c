@@ -99,14 +99,14 @@ static int WMFReadBlob(void *image)
   return(ReadBlobByte((Image *) image));
 }
 
-static int WMFSeekBlob(void *image,long offset)
+static int WMFSeekBlob(void *image,ssize_t offset)
 {
   return((int) SeekBlob((Image *) image,(MagickOffsetType) offset,SEEK_SET));
 }
 
-static long WMFTellBlob(void *image)
+static ssize_t WMFTellBlob(void *image)
 {
-  return((long) TellBlob((Image*) image));
+  return((ssize_t) TellBlob((Image*) image));
 }
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -129,7 +129,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  unsigned long
+  size_t
     flags;
 
   wmfAPI
@@ -248,10 +248,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterWMFImage method is:
 %
-%      unsigned long RegisterWMFImage(void)
+%      size_t RegisterWMFImage(void)
 %
 */
-ModuleExport unsigned long RegisterWMFImage(void)
+ModuleExport size_t RegisterWMFImage(void)
 {
   MagickInfo
     *entry;

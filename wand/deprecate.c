@@ -139,7 +139,7 @@ WandExport MagickWand *MagickAverageImages(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickClipPathImage() clips along the named paths from the 8BIM profile, if
+%  MagickClipPathImage() clips assize_t the named paths from the 8BIM profile, if
 %  present. Later operations take effect inside the path.  Id may be a number
 %  if preceded with #, to work on a numbered path, e.g., "#1" to use the first
 %  path.
@@ -385,7 +385,7 @@ WandExport void DrawSetStrokeAlpha(DrawingWand *wand,const double stroke_alpha)
 %
 %      MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
 %        const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
-%        const long x,const long y)
+%        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -407,7 +407,7 @@ WandExport void DrawSetStrokeAlpha(DrawingWand *wand,const double stroke_alpha)
 */
 WandExport MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
   const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
-  const long x,const long y)
+  const ssize_t x,const ssize_t y)
 {
   DrawInfo
     *draw_info;
@@ -553,14 +553,14 @@ WandExport char *MagickGetImageAttribute(MagickWand *wand,const char *property)
 %
 %  The format of the MagickGetImageIndex method is:
 %
-%      long MagickGetImageIndex(MagickWand *wand)
+%      ssize_t MagickGetImageIndex(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport long MagickGetImageIndex(MagickWand *wand)
+WandExport ssize_t MagickGetImageIndex(MagickWand *wand)
 {
   return(MagickGetIteratorIndex(wand));
 }
@@ -582,7 +582,7 @@ WandExport long MagickGetImageIndex(MagickWand *wand)
 %  The format of the MagickGetImageChannelExtrema method is:
 %
 %      MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
-%        const ChannelType channel,unsigned long *minima,unsigned long *maxima)
+%        const ChannelType channel,size_t *minima,size_t *maxima)
 %
 %  A description of each parameter follows:
 %
@@ -596,7 +596,7 @@ WandExport long MagickGetImageIndex(MagickWand *wand)
 %
 */
 WandExport MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
-  const ChannelType channel,unsigned long *minima,unsigned long *maxima)
+  const ChannelType channel,size_t *minima,size_t *maxima)
 {
   MagickBooleanType
     status;
@@ -628,7 +628,7 @@ WandExport MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
 %  The format of the MagickGetImageExtrema method is:
 %
 %      MagickBooleanType MagickGetImageExtrema(MagickWand *wand,
-%        unsigned long *minima,unsigned long *maxima)
+%        size_t *minima,size_t *maxima)
 %
 %  A description of each parameter follows:
 %
@@ -640,7 +640,7 @@ WandExport MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickGetImageExtrema(MagickWand *wand,
-  unsigned long *minima,unsigned long *maxima)
+  size_t *minima,size_t *maxima)
 {
   MagickBooleanType
     status;
@@ -671,7 +671,7 @@ WandExport MagickBooleanType MagickGetImageExtrema(MagickWand *wand,
 %
 %  The format of the MagickGetImageMatte method is:
 %
-%      unsigned long MagickGetImageMatte(MagickWand *wand)
+%      size_t MagickGetImageMatte(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -702,7 +702,7 @@ WandExport MagickBooleanType MagickGetImageMatte(MagickWand *wand)
 %
 %  MagickGetImagePixels() extracts pixel data from an image and returns it to
 %  you.  The method returns MagickTrue on success otherwise MagickFalse if an
-%  error is encountered.  The data is returned as char, short int, int, long,
+%  error is encountered.  The data is returned as char, short int, int, ssize_t,
 %  float, or double in the order specified by map.
 %
 %  Suppose you want to extract the first scanline of a 640x480 image as
@@ -713,8 +713,8 @@ WandExport MagickBooleanType MagickGetImageMatte(MagickWand *wand)
 %  The format of the MagickGetImagePixels method is:
 %
 %      MagickBooleanType MagickGetImagePixels(MagickWand *wand,
-%        const long x,const long y,const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType storage,
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,const char *map,const StorageType storage,
 %        void *pixels)
 %
 %  A description of each parameter follows:
@@ -741,8 +741,8 @@ WandExport MagickBooleanType MagickGetImageMatte(MagickWand *wand)
 %
 */
 WandExport MagickBooleanType MagickGetImagePixels(MagickWand *wand,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,const char *map,const StorageType storage,
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,const char *map,const StorageType storage,
   void *pixels)
 {
   return(MagickExportImagePixels(wand,x,y,columns,rows,map,storage,pixels));
@@ -851,7 +851,7 @@ WandExport MagickBooleanType MagickMapImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
 %        const double alpha,const double fuzz,const PixelWand *bordercolor,
-%        const long x,const long y)
+%        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -874,7 +874,7 @@ WandExport MagickBooleanType MagickMapImage(MagickWand *wand,
 */
 WandExport MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
   const double alpha,const double fuzz,const PixelWand *bordercolor,
-  const long x,const long y)
+  const ssize_t x,const ssize_t y)
 {
   DrawInfo
     *draw_info;
@@ -1090,7 +1090,7 @@ WandExport MagickBooleanType MagickOpaqueImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
 %        const ChannelType channel,const PixelWand *fill,const double fuzz,
-%        const PixelWand *bordercolor,const long x,const long y)
+%        const PixelWand *bordercolor,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -1114,7 +1114,7 @@ WandExport MagickBooleanType MagickOpaqueImage(MagickWand *wand,
 */
 WandExport MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
   const ChannelType channel,const PixelWand *fill,const double fuzz,
-  const PixelWand *bordercolor,const long x,const long y)
+  const PixelWand *bordercolor,const ssize_t x,const ssize_t y)
 {
   MagickBooleanType
     status;
@@ -1248,7 +1248,7 @@ WandExport MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
 %  The format of the MagickRecolorImage method is:
 %
 %      MagickBooleanType MagickRecolorImage(MagickWand *wand,
-%        const unsigned long order,const double *color_matrix)
+%        const size_t order,const double *color_matrix)
 %
 %  A description of each parameter follows:
 %
@@ -1260,7 +1260,7 @@ WandExport MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickRecolorImage(MagickWand *wand,
-  const unsigned long order,const double *color_matrix)
+  const size_t order,const double *color_matrix)
 {
   Image
     *transform_image;
@@ -1330,7 +1330,7 @@ WandExport MagickBooleanType MagickSetImageAttribute(MagickWand *wand,
 %
 %  The format of the MagickSetImageIndex method is:
 %
-%      MagickBooleanType MagickSetImageIndex(MagickWand *wand,const long index)
+%      MagickBooleanType MagickSetImageIndex(MagickWand *wand,const ssize_t index)
 %
 %  A description of each parameter follows:
 %
@@ -1340,7 +1340,7 @@ WandExport MagickBooleanType MagickSetImageAttribute(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickSetImageIndex(MagickWand *wand,
-  const long index)
+  const ssize_t index)
 {
   return(MagickSetIteratorIndex(wand,index));
 }
@@ -1449,8 +1449,8 @@ WandExport MagickBooleanType MagickTransparentImage(MagickWand *wand,
 %  The format of the MagickRegionOfInterestImage method is:
 %
 %      MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
-%        const unsigned long width,const unsigned long height,const long x,
-%        const long y)
+%        const size_t width,const size_t height,const ssize_t x,
+%        const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -1466,8 +1466,8 @@ WandExport MagickBooleanType MagickTransparentImage(MagickWand *wand,
 %
 */
 WandExport MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
-  const unsigned long width,const unsigned long height,const long x,
-  const long y)
+  const size_t width,const size_t height,const ssize_t x,
+  const ssize_t y)
 {
   return(MagickGetImageRegion(wand,width,height,x,y));
 }
@@ -1486,7 +1486,7 @@ WandExport MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
 %  MagickSetImagePixels() accepts pixel datand stores it in the image at the
 %  location you specify.  The method returns MagickFalse on success otherwise
 %  MagickTrue if an error is encountered.  The pixel data can be either char,
-%  short int, int, long, float, or double in the order specified by map.
+%  short int, int, ssize_t, float, or double in the order specified by map.
 %
 %  Suppose your want to upload the first scanline of a 640x480 image from
 %  character data in red-green-blue order:
@@ -1496,8 +1496,8 @@ WandExport MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
 %  The format of the MagickSetImagePixels method is:
 %
 %      MagickBooleanType MagickSetImagePixels(MagickWand *wand,
-%        const long x,const long y,const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType storage,
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,const char *map,const StorageType storage,
 %        const void *pixels)
 %
 %  A description of each parameter follows:
@@ -1524,8 +1524,8 @@ WandExport MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickSetImagePixels(MagickWand *wand,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,const char *map,const StorageType storage,
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,const char *map,const StorageType storage,
   const void *pixels)
 {
   return(MagickImportImagePixels(wand,x,y,columns,rows,map,storage,pixels));
@@ -1581,7 +1581,7 @@ WandExport unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
 %  The format of the PixelGetNextRow method is:
 %
 %      PixelWand **PixelGetNextRow(PixelIterator *iterator,
-%        unsigned long *number_wands)
+%        size_t *number_wands)
 %
 %  A description of each parameter follows:
 %
@@ -1592,7 +1592,7 @@ WandExport unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
 */
 WandExport PixelWand **PixelGetNextRow(PixelIterator *iterator)
 {
-  unsigned long
+  size_t
     number_wands;
 
   return(PixelGetNextIteratorRow(iterator,&number_wands));

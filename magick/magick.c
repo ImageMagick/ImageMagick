@@ -469,7 +469,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %  The format of the GetMagickInfoList function is:
 %
 %      const MagickInfo **GetMagickInfoList(const char *pattern,
-%        unsigned long *number_formats,ExceptionInfo *exception)
+%        size_t *number_formats,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -501,7 +501,7 @@ static int MagickInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
-  unsigned long *number_formats,ExceptionInfo *exception)
+  size_t *number_formats,ExceptionInfo *exception)
 {
   const MagickInfo
     **formats;
@@ -509,7 +509,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
   register const MagickInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -517,7 +517,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_formats != (unsigned long *) NULL);
+  assert(number_formats != (size_t *) NULL);
   *number_formats=0;
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
@@ -542,7 +542,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
   UnlockSemaphoreInfo(magick_semaphore);
   qsort((void *) formats,(size_t) i,sizeof(*formats),MagickInfoCompare);
   formats[i]=(MagickInfo *) NULL;
-  *number_formats=(unsigned long) i;
+  *number_formats=(size_t) i;
   return(formats);
 }
 
@@ -561,7 +561,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
 %
 %  The format of the GetMagickList function is:
 %
-%      char **GetMagickList(const char *pattern,unsigned long *number_formats,
+%      char **GetMagickList(const char *pattern,size_t *number_formats,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -594,7 +594,7 @@ static int MagickCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetMagickList(const char *pattern,
-  unsigned long *number_formats,ExceptionInfo *exception)
+  size_t *number_formats,ExceptionInfo *exception)
 {
   char
     **formats;
@@ -602,7 +602,7 @@ MagickExport char **GetMagickList(const char *pattern,
   register const MagickInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -610,7 +610,7 @@ MagickExport char **GetMagickList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_formats != (unsigned long *) NULL);
+  assert(number_formats != (size_t *) NULL);
   *number_formats=0;
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
@@ -632,7 +632,7 @@ MagickExport char **GetMagickList(const char *pattern,
   UnlockSemaphoreInfo(magick_semaphore);
   qsort((void *) formats,(size_t) i,sizeof(*formats),MagickCompare);
   formats[i]=(char *) NULL;
-  *number_formats=(unsigned long) i;
+  *number_formats=(size_t) i;
   return(formats);
 }
 
@@ -936,13 +936,13 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
   const MagickInfo
     **magick_info;
 
-  long
+  ssize_t
     j;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_formats;
 
   if (file == (FILE *) NULL)
@@ -958,7 +958,7 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 #endif
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
-  for (i=0; i < (long) number_formats; i++)
+  for (i=0; i < (ssize_t) number_formats; i++)
   {
     if (magick_info[i]->stealth != MagickFalse)
       continue;

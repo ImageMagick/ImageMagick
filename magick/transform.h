@@ -30,7 +30,7 @@ extern MagickExport Image
   *ExtentImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *FlipImage(const Image *,ExceptionInfo *),
   *FlopImage(const Image *,ExceptionInfo *),
-  *RollImage(const Image *,const long,const long,ExceptionInfo *),
+  *RollImage(const Image *,const ssize_t,const ssize_t,ExceptionInfo *),
   *ShaveImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *SpliceImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *TransposeImage(const Image *,ExceptionInfo *),

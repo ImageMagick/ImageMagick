@@ -59,8 +59,8 @@ extern MagickExport const IndexPacket
   *GetCacheViewVirtualIndexQueue(const CacheView *);
 
 extern MagickExport const PixelPacket
-  *GetCacheViewVirtualPixels(const CacheView *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *),
+  *GetCacheViewVirtualPixels(const CacheView *,const ssize_t,const ssize_t,
+    const size_t,const size_t,ExceptionInfo *),
   *GetCacheViewVirtualPixelQueue(const CacheView *);
 
 extern MagickExport ExceptionInfo
@@ -70,12 +70,12 @@ extern MagickExport IndexPacket
   *GetCacheViewAuthenticIndexQueue(CacheView *);
 
 extern MagickExport MagickBooleanType
-  GetOneCacheViewVirtualPixel(const CacheView *,const long,const long,
+  GetOneCacheViewVirtualPixel(const CacheView *,const ssize_t,const ssize_t,
     PixelPacket *,ExceptionInfo *),
   GetOneCacheViewVirtualMethodPixel(const CacheView *,
-    const VirtualPixelMethod,const long,const long,PixelPacket *,
+    const VirtualPixelMethod,const ssize_t,const ssize_t,PixelPacket *,
     ExceptionInfo *),
-  GetOneCacheViewAuthenticPixel(const CacheView *,const long,const long,
+  GetOneCacheViewAuthenticPixel(const CacheView *,const ssize_t,const ssize_t,
     PixelPacket *,ExceptionInfo *),
   SetCacheViewStorageClass(CacheView *,const ClassType),
   SetCacheViewVirtualPixelMethod(CacheView *,const VirtualPixelMethod),
@@ -86,10 +86,10 @@ extern MagickExport MagickSizeType
 
 extern MagickExport PixelPacket
   *GetCacheViewAuthenticPixelQueue(CacheView *),
-  *GetCacheViewAuthenticPixels(CacheView *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *),
-  *QueueCacheViewAuthenticPixels(CacheView *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *);
+  *GetCacheViewAuthenticPixels(CacheView *,const ssize_t,const ssize_t,
+    const size_t,const size_t,ExceptionInfo *),
+  *QueueCacheViewAuthenticPixels(CacheView *,const ssize_t,const ssize_t,
+    const size_t,const size_t,ExceptionInfo *);
 
 extern MagickExport CacheView
   *AcquireCacheView(const Image *),

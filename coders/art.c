@@ -98,7 +98,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   QuantumInfo
@@ -139,9 +139,9 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=1;
   image->endian=MSBEndian;
   (void) ReadBlobLSBShort(image);
-  image->columns=(unsigned long) ReadBlobLSBShort(image);
+  image->columns=(size_t) ReadBlobLSBShort(image);
   (void) ReadBlobLSBShort(image);
-  image->rows=(unsigned long) ReadBlobLSBShort(image);
+  image->rows=(size_t) ReadBlobLSBShort(image);
   /*
     Initialize image colormap.
   */
@@ -161,7 +161,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
   length=GetQuantumExtent(image,quantum_info,quantum_type);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
       *restrict q;
@@ -209,10 +209,10 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterARTImage method is:
 %
-%      unsigned long RegisterARTImage(void)
+%      size_t RegisterARTImage(void)
 %
 */
-ModuleExport unsigned long RegisterARTImage(void)
+ModuleExport size_t RegisterARTImage(void)
 {
   MagickInfo
     *entry;
@@ -278,7 +278,7 @@ ModuleExport void UnregisterARTImage(void)
 */
 static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
 {
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -330,7 +330,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   */
   (void) SetImageType(image,BilevelType);
   quantum_info=AcquireQuantumInfo(image_info,image);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

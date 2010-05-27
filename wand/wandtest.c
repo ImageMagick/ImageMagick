@@ -397,7 +397,7 @@ int main(int argc,char **argv)
     *fill,
     **pixels;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -409,7 +409,7 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  unsigned long
+  size_t
     columns,
     delay,
     number_options,
@@ -450,7 +450,7 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   if (MagickGetNumberImages(magick_wand) != 5)
     (void) fprintf(stderr,"read %lu images; expected 5\n",
-      (unsigned long) MagickGetNumberImages(magick_wand));
+      (size_t) MagickGetNumberImages(magick_wand));
   (void) fprintf(stdout,"Iterate forward...\n");
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
@@ -623,7 +623,7 @@ int main(int argc,char **argv)
   options=MagickGetOptions(magick_wand,"*",&number_options);
   if (options != (char **) NULL)
     {
-      for (i=0; i < (long) number_options; i++)
+      for (i=0; i < (ssize_t) number_options; i++)
       {
         (void) fprintf(stdout,"  %s\n",options[i]);
         options[i]=(char *) MagickRelinquishMemory(options[i]);
@@ -649,7 +649,7 @@ int main(int argc,char **argv)
   properties=MagickGetImageProperties(magick_wand,"*",&number_properties);
   if (properties != (char **) NULL)
     {
-      for (i=0; i < (long) number_properties; i++)
+      for (i=0; i < (ssize_t) number_properties; i++)
       {
         (void) fprintf(stdout,"  %s\n",properties[i]);
         properties[i]=(char *) MagickRelinquishMemory(properties[i]);
@@ -675,7 +675,7 @@ int main(int argc,char **argv)
   profiles=MagickGetImageProfiles(magick_wand,"*",&number_profiles);
   if (profiles != (char **) NULL)
     {
-      for (i=0; i < (long) number_profiles; i++)
+      for (i=0; i < (ssize_t) number_profiles; i++)
       {
         (void) fprintf(stdout,"  %s\n",profiles[i]);
         profiles[i]=(char *) MagickRelinquishMemory(profiles[i]);

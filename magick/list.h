@@ -27,7 +27,7 @@ extern MagickExport Image
   *CloneImages(const Image *,const char *,ExceptionInfo *),
   *DestroyImageList(Image *),
   *GetFirstImageInList(const Image *),
-  *GetImageFromList(const Image *,const long),
+  *GetImageFromList(const Image *,const ssize_t),
   *GetLastImageInList(const Image *),
   *GetNextImageInList(const Image *),
   *GetPreviousImageInList(const Image *),
@@ -36,14 +36,14 @@ extern MagickExport Image
   *RemoveImageFromList(Image **),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),
-  *SpliceImageIntoList(Image **,const unsigned long,const Image *),
+  *SpliceImageIntoList(Image **,const size_t,const Image *),
   *SplitImageList(Image *),
   *SyncNextImageInList(const Image *);
 
-extern MagickExport long
+extern MagickExport ssize_t
   GetImageIndexInList(const Image *);
 
-extern MagickExport unsigned long
+extern MagickExport size_t
   GetImageListLength(const Image *);
 
 extern MagickExport void

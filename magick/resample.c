@@ -78,7 +78,7 @@ struct _ResampleFilter
     debug;
 
   /* Information about image being resampled */
-  long
+  ssize_t
     image_area;
 
   InterpolatePixelMethod
@@ -109,7 +109,7 @@ struct _ResampleFilter
     filter_lut[WLUT_WIDTH],
     support;
 
-  unsigned long
+  size_t
     signature;
 };
 
@@ -143,8 +143,8 @@ struct _ResampleFilter
 %
 %  Usage Example...
 %      resample_filter=AcquireResampleFilter(image,exception);
-%      for (y=0; y < (long) image->rows; y++) {
-%        for (x=0; x < (long) image->columns; x++) {
+%      for (y=0; y < (ssize_t) image->rows; y++) {
+%        for (x=0; x < (ssize_t) image->columns; x++) {
 %          X= ....;   Y= ....;
 %          ScaleResampleFilter(resample_filter, ... scaling vectors ...);
 %          (void) ResamplePixelColor(resample_filter,X,Y,&pixel);
@@ -191,7 +191,7 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->debug=IsEventLogging();
   resample_filter->signature=MagickSignature;
 
-  resample_filter->image_area = (long) resample_filter->image->columns *
+  resample_filter->image_area = (ssize_t) resample_filter->image->columns *
     resample_filter->image->rows;
   resample_filter->average_defined = MagickFalse;
 
@@ -352,11 +352,11 @@ static inline double MeshInterpolate(const PointInfo *delta,const double p,
   return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
 }
 
-static inline long NearestNeighbor(MagickRealType x)
+static inline ssize_t NearestNeighbor(MagickRealType x)
 {
   if (x >= 0.0)
-    return((long) (x+0.5));
-  return((long) (x-0.5));
+    return((ssize_t) (x+0.5));
+  return((ssize_t) (x-0.5));
 }
 
 static MagickBooleanType InterpolateResampleFilter(
@@ -372,7 +372,7 @@ static MagickBooleanType InterpolateResampleFilter(
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     i;
 
   assert(resample_filter != (ResampleFilter *) NULL);
@@ -389,7 +389,7 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[16],
         gamma;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(long) floor(x)-1,(long)
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,(ssize_t)
         floor(y)-1,4,4,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
@@ -435,7 +435,7 @@ static MagickBooleanType InterpolateResampleFilter(
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(long) floor(x)-1,(long)
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,(ssize_t)
         floor(y)-1,4,4,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
@@ -480,7 +480,7 @@ static MagickBooleanType InterpolateResampleFilter(
         delta,
         epsilon;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(long) floor(x),(long)
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),(ssize_t)
         floor(y),2,2,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
@@ -552,8 +552,8 @@ static MagickBooleanType InterpolateResampleFilter(
 
       geometry.width=4L;
       geometry.height=4L;
-      geometry.x=(long) floor(x)-1L;
-      geometry.y=(long) floor(y)-1L;
+      geometry.x=(ssize_t) floor(x)-1L;
+      geometry.y=(ssize_t) floor(y)-1L;
       excerpt_image=ExcerptImage(resample_filter->image,&geometry,
         resample_filter->exception);
       if (excerpt_image == (Image *) NULL)
@@ -584,7 +584,7 @@ static MagickBooleanType InterpolateResampleFilter(
       MagickPixelPacket
         pixels[1];
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(long) floor(x),(long)
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),(ssize_t)
         floor(y),1,1,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
@@ -609,7 +609,7 @@ static MagickBooleanType InterpolateResampleFilter(
         delta,
         luminance;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(long) floor(x),(long)
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),(ssize_t)
         floor(y),2,2,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
@@ -750,7 +750,7 @@ static MagickBooleanType InterpolateResampleFilter(
     }
     case SplineInterpolatePixel:
     {
-      long
+      ssize_t
         j,
         n;
 
@@ -766,7 +766,7 @@ static MagickBooleanType InterpolateResampleFilter(
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(long) floor(x)-1,(long)
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,(ssize_t)
         floor(y)-1,4,4,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
@@ -852,7 +852,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   MagickBooleanType
     status;
 
-  long u,v, uw,v1,v2, hit;
+  ssize_t u,v, uw,v1,v2, hit;
   double u1;
   double U,V,Q,DQ,DDQ;
   double divisor_c,divisor_m;
@@ -1064,11 +1064,11 @@ MagickExport MagickBooleanType ResamplePixelColor(
         u = -By/2A  +/- sqrt(F/A)
     Which has been pre-calculated above.
   */
-  v1 = (long)(v0 - resample_filter->sqrtA);               /* range of scan lines */
-  v2 = (long)(v0 + resample_filter->sqrtA + 1);
+  v1 = (ssize_t)(v0 - resample_filter->sqrtA);               /* range of scan lines */
+  v2 = (ssize_t)(v0 + resample_filter->sqrtA + 1);
 
   u1 = u0 + (v1-v0)*resample_filter->slope - resample_filter->sqrtU; /* start of scanline for v=v1 */
-  uw = (long)(2*resample_filter->sqrtU)+1;       /* width of parallelogram */
+  uw = (ssize_t)(2*resample_filter->sqrtU)+1;       /* width of parallelogram */
 
   /*
     Do weighted resampling of all pixels,  within the scaled ellipse,
@@ -1076,7 +1076,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   */
   DDQ = 2*resample_filter->A;
   for( v=v1; v<=v2;  v++, u1+=resample_filter->slope ) {
-    u = (long)u1;       /* first pixel in scanline  ( floor(u1) ) */
+    u = (ssize_t)u1;       /* first pixel in scanline  ( floor(u1) ) */
     U = (double)u-u0;   /* location of that pixel, relative to u0,v0 */
     V = (double)v-v0;
 
@@ -1085,7 +1085,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     DQ = resample_filter->A*(2.0*U+1) + resample_filter->B*V;
 
     /* get the scanline of pixels for this v */
-    pixels=GetCacheViewVirtualPixels(resample_filter->view,u,v,(unsigned long) uw,
+    pixels=GetCacheViewVirtualPixels(resample_filter->view,u,v,(size_t) uw,
       1,resample_filter->exception);
     if (pixels == (const PixelPacket *) NULL)
       return(MagickFalse);

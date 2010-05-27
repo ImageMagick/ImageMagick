@@ -77,7 +77,7 @@
 %
 %  ExportImagePixels() extracts pixel data from an image and returns it to you.
 %  The method returns MagickTrue on success otherwise MagickFalse if an error is
-%  encountered.  The data is returned as char, short int, int, long, float,
+%  encountered.  The data is returned as char, short int, int, ssize_t, float,
 %  or double in the order specified by map.
 %
 %  Suppose you want to extract the first scanline of a 640x480 image as
@@ -88,8 +88,8 @@
 %  The format of the ExportImagePixels method is:
 %
 %      MagickBooleanType ExportImagePixels(const Image *image,
-%        const long x_offset,const long y_offset,const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType type,
+%        const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
+%        const size_t rows,const char *map,const StorageType type,
 %        void *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -118,17 +118,17 @@
 %
 */
 MagickExport MagickBooleanType ExportImagePixels(const Image *image,
-  const long x_offset,const long y_offset,const unsigned long columns,
-  const unsigned long rows,const char *map,const StorageType type,void *pixels,
+  const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
+  const size_t rows,const char *map,const StorageType type,void *pixels,
   ExceptionInfo *exception)
 {
-  long
+  ssize_t
     y;
 
   QuantumType
     *quantum_map;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -153,7 +153,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  for (i=0; i < (long) length; i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     switch (map[i])
     {
@@ -262,12 +262,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       q=(unsigned char *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -279,12 +279,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -297,12 +297,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -315,12 +315,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
               p++;
@@ -330,12 +330,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -347,12 +347,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -365,12 +365,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
               *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -381,15 +381,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=0;
             switch (quantum_map[i])
@@ -451,12 +451,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       q=(double *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetBluePixelComponent(p));
               *q++=(double) (QuantumScale*GetGreenPixelComponent(p));
@@ -468,12 +468,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetBluePixelComponent(p));
               *q++=(double) (QuantumScale*GetGreenPixelComponent(p));
@@ -487,12 +487,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetBluePixelComponent(p));
               *q++=(double) (QuantumScale*GetGreenPixelComponent(p));
@@ -505,12 +505,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*PixelIntensityToQuantum(p));
               p++;
@@ -520,12 +520,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetRedPixelComponent(p));
               *q++=(double) (QuantumScale*GetGreenPixelComponent(p));
@@ -537,12 +537,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetRedPixelComponent(p));
               *q++=(double) (QuantumScale*GetGreenPixelComponent(p));
@@ -556,12 +556,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetRedPixelComponent(p));
               *q++=(double) (QuantumScale*GetGreenPixelComponent(p));
@@ -572,15 +572,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=0;
             switch (quantum_map[i])
@@ -643,12 +643,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       q=(float *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetBluePixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
@@ -660,12 +660,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetBluePixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
@@ -678,12 +678,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetBluePixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
@@ -696,12 +696,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*PixelIntensityToQuantum(p));
               p++;
@@ -711,12 +711,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetRedPixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
@@ -728,12 +728,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetRedPixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
@@ -746,12 +746,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetRedPixelComponent(p));
               *q++=(float) (QuantumScale*GetGreenPixelComponent(p));
@@ -762,15 +762,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=0;
             switch (quantum_map[i])
@@ -832,12 +832,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       q=(unsigned int *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -849,12 +849,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -868,12 +868,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int) ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -886,12 +886,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int)
                 ScaleQuantumToLong(PixelIntensityToQuantum(p));
@@ -902,12 +902,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int) ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -919,12 +919,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int) ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -938,12 +938,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(unsigned int) ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=(unsigned int) ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -954,15 +954,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=0;
             switch (quantum_map[i])
@@ -1020,18 +1020,18 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
     }
     case LongPixel:
     {
-      register unsigned long
+      register size_t
         *q;
 
-      q=(unsigned long *) pixels;
+      q=(size_t *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1043,12 +1043,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1061,12 +1061,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetBluePixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1079,12 +1079,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
               p++;
@@ -1094,12 +1094,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1111,12 +1111,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1129,12 +1129,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetRedPixelComponent(p));
               *q++=ScaleQuantumToLong(GetGreenPixelComponent(p));
@@ -1145,15 +1145,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=0;
             switch (quantum_map[i])
@@ -1215,12 +1215,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       q=(Quantum *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetBluePixelComponent(p);
               *q++=GetGreenPixelComponent(p);
@@ -1232,12 +1232,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetBluePixelComponent(p);
               *q++=GetGreenPixelComponent(p);
@@ -1250,12 +1250,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetBluePixelComponent(p);
               *q++=GetGreenPixelComponent(p);
@@ -1268,12 +1268,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=PixelIntensityToQuantum(p);
               p++;
@@ -1283,12 +1283,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetRedPixelComponent(p);
               *q++=GetGreenPixelComponent(p);
@@ -1300,12 +1300,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetRedPixelComponent(p);
               *q++=GetGreenPixelComponent(p);
@@ -1318,12 +1318,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetRedPixelComponent(p);
               *q++=GetGreenPixelComponent(p);
@@ -1334,15 +1334,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=(Quantum) 0;
             switch (quantum_map[i])
@@ -1404,12 +1404,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       q=(unsigned short *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -1421,12 +1421,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -1439,12 +1439,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -1457,12 +1457,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
               p++;
@@ -1472,12 +1472,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -1489,12 +1489,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -1507,12 +1507,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
               *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
@@ -1523,15 +1523,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             *q=0;
             switch (quantum_map[i])
@@ -1657,7 +1657,7 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %  ImportImagePixels() accepts pixel data and stores in the image at the
 %  location you specify.  The method returns MagickTrue on success otherwise
 %  MagickFalse if an error is encountered.  The pixel data can be either char,
-%  short int, int, long, float, or double in the order specified by map.
+%  short int, int, ssize_t, float, or double in the order specified by map.
 %
 %  Suppose your want to upload the first scanline of a 640x480 image from
 %  character data in red-green-blue order:
@@ -1666,9 +1666,9 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %
 %  The format of the ImportImagePixels method is:
 %
-%      MagickBooleanType ImportImagePixels(Image *image,const long x_offset,
-%        const long y_offset,const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType type,
+%      MagickBooleanType ImportImagePixels(Image *image,const ssize_t x_offset,
+%        const ssize_t y_offset,const size_t columns,
+%        const size_t rows,const char *map,const StorageType type,
 %        const void *pixels)
 %
 %  A description of each parameter follows:
@@ -1695,14 +1695,14 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %
 */
 MagickExport MagickBooleanType ImportImagePixels(Image *image,
-  const long x_offset,const long y_offset,const unsigned long columns,
-  const unsigned long rows,const char *map,const StorageType type,
+  const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
+  const size_t rows,const char *map,const StorageType type,
   const void *pixels)
 {
   ExceptionInfo
     *exception;
 
-  long
+  ssize_t
     y;
 
   PixelPacket
@@ -1714,7 +1714,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -1733,7 +1733,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   if (quantum_map == (QuantumType *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  for (i=0; i < (long) length; i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     switch (map[i])
     {
@@ -1834,12 +1834,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       p=(const unsigned char *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1853,12 +1853,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1873,12 +1873,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRO") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1893,12 +1893,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1913,12 +1913,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleCharToQuantum(*p++);
               q->green=q->red;
@@ -1932,12 +1932,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1951,12 +1951,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1971,12 +1971,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBO") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -1991,12 +1991,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleCharToQuantum(*p++);
               q->green=ScaleCharToQuantum(*p++);
@@ -2009,15 +2009,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {
@@ -2081,12 +2081,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       p=(const double *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2103,12 +2103,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2128,12 +2128,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2151,12 +2151,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               q->green=q->red;
@@ -2171,12 +2171,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2193,12 +2193,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2218,12 +2218,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2238,15 +2238,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {
@@ -2311,12 +2311,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       p=(const float *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2333,12 +2333,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2358,12 +2358,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2381,12 +2381,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               q->green=q->red;
@@ -2401,12 +2401,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2423,12 +2423,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2448,12 +2448,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
               p++;
@@ -2468,15 +2468,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {
@@ -2541,12 +2541,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       p=(const unsigned int *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2560,12 +2560,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2580,12 +2580,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2600,12 +2600,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=q->red;
@@ -2619,12 +2619,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2638,12 +2638,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2658,12 +2658,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2676,15 +2676,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {
@@ -2742,18 +2742,18 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
     }
     case LongPixel:
     {
-      register const unsigned long
+      register const size_t
         *p;
 
-      p=(const unsigned long *) pixels;
+      p=(const size_t *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2767,12 +2767,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2787,12 +2787,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2807,12 +2807,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=q->red;
@@ -2826,12 +2826,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2845,12 +2845,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2865,12 +2865,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleLongToQuantum(*p++);
               q->green=ScaleLongToQuantum(*p++);
@@ -2883,15 +2883,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {
@@ -2955,12 +2955,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       p=(const Quantum *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=(*p++);
               q->green=(*p++);
@@ -2974,12 +2974,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=(*p++);
               q->green=(*p++);
@@ -2994,12 +2994,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=(*p++);
               q->green=(*p++);
@@ -3014,12 +3014,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=(*p++);
               q->green=q->red;
@@ -3033,12 +3033,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=(*p++);
               q->green=(*p++);
@@ -3052,12 +3052,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=(*p++);
               q->green=(*p++);
@@ -3072,12 +3072,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=(*p++);
               q->green=(*p++);
@@ -3090,15 +3090,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {
@@ -3162,12 +3162,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       p=(const unsigned short *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleShortToQuantum(*p++);
               q->green=ScaleShortToQuantum(*p++);
@@ -3181,12 +3181,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleShortToQuantum(*p++);
               q->green=ScaleShortToQuantum(*p++);
@@ -3201,12 +3201,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"BGRP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->blue=ScaleShortToQuantum(*p++);
               q->green=ScaleShortToQuantum(*p++);
@@ -3221,12 +3221,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"I") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleShortToQuantum(*p++);
               q->green=q->red;
@@ -3240,12 +3240,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGB") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleShortToQuantum(*p++);
               q->green=ScaleShortToQuantum(*p++);
@@ -3259,12 +3259,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBA") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleShortToQuantum(*p++);
               q->green=ScaleShortToQuantum(*p++);
@@ -3279,12 +3279,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         }
       if (LocaleCompare(map,"RGBP") == 0)
         {
-          for (y=0; y < (long) rows; y++)
+          for (y=0; y < (ssize_t) rows; y++)
           {
             q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
             {
               q->red=ScaleShortToQuantum(*p++);
               q->green=ScaleShortToQuantum(*p++);
@@ -3297,15 +3297,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
           }
           break;
         }
-      for (y=0; y < (long) rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (long) columns; x++)
+        for (x=0; x < (ssize_t) columns; x++)
         {
-          for (i=0; i < (long) length; i++)
+          for (i=0; i < (ssize_t) length; i++)
           {
             switch (quantum_map[i])
             {

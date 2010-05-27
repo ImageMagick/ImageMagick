@@ -351,19 +351,19 @@ namespace Magick
   {
   public:
     distortImage( const Magick::DistortImageMethod method_,
-      const unsigned long number_arguments_,
+      const size_t number_arguments_,
       const double *arguments_,
       const bool bestfit_ );
           
     distortImage( const Magick::DistortImageMethod method_,
-      const unsigned long number_arguments_,
+      const size_t number_arguments_,
       const double *arguments_ );
 
     void operator()( Image &image_ ) const;
 
   private:
     DistortImageMethod _method;
-    unsigned long _number_arguments;
+    size_t _number_arguments;
     const double *_arguments;
     bool _bestfit;
   };
@@ -2010,7 +2010,7 @@ namespace Magick
                       CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch
                       ) {
     // Obtain first entry in MagickInfo list
-    unsigned long number_formats;
+    size_t number_formats;
     MagickCore::ExceptionInfo exceptionInfo;
     MagickCore::GetExceptionInfo( &exceptionInfo );
     char **coder_list =
@@ -2025,7 +2025,7 @@ namespace Magick
     // Clear out container
     container_->clear();
 
-    for ( int i=0; i < (long) number_formats; i++)
+    for ( int i=0; i < (ssize_t) number_formats; i++)
       {
         const MagickCore::MagickInfo *magick_info =
           MagickCore::GetMagickInfo( coder_list[i], &exceptionInfo );
@@ -2073,7 +2073,7 @@ namespace Magick
 
   //
   // Fill container with color histogram.
-  // Entries are of type "std::pair<Color,unsigned long>".  Use the pair
+  // Entries are of type "std::pair<Color,size_t>".  Use the pair
   // "first" member to access the Color and the "second" member to access
   // the number of times the color occurs in the image.
   //
@@ -2082,9 +2082,9 @@ namespace Magick
   //  Using <map>:
   //
   //  Image image("image.miff");
-  //  map<Color,unsigned long> histogram;
+  //  map<Color,size_t> histogram;
   //  colorHistogram( &histogram, image );
-  //  std::map<Color,unsigned long>::const_iterator p=histogram.begin();
+  //  std::map<Color,size_t>::const_iterator p=histogram.begin();
   //  while (p != histogram.end())
   //    {
   //      cout << setw(10) << (int)p->second << ": ("
@@ -2098,9 +2098,9 @@ namespace Magick
   //  Using <vector>:
   //
   //  Image image("image.miff");
-  //  std::vector<std::pair<Color,unsigned long> > histogram;
+  //  std::vector<std::pair<Color,size_t> > histogram;
   //  colorHistogram( &histogram, image );
-  //  std::vector<std::pair<Color,unsigned long> >::const_iterator p=histogram.begin();
+  //  std::vector<std::pair<Color,size_t> >::const_iterator p=histogram.begin();
   //  while (p != histogram.end())
   //    {
   //      cout << setw(10) << (int)p->second << ": ("
@@ -2118,7 +2118,7 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
 
     // Obtain histogram array
-    unsigned long colors;
+    size_t colors;
     MagickCore::ColorPacket *histogram_array = 
       MagickCore::GetImageHistogram( image.constImage(), &colors, &exceptionInfo );
     throwException( exceptionInfo );
@@ -2128,13 +2128,13 @@ namespace Magick
     histogram_->clear();
 
     // Transfer histogram array to container
-    for ( unsigned long i=0; i < colors; i++)
+    for ( size_t i=0; i < colors; i++)
       {
-        histogram_->insert(histogram_->end(),std::pair<const Color,unsigned long>
+        histogram_->insert(histogram_->end(),std::pair<const Color,size_t>
                            ( Color(histogram_array[i].pixel.red,
                                    histogram_array[i].pixel.green,
                                    histogram_array[i].pixel.blue),
-                                   (unsigned long) histogram_array[i].count) );
+                                   (size_t) histogram_array[i].count) );
       }
     
     // Deallocate histogram array

@@ -273,7 +273,7 @@ namespace Magick
     // usally of the same size as the source image, unless 'bestfit' is set to
     // true.
     void            distort ( const DistortImageMethod method_,
-                              const unsigned long number_arguments_,
+                              const size_t number_arguments_,
                               const double *arguments_,
                               const bool bestfit_ = false );
 
@@ -663,7 +663,7 @@ namespace Magick
     // methods.
     void            sparseColor ( const ChannelType channel,
                               const SparseColorMethod method,
-                              const unsigned long number_arguments,
+                              const size_t number_arguments,
                               const double *arguments );
 
     // Add a digital watermark to the image (based on second image)
@@ -1216,7 +1216,7 @@ typedef struct _ImageStatistics
     std::string     tileName ( void ) const;
 
     // Number of colors in the image
-    unsigned long   totalColors ( void );
+    size_t   totalColors ( void );
 
     // Origin of coordinate system to use when annotating with text or drawing
     void            transformOrigin ( const double x_,const  double y_ );
@@ -1354,7 +1354,7 @@ typedef struct _ImageStatistics
     void            throwImageException( void ) const;
 
     // Register image with image registry or obtain registration id
-    long            registerId( void );
+    ssize_t            registerId( void );
 
     // Unregister image from image registry
     void            unregisterId( void) ;

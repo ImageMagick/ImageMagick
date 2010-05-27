@@ -126,7 +126,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickBooleanType
@@ -142,7 +142,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     i,
     x;
 
@@ -155,7 +155,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     buffer[768];
 
-  unsigned long
+  size_t
     separations,
     separations_mask,
     units;
@@ -227,15 +227,15 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert SCT raster image to pixel packets.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    for (i=0; i < (long) separations; i++)
+    for (i=0; i < (ssize_t) separations; i++)
     {
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=(Quantum) ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
         if (image->colorspace == CMYKColorspace)
@@ -304,10 +304,10 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  The format of the RegisterSCTImage method is:
 %
-%      unsigned long RegisterSCTImage(void)
+%      size_t RegisterSCTImage(void)
 %
 */
-ModuleExport unsigned long RegisterSCTImage(void)
+ModuleExport size_t RegisterSCTImage(void)
 {
   MagickInfo
     *entry;

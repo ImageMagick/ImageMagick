@@ -49,6 +49,19 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
+  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
   <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
@@ -75,9 +88,6 @@
 <div class="sub">
     <a title="Program Interface: Magick++" href="../../Magick++/">Magick++</a>
 </div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
 <div class="sep"></div>
 <div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
@@ -89,21 +99,11 @@
     <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="menu">
   <a title="Resources" href="../../www/resources.html">Resources</a>
 </div>
-<div class="sep"></div>
+<div class="menu">
+  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
+</div>
 <div class="menu">
   <a title="Download" href="../../www/download.html">Download</a>
 </div>
@@ -208,7 +208,7 @@ _8c.html" target="source" name="MagickAdaptiveResizeImage">MagickAdaptiveResizeI
 
 <p>MagickAdaptiveResizeImage() adaptively resize image with data dependent triangulation.</p></ol>
 
-<p>MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand, const unsigned long columns,const unsigned long rows)</p></ol>
+<p>MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand, const size_t columns,const size_t rows)</p></ol>
 
 <p>A description of each parameter follows:</p></ol>
 
@@ -262,7 +262,7 @@ _8c.html" target="source" name="MagickAdaptiveThresholdImage">MagickAdaptiveThre
 
 <pre class="code">
   MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long offset)
+    const size_t width,const size_t height,const ssize_t offset)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -560,8 +560,8 @@ _8c.html" target="source" name="MagickBorderImage">MagickBorderImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickBorderImage(MagickWand *wand,
-    const PixelWand *bordercolor,const unsigned long width,
-    const unsigned long height)
+    const PixelWand *bordercolor,const size_t width,
+    const size_t height)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -646,8 +646,8 @@ _8c.html" target="source" name="MagickChopImage">MagickChopImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickChopImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -696,7 +696,7 @@ _8c.html" target="source" name="MagickClampImage">MagickClampImage</a></h2>
 _8c.html" target="source" name="MagickClipImage">MagickClipImage</a></h2>
 <div class="doc-section">
 
-<p>MagickClipImage() clips along the first path from the 8BIM profile, if present.</p></ol>
+<p>MagickClipImage() clips assize_t the first path from the 8BIM profile, if present.</p></ol>
 
 <p>The format of the MagickClipImage method is:</p>
 
@@ -714,7 +714,7 @@ _8c.html" target="source" name="MagickClipImage">MagickClipImage</a></h2>
 _8c.html" target="source" name="MagickClipImagePath">MagickClipImagePath</a></h2>
 <div class="doc-section">
 
-<p>MagickClipImagePath() clips along the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
+<p>MagickClipImagePath() clips assize_t the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
 
 <p>The format of the MagickClipImagePath method is:</p>
 
@@ -1001,10 +1001,10 @@ _8c.html" target="source" name="MagickCompositeImage">MagickCompositeImage</a></
 <pre class="code">
   MagickBooleanType MagickCompositeImage(MagickWand *wand,
     const MagickWand *composite_wand,const CompositeOperator compose,
-    const long x,const long y)
+    const ssize_t x,const ssize_t y)
   MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
     const ChannelType channel,const MagickWand *composite_wand,
-    const CompositeOperator compose,const long x,const long y)
+    const CompositeOperator compose,const ssize_t x,const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1097,9 +1097,9 @@ _8c.html" target="source" name="MagickConvolveImage">MagickConvolveImage</a></h2
 
 <pre class="code">
   MagickBooleanType MagickConvolveImage(MagickWand *wand,
-    const unsigned long order,const double *kernel)
+    const size_t order,const double *kernel)
   MagickBooleanType MagickConvolveImageChannel(MagickWand *wand,
-    const ChannelType channel,const unsigned long order,
+    const ChannelType channel,const size_t order,
     const double *kernel)
 </pre>
 
@@ -1128,8 +1128,8 @@ _8c.html" target="source" name="MagickCropImage">MagickCropImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickCropImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1160,7 +1160,7 @@ _8c.html" target="source" name="MagickCycleColormapImage">MagickCycleColormapIma
 
 <pre class="code">
   MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
-    const long displace)
+    const ssize_t displace)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1184,7 +1184,7 @@ _8c.html" target="source" name="MagickConstituteImage">MagickConstituteImage</a>
 
 <pre class="code">
   MagickBooleanType MagickConstituteImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows,const char *map,
+    const size_t columns,const size_t rows,const char *map,
     const StorageType storage,void *pixels)
 </pre>
 
@@ -1364,7 +1364,7 @@ _8c.html" target="source" name="MagickDistortImage">MagickDistortImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickDistortImage(MagickWand *wand,
-    const DistortImageMethod method,const unsigned long number_arguments,
+    const DistortImageMethod method,const size_t number_arguments,
     const double *arguments,const MagickBooleanType bestfit)
 </pre>
 
@@ -1562,7 +1562,7 @@ _8c.html" target="source" name="MagickEvaluateImage">MagickEvaluateImage</a></h2
 _8c.html" target="source" name="MagickExportImagePixels">MagickExportImagePixels</a></h2>
 <div class="doc-section">
 
-<p>MagickExportImagePixels() extracts pixel data from an image and returns it to you.  The method returns MagickTrue on success otherwise MagickFalse if an error is encountered.  The data is returned as char, short int, int, long, float, or double in the order specified by map.</p></ol>
+<p>MagickExportImagePixels() extracts pixel data from an image and returns it to you.  The method returns MagickTrue on success otherwise MagickFalse if an error is encountered.  The data is returned as char, short int, int, ssize_t, float, or double in the order specified by map.</p></ol>
 
 <p>Suppose you want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</p>
 
@@ -1574,8 +1574,8 @@ _8c.html" target="source" name="MagickExportImagePixels">MagickExportImagePixels
 
 <pre class="code">
   MagickBooleanType MagickExportImagePixels(MagickWand *wand,
-    const long x,const long y,const unsigned long columns,
-    const unsigned long rows,const char *map,const StorageType storage,
+    const ssize_t x,const ssize_t y,const size_t columns,
+    const size_t rows,const char *map,const StorageType storage,
     void *pixels)
 </pre>
 
@@ -1607,8 +1607,8 @@ _8c.html" target="source" name="MagickExtentImage">MagickExtentImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickExtentImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1685,7 +1685,7 @@ _8c.html" target="source" name="MagickFloodfillPaintImage">MagickFloodfillPaintI
 <pre class="code">
   MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
     const ChannelType channel,const PixelWand *fill,const double fuzz,
-    const PixelWand *bordercolor,const long x,const long y,
+    const PixelWand *bordercolor,const ssize_t x,const ssize_t y,
     const MagickBooleanType invert)
 </pre>
 
@@ -1763,9 +1763,9 @@ _8c.html" target="source" name="MagickFrameImage">MagickFrameImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickFrameImage(MagickWand *wand,
-    const PixelWand *matte_color,const unsigned long width,
-    const unsigned long height,const long inner_bevel,
-    const long outer_bevel)
+    const PixelWand *matte_color,const size_t width,
+    const size_t height,const ssize_t inner_bevel,
+    const ssize_t outer_bevel)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1799,11 +1799,11 @@ _8c.html" target="source" name="MagickFunctionImage">MagickFunctionImage</a></h2
 
 <pre class="code">
   MagickBooleanType MagickFunctionImage(MagickWand *wand,
-    const MagickFunction function,const unsigned long number_arguments,
+    const MagickFunction function,const size_t number_arguments,
     const double *arguments)
   MagickBooleanType MagickFunctionImageChannel(MagickWand *wand,
     const ChannelType channel,const MagickFunction function,
-    const unsigned long number_arguments,const double *arguments)
+    const size_t number_arguments,const double *arguments)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -1935,7 +1935,7 @@ _8c.html" target="source" name="MagickGetImageAlphaChannel">MagickGetImageAlphaC
 <p>The format of the MagickGetImageAlphaChannel method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageAlphaChannel(MagickWand *wand)
+  size_t MagickGetImageAlphaChannel(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2086,7 +2086,7 @@ _8c.html" target="source" name="MagickGetImageChannelDepth">MagickGetImageChanne
 <p>The format of the MagickGetImageChannelDepth method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageChannelDepth(MagickWand *wand,
+  size_t MagickGetImageChannelDepth(MagickWand *wand,
     const ChannelType channel)
 </pre>
 
@@ -2175,7 +2175,7 @@ _8c.html" target="source" name="MagickGetImageChannelFeatures">MagickGetImageCha
 
 <pre class="code">
   ChannelFeatures *MagickGetImageChannelFeatures(MagickWand *wand,
-    const unsigned long distance)
+    const size_t distance)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2306,7 +2306,7 @@ _8c.html" target="source" name="MagickGetImageColormapColor">MagickGetImageColor
 
 <pre class="code">
   MagickBooleanType MagickGetImageColormapColor(MagickWand *wand,
-    const unsigned long index,PixelWand *color)
+    const size_t index,PixelWand *color)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2330,7 +2330,7 @@ _8c.html" target="source" name="MagickGetImageColors">MagickGetImageColors</a></
 <p>The format of the MagickGetImageColors method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageColors(MagickWand *wand)
+  size_t MagickGetImageColors(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2402,7 +2402,7 @@ _8c.html" target="source" name="MagickGetImageCompression">MagickGetImageCompres
 <p>The format of the MagickGetImageCompression method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageCompression(MagickWand *wand)
+  size_t MagickGetImageCompression(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2420,7 +2420,7 @@ _8c.html" target="source" name="MagickGetImageDelay">MagickGetImageDelay</a></h2
 <p>The format of the MagickGetImageDelay method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageDelay(MagickWand *wand)
+  size_t MagickGetImageDelay(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2438,7 +2438,7 @@ _8c.html" target="source" name="MagickGetImageDepth">MagickGetImageDepth</a></h2
 <p>The format of the MagickGetImageDepth method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageDepth(MagickWand *wand)
+  size_t MagickGetImageDepth(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2618,7 +2618,7 @@ _8c.html" target="source" name="MagickGetImageHeight">MagickGetImageHeight</a></
 <p>The format of the MagickGetImageHeight method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageHeight(MagickWand *wand)
+  size_t MagickGetImageHeight(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2637,7 +2637,7 @@ _8c.html" target="source" name="MagickGetImageHistogram">MagickGetImageHistogram
 
 <pre class="code">
   PixelWand **MagickGetImageHistogram(MagickWand *wand,
-    unsigned long *number_colors)
+    size_t *number_colors)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2694,7 +2694,7 @@ _8c.html" target="source" name="MagickGetImageIterations">MagickGetImageIteratio
 <p>The format of the MagickGetImageIterations method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageIterations(MagickWand *wand)
+  size_t MagickGetImageIterations(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2775,7 +2775,7 @@ _8c.html" target="source" name="MagickGetImagePage">MagickGetImagePage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickGetImagePage(MagickWand *wand,
-    unsigned long *width,unsigned long *height,long *x,long *y)
+    size_t *width,size_t *height,ssize_t *x,ssize_t *y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2806,7 +2806,7 @@ _8c.html" target="source" name="MagickGetImagePixelColor">MagickGetImagePixelCol
 
 <pre class="code">
   MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
-    const long x,const long y,PixelWand *color)
+    const ssize_t x,const ssize_t y,PixelWand *color)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2856,8 +2856,8 @@ _8c.html" target="source" name="MagickGetImageRegion">MagickGetImageRegion</a></
 
 <pre class="code">
   MagickWand *MagickGetImageRegion(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2930,7 +2930,7 @@ _8c.html" target="source" name="MagickGetImageScene">MagickGetImageScene</a></h2
 <p>The format of the MagickGetImageScene method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageScene(MagickWand *wand)
+  size_t MagickGetImageScene(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -2966,7 +2966,7 @@ _8c.html" target="source" name="MagickGetImageTicksPerSecond">MagickGetImageTick
 <p>The format of the MagickGetImageTicksPerSecond method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageTicksPerSecond(MagickWand *wand)
+  size_t MagickGetImageTicksPerSecond(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -3071,7 +3071,7 @@ _8c.html" target="source" name="MagickGetImageWidth">MagickGetImageWidth</a></h2
 <p>The format of the MagickGetImageWidth method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetImageWidth(MagickWand *wand)
+  size_t MagickGetImageWidth(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -3089,7 +3089,7 @@ _8c.html" target="source" name="MagickGetNumberImages">MagickGetNumberImages</a>
 <p>The format of the MagickGetNumberImages method is:</p>
 
 <pre class="code">
-  unsigned long MagickGetNumberImages(MagickWand *wand)
+  size_t MagickGetNumberImages(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -3220,7 +3220,7 @@ _8c.html" target="source" name="MagickImplodeImage">MagickImplodeImage</a></h2>
 _8c.html" target="source" name="MagickImportImagePixels">MagickImportImagePixels</a></h2>
 <div class="doc-section">
 
-<p>MagickImportImagePixels() accepts pixel datand stores it in the image at the location you specify.  The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The pixel data can be either char, short int, int, long, float, or double in the order specified by map.</p></ol>
+<p>MagickImportImagePixels() accepts pixel datand stores it in the image at the location you specify.  The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The pixel data can be either char, short int, int, ssize_t, float, or double in the order specified by map.</p></ol>
 
 <p>Suppose your want to upload the first scanline of a 640x480 image from character data in red-green-blue order:</p>
 
@@ -3232,8 +3232,8 @@ _8c.html" target="source" name="MagickImportImagePixels">MagickImportImagePixels
 
 <pre class="code">
   MagickBooleanType MagickImportImagePixels(MagickWand *wand,
-    const long x,const long y,const unsigned long columns,
-    const unsigned long rows,const char *map,const StorageType storage,
+    const ssize_t x,const ssize_t y,const size_t columns,
+    const size_t rows,const char *map,const StorageType storage,
     const void *pixels)
 </pre>
 
@@ -3369,7 +3369,7 @@ _8c.html" target="source" name="MagickLiquidRescaleImage">MagickLiquidRescaleIma
 
 <p>MagickLiquidRescaleImage() rescales image with seam carving.</p></ol>
 
-<p>MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand, const unsigned long columns,const unsigned long rows, const double delta_x,const double rigidity)</p></ol>
+<p>MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand, const size_t columns,const size_t rows, const double delta_x,const double rigidity)</p></ol>
 
 <p>A description of each parameter follows:</p></ol>
 
@@ -3553,7 +3553,7 @@ _8c.html" target="source" name="MagickMorphImages">MagickMorphImages</a></h2>
 
 <pre class="code">
   MagickWand *MagickMorphImages(MagickWand *wand,
-    const unsigned long number_frames)
+    const size_t number_frames)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -3575,9 +3575,9 @@ _8c.html" target="source" name="MagickMorphologyImage">MagickMorphologyImage</a>
 
 <pre class="code">
   MagickBooleanType MagickMorphologyImage(MagickWand *wand,
-    MorphologyMethod method,const long iterations,KernelInfo *kernel)
+    MorphologyMethod method,const ssize_t iterations,KernelInfo *kernel)
   MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
-    ChannelType channel,MorphologyMethod method,const long iterations,
+    ChannelType channel,MorphologyMethod method,const ssize_t iterations,
     KernelInfo *kernel)
 </pre>
 
@@ -3630,7 +3630,7 @@ _8c.html" target="source" name="MagickMotionBlurImage">MagickMotionBlurImage</a>
 <ol><p>the standard deviation of the Gaussian, in pixels.</p></ol>
 
 <h5>angle</h5>
-<ol><p>Apply the effect along this angle.</p></ol>
+<ol><p>Apply the effect assize_t this angle.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image
@@ -3672,7 +3672,7 @@ _8c.html" target="source" name="MagickNewImage">MagickNewImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickNewImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows,
+    const size_t columns,const size_t rows,
     const PixelWand *background)
 </pre>
 
@@ -3934,7 +3934,7 @@ _8c.html" target="source" name="MagickPolaroidImage">MagickPolaroidImage</a></h2
 <ol><p>the draw wand.</p></ol>
 
 <h5>angle</h5>
-<ol><p>Apply the effect along this angle.</p></ol>
+<ol><p>Apply the effect assize_t this angle.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image
@@ -4012,8 +4012,8 @@ _8c.html" target="source" name="MagickQuantizeImage">MagickQuantizeImage</a></h2
 
 <pre class="code">
   MagickBooleanType MagickQuantizeImage(MagickWand *wand,
-    const unsigned long number_colors,const ColorspaceType colorspace,
-    const unsigned long treedepth,const MagickBooleanType dither,
+    const size_t number_colors,const ColorspaceType colorspace,
+    const size_t treedepth,const MagickBooleanType dither,
     const MagickBooleanType measure_error)
 </pre>
 
@@ -4032,7 +4032,7 @@ _8c.html" target="source" name="MagickQuantizeImage">MagickQuantizeImage</a></h2
 <ol><p>Normally, this integer value is zero or one.  A zero or one tells Quantize to choose a optimal tree depth of Log4(number_colors).      A tree of this depth generally allows the best representation of the reference image with the least amount of memory and the fastest computational speed.  In some cases, such as an image with low color dispersion (a few number of colors), a value other than Log4(number_colors) is required.  To expand the color tree completely, use a value of 8.</p></ol>
 
 <h5>dither</h5>
-<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced image to neighboring pixels along a Hilbert curve.</p></ol>
+<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced image to neighboring pixels assize_t a Hilbert curve.</p></ol>
 
 <h5>measure_error</h5>
 <ol><p>A value other than zero measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.</p></ol>
@@ -4048,8 +4048,8 @@ _8c.html" target="source" name="MagickQuantizeImages">MagickQuantizeImages</a></
 
 <pre class="code">
   MagickBooleanType MagickQuantizeImages(MagickWand *wand,
-    const unsigned long number_colors,const ColorspaceType colorspace,
-    const unsigned long treedepth,const MagickBooleanType dither,
+    const size_t number_colors,const ColorspaceType colorspace,
+    const size_t treedepth,const MagickBooleanType dither,
     const MagickBooleanType measure_error)
 </pre>
 
@@ -4068,7 +4068,7 @@ _8c.html" target="source" name="MagickQuantizeImages">MagickQuantizeImages</a></
 <ol><p>Normally, this integer value is zero or one.  A zero or one tells Quantize to choose a optimal tree depth of Log4(number_colors).      A tree of this depth generally allows the best representation of the reference image with the least amount of memory and the fastest computational speed.  In some cases, such as an image with low color dispersion (a few number of colors), a value other than Log4(number_colors) is required.  To expand the color tree completely, use a value of 8.</p></ol>
 
 <h5>dither</h5>
-<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced algorithm to neighboring pixels along a Hilbert curve.</p></ol>
+<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced algorithm to neighboring pixels assize_t a Hilbert curve.</p></ol>
 
 <h5>measure_error</h5>
 <ol><p>A value other than zero measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.</p></ol>
@@ -4111,8 +4111,8 @@ _8c.html" target="source" name="MagickRaiseImage">MagickRaiseImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickRaiseImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y,const MagickBooleanType raise)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y,const MagickBooleanType raise)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4367,7 +4367,7 @@ _8c.html" target="source" name="MagickResizeImage">MagickResizeImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickResizeImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows,
+    const size_t columns,const size_t rows,
     const FilterTypes filter,const double blur)
 </pre>
 
@@ -4398,8 +4398,8 @@ _8c.html" target="source" name="MagickRollImage">MagickRollImage</a></h2>
 <p>The format of the MagickRollImage method is:</p>
 
 <pre class="code">
-  MagickBooleanType MagickRollImage(MagickWand *wand,const long x,
-    const unsigned long y)
+  MagickBooleanType MagickRollImage(MagickWand *wand,const ssize_t x,
+    const size_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4451,7 +4451,7 @@ _8c.html" target="source" name="MagickSampleImage">MagickSampleImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickSampleImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows)
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4477,7 +4477,7 @@ _8c.html" target="source" name="MagickScaleImage">MagickScaleImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickScaleImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows)
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4748,7 +4748,7 @@ _8c.html" target="source" name="MagickSetImageChannelDepth">MagickSetImageChanne
 
 <pre class="code">
   MagickBooleanType MagickSetImageChannelDepth(MagickWand *wand,
-    const ChannelType channel,const unsigned long depth)
+    const ChannelType channel,const size_t depth)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4817,7 +4817,7 @@ _8c.html" target="source" name="MagickSetImageColormapColor">MagickSetImageColor
 
 <pre class="code">
   MagickBooleanType MagickSetImageColormapColor(MagickWand *wand,
-    const unsigned long index,const PixelWand *color)
+    const size_t index,const PixelWand *color)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4908,7 +4908,7 @@ _8c.html" target="source" name="MagickSetImageCompressionQuality">MagickSetImage
 
 <pre class="code">
   MagickBooleanType MagickSetImageCompressionQuality(MagickWand *wand,
-    const unsigned long quality)
+    const size_t quality)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4930,7 +4930,7 @@ _8c.html" target="source" name="MagickSetImageDelay">MagickSetImageDelay</a></h2
 
 <pre class="code">
   MagickBooleanType MagickSetImageDelay(MagickWand *wand,
-    const unsigned long delay)
+    const size_t delay)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4952,7 +4952,7 @@ _8c.html" target="source" name="MagickSetImageDepth">MagickSetImageDepth</a></h2
 
 <pre class="code">
   MagickBooleanType MagickSetImageDepth(MagickWand *wand,
-    const unsigned long depth)
+    const size_t depth)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -4996,7 +4996,7 @@ _8c.html" target="source" name="MagickSetImageExtent">MagickSetImageExtent</a></
 
 <pre class="code">
   MagickBooleanType MagickSetImageExtent(MagickWand *wand,
-    const unsigned long columns,const unsigned rows)
+    const size_t columns,const unsigned rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5201,7 +5201,7 @@ _8c.html" target="source" name="MagickSetImageIterations">MagickSetImageIteratio
 
 <pre class="code">
   MagickBooleanType MagickSetImageIterations(MagickWand *wand,
-    const unsigned long iterations)
+    const size_t iterations)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5311,8 +5311,8 @@ _8c.html" target="source" name="MagickSetImagePage">MagickSetImagePage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickSetImagePage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5448,7 +5448,7 @@ _8c.html" target="source" name="MagickSetImageScene">MagickSetImageScene</a></h2
 
 <pre class="code">
   MagickBooleanType MagickSetImageScene(MagickWand *wand,
-    const unsigned long scene)
+    const size_t scene)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5470,7 +5470,7 @@ _8c.html" target="source" name="MagickSetImageTicksPerSecond">MagickSetImageTick
 
 <pre class="code">
   MagickBooleanType MagickSetImageTicksPerSecond(MagickWand *wand,
-    const long ticks_per-second)
+    const ssize_t ticks_per-second)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5609,7 +5609,7 @@ _8c.html" target="source" name="MagickShadowImage">MagickShadowImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickShadowImage(MagickWand *wand,
-    const double opacity,const double sigma,const long x,const long y)
+    const double opacity,const double sigma,const ssize_t x,const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5670,7 +5670,7 @@ _8c.html" target="source" name="MagickShaveImage">MagickShaveImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickShaveImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows)
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5690,7 +5690,7 @@ _8c.html" target="source" name="MagickShaveImage">MagickShaveImage</a></h2>
 _8c.html" target="source" name="MagickShearImage">MagickShearImage</a></h2>
 <div class="doc-section">
 
-<p>MagickShearImage() slides one edge of an image along the X or Y axis, creating a parallelogram.  An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the background color.</p></ol>
+<p>MagickShearImage() slides one edge of an image assize_t the X or Y axis, creating a parallelogram.  An X direction shear slides an edge assize_t the X axis, while a Y direction shear slides an edge assize_t the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the background color.</p></ol>
 
 <p>The format of the MagickShearImage method is:</p>
 
@@ -5801,7 +5801,7 @@ _8c.html" target="source" name="MagickSketchImage">MagickSketchImage</a></h2>
 <ol><p>the standard deviation of the Gaussian, in pixels.</p></ol>
 
 <h5>angle</h5>
-<ol><p>Apply the effect along this angle.</p></ol>
+<ol><p>Apply the effect assize_t this angle.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image
@@ -5837,7 +5837,7 @@ _8c.html" target="source" name="MagickSparseColorImage">MagickSparseColorImage</
 <pre class="code">
   MagickBooleanType MagickSparseColorImage(MagickWand *wand,
     const ChannelType channel,const SparseColorMethod method,
-    const unsigned long number_arguments,const double *arguments)
+    const size_t number_arguments,const double *arguments)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5873,8 +5873,8 @@ _8c.html" target="source" name="MagickSpliceImage">MagickSpliceImage</a></h2>
 
 <pre class="code">
   MagickBooleanType MagickSpliceImage(MagickWand *wand,
-    const unsigned long width,const unsigned long height,const long x,
-    const long y)
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -5926,7 +5926,7 @@ _8c.html" target="source" name="MagickSteganoImage">MagickSteganoImage</a></h2>
 
 <pre class="code">
   MagickWand *MagickSteganoImage(MagickWand *wand,
-    const MagickWand *watermark_wand,const long offset)
+    const MagickWand *watermark_wand,const ssize_t offset)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -6061,7 +6061,7 @@ _8c.html" target="source" name="MagickThumbnailImage">MagickThumbnailImage</a></
 
 <pre class="code">
   MagickBooleanType MagickThumbnailImage(MagickWand *wand,
-    const unsigned long columns,const unsigned long rows)
+    const size_t columns,const size_t rows)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -6303,8 +6303,8 @@ _8c.html" target="source" name="MagickVignetteImage">MagickVignetteImage</a></h2
 
 <pre class="code">
   MagickBooleanType MagickVignetteImage(MagickWand *wand,
-    const double black_point,const double white_point,const long x,
-    const long y)
+    const double black_point,const double white_point,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -6326,7 +6326,7 @@ _8c.html" target="source" name="MagickVignetteImage">MagickVignetteImage</a></h2
 _8c.html" target="source" name="MagickWaveImage">MagickWaveImage</a></h2>
 <div class="doc-section">
 
-<p>MagickWaveImage()  creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelength is specified by the given parameters.</p></ol>
+<p>MagickWaveImage()  creates a "ripple" effect in the image by shifting the pixels vertically assize_t a sine wave whose amplitude and wavelength is specified by the given parameters.</p></ol>
 
 <p>The format of the MagickWaveImage method is:</p>
 
@@ -6463,7 +6463,7 @@ _8c.html" target="source" name="MagickWriteImagesFile">MagickWriteImagesFile</a>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

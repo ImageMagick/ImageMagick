@@ -45,7 +45,7 @@ extern MagickExport SplayTreeInfo
   *NewSplayTree(int (*)(const void *,const void *),void *(*)(void *),
     void *(*)(void *));
 
-extern MagickExport unsigned long
+extern MagickExport size_t
   GetNumberOfNodesInSplayTree(const SplayTreeInfo *);
 
 extern MagickExport void

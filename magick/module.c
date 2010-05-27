@@ -261,7 +261,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 %  The format of the GetModuleInfoList function is:
 %
 %      const ModuleInfo **GetModuleInfoList(const char *pattern,
-%        unsigned long *number_modules,ExceptionInfo *exception)
+%        size_t *number_modules,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -295,7 +295,7 @@ static int ModuleInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
-  unsigned long *number_modules,ExceptionInfo *exception)
+  size_t *number_modules,ExceptionInfo *exception)
 {
   const ModuleInfo
     **modules;
@@ -303,7 +303,7 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
   register const ModuleInfo
     *p;
 
-  register long
+  register ssize_t
     i;
 
   /*
@@ -311,7 +311,7 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_modules != (unsigned long *) NULL);
+  assert(number_modules != (size_t *) NULL);
   *number_modules=0;
   p=GetModuleInfo("*",exception);
   if (p == (const ModuleInfo *) NULL)
@@ -336,7 +336,7 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
   UnlockSemaphoreInfo(module_semaphore);
   qsort((void *) modules,(size_t) i,sizeof(*modules),ModuleInfoCompare);
   modules[i]=(ModuleInfo *) NULL;
-  *number_modules=(unsigned long) i;
+  *number_modules=(size_t) i;
   return(modules);
 }
 
@@ -356,7 +356,7 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
 %
 %  The format of the GetModuleList function is:
 %
-%      char **GetModuleList(const char *pattern,unsigned long *number_modules,
+%      char **GetModuleList(const char *pattern,size_t *number_modules,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -403,7 +403,7 @@ static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
 }
 
 MagickExport char **GetModuleList(const char *pattern,
-  unsigned long *number_modules,ExceptionInfo *exception)
+  size_t *number_modules,ExceptionInfo *exception)
 {
   char
     **modules,
@@ -417,7 +417,7 @@ MagickExport char **GetModuleList(const char *pattern,
   MagickBooleanType
     status;
 
-  register long
+  register ssize_t
     i;
 
   size_t
@@ -427,7 +427,7 @@ MagickExport char **GetModuleList(const char *pattern,
     *buffer,
     *entry;
 
-  unsigned long
+  size_t
     max_entries;
 
   /*
@@ -463,7 +463,7 @@ MagickExport char **GetModuleList(const char *pattern,
       continue;
     if (GlobExpression(entry->d_name,pattern,MagickFalse) == MagickFalse)
       continue;
-    if (i >= (long) max_entries)
+    if (i >= (ssize_t) max_entries)
       {
         modules=(char **) NULL;
         if (~max_entries > max_entries)
@@ -496,7 +496,7 @@ MagickExport char **GetModuleList(const char *pattern,
     }
   qsort((void *) modules,(size_t) i,sizeof(*modules),ModuleCompare);
   modules[i]=(char *) NULL;
-  *number_modules=(unsigned long) i;
+  *number_modules=(size_t) i;
   return(modules);
 }
 
@@ -995,7 +995,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
       "UnableToLoadModule","`%s': %s",name,lt_dlerror());
   else
     {
-      unsigned long
+      size_t
         signature;
 
       if ((*images)->debug != MagickFalse)
@@ -1049,10 +1049,10 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
   const ModuleInfo
     **module_info;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_modules;
 
   if (file == (const FILE *) NULL)
@@ -1071,7 +1071,7 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
   (void) fprintf(file,"Module\n");
   (void) fprintf(file,"-------------------------------------------------"
     "------------------------------\n");
-  for (i=0; i < (long) number_modules; i++)
+  for (i=0; i < (ssize_t) number_modules; i++)
   {
     if (module_info[i]->stealth != MagickFalse)
       continue;
@@ -1186,7 +1186,7 @@ MagickExport MagickBooleanType OpenModule(const char *module,
   size_t
     length;
 
-  unsigned long
+  size_t
     signature;
 
   /*
@@ -1236,8 +1236,8 @@ MagickExport MagickBooleanType OpenModule(const char *module,
     Define RegisterFORMATImage method.
   */
   TagToModuleName(module_name,"Register%sImage",name);
-  module_info->register_module=(unsigned long (*)(void)) lt_dlsym(handle,name);
-  if (module_info->register_module == (unsigned long (*)(void)) NULL)
+  module_info->register_module=(size_t (*)(void)) lt_dlsym(handle,name);
+  if (module_info->register_module == (size_t (*)(void)) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
         "UnableToRegisterImageFormat","`%s': %s",module_name,lt_dlerror());
@@ -1298,10 +1298,10 @@ MagickExport MagickBooleanType OpenModules(ExceptionInfo *exception)
   char
     **modules;
 
-  register long
+  register ssize_t
     i;
 
-  unsigned long
+  size_t
     number_modules;
 
   /*
@@ -1312,12 +1312,12 @@ MagickExport MagickBooleanType OpenModules(ExceptionInfo *exception)
   modules=GetModuleList("*",&number_modules,exception);
   if (modules == (char **) NULL)
     return(MagickFalse);
-  for (i=0; i < (long) number_modules; i++)
+  for (i=0; i < (ssize_t) number_modules; i++)
     (void) OpenModule(modules[i],exception);
   /*
     Relinquish resources.
   */
-  for (i=0; i < (long) number_modules; i++)
+  for (i=0; i < (ssize_t) number_modules; i++)
     modules[i]=DestroyString(modules[i]);
   modules=(char **) RelinquishMagickMemory(modules);
   return(MagickTrue);
@@ -1567,7 +1567,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
   {
-    extern unsigned long
+    extern size_t
       analyzeImage(Image **,const int,const char **,ExceptionInfo *);
 
     ImageFilterHandler
@@ -1578,7 +1578,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
       image_filter=analyzeImage;
     if (image_filter != (ImageFilterHandler *) NULL)
       {
-        unsigned long
+        size_t
           signature;
 
         signature=image_filter(image,argc,argv,exception);

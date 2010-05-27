@@ -156,7 +156,7 @@ XWMHints *XAllocWMHints)
   return((XWMHints *) AcquireAlignedMemory(1,sizeof(XWMHints)));
 }
 
-Status XGetGCValues(Display *display,GC gc,unsigned long mask,
+Status XGetGCValues(Display *display,GC gc,size_t mask,
   XGCValues *values)
 {
   return(MagickTrue);
@@ -181,7 +181,7 @@ Status XGetWMColormapWindows(Display *display,Window window,
     actual_format,
     status;
 
-  unsigned long
+  size_t
     leftover,
     number_items;
 
@@ -276,7 +276,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
      protocol;
 
   number_bytes=0;
-  for (i=0; i < (long) argc; i++)
+  for (i=0; i < (ssize_t) argc; i++)
     number_bytes+=(unsigned int) ((argv[i] ? strlen(argv[i]) : 0)+1);
   protocol.encoding=XA_STRING;
   protocol.format=8;
@@ -301,7 +301,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
       if (buffer == (char *) NULL)
         return(MagickFalse);
       protocol.value=(unsigned char *) buffer;
-      for (i=0; i < (long) argc; i++)
+      for (i=0; i < (ssize_t) argc; i++)
       {
         char
           *argument;

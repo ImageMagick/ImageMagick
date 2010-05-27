@@ -99,7 +99,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  ssize_t
     y;
 
   MagickPixelPacket
@@ -108,7 +108,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register long
+  register ssize_t
     x;
 
   register PixelPacket
@@ -134,13 +134,13 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   background.opacity=(MagickRealType) TransparentOpacity;
   if (image->colorspace == CMYKColorspace)
     ConvertRGBToCMYK(&background);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelPacket(image,&background,q,indexes);
       q++;
@@ -172,10 +172,10 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterNULLImage method is:
 %
-%      unsigned long RegisterNULLImage(void)
+%      size_t RegisterNULLImage(void)
 %
 */
-ModuleExport unsigned long RegisterNULLImage(void)
+ModuleExport size_t RegisterNULLImage(void)
 {
   MagickInfo
     *entry;
