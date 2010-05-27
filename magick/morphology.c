@@ -1725,6 +1725,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case ConvexHullKernel:
       {
+        KernelInfo
+          *new_kernel;
+        /* first set of 8 kernels */
         kernel=ParseKernelArray("3: 1,1,-  1,0,-  1,-,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
