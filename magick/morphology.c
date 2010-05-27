@@ -1725,21 +1725,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case ConvexHullKernel:
       {
-        KernelInfo
-          *new_kernel;
-        /* first set of 4 kernels */
         kernel=ParseKernelArray("3: 1,1,-  1,0,-  1,-,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0);
-        /* append second set of 4 kernels */
-        new_kernel=ParseKernelArray("3: 1,1,1  1,0,0  -,-,0");
-        if (new_kernel == (KernelInfo *) NULL)
-          return(DestroyKernelInfo(kernel));
-        new_kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90.0);
-        LastKernelInfo(kernel)->next = new_kernel;
+        ExpandKernelInfo(kernel, 45.0);
         break;
       }
     case SkeletonKernel:
