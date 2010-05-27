@@ -154,18 +154,20 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   Image
     *threshold_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickPixelPacket
     zero;
 
   MagickRealType
     number_pixels;
+
+  ssize_t
+    y;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -367,12 +369,14 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -523,18 +527,20 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   GeometryInfo
     geometry_info;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickPixelPacket
     threshold;
 
   MagickStatusType
     flags;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -710,12 +716,14 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1353,15 +1361,17 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    progress,
-    y;
-
   LongPixelPacket
     levels;
 
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   ThresholdMap
     *map;
@@ -1636,12 +1646,11 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
   MagickStatusType
     flags;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickPixelPacket
     threshold;
@@ -1652,6 +1661,9 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 
   RandomInfo
     **restrict random_info;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1944,12 +1956,11 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
 {
 #define ThresholdImageTag  "Threshold/Image"
 
+  CacheView
+    *image_view;
+
   GeometryInfo
     geometry_info;
-
-  ssize_t
-    progress,
-    y;
 
   MagickBooleanType
     status;
@@ -1957,11 +1968,14 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   MagickPixelPacket
     threshold;
 
+  MagickOffsetType
+    progress;
+
   MagickStatusType
     flags;
 
-  CacheView
-    *image_view;
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

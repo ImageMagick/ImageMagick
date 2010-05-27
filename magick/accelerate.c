@@ -133,7 +133,7 @@
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define CLOptions "-DCLQuantum=ussize_t -DCLPixelType=ussize_t4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_ussize_t4
+#define CLPixelPacket  cl_ulong4
 #endif
 #endif
 
@@ -158,7 +158,7 @@ typedef struct _ConvolveInfo
     pixels,
     convolve_pixels;
 
-  cl_ussize_t
+  cl_ulong
     width,
     height;
 
@@ -171,12 +171,12 @@ typedef struct _ConvolveInfo
 
 static char
   *ConvolveKernel =
-    "static inline ssize_t ClampToCanvas(const ssize_t offset,const ussize_t range)\n"
+    "static inline long ClampToCanvas(const long offset,const unsigned long range)\n"
     "{\n"
     "  if (offset < 0L)\n"
     "    return(0L);\n"
     "  if (offset >= range)\n"
-    "    return((ssize_t) (range-1L));\n"
+    "    return((long) (range-1L));\n"
     "  return(offset);\n"
     "}\n"
     "\n"
@@ -194,21 +194,21 @@ static char
     "}\n"
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
-    "  __constant double *filter,const ussize_t width,const ussize_t height,\n"
+    "  __constant double *filter,const unsigned long width,const unsigned long height,\n"
     "  const bool matte,__global CLPixelType *output)\n"
     "{\n"
-    "  const ussize_t columns = get_global_size(0);\n"
-    "  const ussize_t rows = get_global_size(1);\n"
+    "  const unsigned long columns = get_global_size(0);\n"
+    "  const unsigned long rows = get_global_size(1);\n"
     "\n"
-    "  const ssize_t x = get_global_id(0);\n"
-    "  const ssize_t y = get_global_id(1);\n"
+    "  const long x = get_global_id(0);\n"
+    "  const long y = get_global_id(1);\n"
     "\n"
     "  const double scale = (1.0/QuantumRange);\n"
-    "  const ssize_t mid_width = (width-1)/2;\n"
-    "  const ssize_t mid_height = (height-1)/2;\n"
+    "  const long mid_width = (width-1)/2;\n"
+    "  const long mid_height = (height-1)/2;\n"
     "  double4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
     "  double gamma = 0.0;\n"
-    "  register ussize_t i = 0;\n"
+    "  register unsigned long i = 0;\n"
     "\n"
     "  int method = 0;\n"
     "  if (matte != false)\n"
@@ -224,11 +224,11 @@ static char
     "  {\n"
     "    case 0:\n"
     "    {\n"
-    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ssize_t index=ClampToCanvas(y+v,rows)*columns+\n"
+    "          const long index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
     "          sum.x+=filter[i]*input[index].x;\n"
     "          sum.y+=filter[i]*input[index].y;\n"
@@ -241,11 +241,11 @@ static char
     "    }\n"
     "    case 1:\n"
     "    {\n"
-    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ussize_t index=ClampToCanvas(y+v,rows)*columns+\n"
+    "          const unsigned long index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
     "          const double alpha=scale*(QuantumRange-input[index].w);\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
@@ -260,11 +260,11 @@ static char
     "    }\n"
     "    case 2:\n"
     "    {\n"
-    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ussize_t index=(y+v)*columns+(x+u);\n"
+    "          const unsigned long index=(y+v)*columns+(x+u);\n"
     "          sum.x+=filter[i]*input[index].x;\n"
     "          sum.y+=filter[i]*input[index].y;\n"
     "          sum.z+=filter[i]*input[index].z;\n"
@@ -276,11 +276,11 @@ static char
     "    }\n"
     "    case 3:\n"
     "    {\n"
-    "      for (ssize_t v=(-mid_height); v <= mid_height; v++)\n"
+    "      for (long v=(-mid_height); v <= mid_height; v++)\n"
     "      {\n"
-    "        for (ssize_t u=(-mid_width); u <= mid_width; u++)\n"
+    "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
-    "          const ussize_t index=(y+v)*columns+(x+u);\n"
+    "          const unsigned long index=(y+v)*columns+(x+u);\n"
     "          const double alpha=scale*(QuantumRange-input[index].w);\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
     "          sum.y+=alpha*filter[i]*input[index].y;\n"
@@ -294,7 +294,7 @@ static char
     "    }\n"
     "  }\n"
     "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
-    "  const ussize_t index = y*columns+x;\n"
+    "  const unsigned long index = y*columns+x;\n"
     "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
     "  output[index].y=ClampToQuantum(gamma*sum.y);\n"
     "  output[index].z=ClampToQuantum(gamma*sum.z);\n"
@@ -324,7 +324,7 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
   cl_int
     status;
 
-  register int
+  register cl_uint
     i;
 
   size_t
@@ -334,19 +334,21 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
     Allocate OpenCL buffers.
   */
   length=image->columns*image->rows;
-  convolve_info->pixels=clCreateBuffer(convolve_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,length*sizeof(CLPixelPacket),(void *) pixels,&status);
+  convolve_info->pixels=clCreateBuffer(convolve_info->context,(cl_mem_flags)
+    (CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR),length*sizeof(CLPixelPacket),
+    (void *) pixels,&status);
   if ((convolve_info->pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
   length=width*height;
-  convolve_info->filter=clCreateBuffer(convolve_info->context,CL_MEM_READ_ONLY |
-    CL_MEM_USE_HOST_PTR,length*sizeof(cl_double),filter,&status);
+  convolve_info->filter=clCreateBuffer(convolve_info->context,(cl_mem_flags)
+    (CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR),length*sizeof(cl_double),filter,
+    &status);
   if ((convolve_info->filter == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
   length=image->columns*image->rows;
   convolve_info->convolve_pixels=clCreateBuffer(convolve_info->context,
-    CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,length*sizeof(CLPixelPacket),
-    convolve_pixels,&status);
+    (cl_mem_flags) (CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR),length*
+    sizeof(CLPixelPacket),convolve_pixels,&status);
   if ((convolve_info->convolve_pixels == (cl_mem) NULL) ||
       (status != CL_SUCCESS))
     return(MagickFalse);
@@ -362,13 +364,13 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
     &convolve_info->filter);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  convolve_info->width=(cl_ussize_t) width;
-  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ussize_t),(void *)
+  convolve_info->width=(cl_ulong) width;
+  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ulong),(void *)
     &convolve_info->width);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  convolve_info->height=(cl_ussize_t) height;
-  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ussize_t),(void *)
+  convolve_info->height=(cl_ulong) height;
+  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_ulong),(void *)
     &convolve_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
@@ -487,18 +489,20 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
     Create OpenCL context.
   */
   convolve_info->context=clCreateContextFromType((cl_context_properties *)
-    NULL,CL_DEVICE_TYPE_GPU,ConvolveNotify,exception,&status);
+    NULL,(cl_device_type) CL_DEVICE_TYPE_GPU,ConvolveNotify,exception,&status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     convolve_info->context=clCreateContextFromType((cl_context_properties *)
-      NULL,CL_DEVICE_TYPE_CPU,ConvolveNotify,exception,&status);
+      NULL,(cl_device_type) CL_DEVICE_TYPE_CPU,ConvolveNotify,exception,
+      &status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     convolve_info->context=clCreateContextFromType((cl_context_properties *)
-      NULL,CL_DEVICE_TYPE_DEFAULT,ConvolveNotify,exception,&status);
+      NULL,(cl_device_type) CL_DEVICE_TYPE_DEFAULT,ConvolveNotify,exception,
+      &status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
         "failed to create OpenCL context","`%s' (%d)",image->filename,status);
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   /*
@@ -508,7 +512,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
     &length);
   if ((status != CL_SUCCESS) || (length == 0))
     {
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   convolve_info->devices=(cl_device_id *) AcquireMagickMemory(length);
@@ -516,14 +520,14 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   status=clGetContextInfo(convolve_info->context,CL_CONTEXT_DEVICES,length,
     convolve_info->devices,NULL);
   if (status != CL_SUCCESS)
     {
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   /*
@@ -534,7 +538,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   if ((convolve_info->command_queue == (cl_command_queue) NULL) ||
       (status != CL_SUCCESS))
     {
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   /*
@@ -544,7 +548,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
     &source,lengths,&status);
   if ((convolve_info->program == (cl_program) NULL) || (status != CL_SUCCESS))
     {
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   (void) FormatMagickString(options,MaxTextExtent,CLOptions,(double)
@@ -561,7 +565,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
       log=(char *) AcquireMagickMemory(length);
       if (log == (char *) NULL)
         {
-          DestroyConvolveInfo(convolve_info);
+          convolve_info=DestroyConvolveInfo(convolve_info);
           return((ConvolveInfo *) NULL);
         }
       status=clGetProgramBuildInfo(convolve_info->program,
@@ -569,7 +573,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
         "failed to build OpenCL program","`%s' (%s)",image->filename,log);
       log=DestroyString(log);
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   /*
@@ -578,7 +582,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   convolve_info->kernel=clCreateKernel(convolve_info->program,name,&status);
   if ((convolve_info->kernel == (cl_kernel) NULL) || (status != CL_SUCCESS))
     {
-      DestroyConvolveInfo(convolve_info);
+      convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
   return(convolve_info);

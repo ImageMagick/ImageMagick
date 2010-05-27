@@ -259,10 +259,8 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     green,
     red;
 
-  ssize_t
-    count,
-    progress,
-    y;
+  MagickOffsetType
+    progress;
 
   MagickRealType
     *free_squares;
@@ -278,6 +276,10 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 
   size_t
     number_clusters;
+
+  ssize_t
+    count,
+    y;
 
   /*
     Form clusters.

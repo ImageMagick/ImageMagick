@@ -991,17 +991,19 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             int
               intent;
 
-            ssize_t
-              progress,
-              y;
-
             MagickBooleanType
               status;
+
+            MagickOffsetType
+              progress;
 
             size_t
               length,
               source_channels,
               target_channels;
+
+            ssize_t
+              y;
 
             unsigned short
               **restrict source_pixels,

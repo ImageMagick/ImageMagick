@@ -1965,8 +1965,8 @@ MagickExport PixelPacket *GetAuthenticPixelQueue(const Image *image)
 %
 %  The format of the GetAuthenticPixels() method is:
 %
-%      PixelPacket *GetAuthenticPixels(Image *image,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows,
+%      PixelPacket *GetAuthenticPixels(Image *image,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2319,7 +2319,8 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,const ssize_t x
 %  The format of the GetOneAuthenticPixelFromCache() method is:
 %
 %      MagickBooleanType GetOneAuthenticPixelFromCache(const Image image,
-%        const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,PixelPacket *pixel,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3137,8 +3138,8 @@ MagickExport const IndexPacket *GetVirtualIndexQueue(const Image *image)
 %
 %      PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
 %        const VirtualPixelMethod method,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows,
-%        NexusInfo *nexus_info,ExceptionInfo *exception)
+%        const size_t columns,const size_t rows,NexusInfo *nexus_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4401,8 +4402,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
 %
 %  The format of the QueueAuthenticNexus() method is:
 %
-%      PixelPacket *QueueAuthenticNexus(Image *image,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows,
+%      PixelPacket *QueueAuthenticNexus(Image *image,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        NexusInfo *nexus_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -4565,8 +4566,8 @@ static PixelPacket *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
 %
 %  The format of the QueueAuthenticPixels() method is:
 %
-%      PixelPacket *QueueAuthenticPixels(Image *image,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows,
+%      PixelPacket *QueueAuthenticPixels(Image *image,const ssize_t x,
+%        const ssize_t y,const size_t columns,const size_t rows,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:

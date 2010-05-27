@@ -1942,16 +1942,21 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     CacheView
       *distort_view;
 
-    ssize_t
-      j,
-      progress,
+    MagickBooleanType
       status;
+
+    MagickOffsetType
+      progress;
 
     MagickPixelPacket
       zero;
 
     ResampleFilter
       **restrict resample_filter;
+
+    ssize_t
+      j,
+      y;
 
     status=MagickTrue;
     progress=0;

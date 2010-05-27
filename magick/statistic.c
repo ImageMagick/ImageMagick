@@ -387,12 +387,11 @@ MagickExport Image *EvaluateImages(const Image *images,
   Image
     *evaluate_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickPixelPacket
     **restrict evaluate_pixels,
@@ -403,6 +402,9 @@ MagickExport Image *EvaluateImages(const Image *images,
 
   size_t
     number_images;
+
+  ssize_t
+    y;
 
   /*
     Ensure the image are the same size.
@@ -583,15 +585,17 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   RandomInfo
     **restrict random_info;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -822,12 +826,14 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

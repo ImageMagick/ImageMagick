@@ -185,19 +185,21 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status,
     sync;
+
+  MagickOffsetType
+    progress;
 
   PrimaryInfo
     primary_info;
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   TransformPacket
     *x_map,
@@ -1401,15 +1403,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   TransformPacket
     *y_map,

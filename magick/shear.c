@@ -1020,15 +1020,17 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
   Image
     *rotate_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   RectangleInfo
     page;
+
+  ssize_t
+    y;
 
   /*
     Initialize rotated image attributes.
@@ -1191,7 +1193,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 180 degrees.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress, status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1267,7 +1269,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress, status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=tile_height)
       {
@@ -1436,15 +1438,17 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   CacheView
     *image_view;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   MagickPixelPacket
     background;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1654,15 +1658,17 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   CacheView
     *image_view;
 
-  ssize_t
-    progress,
-    x;
-
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   MagickPixelPacket
     background;
+
+  ssize_t
+    x;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
