@@ -1,6 +1,8 @@
 2010-05-25  6.6.2.1 Anthony Thyssen <A.Thyssen@griffith...>
   * Finish for Square Array Rotates (off center origin rotate)
   * Added HitAndMiss kernel Ridges2 to find 2 pixel thick ridges
+  * Added FreiChen:0,{angle}  FreiChen:{angle} and FreiChen:-1 variations
+    to complete this kernels definition
 
 2010-05-24  6.6.2-1 Cristy  <quetzlzacatenango@image...>
   * Respect density when rendering SVG images.
