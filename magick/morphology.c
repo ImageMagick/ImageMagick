@@ -1616,18 +1616,18 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case RidgesKernel:
       {
-        kernel=ParseKernelArray("3: 0,1,0 ");
+        kernel=ParseKernelArray("3x1:0,1,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 45.0); /* 4 rotated kernels (symmetrical) */
+        ExpandKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
         break;
       }
     case Ridges2Kernel:
       {
         KernelInfo
           *new_kernel;
-        kernel=ParseKernelArray("4x1^:0,1,1,0");
+        kernel=ParseKernelArray("4x1:0,1,1,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1649,37 +1649,37 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("4x3+2+1^:0,1,1,- -,1,1,- -,1,1,0");
+        new_kernel=ParseKernelArray("4x3+2+1:0,1,1,- -,1,1,- -,1,1,0");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("4x3+1+1^:-,1,1,0 -,1,1,- 0,1,1,-");
+        new_kernel=ParseKernelArray("4x3+1+1:-,1,1,0 -,1,1,- 0,1,1,-");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("4x3+2+1^:-,1,1,0 -,1,1,- 0,1,1,-");
+        new_kernel=ParseKernelArray("4x3+2+1:-,1,1,0 -,1,1,- 0,1,1,-");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("3x4+1+1^:0,-,- 1,1,1 1,1,1 -,-,0");
+        new_kernel=ParseKernelArray("3x4+1+1:0,-,- 1,1,1 1,1,1 -,-,0");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("3x4+1+2^:0,-,- 1,1,1 1,1,1 -,-,0");
+        new_kernel=ParseKernelArray("3x4+1+2:0,-,- 1,1,1 1,1,1 -,-,0");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("3x4+1+1^:-,-,0 1,1,1 1,1,1 0,-,-");
+        new_kernel=ParseKernelArray("3x4+1+1:-,-,0 1,1,1 1,1,1 0,-,-");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         LastKernelInfo(kernel)->next = new_kernel;
-        new_kernel=ParseKernelArray("3x4+1+2^:-,-,0 1,1,1 1,1,1 0,-,-");
+        new_kernel=ParseKernelArray("3x4+1+2:-,-,0 1,1,1 1,1,1 0,-,-");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
