@@ -57,9 +57,11 @@ typedef enum
   LineJunctionsKernel,
   ConvexHullKernel,
   SkeletonKernel,
+  MatKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */
   ManhattenKernel,
   EuclideanKernel,
+  TestKernel,         /* Kernel being tested as posible addition */
   UserDefinedKernel   /* User Specified Kernel Array */
 } KernelInfoType;
 

@@ -792,6 +792,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Find single pixel ridges or thin lines
 %    Ridges2
 %       Find 2 pixel thick ridges or lines
+%    Ridges3
+%       Find 2 pixel thick diagonal ridges (experimental)
 %    LineEnds
 %       Find end points of lines (for pruning a skeletion)
 %    LineJunctions
@@ -1557,7 +1559,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case RidgesKernel:
       {
-        kernel=ParseKernelArray("3: -,-,-  0,1,0  -,-,-");
+        kernel=ParseKernelArray("3: 0,1,0 ");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1573,14 +1575,58 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 90.0); /* 4 rotated kernels */
-        /* append second set of 4 kernels */
+#if 0
+        /* 2 pixel diagonaly thick - 4 rotates - not needed? */
         new_kernel=ParseKernelArray("4x4^:0,-,-,- -,1,-,- -,-,1,- -,-,-,0'");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
         ExpandKernelInfo(new_kernel, 90.0);  /* 4 rotated kernels */
         LastKernelInfo(kernel)->next = new_kernel;
-        break;
+#endif
+        /* kernels to find a stepped 'thick' line - 4 rotates * mirror */
+        /* Unfortunatally we can not yet rotate a non-square kernel */
+        /* But then we can't flip a non-symetrical kernel either */
+        new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("4x3+2+1^:0,1,1,- -,1,1,- -,1,1,0");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("4x3+1+1^:-,1,1,0 -,1,1,- 0,1,1,-");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("4x3+2+1^:-,1,1,0 -,1,1,- 0,1,1,-");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("3x4+1+1^:0,-,- 1,1,1 1,1,1 -,-,0");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("3x4+1+2^:0,-,- 1,1,1 1,1,1 -,-,0");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("3x4+1+1^:-,-,0 1,1,1 1,1,1 0,-,-");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        new_kernel=ParseKernelArray("3x4+1+2^:-,-,0 1,1,1 1,1,1 0,-,-");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
     case LineEndsKernel:
@@ -1640,7 +1686,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     case SkeletonKernel:
-      { /* what is the best form for medial axis skeletonization? */
+      { /* what is the best form for skeletonization by thinning? */
 #if 0
 #  if 0
         kernel=AcquireKernelInfo("Corners;Edges");
@@ -1655,6 +1701,23 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ExpandKernelInfo(kernel, 45);
         break;
 #endif
+        break;
+      }
+    case MatKernel: /* experimental - MAT from a Distance Gradient */
+      {
+        KernelInfo
+          *new_kernel;
+        /* Ridge Kernel but without the diagonal */
+        kernel=ParseKernelArray("3x1: 0,1,0");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = RidgesKernel;
+        ExpandKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
+        /* Plus the 2 pixel ridges kernel - no diagonal */
+        new_kernel=AcquireKernelBuiltIn(Ridges2Kernel,args);
+        if (new_kernel == (KernelInfo *) NULL)
+          return(kernel);
+        LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
     /* Distance Measuring Kernels */
@@ -3541,7 +3604,7 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
           MagickOptionToMnemonic(MagickKernelOptions, k->type) );
     if ( fabs(k->angle) > MagickEpsilon )
       fprintf(stderr, "@%lg", k->angle);
-    fprintf(stderr, "\" of size %lux%lu%+ld%+ld ",
+    fprintf(stderr, "\" of size %lux%lu%+ld%+ld",
           k->width, k->height,
           k->x, k->y );
     fprintf(stderr,
