@@ -499,7 +499,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
       /* Error handling -- this is not proper error handling! */
       if ( new_kernel == (KernelInfo *) NULL ) {
-        fprintf(stderr, "Failed to parse kernel number #%lu\n", kernel_number);
+        fprintf(stderr, "Failed to parse kernel number #%lu\n",(unsigned long)
+          kernel_number);
         if ( kernel != (KernelInfo *) NULL )
           kernel=DestroyKernelInfo(kernel);
         return((KernelInfo *) NULL);
@@ -2815,6 +2816,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
     /* Loop 2:  iterate over each kernel in a multi-kernel list */
     norm_kernel = (KernelInfo *) kernel;
+    this_kernel = (KernelInfo *) kernel;
     rflt_kernel = reflected_kernel;
     kernel_number = 0;
     while ( norm_kernel != NULL ) {
@@ -2906,12 +2908,12 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         if ( verbose == MagickTrue ) {
           if ( stage_limit > 1 )
             (void) FormatMagickString(v_info, MaxTextExtent, "%s:%lu.%lu -> ",
-                 MagickOptionToMnemonic(MagickMorphologyOptions, method),
-                 method_loop, stage_loop );
+             MagickOptionToMnemonic(MagickMorphologyOptions, method),
+             (unsigned long) method_loop,(unsigned long) stage_loop);
           else if ( primative != method )
             (void) FormatMagickString(v_info, MaxTextExtent, "%s:%lu -> ",
-                 MagickOptionToMnemonic(MagickMorphologyOptions, method),
-                 method_loop );
+               MagickOptionToMnemonic(MagickMorphologyOptions, method),
+               (unsigned long) method_loop);
           else
             v_info[0] = '\0';
         }
@@ -2949,7 +2951,8 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             fprintf(stderr, "%s%s%s:%lu.%lu #%lu => Changed %lu", v_info,
                 MagickOptionToMnemonic(MagickMorphologyOptions, primative),
                  ( this_kernel == rflt_kernel ) ? "*" : "",
-               method_loop+kernel_loop-1, kernel_number, count, changed);
+               (unsigned long) method_loop+kernel_loop-1,(unsigned long)
+               kernel_number,(unsigned long) count,(unsigned long) changed);
           }
           /* prepare next loop */
           { Image *tmp = work_image;   /* swap images for iteration */
@@ -2962,7 +2965,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         } /* End Loop 4: Iterate the kernel with primative */
 
         if ( verbose == MagickTrue && kernel_changed != changed )
-          fprintf(stderr, "   Total %lu", kernel_changed);
+          fprintf(stderr, "   Total %lu",(unsigned long) kernel_changed);
         if ( verbose == MagickTrue && stage_loop < stage_limit )
           fprintf(stderr, "\n"); /* add end-of-line before looping */
 
@@ -3658,14 +3661,13 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 
     fprintf(stderr, "Kernel");
     if ( kernel->next != (KernelInfo *) NULL )
-      fprintf(stderr, " #%lu", c );
+      fprintf(stderr, " #%lu", (unsigned long) c );
     fprintf(stderr, " \"%s",
           MagickOptionToMnemonic(MagickKernelOptions, k->type) );
     if ( fabs(k->angle) > MagickEpsilon )
       fprintf(stderr, "@%lg", k->angle);
-    fprintf(stderr, "\" of size %lux%lu%+ld%+ld",
-          k->width, k->height,
-          k->x, k->y );
+    fprintf(stderr, "\" of size %lux%lu%+ld%+ld",(unsigned long) k->width,
+      (unsigned long) k->height,(long) k->x,(long) k->y);
     fprintf(stderr,
           " with values from %.*lg to %.*lg\n",
           GetMagickPrecision(), k->minimum,
@@ -3681,7 +3683,7 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
       fprintf(stderr, " (Sum %.*lg)\n",
           GetMagickPrecision(), k->positive_range+k->negative_range);
     for (i=v=0; v < k->height; v++) {
-      fprintf(stderr, "%2lu:", v );
+      fprintf(stderr, "%2lu:", (unsigned long) v );
       for (u=0; u < k->width; u++, i++)
         if ( IsNan(k->values[i]) )
           fprintf(stderr," %*s", GetMagickPrecision()+3, "nan");

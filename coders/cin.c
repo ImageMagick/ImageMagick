@@ -585,12 +585,12 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   offset+=4;
   if ((size_t) cin.origination.x_offset != ~0UL)
     (void) FormatImageProperty(image,"cin:origination.x_offset","%ld",
-      cin.origination.x_offset);
+      (long) cin.origination.x_offset);
   cin.origination.y_offset=(ssize_t) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.y_offset != ~0UL)
     (void) FormatImageProperty(image,"cin:origination.y_offset","%ld",
-      cin.origination.y_offset);
+      (long) cin.origination.y_offset);
   offset+=ReadBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
   (void) SetImageProperty(image,"cin:origination.filename",
@@ -647,7 +647,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       cin.film.prefix=ReadBlobLong(image);
       offset+=4;
       if (cin.film.prefix != ~0UL)
-        (void) FormatImageProperty(image,"cin:film.prefix","%lu",
+        (void) FormatImageProperty(image,"cin:film.prefix","%lu",(unsigned long)
           cin.film.prefix);
       cin.film.count=ReadBlobLong(image);
       offset+=4;
@@ -658,7 +658,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       offset+=4;
       if (cin.film.frame_position != ~0UL)
         (void) FormatImageProperty(image,"cin:film.frame_position","%lu",
-          cin.film.frame_position);
+          (unsigned long) cin.film.frame_position);
       cin.film.frame_rate=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(cin.film.frame_rate) != MagickFalse)

@@ -927,7 +927,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,ssize_t *curren
       break;
   }
   (void) fprintf(stderr,"GetList: UnrecognizedType %ld\n",
-    (ssize_t) SvTYPE(reference));
+    (long) SvTYPE(reference));
   return((Image *) NULL);
 }
 
@@ -971,7 +971,7 @@ static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
     *sv;
 
   (void) FormatMagickString(message,MaxTextExtent,"%s::package%s%lx",
-    PackageName,XS_VERSION,(ssize_t) reference);
+    PackageName,XS_VERSION,(long) reference);
   sv=perl_get_sv(message,(TRUE | 0x02));
   if (sv == (SV *) NULL)
     {
@@ -1063,7 +1063,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
   ssize_t
     sp;
 
-  ssize_t
+  long
     x,
     y;
 
@@ -1229,7 +1229,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             int
               items;
 
-            ssize_t
+            long
               i;
 
             if (image->storage_class == DirectClass)
@@ -1558,7 +1558,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           int
             items;
 
-          ssize_t
+          long
             index;
 
           register PixelPacket
@@ -3413,7 +3413,7 @@ DESTROY(ref)
           Array (AV *) reference
         */
         (void) FormatMagickString(message,MaxTextExtent,"package%s%lx",
-          XS_VERSION,(ssize_t) reference);
+          XS_VERSION,(unsigned long) reference);
         hv=gv_stashpv(PackageName, FALSE);
         if (!hv)
           break;
@@ -4185,7 +4185,7 @@ Get(ref,...)
     Image
       *image;
 
-    ssize_t
+    long
       j;
 
     register ssize_t
@@ -4355,7 +4355,8 @@ Get(ref,...)
                 break;
               page=GetImageBoundingBox(image,&image->exception);
               (void) FormatMagickString(geometry,MaxTextExtent,
-                "%lux%lu%+ld%+ld",page.width,page.height,page.x,page.y);
+                "%lux%lu%+ld%+ld",(unsigned long) page.width,(unsigned long)
+                page.height,(long) page.x,(long) page.y);
               s=newSVpv(geometry,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4764,7 +4765,8 @@ Get(ref,...)
                   static ssize_t
                     id = 0;
 
-                  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",id);
+                  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",(long)
+                    id);
                   status=SetImageRegistry(ImageRegistryType,key,image,
                     &image->exception);
                   s=newSViv(id++);
@@ -4780,7 +4782,7 @@ Get(ref,...)
               int
                 items;
 
-              ssize_t
+              long
                 x,
                 y;
 
@@ -5015,8 +5017,9 @@ Get(ref,...)
                     geometry[MaxTextExtent];
 
                   (void) FormatMagickString(geometry,MaxTextExtent,
-                    "%lux%lu%+ld%+ld",image->page.width,image->page.height,
-                    image->page.x,image->page.y);
+                    "%lux%lu%+ld%+ld",(unsigned long) image->page.width,
+                    (unsigned long) image->page.height,(long) image->page.x,
+                    (long) image->page.y);
                   s=newSVpv(geometry,0);
                 }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5044,7 +5047,7 @@ Get(ref,...)
               int
                 items;
 
-              ssize_t
+              long
                 x,
                 y;
 
@@ -5987,7 +5990,7 @@ Histogram(ref,...)
           histogram[i].pixel.opacity);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         (void) FormatMagickString(message,MaxTextExtent,"%lu",
-           (size_t) histogram[i].count);
+           (unsigned long) histogram[i].count);
         PUSHs(sv_2mortal(newSVpv(message,0)));
       }
       histogram=(ColorPacket *) RelinquishMagickMemory(histogram);
@@ -7457,7 +7460,7 @@ Mogrify(ref,...)
       {
         default:
         {
-          (void) FormatMagickString(message,MaxTextExtent,"%ld",(ssize_t) ix);
+          (void) FormatMagickString(message,MaxTextExtent,"%ld",(long) ix);
           ThrowPerlException(exception,OptionError,
             "UnrecognizedPerlMagickMethod",message);
           goto PerlException;
@@ -8307,8 +8310,9 @@ Mogrify(ref,...)
             Composite two images (normal composition).
           */
           (void) FormatMagickString(composite_geometry,MaxTextExtent,
-            "%lux%lu%+ld%+ld",composite_image->columns,composite_image->rows,
-            geometry.x,geometry.y);
+            "%lux%lu%+ld%+ld",(unsigned long) composite_image->columns,
+            (unsigned long) composite_image->rows,(long) geometry.x,(long)
+            geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             exception);
           if (attribute_flag[8] == 0) /* no rotate */
@@ -8321,7 +8325,8 @@ Mogrify(ref,...)
               */
               geometry.x-=(ssize_t) (rotate_image->columns-
                 composite_image->columns)/2;
-              geometry.y-=(ssize_t) (rotate_image->rows-composite_image->rows)/2;
+              geometry.y-=(ssize_t) (rotate_image->rows-
+                composite_image->rows)/2;
               CompositeImageChannel(image,channel,compose,rotate_image,
                 geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
@@ -11727,7 +11732,8 @@ QueryFont(ref,...)
       else
         PUSHs(sv_2mortal(newSVpv(MagickOptionToMnemonic(MagickStretchOptions,
           type_info->stretch),0)));
-      (void) FormatMagickString(message,MaxTextExtent,"%lu",type_info->weight);
+      (void) FormatMagickString(message,MaxTextExtent,"%lu",(unsigned long)
+        type_info->weight);
       PUSHs(sv_2mortal(newSVpv(message,0)));
       if (type_info->encoding == (char *) NULL)
         PUSHs(&sv_undef);
@@ -13283,7 +13289,7 @@ Statistics(ref,...)
 #define ChannelStatistics(channel) \
 { \
   (void) FormatMagickString(message,MaxTextExtent,"%lu", \
-    channel_statistics[channel].depth); \
+    (unsigned long) channel_statistics[channel].depth); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatMagickString(message,MaxTextExtent,"%.15g", \
     channel_statistics[channel].minima/scale); \

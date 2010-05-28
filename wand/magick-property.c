@@ -2504,7 +2504,7 @@ WandExport MagickBooleanType MagickSetPage(MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-    width,height,x,y);
+    (unsigned long) width,(unsigned long) height,(long) x,(long) y);
   (void) CloneString(&wand->image_info->page,geometry);
   return(MagickTrue);
 }
@@ -2806,7 +2806,8 @@ WandExport MagickBooleanType MagickSetSize(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu",columns,rows);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu",(unsigned long)
+    columns,(unsigned long) rows);
   (void) CloneString(&wand->image_info->size,geometry);
   return(MagickTrue);
 }
@@ -2852,8 +2853,8 @@ WandExport MagickBooleanType MagickSetSizeOffset(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld",columns,rows,
-    offset);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld",
+    (unsigned long) columns,(unsigned long) rows,(long) offset);
   (void) CloneString(&wand->image_info->size,geometry);
   return(MagickTrue);
 }

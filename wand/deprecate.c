@@ -97,7 +97,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%lu",
-    MagickWandId,clone_wand->id);
+    MagickWandId,(unsigned long) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
   clone_wand->image_info=CloneImageInfo(wand->image_info);

@@ -386,7 +386,7 @@ static double *GenerateCoefficients(const Image *image,
       if ( number_arguments < 1+i*cp_size ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
                "InvalidArgument", "%s : 'require at least %ld CPs'",
-               "Polynomial", i);
+               "Polynomial", (long) i);
         return((double *) NULL);
       }
       break;
@@ -1651,8 +1651,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     /* Set destination image size and virtual offset */
     if ( bestfit || viewport_given ) {
       (void) FormatMagickString(image_gen, MaxTextExtent,"  -size %lux%lu "
-        "-page %+ld%+ld xc: +insert \\\n",geometry.width,geometry.height,
-        geometry.x,geometry.y);
+        "-page %+ld%+ld xc: +insert \\\n",(unsigned long) geometry.width,
+        (unsigned long) geometry.height,(long) geometry.x,(long) geometry.y);
       lookup="v.p{ xx-v.page.x-.5, yy-v.page.x-.5 }";
     }
     else {
@@ -1789,7 +1789,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         size_t nterms = (size_t) coeff[1];
         fprintf(stderr, "Polynomial (order %lg, terms %lu), FX Equivelent\n",
-                       coeff[0], nterms);
+          coeff[0],(unsigned long) nterms);
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
         fprintf(stderr, "       xx =");

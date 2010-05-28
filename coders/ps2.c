@@ -516,13 +516,14 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       }
     SetGeometry(image,&geometry);
     (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu",
-      image->columns,image->rows);
+      (unsigned long) image->columns,(unsigned long) image->rows);
     if (image_info->page != (char *) NULL)
       (void) CopyMagickString(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-          image->page.width,image->page.height,image->page.x,image->page.y);
+          (unsigned long) image->page.width,(unsigned long) image->page.height,
+          (long) image->page.x,(long) image->page.y);
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PS") == 0))
@@ -580,8 +581,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
         else
           {
             (void) FormatMagickString(buffer,MaxTextExtent,
-              "%%%%BoundingBox: %ld %ld %ld %ld\n",(ssize_t) ceil(bounds.x1-0.5),
-              (ssize_t) ceil(bounds.y1-0.5),(ssize_t) floor(bounds.x2+0.5),(ssize_t)
+              "%%%%BoundingBox: %ld %ld %ld %ld\n",(long) ceil(bounds.x1-0.5),
+              (long) ceil(bounds.y1-0.5),(long) floor(bounds.x2+0.5),(long)
               floor(bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatMagickString(buffer,MaxTextExtent,
@@ -604,7 +605,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
               (void) CopyMagickString(buffer,"%%Pages: 1\n",MaxTextExtent);
             else
               (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Pages: %lu\n",
-                (size_t) GetImageListLength(image));
+                (unsigned long) GetImageListLength(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -671,11 +672,12 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"} bind def\n");
         (void) WriteBlobString(image,"%%EndProlog\n");
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page:  1 %lu\n",page++);
+    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page:  1 %lu\n",
+      (unsigned long) page++);
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%%%%PageBoundingBox: %ld %ld %ld %ld\n",geometry.x,geometry.y,
-      geometry.x+(ssize_t) geometry.width,geometry.y+(ssize_t)
+      "%%%%PageBoundingBox: %ld %ld %ld %ld\n",(long) geometry.x,(long)
+      geometry.y, geometry.x+(long) geometry.width,geometry.y+(long)
       (geometry.height+text_size));
     (void) WriteBlobString(image,buffer);
     if ((double) geometry.x < bounds.x1)
@@ -701,9 +703,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,
-      "%ld %ld\n%g %g\n%g\n",geometry.x,geometry.y,scale.x,scale.y,
-      pointsize);
+    (void) FormatMagickString(buffer,MaxTextExtent,"%ld %ld\n%g %g\n%g\n",
+      (long) geometry.x,(long) geometry.y,scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
     value=GetImageProperty(image,"label");
@@ -728,7 +729,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
          (IsGrayImage(image,&image->exception) != MagickFalse)))
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n1\n%d\n",
-          image->columns,image->rows,(int)
+          (unsigned long) image->columns,(unsigned long) image->rows,(int)
           (image->colorspace == CMYKColorspace));
         (void) WriteBlobString(image,buffer);
         (void) FormatMagickString(buffer,MaxTextExtent,"%d\n",
@@ -839,7 +840,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
           (compression == JPEGCompression) || (image->matte != MagickFalse))
         {
           (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n0\n%d\n",
-            image->columns,image->rows,(int)
+            (unsigned long) image->columns,(unsigned long) image->rows,(int)
             (image->colorspace == CMYKColorspace));
           (void) WriteBlobString(image,buffer);
           (void) FormatMagickString(buffer,MaxTextExtent,"%d\n",
@@ -979,13 +980,14 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
             Dump number of colors and colormap.
           */
           (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n1\n%d\n",
-            image->columns,image->rows,(int)
+            (unsigned long) image->columns,(unsigned long) image->rows,(int)
             (image->colorspace == CMYKColorspace));
           (void) WriteBlobString(image,buffer);
           (void) FormatMagickString(buffer,MaxTextExtent,"%d\n",
             (int) (compression == NoCompression));
           (void) WriteBlobString(image,buffer);
-          (void) FormatMagickString(buffer,MaxTextExtent,"%lu\n",image->colors);
+          (void) FormatMagickString(buffer,MaxTextExtent,"%lu\n",(unsigned long)
+            image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (ssize_t) image->colors; i++)
           {
@@ -1073,7 +1075,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
     if (offset < 0)
       ThrowWriterException(CorruptImageError,"ImproperImageHeader");
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%%%%BeginData:%13ld %s Bytes\n",(ssize_t) length,
+      "%%%%BeginData:%13ld %s Bytes\n",(long) length,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
     offset=SeekBlob(image,stop,SEEK_SET);
@@ -1093,8 +1095,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
   if (page > 1)
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "%%%%BoundingBox: %ld %ld %ld %ld\n",(ssize_t) ceil(bounds.x1-0.5),
-        (ssize_t) ceil(bounds.y1-0.5),(ssize_t) floor(bounds.x2+0.5),(ssize_t)
+        "%%%%BoundingBox: %ld %ld %ld %ld\n",(long) ceil(bounds.x1-0.5),
+        (long) ceil(bounds.y1-0.5),(long) floor(bounds.x2+0.5),(long)
         floor(bounds.y2+0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatMagickString(buffer,MaxTextExtent,

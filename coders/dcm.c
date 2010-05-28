@@ -3022,8 +3022,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (element == (ssize_t) dicom_info[i].element))
             break;
         (void) fprintf(stdout,"0x%04lX %4ld %s-%s (0x%04lx,0x%04lx)",
-          (size_t) image->offset,(ssize_t) length,implicit_vr,
-          explicit_vr,(size_t) group,(size_t) element);
+          (unsigned long) image->offset,(long) length,implicit_vr,
+          explicit_vr,(unsigned long) group,(unsigned long) element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %s",dicom_info[i].description);
         (void) fprintf(stdout,": ");

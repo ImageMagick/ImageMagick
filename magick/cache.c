@@ -4241,8 +4241,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       (void) FormatMagickSize(cache_info->length,MagickFalse,format);
       (void) FormatMagickString(message,MaxTextExtent,
         "open %s (%s[%d], disk, %lux%lu %sB)",cache_info->filename,
-        cache_info->cache_filename,cache_info->file,cache_info->columns,
-        cache_info->rows,format);
+        cache_info->cache_filename,cache_info->file,(unsigned long)
+        cache_info->columns,(unsigned long) cache_info->rows,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
   return(MagickTrue);
@@ -5450,8 +5450,9 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
-      cache_info->filename,nexus_info->region.width,nexus_info->region.height,
-      nexus_info->region.x,nexus_info->region.y);
+      cache_info->filename,(unsigned long) nexus_info->region.width,
+      (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
+      (long) nexus_info->region.y);
   return(MagickTrue);
 }
 

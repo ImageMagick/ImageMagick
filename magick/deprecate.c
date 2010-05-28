@@ -1489,7 +1489,7 @@ MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
   char
     key[MaxTextExtent];
 
-  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",id);
+  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",(long) id);
   return(DeleteImageRegistry(key));
 }
 
@@ -2638,7 +2638,7 @@ MagickExport void *GetMagickRegistry(const ssize_t id,RegistryType *type,
 
   *type=UndefinedRegistryType;
   *length=0;
-  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",id);
+  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",(long) id);
   blob=(void *) GetImageRegistry(ImageRegistryType,key,exception);
   if (blob != (void *) NULL)
     return(blob);
@@ -5987,7 +5987,7 @@ MagickExport ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
   static ssize_t
     id = 0;
 
-  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",id);
+  (void) FormatMagickString(key,MaxTextExtent,"%ld\n",(long) id);
   status=SetImageRegistry(type,key,blob,exception);
   if (status == MagickFalse)
     return(-1);

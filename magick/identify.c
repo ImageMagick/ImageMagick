@@ -321,19 +321,22 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
            (image->scene == 0))
         (void) fprintf(file,"%s ",image->filename);
       else
-        (void) fprintf(file,"%s[%lu] ",image->filename,image->scene);
+        (void) fprintf(file,"%s[%lu] ",image->filename,(unsigned long)
+          image->scene);
       (void) fprintf(file,"%s ",image->magick);
       if ((image->magick_columns != 0) || (image->magick_rows != 0))
         if ((image->magick_columns != image->columns) ||
             (image->magick_rows != image->rows))
-          (void) fprintf(file,"%lux%lu=>",image->magick_columns,
-            image->magick_rows);
-      (void) fprintf(file,"%lux%lu ",image->columns,image->rows);
+          (void) fprintf(file,"%lux%lu=>",(unsigned long) image->magick_columns,
+            (unsigned long) image->magick_rows);
+      (void) fprintf(file,"%lux%lu ",(unsigned long) image->columns,
+        (unsigned long) image->rows);
       if ((image->page.width != 0) || (image->page.height != 0) ||
           (image->page.x != 0) || (image->page.y != 0))
-        (void) fprintf(file,"%lux%lu%+ld%+ld ",image->page.width,
-          image->page.height,(long) image->page.x,(long) image->page.y);
-      (void) fprintf(file,"%lu-bit ",image->depth);
+        (void) fprintf(file,"%lux%lu%+ld%+ld ",(unsigned long)
+          image->page.width,(unsigned long) image->page.height,(long)
+          image->page.x,(long) image->page.y);
+      (void) fprintf(file,"%lu-bit ",(unsigned long) image->depth);
       if (image->type != UndefinedType)
         (void) fprintf(file,"%s ",MagickOptionToMnemonic(MagickTypeOptions,
           (ssize_t) image->type));
@@ -348,10 +351,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       else
         if (image->total_colors <= image->colors)
-          (void) fprintf(file,"PseudoClass %luc ",image->colors);
-        else
-          (void) fprintf(file,"PseudoClass %lu=>%luc ",image->total_colors,
+          (void) fprintf(file,"PseudoClass %luc ",(unsigned long)
             image->colors);
+        else
+          (void) fprintf(file,"PseudoClass %lu=>%luc ",(unsigned long)
+            image->total_colors,(unsigned long) image->colors);
       if (image->error.mean_error_per_pixel != 0.0)
         (void) fprintf(file,"%ld/%f/%fdb ",(long)
           (image->error.mean_error_per_pixel+0.5),
@@ -397,13 +401,14 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       GetMagickDescription(magick_info));
   (void) fprintf(file,"  Class: %s\n",MagickOptionToMnemonic(MagickClassOptions,
     (ssize_t) image->storage_class));
-  (void) fprintf(file,"  Geometry: %lux%lu%+ld%+ld\n",image->columns,
-    image->rows,(long) image->tile_offset.x,(long) image->tile_offset.y);
+  (void) fprintf(file,"  Geometry: %lux%lu%+ld%+ld\n",(unsigned long)
+    image->columns,(unsigned long) image->rows,(long) image->tile_offset.x,
+    (long) image->tile_offset.y);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      (void) fprintf(file,"  Base geometry: %lux%lu\n",image->magick_columns,
-        image->magick_rows);
+      (void) fprintf(file,"  Base geometry: %lux%lu\n",(unsigned long)
+        image->magick_columns,(unsigned long) image->magick_rows);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
       (void) fprintf(file,"  Resolution: %gx%g\n",image->x_resolution,
@@ -443,9 +448,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       depth=GetImageDepth(image,&image->exception);
       if (image->depth == depth)
-        (void) fprintf(file,"  Depth: %lu-bit\n",image->depth);
+        (void) fprintf(file,"  Depth: %lu-bit\n",(unsigned long) image->depth);
       else
-        (void) fprintf(file,"  Depth: %lu/%lu-bit\n",image->depth,depth);
+        (void) fprintf(file,"  Depth: %lu/%lu-bit\n",(unsigned long)
+          image->depth,(unsigned long) depth);
       (void) fprintf(file,"  Channel depth:\n");
       if (IsGrayImage(image,&image->exception) != MagickFalse)
         colorspace=GRAYColorspace;
@@ -455,38 +461,38 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         default:
         {
           (void) fprintf(file,"    red: %lu-bit\n",
-            channel_statistics[RedChannel].depth);
+            (unsigned long) channel_statistics[RedChannel].depth);
           (void) fprintf(file,"    green: %lu-bit\n",
-            channel_statistics[GreenChannel].depth);
+            (unsigned long) channel_statistics[GreenChannel].depth);
           (void) fprintf(file,"    blue: %lu-bit\n",
-            channel_statistics[BlueChannel].depth);
+            (unsigned long) channel_statistics[BlueChannel].depth);
           if (image->matte != MagickFalse)
             (void) fprintf(file,"    alpha: %lu-bit\n",
-              channel_statistics[OpacityChannel].depth);
+              (unsigned long) channel_statistics[OpacityChannel].depth);
           break;
         }
         case CMYKColorspace:
         {
           (void) fprintf(file,"    cyan: %lu-bit\n",
-            channel_statistics[CyanChannel].depth);
+            (unsigned long) channel_statistics[CyanChannel].depth);
           (void) fprintf(file,"    magenta: %lu-bit\n",
-            channel_statistics[MagentaChannel].depth);
+            (unsigned long) channel_statistics[MagentaChannel].depth);
           (void) fprintf(file,"    yellow: %lu-bit\n",
-            channel_statistics[YellowChannel].depth);
+            (unsigned long) channel_statistics[YellowChannel].depth);
           (void) fprintf(file,"    black: %lu-bit\n",
-            channel_statistics[BlackChannel].depth);
+            (unsigned long) channel_statistics[BlackChannel].depth);
           if (image->matte != MagickFalse)
             (void) fprintf(file,"    alpha: %lu-bit\n",
-              channel_statistics[OpacityChannel].depth);
+              (unsigned long) channel_statistics[OpacityChannel].depth);
           break;
         }
         case GRAYColorspace:
         {
           (void) fprintf(file,"    gray: %lu-bit\n",
-            channel_statistics[GrayChannel].depth);
+            (unsigned long) channel_statistics[GrayChannel].depth);
           if (image->matte != MagickFalse)
             (void) fprintf(file,"    alpha: %lu-bit\n",
-              channel_statistics[OpacityChannel].depth);
+              (unsigned long) channel_statistics[OpacityChannel].depth);
           break;
         }
       }
@@ -629,8 +635,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       artifact=GetImageArtifact(image,"identify:unique-colors");
       if ((artifact != (const char *) NULL) &&
           (IsMagickTrue(artifact) != MagickFalse))
-        (void) fprintf(file,"  Colors: %lu\n",GetNumberColors(image,
-          (FILE *) NULL,&image->exception));
+        (void) fprintf(file,"  Colors: %lu\n",(unsigned long)
+          GetNumberColors(image,(FILE *) NULL,&image->exception));
       if (IsHistogramImage(image,&image->exception) != MagickFalse)
         {
           (void) fprintf(file,"  Histogram:\n");
@@ -639,7 +645,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (image->storage_class == PseudoClass)
     {
-      (void) fprintf(file,"  Colormap: %lu\n",image->colors);
+      (void) fprintf(file,"  Colormap: %lu\n",(unsigned long) image->colors);
       if (image->colors <= 1024)
         {
           char
@@ -718,8 +724,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if ((image->extract_info.width*image->extract_info.height) != 0)
-    (void) fprintf(file,"  Tile geometry: %lux%lu%+ld%+ld\n",
-      image->extract_info.width,image->extract_info.height,
+    (void) fprintf(file,"  Tile geometry: %lux%lu%+ld%+ld\n",(unsigned long)
+      image->extract_info.width,(unsigned long) image->extract_info.height,
       (long) image->extract_info.x,(long) image->extract_info.y);
   (void) fprintf(file,"  Interlace: %s\n",MagickOptionToMnemonic(
     MagickInterlaceOptions,(ssize_t) image->interlace));
@@ -739,28 +745,30 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickComposeOptions,(ssize_t) image->compose));
   if ((image->page.width != 0) || (image->page.height != 0) ||
       (image->page.x != 0) || (image->page.y != 0))
-    (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
-      image->page.height,(long) image->page.x,(long) image->page.y);
+    (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",(unsigned long)
+      image->page.width,(unsigned long) image->page.height,(long)
+      image->page.x,(long) image->page.y);
   if ((image->page.x != 0) || (image->page.y != 0))
     (void) fprintf(file,"  Origin geometry: %+ld%+ld\n",(long) image->page.x,
       (long) image->page.y);
   (void) fprintf(file,"  Dispose: %s\n",MagickOptionToMnemonic(
     MagickDisposeOptions,(ssize_t) image->dispose));
   if (image->delay != 0)
-    (void) fprintf(file,"  Delay: %lux%ld\n",image->delay,
+    (void) fprintf(file,"  Delay: %lux%ld\n",(unsigned long) image->delay,
       (long) image->ticks_per_second);
   if (image->iterations != 1)
-    (void) fprintf(file,"  Iterations: %lu\n",image->iterations);
+    (void) fprintf(file,"  Iterations: %lu\n",(unsigned long)
+      image->iterations);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
-    (void) fprintf(file,"  Scene: %lu of %lu\n",image->scene,
-      GetImageListLength(image));
+    (void) fprintf(file,"  Scene: %lu of %lu\n",(unsigned long) image->scene,
+      (unsigned long) GetImageListLength(image));
   else
     if (image->scene != 0)
-      (void) fprintf(file,"  Scene: %lu\n",image->scene);
+      (void) fprintf(file,"  Scene: %lu\n",(unsigned long) image->scene);
   (void) fprintf(file,"  Compression: %s\n",MagickOptionToMnemonic(
     MagickCompressOptions,(ssize_t) image->compression));
   if (image->quality != UndefinedCompressionQuality)
-    (void) fprintf(file,"  Quality: %lu\n",image->quality);
+    (void) fprintf(file,"  Quality: %lu\n",(unsigned long) image->quality);
   (void) fprintf(file,"  Orientation: %s\n",MagickOptionToMnemonic(
     MagickOrientationOptions,(ssize_t) image->orientation));
   if (image->montage != (char *) NULL)
@@ -802,8 +810,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             (void) fprintf(file,"\n");
             continue;
           }
-        (void) fprintf(file," %lux%lu %s\n",tile->magick_columns,
-          tile->magick_rows,tile->magick);
+        (void) fprintf(file," %lux%lu %s\n",(unsigned long)
+          tile->magick_columns,(unsigned long) tile->magick_rows,tile->magick);
         (void) SignatureImage(tile);
         ResetImagePropertyIterator(tile);
         property=GetNextImageProperty(tile);
@@ -869,7 +877,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         profile=GetImageProfile(image,name);
         if (profile == (StringInfo *) NULL)
           continue;
-        (void) fprintf(file,"    Profile-%s: %lu bytes\n",name,(size_t)
+        (void) fprintf(file,"    Profile-%s: %lu bytes\n",name,(unsigned long)
           GetStringInfoLength(profile));
 #if defined(MAGICKCORE_LCMS_DELEGATE)
         if ((LocaleCompare(name,"icc") == 0) ||

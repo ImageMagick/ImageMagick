@@ -653,7 +653,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
         for (j=(ssize_t) strlen(log_info[i]->filename); j <= 16; j++)
           (void) fprintf(file," ");
       }
-    (void) fprintf(file,"%9lu  ",log_info[i]->generations);
+    (void) fprintf(file,"%9lu  ",(unsigned long) log_info[i]->generations);
     (void) FormatMagickSize(MegabytesToBytes(log_info[i]->limit),MagickFalse,
       limit);
     (void) fprintf(file,"%8sB  ",limit);
@@ -840,10 +840,11 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
         "  <line>%lu</line>\n"
         "  <domain>%s</domain>\n"
         "  <event>%s</event>\n"
-        "</entry>",timestamp,(ssize_t) (elapsed_time/60.0),(ssize_t)
-        floor(fmod(elapsed_time,60.0)),(ssize_t) (1000.0*(elapsed_time-
-        floor(elapsed_time))+0.5),user_time,(ssize_t) getpid(),
-        GetMagickThreadSignature(),module,function,line,domain,event);
+        "</entry>",timestamp,(long) (elapsed_time/60.0),(long)
+        floor(fmod(elapsed_time,60.0)),(long) (1000.0*(elapsed_time-
+        floor(elapsed_time))+0.5),user_time,(long) getpid(),
+        (unsigned long) GetMagickThreadSignature(),module,function,
+        (unsigned long) line, domain,event);
       return(text);
     }
   /*
@@ -930,13 +931,13 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
             q++;
             break;
           }
-        q+=FormatMagickString(q,extent,"%lu",log_info->generation %
-          log_info->generations);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+          (log_info->generation % log_info->generations));
         break;
       }
       case 'l':
       {
-        q+=FormatMagickString(q,extent,"%lu",line);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) line);
         break;
       }
       case 'm':
@@ -960,14 +961,14 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
       }
       case 'p':
       {
-        q+=FormatMagickString(q,extent,"%ld",(ssize_t) getpid());
+        q+=FormatMagickString(q,extent,"%ld",(long) getpid());
         break;
       }
       case 'r':
       {
-        q+=FormatMagickString(q,extent,"%ld:%02ld.%03ld",(ssize_t)
-          (elapsed_time/60.0),(ssize_t) floor(fmod(elapsed_time,60.0)),
-          (ssize_t) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+        q+=FormatMagickString(q,extent,"%ld:%02ld.%03ld",(long)
+          (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
+          (long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
         break;
       }
       case 't':
@@ -1067,8 +1068,8 @@ static char *TranslateFilename(const LogInfo *log_info)
             q++;
             break;
           }
-        q+=FormatMagickString(q,extent,"%lu",log_info->generation %
-          log_info->generations);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+          (log_info->generation % log_info->generations));
         break;
       }
       case 'n':
@@ -1078,7 +1079,7 @@ static char *TranslateFilename(const LogInfo *log_info)
       }
       case 'p':
       {
-        q+=FormatMagickString(q,extent,"%ld",(ssize_t) getpid());
+        q+=FormatMagickString(q,extent,"%ld",(long) getpid());
         break;
       }
       case 'v':

@@ -563,7 +563,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatMagickString(clone_wand->name,MaxTextExtent,"DrawingWand-%lu",
-    clone_wand->id);
+    (unsigned long) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
   clone_wand->mvg=AcquireString(wand->mvg);
@@ -2471,7 +2471,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"font-weight",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%lu",
+      (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
         CurrentContext->weight);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2537,13 +2537,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,MagickOptionToMnemonic(
-        MagickLineJoinOptions,(ssize_t) CurrentContext->linejoin),MaxTextExtent);
+        MagickLineJoinOptions,(ssize_t) CurrentContext->linejoin),
+        MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-miterlimit",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%lu",
+      (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
         CurrentContext->miterlimit);
       (void) SetXMLTreeContent(child,value);
     }
@@ -4027,8 +4028,9 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
   (void) FormatMagickString(key,MaxTextExtent,"%s",wand->pattern_id);
   (void) SetImageArtifact(wand->image,key,wand->mvg+wand->pattern_offset);
   (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-    wand->pattern_bounds.width,wand->pattern_bounds.height,
-    wand->pattern_bounds.x,wand->pattern_bounds.y);
+    (unsigned long) wand->pattern_bounds.width,(unsigned long)
+    wand->pattern_bounds.height,(long) wand->pattern_bounds.x,
+    (long) wand->pattern_bounds.y);
   (void) SetImageArtifact(wand->image,key,geometry);
   wand->pattern_id=DestroyString(wand->pattern_id);
   wand->pattern_offset=0;
@@ -5123,7 +5125,7 @@ WandExport void DrawSetFontWeight(DrawingWand *wand,
       (CurrentContext->weight != font_weight))
     {
       CurrentContext->weight=font_weight;
-      (void) MvgPrintf(wand,"font-weight %lu\n",font_weight);
+      (void) MvgPrintf(wand,"font-weight %lu\n",(unsigned long) font_weight);
     }
 }
 
@@ -5608,7 +5610,8 @@ WandExport void DrawSetStrokeMiterLimit(DrawingWand *wand,
   if (CurrentContext->miterlimit != miterlimit)
     {
       CurrentContext->miterlimit=miterlimit;
-      (void) MvgPrintf(wand,"stroke-miterlimit %lu\n",miterlimit);
+      (void) MvgPrintf(wand,"stroke-miterlimit %lu\n",(unsigned long)
+        miterlimit);
     }
 }
 
@@ -6507,7 +6510,8 @@ WandExport void DrawSetViewbox(DrawingWand *wand,size_t x1,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"viewbox %lu %lu %lu %lu\n",x1,y1,x2,y2);
+  (void) MvgPrintf(wand,"viewbox %lu %lu %lu %lu\n",(unsigned long) x1,
+    (unsigned long) y1,(unsigned long) x2,(unsigned long) y2);
 }
 
 /*
@@ -6583,7 +6587,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
   (void) FormatMagickString(wand->name,MaxTextExtent,"%s-%lu",DrawingWandId,
-    wand->id);
+    (unsigned long) wand->id);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->mvg=(char *) NULL;

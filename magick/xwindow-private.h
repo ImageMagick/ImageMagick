@@ -208,8 +208,10 @@ typedef struct _XAnnotateInfo
 
 typedef struct _XPixelInfo
 {
-  size_t
-    colors,
+  ssize_t
+    colors;
+
+  unsigned long
     *pixels;
 
   XColor

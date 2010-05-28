@@ -174,8 +174,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SetImageProperty(next_image,"label",label);
     label=DestroyString(label);
     if (image_info->debug != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"geometry: %ldx%ld",
-        next_image->columns,next_image->rows);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"geometry: %lux%lu",
+        (unsigned long) next_image->columns,(unsigned long) next_image->rows);
     SetGeometry(next_image,&geometry);
     (void) ParseMetaGeometry(read_info->size,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
@@ -188,7 +188,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (image_info->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "thumbnail geometry: %ldx%ld",next_image->columns,next_image->rows);
+        "thumbnail geometry: %lux%lu",(unsigned long) next_image->columns,
+        (unsigned long) next_image->rows);
     AppendImageToList(&images,next_image);
     status=SetImageProgress(images,LoadImagesTag,i,number_files);
     if (status == MagickFalse)

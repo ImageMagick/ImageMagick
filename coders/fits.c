@@ -658,7 +658,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"BITPIX  =           %10ld",
-    (quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*image->depth);
+    (long) (quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
+    image->depth);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"NAXIS   =           %10lu",
@@ -666,11 +667,11 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"NAXIS1  =           %10lu",
-    image->columns);
+    (unsigned long) image->columns);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"NAXIS2  =           %10lu",
-    image->rows);
+    (unsigned long) image->rows);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
