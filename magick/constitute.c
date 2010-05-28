@@ -146,9 +146,9 @@ MagickExport void ConstituteComponentTerminus(void)
 %
 %  The format of the ConstituteImage method is:
 %
-%      Image *ConstituteImage(const size_t columns,
-%        const size_t rows,const char *map,const StorageType storage,
-%        const void *pixels,ExceptionInfo *exception)
+%      Image *ConstituteImage(const size_t columns,const size_t rows,
+%        const char *map,const StorageType storage,const void *pixels,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

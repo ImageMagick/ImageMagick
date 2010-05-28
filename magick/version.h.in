@@ -81,10 +81,10 @@ extern MagickExport const char
   *GetMagickCopyright(void),
   *GetMagickFeatures(void),
   *GetMagickPackageName(void),
-  *GetMagickQuantumDepth(unsigned long *),
-  *GetMagickQuantumRange(unsigned long *),
+  *GetMagickQuantumDepth(size_t *),
+  *GetMagickQuantumRange(size_t *),
   *GetMagickReleaseDate(void),
-  *GetMagickVersion(unsigned long *);
+  *GetMagickVersion(size_t *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
