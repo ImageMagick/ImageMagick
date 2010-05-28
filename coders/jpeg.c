@@ -2183,7 +2183,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+          if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
             break;
         }
       else
@@ -2206,7 +2206,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+            if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
               break;
           }
         else
@@ -2242,7 +2242,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+            if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
               break;
           }
     }
@@ -2267,7 +2267,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           p++;
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-        if (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse)
+        if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
           break;
       }
     else
@@ -2296,7 +2296,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -2332,7 +2333,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }

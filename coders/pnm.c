@@ -448,7 +448,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,y,image->rows);
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -502,7 +503,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,y,image->rows);
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -567,7 +569,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,y,image->rows);
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -620,7 +623,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                  row,image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -696,7 +700,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
+                image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -805,7 +810,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
+                image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -984,7 +990,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
+                image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -1215,7 +1222,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
+                image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -1665,7 +1673,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1723,7 +1732,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1784,7 +1794,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1822,7 +1833,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1904,7 +1916,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1977,7 +1990,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -2141,7 +2155,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -2176,7 +2191,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,extent,pixels);
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }

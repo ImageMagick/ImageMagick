@@ -167,9 +167,9 @@ static MagickBooleanType ConvertUsage(void)
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
       "-clamp               restrict pixel range from 0 to the quantum depth",
-      "-clip                clip assize_t the first path from the 8BIM profile",
+      "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
-      "-clip-path id        clip assize_t a named path from the 8BIM profile",
+      "-clip-path id        clip along a named path from the 8BIM profile",
       "-colorize value      colorize the image with the fill color",
       "-color-matrix matrix apply color correction to the image",
       "-contrast            enhance or reduce the image contrast",
@@ -259,7 +259,7 @@ static MagickBooleanType ConvertUsage(void)
       "-shadow geometry     simulate an image shadow",
       "-sharpen geometry    sharpen the image",
       "-shave geometry      shave pixels from the image edges",
-      "-shear geometry      slide one edge of the image assize_t the X or Y axis",
+      "-shear geometry      slide one edge of the image along the X or Y axis",
       "-sigmoidal-contrast geometry",
       "                     increase the contrast without saturating highlights or shadows",
       "-sketch geometry     simulate a pencil sketch",
@@ -283,7 +283,7 @@ static MagickBooleanType ConvertUsage(void)
       "-unique-colors       discard all but one of any pixel color",
       "-unsharp geometry    sharpen the image",
       "-vignette geometry   soften the edges of the image in vignette style",
-      "-wave geometry       alter an image assize_t a sine wave",
+      "-wave geometry       alter an image along a sine wave",
       "-white-threshold value",
       "                     force all pixels above the threshold into white",
       (char *) NULL
@@ -572,7 +572,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickTrue,MagickTrue,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         if (image_info->ping != MagickFalse)

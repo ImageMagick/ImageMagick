@@ -1014,10 +1014,10 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
   if ( map->levels == (ssize_t *)NULL )
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
   { /* parse levels into integer array */
-    int i;
+    ssize_t i;
     char *p;
     for( i=0; i< (ssize_t) (map->width*map->height); i++) {
-      map->levels[i] = (int)strtol(content, &p, 10);
+      map->levels[i] = (ssize_t)strtol(content, &p, 10);
       if ( p == content ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "XmlInvalidContent", "<level> too few values, map \"%s\"", map_id);
@@ -1466,7 +1466,7 @@ printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
 #endif
 
   { /* Do the posterized ordered dithering of the image */
-    int
+    ssize_t
       d;
 
     /* d = number of psuedo-level divisions added between color levels */
@@ -1512,7 +1512,7 @@ printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
       indexes=GetCacheViewAuthenticIndexQueue(image_view);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        register int
+        register ssize_t
           threshold,
           t,
           l;
@@ -1535,28 +1535,28 @@ printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
               Opacity is inverted so 'off' represents transparent.
         */
         if (levels.red) {
-          t = (int) (QuantumScale*q->red*(levels.red*d+1));
+          t = (ssize_t) (QuantumScale*q->red*(levels.red*d+1));
           l = t/d;  t = t-l*d;
           q->red=(Quantum) ((l+(t >= threshold))*QuantumRange/levels.red);
         }
         if (levels.green) {
-          t = (int) (QuantumScale*q->green*(levels.green*d+1));
+          t = (ssize_t) (QuantumScale*q->green*(levels.green*d+1));
           l = t/d;  t = t-l*d;
           q->green=(Quantum) ((l+(t >= threshold))*QuantumRange/levels.green);
         }
         if (levels.blue) {
-          t = (int) (QuantumScale*q->blue*(levels.blue*d+1));
+          t = (ssize_t) (QuantumScale*q->blue*(levels.blue*d+1));
           l = t/d;  t = t-l*d;
           q->blue=(Quantum) ((l+(t >= threshold))*QuantumRange/levels.blue);
         }
         if (levels.opacity) {
-          t = (int) ((1.0-QuantumScale*q->opacity)*(levels.opacity*d+1));
+          t = (ssize_t) ((1.0-QuantumScale*q->opacity)*(levels.opacity*d+1));
           l = t/d;  t = t-l*d;
           q->opacity=(Quantum) ((1.0-l-(t >= threshold))*QuantumRange/
             levels.opacity);
         }
         if (levels.index) {
-          t = (int) (QuantumScale*indexes[x]*(levels.index*d+1));
+          t = (ssize_t) (QuantumScale*indexes[x]*(levels.index*d+1));
           l = t/d;  t = t-l*d;
           indexes[x]=(IndexPacket) ((l+(t>=threshold))*QuantumRange/
             levels.index);

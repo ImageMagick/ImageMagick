@@ -1889,7 +1889,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         packed_scanline);
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -1943,7 +1944,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             packed_scanline);
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }

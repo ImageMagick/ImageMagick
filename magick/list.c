@@ -209,7 +209,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     *clone_images,
     *image;
 
-  ssize_t
+  long
     first,
     last,
     step;
@@ -251,7 +251,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
       i=0;
       for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
       {
-        if (i == first)
+        if (i == (ssize_t) first)
           {
             image=CloneImage(next,0,0,MagickTrue,exception);
             if (image == (Image *) NULL)
@@ -343,7 +343,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   Image
     *image;
 
-  ssize_t
+  long
     first,
     last;
 
@@ -398,7 +398,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
       }
     if (first > last)
       continue;
-    for (i=first; i <= last; i++)
+    for (i=(ssize_t) first; i <= (ssize_t) last; i++)
       if ((i >= 0) && (i < (ssize_t) length))
         delete_list[i]=MagickTrue;
   }

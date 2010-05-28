@@ -301,7 +301,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     status=image != (Image *) NULL ? MagickTrue : MagickFalse;
     number_images++;
   }
-  if (i != argc)
+  if (i != (ssize_t) argc)
     ThrowConjureException(OptionError,"MissingAnImageFilename",argv[i]);
   if (number_images == 0)
     ThrowConjureException(OptionError,"MissingAnImageFilename",argv[argc-1]);

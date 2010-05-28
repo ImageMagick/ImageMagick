@@ -100,7 +100,9 @@ typedef struct _CubeInfo
     *root;
 
   ssize_t
-    x,
+    x;
+
+  MagickOffsetType
     progress;
 
   size_t
@@ -291,7 +293,8 @@ static CubeInfo *ClassifyImageColors(const Image *image,
         }
       p++;
     }
-    proceed=SetImageProgress(image,EvaluateImageTag,y,image->rows);
+    proceed=SetImageProgress(image,EvaluateImageTag,(MagickOffsetType) y,
+      image->rows);
     if (proceed == MagickFalse)
       break;
   }
@@ -1187,7 +1190,8 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,HistogramImageTag,i,number_colors);
+        proceed=SetImageProgress(image,HistogramImageTag,(MagickOffsetType) i,
+          number_colors);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

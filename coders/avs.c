@@ -388,7 +388,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
       if (count != (ssize_t) (q-pixels))
         break;
       if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse))
+          (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
         break;
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);

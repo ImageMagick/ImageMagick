@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License assize_t with GNU Libltdl; see the file COPYING.LIB.  If not, a
+License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
 copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
 or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -1844,7 +1844,7 @@ foreachfile_callback (char *dirname, void *data1, void *data2)
 }
 
 
-/* Call FUNC for each unique extensionless file in SEARCH_PATH, assize_t
+/* Call FUNC for each unique extensionless file in SEARCH_PATH, along
    with DATA.  The filenames passed to FUNC would be suitable for
    passing to lt_dlopenext.  The extensions are stripped so that
    individual modules do not generate several entries (e.g. libfoo.la,

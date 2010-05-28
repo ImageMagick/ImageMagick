@@ -395,7 +395,7 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key)
   const StringInfo
     *profile;
 
-  ssize_t
+  long
     count,
     dataset,
     record;
@@ -422,8 +422,8 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key)
       continue;
     length=(size_t) (GetStringInfoDatum(profile)[i+3] << 8);
     length|=GetStringInfoDatum(profile)[i+4];
-    if (((ssize_t) GetStringInfoDatum(profile)[i+1] == dataset) &&
-        ((ssize_t) GetStringInfoDatum(profile)[i+2] == record))
+    if (((long) GetStringInfoDatum(profile)[i+1] == dataset) &&
+        ((long) GetStringInfoDatum(profile)[i+2] == record))
       {
         message=(char *) NULL;
         if (~length >= 1)
@@ -542,11 +542,9 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
   const unsigned char
     *info;
 
-  ssize_t
-    id,
+  long
     start,
-    stop,
-    sub_number;
+    stop;
 
   MagickBooleanType
     status;
@@ -555,7 +553,9 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
     i;
 
   ssize_t
-    count;
+    count,
+    id,
+    sub_number;
 
   size_t
     length;
@@ -593,9 +593,9 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
     if (ReadPropertyByte(&info,&length) != (unsigned char) 'M')
       continue;
     id=(ssize_t) ReadPropertyMSBShort(&info,&length);
-    if (id < start)
+    if (id < (ssize_t) start)
       continue;
-    if (id > stop)
+    if (id > (ssize_t) stop)
       continue;
     if (resource != (char *) NULL)
       resource=DestroyString(resource);

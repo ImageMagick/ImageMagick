@@ -1517,7 +1517,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set all kernel values assize_t axises to given scale */
+        /* set all kernel values along axises to given scale */
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
             kernel->values[i] = (u == 0 || v == 0) ? args->sigma : nan;
@@ -1538,7 +1538,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 
-        /* set all kernel values assize_t axises to given scale */
+        /* set all kernel values along axises to given scale */
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
             kernel->values[i] = (u == v || u == -v) ? args->sigma : nan;

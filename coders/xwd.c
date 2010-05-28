@@ -418,7 +418,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
-            status=SetImageProgress(image,LoadImageTag,y,image->rows);
+            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
             if (status == MagickFalse)
               break;
           }
@@ -444,7 +445,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
-            status=SetImageProgress(image,LoadImageTag,y,image->rows);
+            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
             if (status == MagickFalse)
               break;
           }
@@ -478,7 +480,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
-          status=SetImageProgress(image,LoadImageTag,y,image->rows);
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -778,7 +781,8 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (ssize_t) scanline_pad; x++)
       *q++='\0';
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

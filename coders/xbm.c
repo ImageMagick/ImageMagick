@@ -365,7 +365,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -579,7 +580,8 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
         bit=0;
         byte=0;
       };
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

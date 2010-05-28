@@ -582,7 +582,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -941,7 +942,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     for (i=0; i < (ssize_t) number_components; i++)
       (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
         (unsigned int) image->columns,1,pixels[i]);
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

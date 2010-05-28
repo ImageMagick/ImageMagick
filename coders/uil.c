@@ -370,7 +370,8 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     (void) FormatMagickString(buffer,MaxTextExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? ");" : ","));
     (void) WriteBlobString(image,buffer);
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

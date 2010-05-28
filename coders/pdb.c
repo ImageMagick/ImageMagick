@@ -451,7 +451,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        status=SetImageProgress(image,LoadImageTag,y,image->rows);
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -486,7 +487,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        status=SetImageProgress(image,LoadImageTag,y,image->rows);
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -515,7 +517,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
-        status=SetImageProgress(image,LoadImageTag,y,image->rows);
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -881,7 +884,8 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
         buffer[literal+repeat]=0x00;
       }
     }
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

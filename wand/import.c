@@ -1283,7 +1283,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     ThrowImportException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i-- != argc)
+  if (i-- != (ssize_t) argc)
     ThrowImportException(OptionError,"MissingAnImageFilename",argv[i]);
   if (image == (Image *) NULL)
     ThrowImportException(OptionError,"MissingAnImageFilename",argv[argc-1]);

@@ -2296,9 +2296,13 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           break;
         }
       }
-      if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,SaveImageTag,y,image->rows) == MagickFalse))
-        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
     compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);

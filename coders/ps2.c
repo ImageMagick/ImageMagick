@@ -790,7 +790,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
                 p++;
               }
-              progress=SetImageProgress(image,SaveImageTag,y,image->rows);
+              progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
               if (progress == MagickFalse)
                 break;
             }
@@ -825,7 +825,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   ScaleQuantumToChar(PixelIntensityToQuantum(p)));
                 p++;
               }
-              progress=SetImageProgress(image,SaveImageTag,y,image->rows);
+              progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
               if (progress == MagickFalse)
                 break;
             }
@@ -906,7 +906,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                       }
                   p++;
                 }
-                progress=SetImageProgress(image,SaveImageTag,y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }
@@ -964,7 +964,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                       }
                   p++;
                 }
-                progress=SetImageProgress(image,SaveImageTag,y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }
@@ -1025,7 +1025,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                   *q++=(unsigned char) indexes[x];
-                progress=SetImageProgress(image,SaveImageTag,y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }
@@ -1057,7 +1057,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                   Ascii85Encode(image,(unsigned char) indexes[x]);
-                progress=SetImageProgress(image,SaveImageTag,y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }

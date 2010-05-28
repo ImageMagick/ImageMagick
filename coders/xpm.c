@@ -1029,7 +1029,8 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }

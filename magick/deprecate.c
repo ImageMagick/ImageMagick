@@ -4655,7 +4655,8 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
         }
         if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
           break;
-        proceed=SetImageProgress(image,OpaqueImageTag,y,image->rows);
+        proceed=SetImageProgress(image,OpaqueImageTag,(MagickOffsetType) y,
+          image->rows);
         if (proceed == MagickFalse)
           break;
       }
@@ -6794,7 +6795,8 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
     }
     if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
       break;
-    proceed=SetImageProgress(image,TransparentImageTag,y,image->rows);
+    proceed=SetImageProgress(image,TransparentImageTag,(MagickOffsetType) y,
+      image->rows);
     if (proceed == MagickFalse)
       break;
   }

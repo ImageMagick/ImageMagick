@@ -931,7 +931,7 @@ static const char
     "",
     "  Meta-I    Press to implode image pixels about the center.",
     "",
-    "  Meta-W    Press to alter an image assize_t a sine wave.",
+    "  Meta-W    Press to alter an image along a sine wave.",
     "",
     "  Meta-P    Press to simulate an oil painting.",
     "",
@@ -8548,7 +8548,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (*geometry == '\0')
         break;
       /*
-        Alter an image assize_t a sine wave.
+        Alter an image along a sine wave.
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);

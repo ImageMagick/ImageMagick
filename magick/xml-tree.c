@@ -1966,7 +1966,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 for (l=0; (*p != '\0') && (((l == 0) && (*p != '>')) ||
                      ((l != 0) && ((*p != ']') ||
                      (*(p+strspn(p+1,XMLWhitespace)+1) != '>'))));
-                  l=(*p == '[') ? 1 : l)
+                  l=(ssize_t) (*p == '[') ? 1 : l)
                 p+=strcspn(p+1,"[]>")+1;
                 if ((*p == '\0') && (terminal != '>'))
                   {
@@ -2119,7 +2119,7 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PruneTagFromXMLTree() prunes a tag from the xml-tree assize_t with all its
+%  PruneTagFromXMLTree() prunes a tag from the xml-tree along with all its
 %  subtags.
 %
 %  The format of the PruneTagFromXMLTree method is:

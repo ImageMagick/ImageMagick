@@ -1105,7 +1105,8 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
            }
         for (x=(ssize_t) (image->columns+7)/8; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1127,7 +1128,8 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
           *q++=(unsigned char) indexes[x];
         for ( ; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1158,7 +1160,8 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         }
         for (x=2L*image->columns; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1188,7 +1191,8 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         if (dib_info.bits_per_pixel == 24)
           for (x=3L*image->columns; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }

@@ -510,7 +510,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         images=ReadImages(image_info,exception);

@@ -3066,7 +3066,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o angle: Apply the effect assize_t this angle.
+%    o angle: Apply the effect along this angle.
 %
 %    o exception: return any errors or warnings in this structure.
 %

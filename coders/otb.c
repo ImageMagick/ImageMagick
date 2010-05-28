@@ -193,7 +193,8 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,LoadImageTag,y,image->rows);
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -373,7 +374,8 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobByte(image,byte);
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }

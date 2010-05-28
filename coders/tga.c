@@ -471,7 +471,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,LoadImageTag,y,image->rows);
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -849,7 +850,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,(size_t) (q-targa_pixels),targa_pixels);
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }

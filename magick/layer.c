@@ -185,8 +185,8 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
       break;
     for (x=0; x < (ssize_t) bounds->width; x++)
     {
-      if ((p->opacity <= (ssize_t) (QuantumRange/2)) &&
-          (q->opacity > (ssize_t) (QuantumRange/2)))
+      if ((p->opacity <= (Quantum) (QuantumRange/2)) &&
+          (q->opacity > (Quantum) (QuantumRange/2)))
         break;
       p++;
       q++;
@@ -1836,21 +1836,19 @@ MagickExport Image *MergeImageLayers(Image *image,
   MagickBooleanType
     proceed;
 
-  MagickOffsetType
-    scene;
-
   RectangleInfo
     page;
-
-  size_t
-    width,
-    height;
 
   register const Image
     *next;
 
   size_t
-    number_images;
+    number_images,
+    height,
+    width;
+
+  ssize_t
+    scene;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1963,7 +1961,8 @@ MagickExport Image *MergeImageLayers(Image *image,
   {
     (void) CompositeImage(canvas,image->compose,image,image->page.x-
       canvas->page.x,image->page.y-canvas->page.y);
-    proceed=SetImageProgress(image,MergeLayersTag,scene,number_images);
+    proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
+      number_images);
     if (proceed == MagickFalse)
       break;
     image=GetNextImageInList(image);

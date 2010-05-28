@@ -728,7 +728,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       break;
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,LoadImageTag,y,image->rows);
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1169,7 +1170,8 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     count=WriteBlob(image,length,pixels);
     if (count != (ssize_t) length)
       break;
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

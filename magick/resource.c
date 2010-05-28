@@ -442,7 +442,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
   if (random_info == (RandomInfo *) NULL)
     random_info=AcquireRandomInfo();
   file=(-1);
-  for (i=0; i < TMP_MAX; i++)
+  for (i=0; i < (ssize_t) TMP_MAX; i++)
   {
     /*
       Get temporary pathname.
@@ -913,7 +913,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
   pagesize=GetMagickPageSize();
   pages=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-  pages=sysconf(_SC_PHYS_PAGES);
+  pages=(ssize_t) sysconf(_SC_PHYS_PAGES);
 #endif
   memory=(MagickSizeType) pages*pagesize;
   if ((pagesize <= 0) || (pages <= 0))
@@ -959,7 +959,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
     }
   files=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
-  files=sysconf(_SC_OPEN_MAX);
+  files=(ssize_t) sysconf(_SC_OPEN_MAX);
 #endif
 #if defined(MAGICKCORE_HAVE_GETRLIMIT) && defined(RLIMIT_NOFILE)
   if (files < 0)

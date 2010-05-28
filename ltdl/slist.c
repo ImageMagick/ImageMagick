@@ -22,7 +22,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License assize_t with GNU Libltdl; see the file COPYING.LIB.  If not, a
+License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
 copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
 or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -296,7 +296,7 @@ slist_sort_merge (SList *left, SList *right, SListCompare *compare,
 }
 
 /* Perform a destructive quicksort on the items in SLIST, by repeatedly
-   calling COMPARE with a pair of items from SLIST assize_t with USERDATA
+   calling COMPARE with a pair of items from SLIST along with USERDATA
    at every iteration.  COMPARE is a function as defined above for
    slist_sort_merge().  The value of SLIST is undefined after calling
    this function.
@@ -315,7 +315,7 @@ slist_sort (SList *slist, SListCompare *compare, void *userdata)
   right = slist->next;
 
   /* Skip two items with RIGHT and one with SLIST, until RIGHT falls off
-     the end.  SLIST must be about half way assize_t.  */
+     the end.  SLIST must be about half way along.  */
   while (right && (right = right->next))
     {
       if (!right || !(right = right->next))

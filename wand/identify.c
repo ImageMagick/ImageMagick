@@ -306,7 +306,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         identify_info=CloneImageInfo(image_info);
         identify_info->verbose=MagickFalse;
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         (void) CopyMagickString(identify_info->filename,filename,MaxTextExtent);
         if (identify_info->ping != MagickFalse)
@@ -828,7 +828,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     ThrowIdentifyException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i != argc)
+  if (i != (ssize_t) argc)
     ThrowIdentifyException(OptionError,"MissingAnImageFilename",argv[i]);
   DestroyIdentify();
   return(status != 0 ? MagickTrue : MagickFalse);

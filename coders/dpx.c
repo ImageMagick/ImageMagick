@@ -1107,7 +1107,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             proceed;
 
-          proceed=SetImageProgress(image,LoadImageTag,row,image->rows);
+          proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
+                image->rows);
           if (proceed == MagickFalse)
             status=MagickFalse;
         }
@@ -1819,7 +1820,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     count=WriteBlob(image,extent,pixels);
     if (count != (ssize_t) extent)
       break;
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

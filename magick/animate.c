@@ -924,8 +924,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   context_values.background=pixel.background_color.pixel;
   context_values.foreground=pixel.foreground_color.pixel;
-  pixel.annotate_context=XCreateGC(display,window_info.id,(size_t)
-    GCBackground | GCForeground,&context_values);
+  pixel.annotate_context=XCreateGC(display,window_info.id,(unsigned long)
+    (GCBackground | GCForeground),&context_values);
   if (pixel.annotate_context == (GC) NULL)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateGraphicContext",
       images->filename);
@@ -2350,13 +2350,13 @@ MagickExport Image *XAnimateImages(Display *display,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == (ssize_t) windows->wm_take_focus)
+        if (*event.xclient.data.l == (long) windows->wm_take_focus)
           {
             (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               (Time) event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != (ssize_t) windows->wm_delete_window)
+        if (*event.xclient.data.l != (long) windows->wm_delete_window)
           break;
         (void) XWithdrawWindow(display,event.xclient.window,
           visual_info->screen);
@@ -2674,7 +2674,7 @@ MagickExport Image *XAnimateImages(Display *display,
           Display image named by the remote command protocol.
         */
         status=XGetWindowProperty(display,event.xproperty.window,
-          event.xproperty.atom,0L,(ssize_t) MaxTextExtent,MagickFalse,(Atom)
+          event.xproperty.atom,0L,(long) MaxTextExtent,MagickFalse,(Atom)
           AnyPropertyType,&type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;

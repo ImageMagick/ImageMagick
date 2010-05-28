@@ -1555,7 +1555,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         d.x = (coeff[2]-coeff[3])*ca;
         d.y = (coeff[2]-coeff[3])*sa;
         ExpandBounds(d);
-        /* Orthogonal points assize_t top of arc */
+        /* Orthogonal points along top of arc */
         for( a=ceil((coeff[0]-coeff[1]/2.0)/MagickPI2)*MagickPI2;
                a<(coeff[0]+coeff[1]/2.0); a+=MagickPI2 ) {
           ca = cos(a); sa = sin(a);
@@ -1811,7 +1811,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         fprintf(stderr, "Arc Distort, Internal Coefficients:\n");
         for ( i=0; i<5; i++ )
-          fprintf(stderr, "  c%ld = %+lf\n", i, coeff[i]);
+          fprintf(stderr, "  c%ld = %+lf\n", (long) i, coeff[i]);
         fprintf(stderr, "Arc Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x; jj=j+page.y;\n");
@@ -1829,7 +1829,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         fprintf(stderr, "Polar Distort, Internal Coefficents\n");
         for ( i=0; i<8; i++ )
-          fprintf(stderr, "  c%ld = %+lf\n", i, coeff[i]);
+          fprintf(stderr, "  c%ld = %+lf\n", (long) i, coeff[i]);
         fprintf(stderr, "Polar Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
@@ -1848,7 +1848,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         fprintf(stderr, "DePolar Distort, Internal Coefficents\n");
         for ( i=0; i<8; i++ )
-          fprintf(stderr, "  c%ld = %+lf\n", i, coeff[i]);
+          fprintf(stderr, "  c%ld = %+lf\n", (long) i, coeff[i]);
         fprintf(stderr, "DePolar Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'aa=(i+.5)*%lf %+lf;\n", coeff[6], -coeff[4] );
@@ -1955,8 +1955,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       **restrict resample_filter;
 
     ssize_t
-      j,
-      y;
+      j;
 
     status=MagickTrue;
     progress=0;
@@ -2522,15 +2521,17 @@ MagickExport Image *SparseColorImage(const Image *image,
       return((Image *) NULL);
     }
   { /* ----- MAIN CODE ----- */
-    ssize_t
-      j,
-      progress;
+    CacheView
+      *sparse_view;
 
     MagickBooleanType
       status;
 
-    CacheView
-      *sparse_view;
+    MagickOffsetType
+      progress;
+
+    ssize_t
+      j;
 
     status=MagickTrue;
     progress=0;

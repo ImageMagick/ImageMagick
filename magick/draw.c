@@ -451,7 +451,7 @@ static void ReversePoints(PointInfo *points,const size_t number_points)
 static PolygonInfo *ConvertPathToPolygon(
   const DrawInfo *magick_unused(draw_info),const PathInfo *path_info)
 {
-  ssize_t
+  long
     direction,
     next_direction;
 
@@ -3630,12 +3630,6 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   const FillRule fill_rule,const double x,const double y,
   MagickRealType *stroke_opacity)
 {
-  int
-    winding_number;
-
-  ssize_t
-    j;
-
   MagickRealType
     alpha,
     beta,
@@ -3653,6 +3647,10 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
 
   register ssize_t
     i;
+
+  ssize_t
+    j,
+    winding_number;
 
   /*
     Compute fill & stroke opacity for this (x,y) point.

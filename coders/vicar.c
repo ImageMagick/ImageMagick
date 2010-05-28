@@ -307,7 +307,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       quantum_type,pixels,exception);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -484,7 +485,8 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
     count=WriteBlob(image,length,pixels);
     if (count != (ssize_t) length)
       break;
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

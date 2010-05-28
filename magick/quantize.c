@@ -595,7 +595,8 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           break;
-        proceed=SetImageProgress(image,AssignImageTag,y,image->rows);
+        proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) y,
+          image->rows);
         if (proceed == MagickFalse)
           break;
       }
@@ -785,7 +786,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       /*
         Start at the root and descend the color cube tree.
       */
-      for (count=1; (x+count) < image->columns; count++)
+      for (count=1; (x+count) < (ssize_t) image->columns; count++)
         if (IsSameColor(image,p,p+count) == MagickFalse)
           break;
       AssociateAlphaPixel(cube_info,p,&pixel);
@@ -845,7 +846,8 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         PruneToCubeDepth(image,cube_info,cube_info->root);
         break;
       }
-    proceed=SetImageProgress(image,ClassifyImageTag,y,image->rows);
+    proceed=SetImageProgress(image,ClassifyImageTag,(MagickOffsetType) y,
+      image->rows);
     if (proceed == MagickFalse)
       break;
   }
@@ -873,7 +875,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       /*
         Start at the root and descend the color cube tree.
       */
-      for (count=1; (x+count) < image->columns; count++)
+      for (count=1; (x+count) < (ssize_t) image->columns; count++)
         if (IsSameColor(image,p,p+count) == MagickFalse)
           break;
       AssociateAlphaPixel(cube_info,p,&pixel);
@@ -928,7 +930,8 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         node_info->total_color.opacity+=count*QuantumScale*pixel.opacity;
       p+=count;
     }
-    proceed=SetImageProgress(image,ClassifyImageTag,y,image->rows);
+    proceed=SetImageProgress(image,ClassifyImageTag,(MagickOffsetType) y,
+      image->rows);
     if (proceed == MagickFalse)
       break;
   }
@@ -1169,7 +1172,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      DefineImageColormap(image,cube_info,node_info->child[i]);
+      (void) DefineImageColormap(image,cube_info,node_info->child[i]);
   if (node_info->number_unique != 0)
     {
       register MagickRealType
@@ -1402,7 +1405,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     current=scanlines+(y & 0x01)*image->columns;
     previous=scanlines+((y+1) & 0x01)*image->columns;
-    v=(y & 0x01) ? -1 : 1;
+    v=(ssize_t) ((y & 0x01) ? -1 : 1);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       u=(y & 0x01) ? (ssize_t) image->columns-1-x : x;
@@ -1769,7 +1772,7 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
   if (cube_info->quantize_info->dither_method == FloydSteinbergDitherMethod)
     return(FloydSteinbergDither(image,cube_info));
   /*
-    Distribute quantization error assize_t a Hilbert curve.
+    Distribute quantization error along a Hilbert curve.
   */
   (void) ResetMagickMemory(cube_info->error,0,ErrorQueueLength*
     sizeof(*cube_info->error));
@@ -1877,7 +1880,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   for (i=0; i < (ssize_t) length; i++)
     cube_info->cache[i]=(-1);
   /*
-    Distribute weights assize_t a curve of exponential decay.
+    Distribute weights along a curve of exponential decay.
   */
   weight=1.0;
   for (i=0; i < ErrorQueueLength; i++)
@@ -2486,12 +2489,13 @@ static MagickBooleanType DirectToColormapImage(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      indexes[x]=i;
+      indexes[x]=(IndexPacket) i;
       image->colormap[i++]=(*q++);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
-    proceed=SetImageProgress(image,AssignImageTag,y,image->rows);
+    proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) y,
+      image->rows);
     if (proceed == MagickFalse)
       status=MagickFalse;
   }
@@ -2675,7 +2679,8 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
     if (status == MagickFalse)
       break;
     (void) SetImageProgressMonitor(image,progress_monitor,image->client_data);
-    proceed=SetImageProgress(image,AssignImageTag,i,number_images);
+    proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) i,
+      number_images);
     if (proceed == MagickFalse)
       break;
     image=GetNextImageInList(image);
@@ -2696,7 +2701,8 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
           break;
         (void) SetImageProgressMonitor(image,progress_monitor,
           image->client_data);
-        proceed=SetImageProgress(image,AssignImageTag,i,number_images);
+        proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) i,
+          number_images);
         if (proceed == MagickFalse)
           break;
         image=GetNextImageInList(image);
@@ -3029,7 +3035,7 @@ static int IntensityCompare(const void *x,const void *y)
   color_2=(PixelPacket *) y;
   intensity=PixelIntensityToQuantum(color_1)-(ssize_t)
     PixelIntensityToQuantum(color_2);
-  return(intensity);
+  return((int) intensity);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

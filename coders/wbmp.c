@@ -215,7 +215,8 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -416,7 +417,8 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
     }
     if (bit != 0)
       (void) WriteBlobByte(image,byte);
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

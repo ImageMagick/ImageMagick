@@ -221,9 +221,9 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,
         "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
-        iterations,1.0*iterations/elapsed_time,user_time,(ssize_t)
-        (elapsed_time/60.0),(ssize_t) floor(fmod(elapsed_time,60.0)),
-        (ssize_t) (1000.0*(elapsed_time-floor(elapsed_time))));
+        iterations,1.0*iterations/elapsed_time,user_time,(long)
+        (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
+        (long) (1000.0*(elapsed_time-floor(elapsed_time))));
     }
   timer=DestroyTimerInfo(timer);
   return(status);
@@ -336,10 +336,10 @@ static MagickBooleanType MonitorProgress(const char *text,
     locale_message=tag;
   if (p == (char *) NULL)
     (void) fprintf(stderr,"%s: %ld of %lu, %02ld%% complete\r",locale_message,
-      (ssize_t) offset,(size_t) extent,(ssize_t) (100L*offset/(extent-1)));
+      (long) offset,(size_t) extent,(long) (100L*offset/(extent-1)));
   else
     (void) fprintf(stderr,"%s[%s]: %ld of %lu, %02ld%% complete\r",
-      locale_message,p+1,(ssize_t) offset,(size_t) extent,(ssize_t)
+      locale_message,p+1,(long) offset,(size_t) extent,(long)
       (100L*offset/(extent-1)));
   if (offset == (MagickOffsetType) (extent-1))
     (void) fprintf(stderr,"\n");
@@ -641,9 +641,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       continue;
     count=MagickMax(ParseMagickOption(MagickCommandOptions,MagickFalse,option),
       0L);
-    if ((i+count) >= argc)
+    if ((i+count) >= (ssize_t) argc)
       break;
-    status=MogrifyImageInfo(image_info,count+1,argv+i,exception);
+    status=MogrifyImageInfo(image_info,(int) count+1,argv+i,exception);
     switch (*(option+1))
     {
       case 'a':
@@ -3632,9 +3632,9 @@ static MagickBooleanType MogrifyUsage(void)
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
       "-clamp               restrict pixel range from 0 to the quantum depth",
-      "-clip                clip assize_t the first path from the 8BIM profile",
+      "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
-      "-clip-path id        clip assize_t a named path from the 8BIM profile",
+      "-clip-path id        clip along a named path from the 8BIM profile",
       "-colorize value      colorize the image with the fill color",
       "-color-matrix matrix apply color correction to the image",
       "-contrast            enhance or reduce the image contrast",
@@ -3724,7 +3724,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-shadow geometry     simulate an image shadow",
       "-sharpen geometry    sharpen the image",
       "-shave geometry      shave pixels from the image edges",
-      "-shear geometry      slide one edge of the image assize_t the X or Y axis",
+      "-shear geometry      slide one edge of the image along the X or Y axis",
       "-sigmoidal-contrast geometry",
       "                     increase the contrast without saturating highlights or shadows",
       "-sketch geometry     simulate a pencil sketch",
@@ -3748,7 +3748,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-unique-colors       discard all but one of any pixel color",
       "-unsharp geometry    sharpen the image",
       "-vignette geometry   soften the edges of the image in vignette style",
-      "-wave geometry       alter an image assize_t a sine wave",
+      "-wave geometry       alter an image along a sine wave",
       "-white-threshold value",
       "                     force all pixels above the threshold into white",
       (char *) NULL
@@ -4044,7 +4044,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         images=ReadImages(image_info,exception);
@@ -6342,7 +6342,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     ThrowMogrifyException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i != argc)
+  if (i != (ssize_t) argc)
     ThrowMogrifyException(OptionError,"MissingAnImageFilename",argv[i]);
   DestroyMogrify();
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -6415,7 +6415,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       continue;
     count=MagickMax(ParseMagickOption(MagickCommandOptions,MagickFalse,option),
       0L);
-    if ((i+count) >= argc)
+    if ((i+count) >= (ssize_t) argc)
       break;
     switch (*(option+1))
     {
@@ -7570,9 +7570,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       continue;
     count=MagickMax(ParseMagickOption(MagickCommandOptions,MagickFalse,option),
       0L);
-    if ((i+count) >= argc)
+    if ((i+count) >= (ssize_t) argc)
       break;
-    status=MogrifyImageInfo(image_info,count+1,argv+i,exception);
+    status=MogrifyImageInfo(image_info,(int) count+1,argv+i,exception);
     switch (*(option+1))
     {
       case 'a':

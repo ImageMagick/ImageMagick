@@ -1665,7 +1665,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp critical (MagickCore_CompositeImage)
 #endif
-            proceed=SetImageProgress(image,CompositeImageTag,y,image->rows);
+            proceed=SetImageProgress(image,CompositeImageTag,
+              (MagickOffsetType) y,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -2782,7 +2783,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp critical (MagickCore_TextureImage)
 #endif
-            proceed=SetImageProgress(image,TextureImageTag,y,image->rows);
+            proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType)
+              y,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -2863,7 +2865,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_TextureImage)
 #endif
-        proceed=SetImageProgress(image,TextureImageTag,y,image->rows);
+        proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType) y,
+          image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

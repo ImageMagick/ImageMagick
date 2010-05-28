@@ -117,8 +117,8 @@ static MagickBooleanType DisplayUsage(void)
     {
       "-auto-orient         automagically orient image",
       "-border geometry     surround image with a border of color",
-      "-clip                clip assize_t the first path from the 8BIM profile",
-      "-clip-path id        clip assize_t a named path from the 8BIM profile",
+      "-clip                clip along the first path from the 8BIM profile",
+      "-clip-path id        clip along a named path from the 8BIM profile",
       "-colors value        preferred number of colors in the image",
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
@@ -390,7 +390,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   if (image_marker == (size_t *) NULL)
     ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  for (i=0; i <= argc; i++)
+  for (i=0; i <= (ssize_t) argc; i++)
     image_marker[i]=(size_t) argc;
   /*
     Check for server name specified on the command line.
@@ -504,7 +504,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=option;
-        if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           {
             option=argv[++i];
             filename=option;
@@ -519,7 +519,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
         iterations=0;
-        if (i == (argc-1))
+        if (i == (ssize_t) (argc-1))
           iterations=image->iterations;
         do
         {
@@ -599,14 +599,14 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             Proceed to next/previous image.
           */
           if ((state & FormerImageState) != 0)
-            for (l=0; l < resource_info.quantum; l++)
+            for (l=0; l < (ssize_t) resource_info.quantum; l++)
             {
               image=GetPreviousImageInList(image);
               if (image == (Image *) NULL)
                 break;
             }
           else
-            for (l=0; l < resource_info.quantum; l++)
+            for (l=0; l < (ssize_t) resource_info.quantum; l++)
             {
               image=GetNextImageInList(image);
               if (image == (Image *) NULL)
@@ -645,7 +645,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if ((state & FormerImageState) != 0)
               {
 
-                for (i=1; i < (argc-2); i++)
+                for (i=1; i < (ssize_t) (argc-2); i++)
                   if (last_image == image_marker[i])
                     break;
                 image_number=(ssize_t) image_marker[i]+1;

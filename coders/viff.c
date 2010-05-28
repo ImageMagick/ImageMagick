@@ -651,7 +651,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,y,image->rows);
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -671,7 +672,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,y,image->rows);
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -707,7 +709,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             if (image->previous == (Image *) NULL)
               {
-                status=SetImageProgress(image,LoadImageTag,y,image->rows);
+                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
                 if (status == MagickFalse)
                   break;
               }
@@ -1104,7 +1107,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
           }
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,SaveImageTag,y,image->rows);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1146,7 +1150,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               *q++=(unsigned char) indexes[x];
             if (image->previous == (Image *) NULL)
               {
-                status=SetImageProgress(image,SaveImageTag,y,image->rows);
+                status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
                 if (status == MagickFalse)
                   break;
               }
@@ -1193,7 +1198,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 *q++=byte >> (8-bit);
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,y,image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -1217,7 +1223,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               }
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,y,image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
                   if (status == MagickFalse)
                     break;
                 }

@@ -605,7 +605,7 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
     (void) fprintf(file,"%s",magic_info[i]->name);
     for (j=(ssize_t) strlen(magic_info[i]->name); j <= 9; j++)
       (void) fprintf(file," ");
-    (void) fprintf(file,"%6ld ",(ssize_t) magic_info[i]->offset);
+    (void) fprintf(file,"%6ld ",(long) magic_info[i]->offset);
     if (magic_info[i]->target != (char *) NULL)
       {
         register ssize_t

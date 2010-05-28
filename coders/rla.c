@@ -376,7 +376,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while (runlength > 0);
       }
     }
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

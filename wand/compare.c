@@ -320,7 +320,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         images=ReadImages(image_info,exception);
@@ -984,8 +984,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 (double) distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
-                (void) fprintf(stderr," @ %ld,%ld",difference_image->page.x,
-                  difference_image->page.y);
+                (void) fprintf(stderr," @ %ld,%ld",(long)
+                  difference_image->page.x,(long) difference_image->page.y);
               (void) fprintf(stderr,"\n");
               break;
             }
@@ -995,8 +995,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               (void) fprintf(stderr,"%g",distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
-                (void) fprintf(stderr," @ %ld,%ld",difference_image->page.x,
-                  difference_image->page.y);
+                (void) fprintf(stderr," @ %ld,%ld",(long)
+                  difference_image->page.x,(long) difference_image->page.y);
               (void) fprintf(stderr,"\n");
               break;
             }
@@ -1007,8 +1007,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 image->error.normalized_maximum_error);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
-                (void) fprintf(stderr," @ %ld,%ld",difference_image->page.x,
-                  difference_image->page.y);
+                (void) fprintf(stderr," @ %ld,%ld",(long)
+                  difference_image->page.x,(long) difference_image->page.y);
               (void) fprintf(stderr,"\n");
               break;
             }
@@ -1026,8 +1026,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           (void) fprintf(stderr,"Image: %s\n",image->filename);
           if ((reconstruct_image->columns != image->columns) ||
               (reconstruct_image->rows != image->rows))
-            (void) fprintf(stderr,"Offset: %ld,%ld\n",difference_image->page.x,
-              difference_image->page.y);
+            (void) fprintf(stderr,"Offset: %ld,%ld\n",(long)
+              difference_image->page.x,(long) difference_image->page.y);
           (void) fprintf(stderr,"  Channel distortion: %s\n",
             MagickOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
           switch (metric)

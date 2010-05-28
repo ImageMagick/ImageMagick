@@ -1932,7 +1932,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",arguments[1]);
-      for (i=0; i < number_arguments; i++)
+      for (i=0; i < (ssize_t) number_arguments; i++)
         arguments[i]=DestroyString(arguments[i]);
       arguments=(char **) RelinquishMagickMemory(arguments);
       return(-1);
@@ -2016,7 +2016,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
       "`%s' (%d)",command,status);
   if (shell_command != command)
     shell_command=DestroyString(shell_command);
-  for (i=0; i < number_arguments; i++)
+  for (i=0; i < (ssize_t) number_arguments; i++)
     arguments[i]=DestroyString(arguments[i]);
   arguments=(char **) RelinquishMagickMemory(arguments);
   return(status);
