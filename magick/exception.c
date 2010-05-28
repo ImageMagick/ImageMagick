@@ -981,8 +981,8 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     type="error";
   if (severity >= FatalErrorException)
     type="fatal";
-  (void) FormatMagickString(message,MaxTextExtent,"%s @ %s/%s/%s/%ld",reason,
-    type,path,function,line);
+  (void) FormatMagickString(message,MaxTextExtent,"%s @ %s/%s/%s/%lu",reason,
+    type,path,function,(unsigned long) line);
   (void) ThrowException(exception,severity,message,(char *) NULL);
   return(status);
 }

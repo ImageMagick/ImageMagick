@@ -919,7 +919,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       for (v=0; v < 6; v++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",(long) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < 6; u++)
         {
@@ -1154,7 +1154,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
       default: break;
     }
   (void) FormatMagickString(key,MaxTextExtent,"%p.%ld.%s",(void *) image,
-    (ssize_t) channel,symbol);
+    (long) channel,symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
     return(QuantumScale*StringToDouble(value));
@@ -1165,7 +1165,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         depth;
 
       depth=GetImageChannelDepth(image,channel,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%lu",depth);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%lu",
+        (unsigned long) depth);
     }
   if (LocaleNCompare(symbol,"kurtosis",8) == 0)
     {

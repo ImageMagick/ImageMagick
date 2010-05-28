@@ -1189,7 +1189,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
   count=FormatMagickString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03ld:00",local_time.tm_year+1900,
     local_time.tm_mon+1,local_time.tm_mday,local_time.tm_hour,
-    local_time.tm_min,local_time.tm_sec,(ssize_t) timezone);
+    local_time.tm_min,local_time.tm_sec,(long) timezone);
   return(count);
 }
 
@@ -1568,10 +1568,10 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
   p=(char *) string_info->datum;
   for (i=0; i < string_info->length; i+=0x14)
   {
-    (void) fprintf(file,"0x%08lx: ",(size_t) (0x14*i));
+    (void) fprintf(file,"0x%08lx: ",(unsigned long) (0x14*i));
     for (j=1; j <= MagickMin(string_info->length-i,0x14); j++)
     {
-      (void) fprintf(file,"%02lx",(size_t) (*(p+j)) & 0xff);
+      (void) fprintf(file,"%02lx",(unsigned long) (*(p+j)) & 0xff);
       if ((j % 0x04) == 0)
         (void) fputc(' ',file);
     }
@@ -2206,7 +2206,8 @@ MagickExport char **StringToList(const char *text)
           sizeof(*textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
-        (void) FormatMagickString(textlist[i],MaxTextExtent,"0x%08lx: ",0x14*i);
+        (void) FormatMagickString(textlist[i],MaxTextExtent,"0x%08lx: ",
+          (long) (0x14*i));
         q=textlist[i]+strlen(textlist[i]);
         for (j=1; j <= (ssize_t) MagickMin(strlen(p),0x14); j++)
         {

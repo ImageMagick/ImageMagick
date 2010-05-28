@@ -975,7 +975,8 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   median_image=DestroyImage(median_image);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),"  Deskew geometry: "
-      "%lux%lu%+ld%+ld",geometry.width,geometry.height,geometry.x,geometry.y);
+      "%lux%lu%+ld%+ld",(unsigned long) geometry.width,(unsigned long)
+      geometry.height,(long) geometry.x,(long) geometry.y);
   crop_image=CropImage(deskew_image,&geometry,exception);
   deskew_image=DestroyImage(deskew_image);
   return(crop_image);

@@ -3004,11 +3004,11 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%ld",(ssize_t)
+      (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
         attributes.st_mtime);
       (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value);
     }
-  (void) FormatMagickString(value,MaxTextExtent,"%ld",(ssize_t)
+  (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
   (void) ConcatenateMagickString(value,"B",MaxTextExtent);
@@ -3018,12 +3018,13 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value);
   (void) SetImageProperty(thumbnail_image,"software",
     GetMagickVersion(&version));
-  (void) FormatMagickString(value,MaxTextExtent,"%lu",image->magick_columns);
+  (void) FormatMagickString(value,MaxTextExtent,"%lu",
+     (unsigned long) image->magick_columns);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value);
   (void) FormatMagickString(value,MaxTextExtent,"%lu",image->magick_rows);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value);
   (void) FormatMagickString(value,MaxTextExtent,"%lu",
-    GetImageListLength(image));
+    (unsigned long) GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
   return(thumbnail_image);
 }

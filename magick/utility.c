@@ -941,12 +941,12 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
       count;
 
     (void) FormatMagickString(link_path,MaxTextExtent,"/proc/%ld/exe",
-      (ssize_t) getpid());
+      (long) getpid());
     count=readlink(link_path,execution_path,PATH_MAX);
     if (count == -1)
       {
         (void) FormatMagickString(link_path,MaxTextExtent,"/proc/%ld/file",
-          (ssize_t) getpid());
+          (long) getpid());
         count=readlink(link_path,execution_path,PATH_MAX);
       }
     if ((count > 0) && (count <= (ssize_t) PATH_MAX))

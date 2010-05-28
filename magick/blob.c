@@ -2351,10 +2351,10 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
               GetPathComponent(image->filename,ExtensionPath,extension);
               if (*extension == '\0')
                 (void) FormatMagickString(filename,MaxTextExtent,"%s-%lu",
-                  path,image->scene);
+                  path,(unsigned long) image->scene);
               else
                 (void) FormatMagickString(filename,MaxTextExtent,
-                  "%s-%lu.%s",path,image->scene,extension);
+                  "%s-%lu.%s",path,(unsigned long) image->scene,extension);
             }
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);
 #if defined(macintosh)
@@ -2416,7 +2416,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                   count=fread(magick,1,sizeof(magick),image->blob->file);
                   (void) rewind(image->blob->file);
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                     "  read %ld magic header bytes",(ssize_t) count);
+                     "  read %lu magic header bytes",(unsigned long) count);
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
                   if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
                       ((int) magick[2] == 0x08))

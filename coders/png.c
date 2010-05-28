@@ -8561,7 +8561,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "    Skipping %c%c%c%c chunk, length=%lu.",
-                    *(p),*(p+1),*(p+2),*(p+3),len);
+                    *(p),*(p+1),*(p+2),*(p+3),(unsigned long) len);
               }
             p+=(8+len);
           }
@@ -8571,8 +8571,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           /* Write JDAA chunk header */
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Write JDAA chunk, length=%lu.",
-              (size_t) length);
+              "  Write JDAA chunk, length=%lu.",(unsigned long) length);
           (void) WriteBlobMSBULong(image,(size_t) length);
           PNGType(chunk,mng_JDAA);
           LogPNGChunk((int) logging,mng_JDAA,length);
@@ -8611,8 +8610,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  Created jpeg_image, %lu x %lu.",jpeg_image->columns,
-      jpeg_image->rows);
+      "  Created jpeg_image, %lu x %lu.",(unsigned long) jpeg_image->columns,
+      (unsigned long) jpeg_image->rows);
 
   if (jng_color_type == 8 || jng_color_type == 12)
     jpeg_image_info->type=GrayscaleType;
@@ -8627,11 +8626,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Successfully read jpeg_image into a blob, length=%lu.",
-        (size_t) length);
+        (unsigned long) length);
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Write JDAT chunk, length=%lu.",
-        (size_t) length);
+        "  Write JDAT chunk, length=%lu.",(unsigned long) length);
     }
   /* Write JDAT chunk(s) */
   (void) WriteBlobMSBULong(image,(size_t) length);
@@ -8871,7 +8869,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Optimize: FALSE");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Image_info depth: %ld",image_info->depth);
+        "    Image_info depth: %lu",(unsigned long) image_info->depth);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Type: %d",image_info->type);
 
@@ -8879,9 +8877,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
       for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Scene: %ld",scene++);
+          "    Scene: %lu",(unsigned long) scene++);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "      Image depth: %lu",p->depth);
+          "      Image depth: %lu",(unsigned long) p->depth);
         if (p->matte)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "      Matte: True");
@@ -8896,7 +8894,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
             "      Storage class: DirectClass");
         if (p->colors)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "      Number of colors: %lu",p->colors);
+            "      Number of colors: %lu",(unsigned long) p->colors);
         else
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "      Number of colors: unspecified");
@@ -9230,14 +9228,14 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
            {
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "     TERM delay: %lu",
-               (size_t) (mng_info->ticks_per_second*
+               (unsigned long) (mng_info->ticks_per_second*
                   final_delay/MagickMax(image->ticks_per_second,1)));
              if (image->iterations == 0)
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "     TERM iterations: %lu",(size_t) PNG_UINT_31_MAX);
+                 "     TERM iterations: %lu",(unsigned long) PNG_UINT_31_MAX);
              else
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "     Image iterations: %lu",image->iterations);
+                 "     Image iterations: %lu",(unsigned long) image->iterations);
            }
          (void) WriteBlob(image,14,chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,14));

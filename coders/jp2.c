@@ -244,13 +244,13 @@ static int BlobWrite(jas_stream_obj_t *object,char *buffer,const int length)
   return((int) count);
 }
 
-static ssize_t BlobSeek(jas_stream_obj_t *object,ssize_t offset,int origin)
+static long BlobSeek(jas_stream_obj_t *object,long offset,int origin)
 {
   StreamManager
     *source;
 
   source=(StreamManager *) object;
-  return((ssize_t) SeekBlob(source->image,offset,origin));
+  return((long) SeekBlob(source->image,offset,origin));
 }
 
 static int BlobClose(jas_stream_obj_t *object)
@@ -614,7 +614,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           blob=(jas_stream_memobj_t *) icc_stream->obj_;
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Profile: ICC, %lu bytes",(size_t) blob->len_);
+              "Profile: ICC, %lu bytes",(unsigned long) blob->len_);
           profile=AcquireStringInfo(blob->len_);
           SetStringInfoDatum(profile,blob->buf_);
           icc_profile=(StringInfo *) GetImageProfile(image,"icc");

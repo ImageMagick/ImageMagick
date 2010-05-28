@@ -452,7 +452,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"\tWeighting Exponent = %g\n",(double)
         weighting_exponent);
       (void) fprintf(stdout,"\tTotal Number of Clusters = %lu\n\n",
-        number_clusters);
+        (unsigned long) number_clusters);
       /*
         Print the total number of points per cluster.
       */
