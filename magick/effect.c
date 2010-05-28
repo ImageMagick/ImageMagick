@@ -878,13 +878,13 @@ MagickExport Image *BlurImageChannel(const Image *image,
         *k;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  BlurImage with %ld kernel:",width);
+        "  BlurImage with %lu kernel:",(unsigned long) width);
       message=AcquireString("");
       k=kernel;
       for (i=0; i < (ssize_t) width; i++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",i);
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",(long) i);
         (void) ConcatenateString(&message,format);
         (void) FormatMagickString(format,MaxTextExtent,"%g ",*k++);
         (void) ConcatenateString(&message,format);
@@ -1380,13 +1380,14 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
         *k;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  ConvolveImage with %ldx%ld kernel:",width,width);
+        "  ConvolveImage with %lux%lu kernel:",(unsigned long) width,
+        (unsigned long) width);
       message=AcquireString("");
       k=kernel;
       for (v=0; v < (ssize_t) width; v++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",(long) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < (ssize_t) width; u++)
         {
@@ -2225,13 +2226,14 @@ MagickExport Image *FilterImageChannel(const Image *image,
         *k;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  FilterImage with %ldx%ld kernel:",kernel->width,kernel->height);
+        "  FilterImage with %ldx%ld kernel:",(unsigned long) kernel->width,
+        (unsigned long) kernel->height);
       message=AcquireString("");
       k=kernel->values;
       for (v=0; v < (ssize_t) kernel->height; v++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",(long) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < (ssize_t) kernel->width; u++)
         {
@@ -3469,7 +3471,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         x=(ssize_t) ((i+1)*thumbnail->columns)/NumberTiles;
         y=(ssize_t) ((i+1)*thumbnail->rows)/NumberTiles;
         preview_image=RollImage(thumbnail,x,y,exception);
-        (void) FormatMagickString(label,MaxTextExtent,"roll %ldx%ld",x,y);
+        (void) FormatMagickString(label,MaxTextExtent,"roll %ldx%ld",(long) x,
+          (long) y);
         break;
       }
       case HuePreview:
@@ -3521,7 +3524,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image != (Image *) NULL)
           for (x=0; x < i; x++)
             (void) ContrastImage(preview_image,MagickTrue);
-        (void) FormatMagickString(label,MaxTextExtent,"contrast (%ld)",i+1);
+        (void) FormatMagickString(label,MaxTextExtent,"contrast (%ld)",(long)
+          i+1);
         break;
       }
       case DullPreview:
@@ -3531,7 +3535,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         for (x=0; x < i; x++)
           (void) ContrastImage(preview_image,MagickFalse);
-        (void) FormatMagickString(label,MaxTextExtent,"+contrast (%ld)",i+1);
+        (void) FormatMagickString(label,MaxTextExtent,"+contrast (%ld)",
+          (long) i+1);
         break;
       }
       case GrayscalePreview:
@@ -3544,7 +3549,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,preview_image);
         (void) FormatMagickString(label,MaxTextExtent,
-          "-colorspace gray -colors %ld",colors);
+          "-colorspace gray -colors %lu",(unsigned long) colors);
         break;
       }
       case QuantizePreview:
@@ -3555,7 +3560,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         colors<<=1;
         quantize_info.number_colors=colors;
         (void) QuantizeImage(&quantize_info,preview_image);
-        (void) FormatMagickString(label,MaxTextExtent,"colors %ld",colors);
+        (void) FormatMagickString(label,MaxTextExtent,"colors %lu",
+          (unsigned long) colors);
         break;
       }
       case DespecklePreview:
@@ -3571,7 +3577,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=DespeckleImage(thumbnail,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatMagickString(label,MaxTextExtent,"despeckle (%ld)",i+1);
+        (void) FormatMagickString(label,MaxTextExtent,"despeckle (%ld)",(long)
+          i+1);
         break;
       }
       case ReduceNoisePreview:
@@ -3693,7 +3700,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         geometry.y=i/2;
         (void) RaiseImage(preview_image,&geometry,MagickTrue);
         (void) FormatMagickString(label,MaxTextExtent,"raise %lux%lu%+ld%+ld",
-          geometry.width,geometry.height,geometry.x,geometry.y);
+          (unsigned long) geometry.width,(unsigned long) geometry.height,
+          (long) geometry.x,(long) geometry.y);
         break;
       }
       case SegmentPreview:
@@ -3760,7 +3768,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         preview_info->quality=(size_t) percentage;
         (void) FormatMagickString(factor,MaxTextExtent,"%lu",
-          preview_info->quality);
+          (unsigned long) preview_info->quality);
         file=AcquireUniqueFileResource(filename);
         if (file != -1)
           file=close(file)-1;
@@ -3793,7 +3801,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
               GetBlobSize(preview_image))/1024.0);
           else
             (void) FormatMagickString(label,MaxTextExtent,"quality %s\n%lub ",
-              factor,(size_t) GetBlobSize(thumbnail));
+              factor,(unsigned long) GetBlobSize(thumbnail));
         break;
       }
     }
@@ -4508,13 +4516,14 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
         *k;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  SelectiveBlurImage with %ldx%ld kernel:",width,width);
+        "  SelectiveBlurImage with %lux%lu kernel:",(unsigned long) width,
+        (unsigned long) width);
       message=AcquireString("");
       k=kernel;
       for (v=0; v < (ssize_t) width; v++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",v);
+        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",(long) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < (ssize_t) width; u++)
         {

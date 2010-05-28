@@ -3021,7 +3021,8 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) FormatMagickString(value,MaxTextExtent,"%lu",
      (unsigned long) image->magick_columns);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value);
-  (void) FormatMagickString(value,MaxTextExtent,"%lu",image->magick_rows);
+  (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+    image->magick_rows);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value);
   (void) FormatMagickString(value,MaxTextExtent,"%lu",
     (unsigned long) GetImageListLength(image));

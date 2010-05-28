@@ -479,7 +479,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
         "currentfile %lu %lu "PS3_NoCompression" ByteStreamDecodeFilter\n",
-        image->columns,image->rows);
+        (unsigned long) image->columns,(unsigned long) image->rows);
       break;
     }
     case FaxCompression:
@@ -487,28 +487,28 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
         "currentfile %lu %lu "PS3_FaxCompression" ByteStreamDecodeFilter\n",
-        image->columns,image->rows);
+        (unsigned long) image->columns,(unsigned long) image->rows);
       break;
     }
     case LZWCompression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
         "currentfile %lu %lu "PS3_LZWCompression" ByteStreamDecodeFilter\n",
-        image->columns,image->rows);
+        (unsigned long) image->columns,(unsigned long) image->rows);
       break;
     }
     case RLECompression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
         "currentfile %lu %lu "PS3_RLECompression" ByteStreamDecodeFilter\n",
-        image->columns,image->rows);
+        (unsigned long) image->columns,(unsigned long) image->rows);
       break;
     }
     case ZipCompression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
         "currentfile %lu %lu "PS3_ZipCompression" ByteStreamDecodeFilter\n",
-        image->columns,image->rows);
+        (unsigned long) image->columns,(unsigned long) image->rows);
       break;
     }
   }
@@ -589,7 +589,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   if (offset < 0)
     ThrowWriterException(CorruptImageError,"ImproperImageHeader");
   (void) FormatMagickString(buffer,MaxTextExtent,
-    "%%%%BeginData:%13ld %s Bytes\n",(ssize_t) length,
+    "%%%%BeginData:%13ld %s Bytes\n",(long) length,
     compression == NoCompression ? "ASCII" : "BINARY");
   (void) WriteBlobString(image,buffer);
   offset=SeekBlob(image,stop,SEEK_SET);
@@ -940,13 +940,14 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       }
     SetGeometry(image,&geometry);
     (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu",
-      image->columns,image->rows);
+      (unsigned long) image->columns,(unsigned long) image->rows);
     if (image_info->page != (char *) NULL)
       (void) CopyMagickString(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-          image->page.width,image->page.height,image->page.x,image->page.y);
+          (unsigned long) image->page.width,(unsigned long) image->page.height,
+          (long) image->page.x,(long) image->page.y);
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PS") == 0))
@@ -1045,7 +1046,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               (void) CopyMagickString(buffer,"%%Pages: 1\n",MaxTextExtent);
             else
               (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Pages: %lu\n",
-                (size_t) GetImageListLength(image));
+                (unsigned long) GetImageListLength(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -1085,14 +1086,16 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         }
         (void)WriteBlobString(image,"%%EndProlog\n");
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page: 1 %lu\n",page);
+    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page: 1 %lu\n",
+      (unsigned long) page);
     (void) WriteBlobString(image,buffer);
     /*
       Page bounding box.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%%%%PageBoundingBox: %ld %ld %ld %ld\n",geometry.x,geometry.y,geometry.x+
-      (ssize_t) geometry.width,geometry.y+(ssize_t) (geometry.height+text_size));
+      "%%%%PageBoundingBox: %ld %ld %ld %ld\n",(long) geometry.x,(long)
+       geometry.y,geometry.x+(long) geometry.width,geometry.y+(long)
+       (geometry.height+text_size));
     (void) WriteBlobString(image,buffer);
     /*
       Page process colors if not RGB.
@@ -1164,9 +1167,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     /*
       Translate, scale, and font point size.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,
-      "%ld %ld\n%g %g\n%g\n",geometry.x,geometry.y,scale.x,scale.y,
-      pointsize);
+    (void) FormatMagickString(buffer,MaxTextExtent,"%ld %ld\n%g %g\n%g\n",
+      (long) geometry.x,(long) geometry.y,scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     /*
       Output labels.
@@ -1214,8 +1216,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       Image columns, rows, and color space.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n%s\n",
-      image->columns,image->rows,image->colorspace == CMYKColorspace ?
-      PS3_CMYKColorspace : PS3_RGBColorspace);
+      (unsigned long) image->columns,(unsigned long) image->rows,
+      image->colorspace == CMYKColorspace ? PS3_CMYKColorspace :
+      PS3_RGBColorspace);
     (void) WriteBlobString(image,buffer);
     /*
       Masked image?
@@ -1469,7 +1472,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               Number of colors in color map.
             */
             (void) FormatMagickString(buffer,MaxTextExtent,"%lu\n",
-              image->colors);
+              (unsigned long) image->colors);
             (void) WriteBlobString(image,buffer);
             /*
               Color map - uncompressed.
@@ -1558,7 +1561,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     if (offset < 0)
       ThrowWriterException(CorruptImageError,"ImproperImageHeader");
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%%%%BeginData:%13ld %s Bytes\n",(ssize_t) length,
+      "%%%%BeginData:%13ld %s Bytes\n",(long) length,
       compression == NoCompression ? "ASCII" : "BINARY");
     (void) WriteBlobString(image,buffer);
     offset=SeekBlob(image,stop,SEEK_SET);

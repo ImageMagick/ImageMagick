@@ -464,8 +464,8 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   (void) FormatMagickString(header,MaxTextExtent,
     "LBLSIZE=%lu FORMAT='BYTE' TYPE='IMAGE' BUFSIZE=20000 DIM=2 EOL=0 "
     "RECSIZE=%lu ORG='BSQ' NL=%lu NS=%lu NB=1 N1=0 N2=0 N3=0 N4=0 NBB=0 "
-    "NLB=0 TASK='ImageMagick'",(size_t) MaxTextExtent,image->columns,
-    image->rows,image->columns);
+    "NLB=0 TASK='ImageMagick'",(unsigned long) MaxTextExtent,(unsigned long)
+    image->columns,(unsigned long) image->rows,(unsigned long) image->columns);
   (void) WriteBlob(image,MaxTextExtent,(unsigned char *) header);
   /*
     Write VICAR pixels.

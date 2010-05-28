@@ -2683,7 +2683,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         unsigned char
           *data;
 
-        size_t
+        unsigned long
           after,
           length;
 
@@ -4108,7 +4108,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
         unsigned char
           *data;
 
-        size_t
+        unsigned long
           after,
           length;
 
@@ -5326,7 +5326,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         unsigned char
           *data;
 
-        size_t
+        unsigned long
           after,
           length;
 
@@ -6544,7 +6544,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         unsigned char
           *data;
 
-        size_t
+        unsigned long
           after,
           length;
 
@@ -7551,7 +7551,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
         unsigned char
           *data;
 
-        size_t
+        unsigned long
           after,
           length;
 
@@ -8583,7 +8583,7 @@ MagickExport MagickBooleanType XPreferencesWidget(Display *display,
         preferences_info[7].raised=resource_info->use_pixmap ==
           MagickFalse ? MagickTrue : MagickFalse;
         (void) FormatMagickString(cache,MaxTextExtent,CacheButtonText,
-          resource_info->undo_cache);
+          (unsigned long) resource_info->undo_cache);
         XGetWidgetInfo(cache,&cache_info);
         cache_info.bevel_width--;
         cache_info.width=(unsigned int) QuantumMargin >> 1;
@@ -8657,7 +8657,7 @@ MagickExport MagickBooleanType XPreferencesWidget(Display *display,
             if (resource_info->undo_cache > 256)
               resource_info->undo_cache=1;
             (void) FormatMagickString(cache,MaxTextExtent,CacheButtonText,
-              resource_info->undo_cache);
+              (unsigned long) resource_info->undo_cache);
             cache_info.raised=MagickFalse;
             XDrawTriangleEast(display,&windows->widget,&cache_info);
             break;

@@ -213,16 +213,16 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
     }
   (void) WriteBlobString(image,buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"<LocationX>%ld</LocationX>\n",
-    image->page.x);
+    (long) image->page.x);
   (void) WriteBlobString(image,buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"<LocationY>%ld</LocationY>\n",
-    image->page.y);
+    (long) image->page.y);
   (void) WriteBlobString(image,buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"<Width>%lu</Width>\n",
-    image->columns+(image->columns % 2));
+    (unsigned long) (image->columns+(image->columns % 2)));
   (void) WriteBlobString(image,buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"<Height>%lu</Height>\n",
-    image->rows);
+    (unsigned long) image->rows);
   (void) WriteBlobString(image,buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"<Depth>2</Depth>\n");
   (void) WriteBlobString(image,buffer);

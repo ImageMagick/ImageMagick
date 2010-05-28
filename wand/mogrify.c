@@ -220,7 +220,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       elapsed_time=GetElapsedTime(timer);
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,
-        "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",
+        "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",(unsigned long)
         iterations,1.0*iterations/elapsed_time,user_time,(long)
         (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
         (long) (1000.0*(elapsed_time-floor(elapsed_time))));
@@ -336,10 +336,10 @@ static MagickBooleanType MonitorProgress(const char *text,
     locale_message=tag;
   if (p == (char *) NULL)
     (void) fprintf(stderr,"%s: %ld of %lu, %02ld%% complete\r",locale_message,
-      (long) offset,(size_t) extent,(long) (100L*offset/(extent-1)));
+      (long) offset,(unsigned long) extent,(long) (100L*offset/(extent-1)));
   else
     (void) fprintf(stderr,"%s[%s]: %ld of %lu, %02ld%% complete\r",
-      locale_message,p+1,(long) offset,(size_t) extent,(long)
+      locale_message,p+1,(long) offset,(unsigned long) extent,(long)
       (100L*offset/(extent-1)));
   if (offset == (MagickOffsetType) (extent-1))
     (void) fprintf(stderr,"\n");
@@ -7155,10 +7155,11 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             flags=ParseAbsoluteGeometry(canonical_page,&geometry);
             canonical_page=DestroyString(canonical_page);
             (void) FormatMagickString(page,MaxTextExtent,"%lux%lu",
-              geometry.width,geometry.height);
+              (unsigned long) geometry.width,(unsigned long) geometry.height);
             if (((flags & XValue) != 0) || ((flags & YValue) != 0))
               (void) FormatMagickString(page,MaxTextExtent,"%lux%lu%+ld%+ld",
-                geometry.width,geometry.height,geometry.x,geometry.y);
+                (unsigned long) geometry.width,(unsigned long) geometry.height,
+                (long) geometry.x,(long) geometry.y);
             (void) SetImageOption(image_info,option+1,page);
             (void) CloneString(&image_info->page,page);
             break;

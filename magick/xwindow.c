@@ -350,8 +350,8 @@ MagickExport void DestroyXResources(void)
     RelinquishMagickMemory(windows->icon_resources);
   if (windows->icon_pixel != (XPixelInfo *) NULL)
     {
-      if (windows->icon_pixel->pixels != (size_t *) NULL)
-        windows->icon_pixel->pixels=(size_t *)
+      if (windows->icon_pixel->pixels != (unsigned long *) NULL)
+        windows->icon_pixel->pixels=(unsigned long *)
           RelinquishMagickMemory(windows->icon_pixel->pixels);
       if (windows->icon_pixel->annotate_context != (GC) NULL)
         XFreeGC(windows->display,windows->icon_pixel->annotate_context);
@@ -360,8 +360,8 @@ MagickExport void DestroyXResources(void)
     }
   if (windows->pixel_info != (XPixelInfo *) NULL)
     {
-      if (windows->pixel_info->pixels != (size_t *) NULL)
-        windows->pixel_info->pixels=(size_t *)
+      if (windows->pixel_info->pixels != (unsigned long *) NULL)
+        windows->pixel_info->pixels=(unsigned long *)
           RelinquishMagickMemory(windows->pixel_info->pixels);
       if (windows->pixel_info->annotate_context != (GC) NULL)
         XFreeGC(windows->display,windows->pixel_info->annotate_context);
@@ -1594,7 +1594,7 @@ static Window XClientWindow(Display *display,Window target_window)
   unsigned char
     *data;
 
-  size_t
+  unsigned long
     after,
     number_items;
 
@@ -1888,7 +1888,7 @@ MagickExport void XDestroyWindowColors(Display *display,Window window)
   unsigned char
     *data;
 
-  size_t
+  unsigned long
     after,
     length;
 
@@ -2044,9 +2044,10 @@ MagickExport void XDisplayImageInfo(Display *display,
     undo_image=GetPreviousImageInList(undo_image);
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) fprintf(file,"  bytes: %lumb\n",(size_t)
-    (bytes+(1 << 19)) >> 20);
-  (void) fprintf(file,"  limit: %lumb\n\n",resource_info->undo_cache);
+  (void) fprintf(file,"  bytes: %lumb\n",(unsigned long)
+    ((bytes+(1 << 19)) >> 20));
+  (void) fprintf(file,"  limit: %lumb\n\n",(unsigned long)
+    resource_info->undo_cache);
   /*
     Write info about the image to a file.
   */
@@ -2838,9 +2839,9 @@ MagickExport void XFreeStandardColormap(Display *display,
   map_info->colormap=(Colormap) NULL;
   if (pixel != (XPixelInfo *) NULL)
     {
-      if (pixel->pixels != (size_t *) NULL)
-        pixel->pixels=(size_t *) RelinquishMagickMemory(pixel->pixels);
-      pixel->pixels=(size_t *) NULL;
+      if (pixel->pixels != (unsigned long *) NULL)
+        pixel->pixels=(unsigned long *) RelinquishMagickMemory(pixel->pixels);
+      pixel->pixels=(unsigned long *) NULL;
     }
 }
 
@@ -3038,11 +3039,11 @@ MagickExport void XGetPixelPacket(Display *display,
       pixel->colors=image->colors;
   packets=(unsigned int)
     MagickMax((int) pixel->colors,visual_info->colormap_size)+MaxNumberPens;
-  if (pixel->pixels != (size_t *) NULL)
-    pixel->pixels=(size_t *) RelinquishMagickMemory(pixel->pixels);
-  pixel->pixels=(size_t *) AcquireQuantumMemory(packets,
+  if (pixel->pixels != (unsigned long *) NULL)
+    pixel->pixels=(unsigned long *) RelinquishMagickMemory(pixel->pixels);
+  pixel->pixels=(unsigned long *) AcquireQuantumMemory(packets,
     sizeof(pixel->pixels));
-  if (pixel->pixels == (size_t *) NULL)
+  if (pixel->pixels == (unsigned long *) NULL)
     ThrowXWindowFatalException(ResourceLimitFatalError,"UnableToGetPixelInfo",
       image->filename);
   /*
@@ -5188,13 +5189,13 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       "MemoryAllocationFailed","...");
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
-  windows->pixel_info->pixels=(size_t *) NULL;
+  windows->pixel_info->pixels=(unsigned long *) NULL;
   windows->pixel_info->annotate_context=(GC) NULL;
   windows->pixel_info->highlight_context=(GC) NULL;
   windows->pixel_info->widget_context=(GC) NULL;
   windows->font_info=(XFontStruct *) NULL;
   windows->icon_pixel->annotate_context=(GC) NULL;
-  windows->icon_pixel->pixels=(size_t *) NULL;
+  windows->icon_pixel->pixels=(unsigned long *) NULL;
   /*
     Allocate visual.
   */
@@ -5834,7 +5835,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   unsigned int
     scanline_pad;
 
-  size_t
+  unsigned long
     pixel,
     *pixels;
 
@@ -5864,8 +5865,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         resource_info->image_info->texture != (char *) NULL ?
         resource_info->image_info->texture : "pattern:checkerboard",
         MaxTextExtent);
-      (void) FormatMagickString(size,MaxTextExtent,"%lux%lu",image->columns,
-        image->rows);
+      (void) FormatMagickString(size,MaxTextExtent,"%lux%lu",(unsigned long)
+        image->columns,(unsigned long) image->rows);
       image_info->size=ConstantString(size);
       pattern=ReadImage(image_info,&image->exception);
       image_info=DestroyImageInfo(image_info);
@@ -6447,7 +6448,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   unsigned int
     scanline_pad;
 
-  size_t
+  unsigned long
     pixel,
     *pixels;
 
@@ -6477,8 +6478,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         resource_info->image_info->texture != (char *) NULL ?
         resource_info->image_info->texture : "pattern:checkerboard",
         MaxTextExtent);
-      (void) FormatMagickString(size,MaxTextExtent,"%lux%lu",image->columns,
-        image->rows);
+      (void) FormatMagickString(size,MaxTextExtent,"%lux%lu",(unsigned long)
+        image->columns,(unsigned long) image->rows);
       image_info->size=ConstantString(size);
       pattern=ReadImage(image_info,&image->exception);
       image_info=DestroyImageInfo(image_info);
@@ -7095,7 +7096,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
       while ((1 << i) <= (int) magnify)
         i++;
       (void) FormatMagickString(windows->magnify.name,MaxTextExtent,
-        "Magnify %luX",i);
+        "Magnify %luX",(unsigned long) i);
       status=XStringListToTextProperty(&windows->magnify.name,1,&window_name);
       if (status != False)
         {
@@ -7863,7 +7864,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         Determine if image colors will "fit" into X server colormap.
       */
       colormap_type=resource_info->colormap;
-      status=XAllocColorCells(display,colormap,MagickFalse,(size_t *)
+      status=XAllocColorCells(display,colormap,MagickFalse,(unsigned long *)
         NULL,0,pixel->pixels,(unsigned int) image->colors);
       if (status != False)
         colormap_type=PrivateColormap;
@@ -8042,7 +8043,7 @@ MagickExport void XMakeStandardColormap(Display *display,
                 Transfer colors from default to private colormap.
               */
               (void) XAllocColorCells(display,colormap,MagickFalse,
-                (size_t *) NULL,0,pixel->pixels,(unsigned int)
+                (unsigned long *) NULL,0,pixel->pixels,(unsigned int)
                 retain_colors);
               p=colors+image->colors;
               for (i=0; i < (ssize_t) retain_colors; i++)
@@ -8055,7 +8056,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               number_colors+=retain_colors;
             }
           (void) XAllocColorCells(display,colormap,MagickFalse,
-            (size_t *) NULL,0,pixel->pixels,(unsigned int)
+            (unsigned long *) NULL,0,pixel->pixels,(unsigned int)
             image->colors);
         }
       /*
@@ -9265,7 +9266,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.undoCache",client_name);
-  (void) FormatMagickString(cache,MaxTextExtent,"%lu",
+  (void) FormatMagickString(cache,MaxTextExtent,"%lu",(unsigned long)
     resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.usePixmap",client_name);
@@ -9566,7 +9567,7 @@ MagickExport Window XWindowByProperty(Display *display,const Window window,
     i,
     number_children;
 
-  size_t
+  unsigned long
     after,
     number_items;
 

@@ -341,7 +341,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         {
           (void) FormatMagickString(buffer,MaxTextExtent,
             "%s\" shape=\"rect\" coords=\"0,0,%lu,%lu\" alt=\"\" />\n",
-            image->filename,geometry.width-1,geometry.height-1);
+            image->filename,(unsigned long) geometry.width-1,(unsigned long)
+            geometry.height-1);
           (void) WriteBlobString(image,buffer);
         }
       else
@@ -352,8 +353,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
             {
               (void) FormatMagickString(buffer,MaxTextExtent,
                 "\" shape=\"rect\" coords=\"%ld,%ld,%ld,%ld\" alt=\"\" />\n",
-                geometry.x,geometry.y,geometry.x+(ssize_t) geometry.width-1,
-                geometry.y+(ssize_t) geometry.height-1);
+                (long) geometry.x,(long) geometry.y,(long) (geometry.x+
+                geometry.width-1),(long) (geometry.y+geometry.height-1));
               (void) WriteBlobString(image,buffer);
               if (*(p+1) != '\0')
                 {
@@ -416,7 +417,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
         "%s\" shape=\"rect\" coords=\"0,0,%lu,%lu\" alt=\"\" />\n",
-        image->filename,geometry.width-1,geometry.height-1);
+        image->filename,(unsigned long) geometry.width-1,(unsigned long)
+        geometry.height-1);
       (void) WriteBlobString(image,buffer);
     }
   else
@@ -427,8 +429,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         {
           (void) FormatMagickString(buffer,MaxTextExtent,
             "\" shape=\"rect\" coords=\"%ld,%ld,%ld,%ld\" alt=\"\" />\n",
-            geometry.x,geometry.y,geometry.x+(ssize_t) geometry.width-1,
-            geometry.y+(ssize_t) geometry.height-1);
+            (long) geometry.x,(long) geometry.y,geometry.x+(long)
+            geometry.width-1,geometry.y+(long) geometry.height-1);
           (void) WriteBlobString(image,buffer);
           if (*(p+1) != '\0')
             {

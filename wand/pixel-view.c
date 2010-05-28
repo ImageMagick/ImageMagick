@@ -134,7 +134,7 @@ WandExport PixelView *ClonePixelView(const PixelView *pixel_view)
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
   clone_view->id=AcquireWandId();
   (void) FormatMagickString(clone_view->name,MaxTextExtent,"%s-%lu",PixelViewId,
-    clone_view->id);
+    (unsigned long) clone_view->id);
   clone_view->exception=AcquireExceptionInfo();
   InheritException(clone_view->exception,pixel_view->exception);
   clone_view->view=CloneCacheView(pixel_view->view);
@@ -849,7 +849,7 @@ WandExport PixelView *NewPixelView(MagickWand *wand)
   (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
   pixel_view->id=AcquireWandId();
   (void) FormatMagickString(pixel_view->name,MaxTextExtent,"%s-%lu",
-    PixelViewId,pixel_view->id);
+    PixelViewId,(unsigned long) pixel_view->id);
   pixel_view->exception=AcquireExceptionInfo();
   pixel_view->wand=wand;
   pixel_view->view=AcquireCacheView(pixel_view->wand->images);
@@ -908,7 +908,7 @@ WandExport PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
   (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
   pixel_view->id=AcquireWandId();
   (void) FormatMagickString(pixel_view->name,MaxTextExtent,"%s-%lu",
-    PixelViewId,pixel_view->id);
+    PixelViewId,(unsigned long) pixel_view->id);
   pixel_view->exception=AcquireExceptionInfo();
   pixel_view->view=AcquireCacheView(pixel_view->wand->images);
   pixel_view->wand=wand;

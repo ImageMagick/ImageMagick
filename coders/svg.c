@@ -2116,8 +2116,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->view_box=svg_info->bounds;
           svg_info->width=(size_t) floor(svg_info->bounds.width+0.5);
           svg_info->height=(size_t) floor(svg_info->bounds.height+0.5);
-          MVGPrintf(svg_info->file,"viewbox 0 0 %lu %lu\n",svg_info->width,
-            svg_info->height);
+          MVGPrintf(svg_info->file,"viewbox 0 0 %lu %lu\n",(unsigned long)
+            svg_info->width,(unsigned long) svg_info->height);
           sx=(double) svg_info->width/svg_info->view_box.width;
           sy=(double) svg_info->height/svg_info->view_box.height;
           MVGPrintf(svg_info->file,"affine %g 0 0 %g 0.0 0.0\n",sx,sy);
@@ -2411,7 +2411,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
     Receiving some characters from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.characters(%s,%lu)",c,(size_t) length);
+    "  SAX.characters(%s,%lu)",c,(unsigned long) length);
   svg_info=(SVGInfo *) context;
   if (svg_info->text != (char *) NULL)
     svg_info->text=(char *) ResizeQuantumMemory(svg_info->text,
@@ -3430,7 +3430,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,
     "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
   (void) FormatMagickString(message,MaxTextExtent,
-    "<svg width=\"%lu\" height=\"%lu\">\n",image->columns,image->rows);
+    "<svg width=\"%lu\" height=\"%lu\">\n",(unsigned long) image->columns,
+    (unsigned long) image->rows);
   (void) WriteBlobString(image,message);
   /*
     Allocate primitive info memory.

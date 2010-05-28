@@ -219,7 +219,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (next_image == (Image *) NULL)
       break;
     (void) FormatMagickString(next_image->filename,MaxTextExtent,
-      "slide_%02ld.sfw",next_image->scene);
+      "slide_%02ld.sfw",(long) next_image->scene);
     if (image == (Image *) NULL)
       image=next_image;
     else

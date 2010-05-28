@@ -162,14 +162,15 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
   assert(iterator->signature == WandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  clone_iterator=(PixelIterator *) AcquireAlignedMemory(1,sizeof(*clone_iterator));
+  clone_iterator=(PixelIterator *) AcquireAlignedMemory(1,
+    sizeof(*clone_iterator));
   if (clone_iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       iterator->name);
   (void) ResetMagickMemory(clone_iterator,0,sizeof(*clone_iterator));
   clone_iterator->id=AcquireWandId();
   (void) FormatMagickString(clone_iterator->name,MaxTextExtent,"%s-%lu",
-    PixelIteratorId,clone_iterator->id);
+    PixelIteratorId,(unsigned long) clone_iterator->id);
   clone_iterator->exception=AcquireExceptionInfo();
   InheritException(clone_iterator->exception,iterator->exception);
   clone_iterator->view=CloneCacheView(iterator->view);
@@ -319,7 +320,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   (void) ResetMagickMemory(iterator,0,sizeof(*iterator));
   iterator->id=AcquireWandId();
   (void) FormatMagickString(iterator->name,MaxTextExtent,"%s-%lu",
-    PixelIteratorId,iterator->id);
+    PixelIteratorId,(unsigned long) iterator->id);
   iterator->exception=AcquireExceptionInfo();
   iterator->view=view;
   SetGeometry(image,&iterator->region);
@@ -434,7 +435,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t 
   (void) ResetMagickMemory(iterator,0,sizeof(*iterator));
   iterator->id=AcquireWandId();
   (void) FormatMagickString(iterator->name,MaxTextExtent,"%s-%lu",
-    PixelIteratorId,iterator->id);
+    PixelIteratorId,(unsigned long) iterator->id);
   iterator->exception=AcquireExceptionInfo();
   iterator->view=view;
   SetGeometry(image,&iterator->region);

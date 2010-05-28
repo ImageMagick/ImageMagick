@@ -109,7 +109,7 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
   ssize_t
     count;
 
-  size_t
+  unsigned long
     columns,
     depth,
     rows;
@@ -248,13 +248,15 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   (void) SetImageBackgroundColor(image);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->text,image_info->filename);
-  (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",page.x,page.y);
+  (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
+    (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
-  (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",page.x,page.y);
+  (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
+    (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   (void) CopyMagickString(filename,image_info->filename,MaxTextExtent);
   if (*draw_info->text != '\0')
@@ -368,7 +370,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     *indexes;
 
-  ssize_t
+  long
     type,
     x_offset,
     y,
@@ -393,9 +395,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
-  size_t
+  unsigned long
     depth,
-    max_value;
+    height,
+    max_value,
+    width;
 
   /*
     Open image file.
@@ -421,10 +425,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     *colorspace='\0';
-    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%s",&image->columns,
-      &image->rows,&max_value,colorspace);
+    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%s",&width,&height,&max_value,
+      colorspace);
     if (count != 4)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    image->columns=width;
+    image->rows=height;
     for (depth=1; (GetQuantumRange(depth)+1) < max_value; depth++) ;
     image->depth=depth;
     LocaleLower(colorspace);
@@ -655,8 +661,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     if (image->matte != MagickFalse)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "# ImageMagick pixel enumeration: %lu,%lu,%lu,%s\n",image->columns,
-      image->rows,(size_t) GetQuantumRange(image->depth),colorspace);
+      "# ImageMagick pixel enumeration: %lu,%lu,%lu,%s\n",(unsigned long)
+      image->columns,(unsigned long) image->rows,(unsigned long)
+      GetQuantumRange(image->depth),colorspace);
     (void) WriteBlobString(image,buffer);
     GetMagickPixelPacket(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -667,7 +674,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"%ld,%ld: ",x,y);
+        (void) FormatMagickString(buffer,MaxTextExtent,"%ld,%ld: ",(long) x,
+          (long) y);
         (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);

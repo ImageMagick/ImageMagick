@@ -119,7 +119,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *pixels;
 
-  size_t
+  unsigned long
     columns,
     rows;
 
@@ -370,7 +370,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n",
-      image->columns,image->rows);
+      (unsigned long) image->columns,(unsigned long) image->rows);
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (ssize_t) image->rows; y++)
     {

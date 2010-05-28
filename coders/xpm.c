@@ -257,7 +257,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
-  size_t
+  unsigned long
+    colors,
+    columns,
+    rows,
     width;
 
   /*
@@ -310,10 +313,12 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if (*p != '"')
       continue;
-    count=(ssize_t) sscanf(p+1,"%lu %lu %lu %lu",&image->columns,&image->rows,
-      &image->colors,&width);
+    count=(ssize_t) sscanf(p+1,"%lu %lu %lu %lu",&columns,&rows,&colors,&width);
     if (count == 4)
       break;
+    image->columns=columns;
+    image->rows=rows;
+    image->colors=colors;
   }
   if ((count != 4) || (width > 10) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
@@ -738,7 +743,8 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatMagickString(buffer,MaxTextExtent,"\"%lu %lu %lu %ld\",\n",
-    picon->columns,picon->rows,colors,characters_per_pixel);
+    (unsigned long) picon->columns,(unsigned long) picon->rows,(unsigned long)
+    colors,(unsigned long) characters_per_pixel);
   (void) WriteBlobString(image,buffer);
   GetMagickPixelPacket(image,&pixel);
   for (i=0; i < (ssize_t) colors; i++)
@@ -969,7 +975,8 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatMagickString(buffer,MaxTextExtent,"\"%lu %lu %lu %ld\",\n",
-    image->columns,image->rows,image->colors,characters_per_pixel);
+    (unsigned long) image->columns,(unsigned long) image->rows,
+    (unsigned long) image->colors,(unsigned long) characters_per_pixel);
   (void) WriteBlobString(image,buffer);
   GetMagickPixelPacket(image,&pixel);
   for (i=0; i < (ssize_t) image->colors; i++)

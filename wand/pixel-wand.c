@@ -155,7 +155,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%lu",PixelWandId,
-    clone_wand->id);
+    (unsigned long) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
   clone_wand->pixel=wand->pixel;
@@ -407,7 +407,7 @@ WandExport PixelWand *NewPixelWand(void)
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
   (void) FormatMagickString(wand->name,MaxTextExtent,"%s-%lu",PixelWandId,
-    wand->id);
+    (unsigned long) wand->id);
   wand->exception=AcquireExceptionInfo();
   GetMagickPixelPacket((Image *) NULL,&wand->pixel);
   wand->debug=IsEventLogging();

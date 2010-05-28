@@ -250,10 +250,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info->font=AcquireString(image->filename);
   ConcatenateString(&draw_info->primitive,"push graphic-context\n");
   (void) FormatMagickString(buffer,MaxTextExtent," viewbox 0 0 %lu %lu\n",
-    image->columns,image->rows);
+    (unsigned long) image->columns,(unsigned long) image->rows);
   ConcatenateString(&draw_info->primitive,buffer);
   ConcatenateString(&draw_info->primitive," font-size 18\n");
-  (void) FormatMagickString(buffer,MaxTextExtent," text 10,%ld '",y);
+  (void) FormatMagickString(buffer,MaxTextExtent," text 10,%ld '",(long) y);
   ConcatenateString(&draw_info->primitive,buffer);
   text=EscapeString(Text,'"');
   ConcatenateString(&draw_info->primitive,text);
@@ -265,12 +265,13 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     y+=i+12;
     ConcatenateString(&draw_info->primitive," font-size 18\n");
-    (void) FormatMagickString(buffer,MaxTextExtent," text 10,%ld '%ld'\n",y,i);
+    (void) FormatMagickString(buffer,MaxTextExtent," text 10,%ld '%ld'\n",
+      (long) y,(long) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent," font-size %ld\n",i);
+    (void) FormatMagickString(buffer,MaxTextExtent," font-size %ld\n",(long) i);
     ConcatenateString(&draw_info->primitive,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent," text 50,%ld "
-      "'That which does not destroy me, only makes me stronger.'\n",y);
+      "'That which does not destroy me, only makes me stronger.'\n",(long) y);
     ConcatenateString(&draw_info->primitive,buffer);
     if (i >= 24)
       i+=6;

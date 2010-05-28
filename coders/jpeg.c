@@ -432,7 +432,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: ICC, %lu bytes",(size_t) length);
+      "Profile: ICC, %lu bytes",(unsigned long) length);
   return(MagickTrue);
 }
 
@@ -528,7 +528,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: iptc, %lu bytes",(size_t) length);
+      "Profile: iptc, %lu bytes",(unsigned long) length);
   return(MagickTrue);
 }
 
@@ -612,11 +612,11 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
       image->filename);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: %s, %lu bytes",name,(size_t) length);
+      "Profile: %s, %lu bytes",name,(unsigned long) length);
   return(MagickTrue);
 }
 
-static void SkipInputData(j_decompress_ptr cinfo,ssize_t number_bytes)
+static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
 {
   SourceManager
     *source;
@@ -626,7 +626,7 @@ static void SkipInputData(j_decompress_ptr cinfo,ssize_t number_bytes)
   source=(SourceManager *) cinfo->src;
   while (number_bytes > (ssize_t) source->manager.bytes_in_buffer)
   {
-    number_bytes-=(ssize_t) source->manager.bytes_in_buffer;
+    number_bytes-=(long) source->manager.bytes_in_buffer;
     (void) FillInputBuffer(cinfo);
   }
   source->manager.next_input_byte+=(size_t) number_bytes;
@@ -737,7 +737,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
              image->quality=(size_t) i+1;
            if (image->debug != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "Quality: %ld (%s)",i+1,(qvalue <= hash[i]) &&
+               "Quality: %ld (%s)",(long) i+1,(qvalue <= hash[i]) &&
                (sum <= sums[i]) ? "exact" : "approximate");
            break;
          }
@@ -786,7 +786,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
                image->quality=(size_t) i+1;
              if (image->debug != MagickFalse)
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "Quality: %ld (%s)",i+1,(qvalue <= hash[i]) &&
+                 "Quality: %ld (%s)",(long) i+1,(qvalue <= hash[i]) &&
                  (sum <= sums[i]) ? "exact" : "approximate");
              break;
            }
@@ -1015,7 +1015,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_calc_output_dimensions(&jpeg_info);
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Scale factor: %ld",
-          (ssize_t) scale_factor);
+          (long) scale_factor);
     }
   precision=(size_t) jpeg_info.data_precision;
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
@@ -1127,7 +1127,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   JPEGSetImageQuality(&jpeg_info,image);
   JPEGSetImageSamplingFactor(&jpeg_info,image);
-  (void) FormatMagickString(value,MaxTextExtent,"%ld",(ssize_t)
+  (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
     jpeg_info.out_color_space);
   (void) SetImageProperty(image,"jpeg:colorspace",value);
   if (image_info->ping != MagickFalse)
@@ -1591,7 +1591,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
         xmp_profile=DestroyStringInfo(xmp_profile);
       }
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s profile: %lu bytes",
-      name,(size_t) GetStringInfoLength(profile));
+      name,(unsigned long) GetStringInfoLength(profile));
     name=GetNextImageProfile(image);
   }
   custom_profile=DestroyStringInfo(custom_profile);
@@ -1780,8 +1780,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   jpeg_info.density_unit=(UINT8) 1;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Image resolution: %ld,%ld",(ssize_t) floor(image->x_resolution+0.5),
-      (ssize_t) floor(image->y_resolution+0.5));
+      "Image resolution: %ld,%ld",(long) floor(image->x_resolution+0.5),
+      (long) floor(image->y_resolution+0.5));
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
       /*
@@ -1920,7 +1920,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         jpeg_set_quality(&jpeg_info,(int) image->quality,MagickTrue);
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %lu",
-          image->quality);
+          (unsigned long) image->quality);
     }
   else
     {
@@ -2026,10 +2026,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Storage class: DirectClass");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Depth: %lu",
-        image->depth);
+        (unsigned long) image->depth);
       if (image->colors != 0)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Number of colors: %lu",image->colors);
+          "Number of colors: %lu",(unsigned long) image->colors);
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Number of colors: unspecified");

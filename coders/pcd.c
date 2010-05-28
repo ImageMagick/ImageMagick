@@ -644,9 +644,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         progress_monitor=SetImageProgressMonitor(image,
           (MagickProgressMonitor) NULL,image->client_data);
         (void) FormatMagickString(image->filename,MaxTextExtent,
-          "images/img%04ld.pcd",j);
+          "images/img%04ld.pcd",(long) j);
         (void) FormatMagickString(image->magick_filename,MaxTextExtent,
-          "images/img%04ld.pcd",j);
+          "images/img%04ld.pcd",(long) j);
         image->scene=(size_t) j;
         image->columns=width;
         image->rows=height;

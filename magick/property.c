@@ -1312,13 +1312,13 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_BYTE:
             case EXIF_FMT_UNDEFINED:
             {
-              EXIFMultipleValues(1,"%lu",(size_t)
+              EXIFMultipleValues(1,"%lu",(unsigned long)
                 (*(unsigned char *) p1));
               break;
             }
             case EXIF_FMT_SBYTE:
             {
-              EXIFMultipleValues(1,"%ld",(ssize_t) (*(signed char *) p1));
+              EXIFMultipleValues(1,"%ld",(long) (*(signed char *) p1));
               break;
             }
             case EXIF_FMT_SSHORT:
@@ -1333,23 +1333,25 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             }
             case EXIF_FMT_ULONG:
             {
-              EXIFMultipleValues(4,"%lu",ReadPropertyLong(endian,p1));
+              EXIFMultipleValues(4,"%lu",(long) ReadPropertyLong(endian,p1));
               break;
             }
             case EXIF_FMT_SLONG:
             {
-              EXIFMultipleValues(4,"%ld",ReadPropertyLong(endian,p1));
+              EXIFMultipleValues(4,"%ld",(long) ReadPropertyLong(endian,p1));
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
-              EXIFMultipleFractions(8,"%ld/%ld",ReadPropertyLong(endian,p1),
+              EXIFMultipleFractions(8,"%ld/%ld",(long)
+                ReadPropertyLong(endian,p1),(long)
                 ReadPropertyLong(endian,p1+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
-              EXIFMultipleFractions(8,"%ld/%ld",ReadPropertyLong(endian,p1),
+              EXIFMultipleFractions(8,"%ld/%ld",(long)
+                ReadPropertyLong(endian,p1),(long)
                 ReadPropertyLong(endian,p1+4));
               break;
             }
@@ -1424,11 +1426,11 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 {
                   if (tag_value < 0x10000)
                     (void) FormatMagickString(key,MaxTextExtent,"#%04lx",
-                      tag_value);
+                      (unsigned long) tag_value);
                   else
                     if (tag_value < 0x20000)
                       (void) FormatMagickString(key,MaxTextExtent,"@%04lx",
-                        tag_value & 0xffff);
+                        (unsigned long) (tag_value & 0xffff));
                     else
                       (void) FormatMagickString(key,MaxTextExtent,"unknown");
                   break;
@@ -1804,7 +1806,8 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
   (void) ConcatenateString(&path,message);
   (void) FormatMagickString(message,MaxTextExtent,
-    "<svg width=\"%lu\" height=\"%lu\">\n",columns,rows);
+    "<svg width=\"%lu\" height=\"%lu\">\n",(unsigned long) columns,
+    (unsigned long) rows);
   (void) ConcatenateString(&path,message);
   (void) FormatMagickString(message,MaxTextExtent,"<g>\n");
   (void) ConcatenateString(&path,message);
@@ -2186,7 +2189,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           if (IsGrayImage(image,&image->exception) != MagickFalse)
             colorspace=GRAYColorspace;
           (void) FormatMagickString(value,MaxTextExtent,"%s",
-            MagickOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace));
+            MagickOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+            colorspace));
           break;
         }
       break;
@@ -2195,7 +2199,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("depth",property,5) == 0)
         {
-          (void) FormatMagickString(value,MaxTextExtent,"%lu",image->depth);
+          (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+            image->depth);
           break;
         }
       if (LocaleNCompare("directory",property,9) == 0)
@@ -2221,7 +2226,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleNCompare("group",property,5) == 0)
         {
           (void) FormatMagickString(value,MaxTextExtent,"0x%lx",
-            image_info->group);
+            (unsigned long) image_info->group);
           break;
         }
       break;
@@ -2335,7 +2340,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           p=image;
           for (page=1; GetPreviousImageInList(p) != (Image *) NULL; page++)
             p=GetPreviousImageInList(p);
-          (void) FormatMagickString(value,MaxTextExtent,"%lu",page);
+          (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+            page);
           break;
         }
       break;
@@ -2354,15 +2360,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleNCompare("scenes",property,6) == 0)
         {
           (void) FormatMagickString(value,MaxTextExtent,"%lu",
-            (size_t) GetImageListLength(image));
+            (unsigned long) GetImageListLength(image));
           break;
         }
       if (LocaleNCompare("scene",property,5) == 0)
         {
-          (void) FormatMagickString(value,MaxTextExtent,"%lu",image->scene);
+          (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+            image->scene);
           if (image_info->number_scenes != 0)
             (void) FormatMagickString(value,MaxTextExtent,"%lu",
-              image_info->scene);
+              (unsigned long) image_info->scene);
           break;
         }
       if (LocaleNCompare("skewness",property,8) == 0)
@@ -2406,8 +2413,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("width",property,5) == 0)
         {
-          (void) FormatMagickString(value,MaxTextExtent,"%lu",
-            image->magick_columns != 0 ? image->magick_columns : 256UL);
+          (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+            (image->magick_columns != 0 ? image->magick_columns : 256));
           break;
         }
       break;
@@ -2610,7 +2617,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           File size.
         */
-        (void) FormatMagickString(format,MaxTextExtent,"%lu",(size_t)
+        (void) FormatMagickString(format,MaxTextExtent,"%lu",(unsigned long)
           image->extent);
         if (image->extent != (MagickSizeType) ((size_t) image->extent))
           (void) FormatMagickSize(image->extent,MagickFalse,format);
@@ -2696,8 +2703,9 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image geometry.
         */
-        q+=FormatMagickString(q,extent,"%lux%lu%+ld%+ld",image->page.width,
-          image->page.height,image->page.x,image->page.y);
+        q+=FormatMagickString(q,extent,"%lux%lu%+ld%+ld",(unsigned long)
+          image->page.width,(unsigned long) image->page.height,(long)
+          image->page.x,(long) image->page.y);
         break;
       }
       case 'h':
@@ -2705,8 +2713,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image height.
         */
-        q+=FormatMagickString(q,extent,"%lu",image->rows != 0 ? image->rows :
-          image->magick_rows);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+          (image->rows != 0 ? image->rows : image->magick_rows));
         break;
       }
       case 'i':
@@ -2722,8 +2730,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Number of unique colors.
         */
-        q+=FormatMagickString(q,extent,"%lu",GetNumberColors(image,
-          (FILE *) NULL,&image->exception));
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+          GetNumberColors(image,(FILE *) NULL,&image->exception));
         break;
       }
       case 'l':
@@ -2768,7 +2776,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Number of images in the list.
         */
-        q+=FormatMagickString(q,extent,"%lu",(size_t)
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
           GetImageListLength(image));
         break;
       }
@@ -2794,7 +2802,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         p=image;
         for (page=1; GetPreviousImageInList(p) != (Image *) NULL; page++)
           p=GetPreviousImageInList(p);
-        q+=FormatMagickString(q,extent,"%lu",page);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) page);
         break;
       }
       case 'q':
@@ -2802,7 +2810,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image depth.
         */
-        q+=FormatMagickString(q,extent,"%lu",image->depth);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) image->depth);
         break;
       }
       case 'r':
@@ -2828,9 +2836,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image scene number.
         */
         if (text_info->number_scenes == 0)
-          q+=FormatMagickString(q,extent,"%lu",image->scene);
+          q+=FormatMagickString(q,extent,"%lu",(unsigned long) image->scene);
         else
-          q+=FormatMagickString(q,extent,"%lu",text_info->scene);
+          q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+            text_info->scene);
         break;
       }
       case 'u':
@@ -2847,8 +2856,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image width.
         */
-        q+=FormatMagickString(q,extent,"%lu",image->columns != 0 ?
-          image->columns : image->magick_columns);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+          (image->columns != 0 ? image->columns : image->magick_columns));
         break;
       }
       case 'x':
@@ -2857,7 +2866,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image horizontal resolution.
         */
         q+=FormatMagickString(q,extent,"%g %s",image->x_resolution,
-          MagickOptionToMnemonic(MagickResolutionOptions,(ssize_t) image->units));
+          MagickOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+            image->units));
         break;
       }
       case 'y':
@@ -2866,7 +2876,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image vertical resolution.
         */
         q+=FormatMagickString(q,extent,"%g %s",image->y_resolution,
-          MagickOptionToMnemonic(MagickResolutionOptions,(ssize_t) image->units));
+          MagickOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+          image->units));
         break;
       }
       case 'z':
@@ -2874,7 +2885,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image depth.
         */
-        q+=FormatMagickString(q,extent,"%lu",image->depth);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) image->depth);
         break;
       }
       case 'A':
@@ -2906,29 +2917,31 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 'G':
       {
-        q+=FormatMagickString(q,extent,"%lux%lu",image->magick_columns,
-          image->magick_rows);
+        q+=FormatMagickString(q,extent,"%lux%lu",(unsigned long)
+          image->magick_columns,(unsigned long) image->magick_rows);
         break;
       }
       case 'H':
       {
-        q+=FormatMagickString(q,extent,"%ld",image->page.height);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+          image->page.height);
         break;
       }
       case 'O':
       {
-        q+=FormatMagickString(q,extent,"%+ld%+ld",image->page.x,image->page.y);
+        q+=FormatMagickString(q,extent,"%+ld%+ld",(long) image->page.x,
+          (long) image->page.y);
         break;
       }
       case 'P':
       {
-        q+=FormatMagickString(q,extent,"%lux%lu",image->page.width,
-          image->page.height);
+        q+=FormatMagickString(q,extent,"%lux%lu",(unsigned long)
+          image->page.width,(unsigned long) image->page.height);
         break;
       }
       case 'Q':
       {
-        q+=FormatMagickString(q,extent,"%lu",image->quality);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) image->quality);
         break;
       }
       case 'S':
@@ -2939,28 +2952,28 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         if (text_info->number_scenes == 0)
           q+=CopyMagickString(q,"2147483647",extent);
         else
-          q+=FormatMagickString(q,extent,"%lu",text_info->scene+
-            text_info->number_scenes);
+          q+=FormatMagickString(q,extent,"%lu",(unsigned long)
+            (text_info->scene+text_info->number_scenes));
         break;
       }
       case 'T':
       {
-        q+=FormatMagickString(q,extent,"%lu",image->delay);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) image->delay);
         break;
       }
       case 'W':
       {
-        q+=FormatMagickString(q,extent,"%ld",image->page.width);
+        q+=FormatMagickString(q,extent,"%lu",(unsigned long) image->page.width);
         break;
       }
       case 'X':
       {
-        q+=FormatMagickString(q,extent,"%+ld",image->page.x);
+        q+=FormatMagickString(q,extent,"%+ld",(long) image->page.x);
         break;
       }
       case 'Y':
       {
-        q+=FormatMagickString(q,extent,"%+ld",image->page.y);
+        q+=FormatMagickString(q,extent,"%+ld",(long) image->page.y);
         break;
       }
       case 'Z':
@@ -3098,8 +3111,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image bounding box.
         */
         page=GetImageBoundingBox(image,&image->exception);
-        q+=FormatMagickString(q,MaxTextExtent,"%lux%lu%+ld%+ld",page.width,
-          page.height,page.x,page.y);
+        q+=FormatMagickString(q,MaxTextExtent,"%lux%lu%+ld%+ld",(unsigned long)
+          page.width,(unsigned long) page.height,(long) page.x,(long) page.y);
         break;
       }
       case '#':

@@ -408,7 +408,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
                 image_info->filename,(int) scene,filename);
               if (LocaleCompare(filename,image_info->filename) == 0)
                 (void) FormatMagickString(filename,MaxTextExtent,"%s.%lu",
-                  image_info->filename,scene);
+                  image_info->filename,(unsigned long) scene);
               (void) CopyMagickString(image_info->filename,filename,
                 MaxTextExtent);
             }
