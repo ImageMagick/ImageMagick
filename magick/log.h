@@ -26,7 +26,7 @@ extern "C" {
 #include "magick/exception.h"
 
 #if !defined(GetMagickModule)
-# define GetMagickModule()  __FILE__,__func__,(size_t) __LINE__
+# define GetMagickModule()  __FILE__,__func__,(unsigned long) __LINE__
 #endif
 
 #define MagickLogFilename  "log.xml"
