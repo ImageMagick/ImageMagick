@@ -1007,8 +1007,8 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
           tag);
       if (signature != MagickImageFilterSignature)
         (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-          "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,signature,
-          MagickImageFilterSignature);
+          "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
+          (unsigned long) signature,(unsigned long) MagickImageFilterSignature);
     }
   /*
     Close the module.
@@ -1268,7 +1268,7 @@ MagickExport MagickBooleanType OpenModule(const char *module,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
         "ImageCoderSignatureMismatch","`%s': %8lx != %8lx",module_name,
-        signature,MagickImageCoderSignature);
+        (unsigned long) signature,(unsigned long) MagickImageCoderSignature);
       return(MagickFalse);
     }
   return(MagickTrue);

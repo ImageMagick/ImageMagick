@@ -203,6 +203,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     value,
     version;
 
+  unsigned long
+    height,
+    width;
+
   /*
     Open image file.
   */
@@ -223,16 +227,20 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read X bitmap header.
   */
+  width=0;
+  height=0;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %lu",name,&image->columns) == 2)
+    if (sscanf(buffer,"#define %s %lu",name,&width) == 2)
       if ((strlen(name) >= 6) &&
           (LocaleCompare(name+strlen(name)-6,"_width") == 0))
-          break;
+        break;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %lu",name,&image->rows) == 2)
+    if (sscanf(buffer,"#define %s %lu",name,&height) == 2)
       if ((strlen(name) >= 7) &&
           (LocaleCompare(name+strlen(name)-7,"_height") == 0))
-          break;
+        break;
+  image->columns=width;
+  image->rows=width;
   image->depth=8;
   image->storage_class=PseudoClass;
   image->colors=2;
@@ -509,10 +517,10 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   */
   GetPathComponent(image->filename,BasePath,basename);
   (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_width %lu\n",
-    basename,image->columns);
+    basename,(unsigned long) image->columns);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_height %lu\n",
-    basename,image->rows);
+    basename,(unsigned long) image->rows);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,
     "static char %s_bits[] = {\n",basename);

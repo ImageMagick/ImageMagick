@@ -264,7 +264,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu",
-    page.width,page.height);
+    (unsigned long) page.width,(unsigned long) page.height);
   if (image_info->monochrome != MagickFalse)
     delegate_info=GetDelegateInfo("xps:mono",(char *) NULL,exception);
   else
@@ -283,7 +283,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.height=(size_t) floor(page.height*image->y_resolution/delta.y+
     0.5);
   (void) FormatMagickString(options,MaxTextExtent,"-g%lux%lu ",
-    page.width,page.height);
+    (unsigned long) page.width,(unsigned long) page.height);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
@@ -291,11 +291,11 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (read_info->number_scenes != 1)
         (void) FormatMagickString(options,MaxTextExtent,"-dLastPage=%lu",
-          read_info->scene+read_info->number_scenes);
+          (unsigned long) (read_info->scene+read_info->number_scenes));
       else
         (void) FormatMagickString(options,MaxTextExtent,
-          "-dFirstPage=%lu -dLastPage=%lu",read_info->scene+1,read_info->scene+
-          read_info->number_scenes);
+          "-dFirstPage=%lu -dLastPage=%lu",(unsigned long) read_info->scene+1,
+          (unsigned long) (read_info->scene+read_info->number_scenes));
       read_info->number_scenes=0;
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';

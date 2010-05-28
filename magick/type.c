@@ -866,7 +866,8 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     glyphs="unknown";
     if (type_info[i]->glyphs != (char *) NULL)
       glyphs=type_info[i]->glyphs;
-    (void) FormatMagickString(weight,MaxTextExtent,"%lu",type_info[i]->weight);
+    (void) FormatMagickString(weight,MaxTextExtent,"%lu",
+      (unsigned long) type_info[i]->weight);
     (void) fprintf(file,"  Font: %s\n",name);
     (void) fprintf(file,"    family: %s\n",family);
     (void) fprintf(file,"    style: %s\n",style);

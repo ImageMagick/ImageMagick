@@ -99,14 +99,14 @@ static int WMFReadBlob(void *image)
   return(ReadBlobByte((Image *) image));
 }
 
-static int WMFSeekBlob(void *image,ssize_t offset)
+static int WMFSeekBlob(void *image,long offset)
 {
   return((int) SeekBlob((Image *) image,(MagickOffsetType) offset,SEEK_SET));
 }
 
-static ssize_t WMFTellBlob(void *image)
+static long WMFTellBlob(void *image)
 {
-  return((ssize_t) TellBlob((Image*) image));
+  return((long) TellBlob((Image*) image));
 }
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)

@@ -4077,8 +4077,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info=(CacheInfo *) image->cache;
   source_info=(*cache_info);
   source_info.file=(-1);
-  (void) FormatMagickString(cache_info->filename,MaxTextExtent,"%s[%ld]",
-    image->filename,GetImageIndexInList(image));
+  (void) FormatMagickString(cache_info->filename,MaxTextExtent,"%s[%lu]",
+    image->filename,(unsigned long) GetImageIndexInList(image));
   cache_info->mode=mode;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
@@ -4127,7 +4127,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) FormatMagickString(message,MaxTextExtent,
                     "open %s (%s memory, %lux%lu %sB)",cache_info->filename,
                     cache_info->mapped != MagickFalse ? "anonymous" : "heap",
-                    cache_info->columns,cache_info->rows,format);
+                    (unsigned long) cache_info->columns,(unsigned long)
+                    cache_info->rows,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
@@ -4220,8 +4221,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) FormatMagickString(message,MaxTextExtent,
                     "open %s (%s[%d], memory-mapped, %lux%lu %sB)",
                     cache_info->filename,cache_info->cache_filename,
-                    cache_info->file,cache_info->columns,cache_info->rows,
-                    format);
+                    cache_info->file,(unsigned long) cache_info->columns,
+                    (unsigned long) cache_info->rows,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
@@ -4733,8 +4734,9 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
-      cache_info->filename,nexus_info->region.width,nexus_info->region.height,
-      nexus_info->region.x,nexus_info->region.y);
+      cache_info->filename,(unsigned long) nexus_info->region.width,
+      (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
+      (long) nexus_info->region.y);
   return(MagickTrue);
 }
 
@@ -4863,8 +4865,9 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
-      cache_info->filename,nexus_info->region.width,nexus_info->region.height,
-      nexus_info->region.x,nexus_info->region.y);
+      cache_info->filename,(unsigned long) nexus_info->region.width,
+      (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
+      (long) nexus_info->region.y);
   return(MagickTrue);
 }
 
@@ -5577,7 +5580,8 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
-      cache_info->filename,nexus_info->region.width,nexus_info->region.height,
-      nexus_info->region.x,nexus_info->region.y);
+      cache_info->filename,(unsigned long) nexus_info->region.width,
+      (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
+      (long) nexus_info->region.y);
   return(MagickTrue);
 }

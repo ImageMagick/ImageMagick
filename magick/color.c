@@ -1026,7 +1026,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       if (pixel->depth > 16)
         {
           (void) FormatMagickString(component,MaxTextExtent,"%10lu",
-            (size_t) ScaleQuantumToLong(ClampToQuantum(color)));
+            (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
           return;
         }
@@ -1329,7 +1329,7 @@ static void ConcatentateHexColorComponent(const MagickPixelPacket *pixel,
   if (pixel->depth > 32)
     {
       (void) FormatMagickString(component,MaxTextExtent,"%08lX",
-        ScaleQuantumToLong(ClampToQuantum(color)));
+        (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
