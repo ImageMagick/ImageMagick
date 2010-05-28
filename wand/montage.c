@@ -292,11 +292,13 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
+  long
     first_scene,
+    last_scene;
+
+  ssize_t
     j,
     k,
-    last_scene,
     scene;
 
   MagickBooleanType
@@ -382,7 +384,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           *images;
 
         FireImageStack(MagickFalse,MagickFalse,pend);
-        for (scene=first_scene; scene <= last_scene ; scene++)
+        for (scene=(ssize_t) first_scene; scene <= (ssize_t) last_scene ; scene++)
         {
           char
             *filename;
@@ -391,7 +393,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             Option is a file name: begin by reading image from specified file.
           */
           filename=argv[i];
-          if ((LocaleCompare(filename,"--") == 0) && (i < (argc-1)))
+          if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
             filename=argv[++i];
           (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
           if (first_scene != last_scene)
@@ -1389,7 +1391,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            first_scene=StringToLong(argv[i]);
+            first_scene=(int) StringToLong(argv[i]);
             last_scene=first_scene;
             (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
             break;

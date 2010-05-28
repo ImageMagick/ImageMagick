@@ -334,7 +334,8 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     }
     if (!iso_11548_1)
       (void) WriteBlobByte(image,'\n');
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

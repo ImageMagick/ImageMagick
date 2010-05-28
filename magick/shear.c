@@ -1414,7 +1414,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
 %
 %    o image: the image.
 %
-%    o degrees: A MagickRealType representing the shearing angle assize_t the X
+%    o degrees: A MagickRealType representing the shearing angle along the X
 %      axis.
 %
 %    o width, height, x_offset, y_offset: Defines a region of the image
@@ -1634,7 +1634,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
 %
 %    o image: the image.
 %
-%    o degrees: A MagickRealType representing the shearing angle assize_t the Y
+%    o degrees: A MagickRealType representing the shearing angle along the Y
 %      axis.
 %
 %    o width, height, x_offset, y_offset: Defines a region of the image
@@ -1939,8 +1939,10 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       height=image->columns;
     }
   y_width=width+(ssize_t) floor(fabs(shear.x)*height+0.5);
-  x_offset=(ssize_t) ceil(width+((fabs(shear.y)*height)-width)/2.0-0.5);
-  y_offset=(ssize_t) ceil(height+((fabs(shear.y)*y_width)-height)/2.0-0.5);
+  x_offset=(ssize_t) ceil((double) width+((fabs(shear.y)*height)-width)/2.0-
+    0.5);
+  y_offset=(ssize_t) ceil((double) height+((fabs(shear.y)*y_width)-height)/2.0-
+    0.5);
   /*
     Surround image with a border.
   */
@@ -2001,9 +2003,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ShearImage() creates a new image that is a shear_image copy of an existing
-%  one.  Shearing slides one edge of an image assize_t the X or Y axis, creating
-%  a parallelogram.  An X direction shear slides an edge assize_t the X axis,
-%  while a Y direction shear slides an edge assize_t the Y axis.  The amount of
+%  one.  Shearing slides one edge of an image along the X or Y axis, creating
+%  a parallelogram.  An X direction shear slides an edge along the X axis,
+%  while a Y direction shear slides an edge along the Y axis.  The amount of
 %  the shear is controlled by a shear angle.  For X direction shears, x_shear
 %  is measured relative to the Y axis, and similarly, for Y direction shears
 %  y_shear is measured relative to the X axis.  Empty triangles left over from
@@ -2083,10 +2085,10 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     Compute image size.
   */
   y_width=image->columns+(ssize_t) floor(fabs(shear.x)*image->rows+0.5);
-  x_offset=(ssize_t) ceil(image->columns+((fabs(shear.x)*image->rows)-
+  x_offset=(ssize_t) ceil((double) image->columns+((fabs(shear.x)*image->rows)-
     image->columns)/2.0-0.5);
-  y_offset=(ssize_t) ceil(image->rows+((fabs(shear.y)*y_width)-image->rows)/2.0-
-    0.5);
+  y_offset=(ssize_t) ceil((double) image->rows+((fabs(shear.y)*y_width)-
+    image->rows)/2.0-0.5);
   /*
     Surround image with border.
   */

@@ -658,7 +658,8 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image, image->columns*image->depth/8, pixels);
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }

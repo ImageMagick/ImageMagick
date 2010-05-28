@@ -168,7 +168,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   EndianType
     endian;
 
-  ssize_t
+  long
     value;
 
   register const MimeInfo

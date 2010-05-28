@@ -203,7 +203,8 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
     }
     if (SyncAuthenticPixels(matte_image,exception) == MagickFalse)
       break;
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

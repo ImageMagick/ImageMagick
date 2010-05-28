@@ -1151,7 +1151,7 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
   next->next=list_info->head;
   while (next->next != (ElementInfo *) NULL)
   {
-    i=compare(value,next->next->value);
+    i=(ssize_t) compare(value,next->next->value);
     if ((i < 0) || ((replace != (void **) NULL) && (i == 0)))
       {
         if (i == 0)

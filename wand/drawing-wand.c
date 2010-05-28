@@ -4770,7 +4770,7 @@ WandExport void DrawSetOpacity(DrawingWand *wand,const double opacity)
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->opacity != quantum_opacity))
     {
-      CurrentContext->opacity=opacity;
+      CurrentContext->opacity=(Quantum) opacity;
       (void) MvgPrintf(wand,"opacity %g\n",opacity);
     }
 }
@@ -6070,7 +6070,7 @@ static inline MagickBooleanType IsPoint(const char *point)
   char
     *p;
 
-  ssize_t
+  long
     value;
 
   value=strtol(point,&p,10);

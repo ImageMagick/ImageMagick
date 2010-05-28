@@ -265,12 +265,14 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
     *duplex_image,
     *source_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(source != (PixelView *) NULL);
   assert(source->signature == WandSignature);
@@ -530,12 +532,14 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
   Image
     *source_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(source != (PixelView *) NULL);
   assert(source->signature == WandSignature);
@@ -973,12 +977,14 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
   Image
     *destination_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(destination != (PixelView *) NULL);
   assert(destination->signature == WandSignature);
@@ -1106,12 +1112,14 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
     *destination_image,
     *source_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(source != (PixelView *) NULL);
   assert(source->signature == WandSignature);
@@ -1265,12 +1273,14 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
   Image
     *source_image;
 
-  ssize_t
-    progress,
-    y;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
 
   assert(source != (PixelView *) NULL);
   assert(source->signature == WandSignature);

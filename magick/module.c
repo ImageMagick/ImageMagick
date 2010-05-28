@@ -1107,11 +1107,14 @@ MagickExport MagickBooleanType ModuleComponentGenesis(void)
   ExceptionInfo
     *exception;
 
+  MagickBooleanType
+    status;
+
   AcquireSemaphoreInfo(&module_semaphore);
   exception=AcquireExceptionInfo();
-  InitializeModuleList(exception);
+  status=InitializeModuleList(exception);
   exception=DestroyExceptionInfo(exception);
-  return(MagickTrue);
+  return(status);
 }
 
 /*

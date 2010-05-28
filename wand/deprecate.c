@@ -139,7 +139,7 @@ WandExport MagickWand *MagickAverageImages(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickClipPathImage() clips assize_t the named paths from the 8BIM profile, if
+%  MagickClipPathImage() clips along the named paths from the 8BIM profile, if
 %  present. Later operations take effect inside the path.  Id may be a number
 %  if preceded with #, to work on a numbered path, e.g., "#1" to use the first
 %  path.

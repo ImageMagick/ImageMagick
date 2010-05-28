@@ -47,7 +47,7 @@ extern "C" {
     } \
 }
 #define FireImageStack(postfix,advance,fire) \
-  if ((j <= i) && (i < argc)) \
+  if ((j <= i) && (i < (ssize_t) argc)) \
     { \
       if (image_stack[k].image == (Image *) NULL) \
         status&=MogrifyImageInfo(image_stack[k].image_info,(int) (i-j+1), \

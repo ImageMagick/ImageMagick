@@ -572,7 +572,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,y,image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -600,7 +601,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               {
-                status=SetImageProgress(image,LoadImageTag,y,image->rows);
+                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
                 if (status == MagickFalse)
                   break;
               }
@@ -637,7 +639,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,y,image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -661,7 +664,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               {
-                status=SetImageProgress(image,LoadImageTag,y,image->rows);
+                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
                 if (status == MagickFalse)
                   break;
               }
@@ -1006,7 +1010,8 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
         }
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,SaveImageTag,y,image->rows);
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
           if (status == MagickFalse)
             break;
         }

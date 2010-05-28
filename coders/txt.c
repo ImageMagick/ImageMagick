@@ -699,7 +699,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"\n");
         p++;
       }
-      status=SetImageProgress(image,SaveImageTag,y,image->rows);
+      status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
       if (status == MagickFalse)
         break;
     }

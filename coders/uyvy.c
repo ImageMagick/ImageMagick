@@ -177,7 +177,8 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -358,7 +359,8 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
       full=full == MagickFalse ? MagickTrue : MagickFalse;
       p++;
     }
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

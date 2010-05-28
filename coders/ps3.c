@@ -286,7 +286,8 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
       }
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -363,7 +364,8 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
           p++;
         }
       }
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -413,7 +415,8 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
       *q++=(unsigned char) indexes[x];
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
         if (status == MagickFalse)
           break;
       }

@@ -876,7 +876,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
       ResetImageProfileIterator(image);
       for (name=GetNextImageProfile(image); name != (const char *) NULL; )
       {
-        for (i=1; i < number_arguments; i++)
+        for (i=1; i < (ssize_t) number_arguments; i++)
         {
           if ((*arguments[i] == '!') &&
               (LocaleCompare(name,arguments[i]+1) == 0))
@@ -890,7 +890,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         }
         name=GetNextImageProfile(image);
       }
-      for (i=0; i < number_arguments; i++)
+      for (i=0; i < (ssize_t) number_arguments; i++)
         arguments[i]=DestroyString(arguments[i]);
       arguments=(char **) RelinquishMagickMemory(arguments);
       return(MagickTrue);
@@ -1876,7 +1876,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   }
   if (length < 16)
     return(MagickFalse);
-  id=(int) ReadProfileShort(LSBEndian,exif);
+  id=(ssize_t) ReadProfileShort(LSBEndian,exif);
   endian=LSBEndian;
   if (id == 0x4949)
     endian=LSBEndian;

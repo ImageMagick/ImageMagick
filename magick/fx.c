@@ -3724,7 +3724,7 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
 %
 %    o draw_info: the draw info.
 %
-%    o angle: Apply the effect assize_t this angle.
+%    o angle: Apply the effect along this angle.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -4213,7 +4213,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o angle: Apply the effect assize_t this angle.
+%    o angle: Apply the effect along this angle.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -5238,7 +5238,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  WaveImage() creates a "ripple" effect in the image by shifting the pixels
-%  vertically assize_t a sine wave whose amplitude and wavelength is specified
+%  vertically along a sine wave whose amplitude and wavelength is specified
 %  by the given parameters.
 %
 %  The format of the WaveImage method is:

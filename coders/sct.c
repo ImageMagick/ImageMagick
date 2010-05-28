@@ -273,7 +273,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((image->columns % 2) != 0)
         (void) ReadBlobByte(image);  /* pad */
     }
-    status=SetImageProgress(image,LoadImageTag,y,image->rows);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

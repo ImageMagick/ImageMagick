@@ -376,7 +376,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GradientImage() applies a continuously smooth color transitions assize_t a
+%  GradientImage() applies a continuously smooth color transitions along a
 %  vector from one color to another.
 %
 %  Note, the interface of this method will change in the future to support

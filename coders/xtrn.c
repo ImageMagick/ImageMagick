@@ -204,7 +204,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       size_t
         blob_length;
 
-                  ssize_t
+                  long
         lBoundl,
         lBoundu;
 
@@ -440,7 +440,7 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
   SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
   if (pSafeArray != NULL)
   {
-                ssize_t lBoundl, lBoundu, lCount;
+                long lBoundl, lBoundu, lCount;
           HRESULT hr = S_OK;
     /* First see how big the buffer currently is */
                 hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
@@ -455,14 +455,14 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
     {
             unsigned char       *pReturnBuffer = NULL;
       NewArrayBounds[0].lLbound = 0;   /* Start-Index 0 */
-      NewArrayBounds[0].cElements = (size_t) (length+lCount);  /* # Elemente */
+      NewArrayBounds[0].cElements = (unsigned long) (length+lCount);  /* # Elemente */
       hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
       if (FAILED(hr))
         return 0;
       hr = SafeArrayAccessData(pSafeArray, (void**)&pReturnBuffer);
             if( FAILED(hr) )
                     return 0;
-            (void) CopyMagickMemory( pReturnBuffer+lCount, (unsigned char *)data, length );
+            (void) memcpy( pReturnBuffer+lCount, (unsigned char *)data, length );
       hr = SafeArrayUnaccessData(pSafeArray);
             if( FAILED(hr) )
                     return 0;

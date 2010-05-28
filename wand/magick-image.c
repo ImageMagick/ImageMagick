@@ -1308,7 +1308,7 @@ WandExport MagickBooleanType MagickClampImageChannel(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickClipImage() clips assize_t the first path from the 8BIM profile, if
+%  MagickClipImage() clips along the first path from the 8BIM profile, if
 %  present.
 %
 %  The format of the MagickClipImage method is:
@@ -1348,7 +1348,7 @@ WandExport MagickBooleanType MagickClipImage(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickClipImagePath() clips assize_t the named paths from the 8BIM profile, if
+%  MagickClipImagePath() clips along the named paths from the 8BIM profile, if
 %  present. Later operations take effect inside the path.  Id may be a number
 %  if preceded with #, to work on a numbered path, e.g., "#1" to use the first
 %  path.
@@ -7272,7 +7272,7 @@ WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o angle: Apply the effect assize_t this angle.
+%    o angle: Apply the effect along this angle.
 %
 */
 
@@ -7945,7 +7945,7 @@ WandExport MagickBooleanType MagickPingImageFile(MagickWand *wand,FILE *file)
 %
 %    o drawing_wand: the draw wand.
 %
-%    o angle: Apply the effect assize_t this angle.
+%    o angle: Apply the effect along this angle.
 %
 */
 WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
@@ -8153,7 +8153,7 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
 %
 %    o dither: A value other than zero distributes the difference between an
 %      original image and the corresponding color reduced image to
-%      neighboring pixels assize_t a Hilbert curve.
+%      neighboring pixels along a Hilbert curve.
 %
 %    o measure_error: A value other than zero measures the difference between
 %      the original and quantized images.  This difference is the total
@@ -8234,7 +8234,7 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
 %
 %    o dither: A value other than zero distributes the difference between an
 %      original image and the corresponding color reduced algorithm to
-%      neighboring pixels assize_t a Hilbert curve.
+%      neighboring pixels along a Hilbert curve.
 %
 %    o measure_error: A value other than zero measures the difference between
 %      the original and quantized images.  This difference is the total
@@ -11268,9 +11268,9 @@ WandExport MagickBooleanType MagickShaveImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickShearImage() slides one edge of an image assize_t the X or Y axis,
-%  creating a parallelogram.  An X direction shear slides an edge assize_t the X
-%  axis, while a Y direction shear slides an edge assize_t the Y axis.  The amount
+%  MagickShearImage() slides one edge of an image along the X or Y axis,
+%  creating a parallelogram.  An X direction shear slides an edge along the X
+%  axis, while a Y direction shear slides an edge along the Y axis.  The amount
 %  of the shear is controlled by a shear angle.  For X direction shears, x_shear
 %  is measured relative to the Y axis, and similarly, for Y direction shears
 %  y_shear is measured relative to the X axis.  Empty triangles left over from
@@ -11470,7 +11470,7 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o angle: Apply the effect assize_t this angle.
+%    o angle: Apply the effect along this angle.
 %
 */
 WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
@@ -12603,7 +12603,7 @@ WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickWaveImage()  creates a "ripple" effect in the image by shifting
-%  the pixels vertically assize_t a sine wave whose amplitude and wavelength
+%  the pixels vertically along a sine wave whose amplitude and wavelength
 %  is specified by the given parameters.
 %
 %  The format of the MagickWaveImage method is:

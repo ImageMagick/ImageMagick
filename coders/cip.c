@@ -256,7 +256,8 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
         (void) FormatMagickString(buffer,MaxTextExtent,"%02x",~byte);
         (void) WriteBlobString(image,buffer);
       }
-    status=SetImageProgress(image,SaveImageTag,y,image->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
     if (status == MagickFalse)
       break;
   }

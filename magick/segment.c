@@ -459,8 +459,8 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"\n\nNumber of Vectors Per Cluster\n");
       (void) fprintf(stdout,"=============================\n\n");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        (void) fprintf(stdout,"Cluster #%ld = %ld\n",cluster->id,
-          cluster->count);
+        (void) fprintf(stdout,"Cluster #%ld = %ld\n",(long) cluster->id,
+          (long) cluster->count);
       /*
         Print the cluster extents.
       */
@@ -469,10 +469,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stdout,"\n\nCluster #%ld\n\n",cluster->id);
-        (void) fprintf(stdout,"%ld-%ld  %ld-%ld  %ld-%ld\n",cluster->red.left,
-          cluster->red.right,cluster->green.left,cluster->green.right,
-          cluster->blue.left,cluster->blue.right);
+        (void) fprintf(stdout,"\n\nCluster #%ld\n\n",(long) cluster->id);
+        (void) fprintf(stdout,"%ld-%ld  %ld-%ld  %ld-%ld\n",(long)
+          cluster->red.left,(long) cluster->red.right,(long)
+          cluster->green.left,(long) cluster->green.right,(long)
+          cluster->blue.left,(long) cluster->blue.right);
       }
       /*
         Print the cluster center values.
@@ -482,7 +483,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stdout,"\n\nCluster #%ld\n\n",cluster->id);
+        (void) fprintf(stdout,"\n\nCluster #%ld\n\n",(long) cluster->id);
         (void) fprintf(stdout,"%g  %g  %g\n",(double)
           cluster->red.center,(double) cluster->green.center,(double)
           cluster->blue.center);
@@ -793,7 +794,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
           if (((count % 2) == 0) && (right != k))
             correct=right;
         }
-      l=zero_crossing[i].crossings[j];
+      l=(ssize_t) zero_crossing[i].crossings[j];
       zero_crossing[i].crossings[j]=0;
       if (correct != -1)
         zero_crossing[i].crossings[correct]=(short) l;
@@ -1122,7 +1123,8 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
           }
       p++;
     }
-    proceed=SetImageProgress(image,SegmentImageTag,y,2*image->rows);
+    proceed=SetImageProgress(image,SegmentImageTag,(MagickOffsetType) y,
+      2*image->rows);
     if (proceed == MagickFalse)
       break;
   }

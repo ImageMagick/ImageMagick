@@ -2506,7 +2506,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
         if ((image->previous == (Image *) NULL) && (num_passes == 1))
           {
-            status=SetImageProgress(image,LoadImageTag,y,image->rows);
+            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
             if (status == MagickFalse)
               break;
           }
@@ -2688,7 +2689,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           break;
         if ((image->previous == (Image *) NULL) && (num_passes == 1))
           {
-            status=SetImageProgress(image,LoadImageTag,y,image->rows);
+            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
             if (status == MagickFalse)
               break;
           }
