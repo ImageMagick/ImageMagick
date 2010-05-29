@@ -19,7 +19,7 @@ using namespace std;
 //
 // Color operator fuctions
 //
-int Magick::operator == ( const Magick::Color& left_,
+ssize_t Magick::operator == ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
   return ( ( left_.isValid()      == right_.isValid() ) && 
@@ -28,17 +28,17 @@ int Magick::operator == ( const Magick::Color& left_,
 	   ( left_.blueQuantum()  == right_.blueQuantum() )
 	  );
 }
-int Magick::operator != ( const Magick::Color& left_,
+ssize_t Magick::operator != ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
   return ( ! (left_ == right_) );
 }
-int Magick::operator >  ( const Magick::Color& left_,
+ssize_t Magick::operator >  ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-int Magick::operator <  ( const Magick::Color& left_,
+ssize_t Magick::operator <  ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
     if(left_.redQuantum() < right_.redQuantum()) return true;
@@ -48,12 +48,12 @@ int Magick::operator <  ( const Magick::Color& left_,
     if(left_.blueQuantum() < right_.blueQuantum()) return true;
     return false;
 }
-int Magick::operator >= ( const Magick::Color& left_,
+ssize_t Magick::operator >= ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-int Magick::operator <= ( const Magick::Color& left_,
+ssize_t Magick::operator <= ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
