@@ -30,10 +30,10 @@ namespace Magick
   {
   public:
     
-    Geometry ( unsigned int width_,
-	       unsigned int height_,
-	       unsigned int xOff_ = 0,
-	       unsigned int yOff_ = 0,
+    Geometry ( size_t width_,
+	       size_t height_,
+	       size_t xOff_ = 0,
+	       size_t yOff_ = 0,
 	       bool xNegative_ = false,
 	       bool yNegative_ = false );
     Geometry ( const std::string &geometry_ );
@@ -43,20 +43,20 @@ namespace Magick
     ~Geometry ( void );
     
     // Width
-    void          width ( unsigned int width_ );
-    unsigned int  width ( void ) const;
+    void          width ( size_t width_ );
+    size_t  width ( void ) const;
     
     // Height
-    void          height ( unsigned int height_ );
-    unsigned int  height ( void ) const;
+    void          height ( size_t height_ );
+    size_t  height ( void ) const;
     
     // X offset from origin
-    void          xOff ( unsigned int xOff_ );
-    unsigned int  xOff ( void ) const;
+    void          xOff ( size_t xOff_ );
+    size_t  xOff ( void ) const;
     
     // Y offset from origin
-    void          yOff ( unsigned int yOff_ );
-    unsigned int  yOff ( void ) const;
+    void          yOff ( size_t yOff_ );
+    size_t  yOff ( void ) const;
     
     // Sign of X offset negative? (X origin at right)
     void          xNegative ( bool xNegative_ );
@@ -107,10 +107,10 @@ namespace Magick
     operator MagickCore::RectangleInfo() const;
     
   private:
-    unsigned int  _width;
-    unsigned int  _height;
-    unsigned int  _xOff;
-    unsigned int  _yOff;
+    size_t  _width;
+    size_t  _height;
+    size_t  _xOff;
+    size_t  _yOff;
     bool          _xNegative;
     bool          _yNegative;
     bool          _isValid;
@@ -137,42 +137,42 @@ inline bool Magick::Geometry::isValid ( void ) const
 }
 
 // Width
-inline void Magick::Geometry::width ( unsigned int width_ )
+inline void Magick::Geometry::width ( size_t width_ )
 {
   _width = width_;
   isValid( true );
 }
-inline unsigned int Magick::Geometry::width ( void ) const
+inline size_t Magick::Geometry::width ( void ) const
 {
   return _width;
 }
 
 // Height
-inline void Magick::Geometry::height ( unsigned int height_ )
+inline void Magick::Geometry::height ( size_t height_ )
 {
   _height = height_;
 }
-inline unsigned int Magick::Geometry::height ( void ) const
+inline size_t Magick::Geometry::height ( void ) const
 {
   return _height;
 }
 
 // X offset from origin
-inline void Magick::Geometry::xOff ( unsigned int xOff_ )
+inline void Magick::Geometry::xOff ( size_t xOff_ )
 {
   _xOff = xOff_;
 }
-inline unsigned int Magick::Geometry::xOff ( void ) const
+inline size_t Magick::Geometry::xOff ( void ) const
 {
   return _xOff;
 }
 
 // Y offset from origin
-inline void Magick::Geometry::yOff ( unsigned int yOff_ )
+inline void Magick::Geometry::yOff ( size_t yOff_ )
 {
   _yOff = yOff_;
 }
-inline unsigned int Magick::Geometry::yOff ( void ) const
+inline size_t Magick::Geometry::yOff ( void ) const
 {
   return _yOff;
 }

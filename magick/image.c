@@ -528,13 +528,13 @@ MagickExport Image *AppendImages(const Image *image,
       break;
     if (stack == MagickFalse)
       {
-        x_offset+=image->columns;
+        x_offset+=(ssize_t) image->columns;
         y_offset=0;
       }
     else
       {
         x_offset=0;
-        y_offset+=image->rows;
+        y_offset+=(ssize_t) image->rows;
       }
     image=GetNextImageInList(image);
   }

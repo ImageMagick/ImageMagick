@@ -191,8 +191,8 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->debug=IsEventLogging();
   resample_filter->signature=MagickSignature;
 
-  resample_filter->image_area = (ssize_t) resample_filter->image->columns *
-    resample_filter->image->rows;
+  resample_filter->image_area=(ssize_t) (resample_filter->image->columns*
+    resample_filter->image->rows);
   resample_filter->average_defined = MagickFalse;
 
   /* initialise the resampling filter settings */

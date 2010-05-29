@@ -1474,7 +1474,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(DestroyKernelInfo(kernel));
 
         /* set all kernel values to scale given */
-        u=(ssize_t) kernel->width*kernel->height;
+        u=(ssize_t) (kernel->width*kernel->height);
         for ( i=0; i < u; i++)
             kernel->values[i] = scale;
         kernel->minimum = kernel->maximum = scale;   /* a flat shape */
@@ -3396,10 +3396,10 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           }
           /* rotate the origin - relative to center of array */
           { register ssize_t x,y;
-            x = (ssize_t) kernel->x*2-kernel->width+1;
-            y = (ssize_t) kernel->y*2-kernel->height+1;
-            kernel->x = (size_t) ( -y +kernel->width-1)/2;
-            kernel->y = (size_t) ( +x +kernel->height-1)/2;
+            x = (ssize_t) (kernel->x*2-kernel->width+1);
+            y = (ssize_t) (kernel->y*2-kernel->height+1);
+            kernel->x = (size_t) ( -y +(ssize_t) kernel->width-1)/2;
+            kernel->y = (size_t) ( +x +(ssize_t) kernel->height-1)/2;
           }
           angle = fmod(angle+270.0, 360.0);     /* angle reduced 90 degrees */
           kernel->angle = fmod(kernel->angle+90.0, 360.0);

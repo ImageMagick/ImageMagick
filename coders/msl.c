@@ -1984,8 +1984,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                        image=msl_info->image[n];
                        height=composite_image->rows;
                        width=composite_image->columns;
-                       for (y=0; y < (ssize_t) image->rows; y+=height)
-                         for (x=0; x < (ssize_t) image->columns; x+=width)
+                       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) height)
+                         for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) width)
                          {
                            if (rotate_image != (Image *) NULL)
                              (void) CompositeImage(image,compose,rotate_image,

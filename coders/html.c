@@ -362,11 +362,11 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
                     "  <area href=%s\"",url);
                   (void) WriteBlobString(image,buffer);
                 }
-              geometry.x+=geometry.width;
+              geometry.x+=(ssize_t) geometry.width;
               if ((geometry.x+4) >= (ssize_t) image->columns)
                 {
                   geometry.x=0;
-                  geometry.y+=geometry.height;
+                  geometry.y+=(ssize_t) geometry.height;
                 }
             }
       (void) WriteBlobString(image,"</map>\n");
@@ -438,11 +438,11 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
                 "  <area href=%s\"",url);
               (void) WriteBlobString(image,buffer);
             }
-          geometry.x+=geometry.width;
+          geometry.x+=(ssize_t) geometry.width;
           if ((geometry.x+4) >= (ssize_t) image->columns)
             {
               geometry.x=0;
-              geometry.y+=geometry.height;
+              geometry.y+=(ssize_t) geometry.height;
             }
         }
   (void) WriteBlobString(image,"</map>\n");

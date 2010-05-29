@@ -178,7 +178,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       columns,
       subrows;
 
-    ssize_t
+    int
       x_offset,
       y_offset;
 
@@ -186,7 +186,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       x_bits_per_pixel,
       y_bits_per_pixel;
 
-    size_t
+    unsigned int
       location_type,
       location_dimension,
       number_of_images,

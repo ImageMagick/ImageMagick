@@ -1046,7 +1046,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     i;
 
   size_t
-    depth;
+    depth,
+    one;
 
   /*
     Open persistent cache.
@@ -1064,6 +1065,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
   AppendImageFormat("cache",cache_filename);
   scene=0;
   offset=0;
+  one=1;
   do
   {
     /*
@@ -1071,7 +1073,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     */
     depth=GetImageQuantumDepth(image,MagickTrue);
     if ((image->storage_class == PseudoClass) &&
-        (image->colors > (1UL << depth)))
+        (image->colors > (one << depth)))
       image->storage_class=DirectClass;
     (void) WriteBlobString(image,"id=MagickCache\n");
     (void) FormatMagickString(buffer,MaxTextExtent,"quantum-depth=%d\n",

@@ -161,8 +161,8 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     Initialize crop image attributes.
   */
   bitmap.bmType         = 0;
-  bitmap.bmWidth        = page.width;
-  bitmap.bmHeight       = page.height;
+  bitmap.bmWidth        = (LONG) page.width;
+  bitmap.bmHeight       = (LONG) page.height;
   bitmap.bmWidthBytes   = bitmap.bmWidth * 4;
   bitmap.bmPlanes       = 1;
   bitmap.bmBitsPixel    = 32;
@@ -198,7 +198,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
           x;
 
         /* Transfer pixels, scaling to Quantum */
-        for( x=page.width ; x> 0 ; x-- )
+        for( x=(ssize_t) page.width ; x> 0 ; x-- )
           {
             q->rgbRed = ScaleQuantumToChar(GetRedPixelComponent(p));
             q->rgbGreen = ScaleQuantumToChar(GetGreenPixelComponent(p));
@@ -612,8 +612,8 @@ MagickExport void *ImageToHBITMAP(Image *image)
 
   (void) ResetMagickMemory(&bitmap,0,sizeof(bitmap));
   bitmap.bmType=0;
-  bitmap.bmWidth=image->columns;
-  bitmap.bmHeight=image->rows;
+  bitmap.bmWidth=(LONG) image->columns;
+  bitmap.bmHeight=(LONG) image->rows;
   bitmap.bmWidthBytes=4*bitmap.bmWidth;
   bitmap.bmPlanes=1;
   bitmap.bmBitsPixel=32;

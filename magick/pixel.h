@@ -80,7 +80,7 @@ typedef struct _DoublePixelPacket
 
 typedef struct _LongPixelPacket
 {
-  unsigned long
+  size_t
     red,
     green,
     blue,

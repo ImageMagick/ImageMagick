@@ -557,8 +557,8 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   */
   (void) ResetMagickMemory(&DIBinfo,0,sizeof(BITMAPINFO));
   DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-  DIBinfo.bmiHeader.biWidth=image->columns;
-  DIBinfo.bmiHeader.biHeight=(-1)*image->rows;
+  DIBinfo.bmiHeader.biWidth=(LONG) image->columns;
+  DIBinfo.bmiHeader.biHeight=(-1)*(LONG) image->rows;
   DIBinfo.bmiHeader.biPlanes=1;
   DIBinfo.bmiHeader.biBitCount=32;
   DIBinfo.bmiHeader.biCompression=BI_RGB;
@@ -601,8 +601,8 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   }
   rect.top=0;
   rect.left=0;
-  rect.right=image->columns;
-  rect.bottom=image->rows;
+  rect.right=(LONG) image->columns;
+  rect.bottom=(LONG) image->rows;
   /*
     Convert metafile pixels.
   */

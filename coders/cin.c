@@ -81,7 +81,7 @@ typedef struct _CINDataFormatInfo
     sign,
     sense;
 
-  size_t
+  unsigned int
     line_pad,
     channel_pad;
 
@@ -91,7 +91,7 @@ typedef struct _CINDataFormatInfo
 
 typedef struct _CINFileInfo
 {
-  size_t
+  unsigned int
     magic,
     image_offset,
     generic_length,
@@ -115,14 +115,14 @@ typedef struct _CINFilmInfo
     offset,
     reserve1;
 
-  size_t
+  unsigned int
     prefix,
     count;
 
   char
     format[32];
 
-  size_t
+  unsigned int
     frame_position;
 
   float
@@ -141,7 +141,7 @@ typedef struct _CINImageChannel
     bits_per_pixel,
     reserve;
 
-  size_t
+  unsigned int
     pixels_per_line,
     lines_per_image;
 
@@ -175,7 +175,7 @@ typedef struct _CINImageInfo
 
 typedef struct _CINOriginationInfo
 {
-  ssize_t
+  int
     x_offset,
     y_offset;
 

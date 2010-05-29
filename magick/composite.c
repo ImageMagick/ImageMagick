@@ -2755,14 +2755,14 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-      for (y=0; y < (ssize_t) image->rows; y+=texture->rows)
+      for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture->rows)
       {
         register ssize_t
           x;
 
         if (status == MagickFalse)
           continue;
-        for (x=0; x < (ssize_t) image->columns; x+=texture->columns)
+        for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture->columns)
         {
           MagickBooleanType
             thread_status;
@@ -2839,7 +2839,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       }
     texture_indexes=GetCacheViewVirtualIndexQueue(texture_view);
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (ssize_t) image->columns; x+=texture->columns)
+    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture->columns)
     {
       width=texture->columns;
       if ((x+(ssize_t) width) > (ssize_t) image->columns)

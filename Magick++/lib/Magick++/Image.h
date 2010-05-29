@@ -68,12 +68,12 @@ namespace Magick
 
     // Construct Image of specified size and depth from in-memory BLOB
     Image ( const Blob &blob_, const Geometry &size,
-            const unsigned int depth );
+            const size_t depth );
 
     // Construct Image of specified size, depth, and format from
     // in-memory BLOB
     Image ( const Blob &blob_, const Geometry &size,
-            const unsigned int depth_,
+            const size_t depth_,
             const std::string &magick_ );
     // Construct Image of specified size, and format from in-memory
     // BLOB
@@ -82,8 +82,8 @@ namespace Magick
 
     // Construct an image based on an array of raw pixels, of
     // specified type and mapping, in memory
-    Image ( const unsigned int width_,
-            const unsigned int height_,
+    Image ( const size_t width_,
+            const size_t height_,
             const std::string &map_,
             const StorageType type_,
             const void *pixels_ );
@@ -117,9 +117,9 @@ namespace Magick
     // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
     // Width x height define the size of the pixel neighborhood
     // offset = constant to subtract from pixel neighborhood mean
-    void            adaptiveThreshold ( const unsigned int width,
-                                        const unsigned int height,
-                                        const unsigned offset = 0 );
+    void            adaptiveThreshold ( const size_t width,
+                                        const size_t height,
+                                        const size_t offset = 0 );
 
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
@@ -182,8 +182,8 @@ namespace Magick
 
     // Set or obtain modulus channel depth
     void            channelDepth ( const ChannelType channel_,
-                                   const unsigned int depth_ );
-    unsigned int    channelDepth ( const ChannelType channel_ );
+                                   const size_t depth_ );
+    size_t    channelDepth ( const ChannelType channel_ );
 
     // Charcoal effect image (looks like charcoal sketch)
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -205,17 +205,17 @@ namespace Magick
     
     // Colorize image with pen color, using specified percent opacity
     // for red, green, and blue quantums
-    void            colorize ( const unsigned int opacityRed_,
-                               const unsigned int opacityGreen_,
-                               const unsigned int opacityBlue_,
+    void            colorize ( const size_t opacityRed_,
+                               const size_t opacityGreen_,
+                               const size_t opacityBlue_,
              const Color &penColor_ );
     // Colorize image with pen color, using specified percent opacity.
-    void            colorize ( const unsigned int opacity_,
+    void            colorize ( const size_t opacity_,
              const Color &penColor_ );
     
     // Apply a color matrix to the image channels.  The user supplied
     // matrix may be of order 1 to 5 (1x1 through 5x5).
-    void            colorMatrix (const unsigned int order_,
+    void            colorMatrix (const size_t order_,
          const double *color_matrix_);
 
     // Comment image (add comment string to image)
@@ -248,12 +248,12 @@ namespace Magick
                                 = InCompositeOp );
     
     // Contrast image (enhance intensity differences in image)
-    void            contrast ( const unsigned int sharpen_ );
+    void            contrast ( const size_t sharpen_ );
 
     // Convolve image.  Applies a user-specified convolution to the image.
     //  order_ represents the number of columns and rows in the filter kernel.
     //  kernel_ is an array of doubles representing the convolution kernel.
-    void            convolve ( const unsigned int order_,
+    void            convolve ( const size_t order_,
                                const double *kernel_ );
 
     // Crop image (subregion of original image)
@@ -314,8 +314,8 @@ namespace Magick
     // Flood-fill color across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const unsigned int x_,
-                                    const unsigned int y_,
+    void            floodFillColor( const size_t x_,
+                                    const size_t y_,
             const Color &fillColor_ );
     void            floodFillColor( const Geometry &point_,
             const Color &fillColor_ );
@@ -323,8 +323,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const unsigned int x_,
-                                    const unsigned int y_,
+    void            floodFillColor( const size_t x_,
+                                    const size_t y_,
             const Color &fillColor_,
             const Color &borderColor_ );
     void            floodFillColor( const Geometry &point_,
@@ -333,16 +333,16 @@ namespace Magick
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement opacity value using method.
-    void            floodFillOpacity ( const unsigned int x_,
-                                       const unsigned int y_,
-                                       const unsigned int opacity_,
+    void            floodFillOpacity ( const size_t x_,
+                                       const size_t y_,
+                                       const size_t opacity_,
                                        const PaintMethod method_ );
 
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const unsigned int x_,
-                                      const unsigned int y_,
+    void            floodFillTexture( const size_t x_,
+                                      const size_t y_,
               const Image &texture_ );
     void            floodFillTexture( const Geometry &point_,
               const Image &texture_ );
@@ -350,8 +350,8 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const unsigned int x_,
-                                      const unsigned int y_,
+    void            floodFillTexture( const size_t x_,
+                                      const size_t y_,
               const Image &texture_,
               const Color &borderColor_ );
     void            floodFillTexture( const Geometry &point_,
@@ -368,8 +368,8 @@ namespace Magick
     
     // Frame image
     void            frame ( const Geometry &geometry_ = frameGeometryDefault );
-    void            frame ( const unsigned int width_,
-                            const unsigned int height_,
+    void            frame ( const size_t width_,
+                            const size_t height_,
                             const int innerBevel_ = 6,
                             const int outerBevel_ = 6 );
 
@@ -449,7 +449,7 @@ namespace Magick
     
     // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
-             const unsigned int opacity_,
+             const size_t opacity_,
              const int x_, const int y_,
              const PaintMethod method_ );
 
@@ -493,7 +493,7 @@ namespace Magick
     // to QuantumRange. The defines OpaqueOpacity and TransparentOpacity are
     // available to specify completely opaque or completely
     // transparent, respectively.
-    void            opacity ( const unsigned int opacity_ );
+    void            opacity ( const size_t opacity_ );
 
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
@@ -519,8 +519,8 @@ namespace Magick
                                       double rvalue_);
 
     void            quantumOperator ( const int x_,const int y_,
-                                      const unsigned int columns_,
-                                      const unsigned int rows_,
+                                      const size_t columns_,
+                                      const size_t rows_,
                                       const ChannelType channel_,
                                       const MagickEvaluateOperator operator_,
                                       const double rvalue_);
@@ -570,13 +570,13 @@ namespace Magick
     // in-memory BLOB
     void            read ( const Blob         &blob_,
          const Geometry     &size_,
-         const unsigned int depth_ );
+         const size_t depth_ );
 
     // Read single image frame of specified size, depth, and format
     // from in-memory BLOB
     void            read ( const Blob         &blob_,
          const Geometry     &size_,
-         const unsigned int depth_,
+         const size_t depth_,
          const std::string  &magick_ );
 
     // Read single image frame of specified size, and format from
@@ -588,8 +588,8 @@ namespace Magick
     // Read single image frame from an array of raw pixels, with
     // specified storage type (ConstituteImage), e.g.
     //    image.read( 640, 480, "RGB", 0, pixels );
-    void            read ( const unsigned int width_,
-                           const unsigned int height_,
+    void            read ( const size_t width_,
+                           const size_t height_,
                            const std::string &map_,
                            const StorageType  type_,
                            const void        *pixels_ );
@@ -604,8 +604,8 @@ namespace Magick
     // Roll image (rolls image vertically and horizontally) by specified
     // number of columnms and rows)
     void            roll ( const Geometry &roll_ );
-    void            roll ( const unsigned int columns_,
-         const unsigned int rows_ );
+    void            roll ( const size_t columns_,
+         const size_t rows_ );
     
     // Rotate image counter-clockwise by specified number of degrees.
     void            rotate ( const double degrees_ );
@@ -646,7 +646,7 @@ namespace Magick
           const double yShearAngle_ );
     
     // adjust the image contrast with a non-linear sigmoidal contrast algorithm
-    void            sigmoidalContrast ( const unsigned int sharpen_, const double contrast, const double midpoint = QuantumRange / 2.0 );
+    void            sigmoidalContrast ( const size_t sharpen_, const double contrast, const double midpoint = QuantumRange / 2.0 );
 
     // Solarize image (similar to effect seen when exposing a
     // photographic film to light during the development process)
@@ -656,7 +656,7 @@ namespace Magick
     void            splice ( const Geometry &geometry_ );
 
     // Spread pixels randomly within image by specified ammount
-    void            spread ( const unsigned int amount_ = 3 );
+    void            spread ( const size_t amount_ = 3 );
     
     // Sparse color image, given a set of coordinates, interpolates the colors
     // found at those coordinates, across the whole image, using various
@@ -742,15 +742,15 @@ namespace Magick
           const std::string &magick_ );
     void            write ( Blob *blob_,
           const std::string &magick_,
-          const unsigned int depth_ );
+          const size_t depth_ );
 
     // Write single image frame to an array of pixels with storage
     // type specified by user (DispatchImage), e.g.
     //   image.write( 0, 0, 640, 1, "RGB", 0, pixels );
     void            write ( const int x_,
                             const int y_,
-                            const unsigned int columns_,
-                            const unsigned int rows_,
+                            const size_t columns_,
+                            const size_t rows_,
                             const std::string& map_,
                             const StorageType type_,
                             void *pixels_ );
@@ -774,13 +774,13 @@ namespace Magick
     
     // Time in 1/100ths of a second which must expire before
     // displaying the next image in an animated sequence.
-    void            animationDelay ( const unsigned int delay_ );
-    unsigned int    animationDelay ( void ) const;
+    void            animationDelay ( const size_t delay_ );
+    size_t    animationDelay ( void ) const;
     
     // Number of iterations to loop an animation (e.g. Netscape loop
     // extension) for.
-    void            animationIterations ( const unsigned int iterations_ );
-    unsigned int    animationIterations ( void ) const;
+    void            animationIterations ( const size_t iterations_ );
+    size_t    animationIterations ( void ) const;
 
     // Access/Update a named image attribute
     void            attribute ( const std::string name_,
@@ -796,13 +796,13 @@ namespace Magick
     std::string     backgroundTexture ( void ) const;
     
     // Base image width (before transformations)
-    unsigned int    baseColumns ( void ) const;
+    size_t    baseColumns ( void ) const;
     
     // Base image filename (before transformations)
     std::string     baseFilename ( void ) const;
     
     // Base image height (before transformations)
-    unsigned int    baseRows ( void ) const;
+    size_t    baseRows ( void ) const;
     
     // Image border color
     void            borderColor ( const Color &color_ );
@@ -820,7 +820,7 @@ namespace Magick
     // Pixel cache threshold in megabytes.  Once this memory threshold
     // is exceeded, all subsequent pixels cache operations are to/from
     // disk.  This setting is shared by all Image objects.
-    static void     cacheThreshold ( const unsigned int threshold_ );
+    static void     cacheThreshold ( const size_t threshold_ );
     
     // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
     void            chromaBluePrimary ( const double x_, const double y_ );
@@ -858,13 +858,13 @@ namespace Magick
     double          colorFuzz ( void ) const;
     
     // Color at colormap position index_
-    void            colorMap ( const unsigned int index_,
+    void            colorMap ( const size_t index_,
                                const Color &color_ );
-    Color           colorMap ( const unsigned int index_ ) const;
+    Color           colorMap ( const size_t index_ ) const;
 
     // Colormap size (number of colormap entries)
-    void            colorMapSize ( const unsigned int entries_ );
-    unsigned int    colorMapSize ( void );
+    void            colorMapSize ( const size_t entries_ );
+    size_t    colorMapSize ( void );
 
     // Image Color Space
     void            colorSpace ( const ColorspaceType colorSpace_ );
@@ -874,7 +874,7 @@ namespace Magick
     ColorspaceType  colorspaceType ( void ) const;
 
     // Image width
-    unsigned int    columns ( void ) const;
+    size_t    columns ( void ) const;
     
     // Image comment
     std::string     comment ( void ) const;
@@ -914,8 +914,8 @@ namespace Magick
     Geometry        density ( void ) const;
 
     // Image depth (bits allocated to red/green/blue components)
-    void            depth ( const unsigned int depth_ );
-    unsigned int    depth ( void ) const;
+    void            depth ( const size_t depth_ );
+    size_t    depth ( void ) const;
 
     // Tile names from within an image montage
     std::string     directory ( void ) const;
@@ -975,8 +975,8 @@ namespace Magick
     Geometry        geometry ( void ) const;
 
     // GIF disposal method
-    void            gifDisposeMethod ( const unsigned int disposeMethod_ );
-    unsigned int    gifDisposeMethod ( void ) const;
+    void            gifDisposeMethod ( const size_t disposeMethod_ );
+    size_t    gifDisposeMethod ( void ) const;
 
     // ICC color profile (BLOB)
     void            iccColorProfile( const Blob &colorProfile_ );
@@ -1050,8 +1050,8 @@ typedef struct _ImageStatistics
 
     // Image modulus depth (minimum number of bits required to support
     // red/green/blue components without loss of accuracy)
-    void            modulusDepth ( const unsigned int modulusDepth_ );
-    unsigned int    modulusDepth ( void ) const;
+    void            modulusDepth ( const size_t modulusDepth_ );
+    size_t    modulusDepth ( void ) const;
 
     // Tile size and offset within an image montage
     Geometry        montageGeometry ( void ) const;
@@ -1085,11 +1085,11 @@ typedef struct _ImageStatistics
     Image           penTexture ( void  ) const;
 
     // Get/set pixel color at location x & y.
-    void            pixelColor ( const unsigned int x_,
-                                 const unsigned int y_,
+    void            pixelColor ( const size_t x_,
+                                 const size_t y_,
          const Color &color_ );
-    Color           pixelColor ( const unsigned int x_,
-                                 const unsigned int y_ ) const;
+    Color           pixelColor ( const size_t x_,
+                                 const size_t y_ ) const;
 
     // Add or remove a named profile to/from the image. Remove the
     // profile by passing an empty Blob (e.g. Blob()). Valid names are
@@ -1103,12 +1103,12 @@ typedef struct _ImageStatistics
     Blob            profile( const std::string name_ ) const;
 
     // JPEG/MIFF/PNG compression level (default 75).
-    void            quality ( const unsigned int quality_ );
-    unsigned int    quality ( void ) const;
+    void            quality ( const size_t quality_ );
+    size_t    quality ( void ) const;
     
     // Maximum number of colors to quantize to
-    void            quantizeColors ( const unsigned int colors_ );
-    unsigned int    quantizeColors ( void ) const;
+    void            quantizeColors ( const size_t colors_ );
+    size_t    quantizeColors ( void ) const;
     
     // Colorspace to quantize in.
     void            quantizeColorSpace ( const ColorspaceType colorSpace_ );
@@ -1119,8 +1119,8 @@ typedef struct _ImageStatistics
     bool            quantizeDither ( void ) const;
 
     // Quantization tree-depth
-    void            quantizeTreeDepth ( const unsigned int treeDepth_ );
-    unsigned int    quantizeTreeDepth ( void ) const;
+    void            quantizeTreeDepth ( const size_t treeDepth_ );
+    size_t    quantizeTreeDepth ( void ) const;
 
     // The type of rendering intent
     void            renderingIntent ( const RenderingIntent renderingIntent_ );
@@ -1131,11 +1131,11 @@ typedef struct _ImageStatistics
     ResolutionType  resolutionUnits ( void ) const;
 
     // The number of pixel rows in the image
-    unsigned int    rows ( void ) const;
+    size_t    rows ( void ) const;
 
     // Image scene number
-    void            scene ( const unsigned int scene_ );
-    unsigned int    scene ( void ) const;
+    void            scene ( const size_t scene_ );
+    size_t    scene ( void ) const;
 
     // Image signature.  Set force_ to true in order to re-calculate
     // the signature regardless of whether the image data has been
@@ -1188,8 +1188,8 @@ typedef struct _ImageStatistics
     // the line stroking the path. The miterLimit' imposes a limit on
     // the ratio of the miter length to the 'lineWidth'. The default
     // value of this parameter is 4.
-    void            strokeMiterLimit ( const unsigned int miterLimit_ );
-    unsigned int    strokeMiterLimit ( void ) const;
+    void            strokeMiterLimit ( const size_t miterLimit_ );
+    size_t    strokeMiterLimit ( void ) const;
 
     // Pattern image to use while stroking object outlines.
     void            strokePattern ( const Image &strokePattern_ );
@@ -1200,12 +1200,12 @@ typedef struct _ImageStatistics
     double          strokeWidth ( void ) const;
 
     // Subimage of an image sequence
-    void            subImage ( const unsigned int subImage_ );
-    unsigned int    subImage ( void ) const;
+    void            subImage ( const size_t subImage_ );
+    size_t    subImage ( void ) const;
 
     // Number of images relative to the base image
-    void            subRange ( const unsigned int subRange_ );
-    unsigned int    subRange ( void ) const;
+    void            subRange ( const size_t subRange_ );
+    size_t    subRange ( void ) const;
 
     // Annotation text encoding (e.g. "UTF-16")
     void            textEncoding ( const std::string &encoding_ );
@@ -1279,8 +1279,8 @@ typedef struct _ImageStatistics
     // Transfers read-only pixels from the image to the pixel cache as
     // defined by the specified region
     const PixelPacket* getConstPixels ( const int x_, const int y_,
-                                        const unsigned int columns_,
-                                        const unsigned int rows_ ) const;
+                                        const size_t columns_,
+                                        const size_t rows_ ) const;
 
     // Obtain mutable image pixel indexes (valid for PseudoClass images)
     IndexPacket* getIndexes ( void );
@@ -1293,15 +1293,15 @@ typedef struct _ImageStatistics
     // transferred back to the image via syncPixels.  This method is
     // valid for DirectClass images.
     PixelPacket* getPixels ( const int x_, const int y_,
-           const unsigned int columns_,
-                             const unsigned int rows_ );
+           const size_t columns_,
+                             const size_t rows_ );
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
     PixelPacket* setPixels ( const int x_, const int y_,
-           const unsigned int columns_,
-                             const unsigned int rows_ );
+           const size_t columns_,
+                             const size_t rows_ );
 
     // Transfers the image cache pixels to the image.
     void syncPixels ( void );
@@ -1398,13 +1398,13 @@ inline Magick::ClassType Magick::Image::classType ( void ) const
 }
 
 // Get number of image columns
-inline unsigned int Magick::Image::columns ( void ) const
+inline size_t Magick::Image::columns ( void ) const
 {
   return constImage()->columns;
 }
 
 // Get number of image rows
-inline unsigned int Magick::Image::rows ( void ) const
+inline size_t Magick::Image::rows ( void ) const
 {
   return constImage()->rows;
 }

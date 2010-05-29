@@ -212,7 +212,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   /*
     Extract chop image.
   */
-  i+=extent.height;
+  i+=(ssize_t) extent.height;
   for (y=0; y < (ssize_t) (image->rows-(extent.y+extent.height)); y++)
   {
     register const PixelPacket
@@ -1221,13 +1221,13 @@ MagickExport Image *RollImage(const Image *image,const ssize_t x_offset,
   offset.x=x_offset;
   offset.y=y_offset;
   while (offset.x < 0)
-    offset.x+=image->columns;
+    offset.x+=(ssize_t) image->columns;
   while (offset.x >= (ssize_t) image->columns)
-    offset.x-=image->columns;
+    offset.x-=(ssize_t) image->columns;
   while (offset.y < 0)
-    offset.y+=image->rows;
+    offset.y+=(ssize_t) image->rows;
   while (offset.y >= (ssize_t) image->rows)
-    offset.y-=image->rows;
+    offset.y-=(ssize_t) image->rows;
   /*
     Roll image.
   */
@@ -1311,8 +1311,8 @@ MagickExport Image *ShaveImage(const Image *image,
     return((Image *) NULL);
   shave_image->page.width-=2*shave_info->width;
   shave_image->page.height-=2*shave_info->height;
-  shave_image->page.x-=shave_info->width;
-  shave_image->page.y-=shave_info->height;
+  shave_image->page.x-=(ssize_t) shave_info->width;
+  shave_image->page.y-=(ssize_t) shave_info->height;
   return(shave_image);
 }
 
@@ -1406,47 +1406,47 @@ MagickExport Image *SpliceImage(const Image *image,
       break;
     case NorthGravity:
     {
-      splice_geometry.x+=splice_geometry.width/2;
+      splice_geometry.x+=(ssize_t) splice_geometry.width/2;
       break;
     }
     case NorthEastGravity:
     {
-      splice_geometry.x+=splice_geometry.width;
+      splice_geometry.x+=(ssize_t) splice_geometry.width;
       break;
     }
     case WestGravity:
     {
-      splice_geometry.y+=splice_geometry.width/2;
+      splice_geometry.y+=(ssize_t) splice_geometry.width/2;
       break;
     }
     case StaticGravity:
     case CenterGravity:
     {
-      splice_geometry.x+=splice_geometry.width/2;
-      splice_geometry.y+=splice_geometry.height/2;
+      splice_geometry.x+=(ssize_t) splice_geometry.width/2;
+      splice_geometry.y+=(ssize_t) splice_geometry.height/2;
       break;
     }
     case EastGravity:
     {
-      splice_geometry.x+=splice_geometry.width;
-      splice_geometry.y+=splice_geometry.height/2;
+      splice_geometry.x+=(ssize_t) splice_geometry.width;
+      splice_geometry.y+=(ssize_t) splice_geometry.height/2;
       break;
     }
     case SouthWestGravity:
     {
-      splice_geometry.y+=splice_geometry.height;
+      splice_geometry.y+=(ssize_t) splice_geometry.height;
       break;
     }
     case SouthGravity:
     {
-      splice_geometry.x+=splice_geometry.width/2;
-      splice_geometry.y+=splice_geometry.height;
+      splice_geometry.x+=(ssize_t) splice_geometry.width/2;
+      splice_geometry.y+=(ssize_t) splice_geometry.height;
       break;
     }
     case SouthEastGravity:
     {
-      splice_geometry.x+=splice_geometry.width;
-      splice_geometry.y+=splice_geometry.height;
+      splice_geometry.x+=(ssize_t) splice_geometry.width;
+      splice_geometry.y+=(ssize_t) splice_geometry.height;
       break;
     }
   }
@@ -1555,7 +1555,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y-splice_geometry.height,
+    p=GetCacheViewVirtualPixels(image_view,0,y-(ssize_t) splice_geometry.height,
       image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(splice_view,0,y,splice_image->columns,1,
       exception);
@@ -1830,12 +1830,12 @@ MagickExport MagickBooleanType TransformImage(Image **image,
              proceed=MagickTrue;
              i=0;
              number_images=0;
-             for (y=0; y < (ssize_t) transform_image->page.height; y+=height)
-               for (x=0; x < (ssize_t) transform_image->page.width; x+=width)
+             for (y=0; y < (ssize_t) transform_image->page.height; y+=(ssize_t) height)
+               for (x=0; x < (ssize_t) transform_image->page.width; x+=(ssize_t) width)
                  number_images++;
-             for (y=0; y < (ssize_t) transform_image->page.height; y+=height)
+             for (y=0; y < (ssize_t) transform_image->page.height; y+=(ssize_t) height)
              {
-               for (x=0; x < (ssize_t) transform_image->page.width; x+=width)
+               for (x=0; x < (ssize_t) transform_image->page.width; x+=(ssize_t) width)
                {
                  progress_monitor=SetImageProgressMonitor(transform_image,
                    (MagickProgressMonitor) NULL,transform_image->client_data);

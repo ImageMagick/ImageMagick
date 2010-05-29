@@ -1280,7 +1280,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         format;
 
       q=(unsigned char *) (directory+2+(12*entry));
-      tag_value=(ssize_t) ReadPropertyShort(endian,q)+tag_offset;
+      tag_value=(ssize_t) (ReadPropertyShort(endian,q)+tag_offset);
       format=(size_t) ReadPropertyShort(endian,q+2);
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;

@@ -181,8 +181,11 @@ static LZWInfo *RelinquishLZWInfo(LZWInfo *lzw_info)
 
 static inline void ResetLZWInfo(LZWInfo *lzw_info)
 {
+  size_t
+    one;
+
   lzw_info->bits=lzw_info->data_size+1;
-  lzw_info->maximum_code=1UL << lzw_info->bits;
+  lzw_info->maximum_code=one << lzw_info->bits;
   lzw_info->slot=lzw_info->maximum_data_value+3;
   lzw_info->genesis=MagickTrue;
 }
@@ -361,8 +364,12 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
       if ((lzw_info->slot >= lzw_info->maximum_code) &&
           (lzw_info->bits < MaximumLZWBits))
         {
+          size_t
+            one;
+
           lzw_info->bits++;
-          lzw_info->maximum_code=1UL << lzw_info->bits;
+          one=1;
+          lzw_info->maximum_code=one << lzw_info->bits;
         }
     }
   lzw_info->last_code=(size_t) code;
@@ -988,7 +995,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dispose,
     global_colors,
     image_count,
-    iterations;
+    iterations,
+    one;
 
   /*
     Open image file.
@@ -1029,6 +1037,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   delay=0;
   dispose=0;
   iterations=1;
+  one=1;
   opacity=(-1);
   image_count=0;
   for ( ; ; )
@@ -1216,7 +1225,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace :
       NoInterlace;
     image->colors=BitSet((int) flag,0x80) == 0 ? global_colors :
-      1UL << ((size_t) (flag & 0x07)+1);
+      one << ((size_t) (flag & 0x07)+1);
     if (opacity >= (ssize_t) image->colors)
       opacity=(-1);
     image->page.width=page.width;

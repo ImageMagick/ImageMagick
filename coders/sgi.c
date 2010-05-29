@@ -486,7 +486,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   packets);
                 if (EOFBlob(image) != MagickFalse)
                   break;
-                offset+=runlength[y+z*iris_info.rows];
+                offset+=(ssize_t) runlength[y+z*iris_info.rows];
                 status=SGIDecode(bytes_per_pixel,(ssize_t)
                   (runlength[y+z*iris_info.rows]/bytes_per_pixel),packets,
                   1L*iris_info.columns,p+bytes_per_pixel*z);
@@ -516,7 +516,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   packets);
                 if (EOFBlob(image) != MagickFalse)
                   break;
-                offset+=runlength[y+z*iris_info.rows];
+                offset+=(ssize_t) runlength[y+z*iris_info.rows];
                 status=SGIDecode(bytes_per_pixel,(ssize_t)
                   (runlength[y+z*iris_info.rows]/bytes_per_pixel),packets,
                   1L*iris_info.columns,p+bytes_per_pixel*z);
@@ -951,9 +951,9 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobMSBShort(image,iris_info.columns);
     (void) WriteBlobMSBShort(image,iris_info.rows);
     (void) WriteBlobMSBShort(image,iris_info.depth);
-    (void) WriteBlobMSBLong(image,iris_info.minimum_value);
-    (void) WriteBlobMSBLong(image,iris_info.maximum_value);
-    (void) WriteBlobMSBLong(image,iris_info.sans);
+    (void) WriteBlobMSBLong(image,(unsigned int) iris_info.minimum_value);
+    (void) WriteBlobMSBLong(image,(unsigned int) iris_info.maximum_value);
+    (void) WriteBlobMSBLong(image,(unsigned int) iris_info.sans);
     value=GetImageProperty(image,"label");
     if (value != (const char *) NULL)
       (void) CopyMagickString(iris_info.name,value,sizeof(iris_info.name));
@@ -1099,7 +1099,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
           (void) WriteBlobMSBLong(image,(size_t) offsets[i]);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
-          (void) WriteBlobMSBLong(image,runlength[i]);
+          (void) WriteBlobMSBLong(image,(unsigned int) runlength[i]);
         (void) WriteBlob(image,number_packets,packets);
         /*
           Relinquish resources.

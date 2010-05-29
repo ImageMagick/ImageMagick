@@ -101,8 +101,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 #define GetBit(alpha,i) MagickMin((((size_t) (alpha) >> (size_t) \
   (i)) & 0x01),16)
 #define SetBit(alpha,i,set) (alpha)=(IndexPacket) ((set) != 0 ? \
-  (size_t) (alpha) | (1UL << (size_t) (i)) : (size_t) \
-  (alpha) & ~(1UL << (size_t) (i)))
+  (size_t) (alpha) | (one << (size_t) (i)) : (size_t) \
+  (alpha) & ~(one << (size_t) (i)))
 
   Image
     *image,
@@ -134,7 +134,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     *q;
 
   size_t
-    depth;
+    depth,
+    one;
 
   /*
     Initialize Image structure.
@@ -146,6 +147,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  one=1;
   image=AcquireImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");

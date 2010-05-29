@@ -256,6 +256,10 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    totalOffset,
+    seekNextDepth;
+
   MagickPixelPacket
     transpix;
 
@@ -290,16 +294,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     redbits,
     greenbits,
     bluebits,
+    one,
     pad,
     size,
     bit;
 
   unsigned short
     color16;
-
-  MagickOffsetType
-    totalOffset,
-    seekNextDepth;
 
   /*
     Open image file.
@@ -343,8 +344,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     /*
       Initialize image colormap.
     */
+    one=1;
     if ((bits_per_pixel < 16) &&
-        (AcquireImageColormap(image,1L << bits_per_pixel) == MagickFalse))
+        (AcquireImageColormap(image,one << bits_per_pixel) == MagickFalse))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     GetMagickPixelPacket(image,&transpix);
     if (bits_per_pixel == 16)  /* Direct Color */
@@ -694,7 +696,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     count,
     bits_per_pixel,
     bytes_per_row,
-    nextDepthOffset;
+    nextDepthOffset,
+    one;
 
   unsigned short
     color16,
@@ -722,6 +725,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   transpix.green=0;
   transpix.blue=0;
   transpix.opacity=0;
+  one=1;
   version=0;
   scene=0;
   do
@@ -871,7 +875,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             if (bits_per_pixel >= 8)
               color=(unsigned char) indexes[x];
             else
-              color=(unsigned char) (indexes[x]*((1 << bits_per_pixel)-1)/
+              color=(unsigned char) (indexes[x]*((one << bits_per_pixel)-1)/
                 MagickMax(1L*image->colors-1L,1L));
             byte|=color << bit;
             if (bit != 0)

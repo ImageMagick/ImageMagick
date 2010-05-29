@@ -205,10 +205,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
 
   size_t
     bit,
-    byte;
-
-  size_t
+    byte,
     bytes_per_line,
+    one,
     scanline_pad;
 
   /*
@@ -245,6 +244,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     icon_file.directory[i].size=ReadBlobLSBLong(image);
     icon_file.directory[i].offset=ReadBlobLSBLong(image);
   }
+  one=1;
   for (i=0; i < icon_file.count; i++)
   {
     /*
@@ -343,7 +343,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           image->storage_class=PseudoClass;
           image->colors=icon_info.number_colors;
           if (image->colors == 0)
-            image->colors=1 << icon_info.bits_per_pixel;
+            image->colors=one << icon_info.bits_per_pixel;
         }
       if (image->storage_class == PseudoClass)
         {

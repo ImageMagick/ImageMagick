@@ -53,8 +53,8 @@ namespace Magick
     void              penColor ( const Color &pen_ );
     Color             penColor ( void ) const;
     
-    void              pointSize ( unsigned int pointSize_ );
-    unsigned int      pointSize ( void ) const;
+    void              pointSize ( size_t pointSize_ );
+    size_t      pointSize ( void ) const;
     
     void              shadow ( bool shadow_ );
     bool              shadow ( void ) const;
@@ -93,7 +93,7 @@ namespace Magick
     Geometry          _geometry;          // Thumbnail width & height plus border width & height
     GravityType       _gravity;           // Thumbnail position (e.g. SouthWestGravity)
     std::string       _label;             // Thumbnail label (applied to image prior to montage)
-    unsigned int      _pointSize;         // Font point size
+    size_t      _pointSize;         // Font point size
     bool              _shadow;            // Enable drop-shadows on thumbnails
     Color             _stroke;            // Outline color
     std::string       _texture;           // Background texture image
@@ -114,8 +114,8 @@ namespace Magick
     void           borderColor ( const Color &borderColor_ );
     Color          borderColor ( void ) const;
     
-    void           borderWidth ( unsigned int borderWidth_ );
-    unsigned int   borderWidth ( void ) const;
+    void           borderWidth ( size_t borderWidth_ );
+    size_t   borderWidth ( void ) const;
     
     void           frameGeometry ( const Geometry &frame_ );
     Geometry       frameGeometry ( void ) const;
@@ -135,7 +135,7 @@ namespace Magick
   private:
     
     Color          _borderColor;	// Frame border color
-    unsigned int   _borderWidth;	// Pixels between thumbnail and surrounding frame
+    size_t   _borderWidth;	// Pixels between thumbnail and surrounding frame
     Geometry       _frame;		// Frame geometry (width & height frame thickness)
     Color          _matteColor;		// Frame foreground color
   };
@@ -232,11 +232,11 @@ inline Magick::Color Magick::Montage::penColor ( void ) const
   return _fill;
 }
 
-inline void Magick::Montage::pointSize ( unsigned int pointSize_ )
+inline void Magick::Montage::pointSize ( size_t pointSize_ )
 {
   _pointSize = pointSize_;
 }
-inline unsigned int Magick::Montage::pointSize ( void ) const
+inline size_t Magick::Montage::pointSize ( void ) const
 {
   return _pointSize;
 }
@@ -309,11 +309,11 @@ inline Magick::Color Magick::MontageFramed::borderColor ( void ) const
   return _borderColor;
 }
 
-inline void Magick::MontageFramed::borderWidth ( unsigned int borderWidth_ )
+inline void Magick::MontageFramed::borderWidth ( size_t borderWidth_ )
 {
   _borderWidth = borderWidth_;
 }
-inline unsigned int Magick::MontageFramed::borderWidth ( void ) const
+inline size_t Magick::MontageFramed::borderWidth ( void ) const
 {
   return _borderWidth;
 }

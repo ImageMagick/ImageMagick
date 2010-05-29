@@ -4049,12 +4049,12 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
       qixel=bias;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
         {
-          for (i=0; i < (ssize_t) n; i+=step)
+          for (i=0; i < (ssize_t) n; i+=(ssize_t) step)
           {
-            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) (blur_center.x+
-              center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),(ssize_t) (
-              blur_center.y+center.x*sin_theta[i]+center.y*cos_theta[i]+0.5),
-              &pixel,exception);
+            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
+              (blur_center.x+center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),
+              (ssize_t) (blur_center.y+center.x*sin_theta[i]+center.y*
+              cos_theta[i]+0.5),&pixel,exception);
             qixel.red+=pixel.red;
             qixel.green+=pixel.green;
             qixel.blue+=pixel.blue;
@@ -4088,12 +4088,12 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 
           alpha=1.0;
           gamma=0.0;
-          for (i=0; i < (ssize_t) n; i+=step)
+          for (i=0; i < (ssize_t) n; i+=(ssize_t) step)
           {
-            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) (blur_center.x+
-              center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),(ssize_t) (
-              blur_center.y+center.x*sin_theta[i]+center.y*cos_theta[i]+0.5),
-              &pixel,exception);
+            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
+              (blur_center.x+center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),
+              (ssize_t) (blur_center.y+center.x*sin_theta[i]+center.y*
+              cos_theta[i]+0.5),&pixel,exception);
             alpha=(MagickRealType) (QuantumScale*
               GetAlphaPixelComponent(&pixel));
             qixel.red+=alpha*pixel.red;
@@ -4652,7 +4652,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                       k++;
                     }
                 }
-                j+=image->columns+width;
+                j+=(ssize_t) (image->columns+width);
               }
               if (gamma != 0.0)
                 {
@@ -4678,7 +4678,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                       k++;
                     }
                 }
-                j+=image->columns+width;
+                j+=(ssize_t) (image->columns+width);
               }
               if (gamma != 0.0)
                 {
@@ -4710,7 +4710,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                   k++;
                 }
             }
-            j+=image->columns+width;
+            j+=(ssize_t) (image->columns+width);
           }
           if (gamma != 0.0)
             {
@@ -4737,7 +4737,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                       k++;
                     }
                 }
-                j+=image->columns+width;
+                j+=(ssize_t) (image->columns+width);
               }
               if (gamma != 0.0)
                 {
@@ -4765,7 +4765,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                       k++;
                     }
                 }
-                j+=image->columns+width;
+                j+=(ssize_t) (image->columns+width);
               }
               if (gamma != 0.0)
                 {

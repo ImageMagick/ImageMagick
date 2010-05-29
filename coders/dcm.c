@@ -3273,7 +3273,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (data == (unsigned char *) NULL)
               break;
             colors=(size_t) (length/bytes_per_pixel);
-            datum=colors;
+            datum=(int) colors;
             graymap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*graymap));
             if (graymap == (int *) NULL)
@@ -3296,7 +3296,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (data == (unsigned char *) NULL)
               break;
             colors=(size_t) (length/2);
-            datum=colors;
+            datum=(int) colors;
             redmap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*redmap));
             if (redmap == (int *) NULL)
@@ -3324,7 +3324,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (data == (unsigned char *) NULL)
               break;
             colors=(size_t) (length/2);
-            datum=colors;
+            datum=(int) colors;
             greenmap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*greenmap));
             if (greenmap == (int *) NULL)
@@ -3352,7 +3352,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (data == (unsigned char *) NULL)
               break;
             colors=(size_t) (length/2);
-            datum=colors;
+            datum=(int) colors;
             bluemap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*bluemap));
             if (bluemap == (int *) NULL)
@@ -3654,8 +3654,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       {
+        size_t
+          one;
+
+        one=1;
         if (colors == 0)
-          colors=1UL << image->depth;
+          colors=one << image->depth;
         if (AcquireImageColormap(image,colors) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)

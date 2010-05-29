@@ -4498,9 +4498,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
 {
 #define GetBit(alpha,i) ((((size_t) (alpha) >> (size_t) \
   (i)) & 0x01) != 0)
-#define SetBit(alpha,i,set) (alpha)=(Quantum) ((set) ? (size_t) (alpha) \
-  | (1UL << (size_t) (i)) : (size_t) (alpha) & \
-  ~(1UL << (size_t) (i)))
+#define SetBit(alpha,i,set) (alpha)=(Quantum) ((set) != 0 ? (size_t) (alpha) \
+  | (one << (size_t) (i)) : (size_t) (alpha) & ~(one << (size_t) (i)))
 #define SteganoImageTag  "Stegano/Image"
 
   Image
@@ -4528,7 +4527,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     *q;
 
   size_t
-    depth;
+    depth,
+    one;
 
   /*
     Initialize steganographic image attributes.
@@ -4541,6 +4541,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   assert(watermark->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  one=1UL;
   stegano_image=CloneImage(image,0,0,MagickTrue,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);

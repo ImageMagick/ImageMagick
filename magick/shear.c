@@ -590,7 +590,7 @@ static void RadonProjection(RadonInfo *source_cells,
   q=destination_cells;
   for (step=1; step < p->width; step*=2)
   {
-    for (x=0; x < (ssize_t) p->width; x+=2*step)
+    for (x=0; x < (ssize_t) p->width; x+=2*(ssize_t) step)
     {
       ssize_t
         y;
@@ -606,13 +606,16 @@ static void RadonProjection(RadonInfo *source_cells,
         for (y=0; y < (ssize_t) (p->height-i-1); y++)
         {
           cell=GetRadonCell(p,x+i,y);
-          (void) SetRadonCell(q,x+2*i,y,cell+GetRadonCell(p,x+i+step,y+i));
-          (void) SetRadonCell(q,x+2*i+1,y,cell+GetRadonCell(p,x+i+step,y+i+1));
+          (void) SetRadonCell(q,x+2*i,y,cell+GetRadonCell(p,x+i+(ssize_t)
+            step,y+i));
+          (void) SetRadonCell(q,x+2*i+1,y,cell+GetRadonCell(p,x+i+(ssize_t)
+            step,y+i+1));
         }
         for ( ; y < (ssize_t) (p->height-i); y++)
         {
           cell=GetRadonCell(p,x+i,y);
-          (void) SetRadonCell(q,x+2*i,y,cell+GetRadonCell(p,x+i+step,y+i));
+          (void) SetRadonCell(q,x+2*i,y,cell+GetRadonCell(p,x+i+(ssize_t) step,
+            y+i));
           (void) SetRadonCell(q,x+2*i+1,y,cell);
         }
         for ( ; y < (ssize_t) p->height; y++)
@@ -1081,14 +1084,14 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(progress, status)
 #endif
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=tile_height)
+      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
           tile_x;
 
         if (status == MagickFalse)
           continue;
-        for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=tile_width)
+        for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
         {
           MagickBooleanType
             sync;
@@ -1137,7 +1140,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               x;
 
             q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
-              rotate_image->columns-(tile_y+height),y+tile_x,height,
+              (rotate_image->columns-(tile_y+height)),y+tile_x,height,
               1,exception);
             if (q == (PixelPacket *) NULL)
               {
@@ -1272,14 +1275,14 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=tile_height)
+      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
           tile_x;
 
         if (status == MagickFalse)
           continue;
-        for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=tile_width)
+        for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
         {
           MagickBooleanType
             sync;
@@ -1328,7 +1331,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               x;
 
             q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(ssize_t)
-              y+rotate_image->rows-(tile_x+width),height,1,exception);
+              (y+rotate_image->rows-(tile_x+width)),height,1,exception);
             if (q == (PixelPacket *) NULL)
               {
                 status=MagickFalse;
@@ -1958,22 +1961,22 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   /*
     Rotate the image.
   */
-  status=XShearImage(rotate_image,shear.x,width,height,x_offset,((ssize_t)
-    rotate_image->rows-height)/2,exception);
+  status=XShearImage(rotate_image,shear.x,width,height,x_offset,(ssize_t)
+    (rotate_image->rows-height)/2,exception);
   if (status == MagickFalse)
     {
       rotate_image=DestroyImage(rotate_image);
       return((Image *) NULL);
     }
-  status=YShearImage(rotate_image,shear.y,y_width,height,((ssize_t)
-    rotate_image->columns-y_width)/2,y_offset,exception);
+  status=YShearImage(rotate_image,shear.y,y_width,height,(ssize_t)
+    (rotate_image->columns-y_width)/2,y_offset,exception);
   if (status == MagickFalse)
     {
       rotate_image=DestroyImage(rotate_image);
       return((Image *) NULL);
     }
-  status=XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,((ssize_t)
-    rotate_image->columns-y_width)/2,0,exception);
+  status=XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,(ssize_t)
+    (rotate_image->columns-y_width)/2,0,exception);
   if (status == MagickFalse)
     {
       rotate_image=DestroyImage(rotate_image);
@@ -2107,14 +2110,14 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   if (shear_image->matte == MagickFalse)
     (void) SetImageAlphaChannel(shear_image,OpaqueAlphaChannel);
   status=XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
-    ((ssize_t) shear_image->rows-image->rows)/2,exception);
+    (ssize_t) (shear_image->rows-image->rows)/2,exception);
   if (status == MagickFalse)
     {
       shear_image=DestroyImage(shear_image);
       return((Image *) NULL);
     }
-  status=YShearImage(shear_image,shear.y,y_width,image->rows,((ssize_t)
-    shear_image->columns-y_width)/2,y_offset,exception);
+  status=YShearImage(shear_image,shear.y,y_width,image->rows,(ssize_t)
+    (shear_image->columns-y_width)/2,y_offset,exception);
   if (status == MagickFalse)
     {
       shear_image=DestroyImage(shear_image);

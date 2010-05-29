@@ -79,8 +79,8 @@ namespace Magick
     Geometry        density ( void ) const;
 
     // Image depth (8 or 16)
-    void            depth ( unsigned int depth_ );
-    unsigned int    depth ( void ) const;
+    void            depth ( size_t depth_ );
+    size_t    depth ( void ) const;
 
     // Endianness (little like Intel or big like SPARC) for image
     // formats which support endian-specific options.
@@ -138,12 +138,12 @@ namespace Magick
     Geometry        page ( void ) const;
 
     // Desired image quality factor
-    void            quality ( unsigned int quality_ );
-    unsigned int    quality ( void ) const;
+    void            quality ( size_t quality_ );
+    size_t    quality ( void ) const;
     
     // Maximum number of colors to quantize to
-    void            quantizeColors ( unsigned int colors_ );
-    unsigned int    quantizeColors ( void ) const;
+    void            quantizeColors ( size_t colors_ );
+    size_t    quantizeColors ( void ) const;
     
     // Colorspace to quantize in.
     void            quantizeColorSpace ( ColorspaceType colorSpace_ );
@@ -154,8 +154,8 @@ namespace Magick
     bool            quantizeDither ( void ) const;
     
     // Quantization tree-depth
-    void            quantizeTreeDepth ( unsigned int treeDepth_ );
-    unsigned int    quantizeTreeDepth ( void ) const;
+    void            quantizeTreeDepth ( size_t treeDepth_ );
+    size_t    quantizeTreeDepth ( void ) const;
 
     // Units of resolution to interpret density
     void            resolutionUnits ( ResolutionType resolutionUnits_ );
@@ -208,8 +208,8 @@ namespace Magick
     // the line stroking the path. The miterLimit' imposes a limit on
     // the ratio of the miter length to the 'stroke_width'. The default
     // value of this parameter is 4.
-    void            strokeMiterLimit ( unsigned int miterLimit_ );
-    unsigned int    strokeMiterLimit ( void ) const;
+    void            strokeMiterLimit ( size_t miterLimit_ );
+    size_t    strokeMiterLimit ( void ) const;
 
     // Pattern image to use for stroked outlines
     void            strokePattern ( const MagickCore::Image *strokePattern_ );
@@ -219,12 +219,12 @@ namespace Magick
     void            strokeWidth ( double strokeWidth_ );
     double          strokeWidth ( void ) const;
 
-    void            subImage ( unsigned int subImage_ );
-    unsigned int    subImage ( void ) const;
+    void            subImage ( size_t subImage_ );
+    size_t    subImage ( void ) const;
 
     // Sub-frame number to return
-    void            subRange ( unsigned int subRange_ );
-    unsigned int    subRange ( void ) const;
+    void            subRange ( size_t subRange_ );
+    size_t    subRange ( void ) const;
 
     // Annotation text encoding (e.g. "UTF-16")
     void            textEncoding ( const std::string &encoding_ );

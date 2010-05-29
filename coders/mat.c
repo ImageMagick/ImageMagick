@@ -602,6 +602,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int sample_size;
   MagickOffsetType filepos=0x80;
   BlobInfo *blob;
+  size_t one;
   
   unsigned int (*ReadBlobXXXLong)(Image *image);
   unsigned short (*ReadBlobXXXShort)(Image *image);
@@ -814,7 +815,8 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     quantum_info=AcquireQuantumInfo(clone_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    image->colors = 1l << image->depth;
+    one=1;
+    image->colors = one << image->depth;
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
 

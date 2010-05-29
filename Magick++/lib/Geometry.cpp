@@ -70,10 +70,10 @@ int Magick::operator <= ( const Magick::Geometry& left_,
 }
 
 // Construct using parameterized arguments
-Magick::Geometry::Geometry ( unsigned int width_,
-			     unsigned int height_,
-			     unsigned int xOff_,
-			     unsigned int yOff_,
+Magick::Geometry::Geometry ( size_t width_,
+			     size_t height_,
+			     size_t xOff_,
+			     size_t yOff_,
 			     bool xNegative_,
 			     bool yNegative_ )
   : _width( width_ ),
@@ -234,13 +234,13 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 
   if ( ( flags & XValue ) != 0 )
     {
-      _xOff = static_cast<unsigned int>(AbsoluteValue(x));
+      _xOff = static_cast<size_t>(AbsoluteValue(x));
       isValid( true );
     }
 
   if ( ( flags & YValue ) != 0 )
     {
-      _yOff = static_cast<unsigned int>(AbsoluteValue(y));
+      _yOff = static_cast<size_t>(AbsoluteValue(y));
       isValid( true );
     }
 
@@ -333,10 +333,10 @@ Magick::Geometry::operator std::string() const
 
 // Construct from RectangleInfo
 Magick::Geometry::Geometry ( const MagickCore::RectangleInfo &rectangle_ )
-  : _width(static_cast<unsigned int>(rectangle_.width)),
-    _height(static_cast<unsigned int>(rectangle_.height)),
-    _xOff(static_cast<unsigned int>(AbsoluteValue(rectangle_.x))),
-    _yOff(static_cast<unsigned int>(AbsoluteValue(rectangle_.y))),
+  : _width(static_cast<size_t>(rectangle_.width)),
+    _height(static_cast<size_t>(rectangle_.height)),
+    _xOff(static_cast<size_t>(AbsoluteValue(rectangle_.x))),
+    _yOff(static_cast<size_t>(AbsoluteValue(rectangle_.y))),
     _xNegative(rectangle_.x < 0 ? true : false),
     _yNegative(rectangle_.y < 0 ? true : false),
     _isValid(true),
