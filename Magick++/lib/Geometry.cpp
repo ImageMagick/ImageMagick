@@ -22,7 +22,7 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-int Magick::operator == ( const Magick::Geometry& left_,
+ssize_t Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return (
@@ -39,17 +39,17 @@ int Magick::operator == ( const Magick::Geometry& left_,
 	  ( left_.less()      == right_.less() )
 	  );
 }
-int Magick::operator != ( const Magick::Geometry& left_,
+ssize_t Magick::operator != ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( ! (left_ == right_) );
 }
-int Magick::operator >  ( const Magick::Geometry& left_,
+ssize_t Magick::operator >  ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-int Magick::operator <  ( const Magick::Geometry& left_,
+ssize_t Magick::operator <  ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return (
@@ -58,12 +58,12 @@ int Magick::operator <  ( const Magick::Geometry& left_,
 	  ( right_.width() * right_.height() )
 	  );
 }
-int Magick::operator >= ( const Magick::Geometry& left_,
+ssize_t Magick::operator >= ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-int Magick::operator <= ( const Magick::Geometry& left_,
+ssize_t Magick::operator <= ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );

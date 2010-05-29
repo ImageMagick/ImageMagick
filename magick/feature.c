@@ -247,14 +247,17 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      grays[ScaleQuantumToMap(p->red)].red=ScaleQuantumToMap(p->red);
-      grays[ScaleQuantumToMap(p->green)].green=ScaleQuantumToMap(p->green);
-      grays[ScaleQuantumToMap(p->blue)].blue=ScaleQuantumToMap(p->blue);
+      grays[ScaleQuantumToMap(p->red)].red=(unsigned long)
+        ScaleQuantumToMap(p->red);
+      grays[ScaleQuantumToMap(p->green)].green=(unsigned long)
+        ScaleQuantumToMap(p->green);
+      grays[ScaleQuantumToMap(p->blue)].blue=(unsigned long)
+        ScaleQuantumToMap(p->blue);
       if (image->matte != MagickFalse)
-        grays[ScaleQuantumToMap(p->opacity)].opacity=
+        grays[ScaleQuantumToMap(p->opacity)].opacity=(unsigned long)
           ScaleQuantumToMap(p->opacity);
       if (image->colorspace == CMYKColorspace)
-        grays[ScaleQuantumToMap(indexes[x])].index=
+        grays[ScaleQuantumToMap(indexes[x])].index=(unsigned long)
           ScaleQuantumToMap(indexes[x]);
       p++;
     }
