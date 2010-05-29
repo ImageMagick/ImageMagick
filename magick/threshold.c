@@ -220,8 +220,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-height/2L,
-      image->columns+width,height,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
+      height/2L,image->columns+width,height,exception);
     q=GetCacheViewAuthenticPixels(threshold_view,0,y,threshold_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))

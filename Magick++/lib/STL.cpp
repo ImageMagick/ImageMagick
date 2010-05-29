@@ -229,8 +229,8 @@ void Magick::commentImage::operator()( Magick::Image &image_ ) const
 // Compose an image onto another at specified offset and using
 // specified algorithm
 Magick::compositeImage::compositeImage( const Magick::Image &compositeImage_,
-                                        int xOffset_,
-                                        int yOffset_,
+                                        ssize_t xOffset_,
+                                        ssize_t yOffset_,
                                         Magick::CompositeOperator compose_  )
   : _compositeImage( compositeImage_ ),
     _xOffset ( xOffset_ ),
@@ -273,7 +273,7 @@ void Magick::cropImage::operator()( Magick::Image &image_ ) const
 }
 
 // Cycle image colormap
-Magick::cycleColormapImage::cycleColormapImage( const int amount_ )
+Magick::cycleColormapImage::cycleColormapImage( const ssize_t amount_ )
   : _amount( amount_ )
 {
 }
@@ -526,7 +526,7 @@ Magick::frameImage::frameImage( const Magick::Geometry &geometry_ )
 {
 }
 Magick::frameImage::frameImage( const size_t width_, const size_t height_,
-                                const int innerBevel_, const int outerBevel_ )
+                                const ssize_t innerBevel_, const ssize_t outerBevel_ )
   : _width( width_ ),
     _height( height_ ),
     _outerBevel( outerBevel_ ),
@@ -679,7 +679,7 @@ void Magick::mapImage::operator()( Magick::Image &image_ ) const
 // Floodfill designated area with a matte value
 Magick::matteFloodfillImage::matteFloodfillImage( const Color &target_ ,
                                                   const size_t matte_,
-                                                  const int x_, const int y_,
+                                                  const ssize_t x_, const ssize_t y_,
                                                   const PaintMethod method_ )
   : _target( target_ ),
     _matte( matte_ ),
@@ -829,8 +829,8 @@ Magick::rollImage::rollImage( const Magick::Geometry &roll_ )
     _rows( roll_.height() )
 {
 }
-Magick::rollImage::rollImage( const int columns_,
-                              const int rows_ )
+Magick::rollImage::rollImage( const ssize_t columns_,
+                              const ssize_t rows_ )
   : _columns( columns_ ),
     _rows( rows_ )
 {

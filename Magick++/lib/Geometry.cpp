@@ -210,7 +210,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   ssize_t y = 0;
   size_t width_val = 0;
   size_t height_val = 0;
-  int flags = GetGeometry (geom, &x, &y, &width_val, &height_val );
+  ssize_t flags = GetGeometry (geom, &x, &y, &width_val, &height_val );
 
   if (flags == NoValue)
     {

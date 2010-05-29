@@ -279,8 +279,8 @@ namespace Magick
   {
   public:
     compositeImage( const Image &compositeImage_,
-        int xOffset_,
-        int yOffset_,
+        ssize_t xOffset_,
+        ssize_t yOffset_,
         CompositeOperator compose_ = InCompositeOp );
 
     compositeImage( const Image &compositeImage_,
@@ -291,8 +291,8 @@ namespace Magick
 
   private:
     Image             _compositeImage;
-    int               _xOffset;
-    int               _yOffset;
+    ssize_t               _xOffset;
+    ssize_t               _yOffset;
     CompositeOperator _compose;
   };
 
@@ -324,12 +324,12 @@ namespace Magick
   class MagickDLLDecl cycleColormapImage : public std::unary_function<Image&,void>
   {
   public:
-    cycleColormapImage( const int amount_ );
+    cycleColormapImage( const ssize_t amount_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    int _amount;
+    ssize_t _amount;
   };
 
   // Despeckle image (reduce speckle noise)
@@ -544,15 +544,15 @@ namespace Magick
     frameImage( const Geometry &geometry_ = frameGeometryDefault );
 
     frameImage( const size_t width_, const size_t height_,
-    const int innerBevel_ = 6, const int outerBevel_ = 6 );
+    const ssize_t innerBevel_ = 6, const ssize_t outerBevel_ = 6 );
 
     void operator()( Image &image_ ) const;
 
   private:
     size_t _width;
     size_t _height;
-    int          _outerBevel;
-    int          _innerBevel;
+    ssize_t          _outerBevel;
+    ssize_t          _innerBevel;
   };
 
   // Gamma correct image
@@ -717,7 +717,7 @@ namespace Magick
   public:
     matteFloodfillImage( const Color &target_ ,
        const size_t matte_,
-       const int x_, const int y_,
+       const ssize_t x_, const ssize_t y_,
        const PaintMethod method_ );
 
     void operator()( Image &image_ ) const;
@@ -725,8 +725,8 @@ namespace Magick
   private:
     Color         _target;
     size_t  _matte;
-    int           _x;
-    int           _y;
+    ssize_t           _x;
+    ssize_t           _y;
     PaintMethod   _method;
   };
 
@@ -899,13 +899,13 @@ namespace Magick
   public:
     rollImage( const Geometry &roll_ );
 
-    rollImage( const int columns_, const int rows_ );
+    rollImage( const ssize_t columns_, const ssize_t rows_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    int _columns;
-    int _rows;
+    ssize_t _columns;
+    ssize_t _rows;
   };
 
   // Rotate image counter-clockwise by specified number of degrees.
@@ -1846,7 +1846,7 @@ namespace Magick
        InputIterator last_ ) {
 
     MagickCore::Image* previous = 0;
-    int scene = 0;
+    ssize_t scene = 0;
     for ( InputIterator iter = first_; iter != last_; ++iter )
       {
   // Unless we reduce the reference count to one, the same image
@@ -2025,7 +2025,7 @@ namespace Magick
     // Clear out container
     container_->clear();
 
-    for ( int i=0; i < (ssize_t) number_formats; i++)
+    for ( ssize_t i=0; i < (ssize_t) number_formats; i++)
       {
         const MagickCore::MagickInfo *magick_info =
           MagickCore::GetMagickInfo( coder_list[i], &exceptionInfo );
@@ -2438,7 +2438,7 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
 
     linkImages( first_, last_ );
-    int errorStat = MagickCore::WriteImages( first_->constImageInfo(),
+    ssize_t errorStat = MagickCore::WriteImages( first_->constImageInfo(),
                                             first_->image(),
                                             imageSpec_.c_str(),
                                             &exceptionInfo );

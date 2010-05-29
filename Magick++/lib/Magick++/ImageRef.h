@@ -49,7 +49,7 @@ namespace Magick
     MagickCore::Image *   _image;    // ImageMagick Image
     Options *            _options;  // User-specified options
     ssize_t                 _id;       // Registry ID (-1 if not registered)
-    int                  _refCount; // Reference count
+    ssize_t                  _refCount; // Reference count
     MutexLock            _mutexLock;// Mutex lock
   };
 

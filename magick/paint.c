@@ -672,7 +672,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
               count=histogram[k];
             }
         }
-        i+=image->columns+width;
+        i+=(ssize_t) (image->columns+width);
       }
       *q=(*(p+j));
       if (image->colorspace == CMYKColorspace)
