@@ -458,7 +458,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
             /*
               Right diagonal adjacency.
             */
-            offset=(ssize_t) (image->columns+2*distance)-distance;
+            offset=(ssize_t) ((image->columns+2*distance)-distance);
             break;
           }
           case 3:
@@ -466,7 +466,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
             /*
               Left diagonal adjacency.
             */
-            offset=(ssize_t) (image->columns+2*distance)+distance;
+            offset=(ssize_t) ((image->columns+2*distance)+distance);
             break;
           }
         }

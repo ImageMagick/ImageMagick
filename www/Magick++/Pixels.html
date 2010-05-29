@@ -18,16 +18,8 @@
   <meta name="DESCRIPTION" content="Class to access raw image pixels.">
 	
   <meta name="KEYWORDS" content="ImageMagick,Pixel,Magick++">
+<link rel=stylesheet type=text/css href="magick.css">
 	
-  <style>
-	<!--
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		A:link { color: #0000ff }
-		A:visited { color: #ff0000 }
-	-->
-	</style>
 </head>
 <body lang="en-US" text="#000000" link="#0000ff" vlink="#ff0000"
  bgcolor="#ffffff">
@@ -108,7 +100,7 @@ view</font></font></font> 			<br>
  color="#000099">  			</font><font color="#ff0000"> // Set all pixels
 in region anchored 			at 38x36, with size 160x230 to green.</font></font></font> <br>
       <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			unsigned int columns = 196; unsigned int rows =
+ color="#000099">   			size_t columns = 196; size_t rows =
 162;</font></font></font> 			<br>
       <font size="2"><font face="Courier New, Courier"><font
  color="#000099">   			Color green("green");</font></font></font> <br>
@@ -116,10 +108,10 @@ in region anchored 			at 38x36, with size 160x230 to green.</font></font></font>
  color="#000099">   			PixelPacket *pixels =
 view.get(38,36,columns,rows);</font></font></font> 			<br>
       <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			for ( int row = 0; row &lt; rows ; ++row )</font></font></font>
+ color="#000099">   			for ( ssize_t row = 0; row &lt; rows ; ++row )</font></font></font>
 			<br>
       <font size="2"><font face="Courier New, Courier"><font
- color="#000099">     			for ( int column = 0; column &lt; columns ;
+ color="#000099">     			for ( ssize_t column = 0; column &lt; columns ;
 ++column )</font></font></font> 			<br>
       <font size="2"><font face="Courier New, Courier"><font
  color="#000099">       			*pixels++=green;</font></font></font> </p>
@@ -140,10 +132,10 @@ in region anchored 			at 86x72, with size 108x67 to yellow.</font></font></font>
       <font size="2"><font face="Courier New, Courier"><font
  color="#000099">   			pixels = view.get(86,72,columns,rows);</font></font></font> <br>
       <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			for ( int row = 0; row &lt; rows ; ++row )</font></font></font>
+ color="#000099">   			for ( ssize_t row = 0; row &lt; rows ; ++row )</font></font></font>
 			<br>
       <font size="2"><font face="Courier New, Courier"><font
- color="#000099">      			for ( int column = 0; column &lt; columns ;
+ color="#000099">      			for ( ssize_t column = 0; column &lt; columns ;
 ++column )</font></font></font> 			<br>
       <font size="2"><font face="Courier New, Courier"><font
  color="#000099">         			*pixels++=yellow;</font></font></font> <br>
@@ -199,8 +191,8 @@ methods: <br>
       <p><font size="2"><a href="PixelPacket.html">PixelPacket</a>*</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">const int x_, const int y_, const unsigned
-const 			int columns_, const unsigned int rows_</font></p>
+      <p><font size="2">const ssize_t x_, const ssize_t y_, const unsigned
+const 			int columns_, const size_t rows_</font></p>
 		</td>
 		<td> 			
       <p><font size="2">Transfers read-write pixels from the image to
@@ -218,8 +210,8 @@ the 			pixel cache as defined by the specified rectangular region.
       <p><font size="2">const <a href="PixelPacket.html">PixelPacket</a>*</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">const int x_, const int y_, const unsigned int
-			columns_, const unsigned int rows_</font></p>
+      <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
+			columns_, const size_t rows_</font></p>
 		</td>
 		<td> 			
       <p><font size="2">Transfers read-only pixels from the image to
@@ -234,8 +226,8 @@ the 			pixel cache as defined by the specified rectangular region.</font></p>
       <p><font size="2"><a href="PixelPacket.html">PixelPacket</a>*</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">const int x_, const int y_, const unsigned int
-			columns_, const unsigned int rows_</font></p>
+      <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
+			columns_, const size_t rows_</font></p>
 		</td>
 		<td> 			
       <p><font size="2">Allocates a pixel cache region to store image
@@ -279,7 +271,7 @@ which is itself typedef <i>unsigned char</i>, or 			<i>unsigned short</i>,
 depending on the value of the <i>QuantumDepth 			</i>define) provide
 the <span lang="en-US">colormap</span> index 			(see <a
  href="Image.html#colorMap">colorMap</a>) for each pixel in 			the
-image. For CMYKA images, the indexes represent the black
+image. For CMYKA images, the indexes represent the black 			
 channel. The value returned is intended for pixel access 			only. It
 should never be deallocated.</font></p>
 		</td>
@@ -317,7 +309,7 @@ should never be deallocated.</font></p>
       <p align="center"><a name="columns"></a><font size="2">columns</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">unsigned int</font></p>
+      <p><font size="2">size_t</font></p>
 		</td>
 		<td> 			
       <p><font size="2">void</font></p>
@@ -331,7 +323,7 @@ should never be deallocated.</font></p>
       <p align="center"><a name="rows"></a><font size="2">rows</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">unsigned int</font></p>
+      <p><font size="2">size_t</font></p>
 		</td>
 		<td> 			
       <p><font size="2">void</font></p>

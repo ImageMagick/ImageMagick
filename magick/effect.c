@@ -4625,7 +4625,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                   k++;
                 }
             }
-            j+=image->columns+width;
+            j+=(ssize_t) (image->columns+width);
           }
           if (gamma != 0.0)
             {

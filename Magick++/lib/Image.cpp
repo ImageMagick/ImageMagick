@@ -44,7 +44,7 @@ static bool magick_initialized=false;
 // Friend functions to compare Image objects
 //
 
-MagickDLLDecl int Magick::operator == ( const Magick::Image& left_,
+MagickDLLDecl ssize_t Magick::operator == ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   // If image pixels and signature are the same, then the image is identical
@@ -53,17 +53,17 @@ MagickDLLDecl int Magick::operator == ( const Magick::Image& left_,
 	   ( left_.signature() == right_.signature() )
 	   );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::Image& left_,
+MagickDLLDecl ssize_t Magick::operator != ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ! (left_ == right_) );
 }
-MagickDLLDecl int Magick::operator >  ( const Magick::Image& left_,
+MagickDLLDecl ssize_t Magick::operator >  ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_,
+MagickDLLDecl ssize_t Magick::operator <  ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   // If image pixels are less, then image is smaller
@@ -71,12 +71,12 @@ MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_,
 	   ( right_.rows() * right_.columns() )
 	   );
 }
-MagickDLLDecl int Magick::operator >= ( const Magick::Image& left_,
+MagickDLLDecl ssize_t Magick::operator >= ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-MagickDLLDecl int Magick::operator <= ( const Magick::Image& left_,
+MagickDLLDecl ssize_t Magick::operator <= ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
@@ -646,8 +646,8 @@ bool Magick::Image::compare ( const Image &reference_ )
 
 // Composite two images
 void Magick::Image::composite ( const Image &compositeImage_,
-				const int xOffset_,
-				const int yOffset_,
+				const ssize_t xOffset_,
+				const ssize_t yOffset_,
 				const CompositeOperator compose_ )
 {
   // Image supplied as compositeImage is composited with current image and
@@ -740,7 +740,7 @@ void Magick::Image::crop ( const Geometry &geometry_ )
 }
 
 // Cycle Color Map
-void Magick::Image::cycleColormap ( const int amount_ )
+void Magick::Image::cycleColormap ( const ssize_t amount_ )
 {
   modifyImage();
   CycleColormapImage( image(), amount_ );
@@ -1114,7 +1114,7 @@ void Magick::Image::frame ( const Geometry &geometry_ )
 }
 void Magick::Image::frame ( const size_t width_,
                             const size_t height_,
-			    const int outerBevel_, const int innerBevel_ )
+			    const ssize_t outerBevel_, const ssize_t innerBevel_ )
 {
   FrameInfo info;
   info.x           = static_cast<ssize_t>(width_);
@@ -1319,7 +1319,7 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
 // Floodfill designated area with replacement opacity value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
 				     const size_t opacity_,
-				     const int x_, const int y_,
+				     const ssize_t x_, const ssize_t y_,
 				     const Magick::PaintMethod method_ )
 {
   modifyImage();
@@ -1495,7 +1495,7 @@ void Magick::Image::ping ( const Blob& blob_ )
 // that accepted by a C 'main' routine. An exception is thrown if the
 // requested process module doesn't exist, fails to load, or fails during
 // execution.
-void Magick::Image::process( std::string name_, const int argc, const char **argv )
+void Magick::Image::process( std::string name_, const ssize_t argc, const char **argv )
 {
   modifyImage();
 
@@ -1535,7 +1535,7 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-void Magick::Image::quantumOperator ( const int x_,const int y_,
+void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
                                       const size_t columns_,
                                       const size_t rows_,
                                       const ChannelType channel_,
@@ -2260,8 +2260,8 @@ void Magick::Image::write ( Blob *blob_,
 // Write image to an array of pixels with storage type specified
 // by user (ExportImagePixels), e.g.
 // image.write( 0, 0, 640, 1, "RGB", 0, pixels );
-void Magick::Image::write ( const int x_,
-                            const int y_,
+void Magick::Image::write ( const ssize_t x_,
+                            const ssize_t y_,
                             const size_t columns_,
                             const size_t rows_,
                             const std::string &map_,
@@ -3461,7 +3461,7 @@ void Magick::Image::profile( const std::string name_,
                              const Magick::Blob &profile_ )
 {
   modifyImage();
-  int result = ProfileImage( image(), name_.c_str(),
+  ssize_t result = ProfileImage( image(), name_.c_str(),
                              (unsigned char *)profile_.data(),
                              profile_.length(), MagickTrue);
 
@@ -4013,7 +4013,7 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 // Transfers read-only pixels from the image to the pixel cache as
 // defined by the specified region
 const Magick::PixelPacket* Magick::Image::getConstPixels
-  ( const int x_, const int y_,
+  ( const ssize_t x_, const ssize_t y_,
     const size_t columns_,
     const size_t rows_ ) const
 {
@@ -4053,7 +4053,7 @@ Magick::IndexPacket* Magick::Image::getIndexes ( void )
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently
 // transferred back to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::getPixels ( const int x_, const int y_,
+Magick::PixelPacket* Magick::Image::getPixels ( const ssize_t x_, const ssize_t y_,
 						const size_t columns_,
 						const size_t rows_ )
 {
@@ -4072,7 +4072,7 @@ Magick::PixelPacket* Magick::Image::getPixels ( const int x_, const int y_,
 // Allocates a pixel cache region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel cache to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::setPixels ( const int x_, const int y_,
+Magick::PixelPacket* Magick::Image::setPixels ( const ssize_t x_, const ssize_t y_,
 						const size_t columns_,
 						const size_t rows_ )
 {

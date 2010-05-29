@@ -20,7 +20,7 @@ Magick::MutexLock::MutexLock(void)
   : _mutex()
 {
   ::pthread_mutexattr_t attr;
-  int sysError;
+  ssize_t sysError;
   if ( (sysError = ::pthread_mutexattr_init( &attr )) == 0 )
     if ( (sysError = ::pthread_mutex_init( &_mutex, &attr )) == 0 )
       {
@@ -59,7 +59,7 @@ Magick::MutexLock::MutexLock(void)
 Magick::MutexLock::~MutexLock(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
-  int sysError;
+  ssize_t sysError;
   if ( (sysError = ::pthread_mutex_destroy( &_mutex )) == 0 )
     return;
   throwExceptionExplicit( OptionError, "mutex destruction failed",
@@ -76,7 +76,7 @@ Magick::MutexLock::~MutexLock(void)
 void Magick::MutexLock::lock(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
-  int sysError;
+  ssize_t sysError;
   if ( (sysError = ::pthread_mutex_lock( &_mutex )) == 0)
     return;
   throwExceptionExplicit( OptionError, "mutex lock failed",
@@ -93,7 +93,7 @@ void Magick::MutexLock::lock(void)
 void Magick::MutexLock::unlock(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
-  int sysError;
+  ssize_t sysError;
   if ( (sysError = ::pthread_mutex_unlock( &_mutex )) == 0)
     return;
   throwExceptionExplicit( OptionError, "mutex unlock failed",

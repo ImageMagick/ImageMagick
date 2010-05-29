@@ -10,6 +10,7 @@
  content="Documentation on Magick++'s STL support templates.">
   <meta name="Keywords" content="STL,Magick++,ImageMagick">
   <title>Magick++ STL Support</title>
+<link rel=stylesheet type=text/css href="magick.css">
 </head>
 <body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#ff0000"
  alink="#000088">
@@ -180,7 +181,7 @@ use of a pop-up menu, image frames may be selected in succession. This
 feature is  fully supported under X11 but may have only limited support
 in other environments.</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
-an image format is not compatable with the display visual (e.g. JPEG
+an image format is is not compatable with the display visual (e.g. JPEG
 on a colormapped display) then the original image will be altered. Use a
 copy of the original if this is a problem.</font></td>
     </tr>
@@ -244,7 +245,7 @@ as options by <i>montageImages().</i></font></td>
 *morphedImages_, <a
  href="http://www.sgi.com/tech/stl/InputIterator.html"> InputIterator</a>
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
-last_, unsigned int frames_</font></td>
+last_, size_t frames_</font></td>
       <td><font size="-1">Morph a seqence of image frames. This
 algorithm&nbsp; expands the number of image frames (output to the
 container <i>morphedImages_)</i> by adding the number of intervening
@@ -379,7 +380,7 @@ manipulating images are shown in the following table: <br>
  size="-1">adaptiveThresholdImage</font><br>
       </div>
       </td>
-      <td valign="middle"><font size="-1">unsigned int width, unsigned
+      <td valign="middle"><font size="-1">size_t width, unsigned
 int height, unsigned offset = 0</font><br>
       </td>
       <td valign="top"><font size="-1">Apply adaptive thresholding to
@@ -489,14 +490,14 @@ subregion of image)</font></td>
       <td rowspan="2">
       <center><a name="colorizeImage"></a> <font size="-1">colorizeImage</font></center>
       </td>
-      <td><font size="-1">const unsigned int opacityRed_, const
-unsigned int opacityGreen_, const unsigned int opacityBlue_, const Color
+      <td><font size="-1">const size_t opacityRed_, const
+size_t opacityGreen_, const size_t opacityBlue_, const Color
 &amp;penColor_</font></td>
       <td><font size="-1">Colorize image with pen color, using
 specified percent  opacity for red, green, and blue quantums.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const unsigned int opacity_, const <a
+      <td><font size="-1">const size_t opacity_, const <a
  href="Color.html"> Color</a> &amp;penColor_</font></td>
       <td><font size="-1">Colorize image with pen color, using
 specified percent  opacity.</font></td>
@@ -518,7 +519,7 @@ height, or other&nbsp; image&nbsp; attributes by embedding <a
       <center><a name="compositeImage"></a> <font size="-1">compositeImage</font></center>
       </td>
       <td><font size="-1">const <a href="Image.html">Image</a>
-&amp;compositeImage_, int xOffset_, int yOffset_, <a
+&amp;compositeImage_, ssize_t xOffset_, ssize_t yOffset_, <a
  href="Enumerations.html#CompositeOperator"> CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
       <td rowspan="2"><font size="-1">Compose an image onto another at
@@ -542,7 +543,7 @@ memory).</font></td>
       <td>
       <center><a name="contrastImage"></a> <font size="-1">contrastImage</font></center>
       </td>
-      <td><font size="-1">unsigned int sharpen_</font></td>
+      <td><font size="-1">size_t sharpen_</font></td>
       <td><font size="-1">Contrast image (enhance intensity differences
 in image)</font></td>
     </tr>
@@ -589,7 +590,7 @@ for repeated use.</font></td>
       <td>
       <center><a name="edgeImage"></a> <font size="-1">edgeImage</font></center>
       </td>
-      <td><font size="-1">unsigned int radius_ = 0.0</font></td>
+      <td><font size="-1">size_t radius_ = 0.0</font></td>
       <td><font size="-1">Edge image (hilight edges in image).&nbsp;
 The radius  is the radius of the pixel neighborhood.. Specify a radius
 of zero for automatic radius selection.</font></td>
@@ -632,7 +633,7 @@ vertical direction)</font></td>
       <center><a name="floodFillColorImage"></a> <font size="-1">floodFill-</font> <br>
       <font size="-1">ColorImage</font></center>
       </td>
-      <td><font size="-1">unsigned int x_, unsigned int y_, const <a
+      <td><font size="-1">size_t x_, size_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
 that match  the color of the target pixel and are neighbors of the
@@ -643,7 +644,7 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
 &amp;point_, const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">unsigned int x_, unsigned int y_, const <a
+      <td><font size="-1">size_t x_, size_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_, const <a href="Color.html">Color</a>
 &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
@@ -660,7 +661,7 @@ border color. Uses  current fuzz setting when determining color match.</font></t
       <center><a name="floodFillTextureImage"></a> <font size="-1">floodFill-</font> <br>
       <font size="-1">TextureImage</font></center>
       </td>
-      <td><font size="-1">unsigned int x_, unsigned int y_,&nbsp; const <a
+      <td><font size="-1">size_t x_, size_t y_,&nbsp; const <a
  href="Image.html"> Image</a> &amp;texture_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 that match  the color of the target pixel and are neighbors of the
@@ -671,7 +672,7 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
 &amp;point_, const Image &amp;texture_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">unsigned int x_, unsigned int y_, const Image
+      <td><font size="-1">size_t x_, size_t y_, const Image
 &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 starting at target-pixel and stopping at pixels matching specified
@@ -699,8 +700,8 @@ horizontal direction)</font></td>
       <td rowspan="2"><font size="-1">Add decorative frame around image</font></td>
     </tr>
     <tr>
-      <td><font size="-1">unsigned int width_, unsigned int height_,
-int x_, int  y_, int innerBevel_ = 0, int outerBevel_ = 0</font></td>
+      <td><font size="-1">size_t width_, size_t height_,
+int x_, ssize_t  y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
     </tr>
     <tr>
       <td rowspan="2">
@@ -733,6 +734,14 @@ specified by 'sigma_'.</font></td>
       </td>
       <td><font size="-1">double factor_</font></td>
       <td><font size="-1">Implode image (special effect)</font></td>
+    </tr>
+    <tr>
+      <td>
+      <center><a name="inverseFourierTransformImage"></a> <font size="-1">inverseFourierTransformImage</font></center>
+      </td>
+      <td><font size="-1">const <a href="Image.html">Image</a>
+&amp;phaseImage_, const bool magnitude_</font></td>
+      <td><font size="-1">implements the inverse discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair.</font></td>
     </tr>
     <tr>
       <td>
@@ -825,7 +834,7 @@ with this option.</font></td>
       <font size="-1">Image</font></center>
       </td>
       <td><font size="-1">const <a href="Color.html">Color</a>
-&amp;target_, unsigned int matte_, int x_, int y_, <a
+&amp;target_, size_t matte_, ssize_t x_, ssize_t y_, <a
  href="Enumerations.html#PaintMethod"> PaintMethod</a> method_</font></td>
       <td><font size="-1">Floodfill designated area with a matte value</font></td>
     </tr>
@@ -877,14 +886,14 @@ normalizing the  pixel values to span the full range of color values).</font></t
       <td>
       <center><a name="oilPaintImage"></a> <font size="-1">oilPaintImage</font></center>
       </td>
-      <td><font size="-1">unsigned int radius_ = 3</font></td>
+      <td><font size="-1">size_t radius_ = 3</font></td>
       <td><font size="-1">Oilpaint image (image looks like oil painting)</font></td>
     </tr>
     <tr>
       <td>
       <center><a name="opacityImage"></a> <font size="-1">opacityImage</font></center>
       </td>
-      <td><font size="-1">unsigned int opacity_</font></td>
+      <td><font size="-1">size_t opacity_</font></td>
       <td><font size="-1">Set or attenuate the opacity channel in the
 image. If the image pixels are opaque then they are set to the specified
 opacity value, otherwise they are blended with the supplied opacity
@@ -929,13 +938,13 @@ an image  to give a 3-D raised or lowered effect)</font></td>
 noise peak  elimination filter.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">unsigned int order_</font></td>
+      <td><font size="-1">size_t order_</font></td>
     </tr>
     <tr>
       <td>
       <center><a name="rollImage"></a> <font size="-1">rollImage</font></center>
       </td>
-      <td><font size="-1">int columns_, int rows_</font></td>
+      <td><font size="-1">int columns_, ssize_t rows_</font></td>
       <td><font size="-1">Roll image (rolls image vertically and
 horizontally) by specified number of columnms and rows)</font></td>
     </tr>
@@ -1039,7 +1048,7 @@ exposing a photographic film to light during the development process)</font></td
       <td>
       <center><a name="spreadImage"></a> <font size="-1">spreadImage</font></center>
       </td>
-      <td><font size="-1">unsigned int amount_ = 3</font></td>
+      <td><font size="-1">size_t amount_ = 3</font></td>
       <td><font size="-1">Spread pixels randomly within image by
 specified amount</font></td>
     </tr>
@@ -1186,8 +1195,8 @@ and Postscript  or TrueType fonts. Enabled by default.</font></td>
       <center><a name="animationDelay"></a> <font size="-1">animation-</font> <br>
       <font size="-1">DelayImage</font></center>
       </td>
-      <td><font size="-1">unsigned int (0 to 65535)</font></td>
-      <td><font size="-1">unsigned int delay_</font></td>
+      <td><font size="-1">size_t (0 to 65535)</font></td>
+      <td><font size="-1">size_t delay_</font></td>
       <td><font size="-1">Time in 1/100ths of a second (0 to 65535)
 which must  expire before displaying the next image in an animated
 sequence. This option  is useful for regulating the animation of a
@@ -1198,8 +1207,8 @@ sequence&nbsp; of GIF images within Netscape.</font></td>
       <center><a name="animationIterations"></a> <font size="-1">animation-</font> <br>
       <font size="-1">IterationsImage</font></center>
       </td>
-      <td><font size="-1">unsigned int</font></td>
-      <td><font size="-1">unsigned int iterations_</font></td>
+      <td><font size="-1">size_t</font></td>
+      <td><font size="-1">size_t iterations_</font></td>
       <td><font size="-1">Number of iterations to loop an animation
 (e.g. Netscape  loop extension) for.</font></td>
     </tr>
@@ -1298,7 +1307,7 @@ are close to the target  color in RGB space.</font></td>
       <center><a name="colorMap"></a> <font size="-1">colorMapImage</font></center>
       </td>
       <td><font size="-1"><a href="Color.html">Color</a> </font></td>
-      <td><font size="-1">unsigned int index_, const <a
+      <td><font size="-1">size_t index_, const <a
  href="Color.html">Color</a> &amp;color_</font></td>
       <td><font size="-1">Color at color-pallet index.</font></td>
     </tr>
@@ -1348,8 +1357,8 @@ Postscript or Portable Document page. Often used with <i>psPageSize</i>.</font><
       <td>
       <center><a name="depth"></a> <font size="-1">depthImage</font></center>
       </td>
-      <td><font size="-1">unsigned int (8 or 16)</font></td>
-      <td><font size="-1">unsigned int depth_</font></td>
+      <td><font size="-1">size_t (8 or 16)</font></td>
+      <td><font size="-1">size_t depth_</font></td>
       <td><font size="-1">Image depth. Used to specify the bit depth
 when reading  or writing&nbsp; raw images or thwn the output format
 supports multiple depths. Defaults to the quantum depth that
@@ -1410,8 +1419,8 @@ Otherwise, specify&nbsp;  a&nbsp; Postscript font name (e.g.
       <center><a name="fontPointsize"></a> <font size="-1">fontPointsize-</font> <br>
       <font size="-1">Image</font></center>
       </td>
-      <td><font size="-1">unsigned int</font></td>
-      <td><font size="-1">unsigned int pointSize_</font></td>
+      <td><font size="-1">size_t</font></td>
+      <td><font size="-1">size_t pointSize_</font></td>
       <td><font size="-1">Text rendering font point size</font></td>
     </tr>
     <tr>
@@ -1419,13 +1428,13 @@ Otherwise, specify&nbsp;  a&nbsp; Postscript font name (e.g.
       <center><a name="gifDisposeMethod"></a> <font size="-1">gifDispose-</font> <br>
       <font size="-1">MethodImage</font></center>
       </td>
-      <td><font size="-1">unsigned int</font> <br>
+      <td><font size="-1">size_t</font> <br>
       <font size="-1">{ 0 = Disposal not specified,</font> <br>
       <font size="-1">1 = Do not dispose of graphic,</font> <br>
       <font size="-1">3 = Overwrite graphic with background color,</font> <br>
       <font size="-1">4 = Overwrite graphic with previous graphic. }</font></td>
-      <td><font size="-1">unsigned int disposeMethod_</font></td>
-      <td><font size="-1">GIF disposal method. This option is used to
+      <td><font size="-1">size_t disposeMethod_</font></td>
+      <td><font size="-1">layer disposal method. This option is used to
 control how successive frames are rendered (how the preceding frame is
 disposed of)  when creating a GIF animation.</font></td>
     </tr>
@@ -1550,7 +1559,7 @@ penColor).</font></td>
       <center><a name="pixelColor"></a> <font size="-1">pixelColorImage</font></center>
       </td>
       <td><font size="-1"><a href="Color.html">Color</a> </font></td>
-      <td><font size="-1">unsigned int x_, unsigned int y_, const <a
+      <td><font size="-1">size_t x_, size_t y_, const <a
  href="Color.html"> Color</a> &amp;color_</font></td>
       <td><font size="-1">Get/set pixel color at location x &amp; y.</font></td>
     </tr>
@@ -1569,8 +1578,8 @@ or a TEXT page in pixels. This option is typically used in concert with <i>densi
       <td>
       <center><a name="quality"></a> <font size="-1">qualityImage</font></center>
       </td>
-      <td><font size="-1">unsigned int (0 to 100)</font></td>
-      <td><font size="-1">unsigned int quality_</font></td>
+      <td><font size="-1">size_t (0 to 100)</font></td>
+      <td><font size="-1">size_t quality_</font></td>
       <td><font size="-1">JPEG/MIFF/PNG compression level (default 75).</font></td>
     </tr>
     <tr>
@@ -1578,8 +1587,8 @@ or a TEXT page in pixels. This option is typically used in concert with <i>densi
       <center><a name="quantizeColors"></a> <font size="-1">quantize-</font> <br>
       <font size="-1">ColorsImage</font></center>
       </td>
-      <td><font size="-1">unsigned int</font></td>
-      <td><font size="-1">unsigned int colors_</font></td>
+      <td><font size="-1">size_t</font></td>
+      <td><font size="-1">size_t colors_</font></td>
       <td><font size="-1">Preferred number of colors in the image. The
 actual number of colors in the image may be less than your request, but
 never more. Images with less unique colors than specified with this
@@ -1620,8 +1629,8 @@ for this option to take effect.</font></td>
       <center><a name="quantizeTreeDepth"></a> <font size="-1">quantize-</font> <br>
       <font size="-1">TreeDepthImage</font></center>
       </td>
-      <td><font size="-1">unsigned int (0 to 8)</font></td>
-      <td><font size="-1">unsigned int treeDepth_</font></td>
+      <td><font size="-1">size_t (0 to 8)</font></td>
+      <td><font size="-1">size_t treeDepth_</font></td>
       <td><font size="-1">Depth of the quantization color
 classification tree.  Values of 0 or 1 allow selection of the optimal
 tree depth for the color reduction algorithm. Values between 2 and 8 may
@@ -1651,8 +1660,8 @@ units_</font></td>
       <td>
       <center><a name="scene"></a> <font size="-1">sceneImage</font></center>
       </td>
-      <td><font size="-1">unsigned int</font></td>
-      <td><font size="-1">unsigned int scene_</font></td>
+      <td><font size="-1">size_t</font></td>
+      <td><font size="-1">size_t scene_</font></td>
       <td><font size="-1">Image scene number</font></td>
     </tr>
     <tr>
@@ -1680,16 +1689,16 @@ format (e.g. Photo CD, JBIG, or JPEG.</font></td>
       <td>
       <center><a name="subImage"></a> <font size="-1">subImageImage</font></center>
       </td>
-      <td><font size="-1">unsigned int</font></td>
-      <td><font size="-1">unsigned int subImage_</font></td>
+      <td><font size="-1">size_t</font></td>
+      <td><font size="-1">size_t subImage_</font></td>
       <td><font size="-1">Subimage of an image sequence</font></td>
     </tr>
     <tr>
       <td>
       <center><a name="subRange"></a> <font size="-1">subRangeImage</font></center>
       </td>
-      <td><font size="-1">unsigned int</font></td>
-      <td><font size="-1">unsigned int subRange_</font></td>
+      <td><font size="-1">size_t</font></td>
+      <td><font size="-1">size_t subRange_</font></td>
       <td><font size="-1">Number of images relative to the base image</font></td>
     </tr>
     <tr>

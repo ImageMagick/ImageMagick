@@ -19,12 +19,12 @@ namespace Magick
   class MagickDLLDecl Geometry;
 
   // Compare two Geometry objects regardless of LHS/RHS
-  int MagickDLLDecl operator == ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickDLLDecl operator != ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickDLLDecl operator >  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickDLLDecl operator <  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickDLLDecl operator >= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickDLLDecl operator <= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  ssize_t MagickDLLDecl operator == ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  ssize_t MagickDLLDecl operator != ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  ssize_t MagickDLLDecl operator >  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  ssize_t MagickDLLDecl operator <  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  ssize_t MagickDLLDecl operator >= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  ssize_t MagickDLLDecl operator <= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
 
   class MagickDLLDecl Geometry
   {
@@ -32,8 +32,8 @@ namespace Magick
     
     Geometry ( size_t width_,
 	       size_t height_,
-	       size_t xOff_ = 0,
-	       size_t yOff_ = 0,
+	       ssize_t xOff_ = 0,
+	       ssize_t yOff_ = 0,
 	       bool xNegative_ = false,
 	       bool yNegative_ = false );
     Geometry ( const std::string &geometry_ );
@@ -51,12 +51,12 @@ namespace Magick
     size_t  height ( void ) const;
     
     // X offset from origin
-    void          xOff ( size_t xOff_ );
-    size_t  xOff ( void ) const;
+    void          xOff ( ssize_t xOff_ );
+    ssize_t  xOff ( void ) const;
     
     // Y offset from origin
-    void          yOff ( size_t yOff_ );
-    size_t  yOff ( void ) const;
+    void          yOff ( ssize_t yOff_ );
+    ssize_t  yOff ( void ) const;
     
     // Sign of X offset negative? (X origin at right)
     void          xNegative ( bool xNegative_ );
@@ -109,8 +109,8 @@ namespace Magick
   private:
     size_t  _width;
     size_t  _height;
-    size_t  _xOff;
-    size_t  _yOff;
+    ssize_t  _xOff;
+    ssize_t  _yOff;
     bool          _xNegative;
     bool          _yNegative;
     bool          _isValid;
@@ -158,21 +158,21 @@ inline size_t Magick::Geometry::height ( void ) const
 }
 
 // X offset from origin
-inline void Magick::Geometry::xOff ( size_t xOff_ )
+inline void Magick::Geometry::xOff ( ssize_t xOff_ )
 {
   _xOff = xOff_;
 }
-inline size_t Magick::Geometry::xOff ( void ) const
+inline ssize_t Magick::Geometry::xOff ( void ) const
 {
   return _xOff;
 }
 
 // Y offset from origin
-inline void Magick::Geometry::yOff ( size_t yOff_ )
+inline void Magick::Geometry::yOff ( ssize_t yOff_ )
 {
   _yOff = yOff_;
 }
-inline size_t Magick::Geometry::yOff ( void ) const
+inline ssize_t Magick::Geometry::yOff ( void ) const
 {
   return _yOff;
 }

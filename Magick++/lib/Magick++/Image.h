@@ -30,17 +30,17 @@ namespace Magick
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
-  int MagickDLLDecl operator == ( const Magick::Image& left_,
+  ssize_t MagickDLLDecl operator == ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator != ( const Magick::Image& left_,
+  ssize_t MagickDLLDecl operator != ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator >  ( const Magick::Image& left_,
+  ssize_t MagickDLLDecl operator >  ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator <  ( const Magick::Image& left_,
+  ssize_t MagickDLLDecl operator <  ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator >= ( const Magick::Image& left_,
+  ssize_t MagickDLLDecl operator >= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator <= ( const Magick::Image& left_,
+  ssize_t MagickDLLDecl operator <= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
 
   // C library initialization routine
@@ -234,8 +234,8 @@ namespace Magick
     // Compose an image onto another at specified offset and using
     // specified algorithm
     void            composite ( const Image &compositeImage_,
-        const int xOffset_,
-        const int yOffset_,
+        const ssize_t xOffset_,
+        const ssize_t yOffset_,
         const CompositeOperator compose_
                                 = InCompositeOp );
     void            composite ( const Image &compositeImage_,
@@ -260,7 +260,7 @@ namespace Magick
     void            crop ( const Geometry &geometry_ );
     
     // Cycle image colormap
-    void            cycleColormap ( const int amount_ );
+    void            cycleColormap ( const ssize_t amount_ );
     
     // Despeckle image (reduce speckle noise)
     void            despeckle ( void );
@@ -370,8 +370,8 @@ namespace Magick
     void            frame ( const Geometry &geometry_ = frameGeometryDefault );
     void            frame ( const size_t width_,
                             const size_t height_,
-                            const int innerBevel_ = 6,
-                            const int outerBevel_ = 6 );
+                            const ssize_t innerBevel_ = 6,
+                            const ssize_t outerBevel_ = 6 );
 
     // Applies a mathematical expression to the image.
     void            fx ( const std::string expression );
@@ -450,7 +450,7 @@ namespace Magick
     // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
              const size_t opacity_,
-             const int x_, const int y_,
+             const ssize_t x_, const ssize_t y_,
              const PaintMethod method_ );
 
     // Filter image by replacing each pixel component with the median
@@ -518,7 +518,7 @@ namespace Magick
                                       const MagickEvaluateOperator operator_,
                                       double rvalue_);
 
-    void            quantumOperator ( const int x_,const int y_,
+    void            quantumOperator ( const ssize_t x_,const ssize_t y_,
                                       const size_t columns_,
                                       const size_t rows_,
                                       const ChannelType channel_,
@@ -530,7 +530,7 @@ namespace Magick
     // requested process module doesn't exist, fails to load, or fails during
     // execution.
     void            process ( std::string name_,
-                              const int argc_,
+                              const ssize_t argc_,
                               const char **argv_ );
 
     // Raise image (lighten or darken the edges of an image to give a
@@ -747,8 +747,8 @@ namespace Magick
     // Write single image frame to an array of pixels with storage
     // type specified by user (DispatchImage), e.g.
     //   image.write( 0, 0, 640, 1, "RGB", 0, pixels );
-    void            write ( const int x_,
-                            const int y_,
+    void            write ( const ssize_t x_,
+                            const ssize_t y_,
                             const size_t columns_,
                             const size_t rows_,
                             const std::string& map_,
@@ -1278,7 +1278,7 @@ typedef struct _ImageStatistics
 
     // Transfers read-only pixels from the image to the pixel cache as
     // defined by the specified region
-    const PixelPacket* getConstPixels ( const int x_, const int y_,
+    const PixelPacket* getConstPixels ( const ssize_t x_, const ssize_t y_,
                                         const size_t columns_,
                                         const size_t rows_ ) const;
 
@@ -1292,14 +1292,14 @@ typedef struct _ImageStatistics
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.  This method is
     // valid for DirectClass images.
-    PixelPacket* getPixels ( const int x_, const int y_,
+    PixelPacket* getPixels ( const ssize_t x_, const ssize_t y_,
            const size_t columns_,
                              const size_t rows_ );
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
-    PixelPacket* setPixels ( const int x_, const int y_,
+    PixelPacket* setPixels ( const ssize_t x_, const ssize_t y_,
            const size_t columns_,
                              const size_t rows_ );
 

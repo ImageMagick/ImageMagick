@@ -11,9 +11,9 @@ Single
 2 2 0 1 0 6 5 0 32 0.000 0 0 7 0 0 5
 	 5325 4350 7425 4350 7425 5175 5325 5175 5325 4350
 4 1 0 0 0 0 10 0.0000 4 135 810 6450 4275 class Options\001
-4 2 0 0 0 0 8 0.0000 4 135 1785 7350 4575 MagickLib::ImageInfo* _imageInfo\001
-4 2 0 0 0 0 8 0.0000 4 135 2040 7350 4800 MagickLib::QuantizeInfo* _quantizeInfo\001
-4 2 0 0 0 0 8 0.0000 4 135 1875 7350 5025 MagickLib::QuantizeInfo* _drawInfo\001
+4 2 0 0 0 0 8 0.0000 4 135 1785 7350 4575 MagickCore::ImageInfo* _imageInfo\001
+4 2 0 0 0 0 8 0.0000 4 135 2040 7350 4800 MagickCore::QuantizeInfo* _quantizeInfo\001
+4 2 0 0 0 0 8 0.0000 4 135 1875 7350 5025 MagickCore::QuantizeInfo* _drawInfo\001
 -6
 6 600 4800 2400 5625
 2 2 0 1 0 6 5 0 32 0.000 0 0 7 0 0 5
@@ -79,19 +79,19 @@ Single
 4 1 0 0 0 18 14 0.0000 4 210 3300 5250 900 Magick++ Image Data Structures\001
 4 1 0 0 0 0 10 0.0000 4 135 690 1575 1425 class Image\001
 4 1 0 0 0 0 10 0.0000 4 135 690 1500 2625 class Image\001
-4 1 0 0 0 0 10 0.0000 4 135 1725 8700 3525 struct MagickLib::ImageInfo\001
-4 1 0 0 0 0 10 0.0000 4 135 1890 8700 4425 struct MagickLib::QuantizeInfo\001
+4 1 0 0 0 0 10 0.0000 4 135 1725 8700 3525 struct MagickCore::ImageInfo\001
+4 1 0 0 0 0 10 0.0000 4 135 1890 8700 4425 struct MagickCore::QuantizeInfo\001
 4 2 0 0 0 0 8 0.0000 4 135 1395 2325 1875 class ImageRef* _imageRef\001
 4 2 0 0 0 0 8 0.0000 4 135 1395 2325 3075 class ImageRef* _imageRef\001
-4 2 0 0 0 0 8 0.0000 4 135 1665 4725 2475 struct MagickLib::Image* _image\001
-4 1 0 0 0 0 10 0.0000 4 135 1680 8700 5325 struct MagickLib::DrawInfo\001
+4 2 0 0 0 0 8 0.0000 4 135 1665 4725 2475 struct MagickCore::Image* _image\001
+4 1 0 0 0 0 10 0.0000 4 135 1680 8700 5325 struct MagickCore::DrawInfo\001
 4 2 0 0 0 0 8 0.0000 4 135 1485 4725 3750 class MutexLock _mutexLock\001
 4 2 0 0 0 0 8 0.0000 4 135 1140 4725 2850 class Options* _options\001
 4 2 0 0 0 0 8 0.0000 4 135 390 4725 3150 long _id\001
-4 2 0 0 0 0 8 0.0000 4 135 645 4725 3450 int _refCount\001
+4 2 0 0 0 0 8 0.0000 4 135 645 4725 3450 ssize_t _refCount\001
 4 1 0 0 0 0 10 0.0000 4 135 675 8708 2295 Image Data\001
 4 1 0 0 0 0 10 0.0000 4 135 1005 8700 2902 Image Attributes\001
-4 1 0 0 0 0 10 0.0000 4 135 1485 6450 2025 struct MagickLib::Image\001
+4 1 0 0 0 0 10 0.0000 4 135 1485 6450 2025 struct MagickCore::Image\001
 4 1 0 0 0 0 10 0.0000 4 135 900 3975 1950 class ImageRef\001
 4 1 0 0 0 0 10 0.0000 4 105 150 2625 2925 ref\001
 4 1 0 0 0 0 10 0.0000 4 105 150 2625 1875 ref\001
