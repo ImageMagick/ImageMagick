@@ -234,7 +234,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
     {
       index=(ssize_t) (indexes[x]+displace) % image->colors;
       if (index < 0)
-        index+=image->colors;
+        index+=(ssize_t) image->colors;
       indexes[x]=(IndexPacket) index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

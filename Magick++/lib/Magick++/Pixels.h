@@ -28,13 +28,13 @@ namespace Magick
     // the specified region. Modified pixels may be subsequently
     // transferred back to the image via sync.
     PixelPacket* get ( const int x_, const int y_,
-		       const unsigned int columns_,const  unsigned int rows_ );
+		       const size_t columns_,const  size_t rows_ );
 
     // Transfer read-only pixels from the image to the pixel view as
     // defined by the specified region.
     const PixelPacket* getConst ( const int x_, const int y_,
-                                  const unsigned int columns_,
-                                  const unsigned int rows_ );
+                                  const size_t columns_,
+                                  const size_t rows_ );
     
     // Transfers the image view pixels to the image.
     void sync ( void );
@@ -43,7 +43,7 @@ namespace Magick
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel view to the image via sync.
     PixelPacket* set ( const int x_, const int y_,
-		       const unsigned int columns_, const unsigned int rows_ );
+		       const size_t columns_, const size_t rows_ );
 
     // Return pixel colormap index array
     IndexPacket* indexes ( void );
@@ -55,10 +55,10 @@ namespace Magick
     int y ( void ) const;
 
     // Width of view
-    unsigned int columns ( void ) const;
+    size_t columns ( void ) const;
 
     // Height of view
-    unsigned int rows ( void ) const;
+    size_t rows ( void ) const;
 
 #if 0
     // Transfer one or more pixel components from a buffer or file
@@ -88,8 +88,8 @@ namespace Magick
     MagickCore::CacheView*   _view;    // Image view handle
     int                    _x;       // Left ordinate of view
     int                    _y;       // Top ordinate of view
-    unsigned int           _columns; // Width of view
-    unsigned int           _rows;    // Height of view
+    size_t           _columns; // Width of view
+    size_t           _rows;    // Height of view
     MagickCore:: ExceptionInfo _exception; // Any thrown exception
 
   }; // class Pixels
@@ -113,13 +113,13 @@ inline int Magick::Pixels::y ( void ) const
 }
 
 // Width of view
-inline unsigned int Magick::Pixels::columns ( void ) const
+inline size_t Magick::Pixels::columns ( void ) const
 {
   return _columns;
 }
 
 // Height of view
-inline unsigned int Magick::Pixels::rows ( void ) const
+inline size_t Magick::Pixels::rows ( void ) const
 {
   return _rows;
 }

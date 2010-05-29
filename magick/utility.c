@@ -930,7 +930,7 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
     *cwd;
 
   *path='\0';
-  cwd=getcwd(path,(size_t) extent);
+  cwd=getcwd(path,(unsigned long) extent);
 #if defined(MAGICKCORE_HAVE_GETPID) && defined(MAGICKCORE_HAVE_READLINK) && defined(PATH_MAX)
   {
     char

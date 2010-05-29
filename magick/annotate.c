@@ -1048,7 +1048,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     else
       args.pathname=ConstantString(draw_info->font+1);
   face=(FT_Face) NULL;
-  status=FT_Open_Face(library,&args,draw_info->face,&face);
+  status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
   args.pathname=DestroyString(args.pathname);
   if (status != 0)
     {

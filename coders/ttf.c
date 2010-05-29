@@ -260,7 +260,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   text=DestroyString(text);
   (void) FormatMagickString(buffer,MaxTextExtent,"'\n");
   ConcatenateString(&draw_info->primitive,buffer);
-  y+=20*MultilineCensus((char *) Text)+20;
+  y+=20*(ssize_t) MultilineCensus((char *) Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;

@@ -1606,7 +1606,7 @@ class MagickDLLDecl DrawableDashArray : public DrawableBase
 {
 public:
   DrawableDashArray( const double* dasharray_ );
-  DrawableDashArray( const unsigned int* dasharray_ ); // Deprecated
+  DrawableDashArray( const size_t* dasharray_ ); // Deprecated
   DrawableDashArray( const Magick::DrawableDashArray &original_ );
 
   /*virtual*/ ~DrawableDashArray( void );
@@ -1618,7 +1618,7 @@ public:
   /*virtual*/ DrawableBase* copy() const;
 
   void dasharray( const double* dasharray_ );
-  void dasharray( const unsigned int* dasharray_ ); // Deprecated
+  void dasharray( const size_t* dasharray_ ); // Deprecated
 
   const double* dasharray( void ) const
     {
@@ -1723,7 +1723,7 @@ private:
 class MagickDLLDecl DrawableMiterLimit : public DrawableBase
 {
 public:
-  DrawableMiterLimit ( unsigned int miterlimit_ )
+  DrawableMiterLimit ( size_t miterlimit_ )
     : _miterlimit(miterlimit_)
     { }
 
@@ -1735,17 +1735,17 @@ public:
   // Return polymorphic copy of object
   /*virtual*/ DrawableBase* copy() const;
 
-  void miterlimit( unsigned int miterlimit_ )
+  void miterlimit( size_t miterlimit_ )
     {
       _miterlimit = miterlimit_;
     }
-  unsigned int miterlimit( void ) const
+  size_t miterlimit( void ) const
     {
       return _miterlimit;
     }
 
 private:
-  unsigned int _miterlimit;
+  size_t _miterlimit;
 };
 
 

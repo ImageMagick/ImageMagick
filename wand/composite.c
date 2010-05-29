@@ -187,8 +187,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               (void) SetImageArtifact(composite_image,"compose:outside-overlay",
                 "false");
               columns=composite_image->columns;
-              for (y=0; y < (ssize_t) (*image)->rows; y+=composite_image->rows)
-                for (x=0; x < (ssize_t) (*image)->columns; x+=columns)
+              for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
+                for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
                   status&=CompositeImageChannel(*image,
                     composite_options->channel,composite_options->compose,
                     composite_image,x,y);

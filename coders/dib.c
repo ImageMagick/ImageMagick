@@ -71,10 +71,10 @@
 */
 typedef struct _DIBInfo
 {
-  size_t
+  unsigned int
     size;
 
-  ssize_t
+  int
     width,
     height;
 
@@ -82,7 +82,7 @@ typedef struct _DIBInfo
     planes,
     bits_per_pixel;
 
-  size_t
+  unsigned int
     compression,
     image_size,
     x_pixels,
@@ -94,7 +94,7 @@ typedef struct _DIBInfo
     alpha_mask,
     colors_important;
 
-  ssize_t
+  int
     colorspace;
 
   PointInfo
@@ -544,10 +544,14 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))
     {
+      size_t
+        one;
+
       image->storage_class=PseudoClass;
       image->colors=dib_info.number_colors;
+      one=1;
       if (image->colors == 0)
-        image->colors=1L << dib_info.bits_per_pixel;
+        image->colors=one << dib_info.bits_per_pixel;
     }
   if (image_info->size)
     {
@@ -1226,7 +1230,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
     Write DIB header.
   */
   (void) WriteBlobLSBLong(image,dib_info.size);
-  (void) WriteBlobLSBLong(image,(size_t) dib_info.width);
+  (void) WriteBlobLSBLong(image,dib_info.width);
   (void) WriteBlobLSBLong(image,(unsigned short) dib_info.height);
   (void) WriteBlobLSBShort(image,(unsigned short) dib_info.planes);
   (void) WriteBlobLSBShort(image,dib_info.bits_per_pixel);

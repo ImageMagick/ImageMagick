@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a title="Sponsor: Lampe Berger" href="http://www.geschenke-elsen.de/" title="Lampe Berger">Lampe Berger</a><!-- 201006101000040 -->
 </div>
 </div>
 </div>
@@ -696,7 +696,7 @@ _8c.html" target="source" name="MagickClampImage">MagickClampImage</a></h2>
 _8c.html" target="source" name="MagickClipImage">MagickClipImage</a></h2>
 <div class="doc-section">
 
-<p>MagickClipImage() clips assize_t the first path from the 8BIM profile, if present.</p></ol>
+<p>MagickClipImage() clips along the first path from the 8BIM profile, if present.</p></ol>
 
 <p>The format of the MagickClipImage method is:</p>
 
@@ -714,7 +714,7 @@ _8c.html" target="source" name="MagickClipImage">MagickClipImage</a></h2>
 _8c.html" target="source" name="MagickClipImagePath">MagickClipImagePath</a></h2>
 <div class="doc-section">
 
-<p>MagickClipImagePath() clips assize_t the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
+<p>MagickClipImagePath() clips along the named paths from the 8BIM profile, if present. Later operations take effect inside the path.  Id may be a number if preceded with #, to work on a numbered path, e.g., "#1" to use the first path.</p></ol>
 
 <p>The format of the MagickClipImagePath method is:</p>
 
@@ -3630,7 +3630,7 @@ _8c.html" target="source" name="MagickMotionBlurImage">MagickMotionBlurImage</a>
 <ol><p>the standard deviation of the Gaussian, in pixels.</p></ol>
 
 <h5>angle</h5>
-<ol><p>Apply the effect assize_t this angle.</p></ol>
+<ol><p>Apply the effect along this angle.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image
@@ -3934,7 +3934,7 @@ _8c.html" target="source" name="MagickPolaroidImage">MagickPolaroidImage</a></h2
 <ol><p>the draw wand.</p></ol>
 
 <h5>angle</h5>
-<ol><p>Apply the effect assize_t this angle.</p></ol>
+<ol><p>Apply the effect along this angle.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image
@@ -4032,7 +4032,7 @@ _8c.html" target="source" name="MagickQuantizeImage">MagickQuantizeImage</a></h2
 <ol><p>Normally, this integer value is zero or one.  A zero or one tells Quantize to choose a optimal tree depth of Log4(number_colors).      A tree of this depth generally allows the best representation of the reference image with the least amount of memory and the fastest computational speed.  In some cases, such as an image with low color dispersion (a few number of colors), a value other than Log4(number_colors) is required.  To expand the color tree completely, use a value of 8.</p></ol>
 
 <h5>dither</h5>
-<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced image to neighboring pixels assize_t a Hilbert curve.</p></ol>
+<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced image to neighboring pixels along a Hilbert curve.</p></ol>
 
 <h5>measure_error</h5>
 <ol><p>A value other than zero measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.</p></ol>
@@ -4068,7 +4068,7 @@ _8c.html" target="source" name="MagickQuantizeImages">MagickQuantizeImages</a></
 <ol><p>Normally, this integer value is zero or one.  A zero or one tells Quantize to choose a optimal tree depth of Log4(number_colors).      A tree of this depth generally allows the best representation of the reference image with the least amount of memory and the fastest computational speed.  In some cases, such as an image with low color dispersion (a few number of colors), a value other than Log4(number_colors) is required.  To expand the color tree completely, use a value of 8.</p></ol>
 
 <h5>dither</h5>
-<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced algorithm to neighboring pixels assize_t a Hilbert curve.</p></ol>
+<ol><p>A value other than zero distributes the difference between an original image and the corresponding color reduced algorithm to neighboring pixels along a Hilbert curve.</p></ol>
 
 <h5>measure_error</h5>
 <ol><p>A value other than zero measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.</p></ol>
@@ -5690,7 +5690,7 @@ _8c.html" target="source" name="MagickShaveImage">MagickShaveImage</a></h2>
 _8c.html" target="source" name="MagickShearImage">MagickShearImage</a></h2>
 <div class="doc-section">
 
-<p>MagickShearImage() slides one edge of an image assize_t the X or Y axis, creating a parallelogram.  An X direction shear slides an edge assize_t the X axis, while a Y direction shear slides an edge assize_t the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the background color.</p></ol>
+<p>MagickShearImage() slides one edge of an image along the X or Y axis, creating a parallelogram.  An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the background color.</p></ol>
 
 <p>The format of the MagickShearImage method is:</p>
 
@@ -5801,7 +5801,7 @@ _8c.html" target="source" name="MagickSketchImage">MagickSketchImage</a></h2>
 <ol><p>the standard deviation of the Gaussian, in pixels.</p></ol>
 
 <h5>angle</h5>
-<ol><p>Apply the effect assize_t this angle.</p></ol>
+<ol><p>Apply the effect along this angle.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image
@@ -6326,7 +6326,7 @@ _8c.html" target="source" name="MagickVignetteImage">MagickVignetteImage</a></h2
 _8c.html" target="source" name="MagickWaveImage">MagickWaveImage</a></h2>
 <div class="doc-section">
 
-<p>MagickWaveImage()  creates a "ripple" effect in the image by shifting the pixels vertically assize_t a sine wave whose amplitude and wavelength is specified by the given parameters.</p></ol>
+<p>MagickWaveImage()  creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelength is specified by the given parameters.</p></ol>
 
 <p>The format of the MagickWaveImage method is:</p>
 

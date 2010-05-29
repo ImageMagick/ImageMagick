@@ -24,9 +24,9 @@ void Magick::adaptiveBlurImage::operator()( Magick::Image &image_ ) const
 }
 
 // Local adaptive threshold image
-Magick::adaptiveThresholdImage::adaptiveThresholdImage( const unsigned int width_,
-                                                        const unsigned int height_,
-                                                        const unsigned int offset_ )
+Magick::adaptiveThresholdImage::adaptiveThresholdImage( const size_t width_,
+                                                        const size_t height_,
+                                                        const size_t offset_ )
       : _width(width_),
         _height(height_),
         _offset(offset_)
@@ -170,9 +170,9 @@ void Magick::cdlImage::operator()( Image &image_ ) const
 }
 
 // Colorize image using pen color at specified percent opacity
-Magick::colorizeImage::colorizeImage( const unsigned int opacityRed_,
-                                      const unsigned int opacityGreen_,
-                                      const unsigned int opacityBlue_,
+Magick::colorizeImage::colorizeImage( const size_t opacityRed_,
+                                      const size_t opacityGreen_,
+                                      const size_t opacityBlue_,
                                       const Magick::Color &penColor_ )
   : _opacityRed ( opacityRed_ ),
     _opacityGreen ( opacityGreen_ ),
@@ -180,7 +180,7 @@ Magick::colorizeImage::colorizeImage( const unsigned int opacityRed_,
     _penColor( penColor_ )
 {
 }
-Magick::colorizeImage::colorizeImage( const unsigned int opacity_,
+Magick::colorizeImage::colorizeImage( const size_t opacity_,
                                       const Magick::Color &penColor_ )
   : _opacityRed ( opacity_ ),
     _opacityGreen ( opacity_ ),
@@ -195,7 +195,7 @@ void Magick::colorizeImage::operator()( Magick::Image &image_ ) const
 
 // Apply a color matrix to the image channels.  The user supplied
 // matrix may be of order 1 to 5 (1x1 through 5x5).
-Magick::colorMatrixImage::colorMatrixImage( const unsigned int order_,
+Magick::colorMatrixImage::colorMatrixImage( const size_t order_,
               const double *color_matrix_ )
   : _order( order_ ),
     _color_matrix( color_matrix_ )
@@ -253,7 +253,7 @@ void Magick::compositeImage::operator()( Image &image_ ) const
 }
 
 // Contrast image (enhance intensity differences in image)
-Magick::contrastImage::contrastImage( const unsigned int sharpen_ )
+Magick::contrastImage::contrastImage( const size_t sharpen_ )
   : _sharpen( sharpen_ )
 {
 }
@@ -401,8 +401,8 @@ void Magick::flipImage::operator()( Magick::Image &image_ ) const
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.  Uses current
 // fuzz setting when determining color match.
-Magick::floodFillColorImage::floodFillColorImage( const unsigned int x_,
-                                                  const unsigned int y_,
+Magick::floodFillColorImage::floodFillColorImage( const size_t x_,
+                                                  const size_t y_,
                                                   const Magick::Color &fillColor_ )
   : _x(x_),
     _y(y_),
@@ -421,8 +421,8 @@ Magick::floodFillColorImage::floodFillColorImage( const Magick::Geometry &point_
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.  Uses current
 // fuzz setting when determining color match.
-Magick::floodFillColorImage::floodFillColorImage( const unsigned int x_,
-                                                  const unsigned int y_,
+Magick::floodFillColorImage::floodFillColorImage( const size_t x_,
+                                                  const size_t y_,
                                                   const Magick::Color &fillColor_,
                                                   const Magick::Color &borderColor_ )
   : _x(x_),
@@ -457,8 +457,8 @@ void Magick::floodFillColorImage::operator()( Magick::Image &image_ ) const
 // Flood-fill texture across pixels that match the color of the target
 // pixel and are neighbors of the target pixel.  Uses current fuzz
 // setting when determining color match.
-Magick::floodFillTextureImage::floodFillTextureImage( const unsigned int x_,
-                                                      const unsigned int y_,
+Magick::floodFillTextureImage::floodFillTextureImage( const size_t x_,
+                                                      const size_t y_,
                                                       const Magick::Image &texture_ )
   : _x(x_),
     _y(y_),
@@ -477,8 +477,8 @@ Magick::floodFillTextureImage::floodFillTextureImage( const Magick::Geometry &po
 // Flood-fill texture across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.  Uses current
 // fuzz setting when determining color match.
-Magick::floodFillTextureImage::floodFillTextureImage( const unsigned int x_,
-                                                      const unsigned int y_,
+Magick::floodFillTextureImage::floodFillTextureImage( const size_t x_,
+                                                      const size_t y_,
                                                       const Magick::Image &texture_,
                                                       const Magick::Color &borderColor_ )
   : _x(x_),
@@ -525,7 +525,7 @@ Magick::frameImage::frameImage( const Magick::Geometry &geometry_ )
     _innerBevel( geometry_.yOff() )
 {
 }
-Magick::frameImage::frameImage( const unsigned int width_, const unsigned int height_,
+Magick::frameImage::frameImage( const size_t width_, const size_t height_,
                                 const int innerBevel_, const int outerBevel_ )
   : _width( width_ ),
     _height( height_ ),
@@ -678,7 +678,7 @@ void Magick::mapImage::operator()( Magick::Image &image_ ) const
 
 // Floodfill designated area with a matte value
 Magick::matteFloodfillImage::matteFloodfillImage( const Color &target_ ,
-                                                  const unsigned int matte_,
+                                                  const size_t matte_,
                                                   const int x_, const int y_,
                                                   const PaintMethod method_ )
   : _target( target_ ),
@@ -764,7 +764,7 @@ void Magick::oilPaintImage::operator()( Magick::Image &image_ ) const
 // opacity_ ranges from 0 (completely opaque) to QuantumRange. The defines
 // OpaqueOpacity and TransparentOpacity are available to specify
 // completely opaque or completely transparent, respectively.
-Magick::opacityImage::opacityImage( const unsigned int opacity_ )
+Magick::opacityImage::opacityImage( const size_t opacity_ )
   : _opacity( opacity_ )
 {
 }
@@ -813,7 +813,7 @@ Magick::reduceNoiseImage::reduceNoiseImage( void )
   : _order(3)
 {
 }
-Magick::reduceNoiseImage::reduceNoiseImage ( const unsigned int order_ )
+Magick::reduceNoiseImage::reduceNoiseImage ( const size_t order_ )
       : _order(order_)
 {
 }
@@ -944,7 +944,7 @@ void Magick::solarizeImage::operator()( Magick::Image &image_ ) const
 }
 
 // Spread pixels randomly within image by specified ammount
-Magick::spreadImage::spreadImage( const unsigned int amount_ )
+Magick::spreadImage::spreadImage( const size_t amount_ )
   : _amount( amount_ )
 {
 }
@@ -1111,7 +1111,7 @@ void Magick::adjoinImage::operator()( Magick::Image &image_ ) const
 
 // Time in 1/100ths of a second which must expire before displaying
 // the next image in an animated sequence.
-Magick::animationDelayImage::animationDelayImage( const unsigned int delay_ )
+Magick::animationDelayImage::animationDelayImage( const size_t delay_ )
   : _delay( delay_ )
 {
 }
@@ -1122,7 +1122,7 @@ void Magick::animationDelayImage::operator()( Magick::Image &image_ ) const
 
 // Number of iterations to loop an animation (e.g. Netscape loop
 // extension) for.
-Magick::animationIterationsImage::animationIterationsImage( const unsigned int iterations_ )
+Magick::animationIterationsImage::animationIterationsImage( const size_t iterations_ )
   : _iterations( iterations_ )
 {
 }
@@ -1229,7 +1229,7 @@ void Magick::colorFuzzImage::operator()( Magick::Image &image_ ) const
 }
 
 // Color at colormap position index_
-Magick::colorMapImage::colorMapImage( const unsigned int index_,
+Magick::colorMapImage::colorMapImage( const size_t index_,
                                       const Color &color_ )
   : _index( index_ ),
     _color( color_ )
@@ -1272,7 +1272,7 @@ void Magick::densityImage::operator()( Magick::Image &image_ ) const
 }
 
 // Image depth (bits allocated to red/green/blue components)
-Magick::depthImage::depthImage( const unsigned int depth_ )
+Magick::depthImage::depthImage( const size_t depth_ )
   : _depth( depth_ )
 {
 }
@@ -1323,7 +1323,7 @@ void Magick::fontImage::operator()( Magick::Image &image_ ) const
 }
 
 // Font point size
-Magick::fontPointsizeImage::fontPointsizeImage( const unsigned int pointsize_ )
+Magick::fontPointsizeImage::fontPointsizeImage( const size_t pointsize_ )
   : _pointsize( pointsize_ )
 {
 }
@@ -1333,7 +1333,7 @@ void Magick::fontPointsizeImage::operator()( Magick::Image &image_ ) const
 }
 
 // GIF disposal method
-Magick::gifDisposeMethodImage::gifDisposeMethodImage( const unsigned int disposeMethod_ )
+Magick::gifDisposeMethodImage::gifDisposeMethodImage( const size_t disposeMethod_ )
   : _disposeMethod( disposeMethod_ )
 {
 }
@@ -1423,8 +1423,8 @@ void Magick::penTextureImage::operator()( Magick::Image &image_ ) const
 }
 
 // Set pixel color at location x & y.
-Magick::pixelColorImage::pixelColorImage( const unsigned int x_,
-                                          const unsigned int y_,
+Magick::pixelColorImage::pixelColorImage( const size_t x_,
+                                          const size_t y_,
                                           const Color &color_)
   : _x( x_ ),
     _y( y_ ),
@@ -1446,7 +1446,7 @@ void Magick::pageImage::operator()( Magick::Image &image_ ) const
 }
 
 // JPEG/MIFF/PNG compression level (default 75).
-Magick::qualityImage::qualityImage( const unsigned int quality_ )
+Magick::qualityImage::qualityImage( const size_t quality_ )
   : _quality( quality_ )
 {
 }
@@ -1456,7 +1456,7 @@ void Magick::qualityImage::operator()( Magick::Image &image_ ) const
 }
 
 // Maximum number of colors to quantize to
-Magick::quantizeColorsImage::quantizeColorsImage( const unsigned int colors_ )
+Magick::quantizeColorsImage::quantizeColorsImage( const size_t colors_ )
   : _colors( colors_ )
 {
 }
@@ -1486,7 +1486,7 @@ void Magick::quantizeDitherImage::operator()( Magick::Image &image_ ) const
 }
 
 // Quantization tree-depth
-Magick::quantizeTreeDepthImage::quantizeTreeDepthImage( const unsigned int treeDepth_ )
+Magick::quantizeTreeDepthImage::quantizeTreeDepthImage( const size_t treeDepth_ )
   : _treeDepth( treeDepth_ ) { }
 
 void Magick::quantizeTreeDepthImage::operator()( Magick::Image &image_ ) const
@@ -1515,7 +1515,7 @@ void Magick::resolutionUnitsImage::operator()( Magick::Image &image_ ) const
 }
 
 // Image scene number
-Magick::sceneImage::sceneImage( const unsigned int scene_ )
+Magick::sceneImage::sceneImage( const size_t scene_ )
   : _scene( scene_ )
 {
 }
@@ -1545,7 +1545,7 @@ void Magick::spliceImage::operator()( Magick::Image &image_ ) const
 }
 
 // Subimage of an image sequence
-Magick::subImageImage::subImageImage( const unsigned int subImage_ )
+Magick::subImageImage::subImageImage( const size_t subImage_ )
   : _subImage( subImage_ )
 {
 }
@@ -1555,7 +1555,7 @@ void Magick::subImageImage::operator()( Magick::Image &image_ ) const
 }
 
 // Number of images relative to the base image
-Magick::subRangeImage::subRangeImage( const unsigned int subRange_ )
+Magick::subRangeImage::subRangeImage( const size_t subRange_ )
   : _subRange( subRange_ )
 {
 }

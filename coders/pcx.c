@@ -267,6 +267,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *scanline;
 
   size_t
+    one,
     pcx_packets;
 
   /*
@@ -358,10 +359,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=ReadBlob(image,3*image->colors,pcx_colormap);
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
+    one=1;
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=(size_t) MagickMin(1UL << (1UL*
+        image->colors=(size_t) MagickMin(one << (1UL*
           (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
     if (AcquireImageColormap(image,image->colors) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");

@@ -263,7 +263,7 @@ static MagickBooleanType IsTIFF(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline size_t WriteLSBLong(FILE *file,const unsigned int value)
+static inline size_t WriteLSBLong(FILE *file,const size_t value)
 {
   unsigned char
     buffer[4];
@@ -1379,7 +1379,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             {
               if (TIFFReadRGBAStrip(tiff,(tstrip_t) y,(uint32 *) pixels) == 0)
                 break;
-              i=(ssize_t) MagickMin((ssize_t) rows_per_strip,(ssize_t) image->rows-y);
+              i=(ssize_t) MagickMin((ssize_t) rows_per_strip,(ssize_t)
+                image->rows-y);
             }
           i--;
           p=pixels+image->columns*i;
@@ -2824,8 +2825,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,image_info->quality ==
-          UndefinedCompressionQuality ? 7 : MagickMin(1L*image_info->quality/10,
-          9));
+          UndefinedCompressionQuality ? 7 : (long) MagickMin(1L*
+          image_info->quality/10,9));
         break;
       }
       case COMPRESSION_CCITTFAX3:
@@ -2833,13 +2834,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         /*
           Byte-aligned EOL.
         */
-        rows_per_strip=image->rows;
+        rows_per_strip=(uint32) image->rows;
         (void) TIFFSetField(tiff,TIFFTAG_GROUP3OPTIONS,4);
         break;
       }
       case COMPRESSION_CCITTFAX4:
       {
-        rows_per_strip=image->rows;
+        rows_per_strip=(uint32) image->rows;
         break;
       }
       case COMPRESSION_LZW:
@@ -2918,7 +2919,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         pages;
 
       page=(uint16) scene;
-      pages=GetImageListLength(image);
+      pages=(uint16) GetImageListLength(image);
       if ((image_info->adjoin != MagickFalse) && (pages > 1))
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
       (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);

@@ -49,8 +49,8 @@ Magick::Pixels::~Pixels( void )
 // transferred back to the image via sync.
 Magick::PixelPacket* Magick::Pixels::get ( const int x_,
 					   const int y_,
-					   const unsigned int columns_,
-					   const unsigned int rows_ )
+					   const size_t columns_,
+					   const size_t rows_ )
 {
   _x = x_;
   _y = y_;
@@ -68,8 +68,8 @@ Magick::PixelPacket* Magick::Pixels::get ( const int x_,
 // Transfer read-only pixels from the image to the pixel view as
 // defined by the specified region.
 const Magick::PixelPacket* Magick::Pixels::getConst ( const int x_, const int y_,
-                                                      const unsigned int columns_,
-                                                      const unsigned int rows_ )
+                                                      const size_t columns_,
+                                                      const size_t rows_ )
 {
   _x = x_;
   _y = y_;
@@ -97,8 +97,8 @@ void Magick::Pixels::sync ( void )
 // from the pixel view to the image via 'sync'.
 Magick::PixelPacket* Magick::Pixels::set ( const int x_,
 					   const int y_,
-					   const unsigned int columns_,
-					   const unsigned int rows_ )
+					   const size_t columns_,
+					   const size_t rows_ )
 {
   _x = x_;
   _y = y_;

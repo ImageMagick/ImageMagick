@@ -1026,7 +1026,7 @@ Magick::DrawableDashArray::DrawableDashArray( const double* dasharray_ )
 }
 // Deprecated, do not use for new code, and migrate existing code to
 // using double*
-Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
+Magick::DrawableDashArray::DrawableDashArray( const size_t* dasharray_ )
   : _size(0),
     _dasharray(0)
 {
@@ -1071,7 +1071,7 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
   if(dasharray_)
     {
       // Count elements in dash array
-      unsigned int n = 0;
+      size_t n = 0;
       {
         const double *p = dasharray_;
         while(*p++ != 0)
@@ -1093,16 +1093,16 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 }
 // This method is deprecated.  Don't use for new code, and migrate existing
 // code to the const double* version.
-void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
+void Magick::DrawableDashArray::dasharray( const size_t* dasharray_ )
 {
   _dasharray=(double *) RelinquishMagickMemory(_dasharray);
 
   if(dasharray_)
     {
       // Count elements in dash array
-      unsigned int n = 0;
+      size_t n = 0;
       {
-        const unsigned int *p = dasharray_;
+        const size_t *p = dasharray_;
         while(*p++ != 0)
           n++;
       }
@@ -1113,7 +1113,7 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
       // Copy elements
       {
         double *q = _dasharray;
-        const unsigned int *p = dasharray_;
+        const size_t *p = dasharray_;
         while( *p )
           *q++=static_cast<double>(*p++);
         *q=0;

@@ -376,7 +376,8 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
           q->red=ScaleCharToQuantum(*graydata);
           q->green=q->red;
           q->blue=q->red;
-          q->opacity=ScaleCharToQuantum(255-inLayerInfo->opacity);
+          q->opacity=ScaleCharToQuantum((unsigned char) (255-
+            inLayerInfo->opacity));
           graydata++;
           q++;
         }
@@ -390,7 +391,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
             q->green=ScaleCharToQuantum(xcfdata->green);
             q->blue=ScaleCharToQuantum(xcfdata->blue);
             q->opacity=(Quantum) (xcfdata->opacity == 0U ? TransparentOpacity :
-              ScaleCharToQuantum(255-inLayerInfo->opacity));
+              ScaleCharToQuantum((unsigned char) (255-inLayerInfo->opacity)));
             xcfdata++;
             q++;
           }
@@ -478,13 +479,15 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     {
                       q->green=ScaleCharToQuantum(data);
                       q->blue=ScaleCharToQuantum(data);
-                      q->opacity=ScaleCharToQuantum(255-inLayerInfo->opacity);
+                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
+                        inLayerInfo->opacity));
                     }
                   else
                     {
                       q->green= q->red;
                       q->blue= q->red;
-                      q->opacity=ScaleCharToQuantum(255-inLayerInfo->opacity);
+                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
+                        inLayerInfo->opacity));
                     }
                   break;
                 }
@@ -501,7 +504,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 case 3:
                 {
                   q->opacity=(Quantum) (data == 0 ? TransparentOpacity :
-                    ScaleCharToQuantum(255-inLayerInfo->opacity));
+                    ScaleCharToQuantum((unsigned char) (255-
+                    inLayerInfo->opacity)));
                   break;
                 }
               }
@@ -536,13 +540,15 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     {
                       q->green=ScaleCharToQuantum(data);
                       q->blue=ScaleCharToQuantum(data);
-                      q->opacity=ScaleCharToQuantum(255-inLayerInfo->opacity);
+                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
+                        inLayerInfo->opacity));
                     }
                   else
                     {
                       q->green=q->red;
                       q->blue=q->red;
-                      q->opacity=ScaleCharToQuantum(255-inLayerInfo->opacity);
+                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
+                        inLayerInfo->opacity));
                     }
                   break;
                 }
@@ -559,7 +565,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 case 3:
                 {
                   q->opacity=(Quantum) (data == 0 ? TransparentOpacity :
-                    ScaleCharToQuantum(255-inLayerInfo->opacity));
+                    ScaleCharToQuantum((unsigned char) (255-
+                    inLayerInfo->opacity)));
                   break;
                 }
               }

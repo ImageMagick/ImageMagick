@@ -2180,6 +2180,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
     j,
     k,
     l,
+    length,
     n;
 
   MagickBooleanType
@@ -2205,7 +2206,8 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
   if (posterize_image == (Image *) NULL)
     return(MagickFalse);
   l=1;
-  while ((l*l*l) < (ssize_t) MagickMin((ssize_t) levels*levels*levels,MaxColormapSize+1))
+  length=levels*levels*levels;
+  while ((l*l*l) < (ssize_t) MagickMin((ssize_t) length,MaxColormapSize+1))
     l++;
   status=SetImageExtent(posterize_image,(size_t) (l*l*l),1);
   if (status == MagickFalse)

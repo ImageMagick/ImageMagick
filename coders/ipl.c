@@ -68,16 +68,16 @@ Tyedef declarations
 
 typedef struct _IPLInfo
 {
-  size_t
-  tag,
-  size,
-  time,
-  z,
-  width,
-  height,
-  colors,
-  depth,
-  byteType;
+  unsigned int
+    tag,
+    size,
+    time,
+    z,
+    width,
+    height,
+    colors,
+    depth,
+    byteType;
 } IPLInfo;
 
 static MagickBooleanType

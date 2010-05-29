@@ -593,7 +593,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
         case TWId:
         case TBId:
         {
-          count+=entry->count;
+          count+=(ssize_t) entry->count;
           if ((x+count) > (ssize_t) image->columns)
             count=(ssize_t) image->columns-x;
           if (count > 0)
@@ -615,7 +615,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
         case MBId:
         case EXId:
         {
-          count+=entry->count;
+          count+=(ssize_t) entry->count;
           break;
         }
         default:
@@ -688,7 +688,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 {
 #define HuffmanOutputCode(entry)  \
 {  \
-  mask=1 << (entry->length-1);  \
+  mask=one << (entry->length-1);  \
   while (mask != 0)  \
   {  \
     OutputBit(((entry->code & mask) != 0 ? 1 : 0));  \
@@ -749,6 +749,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 
   size_t
     mask,
+    one,
     width;
 
   /*
@@ -762,6 +763,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(inject_image != (Image *) NULL);
   assert(inject_image->signature == MagickSignature);
+  one=1;
   width=inject_image->columns;
   if (LocaleCompare(image_info->magick,"FAX") == 0)
     width=(size_t) MagickMax(inject_image->columns,1728);
@@ -827,7 +829,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
             entry=MWTable+((runlength/64)-1);
           else
             entry=EXTable+(MagickMin((size_t) runlength,2560)-1792)/64;
-          runlength-=entry->count;
+          runlength-=(ssize_t) entry->count;
           HuffmanOutputCode(entry);
         }
       entry=TWTable+MagickMin((size_t) runlength,63);
@@ -847,7 +849,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
               entry=MBTable+((runlength/64)-1);
               if (runlength >= 1792)
                 entry=EXTable+(MagickMin((size_t) runlength,2560)-1792)/64;
-              runlength-=entry->count;
+              runlength-=(ssize_t) entry->count;
               HuffmanOutputCode(entry);
             }
           entry=TBTable+MagickMin((size_t) runlength,63);

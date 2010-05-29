@@ -304,8 +304,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixels;
 
   size_t
-    num_pad_bytes, /* TS */
     bits_per_pixel,
+    num_pad_bytes, /* TS */
+    one,
     packets;
 
   /*
@@ -390,7 +391,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   image->storage_class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2UL : pdb_image.type == 2 ? 4UL : 1UL;
-  if (AcquireImageColormap(image,1 << bits_per_pixel) == MagickFalse)
+  one=1;
+  if (AcquireImageColormap(image,one << bits_per_pixel) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
@@ -774,16 +776,16 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,32,(unsigned char *) pdb_info.name);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.attributes);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.version);
-  (void) WriteBlobMSBLong(image,pdb_info.create_time);
-  (void) WriteBlobMSBLong(image,pdb_info.modify_time);
-  (void) WriteBlobMSBLong(image,pdb_info.archive_time);
-  (void) WriteBlobMSBLong(image,pdb_info.modify_number);
-  (void) WriteBlobMSBLong(image,pdb_info.application_info);
-  (void) WriteBlobMSBLong(image,pdb_info.sort_info);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.create_time);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.modify_time);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.archive_time);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.modify_number);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.application_info);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.sort_info);
   (void) WriteBlob(image,4,(unsigned char *) pdb_info.type);
   (void) WriteBlob(image,4,(unsigned char *) pdb_info.id);
-  (void) WriteBlobMSBLong(image,(size_t) pdb_info.seed);
-  (void) WriteBlobMSBLong(image,(size_t) pdb_info.next_record);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.seed);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.next_record);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.number_records);
   (void) CopyMagickString(pdb_image.name,pdb_info.name,32);
   pdb_image.version=1;  /* RLE Compressed */
@@ -920,11 +922,11 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,32,(unsigned char *) pdb_image.name);
   (void) WriteBlobByte(image,(unsigned char) pdb_image.version);
   (void) WriteBlobByte(image,(unsigned char) pdb_image.type);
-  (void) WriteBlobMSBLong(image,pdb_image.reserved_1);
-  (void) WriteBlobMSBLong(image,pdb_image.note);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.reserved_1);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.note);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.x_last);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.y_last);
-  (void) WriteBlobMSBLong(image,pdb_image.reserved_2);
+  (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.reserved_2);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.x_anchor);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.y_anchor);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.width);

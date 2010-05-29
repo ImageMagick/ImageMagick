@@ -937,6 +937,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   ssize_t
     ldblk;
 
+  size_t
+    one;
+
   unsigned char
     *BImgBuff;
 
@@ -949,6 +952,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  one=1;
   image=AcquireImage(image_info);
   image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -1076,7 +1080,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             UnpackRaster:      
               if ((image->colors == 0) && (bpp != 24))
                 {
-                  image->colors=1 << bpp;
+                  image->colors=one << bpp;
                   if (!AcquireImageColormap(image,image->colors))
                     {
                     NoMemory:
@@ -1094,9 +1098,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               else
                 {
                   if (bpp < 24)
-                    if ( (image->colors < (1UL<<bpp)) && (bpp != 24) )
+                    if ( (image->colors < (one << bpp)) && (bpp != 24) )
                       image->colormap=(PixelPacket *) ResizeQuantumMemory(
-                        image->colormap,(size_t) (1UL << bpp),
+                        image->colormap,(size_t) (one << bpp),
                         sizeof(*image->colormap));
                 }
           
@@ -1263,9 +1267,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               else
                 {
                   if(bpp < 24)
-                    if( image->colors<(1UL<<bpp) && bpp!=24 )
+                    if( image->colors<(one << bpp) && bpp!=24 )
                       image->colormap=(PixelPacket *) ResizeQuantumMemory(
-                       image->colormap,(size_t) (1UL << bpp),
+                       image->colormap,(size_t) (one << bpp),
                        sizeof(*image->colormap));
                 }
 

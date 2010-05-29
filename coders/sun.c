@@ -316,10 +316,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MAGICKCORE_QUANTUM_DEPTH;
     if (sun_info.depth < 24)
       {
+        size_t
+          one;
+
         image->storage_class=PseudoClass;
         image->colors=sun_info.maplength;
+        one=1;
         if (sun_info.maptype == RMT_NONE)
-          image->colors=1 << sun_info.depth;
+          image->colors=one << sun_info.depth;
         if (sun_info.maptype == RMT_EQUAL_RGB)
           image->colors=sun_info.maplength/3;
       }
@@ -770,9 +774,10 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         /*
           Full color SUN raster.
         */
-        sun_info.depth=image->matte ? 32U : 24U;
+        sun_info.depth=(unsigned int) image->matte ? 32U : 24U;
         sun_info.length=(unsigned int) ((image->matte ? 4 : 3)*number_pixels);
-        sun_info.length+=sun_info.length & 0x01 ? image->rows : 0;
+        sun_info.length+=sun_info.length & 0x01 ? (unsigned int) image->rows :
+          0;
       }
     else
       if (IsMonochromeImage(image,&image->exception))

@@ -551,7 +551,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
               (void) CopyMagickMemory(q,p,(size_t) number_pixels);
             q+=number_pixels;
           }
-          j+=bytes_per_pixel+1;
+          j+=(ssize_t) bytes_per_pixel+1;
         }
   }
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
@@ -1755,7 +1755,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         return(MagickFalse);
       jpeg_image=DestroyImage(jpeg_image);
       (void) WriteBlobMSBShort(image,PictJPEGOp);
-      (void) WriteBlobMSBLong(image,(size_t) length+154);
+      (void) WriteBlobMSBLong(image,(unsigned int) length+154);
       (void) WriteBlobMSBShort(image,0x0000);
       (void) WriteBlobMSBLong(image,0x00010000UL);
       (void) WriteBlobMSBLong(image,0x00000000UL);
@@ -1826,7 +1826,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   */
   (void) WriteBlobMSBShort(image,(unsigned short) pixmap.version);
   (void) WriteBlobMSBShort(image,(unsigned short) pixmap.pack_type);
-  (void) WriteBlobMSBLong(image,pixmap.pack_size);
+  (void) WriteBlobMSBLong(image,(unsigned int) pixmap.pack_size);
   (void) WriteBlobMSBShort(image,(unsigned short) (x_resolution+0.5));
   (void) WriteBlobMSBShort(image,0x0000);
   (void) WriteBlobMSBShort(image,(unsigned short) (y_resolution+0.5));
@@ -1838,9 +1838,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   */
   (void) WriteBlobMSBShort(image,(unsigned short) pixmap.component_count);
   (void) WriteBlobMSBShort(image,(unsigned short) pixmap.component_size);
-  (void) WriteBlobMSBLong(image,(size_t) pixmap.plane_bytes);
-  (void) WriteBlobMSBLong(image,(size_t) pixmap.table);
-  (void) WriteBlobMSBLong(image,(size_t) pixmap.reserved);
+  (void) WriteBlobMSBLong(image,(unsigned int) pixmap.plane_bytes);
+  (void) WriteBlobMSBLong(image,(unsigned int) pixmap.table);
+  (void) WriteBlobMSBLong(image,(unsigned int) pixmap.reserved);
   if (storage_class == PseudoClass)
     {
       /*

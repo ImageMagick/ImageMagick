@@ -208,11 +208,11 @@ Magick::Geometry Magick::Options::density ( void ) const
   return Geometry();
 }
 
-void Magick::Options::depth ( unsigned int depth_ )
+void Magick::Options::depth ( size_t depth_ )
 {
   _imageInfo->depth = depth_;
 }
-unsigned int Magick::Options::depth ( void ) const
+size_t Magick::Options::depth ( void ) const
 {
   return _imageInfo->depth;
 }
@@ -406,20 +406,20 @@ Magick::Geometry Magick::Options::page ( void ) const
     return Geometry();
 }
 
-void Magick::Options::quality ( unsigned int quality_ )
+void Magick::Options::quality ( size_t quality_ )
 {
   _imageInfo->quality = quality_;
 }
-unsigned int Magick::Options::quality ( void ) const
+size_t Magick::Options::quality ( void ) const
 {
   return _imageInfo->quality;
 }
 
-void Magick::Options::quantizeColors ( unsigned int colors_ )
+void Magick::Options::quantizeColors ( size_t colors_ )
 {
   _quantizeInfo->number_colors = colors_;
 }
-unsigned int Magick::Options::quantizeColors ( void ) const
+size_t Magick::Options::quantizeColors ( void ) const
 {
   return _quantizeInfo->number_colors;
 }
@@ -443,11 +443,11 @@ bool Magick::Options::quantizeDither ( void ) const
   return static_cast<bool>(_imageInfo->dither);
 }
 
-void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
+void Magick::Options::quantizeTreeDepth ( size_t treeDepth_ )
 {
   _quantizeInfo->tree_depth = treeDepth_;
 }
-unsigned int Magick::Options::quantizeTreeDepth ( void ) const
+size_t Magick::Options::quantizeTreeDepth ( void ) const
 {
   return _quantizeInfo->tree_depth;
 }
@@ -518,7 +518,7 @@ void Magick::Options::strokeDashArray ( const double* strokeDashArray_ )
   if(strokeDashArray_)
     {
       // Count elements in dash array
-      unsigned int x;
+      size_t x;
       for (x=0; strokeDashArray_[x]; x++) ;
       // Allocate elements
       _drawInfo->dash_pattern =
@@ -566,11 +566,11 @@ Magick::LineJoin Magick::Options::strokeLineJoin ( void ) const
 }
 
 // miterLimit for drawing lines, circles, ellipses, etc.
-void Magick::Options::strokeMiterLimit ( unsigned int miterLimit_ )
+void Magick::Options::strokeMiterLimit ( size_t miterLimit_ )
 {
   _drawInfo->miterlimit = miterLimit_;
 }
-unsigned int Magick::Options::strokeMiterLimit ( void ) const
+size_t Magick::Options::strokeMiterLimit ( void ) const
 {
   return _drawInfo->miterlimit;
 }
@@ -613,20 +613,20 @@ double Magick::Options::strokeWidth ( void ) const
   return _drawInfo->stroke_width;
 }
 
-void Magick::Options::subImage ( unsigned int subImage_ )
+void Magick::Options::subImage ( size_t subImage_ )
 {
   _imageInfo->scene = subImage_;
 }
-unsigned int Magick::Options::subImage ( void ) const
+size_t Magick::Options::subImage ( void ) const
 {
   return _imageInfo->scene;
 }
 
-void Magick::Options::subRange ( unsigned int subRange_ )
+void Magick::Options::subRange ( size_t subRange_ )
 {
   _imageInfo->number_scenes = subRange_;
 }
-unsigned int Magick::Options::subRange ( void ) const
+size_t Magick::Options::subRange ( void ) const
 {
   return _imageInfo->number_scenes;
 }
