@@ -131,7 +131,8 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-              "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,signature,
+              "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
+              (unsigned long) signature,(unsigned long)
               MagickImageFilterSignature);
             return(MagickFalse);
           }
