@@ -3320,7 +3320,8 @@ static MagickBooleanType TraceSVGImage(Image *image)
     (void) WriteBlobString(image,
       "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
     (void) FormatMagickString(message,MaxTextExtent,
-      "<svg width=\"%lu\" height=\"%lu\">\n",image->columns,image->rows);
+      "<svg width=\"%lu\" height=\"%lu\">\n",(unsigned long) image->columns,
+      (unsigned long) image->rows);
     (void) WriteBlobString(image,message);
     GetMagickPixelPacket(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -3335,7 +3336,8 @@ static MagickBooleanType TraceSVGImage(Image *image)
         (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
           &image->exception);
         (void) FormatMagickString(message,MaxTextExtent,
-          "  <circle cx=\"%ld\" cy=\"%ld\" r=\"1\" fill=\"%s\"/>\n",x,y,tuple);
+          "  <circle cx=\"%ld\" cy=\"%ld\" r=\"1\" fill=\"%s\"/>\n",(long) x,
+          (long) y,tuple);
         (void) WriteBlobString(image,message);
         p++;
       }
