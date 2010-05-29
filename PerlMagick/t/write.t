@@ -218,14 +218,14 @@ print("X Windows system bitmap (black and white only) ...\n");
 testReadWrite( 'XBM:input.xbm',
   'XBM:output.xbm',
   q//,
-  '4cc91a24ddcbe4a9563b1ca063f765ec1ca4514cc3e3ba3e710f1226e49a8dd5');
+  'c0e7d770445314ea4990484553b8a05e7653a8f8eff874ad4daa28ea4c8df6fe');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
 testReadWrite( 'XPM:input.xpm',
   'XPM:output.xpm',
   q//,
-  'fa51c37680393251b7011d1825df7a5ed4e0f78168afb4d6d5c59aa4d45ade12');
+  'd28c7104a30c8986c34b98a4209de5d4b8a79911a9b5c46037e62c8a2063a09c');
 
 print("CMYK format ...\n");
 ++$test;
