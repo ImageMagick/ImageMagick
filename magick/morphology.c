@@ -1483,11 +1483,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case DiskKernel:
       {
-        ssize_t limit = (ssize_t)(args->rho*args->rho);
-        if (args->rho < 0.1)             /* default radius approx 3.5 */
+        ssize_t
+         limit = (ssize_t)(args->rho*args->rho);
+
+        if (args->rho < 0.4)           /* default radius approx 3.5 */
           kernel->width = kernel->height = 7L, limit = 10L;
         else
-           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+           kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
@@ -1559,14 +1561,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (args->rho < args->sigma)
           {
             kernel->width = ((size_t)args->sigma)*2+1;
-            limit1 = (ssize_t)args->rho*args->rho;
-            limit2 = (ssize_t)args->sigma*args->sigma;
+            limit1 = (ssize_t)(args->rho*args->rho);
+            limit2 = (ssize_t)(args->sigma*args->sigma);
           }
         else
           {
             kernel->width = ((size_t)args->rho)*2+1;
-            limit1 = (ssize_t)args->sigma*args->sigma;
-            limit2 = (ssize_t)args->rho*args->rho;
+            limit1 = (ssize_t)(args->sigma*args->sigma);
+            limit2 = (ssize_t)(args->rho*args->rho);
           }
         if ( limit2 <= 0 )
           kernel->width = 7L, limit1 = 7L, limit2 = 11L;
@@ -1745,19 +1747,35 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case SkeletonKernel:
       { /* what is the best form for skeletonization by thinning? */
-#if 0
-#  if 0
-        kernel=AcquireKernelInfo("Corners;Edges");
-#  else
-        kernel=AcquireKernelInfo("Edges;Corners");
-#  endif
-#else
+#if 1
+        /* Full Corner rotated to form edges too */
         kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
         ExpandKernelInfo(kernel, 45);
-        break;
+#endif
+#if 0
+        /* As last but thin the edges before looking for corners */
+        KernelInfo
+          *new_kernel;
+        kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        ExpandKernelInfo(kernel, 90.0);
+        new_kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        ExpandKernelInfo(new_kernel, 90.0);
+        LastKernelInfo(kernel)->next = new_kernel;
+#endif
+#if 0
+        kernel=AcquireKernelInfo("Edges;Corners");
+#endif
+#if 0
+        kernel=AcquireKernelInfo("Corners;Edges");
 #endif
         break;
       }
@@ -2166,6 +2184,15 @@ static size_t MorphologyPrimitive(const Image *image, Image
 
   MagickOffsetType
     progress;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(result_image != (Image *) NULL);
+  assert(result_image->signature == MagickSignature);
+  assert(kernel != (KernelInfo *) NULL);
+  assert(kernel->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
 
   status=MagickTrue;
   changed=0;
@@ -2775,9 +2802,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       break;
     case ThinningMorphology:
     case ThickenMorphology:
-    case DistanceMorphology:
       method_limit = kernel_limit;  /* iterate method with each kernel */
       kernel_limit = 1;             /* do not do kernel iteration  */
+    case DistanceMorphology:
       rslt_compose = NoCompositeOp; /* Re-iterate with multiple kernels */
       break;
     default:
@@ -2818,6 +2845,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     norm_kernel = (KernelInfo *) kernel;
     this_kernel = (KernelInfo *) kernel;
     rflt_kernel = reflected_kernel;
+
     kernel_number = 0;
     while ( norm_kernel != NULL ) {
 
@@ -2848,6 +2876,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             primative = ErodeIntensityMorphology;
             if ( stage_loop == 2 )
               primative = DilateIntensityMorphology;
+            break;
           case CloseMorphology:      /* dilate, then erode */
           case BottomHatMorphology:  /* close and image difference */
             this_kernel = rflt_kernel; /* use the reflected kernel */
@@ -2903,6 +2932,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           default:
             break;
         }
+        assert( this_kernel != (KernelInfo *) NULL );
 
         /* Extra information for debugging compound operations */
         if ( verbose == MagickTrue ) {
@@ -2938,7 +2968,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
                 }
             }
 
-          /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
+      /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
           changed = MorphologyPrimitive(curr_image, work_image, primative,
                         channel, this_kernel, bias, exception);
@@ -2970,11 +3000,11 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           fprintf(stderr, "\n"); /* add end-of-line before looping */
 
 #if 0
-    fprintf(stderr, "--E-- image=0x%lx\n", (size_t)image);
-    fprintf(stderr, "      curr =0x%lx\n", (size_t)curr_image);
-    fprintf(stderr, "      work =0x%lx\n", (size_t)work_image);
-    fprintf(stderr, "      save =0x%lx\n", (size_t)save_image);
-    fprintf(stderr, "      union=0x%lx\n", (size_t)rslt_image);
+    fprintf(stderr, "--E-- image=0x%lx\n", (unsigned long)image);
+    fprintf(stderr, "      curr =0x%lx\n", (unsigned long)curr_image);
+    fprintf(stderr, "      work =0x%lx\n", (unsigned long)work_image);
+    fprintf(stderr, "      save =0x%lx\n", (unsigned long)save_image);
+    fprintf(stderr, "      union=0x%lx\n", (unsigned long)rslt_image);
 #endif
 
       } /* End Loop 3: Primative (staging) Loop for Coumpound Methods */
