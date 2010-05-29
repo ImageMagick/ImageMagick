@@ -257,7 +257,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
-  size_t
+  unsigned long
     colors,
     columns,
     rows,
