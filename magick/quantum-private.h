@@ -312,7 +312,7 @@ static inline Quantum ScaleAnyToQuantum(const QuantumAny quantum,
 static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
   const QuantumAny range)
 {
-  return((QuantumAny) (((MagickRealType) range*quantum)/QuantumRange)+0.5);
+  return((QuantumAny) (((MagickRealType) range*quantum)/QuantumRange+0.5));
 }
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)

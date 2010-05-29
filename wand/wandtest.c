@@ -448,16 +448,18 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   if (MagickGetNumberImages(magick_wand) != 5)
     (void) fprintf(stderr,"read %lu images; expected 5\n",
-      (size_t) MagickGetNumberImages(magick_wand));
+      (unsigned long) MagickGetNumberImages(magick_wand));
   (void) fprintf(stdout,"Iterate forward...\n");
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
     (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),MagickGetImageScene(magick_wand));
+      MagickGetIteratorIndex(magick_wand),(unsigned long)
+      MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Iterate reverse...\n");
   while (MagickPreviousImage(magick_wand) != MagickFalse)
     (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),MagickGetImageScene(magick_wand));
+      MagickGetIteratorIndex(magick_wand),(unsigned long)
+      MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Remove scene 1...\n");
   (void) MagickSetIteratorIndex(magick_wand,1);
   clone_wand=MagickGetImage(magick_wand);
@@ -467,7 +469,8 @@ int main(int argc,char **argv)
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
     (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),MagickGetImageScene(magick_wand));
+      MagickGetIteratorIndex(magick_wand),(unsigned long)
+      MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Insert scene 1 back in sequence...\n");
   (void) MagickSetIteratorIndex(magick_wand,0);
   status=MagickAddImage(magick_wand,clone_wand);
@@ -476,7 +479,8 @@ int main(int argc,char **argv)
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
     (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),MagickGetImageScene(magick_wand));
+      MagickGetIteratorIndex(magick_wand),(unsigned long)
+      MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Set scene 2 to scene 1...\n");
   (void) MagickSetIteratorIndex(magick_wand,2);
   status=MagickSetImage(magick_wand,clone_wand);
