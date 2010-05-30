@@ -173,7 +173,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     char
       comment[512];
 
-    size_t
+    unsigned int
       rows,
       columns,
       subrows;
@@ -887,15 +887,13 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
       columns,
       subrows;
 
-    ssize_t
+    int
       x_offset,
       y_offset;
 
     unsigned int
       x_bits_per_pixel,
-      y_bits_per_pixel;
-
-    size_t
+      y_bits_per_pixel,
       location_type,
       location_dimension,
       number_of_images,
@@ -1198,8 +1196,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 *q++=byte >> (8-bit);
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -1223,8 +1221,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               }
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
