@@ -92,20 +92,20 @@ typedef struct
   char identific[124];
   unsigned short Version;
   char EndianIndicator[2];
-  size_t DataType;
-  size_t ObjectSize;
-  size_t unknown1;
-  size_t unknown2;
+  unsigned long DataType;
+  unsigned long ObjectSize;
+  unsigned long unknown1;
+  unsigned long unknown2;
 
   unsigned short unknown5;
   unsigned char StructureFlag;
   unsigned char StructureClass;
-  size_t unknown3;
-  size_t unknown4;
-  size_t DimFlag;
+  unsigned long unknown3;
+  unsigned long unknown4;
+  unsigned long DimFlag;
 
-  size_t SizeX;
-  size_t SizeY;
+  unsigned long SizeX;
+  unsigned long SizeY;
   unsigned short Flag1;
   unsigned short NameFlag;
 }
@@ -1201,15 +1201,15 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
 
     (void) WriteBlobLSBLong(image, miMATRIX);
-    (void) WriteBlobLSBLong(image, DataSize+padding+(is_gray ? 48l : 56l));
+    (void) WriteBlobLSBLong(image, (unsigned int) DataSize+padding+(is_gray ? 48 : 56));
     (void) WriteBlobLSBLong(image, 0x6); /* 0x88 */
     (void) WriteBlobLSBLong(image, 0x8); /* 0x8C */
     (void) WriteBlobLSBLong(image, 0x6); /* 0x90 */  
     (void) WriteBlobLSBLong(image, 0);   
     (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */
     (void) WriteBlobLSBLong(image, is_gray ? 0x8 : 0xC); /* 0x9C - DimFlag */
-    (void) WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
-    (void) WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
+    (void) WriteBlobLSBLong(image, (unsigned int) image->rows);    /* x: 0xA0 */  
+    (void) WriteBlobLSBLong(image, (unsigned int) image->columns); /* y: 0xA4 */  
     if(!is_gray)
     {
       (void) WriteBlobLSBLong(image, 3); /* z: 0xA8 */  
@@ -1219,7 +1219,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBShort(image, 1);  /* 0xB2 */
     (void) WriteBlobLSBLong(image, 'M'); /* 0xB4 */
     (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
-    (void) WriteBlobLSBLong(image, DataSize); /* 0xBC */
+    (void) WriteBlobLSBLong(image, (unsigned int) DataSize); /* 0xBC */
 
     /*
       Store image data.

@@ -71,10 +71,10 @@
 */
 typedef struct _DIBInfo
 {
-  unsigned int
+  size_t
     size;
 
-  int
+  ssize_t
     width,
     height;
 
@@ -82,7 +82,7 @@ typedef struct _DIBInfo
     planes,
     bits_per_pixel;
 
-  unsigned int
+  size_t
     compression,
     image_size,
     x_pixels,
@@ -94,7 +94,7 @@ typedef struct _DIBInfo
     alpha_mask,
     colors_important;
 
-  int
+  ssize_t
     colorspace;
 
   PointInfo
@@ -1162,7 +1162,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
           *q++=(unsigned char)(word >> 8);
           p++;
         }
-        for (x=2L*image->columns; x < (ssize_t) bytes_per_line; x++)
+        for (x=(ssize_t) (2*image->columns); x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
                 image->rows);
@@ -1193,7 +1193,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
           p++;
         }
         if (dib_info.bits_per_pixel == 24)
-          for (x=3L*image->columns; x < (ssize_t) bytes_per_line; x++)
+          for (x=(ssize_t) (3*image->columns); x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
                 image->rows);
@@ -1229,17 +1229,17 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
   /*
     Write DIB header.
   */
-  (void) WriteBlobLSBLong(image,dib_info.size);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.size);
   (void) WriteBlobLSBLong(image,dib_info.width);
   (void) WriteBlobLSBLong(image,(unsigned short) dib_info.height);
   (void) WriteBlobLSBShort(image,(unsigned short) dib_info.planes);
   (void) WriteBlobLSBShort(image,dib_info.bits_per_pixel);
-  (void) WriteBlobLSBLong(image,dib_info.compression);
-  (void) WriteBlobLSBLong(image,dib_info.image_size);
-  (void) WriteBlobLSBLong(image,dib_info.x_pixels);
-  (void) WriteBlobLSBLong(image,dib_info.y_pixels);
-  (void) WriteBlobLSBLong(image,dib_info.number_colors);
-  (void) WriteBlobLSBLong(image,dib_info.colors_important);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.compression);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.image_size);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.x_pixels);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.y_pixels);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.number_colors);
+  (void) WriteBlobLSBLong(image,(unsigned int) dib_info.colors_important);
   if (image->storage_class == PseudoClass)
     {
       if (dib_info.bits_per_pixel <= 8)
