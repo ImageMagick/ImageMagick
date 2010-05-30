@@ -53,7 +53,8 @@ extern WandExport MagickBooleanType
   MagickClipPathImage(MagickWand *,const char *,const MagickBooleanType)
     magick_attribute((deprecated)),
   MagickColorFloodfillImage(MagickWand *,const PixelWand *,const double,
-    const PixelWand *,const ssize_t,const ssize_t) magick_attribute((deprecated)),
+    const PixelWand *,const ssize_t,const ssize_t)
+    magick_attribute((deprecated)),
   MagickGetImageChannelExtrema(MagickWand *,const ChannelType,size_t *,
     size_t *) magick_attribute((deprecated)),
   MagickGetImageExtrema(MagickWand *,size_t *,size_t *)
@@ -65,7 +66,8 @@ extern WandExport MagickBooleanType
   MagickMapImage(MagickWand *,const MagickWand *,const MagickBooleanType)
     magick_attribute((deprecated)),
   MagickMatteFloodfillImage(MagickWand *,const double,const double,
-    const PixelWand *,const ssize_t,const ssize_t) magick_attribute((deprecated)),
+    const PixelWand *,const ssize_t,const ssize_t)
+    magick_attribute((deprecated)),
   MagickOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double) magick_attribute((deprecated)),
   MagickPaintFloodfillImage(MagickWand *,const ChannelType,const PixelWand *,
@@ -82,7 +84,8 @@ extern WandExport MagickBooleanType
     magick_attribute((deprecated)),
   MagickSetImageAttribute(MagickWand *,const char *,const char *)
     magick_attribute((deprecated)),
-  MagickSetImageIndex(MagickWand *,const ssize_t) magick_attribute((deprecated)),
+  MagickSetImageIndex(MagickWand *,const ssize_t)
+    magick_attribute((deprecated)),
   MagickSetImageOption(MagickWand *,const char *,const char *,const char *)
     magick_attribute((deprecated)),
   MagickSetImagePixels(MagickWand *,const ssize_t,const ssize_t,const size_t,
@@ -97,8 +100,8 @@ extern WandExport MagickWand
   *MagickMaximumImages(MagickWand *),
   *MagickMinimumImages(MagickWand *),
   *MagickMosaicImages(MagickWand *) magick_attribute((deprecated)),
-  *MagickRegionOfInterestImage(MagickWand *,const size_t,
-    const size_t,const ssize_t,const ssize_t) magick_attribute((deprecated));
+  *MagickRegionOfInterestImage(MagickWand *,const size_t,const size_t,
+    const ssize_t,const ssize_t) magick_attribute((deprecated));
 
 extern WandExport MagickSizeType
   MagickGetImageSize(MagickWand *) magick_attribute((deprecated));
