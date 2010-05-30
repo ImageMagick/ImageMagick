@@ -244,7 +244,7 @@ static png_byte FARDATA mng_zTXt[5]={122,  84,  88, 116, (png_byte) '\0'};
 
 typedef struct _MngBox
 {
-  ssize_t
+  long
     left,
     right,
     top,
@@ -253,7 +253,7 @@ typedef struct _MngBox
 
 typedef struct _MngPair
 {
-  volatile ssize_t
+  volatile long
     a,
     b;
 } MngPair;
@@ -1410,8 +1410,8 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
   /*
     Read two ssize_ts from CLON, MOVE or PAST chunk
   */
-  pair.a=(ssize_t) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]);
-  pair.b=(ssize_t) ((p[4] << 24) | (p[5] << 16) | (p[6] << 8) | p[7]);
+  pair.a=(long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]);
+  pair.b=(long) ((p[4] << 24) | (p[5] << 16) | (p[6] << 8) | p[7]);
   if (delta_type != 0)
     {
       pair.a+=previous_pair.a;
@@ -1420,9 +1420,9 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
   return(pair);
 }
 
-static ssize_t mng_get_ssize_t(unsigned char *p)
+static long mng_get_long(unsigned char *p)
 {
-  return((ssize_t) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
+  return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
 }
 
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
@@ -3489,7 +3489,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     if (memcmp(type,mng_gAMA,4) == 0)
       {
         if (length == 4)
-          image->gamma=((float) mng_get_ssize_t(p))*0.00001;
+          image->gamma=((float) mng_get_long(p))*0.00001;
         chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
@@ -3498,14 +3498,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 32)
           {
-            image->chromaticity.white_point.x=0.00001*mng_get_ssize_t(p);
-            image->chromaticity.white_point.y=0.00001*mng_get_ssize_t(&p[4]);
-            image->chromaticity.red_primary.x=0.00001*mng_get_ssize_t(&p[8]);
-            image->chromaticity.red_primary.y=0.00001*mng_get_ssize_t(&p[12]);
-            image->chromaticity.green_primary.x=0.00001*mng_get_ssize_t(&p[16]);
-            image->chromaticity.green_primary.y=0.00001*mng_get_ssize_t(&p[20]);
-            image->chromaticity.blue_primary.x=0.00001*mng_get_ssize_t(&p[24]);
-            image->chromaticity.blue_primary.y=0.00001*mng_get_ssize_t(&p[28]);
+            image->chromaticity.white_point.x=0.00001*mng_get_long(p);
+            image->chromaticity.white_point.y=0.00001*mng_get_long(&p[4]);
+            image->chromaticity.red_primary.x=0.00001*mng_get_long(&p[8]);
+            image->chromaticity.red_primary.y=0.00001*mng_get_long(&p[12]);
+            image->chromaticity.green_primary.x=0.00001*mng_get_long(&p[16]);
+            image->chromaticity.green_primary.y=0.00001*mng_get_long(&p[20]);
+            image->chromaticity.blue_primary.x=0.00001*mng_get_long(&p[24]);
+            image->chromaticity.blue_primary.y=0.00001*mng_get_long(&p[28]);
           }
         chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
@@ -3534,8 +3534,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > 8)
           {
-            image->page.x=mng_get_ssize_t(p);
-            image->page.y=mng_get_ssize_t(&p[4]);
+            image->page.x=mng_get_long(p);
+            image->page.y=mng_get_long(&p[4]);
             if ((int) p[8] != 0)
               {
                 image->page.x/=10000;
@@ -3551,8 +3551,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > 8)
           {
-            image->x_resolution=(double) mng_get_ssize_t(p);
-            image->y_resolution=(double) mng_get_ssize_t(&p[4]);
+            image->x_resolution=(double) mng_get_long(p);
+            image->y_resolution=(double) mng_get_long(&p[4]);
             if ((int) p[8] == PNG_RESOLUTION_METER)
               {
                 image->units=PixelsPerCentimeterResolution;
@@ -4112,7 +4112,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   "  MNG height: %lu",(unsigned long) mng_info->mng_height);
               }
             p+=8;
-            mng_info->ticks_per_second=(size_t) mng_get_ssize_t(p);
+            mng_info->ticks_per_second=(size_t) mng_get_long(p);
             if (mng_info->ticks_per_second == 0)
               default_frame_delay=0;
             else
@@ -4123,7 +4123,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (length > 16)
               {
                 p+=16;
-                simplicity=(size_t) mng_get_ssize_t(p);
+                simplicity=(size_t) mng_get_long(p);
               }
             mng_type=1;    /* Full MNG */
             if ((simplicity != 0) && ((simplicity | 11) == 11))
@@ -4173,8 +4173,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               repeat=p[0];
             if (repeat == 3)
               {
-                final_delay=(png_uint_32) mng_get_ssize_t(&p[2]);
-                mng_iterations=(png_uint_32) mng_get_ssize_t(&p[6]);
+                final_delay=(png_uint_32) mng_get_long(&p[2]);
+                mng_iterations=(png_uint_32) mng_get_long(&p[6]);
                 if (mng_iterations == PNG_UINT_31_MAX)
                   mng_iterations=0;
                 image->iterations=mng_iterations;
@@ -4351,7 +4351,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ssize_t
                   igamma;
 
-                igamma=mng_get_ssize_t(p);
+                igamma=mng_get_long(p);
                 mng_info->global_gamma=((float) igamma)*0.00001;
                 mng_info->have_global_gama=MagickTrue;
               }
@@ -4368,19 +4368,19 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length == 32)
               {
-                mng_info->global_chrm.white_point.x=0.00001*mng_get_ssize_t(p);
-                mng_info->global_chrm.white_point.y=0.00001*mng_get_ssize_t(&p[4]);
-                mng_info->global_chrm.red_primary.x=0.00001*mng_get_ssize_t(&p[8]);
+                mng_info->global_chrm.white_point.x=0.00001*mng_get_long(p);
+                mng_info->global_chrm.white_point.y=0.00001*mng_get_long(&p[4]);
+                mng_info->global_chrm.red_primary.x=0.00001*mng_get_long(&p[8]);
                 mng_info->global_chrm.red_primary.y=0.00001*
-                  mng_get_ssize_t(&p[12]);
+                  mng_get_long(&p[12]);
                 mng_info->global_chrm.green_primary.x=0.00001*
-                  mng_get_ssize_t(&p[16]);
+                  mng_get_long(&p[16]);
                 mng_info->global_chrm.green_primary.y=0.00001*
-                  mng_get_ssize_t(&p[20]);
+                  mng_get_long(&p[20]);
                 mng_info->global_chrm.blue_primary.x=0.00001*
-                  mng_get_ssize_t(&p[24]);
+                  mng_get_long(&p[24]);
                 mng_info->global_chrm.blue_primary.y=0.00001*
-                  mng_get_ssize_t(&p[28]);
+                  mng_get_long(&p[28]);
                 mng_info->have_global_chrm=MagickTrue;
               }
             else
@@ -4453,8 +4453,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     p++; /* change_sync */
                     if (change_delay)
                       {
-                        frame_delay=(1UL*image->ticks_per_second*
-                            (mng_get_ssize_t(p))/mng_info->ticks_per_second);
+                        frame_delay=1UL*image->ticks_per_second*
+                          mng_get_long(p);
+                        if (mng_info->ticks_per_second != 0)
+                          frame_delay/=mng_info->ticks_per_second;
                         if (change_delay == 2)
                           default_frame_delay=frame_delay;
                         p+=4;
@@ -4465,7 +4467,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (change_timeout)
                       {
                         frame_timeout=(1UL*image->ticks_per_second*
-                            (mng_get_ssize_t(p))/mng_info->ticks_per_second);
+                            (mng_get_long(p))/mng_info->ticks_per_second);
                         if (change_delay == 2)
                           default_frame_timeout=frame_timeout;
                         p+=4;
@@ -4654,7 +4656,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Record starting point.
             */
-            loop_iters=mng_get_ssize_t(&chunk[1]);
+            loop_iters=mng_get_long(&chunk[1]);
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  LOOP level %ld  has %ld iterations ",(long) loop_level,
@@ -4876,9 +4878,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (length > 8)
               {
                 mng_info->global_x_pixels_per_unit=
-                    (size_t) mng_get_ssize_t(p);
+                    (size_t) mng_get_long(p);
                 mng_info->global_y_pixels_per_unit=
-                    (size_t) mng_get_ssize_t(&p[4]);
+                    (size_t) mng_get_long(&p[4]);
                 mng_info->global_phys_unit_type=p[8];
                 mng_info->have_global_phys=MagickTrue;
               }
@@ -4967,8 +4969,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if defined(MNG_INSERT_LAYERS)
         if (length < 8)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        image_width=(size_t) mng_get_ssize_t(p);
-        image_height=(size_t) mng_get_ssize_t(&p[4]);
+        image_width=(size_t) mng_get_long(p);
+        image_height=(size_t) mng_get_long(&p[4]);
 #endif
         chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
