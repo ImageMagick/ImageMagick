@@ -733,7 +733,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     if (image->colorspace != RGBColorspace)
       (void) TransformImageColorspace(image,RGBColorspace);
     count=GetNumberColors(image,NULL,&exception);
-    for (bits_per_pixel=1;  (1UL << bits_per_pixel) < count;  bits_per_pixel*=2) ;
+    for (bits_per_pixel=1;  (one << bits_per_pixel) < count; bits_per_pixel*=2) ;
     if (image_info->depth > 100)
       bits_per_pixel=image_info->depth-100;
     if (bits_per_pixel < 16)
@@ -876,10 +876,10 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
               color=(unsigned char) indexes[x];
             else
               color=(unsigned char) (indexes[x]*((one << bits_per_pixel)-1)/
-                MagickMax(1L*image->colors-1L,1L));
+                MagickMax(1*image->colors-1,1));
             byte|=color << bit;
             if (bit != 0)
-              bit-=bits_per_pixel;
+              bit-=(ssize_t) bits_per_pixel;
             else
               {
                 *ptr++=byte;
