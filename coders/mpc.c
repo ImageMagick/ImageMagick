@@ -871,7 +871,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               case 32:
               {
-                size_t
+                unsigned int
                   pixel;
 
                 for (i=0; i < (ssize_t) image->colors; i++)
@@ -1082,8 +1082,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     (void) FormatMagickString(buffer,MaxTextExtent,
       "class=%s  colors=%lu  matte=%s\n",MagickOptionToMnemonic(
       MagickClassOptions,image->storage_class),(unsigned long) image->colors,
-      MagickOptionToMnemonic(MagickBooleanOptions,(unsigned long)
-      image->matte));
+      MagickOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,
       "columns=%lu  rows=%lu  depth=%lu\n",(unsigned long) image->columns,
@@ -1351,7 +1350,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(CorruptImageError,"ImageDepthNotSupported");
             case 32:
             {
-              size_t
+              unsigned int
                 pixel;
 
               pixel=ScaleQuantumToLong(image->colormap[i].red);

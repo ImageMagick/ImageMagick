@@ -178,26 +178,26 @@ static inline unsigned char *PopQuantumPixel(QuantumState *quantum_state,
   register ssize_t
     i;
 
-  register size_t
+  register unsigned int
     quantum_bits;
 
   if (quantum_state->bits == 0UL)
-    quantum_state->bits=8UL;
+    quantum_state->bits=8U;
   for (i=(ssize_t) depth; i > 0L; )
   {
-    quantum_bits=(size_t) i;
+    quantum_bits=(unsigned int) i;
     if (quantum_bits > quantum_state->bits)
       quantum_bits=quantum_state->bits;
     i-=(ssize_t) quantum_bits;
     if (quantum_state->bits == 8)
       *pixels='\0';
     quantum_state->bits-=quantum_bits;
-    *pixels|=(((pixel >> i) &~ ((~0UL) << quantum_bits)) <<
+    *pixels|=(((pixel >> i) &~ ((~0U) << quantum_bits)) <<
       quantum_state->bits);
     if (quantum_state->bits == 0UL)
       {
         pixels++;
-        quantum_state->bits=8UL;
+        quantum_state->bits=8U;
       }
   }
   return(pixels);
@@ -212,22 +212,22 @@ static inline unsigned char *PopQuantumLongPixel(QuantumState *quantum_state,
   size_t
     quantum_bits;
 
-  if (quantum_state->bits == 0UL)
-    quantum_state->bits=32UL;
+  if (quantum_state->bits == 0U)
+    quantum_state->bits=32U;
   for (i=(ssize_t) depth; i > 0; )
   {
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_state->bits)
       quantum_bits=quantum_state->bits;
     quantum_state->pixel|=(((pixel >> (depth-i)) &
-      quantum_state->mask[quantum_bits]) << (32UL-quantum_state->bits));
+      quantum_state->mask[quantum_bits]) << (32U-quantum_state->bits));
     i-=(ssize_t) quantum_bits;
     quantum_state->bits-=quantum_bits;
     if (quantum_state->bits == 0U)
       {
         pixels=PopLongPixel(quantum_state->endian,quantum_state->pixel,pixels);
         quantum_state->pixel=0U;
-        quantum_state->bits=32UL;
+        quantum_state->bits=32U;
       }
   }
   return(pixels);
@@ -460,7 +460,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            q=PopLongPixel(endian,(size_t) indexes[x],q);
+            q=PopLongPixel(endian,(unsigned int) indexes[x],q);
             q+=quantum_info->pad;
           }
           break;
@@ -614,7 +614,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -634,7 +634,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            q=PopLongPixel(endian,(size_t) indexes[x],q);
+            q=PopLongPixel(endian,(unsigned int) indexes[x],q);
             pixel=ScaleQuantumToLong((Quantum) (QuantumRange-
               GetOpacityPixelComponent(p)));
             q=PopLongPixel(endian,pixel,q);
@@ -775,12 +775,12 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           range=GetQuantumRange(image->depth);
           if (quantum_info->pack == MagickFalse)
             {
-              register size_t
+              register unsigned int
                 pixel;
 
               for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
               {
-                pixel=(size_t) (
+                pixel=(unsigned int) (
                   ScaleQuantumToAny(PixelIntensityToQuantum(p+2),range) << 22 |
                   ScaleQuantumToAny(PixelIntensityToQuantum(p+1),range) << 12 |
                   ScaleQuantumToAny(PixelIntensityToQuantum(p+0),range) << 2);
@@ -861,7 +861,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1047,7 +1047,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1161,7 +1161,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1258,7 +1258,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1355,7 +1355,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1453,7 +1453,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1558,7 +1558,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1659,7 +1659,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1728,7 +1728,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 10:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           range=GetQuantumRange(image->depth);
@@ -1736,7 +1736,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (ssize_t) number_pixels; x++)
               {
-                pixel=(size_t) (ScaleQuantumToAny(p->red,range) << 22 |
+                pixel=(unsigned int) (ScaleQuantumToAny(p->red,range) << 22 |
                   ScaleQuantumToAny(p->green,range) << 12 |
                   ScaleQuantumToAny(p->blue,range) << 2);
                 q=PopLongPixel(endian,pixel,q);
@@ -1749,11 +1749,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (ssize_t) number_pixels; x++)
               {
-                pixel=(size_t) ScaleQuantumToAny(p->red,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny(p->green,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1762,11 +1762,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=(size_t) ScaleQuantumToAny(p->red,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny(p->green,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1775,7 +1775,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 12:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           range=GetQuantumRange(image->depth);
@@ -1788,17 +1788,17 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   default:
                   case 0:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->red,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
                     break;
                   }
                   case 1:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->green,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
                     break;
                   }
                   case 2:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
                     p++;
                     break;
                   }
@@ -1809,17 +1809,17 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   default:
                   case 0:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->red,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
                     break;
                   }
                   case 1:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->green,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
                     break;
                   }
                   case 2:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
                     p++;
                     break;
                   }
@@ -1834,17 +1834,17 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   default:
                   case 0:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->red,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
                     break;
                   }
                   case 1:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->green,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
                     break;
                   }
                   case 2:
                   {
-                    pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+                    pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
                     p++;
                     break;
                   }
@@ -1860,11 +1860,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (ssize_t) number_pixels; x++)
               {
-                pixel=(size_t) ScaleQuantumToAny(p->red,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny(p->green,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
                 p++;
                 q+=quantum_info->pad;
@@ -1873,11 +1873,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=(size_t) ScaleQuantumToAny(p->red,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny(p->green,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
             p++;
             q+=quantum_info->pad;
@@ -1922,7 +1922,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2012,7 +2012,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 10:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           range=GetQuantumRange(image->depth);
@@ -2075,13 +2075,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             {
               for (x=0; x < (ssize_t) number_pixels; x++)
               {
-                pixel=(size_t) ScaleQuantumToAny(p->red,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny(p->green,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+                pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
-                pixel=(size_t) ScaleQuantumToAny((Quantum) (QuantumRange-
+                pixel=(unsigned int) ScaleQuantumToAny((Quantum) (QuantumRange-
                   p->opacity),range);
                 q=PopQuantumLongPixel(&quantum_state,image->depth,pixel,q);
                 p++;
@@ -2091,13 +2091,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             }
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=(size_t) ScaleQuantumToAny(p->red,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->red,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny(p->green,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->green,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny(p->blue,range);
+            pixel=(unsigned int) ScaleQuantumToAny(p->blue,range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
-            pixel=(size_t) ScaleQuantumToAny((Quantum) (QuantumRange-
+            pixel=(unsigned int) ScaleQuantumToAny((Quantum) (QuantumRange-
               p->opacity),range);
             q=PopQuantumPixel(&quantum_state,image->depth,pixel,q);
             p++;
@@ -2148,7 +2148,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2296,7 +2296,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2446,7 +2446,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         }
         case 32:
         {
-          register size_t
+          register unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2540,7 +2540,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       register ssize_t
         i;
 
-      register size_t
+      register unsigned int
         pixel;
 
       size_t
@@ -2580,12 +2580,12 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   cbcr[i]=(Quantum) quantum;
                   n++;
                 }
-                pixel=(size_t) ((size_t) (cbcr[1]) << 22 |
+                pixel=(unsigned int) ((size_t) (cbcr[1]) << 22 |
                   (size_t) (cbcr[0]) << 12 |
                   (size_t) (cbcr[2]) << 2);
                 q=PopLongPixel(endian,pixel,q);
                 p++;
-                pixel=(size_t) ((size_t) (cbcr[3]) << 22 |
+                pixel=(unsigned int) ((size_t) (cbcr[3]) << 22 |
                   (size_t) (cbcr[0]) << 12 |
                   (size_t) (cbcr[2]) << 2);
                 q=PopLongPixel(endian,pixel,q);

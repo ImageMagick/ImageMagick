@@ -667,7 +667,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   exception=(&image->exception);
   if (picon->storage_class == PseudoClass)
     {
-      CompressImageColormap(picon);
+      (void) CompressImageColormap(picon);
       if (picon->matte != MagickFalse)
         transparent=MagickTrue;
     }
@@ -805,7 +805,8 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     (void) FormatMagickString(buffer,MaxTextExtent,"\"%s\n",
       y == (ssize_t) (picon->rows-1) ? "" : ",");
     (void) WriteBlobString(image,buffer);
-    status=SetImageProgress(image,SaveImageTag,y,picon->rows);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      picon->rows);
     if (status == MagickFalse)
       break;
   }
@@ -1036,7 +1037,8 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,SaveImageTag,y,image->rows);
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
         if (status == MagickFalse)
           break;
       }

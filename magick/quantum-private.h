@@ -34,11 +34,11 @@ typedef struct _QuantumState
     scale,
     inverse_scale;
 
-  size_t
+  unsigned int
     pixel,
     bits;
 
-  const size_t
+  const unsigned int
     *mask;
 } QuantumState;
 
@@ -84,8 +84,11 @@ struct _QuantumInfo
 
 static inline MagickSizeType GetQuantumRange(const size_t depth)
 {
-  return((MagickSizeType) ((MagickULLConstant(1) << (depth-1))+
-    ((MagickULLConstant(1) << (depth-1))-1)));
+  MagickSizeType
+    one;
+
+  one=1;
+  return((MagickSizeType) ((one << (depth-1))+((one << (depth-1))-1)));
 }
 
 static inline float HalfToSinglePrecision(const unsigned short half)
@@ -179,15 +182,15 @@ static inline Quantum HDRIClampToQuantum(const MagickRealType value)
 static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
   const EndianType endian,QuantumState *quantum_state)
 {
-  static const size_t mask[32] =
+  static const unsigned int mask[32] =
   {
-    0x00000000UL, 0x00000001UL, 0x00000003UL, 0x00000007UL, 0x0000000fUL,
-    0x0000001fUL, 0x0000003fUL, 0x0000007fUL, 0x000000ffUL, 0x000001ffUL,
-    0x000003ffUL, 0x000007ffUL, 0x00000fffUL, 0x00001fffUL, 0x00003fffUL,
-    0x00007fffUL, 0x0000ffffUL, 0x0001ffffUL, 0x0003ffffUL, 0x0007ffffUL,
-    0x000fffffUL, 0x001fffffUL, 0x003fffffUL, 0x007fffffUL, 0x00ffffffUL,
-    0x01ffffffUL, 0x03ffffffUL, 0x07ffffffUL, 0x0fffffffUL, 0x1fffffffUL,
-    0x3fffffffUL, 0x7fffffffUL
+    0x00000000U, 0x00000001U, 0x00000003U, 0x00000007U, 0x0000000fU,
+    0x0000001fU, 0x0000003fU, 0x0000007fU, 0x000000ffU, 0x000001ffU,
+    0x000003ffU, 0x000007ffU, 0x00000fffU, 0x00001fffU, 0x00003fffU,
+    0x00007fffU, 0x0000ffffU, 0x0001ffffU, 0x0003ffffU, 0x0007ffffU,
+    0x000fffffU, 0x001fffffU, 0x003fffffU, 0x007fffffU, 0x00ffffffU,
+    0x01ffffffU, 0x03ffffffU, 0x07ffffffU, 0x0fffffffU, 0x1fffffffU,
+    0x3fffffffU, 0x7fffffffU
   };
 
   quantum_state->endian=endian;
@@ -196,8 +199,8 @@ static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
   quantum_state->inverse_scale=1.0;
   if (quantum_state->scale != 0.0)
     quantum_state->inverse_scale/=quantum_state->scale;
-  quantum_state->pixel=0UL;
-  quantum_state->bits=0UL;
+  quantum_state->pixel=0U;
+  quantum_state->bits=0U;
   quantum_state->mask=mask;
 }
 
@@ -209,7 +212,7 @@ static inline unsigned char *PopCharPixel(const unsigned char pixel,
 }
 
 static inline unsigned char *PopLongPixel(const EndianType endian,
-  const size_t pixel,unsigned char *pixels)
+  const unsigned int pixel,unsigned char *pixels)
 {
   register unsigned int
     quantum;
@@ -256,7 +259,7 @@ static inline const unsigned char *PushCharPixel(const unsigned char *pixels,
 }
 
 static inline const unsigned char *PushLongPixel(const EndianType endian,
-  const unsigned char *pixels,size_t *pixel)
+  const unsigned char *pixels,unsigned int *pixel)
 {
   register unsigned int
     quantum;
@@ -275,7 +278,7 @@ static inline const unsigned char *PushLongPixel(const EndianType endian,
       quantum|=(unsigned int) (*pixels++ << 16);
       quantum|=(unsigned int) (*pixels++ << 24);
     }
-  *pixel=(size_t) (quantum & 0xffffffff);
+  *pixel=(unsigned int) (quantum & 0xffffffff);
   return(pixels);
 }
 
@@ -321,7 +324,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
   return((Quantum) value);
 }
 
-static inline Quantum ScaleLongToQuantum(const size_t value)
+static inline Quantum ScaleLongToQuantum(const unsigned int value)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) ((value+8421504UL)/16843009UL));
@@ -343,29 +346,29 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #endif
 }
 
-static inline size_t ScaleQuantumToLong(const Quantum quantum)
+static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((size_t) (16843009UL*quantum));
+  return((unsigned int) (16843009UL*quantum));
 #else
   if (quantum <= 0.0)
     return(0UL);
   if ((16843009.0*quantum) >= 4294967295.0)
     return(4294967295UL);
-  return((size_t) (16843009.0*quantum+0.5));
+  return((unsigned int) (16843009.0*quantum+0.5));
 #endif
 }
 
-static inline size_t ScaleQuantumToMap(const Quantum quantum)
+static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
 {
   if (quantum >= (Quantum) MaxMap)
-    return((size_t) MaxMap);
+    return((unsigned int) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((size_t) quantum);
+  return((unsigned int) quantum);
 #else
   if (quantum < 0.0)
     return(0UL);
-  return((size_t) (quantum+0.5));
+  return((unsigned int) (quantum+0.5));
 #endif
 }
 
@@ -400,7 +403,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 #endif
 }
 
-static inline Quantum ScaleLongToQuantum(const size_t value)
+static inline Quantum ScaleLongToQuantum(const unsigned int value)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) ((value+MagickULLConstant(32768))/
@@ -423,29 +426,29 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #endif
 }
 
-static inline size_t ScaleQuantumToLong(const Quantum quantum)
+static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((size_t) (65537UL*quantum));
+  return((unsigned int) (65537UL*quantum));
 #else
   if (quantum <= 0.0)
     return(0UL);
   if ((65537.0*quantum) >= 4294967295.0)
     return(4294967295UL);
-  return((size_t) (65537.0*quantum+0.5));
+  return((unsigned int) (65537.0*quantum+0.5));
 #endif
 }
 
-static inline size_t ScaleQuantumToMap(const Quantum quantum)
+static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
 {
   if (quantum >= (Quantum) MaxMap)
-    return((size_t) MaxMap);
+    return((unsigned int) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((size_t) quantum);
+  return((unsigned int) quantum);
 #else
   if (quantum < 0.0)
     return(0UL);
-  return((size_t) (quantum+0.5));
+  return((unsigned int) (quantum+0.5));
 #endif
 }
 
@@ -476,7 +479,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
 #endif
 }
 
-static inline Quantum ScaleLongToQuantum(const size_t value)
+static inline Quantum ScaleLongToQuantum(const unsigned int value)
 {
   return((Quantum) value);
 }
@@ -494,26 +497,26 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 #endif
 }
 
-static inline size_t ScaleQuantumToLong(const Quantum quantum)
+static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((size_t) quantum);
+  return((unsigned int) quantum);
 #else
-  return((size_t) (quantum+0.5));
+  return((unsigned int) (quantum+0.5));
 #endif
 }
 
-static inline size_t ScaleQuantumToMap(const Quantum quantum)
+static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
 {
   if (quantum < 0.0)
     return(0UL);
   if ((quantum/65537) >= (Quantum) MaxMap)
-    return((size_t) MaxMap);
+    return((unsigned int) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((size_t) ((quantum+MagickULLConstant(32768))/
+  return((unsigned int) ((quantum+MagickULLConstant(32768))/
     MagickULLConstant(65537)));
 #else
-  return((size_t) (quantum/65537.0+0.5));
+  return((unsigned int) (quantum/65537.0+0.5));
 #endif
 }
 
@@ -545,7 +548,7 @@ static inline Quantum ScaleCharToQuantum(const unsigned char value)
   return((Quantum) (72340172838076673.0*value));
 }
 
-static inline Quantum ScaleLongToQuantum(const size_t value)
+static inline Quantum ScaleLongToQuantum(const unsigned int value)
 {
   return((Quantum) (4294967297.0*value));
 }
@@ -559,18 +562,18 @@ static inline Quantum ScaleMapToQuantum(const MagickRealType value)
   return((Quantum) (281479271743489.0*value));
 }
 
-static inline size_t ScaleQuantumToLong(const Quantum quantum)
+static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 {
-  return((size_t) (quantum/4294967297.0+0.5));
+  return((unsigned int) (quantum/4294967297.0+0.5));
 }
 
-static inline size_t ScaleQuantumToMap(const Quantum quantum)
+static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
 {
   if (quantum <= 0.0)
     return(0UL);
   if ((quantum/281479271743489.0) >= MaxMap)
-    return((size_t) MaxMap);
-  return((size_t) (quantum/281479271743489.0+0.5));
+    return((unsigned int) MaxMap);
+  return((unsigned int) (quantum/281479271743489.0+0.5));
 }
 
 static inline unsigned short ScaleQuantumToShort(const Quantum quantum)
@@ -625,13 +628,13 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
   significand=map.fixed_point & 0x007fffff;
   if (exponent <= 0)
     {
-      ssize_t
+      int
         shift;
 
       if (exponent < -10)
         return((unsigned short) sign_bit);
       significand=significand | 0x00800000;
-      shift=(ssize_t) (14-exponent);
+      shift=(int) (14-exponent);
       significand=(unsigned int) ((significand+((1 << (shift-1))-1)+
         ((significand >> shift) & 0x01)) >> shift);
       return((unsigned short) (sign_bit | significand));
@@ -660,7 +663,7 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
       float
         alpha;
 
-      register ssize_t
+      register int
         i;
 
       /*

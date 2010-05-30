@@ -187,7 +187,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
       if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse))
+          (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
         break;
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
