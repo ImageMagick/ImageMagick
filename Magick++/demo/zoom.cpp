@@ -159,9 +159,9 @@ int main(int argc,char **argv)
       if (resample.isValid())
         {
           geometry =
-            Geometry(static_cast<unsigned int>
+            Geometry(static_cast<size_t>
                      (image.columns()*((double)resample.width()/density.width())+0.5),
-                     static_cast<unsigned int>
+                     static_cast<size_t>
                      (image.rows()*((double)resample.height()/density.height())+0.5));
           image.density(resample);
         }

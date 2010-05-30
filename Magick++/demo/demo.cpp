@@ -442,8 +442,8 @@ int main( int /*argc*/, char ** argv)
       cout << "  threshold random ..." << endl;
       example = model;
       example.label( "Random\nThreshold" );
-      example.randomThreshold( Geometry((unsigned int) (0.3*QuantumRange),
-        (unsigned int) (0.85*QuantumRange)) );
+      example.randomThreshold( Geometry((size_t) (0.3*QuantumRange),
+        (size_t) (0.85*QuantumRange)) );
       images.push_back( example );
     
       cout << "  unsharp mask ..." << endl;
