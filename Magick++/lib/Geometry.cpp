@@ -22,7 +22,7 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-ssize_t Magick::operator == ( const Magick::Geometry& left_,
+int Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return (
@@ -39,17 +39,17 @@ ssize_t Magick::operator == ( const Magick::Geometry& left_,
 	  ( left_.less()      == right_.less() )
 	  );
 }
-ssize_t Magick::operator != ( const Magick::Geometry& left_,
+int Magick::operator != ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( ! (left_ == right_) );
 }
-ssize_t Magick::operator >  ( const Magick::Geometry& left_,
+int Magick::operator >  ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-ssize_t Magick::operator <  ( const Magick::Geometry& left_,
+int Magick::operator <  ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return (
@@ -58,12 +58,12 @@ ssize_t Magick::operator <  ( const Magick::Geometry& left_,
 	  ( right_.width() * right_.height() )
 	  );
 }
-ssize_t Magick::operator >= ( const Magick::Geometry& left_,
+int Magick::operator >= ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-ssize_t Magick::operator <= ( const Magick::Geometry& left_,
+int Magick::operator <= ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
@@ -72,8 +72,8 @@ ssize_t Magick::operator <= ( const Magick::Geometry& left_,
 // Construct using parameterized arguments
 Magick::Geometry::Geometry ( size_t width_,
 			     size_t height_,
-			     size_t xOff_,
-			     size_t yOff_,
+			     ssize_t xOff_,
+			     ssize_t yOff_,
 			     bool xNegative_,
 			     bool yNegative_ )
   : _width( width_ ),
@@ -234,13 +234,13 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 
   if ( ( flags & XValue ) != 0 )
     {
-      _xOff = static_cast<size_t>(AbsoluteValue(x));
+      _xOff = static_cast<ssize_t>(x);
       isValid( true );
     }
 
   if ( ( flags & YValue ) != 0 )
     {
-      _yOff = static_cast<size_t>(AbsoluteValue(y));
+      _yOff = static_cast<ssize_t>(y);
       isValid( true );
     }
 
@@ -335,8 +335,8 @@ Magick::Geometry::operator std::string() const
 Magick::Geometry::Geometry ( const MagickCore::RectangleInfo &rectangle_ )
   : _width(static_cast<size_t>(rectangle_.width)),
     _height(static_cast<size_t>(rectangle_.height)),
-    _xOff(static_cast<size_t>(AbsoluteValue(rectangle_.x))),
-    _yOff(static_cast<size_t>(AbsoluteValue(rectangle_.y))),
+    _xOff(static_cast<ssize_t>(rectangle_.x)),
+    _yOff(static_cast<ssize_t>(rectangle_.y)),
     _xNegative(rectangle_.x < 0 ? true : false),
     _yNegative(rectangle_.y < 0 ? true : false),
     _isValid(true),

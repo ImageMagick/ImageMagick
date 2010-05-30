@@ -26,7 +26,7 @@ void Magick::adaptiveBlurImage::operator()( Magick::Image &image_ ) const
 // Local adaptive threshold image
 Magick::adaptiveThresholdImage::adaptiveThresholdImage( const size_t width_,
                                                         const size_t height_,
-                                                        const size_t offset_ )
+                                                        const ssize_t offset_ )
       : _width(width_),
         _height(height_),
         _offset(offset_)
@@ -170,9 +170,9 @@ void Magick::cdlImage::operator()( Image &image_ ) const
 }
 
 // Colorize image using pen color at specified percent opacity
-Magick::colorizeImage::colorizeImage( const size_t opacityRed_,
-                                      const size_t opacityGreen_,
-                                      const size_t opacityBlue_,
+Magick::colorizeImage::colorizeImage( const unsigned int opacityRed_,
+                                      const unsigned int opacityGreen_,
+                                      const unsigned int opacityBlue_,
                                       const Magick::Color &penColor_ )
   : _opacityRed ( opacityRed_ ),
     _opacityGreen ( opacityGreen_ ),
@@ -180,7 +180,7 @@ Magick::colorizeImage::colorizeImage( const size_t opacityRed_,
     _penColor( penColor_ )
 {
 }
-Magick::colorizeImage::colorizeImage( const size_t opacity_,
+Magick::colorizeImage::colorizeImage( const unsigned int opacity_,
                                       const Magick::Color &penColor_ )
   : _opacityRed ( opacity_ ),
     _opacityGreen ( opacity_ ),
@@ -401,8 +401,8 @@ void Magick::flipImage::operator()( Magick::Image &image_ ) const
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.  Uses current
 // fuzz setting when determining color match.
-Magick::floodFillColorImage::floodFillColorImage( const size_t x_,
-                                                  const size_t y_,
+Magick::floodFillColorImage::floodFillColorImage( const ssize_t x_,
+                                                  const ssize_t y_,
                                                   const Magick::Color &fillColor_ )
   : _x(x_),
     _y(y_),
@@ -421,8 +421,8 @@ Magick::floodFillColorImage::floodFillColorImage( const Magick::Geometry &point_
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.  Uses current
 // fuzz setting when determining color match.
-Magick::floodFillColorImage::floodFillColorImage( const size_t x_,
-                                                  const size_t y_,
+Magick::floodFillColorImage::floodFillColorImage( const ssize_t x_,
+                                                  const ssize_t y_,
                                                   const Magick::Color &fillColor_,
                                                   const Magick::Color &borderColor_ )
   : _x(x_),
@@ -457,8 +457,8 @@ void Magick::floodFillColorImage::operator()( Magick::Image &image_ ) const
 // Flood-fill texture across pixels that match the color of the target
 // pixel and are neighbors of the target pixel.  Uses current fuzz
 // setting when determining color match.
-Magick::floodFillTextureImage::floodFillTextureImage( const size_t x_,
-                                                      const size_t y_,
+Magick::floodFillTextureImage::floodFillTextureImage( const ssize_t x_,
+                                                      const ssize_t y_,
                                                       const Magick::Image &texture_ )
   : _x(x_),
     _y(y_),
@@ -477,8 +477,8 @@ Magick::floodFillTextureImage::floodFillTextureImage( const Magick::Geometry &po
 // Flood-fill texture across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.  Uses current
 // fuzz setting when determining color match.
-Magick::floodFillTextureImage::floodFillTextureImage( const size_t x_,
-                                                      const size_t y_,
+Magick::floodFillTextureImage::floodFillTextureImage( const ssize_t x_,
+                                                      const ssize_t y_,
                                                       const Magick::Image &texture_,
                                                       const Magick::Color &borderColor_ )
   : _x(x_),
@@ -764,7 +764,7 @@ void Magick::oilPaintImage::operator()( Magick::Image &image_ ) const
 // opacity_ ranges from 0 (completely opaque) to QuantumRange. The defines
 // OpaqueOpacity and TransparentOpacity are available to specify
 // completely opaque or completely transparent, respectively.
-Magick::opacityImage::opacityImage( const size_t opacity_ )
+Magick::opacityImage::opacityImage( const unsigned int opacity_ )
   : _opacity( opacity_ )
 {
 }
@@ -1423,8 +1423,8 @@ void Magick::penTextureImage::operator()( Magick::Image &image_ ) const
 }
 
 // Set pixel color at location x & y.
-Magick::pixelColorImage::pixelColorImage( const size_t x_,
-                                          const size_t y_,
+Magick::pixelColorImage::pixelColorImage( const ssize_t x_,
+                                          const ssize_t y_,
                                           const Color &color_)
   : _x( x_ ),
     _y( y_ ),
