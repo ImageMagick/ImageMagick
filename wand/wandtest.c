@@ -490,7 +490,8 @@ int main(int argc,char **argv)
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
     (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),MagickGetImageScene(magick_wand));
+      MagickGetIteratorIndex(magick_wand),(unsigned long)
+      MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Apply image processing options...\n");
   status=MagickCropImage(magick_wand,60,60,10,10);
   if (status == MagickFalse)
