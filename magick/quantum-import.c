@@ -193,7 +193,7 @@ static inline const unsigned char *PushFloatPixel(
 
 static inline const unsigned char *PushQuantumPixel(
   QuantumState *quantum_state,const size_t depth,
-  const unsigned char *pixels,size_t *quantum)
+  const unsigned char *pixels,unsigned int *quantum)
 {
   register ssize_t
     i;
@@ -207,7 +207,7 @@ static inline const unsigned char *PushQuantumPixel(
     if (quantum_state->bits == 0UL)
       {
         quantum_state->pixel=(*pixels++);
-        quantum_state->bits=8UL;
+        quantum_state->bits=8U;
       }
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_state->bits)
@@ -215,14 +215,14 @@ static inline const unsigned char *PushQuantumPixel(
     i-=(ssize_t) quantum_bits;
     quantum_state->bits-=quantum_bits;
     *quantum=(*quantum << quantum_bits) | ((quantum_state->pixel >>
-      quantum_state->bits) &~ ((~0UL) << quantum_bits));
+      quantum_state->bits) &~ ((~0U) << quantum_bits));
   }
   return(pixels);
 }
 
 static inline const unsigned char *PushQuantumLongPixel(
   QuantumState *quantum_state,const size_t depth,
-  const unsigned char *pixels,size_t *quantum)
+  const unsigned char *pixels,unsigned int *quantum)
 {
   register ssize_t
     i;
@@ -237,12 +237,12 @@ static inline const unsigned char *PushQuantumLongPixel(
       {
         pixels=PushLongPixel(quantum_state->endian,pixels,
           &quantum_state->pixel);
-        quantum_state->bits=32UL;
+        quantum_state->bits=32U;
       }
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_state->bits)
       quantum_bits=quantum_state->bits;
-    *quantum|=(((quantum_state->pixel >> (32UL-quantum_state->bits)) &
+    *quantum|=(((quantum_state->pixel >> (32U-quantum_state->bits)) &
       quantum_state->mask[quantum_bits]) << (depth-i));
     i-=(ssize_t) quantum_bits;
     quantum_state->bits-=quantum_bits;
@@ -284,7 +284,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
   size_t
     extent;
 
-  size_t
+  unsigned int
     pixel;
 
   assert(image != (Image *) NULL);
@@ -435,7 +435,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -628,7 +628,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -980,7 +980,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1190,7 +1190,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1311,7 +1311,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1416,7 +1416,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1521,7 +1521,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1625,7 +1625,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1732,7 +1732,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1830,7 +1830,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               }
               break;
             }
-          if (quantum_info->quantum == 32UL)
+          if (quantum_info->quantum == 32U)
             {
               for (x=0; x < (ssize_t) number_pixels; x++)
               {
@@ -1939,7 +1939,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 p++;
               break;
             }
-          if (quantum_info->quantum == 32UL)
+          if (quantum_info->quantum == 32U)
             {
               for (x=0; x < (ssize_t) number_pixels; x++)
               {
@@ -2003,7 +2003,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2216,7 +2216,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2370,7 +2370,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2532,7 +2532,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         }
         case 32:
         {
-          size_t
+          unsigned int
             pixel;
 
           if (quantum_info->format == FloatingPointQuantumFormat)

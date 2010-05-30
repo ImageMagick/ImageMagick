@@ -2918,12 +2918,12 @@ MagickExport unsigned int ReadBlobLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobLongLong() reads a ssize_t value as a 64-bit quantity in the byte-order
-%  specified by the endian member of the image structure.
+%  ReadBlobLongLong() reads a long long value as a 64-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
 %
-%  The format of the ReadBlobLong method is:
+%  The format of the ReadBlobLongLong method is:
 %
-%      MagickSizeType ReadBlobLong(Image *image)
+%      MagickSizeType ReadBlobLongLong(Image *image)
 %
 %  A description of each parameter follows.
 %

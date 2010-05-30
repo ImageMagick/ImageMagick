@@ -244,7 +244,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         }
         case 32:
         {
-          size_t
+          unsigned int
             quantum;
 
           if (image->matte != MagickFalse)
@@ -316,7 +316,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
     }
     case 32:
     {
-      size_t
+      unsigned int
         quantum;
 
       p=PushLongPixel(MSBEndian,p,&quantum);
@@ -1145,7 +1145,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
               case 32:
               {
-                size_t
+                unsigned int
                   pixel;
 
                 for (i=0; i < (ssize_t) image->colors; i++)
@@ -1554,7 +1554,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
       {
         case 32:
         {
-          size_t
+          unsigned int
             value;
 
           if (image->matte != MagickFalse)
@@ -1599,7 +1599,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
   {
     case 32:
     {
-      size_t
+      unsigned int
         value;
 
       value=ScaleQuantumToLong(pixel.red);
@@ -1820,7 +1820,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     (void) FormatMagickString(buffer,MaxTextExtent,
       "class=%s  colors=%lu  matte=%s\n",MagickOptionToMnemonic(
       MagickClassOptions,image->storage_class),(unsigned long) image->colors,
-      MagickOptionToMnemonic(MagickBooleanOptions,(long) image->matte));
+      MagickOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,"columns=%lu  rows=%lu  "
       "depth=%lu\n",(unsigned long) image->columns,(unsigned long) image->rows,
@@ -2083,7 +2083,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               ThrowWriterException(CorruptImageError,"ImageDepthNotSupported");
             case 32:
             {
-              register size_t
+              register unsigned int
                 pixel;
 
               pixel=ScaleQuantumToLong(image->colormap[i].red);

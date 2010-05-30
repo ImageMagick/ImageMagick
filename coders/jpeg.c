@@ -624,13 +624,13 @@ static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
   if (number_bytes <= 0)
     return;
   source=(SourceManager *) cinfo->src;
-  while (number_bytes > (ssize_t) source->manager.bytes_in_buffer)
+  while (number_bytes > (long) source->manager.bytes_in_buffer)
   {
     number_bytes-=(long) source->manager.bytes_in_buffer;
     (void) FillInputBuffer(cinfo);
   }
-  source->manager.next_input_byte+=(size_t) number_bytes;
-  source->manager.bytes_in_buffer-=(size_t) number_bytes;
+  source->manager.next_input_byte+=number_bytes;
+  source->manager.bytes_in_buffer-=number_bytes;
 }
 
 static void TerminateSource(j_decompress_ptr cinfo)
@@ -954,7 +954,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   for (i=1; i < 16; i++)
     if ((i != 2) && (i != 13) && (i != 14))
       jpeg_set_marker_processor(&jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
-  i=jpeg_read_header(&jpeg_info,MagickTrue);
+  i=(ssize_t) jpeg_read_header(&jpeg_info,MagickTrue);
   if ((image_info->colorspace == YCbCrColorspace) ||
       (image_info->colorspace == Rec601YCbCrColorspace) ||
       (image_info->colorspace == Rec709YCbCrColorspace))
@@ -1277,7 +1277,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
+    if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
       break;
   }
   /*
