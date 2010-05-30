@@ -1156,7 +1156,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(CorruptImageError,"ImproperImageHeader");
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
       for (i=0; i <= (ssize_t) scene; i++)
-        (void) WriteBlobLSBLong(image,(size_t) page_table[i]);
+        (void) WriteBlobLSBLong(image,(unsigned int) page_table[i]);
       page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table);
     }
   if (status == MagickFalse)

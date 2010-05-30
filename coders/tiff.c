@@ -2826,7 +2826,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,(long) (
           image_info->quality == UndefinedCompressionQuality ? 7 :
-          MagickMin(1*image_info->quality/10,9)));
+          MagickMin((ssize_t) image_info->quality/10,9)));
         break;
       }
       case COMPRESSION_CCITTFAX3:

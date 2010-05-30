@@ -959,7 +959,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
       (void) CopyMagickString(iris_info.name,value,sizeof(iris_info.name));
     (void) WriteBlob(image,sizeof(iris_info.name),(unsigned char *)
       iris_info.name);
-    (void) WriteBlobMSBLong(image,iris_info.pixel_format);
+    (void) WriteBlobMSBLong(image,(unsigned int) iris_info.pixel_format);
     (void) WriteBlob(image,sizeof(iris_info.filler),iris_info.filler);
     /*
       Allocate SGI pixels.

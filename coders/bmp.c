@@ -835,10 +835,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=bmp_info.alpha_mask != 0 ? MagickTrue : MagickFalse;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
+        size_t
+          one;
+
         image->storage_class=PseudoClass;
         image->colors=bmp_info.number_colors;
+        one=1;
         if (image->colors == 0)
-          image->colors=1L << bmp_info.bits_per_pixel;
+          image->colors=one << bmp_info.bits_per_pixel;
       }
     if (image->storage_class == PseudoClass)
       {
