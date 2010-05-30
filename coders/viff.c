@@ -1023,7 +1023,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             viff_info.map_scheme=VFF_MS_ONEPERBAND;
             viff_info.map_storage_type=VFF_MAPTYP_1_BYTE;
             viff_info.map_rows=3;
-            viff_info.map_columns=image->colors;
+            viff_info.map_columns=(unsigned int) image->colors;
           }
         else
           if (image->colors <= 2)
@@ -1048,8 +1048,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     buffer[7]=(unsigned char) viff_info.reserve[2];
     (void) WriteBlob(image,8,buffer);
     (void) WriteBlob(image,512,(unsigned char *) viff_info.comment);
-    (void) WriteBlobMSBLong(image,viff_info.rows);
-    (void) WriteBlobMSBLong(image,viff_info.columns);
+    (void) WriteBlobMSBLong(image,(unsigned int) viff_info.rows);
+    (void) WriteBlobMSBLong(image,(unsigned int) viff_info.columns);
     (void) WriteBlobMSBLong(image,(unsigned int) viff_info.subrows);
     (void) WriteBlobMSBLong(image,(unsigned int) viff_info.x_offset);
     (void) WriteBlobMSBLong(image,(unsigned int) viff_info.y_offset);

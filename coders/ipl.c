@@ -565,11 +565,11 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
     break;
     
   }
-  ipl_info.z = GetImageListLength(image);
+  ipl_info.z = (unsigned int) GetImageListLength(image);
   /* There is no current method for detecting whether we have T or Z stacks */
   ipl_info.time = 1;
-  ipl_info.width = image->columns;
-  ipl_info.height = image->rows;
+  ipl_info.width = (unsigned int) image->columns;
+  ipl_info.height = (unsigned int) image->rows;
   
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
@@ -577,8 +577,8 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   if(image->colorspace == RGBColorspace) { ipl_info.colors = 3; }
   else{ ipl_info.colors = 1; }
   
-  ipl_info.size = 28 + 
-    ((image->depth)/8)*ipl_info.height*ipl_info.width*ipl_info.colors*ipl_info.z;
+  ipl_info.size = (unsigned int) (28 + 
+    ((image->depth)/8)*ipl_info.height*ipl_info.width*ipl_info.colors*ipl_info.z);
   
   /* Ok!  Calculations are done.  Lets write this puppy down! */
   

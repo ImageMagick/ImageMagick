@@ -256,7 +256,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
         (PixelIntensityToQuantum(&image->colormap[0]) >=
          PixelIntensityToQuantum(&image->colormap[1]));
   }
-  for (y=0; y < (ssize_t) image->rows; y+=cell_height)
+  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) cell_height)
   {
     if ((y+cell_height) > image->rows)
       cell_height = (size_t) (image->rows-y);

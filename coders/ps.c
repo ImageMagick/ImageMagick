@@ -691,7 +691,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=write(file,command,(unsigned int) strlen(command));
   (void) FormatMagickString(translate_geometry,MaxTextExtent,
     "%g %g translate\n",-bounds.x1,-bounds.y1);
-  count=write(file,translate_geometry,strlen(translate_geometry));
+  count=write(file,translate_geometry,(unsigned int)
+    strlen(translate_geometry));
   file=close(file)-1;
   /*
     Render Postscript with the Ghostscript delegate.
