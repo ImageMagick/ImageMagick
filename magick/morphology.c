@@ -1435,7 +1435,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values within diamond area to scale given */
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            if ((labs(u)+labs(v)) <= (ssize_t)kernel->x)
+            if ((ssize_t) (labs((long) u)+labs((long) v)) <= kernel->x)
               kernel->positive_range += kernel->values[i] = args->sigma;
             else
               kernel->values[i] = nan;
@@ -1813,7 +1813,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-                 args->sigma*((labs(u)>labs(v)) ? labs(u) : labs(v)) );
+                 args->sigma*((labs((long) u)>labs((long) v)) ? labs((long) u) : labs((long) v)) );
         kernel->maximum = kernel->values[0];
         break;
       }
@@ -1833,7 +1833,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-                 args->sigma*(labs(u)+labs(v)) );
+                 args->sigma*(labs((long) u)+labs((long) v)) );
         kernel->maximum = kernel->values[0];
         break;
       }
@@ -3347,8 +3347,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
             else if ( x == 0  ) x = -y;
             else if ( x == -y ) y = 0;
             else if ( y == 0  ) y = x;
-            kernel->x = (size_t) x+1;
-            kernel->y = (size_t) y+1;
+            kernel->x = (ssize_t) x+1;
+            kernel->y = (ssize_t) y+1;
           }
           angle = fmod(angle+315.0, 360.0);  /* angle reduced 45 degrees */
           kernel->angle = fmod(kernel->angle+45.0, 360.0);
@@ -3398,8 +3398,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           { register ssize_t x,y;
             x = (ssize_t) (kernel->x*2-kernel->width+1);
             y = (ssize_t) (kernel->y*2-kernel->height+1);
-            kernel->x = (size_t) ( -y +(ssize_t) kernel->width-1)/2;
-            kernel->y = (size_t) ( +x +(ssize_t) kernel->height-1)/2;
+            kernel->x = (ssize_t) ( -y +(ssize_t) kernel->width-1)/2;
+            kernel->y = (ssize_t) ( +x +(ssize_t) kernel->height-1)/2;
           }
           angle = fmod(angle+270.0, 360.0);     /* angle reduced 90 degrees */
           kernel->angle = fmod(kernel->angle+90.0, 360.0);

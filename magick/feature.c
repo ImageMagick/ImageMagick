@@ -184,7 +184,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   size_t
     length;
 
-  size_t
+  unsigned int
     number_grays;
 
   assert(image != (Image *) NULL);
@@ -214,11 +214,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     }
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    grays[i].red=(~0UL);
-    grays[i].green=(~0UL);
-    grays[i].blue=(~0UL);
-    grays[i].opacity=(~0UL);
-    grays[i].index=(~0UL);
+    grays[i].red=(~0U);
+    grays[i].green=(~0U);
+    grays[i].blue=(~0U);
+    grays[i].opacity=(~0U);
+    grays[i].index=(~0U);
   }
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -247,17 +247,17 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      grays[ScaleQuantumToMap(p->red)].red=(unsigned long)
+      grays[ScaleQuantumToMap(p->red)].red=
         ScaleQuantumToMap(p->red);
-      grays[ScaleQuantumToMap(p->green)].green=(unsigned long)
+      grays[ScaleQuantumToMap(p->green)].green=
         ScaleQuantumToMap(p->green);
-      grays[ScaleQuantumToMap(p->blue)].blue=(unsigned long)
+      grays[ScaleQuantumToMap(p->blue)].blue=
         ScaleQuantumToMap(p->blue);
       if (image->matte != MagickFalse)
-        grays[ScaleQuantumToMap(p->opacity)].opacity=(unsigned long)
+        grays[ScaleQuantumToMap(p->opacity)].opacity=
           ScaleQuantumToMap(p->opacity);
       if (image->colorspace == CMYKColorspace)
-        grays[ScaleQuantumToMap(indexes[x])].index=(unsigned long)
+        grays[ScaleQuantumToMap(indexes[x])].index=
           ScaleQuantumToMap(indexes[x]);
       p++;
     }
@@ -273,17 +273,17 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(&gray,0,sizeof(gray));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if (grays[i].red != ~0UL)
+    if (grays[i].red != ~0U)
       grays[gray.red++].red=grays[i].red;
-    if (grays[i].green != ~0UL)
+    if (grays[i].green != ~0U)
       grays[gray.green++].green=grays[i].green;
-    if (grays[i].blue != ~0UL)
+    if (grays[i].blue != ~0U)
       grays[gray.blue++].blue=grays[i].blue;
     if (image->matte != MagickFalse)
-      if (grays[i].opacity != ~0UL)
+      if (grays[i].opacity != ~0U)
         grays[gray.opacity++].opacity=grays[i].opacity;
     if (image->colorspace == CMYKColorspace)
-      if (grays[i].index != ~0UL)
+      if (grays[i].index != ~0U)
         grays[gray.index++].index=grays[i].index;
   }
   /*

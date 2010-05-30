@@ -82,7 +82,7 @@ struct _MimeInfo
   DataType
     data_type;
 
-  ssize_t
+  size_t
     mask,
     value;
 
@@ -168,9 +168,6 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   EndianType
     endian;
 
-  long
-    value;
-
   register const MimeInfo
     *p;
 
@@ -182,6 +179,9 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
 
   size_t
     lsb_first;
+
+  size_t
+    value;
 
   assert(exception != (ExceptionInfo *) NULL);
   if ((mime_list == (LinkedListInfo *) NULL) ||
@@ -886,11 +886,12 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
         }
         token=DestroyString(token);
         if (mime_info->data_type != StringData)
-          mime_info->value=strtol((char *) mime_info->magic,(char **) NULL,0);
+          mime_info->value=(size_t) strtoul((char *) mime_info->magic,
+            (char **) NULL,0);
       }
     attribute=GetXMLTreeAttribute(mime,"mask");
     if (attribute != (const char *) NULL)
-      mime_info->mask=strtol(attribute,(char **) NULL,0);
+      mime_info->mask=(size_t) strtoul(attribute,(char **) NULL,0);
     attribute=GetXMLTreeAttribute(mime,"offset");
     if (attribute != (const char *) NULL)
       {
@@ -906,7 +907,7 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
       mime_info->pattern=ConstantString(attribute);
     attribute=GetXMLTreeAttribute(mime,"priority");
     if (attribute != (const char *) NULL)
-      mime_info->priority=strtol(attribute,(char **) NULL,0);
+      mime_info->priority=(ssize_t) strtol(attribute,(char **) NULL,0);
     attribute=GetXMLTreeAttribute(mime,"stealth");
     if (attribute != (const char *) NULL)
       mime_info->stealth=IsMagickTrue(attribute);

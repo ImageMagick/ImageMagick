@@ -1420,7 +1420,7 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
 
     p = strchr((char *) threshold_map,',');
     if ( p != (char *)NULL && isdigit((int) ((unsigned char) *(++p))) )
-      levels.index = (size_t) strtol(p, &p, 10);
+      levels.index = (unsigned int) strtoul(p, &p, 10);
     else
       levels.index = 2;
 
@@ -1436,15 +1436,15 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
       p=strchr((char *) threshold_map,',');
       p++;
       if ((channel & RedChannel) != 0)
-        levels.red = (size_t) strtol(p, &p, 10),   (void)(*p == ',' && p++);
+        levels.red = (unsigned int) strtoul(p, &p, 10),   (void)(*p == ',' && p++);
       if ((channel & GreenChannel) != 0)
-        levels.green = (size_t) strtol(p, &p, 10), (void)(*p == ',' && p++);
+        levels.green = (unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
       if ((channel & BlueChannel) != 0)
-        levels.blue = (size_t) strtol(p, &p, 10),  (void)(*p == ',' && p++);
+        levels.blue = (unsigned int) strtoul(p, &p, 10),  (void)(*p == ',' && p++);
       if ((channel & IndexChannel) != 0 && image->colorspace == CMYKColorspace)
-        levels.index=(size_t) strtol(p, &p, 10), (void)(*p == ',' && p++);
+        levels.index=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
       if ((channel & OpacityChannel) != 0)
-        levels.opacity = (size_t) strtol(p, &p, 10), (void)(*p == ',' && p++);
+        levels.opacity = (unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
     }
   }
 #else

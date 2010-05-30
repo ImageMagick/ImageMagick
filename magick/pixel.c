@@ -2742,10 +2742,10 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
     }
     case LongPixel:
     {
-      register const size_t
+      register const unsigned int
         *p;
 
-      p=(const size_t *) pixels;
+      p=(const unsigned int *) pixels;
       if (LocaleCompare(map,"BGR") == 0)
         {
           for (y=0; y < (ssize_t) rows; y++)

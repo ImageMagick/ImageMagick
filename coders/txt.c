@@ -396,14 +396,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   unsigned long
-    blue,
     depth,
-    green,
     height,
-    index,
     max_value,
-    opacity,
-    red,
     width;
 
   /*
@@ -462,24 +457,20 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->colorspace == CMYKColorspace)
           {
             if (image->matte != MagickFalse)
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%lu,%lu,%lu,%lu,%lu",
-                &x_offset,&y_offset,&red,&green,&blue,&index,&opacity);
+              count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u,%u",&x_offset,
+                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index,
+                &pixel.opacity);
             else
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%lu,%lu,%lu,%lu",
-                &x_offset,&y_offset,&red,&green,&blue,&index);
+              count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
+                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index);
           }
         else
           if (image->matte != MagickFalse)
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%lu,%lu,%lu,%lu",
-              &x_offset,&y_offset,&red,&green,&blue,&opacity);
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
+              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
           else
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%lu,%lu,%lu",
-              &x_offset,&y_offset,&red,&green,&blue);
-        pixel.red=red;
-        pixel.green=green;
-        pixel.blue=blue;
-        pixel.opacity=opacity;
-        pixel.index=index;
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u",&x_offset,
+              &y_offset,&pixel.red,&pixel.green,&pixel.blue);
         if (count < 5)
           continue;
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);

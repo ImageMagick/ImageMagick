@@ -786,7 +786,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       /*
         Start at the root and descend the color cube tree.
       */
-      for (count=1; (x+count) < image->columns; count++)
+      for (count=1; (x+count) < (ssize_t) image->columns; count++)
         if (IsSameColor(image,p,p+count) == MagickFalse)
           break;
       AssociateAlphaPixel(cube_info,p,&pixel);
@@ -875,7 +875,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       /*
         Start at the root and descend the color cube tree.
       */
-      for (count=1; (x+count) < image->columns; count++)
+      for (count=1; (x+count) < (ssize_t) image->columns; count++)
         if (IsSameColor(image,p,p+count) == MagickFalse)
           break;
       AssociateAlphaPixel(cube_info,p,&pixel);
