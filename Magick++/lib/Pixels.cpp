@@ -105,7 +105,7 @@ Magick::PixelPacket* Magick::Pixels::set ( const ssize_t x_,
   _columns = columns_;
   _rows = rows_;
 
-  PixelPacket* pixels = QueueCacheViewAuthenticPixels( _view, static_cast<ssize_t>(x_), static_cast<ssize_t>(y_),
+  PixelPacket* pixels = QueueCacheViewAuthenticPixels( _view, x_, y_,
                                       columns_, rows_,  &_exception );
   if ( !pixels )
     throwException( _exception );

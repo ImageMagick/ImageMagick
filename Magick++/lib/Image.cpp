@@ -44,7 +44,7 @@ static bool magick_initialized=false;
 // Friend functions to compare Image objects
 //
 
-MagickDLLDecl ssize_t Magick::operator == ( const Magick::Image& left_,
+MagickDLLDecl int Magick::operator == ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   // If image pixels and signature are the same, then the image is identical
@@ -53,17 +53,17 @@ MagickDLLDecl ssize_t Magick::operator == ( const Magick::Image& left_,
 	   ( left_.signature() == right_.signature() )
 	   );
 }
-MagickDLLDecl ssize_t Magick::operator != ( const Magick::Image& left_,
+MagickDLLDecl int Magick::operator != ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ! (left_ == right_) );
 }
-MagickDLLDecl ssize_t Magick::operator >  ( const Magick::Image& left_,
+MagickDLLDecl int Magick::operator >  ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-MagickDLLDecl ssize_t Magick::operator <  ( const Magick::Image& left_,
+MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   // If image pixels are less, then image is smaller
@@ -71,12 +71,12 @@ MagickDLLDecl ssize_t Magick::operator <  ( const Magick::Image& left_,
 	   ( right_.rows() * right_.columns() )
 	   );
 }
-MagickDLLDecl ssize_t Magick::operator >= ( const Magick::Image& left_,
+MagickDLLDecl int Magick::operator >= ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-MagickDLLDecl ssize_t Magick::operator <= ( const Magick::Image& left_,
+MagickDLLDecl int Magick::operator <= ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
@@ -316,7 +316,7 @@ void Magick::Image::adaptiveBlur( const double radius_, const double sigma_ )
 // offset = constant to subtract from pixel neighborhood mean
 void Magick::Image::adaptiveThreshold ( const size_t width_,
                                         const size_t height_,
-                                        const size_t offset_ )
+                                        const ssize_t offset_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -581,9 +581,9 @@ void Magick::Image::cdl ( const std::string &cdl_ )
 }
 
 // Colorize
-void Magick::Image::colorize ( const size_t opacityRed_,
-                               const size_t opacityGreen_,
-                               const size_t opacityBlue_,
+void Magick::Image::colorize ( const unsigned int opacityRed_,
+                               const unsigned int opacityGreen_,
+                               const unsigned int opacityBlue_,
 			       const Color &penColor_ )
 {
   if ( !penColor_.isValid() )
@@ -604,7 +604,7 @@ void Magick::Image::colorize ( const size_t opacityRed_,
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
-void Magick::Image::colorize ( const size_t opacity_,
+void Magick::Image::colorize ( const unsigned int opacity_,
 			       const Color &penColor_ )
 {
   colorize( opacity_, opacity_, opacity_, penColor_ );

@@ -30,17 +30,17 @@ namespace Magick
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
-  ssize_t MagickDLLDecl operator == ( const Magick::Image& left_,
+  int MagickDLLDecl operator == ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  ssize_t MagickDLLDecl operator != ( const Magick::Image& left_,
+  int MagickDLLDecl operator != ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  ssize_t MagickDLLDecl operator >  ( const Magick::Image& left_,
+  int MagickDLLDecl operator >  ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  ssize_t MagickDLLDecl operator <  ( const Magick::Image& left_,
+  int MagickDLLDecl operator <  ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  ssize_t MagickDLLDecl operator >= ( const Magick::Image& left_,
+  int MagickDLLDecl operator >= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  ssize_t MagickDLLDecl operator <= ( const Magick::Image& left_,
+  int MagickDLLDecl operator <= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
 
   // C library initialization routine
@@ -119,7 +119,7 @@ namespace Magick
     // offset = constant to subtract from pixel neighborhood mean
     void            adaptiveThreshold ( const size_t width,
                                         const size_t height,
-                                        const size_t offset = 0 );
+                                        const ssize_t offset = 0 );
 
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
@@ -205,12 +205,12 @@ namespace Magick
     
     // Colorize image with pen color, using specified percent opacity
     // for red, green, and blue quantums
-    void            colorize ( const size_t opacityRed_,
-                               const size_t opacityGreen_,
-                               const size_t opacityBlue_,
+    void            colorize ( const unsigned int opacityRed_,
+                               const unsigned int opacityGreen_,
+                               const unsigned int opacityBlue_,
              const Color &penColor_ );
     // Colorize image with pen color, using specified percent opacity.
-    void            colorize ( const size_t opacity_,
+    void            colorize ( const unsigned int opacity_,
              const Color &penColor_ );
     
     // Apply a color matrix to the image channels.  The user supplied

@@ -64,7 +64,7 @@ namespace Magick
   public:
     adaptiveThresholdImage( const size_t width_,
                             const size_t height_,
-                            const size_t offset_ = 0  );
+                            const ssize_t offset_ = 0  );
 
     void operator()( Image &image_ ) const;
 
@@ -217,12 +217,12 @@ namespace Magick
   class MagickDLLDecl colorizeImage : public std::unary_function<Image&,void>
   {
   public:
-    colorizeImage( const size_t opacityRed_,
-                   const size_t opacityGreen_,
-                   const size_t opacityBlue_,
+    colorizeImage( const unsigned int opacityRed_,
+                   const unsigned int opacityGreen_,
+                   const unsigned int opacityBlue_,
        const Color &penColor_ );
 
-    colorizeImage( const size_t opacity_,
+    colorizeImage( const unsigned int opacity_,
                    const Color &penColor_ );
 
     void operator()( Image &image_ ) const;
@@ -463,8 +463,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( const size_t x_,
-                         const size_t y_,
+    floodFillColorImage( const ssize_t x_,
+                         const ssize_t y_,
        const Color &fillColor_ );
 
     floodFillColorImage( const Geometry &point_,
@@ -473,8 +473,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( const size_t x_,
-                         const size_t y_,
+    floodFillColorImage( const ssize_t x_,
+                         const ssize_t y_,
        const Color &fillColor_,
        const Color &borderColor_ );
 
@@ -498,8 +498,8 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( const size_t x_,
-                           const size_t y_,
+    floodFillTextureImage( const ssize_t x_,
+                           const ssize_t y_,
          const Image &texture_ );
 
     floodFillTextureImage( const Geometry &point_,
@@ -508,8 +508,8 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( const size_t x_,
-                           const size_t y_,
+    floodFillTextureImage( const ssize_t x_,
+                           const ssize_t y_,
          const Image &texture_,
          const Color &borderColor_ );
 
@@ -520,8 +520,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    size_t  _x;
-    size_t  _y;
+    ssize_t  _x;
+    ssize_t  _y;
     Image         _texture;
     Color         _borderColor;
   };
@@ -817,7 +817,7 @@ namespace Magick
   class MagickDLLDecl opacityImage : public std::unary_function<Image&,void>
   {
   public:
-    opacityImage( const size_t opacity_ );
+    opacityImage( const unsigned int opacity_ );
 
     void operator()( Image &image_ ) const;
 
@@ -1593,15 +1593,15 @@ namespace Magick
   class MagickDLLDecl pixelColorImage : public std::unary_function<Image&,void>
   {
   public:
-    pixelColorImage( const size_t x_,
-                     const size_t y_,
+    pixelColorImage( const ssize_t x_,
+                     const ssize_t y_,
          const Color &color_);
 
     void operator()( Image &image_ ) const;
 
   private:
-    size_t _x;
-    size_t _y;
+    ssize_t _x;
+    ssize_t _y;
     Color        _color;
   };
 

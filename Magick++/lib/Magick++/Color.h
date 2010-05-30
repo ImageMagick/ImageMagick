@@ -16,12 +16,12 @@ namespace Magick
   class MagickDLLDecl Color;
 
   // Compare two Color objects regardless of LHS/RHS
-  ssize_t MagickDLLDecl operator == ( const Magick::Color& left_, const Magick::Color& right_ );
-  ssize_t MagickDLLDecl operator != ( const Magick::Color& left_, const Magick::Color& right_ );
-  ssize_t MagickDLLDecl operator >  ( const Magick::Color& left_, const Magick::Color& right_ );
-  ssize_t MagickDLLDecl operator <  ( const Magick::Color& left_, const Magick::Color& right_ );
-  ssize_t MagickDLLDecl operator >= ( const Magick::Color& left_, const Magick::Color& right_ );
-  ssize_t MagickDLLDecl operator <= ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator == ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator != ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator >  ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator <  ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator >= ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator <= ( const Magick::Color& left_, const Magick::Color& right_ );
 
   // Base color class stores RGB components scaled to fit Quantum
   class MagickDLLDecl Color
