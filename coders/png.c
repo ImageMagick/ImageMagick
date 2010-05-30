@@ -2752,7 +2752,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       {
          for (x=0; x < ping_num_trans; x++)
          {
-            image->colormap[x].opacity = ScaleCharToQuantum((unsigned char)(255-ping_trans_alpha[x]));
+            image->colormap[x].opacity =
+              ScaleCharToQuantum((unsigned char)(255-ping_trans_alpha[x]));
          }
       }
       else if (ping_color_type == PNG_COLOR_TYPE_GRAY)
@@ -6344,8 +6345,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     num_passes,
     pass;
 
-  png_bytep
-     ping_trans_alpha;
+  png_byte
+     ping_trans_alpha[256];
 
   png_colorp
      palette;
@@ -6430,8 +6431,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_trans_color.green=0;
   ping_trans_color.blue=0;
   ping_trans_color.gray=0;
-
-  ping_trans_alpha = NULL;
 
   quantum_info = (QuantumInfo *) NULL;
   image_colors=image->colors;
@@ -7217,11 +7216,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 ping_num_trans=0;
               if (ping_num_trans != 0)
               {
-                ping_trans_alpha=(unsigned char *) AcquireQuantumMemory(
-                  number_colors,sizeof(*ping_trans_alpha));
-                if (ping_trans_alpha == (unsigned char *) NULL)
-                  ThrowWriterException(ResourceLimitError,
-                     "MemoryAllocationFailed");
                 for (i=0; i < (ssize_t) number_colors; i++)
                     ping_trans_alpha[i]=(png_byte) trans[i];
               }
@@ -7513,6 +7507,22 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "  Added an opaque matte channel");
     }
 
+  if (image->matte == MagickTrue && ping_color_type < 4)
+    {
+      if (ping_color_type == 3 && ping_num_trans == 0)
+        {
+          png_set_invalid(ping,ping_info,PNG_INFO_tRNS);
+          if (logging != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Ignoring request to write tRNS chunk with num_trans==0");
+        }
+      else
+        (void) png_set_tRNS(ping, ping_info,
+                            ping_trans_alpha,
+                            ping_num_trans,
+                            &ping_trans_color);
+    }
+
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Writing PNG header chunks");
@@ -7772,7 +7782,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             }
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            if (logging)
+            if (logging && y == 0)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  pass %d, Image Is RGB, 16-bit GRAY, or GRAY_ALPHA",pass);
             p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
