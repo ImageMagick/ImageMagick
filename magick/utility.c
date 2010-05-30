@@ -1053,10 +1053,10 @@ MagickExport ssize_t GetMagickPageSize(void)
   if (page_size > 0)
     return(page_size);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-  page_size=sysconf(_SC_PAGE_SIZE);
+  page_size=(ssize_t) sysconf(_SC_PAGE_SIZE);
 #else
 #if defined(MAGICKCORE_HAVE_GETPAGESIZE)
-  page_size=getpagesize();
+  page_size=(ssize_t) getpagesize();
 #endif
 #endif
   if (page_size <= 0)

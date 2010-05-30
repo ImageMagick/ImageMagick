@@ -9044,8 +9044,8 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
           target_window=root_window;
         x_offset=event.xbutton.x_root;
         y_offset=event.xbutton.y_root;
-        crop_info->x=x_offset;
-        crop_info->y=y_offset;
+        crop_info->x=(ssize_t) x_offset;
+        crop_info->y=(ssize_t) y_offset;
         crop_info->width=0;
         crop_info->height=0;
         presses++;
@@ -9062,24 +9062,24 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
           Discard pending button motion events.
         */
         while (XCheckMaskEvent(display,ButtonMotionMask,&event)) ;
-        crop_info->x=event.xmotion.x;
-        crop_info->y=event.xmotion.y;
+        crop_info->x=(ssize_t) event.xmotion.x;
+        crop_info->y=(ssize_t) event.xmotion.y;
         /*
           Check boundary conditions.
         */
         if ((int) crop_info->x < x_offset)
-          crop_info->width=(unsigned int) (x_offset-crop_info->x);
+          crop_info->width=(size_t) (x_offset-crop_info->x);
         else
           {
-            crop_info->width=(unsigned int) (crop_info->x-x_offset);
-            crop_info->x=x_offset;
+            crop_info->width=(size_t) (crop_info->x-x_offset);
+            crop_info->x=(ssize_t) x_offset;
           }
         if ((int) crop_info->y < y_offset)
-          crop_info->height=(unsigned int) (y_offset-crop_info->y);
+          crop_info->height=(size_t) (y_offset-crop_info->y);
         else
           {
-            crop_info->height=(unsigned int) (crop_info->y-y_offset);
-            crop_info->y=y_offset;
+            crop_info->height=(size_t) (crop_info->y-y_offset);
+            crop_info->y=(ssize_t) y_offset;
           }
       }
       default:

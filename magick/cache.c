@@ -4732,7 +4732,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
       cache_info->filename,(unsigned long) nexus_info->region.width,
       (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
@@ -4863,7 +4863,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
       cache_info->filename,(unsigned long) nexus_info->region.width,
       (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
@@ -5448,7 +5448,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
       cache_info->filename,(unsigned long) nexus_info->region.width,
       (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,
@@ -5579,7 +5579,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s[%lux%lu%+ld%+ld]",
       cache_info->filename,(unsigned long) nexus_info->region.width,
       (unsigned long) nexus_info->region.height,(long) nexus_info->region.x,

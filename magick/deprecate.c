@@ -5330,7 +5330,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
           order=1;
           lower_threshold=0;
           upper_threshold=0;
-          count=sscanf(thresholds,"%lf[/x%%]%lf",&lower_threshold,
+          count=(ssize_t) sscanf(thresholds,"%lf[/x%%]%lf",&lower_threshold,
             &upper_threshold);
           if (strchr(thresholds,'%') != (char *) NULL)
             {

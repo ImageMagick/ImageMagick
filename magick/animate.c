@@ -947,8 +947,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_attributes.width,window_attributes.height);
   geometry_info.width=window_info.width;
   geometry_info.height=window_info.height;
-  geometry_info.x=window_info.x;
-  geometry_info.y=window_info.y;
+  geometry_info.x=(ssize_t) window_info.x;
+  geometry_info.y=(ssize_t) window_info.y;
   (void) ParseMetaGeometry(geometry,&geometry_info.x,&geometry_info.y,
     &geometry_info.width,&geometry_info.height);
   window_info.width=(unsigned int) geometry_info.width;
@@ -2252,7 +2252,7 @@ MagickExport Image *XAnimateImages(Display *display,
             event.xclient.format,(unsigned long) event.xclient.data.l[0]);
         if (event.xclient.message_type == windows->im_protocols)
           {
-            if (*event.xclient.data.l == (ssize_t) windows->im_update_colormap)
+            if (*event.xclient.data.l == (long) windows->im_update_colormap)
               {
                 /*
                   Update graphic context and window colormap.
@@ -2286,7 +2286,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   (void) XInstallColormap(display,map_info->colormap);
                 break;
               }
-            if (*event.xclient.data.l == (ssize_t) windows->im_exit)
+            if (*event.xclient.data.l == (long) windows->im_exit)
               {
                 state|=ExitState;
                 break;

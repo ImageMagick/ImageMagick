@@ -4237,7 +4237,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     x,
     y;
 
-  register int
+  register ssize_t
     i;
 
   static char

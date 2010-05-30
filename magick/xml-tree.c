@@ -1966,7 +1966,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 for (l=0; (*p != '\0') && (((l == 0) && (*p != '>')) ||
                      ((l != 0) && ((*p != ']') ||
                      (*(p+strspn(p+1,XMLWhitespace)+1) != '>'))));
-                  l=(ssize_t) (*p == '[') ? 1 : l)
+                  l=(ssize_t) ((*p == '[') ? 1 : l))
                 p+=strcspn(p+1,"[]>")+1;
                 if ((*p == '\0') && (terminal != '>'))
                   {

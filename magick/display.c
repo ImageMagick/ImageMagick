@@ -2572,7 +2572,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
         if (event.xselection.property == (Atom) None)
           break;
         status=XGetWindowProperty(display,event.xselection.requestor,
-          event.xselection.property,0L,(ssize_t) MaxTextExtent,True,XA_STRING,
+          event.xselection.property,0L,(long) MaxTextExtent,True,XA_STRING,
           &type,&format,&length,&after,&data);
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
@@ -12578,7 +12578,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
       */
       if (event->xclient.message_type != windows->wm_protocols)
         break;
-      if (*event->xclient.data.l != (ssize_t) windows->wm_delete_window)
+      if (*event->xclient.data.l != (long) windows->wm_delete_window)
         break;
       if (event->xclient.window == windows->magnify.id)
         {
@@ -13717,8 +13717,8 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
     window_attributes.width,window_attributes.height);
   geometry_info.width=window_info.width;
   geometry_info.height=window_info.height;
-  geometry_info.x=window_info.x;
-  geometry_info.y=window_info.y;
+  geometry_info.x=(ssize_t) window_info.x;
+  geometry_info.y=(ssize_t) window_info.y;
   (void) ParseMetaGeometry(geometry,&geometry_info.x,&geometry_info.y,
     &geometry_info.width,&geometry_info.height);
   window_info.width=(unsigned int) geometry_info.width;
@@ -15164,7 +15164,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             event.xclient.data.l[0]);
         if (event.xclient.message_type == windows->im_protocols)
           {
-            if (*event.xclient.data.l == (ssize_t) windows->im_update_widget)
+            if (*event.xclient.data.l == (long) windows->im_update_widget)
               {
                 (void) CloneString(&windows->command.name,MagickTitle);
                 windows->command.data=MagickMenus;
@@ -15172,7 +15172,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   (XEvent *) NULL);
                 break;
               }
-            if (*event.xclient.data.l == (ssize_t) windows->im_update_colormap)
+            if (*event.xclient.data.l == (long) windows->im_update_colormap)
               {
                 /*
                   Update graphic context and window colormap.
@@ -15213,22 +15213,22 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   (void) XInstallColormap(display,map_info->colormap);
                 break;
               }
-            if (*event.xclient.data.l == (ssize_t) windows->im_former_image)
+            if (*event.xclient.data.l == (long) windows->im_former_image)
               {
                 *state|=FormerImageState | ExitState;
                 break;
               }
-            if (*event.xclient.data.l == (ssize_t) windows->im_next_image)
+            if (*event.xclient.data.l == (long) windows->im_next_image)
               {
                 *state|=NextImageState | ExitState;
                 break;
               }
-            if (*event.xclient.data.l == (ssize_t) windows->im_retain_colors)
+            if (*event.xclient.data.l == (long) windows->im_retain_colors)
               {
                 *state|=RetainColorsState;
                 break;
               }
-            if (*event.xclient.data.l == (ssize_t) windows->im_exit)
+            if (*event.xclient.data.l == (long) windows->im_exit)
               {
                 *state|=ExitState;
                 break;
@@ -15258,7 +15258,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if ((*event.xclient.data.l != 2) && (*event.xclient.data.l != 128))
               break;
             selection=XInternAtom(display,"DndSelection",MagickFalse);
-            status=XGetWindowProperty(display,root_window,selection,0L,(ssize_t)
+            status=XGetWindowProperty(display,root_window,selection,0L,(long)
               MaxTextExtent,MagickFalse,(Atom) AnyPropertyType,&type,&format,
               &length,&after,&data);
             if ((status != Success) || (length == 0))
@@ -15297,7 +15297,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l != (ssize_t) windows->wm_delete_window)
+        if (*event.xclient.data.l != (long) windows->wm_delete_window)
           break;
         (void) XWithdrawWindow(display,event.xclient.window,
           visual_info->screen);
@@ -15393,8 +15393,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         &window_changes);
                     }
               }
-            if ((event.xconfigure.width == (ssize_t) windows->image.width) &&
-                (event.xconfigure.height == (ssize_t) windows->image.height))
+            if ((event.xconfigure.width == (int) windows->image.width) &&
+                (event.xconfigure.height == (int) windows->image.height))
               break;
             windows->image.width=(unsigned int) event.xconfigure.width;
             windows->image.height=(unsigned int) event.xconfigure.height;
@@ -15738,7 +15738,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           Display image named by the remote command protocol.
         */
         status=XGetWindowProperty(display,event.xproperty.window,
-          event.xproperty.atom,0L,(ssize_t) MaxTextExtent,MagickFalse,(Atom)
+          event.xproperty.atom,0L,(long) MaxTextExtent,MagickFalse,(Atom)
           AnyPropertyType,&type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;
