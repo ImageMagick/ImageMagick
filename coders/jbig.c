@@ -162,7 +162,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     Initialize JBIG toolkit.
   */
   jbg_dec_init(&jbig_info);
-  jbg_dec_maxsize(&jbig_info,(size_t) image->columns,(size_t)
+  jbg_dec_maxsize(&jbig_info,(unsigned long) image->columns,(unsigned long)
     image->rows);
   image->columns=jbg_dec_getwidth(&jbig_info);
   image->rows=jbg_dec_getheight(&jbig_info);
@@ -495,8 +495,9 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     /*
       Initialize JBIG info structure.
     */
-    jbg_enc_init(&jbig_info,image->columns,image->rows,1,&pixels,
-      (void (*)(unsigned char *,size_t,void *)) JBIGEncode,image);
+    jbg_enc_init(&jbig_info,(unsigned long) image->columns,(unsigned long)
+      image->rows,1,&pixels,(void (*)(unsigned char *,size_t,void *))
+      JBIGEncode,image);
     if (image_info->scene != 0)
       jbg_enc_layers(&jbig_info,(int) image_info->scene);
     else
@@ -530,7 +531,8 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
             x_resolution=(size_t) (100.0*2.54*x_resolution+0.5)/100.0;
             y_resolution=(size_t) (100.0*2.54*y_resolution+0.5)/100.0;
           }
-        (void) jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
+        (void) jbg_enc_lrlmax(&jbig_info,(unsigned long) x_resolution,
+          (unsigned long) y_resolution);
       }
     (void) jbg_enc_lrange(&jbig_info,-1,-1);
     jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |

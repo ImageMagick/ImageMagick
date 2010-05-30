@@ -81,7 +81,7 @@ typedef struct _CINDataFormatInfo
     sign,
     sense;
 
-  unsigned int
+  size_t
     line_pad,
     channel_pad;
 
@@ -91,7 +91,7 @@ typedef struct _CINDataFormatInfo
 
 typedef struct _CINFileInfo
 {
-  unsigned int
+  size_t
     magic,
     image_offset,
     generic_length,
@@ -115,14 +115,14 @@ typedef struct _CINFilmInfo
     offset,
     reserve1;
 
-  unsigned int
+  size_t
     prefix,
     count;
 
   char
     format[32];
 
-  unsigned int
+  size_t
     frame_position;
 
   float
@@ -141,7 +141,7 @@ typedef struct _CINImageChannel
     bits_per_pixel,
     reserve;
 
-  unsigned int
+  size_t
     pixels_per_line,
     lines_per_image;
 
@@ -175,7 +175,7 @@ typedef struct _CINImageInfo
 
 typedef struct _CINOriginationInfo
 {
-  int
+  ssize_t
     x_offset,
     y_offset;
 
@@ -909,7 +909,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   (void) ResetMagickMemory(&cin,0,sizeof(cin));
   offset=0;
   cin.file.magic=0x802A5FD7UL;
-  offset+=WriteBlobLong(image,cin.file.magic);
+  offset+=WriteBlobLong(image,(unsigned int) cin.file.magic);
   cin.file.image_offset=0x800;
   profile=GetImageProfile(image,"cin:user.data");
   if (profile != (StringInfo *) NULL)
@@ -917,20 +917,20 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
       cin.file.image_offset+=(size_t) GetStringInfoLength(profile);
       cin.file.image_offset=(((cin.file.image_offset+0x2000-1)/0x2000)*0x2000);
     }
-  offset+=WriteBlobLong(image,cin.file.image_offset);
+  offset+=WriteBlobLong(image,(unsigned int) cin.file.image_offset);
   cin.file.generic_length=0x400;
-  offset+=WriteBlobLong(image,cin.file.generic_length);
+  offset+=WriteBlobLong(image,(unsigned int) cin.file.generic_length);
   cin.file.industry_length=0x400;
-  offset+=WriteBlobLong(image,cin.file.industry_length);
+  offset+=WriteBlobLong(image,(unsigned int) cin.file.industry_length);
   cin.file.user_length=0x00;
   if (profile != (StringInfo *) NULL)
     {
       cin.file.user_length+=(size_t) GetStringInfoLength(profile);
       cin.file.user_length=(((cin.file.user_length+0x2000-1)/0x2000)*0x2000);
     }
-  offset+=WriteBlobLong(image,cin.file.user_length);
+  offset+=WriteBlobLong(image,(unsigned int) cin.file.user_length);
   cin.file.file_size=4*image->columns*image->rows+0x2000;
-  offset+=WriteBlobLong(image,cin.file.file_size);
+  offset+=WriteBlobLong(image,(unsigned int) cin.file.file_size);
   (void) CopyMagickString(cin.file.version,"V4.5",sizeof(cin.file.version));
   offset+=WriteBlob(image,sizeof(cin.file.version),(unsigned char *)
     cin.file.version);
@@ -974,9 +974,11 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     offset+=WriteBlobByte(image,cin.image.channel[0].bits_per_pixel);
     offset+=WriteBlobByte(image,cin.image.channel[0].reserve);
     cin.image.channel[i].pixels_per_line=image->columns;
-    offset+=WriteBlobLong(image,cin.image.channel[0].pixels_per_line);
+    offset+=WriteBlobLong(image,(unsigned int)
+      cin.image.channel[0].pixels_per_line);
     cin.image.channel[i].lines_per_image=image->rows;
-    offset+=WriteBlobLong(image,cin.image.channel[0].lines_per_image);
+    offset+=WriteBlobLong(image,(unsigned int)
+      cin.image.channel[0].lines_per_image);
     cin.image.channel[i].min_data=0;
     offset+=WriteBlobFloat(image,cin.image.channel[0].min_data);
     cin.image.channel[i].min_quantity=0.0;
@@ -1014,9 +1016,9 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.data_format.sense=0; /* image sense: positive image */
   offset+=WriteBlobByte(image,cin.data_format.sense);
   cin.data_format.line_pad=0;
-  offset+=WriteBlobLong(image,cin.data_format.line_pad);
+  offset+=WriteBlobLong(image,(unsigned int) cin.data_format.line_pad);
   cin.data_format.channel_pad=0;
-  offset+=WriteBlobLong(image,cin.data_format.channel_pad);
+  offset+=WriteBlobLong(image,(unsigned int) cin.data_format.channel_pad);
   offset+=WriteBlob(image,sizeof(cin.data_format.reserve),(unsigned char *)
     cin.data_format.reserve);
   /*
@@ -1105,12 +1107,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   value=GetCINProperty(image_info,image,"cin:film.prefix");
   if (value != (const char *) NULL)
     cin.film.prefix=StringToUnsignedLong(value);
-  offset+=WriteBlobLong(image,cin.film.prefix);
+  offset+=WriteBlobLong(image,(unsigned int) cin.film.prefix);
   cin.film.count=0UL;
   value=GetCINProperty(image_info,image,"cin:film.count");
   if (value != (const char *) NULL)
     cin.film.count=StringToUnsignedLong(value);
-  offset+=WriteBlobLong(image,cin.film.count);
+  offset+=WriteBlobLong(image,(unsigned int) cin.film.count);
   value=GetCINProperty(image_info,image,"cin:film.format");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.film.format,value,sizeof(cin.film.format));
@@ -1120,7 +1122,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   value=GetCINProperty(image_info,image,"cin:film.frame_position");
   if (value != (const char *) NULL)
     cin.film.frame_position=StringToUnsignedLong(value);
-  offset+=WriteBlobLong(image,cin.film.frame_position);
+  offset+=WriteBlobLong(image,(unsigned int) cin.film.frame_position);
   cin.film.frame_rate=0.0f;
   value=GetCINProperty(image_info,image,"cin:film.frame_rate");
   if (value != (const char *) NULL)

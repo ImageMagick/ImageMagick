@@ -523,8 +523,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (i=0; i < (ssize_t) number_components; i++)
       (void) jas_image_readcmpt(jp2_image,(short) components[i],0,
-        ((unsigned int) y)/y_step[i],((unsigned int) image->columns)/x_step[i],
-        1,pixels[i]);
+        (jas_image_coord_t) (y/y_step[i]),(jas_image_coord_t) (image->columns/
+        x_step[i]),1,pixels[i]);
     switch (number_components)
     {
       case 1:

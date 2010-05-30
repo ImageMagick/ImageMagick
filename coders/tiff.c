@@ -2241,7 +2241,7 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
         SetStringInfoLength(iptc_profile,length);
         if (TIFFIsByteSwapped(tiff))
           TIFFSwabArrayOfLong((uint32 *) GetStringInfoDatum(iptc_profile),
-            (size_t) (length/4));
+            (unsigned long) (length/4));
         (void) TIFFSetField(tiff,TIFFTAG_RICHTIFFIPTC,(uint32)
           GetStringInfoLength(iptc_profile)/4,GetStringInfoDatum(iptc_profile));
         iptc_profile=DestroyStringInfo(iptc_profile);
@@ -2759,8 +2759,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
     rows_per_strip=1;
     if (TIFFScanlineSize(tiff) != 0)
-      rows_per_strip=(size_t) MagickMax((size_t)
-        TIFFDefaultStripSize(tiff,0),1);
+      rows_per_strip=(uint32) MagickMax((size_t) TIFFDefaultStripSize(tiff,0),
+        1);
     option=GetImageOption(image_info,"tiff:rows-per-strip");
     if (option != (const char *) NULL)
       rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
@@ -2817,16 +2817,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case COMPRESSION_ADOBE_DEFLATE:
       {
-        rows_per_strip=image->rows;
+        rows_per_strip=(uint32) image->rows;
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
           &bits_per_sample);
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
-        (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,image_info->quality ==
-          UndefinedCompressionQuality ? 7 : (long) MagickMin(1L*
-          image_info->quality/10,9));
+        (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,(long) (
+          image_info->quality == UndefinedCompressionQuality ? 7 :
+          MagickMin(1*image_info->quality/10,9)));
         break;
       }
       case COMPRESSION_CCITTFAX3:

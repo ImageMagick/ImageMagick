@@ -898,7 +898,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   /*
     Write the Image record header.
   */
-  (void) WriteBlobMSBLong(image,(size_t)
+  (void) WriteBlobMSBLong(image,(unsigned int)
     (TellBlob(image)+8*pdb_info.number_records));
   (void) WriteBlobByte(image,0x40);
   (void) WriteBlobByte(image,0x6f);
@@ -909,7 +909,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
       /*
         Write the comment record header.
       */
-      (void) WriteBlobMSBLong(image,(size_t) (TellBlob(image)+8+58+q-
+      (void) WriteBlobMSBLong(image,(unsigned int) (TellBlob(image)+8+58+q-
         runlength));
       (void) WriteBlobByte(image,0x40);
       (void) WriteBlobByte(image,0x6f);
