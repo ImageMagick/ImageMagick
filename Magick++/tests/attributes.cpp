@@ -23,8 +23,8 @@ int main( int /*argc*/, char ** argv)
 
   try {
 
-    unsigned int columns = 640;
-    unsigned int rows = 480;
+    size_t columns = 640;
+    size_t rows = 480;
     Geometry geometry(columns,rows);
     Color canvasColor( "red" );
     Image image( geometry, canvasColor);
