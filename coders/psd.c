@@ -410,9 +410,9 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
   StringInfo
     *profile;
 
-  size_t
+  unsigned int
     count,
-    ssize_t_sans;
+    long_sans;
 
   unsigned short
     id,
@@ -428,7 +428,7 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
   {
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p=PushLongPixel(MSBEndian,p,&ssize_t_sans);
+    p=PushLongPixel(MSBEndian,p,&long_sans);
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
@@ -1897,9 +1897,9 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
   unsigned char
     *datum;
 
-  size_t
+  unsigned int
     count,
-    ssize_t_sans;
+    long_sans;
 
   unsigned short
     id,
@@ -1917,7 +1917,7 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
     q=(unsigned char *) p;
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p=PushLongPixel(MSBEndian,p,&ssize_t_sans);
+    p=PushLongPixel(MSBEndian,p,&long_sans);
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
@@ -1945,9 +1945,9 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
   unsigned char
     *datum;
 
-  size_t
+  unsigned int
     count,
-    ssize_t_sans;
+    long_sans;
 
   unsigned short
     id,
@@ -1965,7 +1965,7 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
     q=(unsigned char *) p;
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p=PushLongPixel(MSBEndian,p,&ssize_t_sans);
+    p=PushLongPixel(MSBEndian,p,&long_sans);
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
