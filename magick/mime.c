@@ -82,7 +82,7 @@ struct _MimeInfo
   DataType
     data_type;
 
-  size_t
+  ssize_t
     mask,
     value;
 
@@ -180,7 +180,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   size_t
     lsb_first;
 
-  size_t
+  ssize_t
     value;
 
   assert(exception != (ExceptionInfo *) NULL);
