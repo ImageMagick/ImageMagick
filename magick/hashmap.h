@@ -35,9 +35,8 @@ typedef struct _LinkedListInfo
 
 extern MagickExport HashmapInfo
   *DestroyHashmap(HashmapInfo *),
-  *NewHashmap(const size_t,size_t (*)(const void *),
-    MagickBooleanType (*)(const void *,const void *),void *(*)(void *),
-    void *(*)(void *));
+  *NewHashmap(const size_t,size_t (*)(const void *),MagickBooleanType (*)
+    (const void *,const void *),void *(*)(void *),void *(*)(void *));
 
 extern MagickExport LinkedListInfo
   *DestroyLinkedList(LinkedListInfo *,void *(*)(void *)),
@@ -56,13 +55,11 @@ extern MagickExport MagickBooleanType
   PutEntryInHashmap(HashmapInfo *,const void *,const void *);
 
 extern MagickExport size_t
+  GetNumberOfElementsInLinkedList(const LinkedListInfo *),
+  GetNumberOfEntriesInHashmap(const HashmapInfo *),
   HashPointerType(const void *),
   HashStringType(const void *),
   HashStringInfoType(const void *);
-
-extern MagickExport size_t
-  GetNumberOfElementsInLinkedList(const LinkedListInfo *),
-  GetNumberOfEntriesInHashmap(const HashmapInfo *);
 
 extern MagickExport void
   ClearLinkedList(LinkedListInfo *,void *(*)(void *)),

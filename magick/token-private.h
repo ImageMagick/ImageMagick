@@ -30,7 +30,7 @@ extern "C" {
 
 typedef struct
 {
-  ssize_t
+  int
     code_mask,
     code_value,
     utf_mask,
@@ -89,15 +89,15 @@ static inline unsigned char *ConvertLatin1ToUTF8(const unsigned char *content)
   return(utf8);
 }
 
-static inline ssize_t GetNextUTFCode(const char *text,size_t *octets)
+static inline int GetNextUTFCode(const char *text,unsigned int *octets)
 {
-  ssize_t
+  int
     code;
 
   register ssize_t
     i;
 
-  register ssize_t
+  register int
     c,
     unicode;
 
@@ -107,7 +107,7 @@ static inline ssize_t GetNextUTFCode(const char *text,size_t *octets)
       errno=EINVAL;
       return(-1);
     }
-  code=(ssize_t) (*text++) & 0xff;
+  code=(int) (*text++) & 0xff;
   unicode=code;
   for (i=0; i < MaxMultibyteCodes; i++)
   {
@@ -119,10 +119,10 @@ static inline ssize_t GetNextUTFCode(const char *text,size_t *octets)
             errno=EILSEQ;
             return(-1);
           }
-        *octets=(size_t) (i+1);
+        *octets=(unsigned int) (i+1);
         return(unicode);
       }
-    c=(ssize_t) (*text++ ^ 0x80) & 0xff;
+    c=(int) (*text++ ^ 0x80) & 0xff;
     if ((c & 0xc0) != 0)
       {
         errno=EILSEQ;
@@ -134,24 +134,24 @@ static inline ssize_t GetNextUTFCode(const char *text,size_t *octets)
   return(-1);
 }
 
-static inline ssize_t GetUTFCode(const char *text)
+static inline int GetUTFCode(const char *text)
 {
-  size_t
+  unsigned int
     octets;
 
   return(GetNextUTFCode(text,&octets));
 }
 
-static inline size_t GetUTFOctets(const char *text)
+static inline unsigned int GetUTFOctets(const char *text)
 {
-  size_t
+  unsigned int
     octets;
 
   (void) GetNextUTFCode(text,&octets);
   return(octets);
 }
 
-static inline MagickBooleanType IsUTFSpace(ssize_t code)
+static inline MagickBooleanType IsUTFSpace(int code)
 {
   if (((code >= 0x0009) && (code <= 0x000d)) || (code == 0x0020) ||
       (code == 0x0085) || (code == 0x00a0) || (code == 0x1680) ||
@@ -162,24 +162,24 @@ static inline MagickBooleanType IsUTFSpace(ssize_t code)
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsUTFValid(ssize_t code)
+static inline MagickBooleanType IsUTFValid(int code)
 {
-  ssize_t
+  int
     mask;
 
-  mask=(ssize_t) 0x7fffffff;
+  mask=(int) 0x7fffffff;
   if (((code & ~mask) != 0) && ((code < 0xd800) || (code > 0xdfff)) &&
       (code != 0xfffe) && (code != 0xffff))
     return(MagickFalse);
   return(MagickTrue);
 }
 
-static inline MagickBooleanType IsUTFAscii(ssize_t code)
+static inline MagickBooleanType IsUTFAscii(int code)
 {
-  ssize_t
+  int
     mask;
 
-  mask=(ssize_t) 0x7f;
+  mask=(int) 0x7f;
   if ((code & ~mask) != 0)
     return(MagickFalse);
   return(MagickTrue);

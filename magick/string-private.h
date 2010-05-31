@@ -68,7 +68,7 @@ static inline ssize_t StringToLong(const char *value)
 
 static inline size_t StringToUnsignedLong(const char *value)
 {
-  return(strtoul(value,(char **) NULL,10));
+  return((size_t) strtoul(value,(char **) NULL,10));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

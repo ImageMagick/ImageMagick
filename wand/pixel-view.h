@@ -36,10 +36,6 @@ typedef MagickBooleanType
 extern WandExport char
   *GetPixelViewException(const PixelView *,ExceptionType *);
 
-extern WandExport ssize_t
-  GetPixelViewX(const PixelView *),
-  GetPixelViewY(const PixelView *);
-
 extern WandExport MagickBooleanType
   DuplexTransferPixelViewIterator(PixelView *,PixelView *,PixelView *,
     DuplexTransferPixelViewMethod,void *),
@@ -57,8 +53,8 @@ extern WandExport PixelView
   *ClonePixelView(const PixelView *),
   *DestroyPixelView(PixelView *),
   *NewPixelView(MagickWand *),
-  *NewPixelViewRegion(MagickWand *,const ssize_t,const ssize_t,
-    const size_t,const size_t);
+  *NewPixelViewRegion(MagickWand *,const ssize_t,const ssize_t,const size_t,
+    const size_t);
 
 extern WandExport PixelWand
   **GetPixelViewPixels(const PixelView *);
@@ -66,6 +62,10 @@ extern WandExport PixelWand
 extern WandExport size_t
   GetPixelViewHeight(const PixelView *),
   GetPixelViewWidth(const PixelView *);
+
+extern WandExport ssize_t
+  GetPixelViewX(const PixelView *),
+  GetPixelViewY(const PixelView *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

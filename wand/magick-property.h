@@ -81,8 +81,7 @@ extern WandExport MagickBooleanType
   MagickDeleteImageProperty(MagickWand *,const char *),
   MagickDeleteOption(MagickWand *,const char *),
   MagickGetAntialias(const MagickWand *),
-  MagickGetPage(const MagickWand *,size_t *,size_t *,ssize_t *,
-    ssize_t *),
+  MagickGetPage(const MagickWand *,size_t *,size_t *,ssize_t *,ssize_t *),
   MagickGetSize(const MagickWand *,size_t *,size_t *),
   MagickGetSizeOffset(const MagickWand *,ssize_t *),
   MagickProfileImage(MagickWand *,const char *,const void *,const size_t),
@@ -104,16 +103,15 @@ extern WandExport MagickBooleanType
   MagickSetInterpolateMethod(MagickWand *,const InterpolatePixelMethod),
   MagickSetOption(MagickWand *,const char *,const char *),
   MagickSetOrientation(MagickWand *,const OrientationType),
-  MagickSetPage(MagickWand *,const size_t,const size_t,
-    const ssize_t,const ssize_t),
+  MagickSetPage(MagickWand *,const size_t,const size_t,const ssize_t,
+    const ssize_t),
   MagickSetPassphrase(MagickWand *,const char *),
   MagickSetPointsize(MagickWand *,const double),
   MagickSetResolution(MagickWand *,const double,const double),
   MagickSetResourceLimit(const ResourceType type,const MagickSizeType limit),
   MagickSetSamplingFactors(MagickWand *,const size_t,const double *),
   MagickSetSize(MagickWand *,const size_t,const size_t),
-  MagickSetSizeOffset(MagickWand *,const size_t,const size_t,
-    const ssize_t),
+  MagickSetSizeOffset(MagickWand *,const size_t,const size_t,const ssize_t),
   MagickSetType(MagickWand *,const ImageType);
 
 extern WandExport MagickProgressMonitor
@@ -129,12 +127,12 @@ extern WandExport PixelWand
 extern WandExport OrientationType
   MagickGetOrientationType(MagickWand *);
 
+extern WandExport size_t
+  MagickGetCompressionQuality(MagickWand *);
+
 extern WandExport unsigned char
   *MagickGetImageProfile(MagickWand *,const char *,size_t *),
   *MagickRemoveImageProfile(MagickWand *,const char *,size_t *);
-
-extern WandExport size_t
-  MagickGetCompressionQuality(MagickWand *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

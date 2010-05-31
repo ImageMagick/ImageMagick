@@ -60,24 +60,24 @@ static inline MagickRealType RadiansToDegrees(const MagickRealType radians)
   return(180.0*radians/MagickPI);
 }
 
-static inline unsigned char ScaleColor5to8(const size_t color)
+static inline unsigned char ScaleColor5to8(const unsigned int color)
 {
   return((unsigned char) (((color) << 3) | ((color) >> 2)));
 }
 
-static inline unsigned char ScaleColor6to8(const size_t color)
+static inline unsigned char ScaleColor6to8(const unsigned int color)
 {
   return((unsigned char) (((color) << 2) | ((color) >> 4)));
 }
 
-static inline size_t ScaleColor8to5(const unsigned char color)
+static inline unsigned int ScaleColor8to5(const unsigned char color)
 {
-  return((size_t) (((color) & ~0x07) >> 3));
+  return((unsigned int) (((color) & ~0x07) >> 3));
 }
 
-static inline size_t ScaleColor8to6(const unsigned char color)
+static inline unsigned int ScaleColor8to6(const unsigned char color)
 {
-  return((size_t) (((color) & ~0x03) >> 2));
+  return((unsigned int) (((color) & ~0x03) >> 2));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

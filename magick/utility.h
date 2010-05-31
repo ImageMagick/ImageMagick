@@ -47,9 +47,6 @@ extern MagickExport int
   SystemCommand(const MagickBooleanType,const MagickBooleanType,const char *,
     ExceptionInfo *);
 
-extern MagickExport ssize_t
-  GetMagickPageSize(void);
-
 extern MagickExport MagickBooleanType
   AcquireUniqueFilename(char *),
   AcquireUniqueSymbolicLink(const char *,char *),
@@ -59,11 +56,14 @@ extern MagickExport MagickBooleanType
   IsMagickTrue(const char *),
   IsPathAccessible(const char *);
 
-extern MagickExport unsigned char
-  *Base64Decode(const char *, size_t *);
-
 extern MagickExport size_t
   MultilineCensus(const char *);
+
+extern MagickExport ssize_t
+  GetMagickPageSize(void);
+
+extern MagickExport unsigned char
+  *Base64Decode(const char *, size_t *);
 
 extern MagickExport void
   AppendImageFormat(const char *,char *),

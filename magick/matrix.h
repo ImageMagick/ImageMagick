@@ -27,12 +27,11 @@ extern MagickExport double
   **RelinquishMagickMatrix(double **,const size_t);
 
 extern MagickExport MagickBooleanType
-  GaussJordanElimination(double **,double **,const size_t,
-       const size_t);
+  GaussJordanElimination(double **,double **,const size_t,const size_t);
 
 extern MagickExport void
   LeastSquaresAddTerms(double **,double **,const double *,const double *,
-       const size_t, const size_t);
+    const size_t, const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

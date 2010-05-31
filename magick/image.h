@@ -490,8 +490,8 @@ extern MagickExport FILE
 extern MagickExport Image
   *AcquireImage(const ImageInfo *),
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),
-  *CloneImage(const Image *,const size_t,const size_t,
-    const MagickBooleanType,ExceptionInfo *),
+  *CloneImage(const Image *,const size_t,const size_t,const MagickBooleanType,
+    ExceptionInfo *),
   *CombineImages(const Image *,const ChannelType,ExceptionInfo *),
   *DestroyImage(Image *),
   *GetImageClipMask(const Image *,ExceptionInfo *),
@@ -505,9 +505,6 @@ extern MagickExport ImageInfo
   *AcquireImageInfo(void),
   *CloneImageInfo(const ImageInfo *),
   *DestroyImageInfo(ImageInfo *);
-
-extern MagickExport ssize_t
-  GetImageReferenceCount(Image *);
 
 extern MagickExport MagickBooleanType
   ClipImage(Image *),
@@ -538,6 +535,9 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport size_t
   InterpretImageFilename(const ImageInfo *,Image *,const char *,int,char *);
+
+extern MagickExport ssize_t
+  GetImageReferenceCount(Image *);
 
 extern MagickExport VirtualPixelMethod
   GetImageVirtualPixelMethod(const Image *),

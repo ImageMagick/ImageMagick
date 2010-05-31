@@ -53,8 +53,8 @@ typedef MagickBooleanType
   (*SyncAuthenticPixelsHandler)(Image *,ExceptionInfo *);
 
 typedef const PixelPacket
-  *(*GetVirtualPixelHandler)(const Image *,const VirtualPixelMethod,const ssize_t,
-    const ssize_t,const size_t,const size_t,ExceptionInfo *),
+  *(*GetVirtualPixelHandler)(const Image *,const VirtualPixelMethod,
+    const ssize_t,const ssize_t,const size_t,const size_t,ExceptionInfo *),
   *(*GetVirtualPixelsHandler)(const Image *);
 
 typedef PixelPacket
@@ -211,8 +211,8 @@ extern MagickExport const IndexPacket
   *GetVirtualIndexesFromNexus(const Cache,NexusInfo *);
 
 extern MagickExport const PixelPacket
-  *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,const ssize_t,
-    const ssize_t,const size_t,const size_t,NexusInfo *,
+  *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,
+    const ssize_t,const ssize_t,const size_t,const size_t,NexusInfo *,
     ExceptionInfo *),
   *GetVirtualPixelsNexus(const Cache,NexusInfo *);
 

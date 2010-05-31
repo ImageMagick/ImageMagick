@@ -274,10 +274,6 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
-    j,
-    k;
-
   MagickBooleanType
     fire,
     pend;
@@ -290,6 +286,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
 
   register ssize_t
     i;
+
+  ssize_t
+    j,
+    k;
 
   XResourceInfo
     resource_info;

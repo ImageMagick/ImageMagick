@@ -131,10 +131,6 @@ extern MagickExport const char
   *GetImageOption(const ImageInfo *,const char *),
   *MagickOptionToMnemonic(const MagickOption,const ssize_t);
 
-extern MagickExport ssize_t
-  ParseChannelOption(const char *),
-  ParseMagickOption(const MagickOption,const MagickBooleanType,const char *);
-
 extern MagickExport MagickBooleanType
   CloneImageOptions(ImageInfo *,const ImageInfo *),
   DefineImageOption(ImageInfo *,const char *),
@@ -142,6 +138,10 @@ extern MagickExport MagickBooleanType
   IsMagickOption(const char *),
   ListMagickOptions(FILE *,const MagickOption,ExceptionInfo *),
   SetImageOption(ImageInfo *,const char *,const char *);
+
+extern MagickExport ssize_t
+  ParseChannelOption(const char *),
+  ParseMagickOption(const MagickOption,const MagickBooleanType,const char *);
 
 extern MagickExport void
   DestroyImageOptions(ImageInfo *),

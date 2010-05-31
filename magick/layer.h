@@ -62,8 +62,8 @@ extern MagickExport Image
   *OptimizePlusImageLayers(const Image *,ExceptionInfo *);
 
 extern MagickExport void
-  CompositeLayers(Image *,const CompositeOperator,Image *,const ssize_t,const ssize_t,
-    ExceptionInfo *),
+  CompositeLayers(Image *,const CompositeOperator,Image *,const ssize_t,
+    const ssize_t,ExceptionInfo *),
   OptimizeImageTransparency(const Image *,ExceptionInfo *),
   RemoveDuplicateLayers(Image **,ExceptionInfo *),
   RemoveZeroDelayLayers(Image **,ExceptionInfo *);
