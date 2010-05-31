@@ -37,7 +37,7 @@ or obtained by writing to the Free Software Foundation, Inc.,
  lt_strlcat appends the NULL-terminated string src to the end of dst.
  It will append at most dstsize - strlen(dst) - 1 bytes,
  NULL-terminating the result. The total length of the string which
- would have been created given sufficient buffer size (may be ssize_ter
+ would have been created given sufficient buffer size (may be longer
  than dstsize) is returned.  This function substitutes for strlcat()
  which is available under NetBSD, FreeBSD and Solaris 9.
 
@@ -85,7 +85,7 @@ lt_strlcat(char *dst, const char *src, const size_t dstsize)
   lt_strlcpy copies up to dstsize - 1 characters from the NULL-terminated
   string src to dst, NULL-terminating the result. The total length of
   the string which would have been created given sufficient buffer
-  size (may be ssize_ter than dstsize) is returned. This function
+  size (may be longer than dstsize) is returned. This function
   substitutes for strlcpy() which is available under OpenBSD, FreeBSD
   and Solaris 9.
 

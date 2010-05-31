@@ -152,7 +152,9 @@
 
 <div class="main">
 
-<ul><dt>2010-05-25  6.6.2.1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<ul><dt>2010-05-28  6.6.2.1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Prevent coders/png.c from attempting to write an empty tRNS chunk.</li><br />
+<dt>2010-05-25  6.6.2.1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Finish for Square Array Rotates (off center origin rotate)</li>
   <li> Added HitAndMiss kernel Ridges2 to find 2 pixel thick ridges</li>
   <li> Added FreiChen:0,{angle}  FreiChen:{angle} and FreiChen:-1 variations    to complete this kernels definition</li><br />
@@ -161,7 +163,8 @@
   <li> Set AVI handler to the MPEG coder.</li>
   <li> Compute the proper DPX user data field size.</li>
   <li> Do not interpret a format specifier when enclosed in brackets (e.g.    rose_tile_%[filename:tile].gif.</li>
-  <li> Use 64-bit types when compiling with the 64-bit Visual C++ compiler under    Windows.</li><br />
+  <li> Use 64-bit types when compiling with the 64-bit Visual C++ compiler under    Windows.</li>
+  <li> Prevent MNG divide by zero (refererce    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16320).</li><br />
 <dt>2010-05-23  6.6.2.0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Third Re-write of MorphologyApply() to better handle compound methods.</li>
   <li> Implemented  -set option:morphology:compose for merging results of    multiple kernels. "None" means re-iterate results with next kernel.    While "Undefined" means to use the internal default for a method.    Thinning, Thickening, HitAndMiss, Convolve, Correlate defaults to "None"    while HitAndMiss defaults to "Lighten" (union of all kernel results).    Other morphology methods defaults still to be decided.</li>
@@ -1548,7 +1551,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

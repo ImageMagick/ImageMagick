@@ -185,7 +185,7 @@ slist_tail (SList *slist)
 }
 
 /* Return a list starting at the Nth item of SLIST.  If SLIST is less
-   than N items ssize_t, NULL is returned.  Just to be confusing, list items
+   than N items long, NULL is returned.  Just to be confusing, list items
    are counted from 1, to get the 2nd element of slist:
 
    e.g. shared_list = slist_nth (slist, 2);  */
