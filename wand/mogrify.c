@@ -2878,38 +2878,38 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            char
+              *value;
+
             /*
               Set image option.
             */
+            if (*option == '+')
+              {
+                if (LocaleNCompare(argv[i+1],"registry:",9) == 0)
+                  (void) DeleteImageRegistry(argv[i+1]+9);
+                else
+                  if (LocaleNCompare(argv[i+1],"option:",7) == 0)
+                    (void) DeleteImageOption(image_info,argv[i+1]+7);
+                  else
+                    (void) DeleteImageProperty(*image,argv[i+1]);
+                break;
+              }
+            value=InterpretImageProperties(image_info,*image,argv[i+2]);
+            if (value == (char *) NULL)
+              break;
             if (LocaleNCompare(argv[i+1],"registry:",9) == 0)
-              (void) DeleteImageRegistry(argv[i+1]+9);
+              (void) SetImageRegistry(StringRegistryType,argv[i+1]+9,value,
+                exception);
             else
               if (LocaleNCompare(argv[i+1],"option:",7) == 0)
-                (void) DeleteImageOption(image_info,argv[i+1]+7);
+                {
+                  (void) SetImageOption(image_info,argv[i+1]+7,value);
+                  (void) SetImageArtifact(*image,argv[i+1]+7,value);
+                }
               else
-                (void) DeleteImageProperty(*image,argv[i+1]);
-            if (*option == '-')
-              {
-                char
-                  *value;
-
-                value=InterpretImageProperties(image_info,*image,argv[i+2]);
-                if (value != (char *) NULL)
-                  {
-                    if (LocaleNCompare(argv[i+1],"registry:",9) == 0)
-                      (void) SetImageRegistry(StringRegistryType,argv[i+1]+9,
-                        value,exception);
-                    else
-                      if (LocaleNCompare(argv[i+1],"option:",7) == 0)
-                        {
-                          (void) SetImageOption(image_info,argv[i+1]+7,value);
-                          (void) SetImageArtifact(*image,argv[i+1]+7,value);
-                        }
-                      else
-                        (void) SetImageProperty(*image,argv[i+1],value);
-                    value=DestroyString(value);
-                  }
-              }
+                (void) SetImageProperty(*image,argv[i+1],value);
+            value=DestroyString(value);
             break;
           }
         if (LocaleCompare("shade",option+1) == 0)
