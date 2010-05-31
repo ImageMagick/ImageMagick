@@ -675,52 +675,54 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %           -3,-3, 5
 %
 %    FreiChen:{type},{angle}
-%      Frei-Chen Edge Detector is a set of 9 unique convolution kernels that
-%      are specially weighted.
+%      Frei-Chen Edge Detector is based on a kernel that is similar to
+%      the Sobel Kernel, but is designed to be isotropic. That is it takes
+%      into account the distance of the diagonal in the kernel.
 %
 %        Type 0: |   -1,     0,   1     |
 %                | -sqrt(2), 0, sqrt(2) |
 %                |   -1,     0,   1     |
 %
-%      This is basically the unnormalized discrete kernel that can be used
-%      instead ot a Sobel kernel.
+%      However this kernel is als at the heart of the FreiChen Edge Detection
+%      Process which uses a set of 9 specially weighted kernel.  These 9
+%      kernels not be normalized, but directly applied to the image. The
+%      results is then added together, to produce the intensity of an edge in
+%      a specific direction.  The square root of the pixel value can then be
+%      taken as the cosine of the edge, and at least 2 such runs at 90 degrees
+%      from each other, both the direction and the strength of the edge can be
+%      determined.
 %
-%      The next 9 kernel types are specially pre-weighted.  They should not
-%      be normalized. After applying each to the original image, the results
-%      is then added together.  The square root of the resulting image is
-%      the cosine of the edge, and the direction of the feature detection.
+%        Type 1: |   -1,     0,   1     |
+%                | -sqrt(2), 0, sqrt(2) | / 2*sqrt(2)
+%                |   -1,     0,   1     |
 %
-%        Type 1: |  1,   sqrt(2),  1 |
+%        Type 2: | -1,  -sqrt(2), -1 |
 %                |  0,     0,      0 | / 2*sqrt(2)
-%                | -1,  -sqrt(2), -1 |
+%                |  1,   sqrt(2),  1 |
 %
-%        Type 2: |   1,     0,   1     |
-%                | sqrt(2), 0, sqrt(2) | / 2*sqrt(2)
-%                |   1,     0,   1     |
+%        Type 3: | -sqrt(2), 1,   0     |
+%                |    1,     0,  -1     | / 2*sqrt(2)
+%                |    0,    -1, sqrt(2) |
 %
-%        Type 3: |    0,    -1, sqrt(2) |
-%                |    1,     0,   -1    | / 2*sqrt(2)
-%                | -sqrt(2), 1,    0    |
-%
-%        Type 4: | sqrt(2), -1,     0    |
+%        Type 4: |    0,     1, -sqrt(2) |
 %                |   -1,     0,     1    | / 2*sqrt(2)
-%                |    0,     1, -sqrt(2) |
+%                | sqrt(2), -1,     0    |
 %
 %        Type 5: |  0, 1,  0 |
 %                | -1, 0, -1 | / 2
 %                |  0, 1,  0 |
 %
-%        Type 6: | -1, 0,  1 |
+%        Type 6: |  1, 0, -1 |
 %                |  0, 0,  0 | / 2
-%                |  1, 0, -1 |
+%                | -1, 0,  1 |
 %
-%        Type 7: |  1, -2,  1 |
-%                | -2,  4, -2 | / 6
-%                |  1, -2,  1 |
-%
-%        Type 8: | -2, 1, -2 |
+%        Type 7: | -2, 1, -2 |
 %                |  1, 4,  1 | / 6
 %                | -2, 1, -2 |
+%
+%        Type 8: |  1, -2,  1 |
+%                | -2,  4, -2 | / 6
+%                |  1, -2,  1 |
 %
 %        Type 9: | 1, 1, 1 |
 %                | 1, 1, 1 | / 3
@@ -1329,42 +1331,42 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 1:
-            kernel=ParseKernelArray("3: 1,2,1  0,0,0  -1,2,-1");
+            kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = +MagickSQ2;
-            kernel->values[7] = -MagickSQ2;
+            kernel->values[3] = -MagickSQ2;
+            kernel->values[5] = +MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 2:
-            kernel=ParseKernelArray("3: 1,0,1  2,0,2  1,0,1");
+            kernel=ParseKernelArray("3: -1,-2,-1  0,0,0  1,2,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = +MagickSQ2;
+            kernel->values[1] = +MagickSQ2;
+            kernel->values[7] = +MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 3:
-            kernel=ParseKernelArray("3: 0,-1,2  1,0,-1  -2,1,0");
+            kernel=ParseKernelArray("3: -2,1,0  1,0,-1  0,-1,2");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[2] = +MagickSQ2;
-            kernel->values[6] = -MagickSQ2;
+            kernel->values[0] = -MagickSQ2;
+            kernel->values[8] = +MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 4:
-            kernel=ParseKernelArray("3: 2,-1,0  -1,0,1  0,1,-2");
+            kernel=ParseKernelArray("3: 0,1,-2  -1,0,1  2,-1,0");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0] = +MagickSQ2;
-            kernel->values[8] = -MagickSQ2;
+            kernel->values[2] = -MagickSQ2;
+            kernel->values[6] = +MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
@@ -1376,21 +1378,21 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/2.0, NoValue);
             break;
           case 6:
-            kernel=ParseKernelArray("3: -1,0,1  0,0,0  1,0,-1");
+            kernel=ParseKernelArray("3: 1,0,-1  0,0,0  -1,0,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
             ScaleKernelInfo(kernel, 1.0/2.0, NoValue);
             break;
           case 7:
-            kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  1,-2,1");
+            kernel=ParseKernelArray("3: -2,1,-2  1,4,1  -2,1,-2");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
             ScaleKernelInfo(kernel, 1.0/6.0, NoValue);
             break;
           case 8:
-            kernel=ParseKernelArray("3: -2,1,-2  1,4,1  -2,1,-2");
+            kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  1,-2,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
@@ -1435,7 +1437,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values within diamond area to scale given */
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            if ((ssize_t) (labs((long) u)+labs((long) v)) <= kernel->x)
+            if ( (labs((long) u)+labs((long) v)) <= (long) kernel->x)
               kernel->positive_range += kernel->values[i] = args->sigma;
             else
               kernel->values[i] = nan;
