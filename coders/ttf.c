@@ -134,7 +134,7 @@ static MagickBooleanType IsTTF(const unsigned char *magick,const size_t length)
     return(MagickFalse);
   if (((int) magick[0] == 0x00) && ((int) magick[1] == 0x01) &&
       ((int) magick[2] == 0x00) && ((int) magick[3] == 0x00) &&
-      ((int) magick[4] == 0x0))
+      ((int) magick[4] == 0x00))
     return(MagickTrue);
   return(MagickFalse);
 }
