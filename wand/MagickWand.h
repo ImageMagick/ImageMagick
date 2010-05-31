@@ -147,9 +147,6 @@ extern WandExport char
 extern WandExport ExceptionType
   MagickGetExceptionType(const MagickWand *);
 
-extern WandExport ssize_t
-  MagickGetIteratorIndex(MagickWand *);
-
 extern WandExport MagickBooleanType
   IsMagickWand(const MagickWand *),
   MagickClearException(MagickWand *),
@@ -160,6 +157,9 @@ extern WandExport MagickWand
   *DestroyMagickWand(MagickWand *),
   *NewMagickWand(void),
   *NewMagickWandFromImage(const Image *);
+
+extern WandExport ssize_t
+  MagickGetIteratorIndex(MagickWand *);
 
 extern WandExport void
   ClearMagickWand(MagickWand *),

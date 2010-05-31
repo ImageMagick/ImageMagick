@@ -35,8 +35,8 @@ typedef enum
 } StorageType;
 
 extern MagickExport Image
-  *ConstituteImage(const size_t,const size_t,const char *,
-    const StorageType,const void *,ExceptionInfo *),
+  *ConstituteImage(const size_t,const size_t,const char *,const StorageType,
+    const void *,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
   *PingImages(const ImageInfo *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),

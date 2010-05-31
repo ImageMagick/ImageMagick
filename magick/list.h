@@ -40,11 +40,11 @@ extern MagickExport Image
   *SplitImageList(Image *),
   *SyncNextImageInList(const Image *);
 
-extern MagickExport ssize_t
-  GetImageIndexInList(const Image *);
-
 extern MagickExport size_t
   GetImageListLength(const Image *);
+
+extern MagickExport ssize_t
+  GetImageIndexInList(const Image *);
 
 extern MagickExport void
   AppendImageToList(Image **,const Image *),

@@ -24,13 +24,13 @@ extern "C" {
 
 #include "magick/draw.h"
 
-extern MagickExport ssize_t
-  FormatMagickCaption(Image *,DrawInfo *,TypeMetric *,char **);
-
 extern MagickExport MagickBooleanType
   AnnotateImage(Image *,const DrawInfo *),
   GetMultilineTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *);
+
+extern MagickExport ssize_t
+  FormatMagickCaption(Image *,DrawInfo *,TypeMetric *,char **);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -204,8 +204,7 @@ extern WandExport void
   DrawSetTextDecoration(DrawingWand *,const DecorationType),
   DrawSetTextEncoding(DrawingWand *,const char *),
   DrawSetTextUnderColor(DrawingWand *,const PixelWand *),
-  DrawSetViewbox(DrawingWand *,size_t,size_t,size_t,
-    size_t),
+  DrawSetViewbox(DrawingWand *,ssize_t,ssize_t,ssize_t,ssize_t),
   DrawSkewX(DrawingWand *,const double),
   DrawSkewY(DrawingWand *,const double),
   DrawTranslate(DrawingWand *,const double,const double);

@@ -6503,15 +6503,15 @@ WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
 %    o y2: bottom y ordinate
 %
 */
-WandExport void DrawSetViewbox(DrawingWand *wand,size_t x1,
-  size_t y1,size_t x2,size_t y2)
+WandExport void DrawSetViewbox(DrawingWand *wand,ssize_t x1,ssize_t y1,
+  ssize_t x2,ssize_t y2)
 {
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"viewbox %lu %lu %lu %lu\n",(unsigned long) x1,
-    (unsigned long) y1,(unsigned long) x2,(unsigned long) y2);
+  (void) MvgPrintf(wand,"viewbox %ld %ld %ld %ld\n",(long) x1,(long) y1,
+    (long) x2,(long) y2);
 }
 
 /*

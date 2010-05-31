@@ -75,12 +75,11 @@ extern MagickExport MagickBooleanType
   IsEventLogging(void),
   ListLogInfo(FILE *,ExceptionInfo *),
   LogComponentGenesis(void),
-  LogMagickEvent(const LogEventType,const char *,const char *,
-    const size_t,const char *,...) 
+  LogMagickEvent(const LogEventType,const char *,const char *,const size_t,
+    const char *,...) 
     magick_attribute((format (printf,5,6))),
-  LogMagickEventList(const LogEventType,const char *,const char *,
-    const size_t,const char *,va_list)
-    magick_attribute((format (printf,5,0)));
+  LogMagickEventList(const LogEventType,const char *,const char *,const size_t,
+    const char *,va_list) magick_attribute((format (printf,5,0)));
 
 extern MagickExport void
   CloseMagickLog(void),
