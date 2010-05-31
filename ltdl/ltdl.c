@@ -1039,7 +1039,7 @@ parse_dotla_file(FILE *file, char **dlname, char **libdir, char **deplibs,
 	}
 
       /* Handle the case where we occasionally need to read a line
-	 that is ssize_ter than the initial buffer size.
+	 that is longer than the initial buffer size.
 	 Behave even if the file contains NUL bytes due to corruption. */
       while (line[line_len-2] != '\0' && line[line_len-2] != '\n' && !feof (file))
 	{
@@ -1511,7 +1511,7 @@ has_library_ext (const char *filename)
 
   assert (filename);
 
-  ext = (char *) strrchr (filename, '.');
+  ext = strrchr (filename, '.');
 
   if (ext && ((streq (ext, archive_ext))
 #if defined(LT_MODULE_EXT)
