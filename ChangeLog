@@ -23,7 +23,7 @@
     rose_tile_%[filename:tile].gif.
   * Use 64-bit types when compiling with the 64-bit Visual C++ compiler under
     Windows.
-  * Prevent MNG divide by zero (refererce
+  * Prevent MNG divide by zero in calculation of frame_delay (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16320).
 
 2010-05-23  6.6.2.0 Anthony Thyssen <A.Thyssen@griffith...>
