@@ -2216,7 +2216,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
        (void) WriteBlobMSBShort(image, 0);
        (void) SetPSDSize(&psd_info,image,channel_size);
        if (tmp_image->matte != MagickFalse) {
-         (void) WriteBlobMSBShort(image,(unsigned short) 1);
+         (void) WriteBlobMSBShort(image,(unsigned short) -1);
          (void) SetPSDSize(&psd_info,image,channel_size);
        }
       } else
@@ -2231,7 +2231,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
        (void) WriteBlobMSBShort(image, 2);
        (void) SetPSDSize(&psd_info,image,channel_size);
        if (tmp_image->matte!= MagickFalse ) {
-         (void) WriteBlobMSBShort(image,(unsigned short) 3);
+         (void) WriteBlobMSBShort(image,(unsigned short) -1);
          (void) SetPSDSize(&psd_info,image,channel_size);
        }
       }
@@ -2248,7 +2248,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
        (void) WriteBlobMSBShort(image, 3);
        (void) SetPSDSize(&psd_info,image,channel_size);
        if (tmp_image->matte) {
-         (void) WriteBlobMSBShort(image,(unsigned short) 4);
+         (void) WriteBlobMSBShort(image,(unsigned short) -1);
          (void) SetPSDSize(&psd_info,image,channel_size);
        }
       }
