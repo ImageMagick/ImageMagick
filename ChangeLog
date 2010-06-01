@@ -2,6 +2,9 @@
   * Add x:silent option to prevent beeps when reading the X image format.
   * Recognize TTF for GetMagicInfo().
   * Ensure the +set option deletes the image artifact.
+  * Prevent MNG divide by zero in calculation of frame_timeout.  Set
+    both frame_delay and frame_timeout to infinite when ticks_per_second
+    is zero, as required by the MNG spec.
 
 2010-05-28  6.6.2.1 Glenn Randers-Pehrson <glennrp@image...>
   * Prevent coders/png.c from attempting to write an empty tRNS chunk.

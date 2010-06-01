@@ -4457,6 +4457,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           mng_get_long(p);
                         if (mng_info->ticks_per_second != 0)
                           frame_delay/=mng_info->ticks_per_second;
+                        else
+                          frame_delay=PNG_UINT_31_MAX;
                         if (change_delay == 2)
                           default_frame_delay=frame_delay;
                         p+=4;
@@ -4466,8 +4468,12 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     if (change_timeout)
                       {
-                        frame_timeout=(1UL*image->ticks_per_second*
-                            (mng_get_long(p))/mng_info->ticks_per_second);
+                        frame_timeout=1UL*image->ticks_per_second*
+                          mng_get_long(p);
+                        if (mng_info->ticks_per_second != 0)
+                          frame_timeout/=mng_info->ticks_per_second;
+                        else
+                          frame_timeout=PNG_UINT_31_MAX;
                         if (change_delay == 2)
                           default_frame_timeout=frame_timeout;
                         p+=4;
