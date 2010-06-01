@@ -1,6 +1,7 @@
 2010-05-31  6.6.2-2 Cristy  <quetzlzacatenango@image...>
   * Add x:silent option to prevent beeps when reading the X image format.
   * Recognize TTF for GetMagicInfo().
+  * Ensure the +set option deletes the image artifact.
 
 2010-05-28  6.6.2.1 Glenn Randers-Pehrson <glennrp@image...>
   * Prevent coders/png.c from attempting to write an empty tRNS chunk.
