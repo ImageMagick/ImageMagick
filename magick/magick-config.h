@@ -1228,6 +1228,11 @@
 #define MAGICKCORE_SIZEOF_SIZE_T 8
 #endif
 
+/* The size of `ssize_t', as computed by sizeof. */
+#ifndef MAGICKCORE_SIZEOF_SSIZE_T
+#define MAGICKCORE_SIZEOF_SSIZE_T 8
+#endif
+
 /* The size of `unsigned int', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_INT
 #define MAGICKCORE_SIZEOF_UNSIGNED_INT 4
