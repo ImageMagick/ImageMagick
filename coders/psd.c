@@ -1737,19 +1737,19 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             Packbits compression.
           */
           (void) WriteBlobMSBShort(image,1);
+          WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
+            compact_pixels,GrayQuantum);
           if (tmp_image->matte != MagickFalse)
             WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
               compact_pixels,AlphaQuantum);
-          WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-            compact_pixels,GrayQuantum);
         }
+      WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
+        compact_pixels,GrayQuantum,(i++ == 0) ||
+        (separate != MagickFalse) ? MagickTrue : MagickFalse);
       if (tmp_image->matte != MagickFalse)
         WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
           compact_pixels,AlphaQuantum,(i++ == 0) ||
           (separate != MagickFalse) ? MagickTrue : MagickFalse);
-      WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-        compact_pixels,GrayQuantum,(i++ == 0) ||
-        (separate != MagickFalse) ? MagickTrue : MagickFalse);
       (void) SetImageProgress(image,SaveImagesTag,0,1);
     }
   else
@@ -1761,19 +1761,19 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
               Packbits compression.
             */
             (void) WriteBlobMSBShort(image,1);
+            WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
+              compact_pixels,IndexQuantum);
             if (tmp_image->matte != MagickFalse)
               WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
                 compact_pixels,AlphaQuantum);
-            WritePackbitsLength(psd_info,image_info,image,tmp_image,pixels,
-              compact_pixels,IndexQuantum);
           }
+        WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
+          compact_pixels,IndexQuantum,(i++ == 0) ||
+          (separate != MagickFalse) ? MagickTrue : MagickFalse);
         if (tmp_image->matte != MagickFalse)
           WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
             compact_pixels,AlphaQuantum,(i++ == 0) ||
             (separate != MagickFalse) ? MagickTrue : MagickFalse);
-        WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-          compact_pixels,IndexQuantum,(i++ == 0) ||
-          (separate != MagickFalse) ? MagickTrue : MagickFalse);
         (void) SetImageProgress(image,SaveImagesTag,0,1);
       }
     else
