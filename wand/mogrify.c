@@ -2890,7 +2890,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   (void) DeleteImageRegistry(argv[i+1]+9);
                 else
                   if (LocaleNCompare(argv[i+1],"option:",7) == 0)
-                    (void) DeleteImageOption(image_info,argv[i+1]+7);
+                    {
+                      (void) DeleteImageOption(image_info,argv[i+1]+7);
+                      (void) DeleteImageArtifact(*image,argv[i+1]+7);
+                    }
                   else
                     (void) DeleteImageProperty(*image,argv[i+1]);
                 break;
