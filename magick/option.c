@@ -102,7 +102,7 @@ static const OptionInfo
     { "Opaque", (ssize_t) OpaqueAlphaChannel, MagickFalse },
     { "Set", (ssize_t) SetAlphaChannel, MagickFalse },
     { "Shape", (ssize_t) ShapeAlphaChannel, MagickFalse },
-    { "Reset", (ssize_t) SetAlphaChannel, MagickTrue }, /* deprecated */
+    { "Reset", (ssize_t) SetAlphaChannel, MagickTrue },  /* deprecated */
     { "Transparent", (ssize_t) TransparentAlphaChannel, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedAlphaChannel, MagickFalse }
   },
@@ -136,7 +136,7 @@ static const OptionInfo
     { "Red", (ssize_t) RedChannel, MagickFalse },
     { "Saturation", (ssize_t) GreenChannel, MagickFalse },
     { "Yellow", (ssize_t) YellowChannel, MagickFalse },
-    { "Sync", (ssize_t) SyncChannels, MagickFalse },   /* special channel flag */
+    { "Sync", (ssize_t) SyncChannels, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedChannel, MagickFalse }
   },
   ClassOptions[] =
@@ -176,10 +176,10 @@ static const OptionInfo
     { "-append", 0L, MagickFalse },
     { "+authenticate", 0L, MagickFalse },
     { "-authenticate", 1L, MagickFalse },
-    { "+auto-gamma", 0L, MagickTrue },   /* under development */
-    { "-auto-gamma", 0L, MagickTrue },   /* under development */
-    { "+auto-level", 0L, MagickTrue },   /* under development */
-    { "-auto-level", 0L, MagickTrue },   /* under development */
+    { "+auto-gamma", 0L, MagickTrue },
+    { "-auto-gamma", 0L, MagickTrue },
+    { "+auto-level", 0L, MagickTrue },
+    { "-auto-level", 0L, MagickTrue },
     { "+auto-orient", 0L, MagickFalse },
     { "-auto-orient", 0L, MagickFalse },
     { "+average", 0L, MagickFalse },
@@ -755,9 +755,9 @@ static const OptionInfo
     { "Src", (ssize_t) SrcCompositeOp, MagickFalse },
     { "VividLight", (ssize_t) VividLightCompositeOp, MagickFalse },
     { "Xor", (ssize_t) XorCompositeOp, MagickFalse },
-    { "Add", (ssize_t) AddCompositeOp, MagickTrue }, /* depreciate */
-    { "Subtract", (ssize_t) SubtractCompositeOp, MagickTrue }, /* depreciate */
-    { "Threshold", (ssize_t) ThresholdCompositeOp, MagickTrue }, /* depreciate */
+    { "Add", (ssize_t) AddCompositeOp, MagickTrue }, /* deprecate */
+    { "Subtract", (ssize_t) SubtractCompositeOp, MagickTrue }, /* deprecate */
+    { "Threshold", (ssize_t) ThresholdCompositeOp, MagickTrue }, /* deprecate */
     { (char *) NULL, (ssize_t) UndefinedCompositeOp, MagickFalse }
   },
   CompressOptions[] =
@@ -1087,8 +1087,8 @@ static const OptionInfo
     { "Chebyshev", (ssize_t) ChebyshevKernel, MagickFalse },
     { "Manhatten", (ssize_t) ManhattenKernel, MagickFalse },
     { "Euclidean", (ssize_t) EuclideanKernel, MagickFalse },
-    { "Test", (ssize_t) TestKernel, MagickTrue },    /* for experimental kernels */
-    { "User Defined", (ssize_t) UserDefinedKernel, MagickTrue }, /* internel */
+    { "Test", (ssize_t) TestKernel, MagickTrue },    /* experimental */
+    { "User Defined", (ssize_t) UserDefinedKernel, MagickTrue }, /* internal */
     { (char *) NULL, (ssize_t) UndefinedKernel, MagickFalse }
   },
   LayerOptions[] =
