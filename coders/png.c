@@ -3951,6 +3951,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
     length;
 
+  /* These delays are all measured in image ticks_per_second,
+   * not in MNG ticks_per_second
+   */
   volatile size_t
     default_frame_delay,
     final_delay,
