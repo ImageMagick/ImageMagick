@@ -684,7 +684,7 @@
 2009-07-01  6.5.4-3 Cristy  <quetzlzacatenango@image...>
   * Add -blue-shift option.
   * Add compression flag for each channel of a PSD layer.
-  * Implement experimental forward and inverse fourier transforms (contributed
+  * Implement experimental forward and inverse Fourier transforms (contributed
     by Sean Burke and Fred Weinhaus).  The -fft / -ifft option is not ready for
     prime time just yet.
   * Support -cdl (color decision list) option.

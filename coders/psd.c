@@ -1813,18 +1813,17 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
           MagickTrue : MagickFalse);
         (void) SetImageProgress(image,SaveImagesTag,3,6);
         if (tmp_image->colorspace == CMYKColorspace)
-          {
-            WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
-              compact_pixels,BlackQuantum,(i++ == 0) ||
-              (separate != MagickFalse) ? MagickTrue : MagickFalse);
-            (void) NegateImage(tmp_image,MagickFalse);
-          }
+          WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
+            compact_pixels,BlackQuantum,(i++ == 0) ||
+            (separate != MagickFalse) ? MagickTrue : MagickFalse);
         (void) SetImageProgress(image,SaveImagesTag,4,6);
         if (tmp_image->matte != MagickFalse)
           WriteOneChannel(psd_info,image_info,image,tmp_image,pixels,
             compact_pixels,AlphaQuantum,(i++ == 0) ||
             (separate != MagickFalse) ? MagickTrue : MagickFalse);
         (void) SetImageProgress(image,SaveImagesTag,5,6);
+        if (tmp_image->colorspace == CMYKColorspace)
+          (void) NegateImage(tmp_image,MagickFalse);
       }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   return(MagickTrue);
@@ -2077,9 +2076,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     {
       (void) WriteBlobMSBShort(image,(unsigned short)
         (image->storage_class == PseudoClass ? 8 : image->depth > 8 ? 16 : 8));
-      if (((image->colorspace != UndefinedColorspace) ||
+      if (((image_info->colorspace != UndefinedColorspace) ||
            (image->colorspace != CMYKColorspace)) &&
-           (image->colorspace != CMYKColorspace))
+          (image_info->colorspace != CMYKColorspace))
         {
           if (image->colorspace != RGBColorspace)
             (void) TransformImageColorspace(image,RGBColorspace);
@@ -2088,7 +2087,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          if (image->colorspace != RGBColorspace)
+          if (image->colorspace != CMYKColorspace)
             (void) TransformImageColorspace(image,CMYKColorspace);
           (void) WriteBlobMSBShort(image,CMYKMode);
         }
@@ -2153,12 +2152,11 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,0);
     }
 
-  layer_count = 0;
-  layer_info_size = 2;
-  tmp_image = base_image;
+  layer_count=0;
+  layer_info_size=2;
+  tmp_image=base_image;
   while ( tmp_image != NULL ) {
     packet_size=tmp_image->depth > 8 ? 2UL : 1UL;
-
     if (IsGrayImage(image,&image->exception) != MagickFalse)
       num_channels=tmp_image->matte != MagickFalse ? 2UL : 1UL;
     else
@@ -2169,12 +2167,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
           num_channels=tmp_image->matte != MagickFalse ? 4UL : 3UL;
         else
           num_channels=tmp_image->matte != MagickFalse ? 5UL : 4UL;
-
-    channelLength=(size_t) (tmp_image->columns * tmp_image->rows *
-      packet_size + 2);
-    layer_info_size += (size_t) (4*4 + 2 + num_channels * 6 +
-      (psd_info.version == 1 ? 8 : 16) + 4 * 1 + 4 + num_channels *
-      channelLength);
+    channelLength=(size_t) (tmp_image->columns*tmp_image->rows*packet_size+2);
+    layer_info_size+=(size_t) (4*4+2+num_channels*6+(psd_info.version == 1 ? 8 :
+      16)+4*1+4+num_channels*channelLength);
     theAttr=(const char *) GetImageProperty(tmp_image,"label");
     if (!theAttr)
       layer_info_size += 16;
@@ -2184,7 +2179,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         layer_info_size += 8+length+(4-(length % 4));
       }
     layer_count++;
-    tmp_image = GetNextImageInList(tmp_image);
+    tmp_image=GetNextImageInList(tmp_image);
   }
   if (layer_count == 0)
     (void) SetPSDSize(&psd_info,image,0);
@@ -2192,15 +2187,17 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   {
     (void) SetPSDSize(&psd_info,image,layer_info_size+
       (psd_info.version == 1 ? 8 : 16));
-    if ( layer_info_size/2 != (layer_info_size+1)/2 ) /* odd */
-      rounded_layer_info_size = layer_info_size + 1;
+    if (image->colorspace == CMYKColorspace)
+      layer_info_size++;
+    if ((layer_info_size/2) != ((layer_info_size+1)/2))
+      rounded_layer_info_size=layer_info_size+1;
     else
-      rounded_layer_info_size = layer_info_size;
+      rounded_layer_info_size=layer_info_size;
     (void) SetPSDSize(&psd_info,image,rounded_layer_info_size);
     (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
     layer_count=1;
-    tmp_image = base_image;
-    while ( tmp_image != NULL ) {
+    tmp_image=base_image;
+    while (tmp_image != NULL) {
       (void) WriteBlobMSBLong(image,0);
       (void) WriteBlobMSBLong(image,0);
       (void) WriteBlobMSBLong(image,(unsigned int) tmp_image->rows);
@@ -2284,14 +2281,11 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     tmp_image = base_image;
     while ( tmp_image != NULL ) {
       status=WriteImageChannels(&psd_info,image_info,image,tmp_image,MagickTrue);
-      /* add in the pad! */
-       if ( rounded_layer_info_size != layer_info_size )
-         (void) WriteBlobByte(image,'\0');
-
+      if (rounded_layer_info_size != layer_info_size)
+         (void) WriteBlobByte(image,'\0');  /* add in the pad! */
       tmp_image = GetNextImageInList(tmp_image);
     };
-    /* user mask data */
-    (void) WriteBlobMSBLong(image,0);
+    (void) WriteBlobMSBLong(image,0);  /* user mask data */
   }
   /*
     Write composite image.
