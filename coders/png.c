@@ -2132,20 +2132,57 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG bKGD chunk.");
-      if (ping_bit_depth <= MAGICKCORE_QUANTUM_DEPTH)
+      if (ping_bit_depth == MAGICKCORE_QUANTUM_DEPTH)
         {
           image->background_color.red=ping_background->red;
           image->background_color.green=ping_background->green;
           image->background_color.blue=ping_background->blue;
         }
-      else
+      else /* Scale background components to 16-bit */
         {
+          unsigned int
+            bkgd_scale;
+
+          if (logging != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    raw ping_background=(%d,%d,%d).",ping_background->red,
+              ping_background->green,ping_background->blue);
+
+          bkgd_scale = 1;
+          if (ping_bit_depth == 1)
+             bkgd_scale = 255;
+          else if (ping_bit_depth == 2)
+             bkgd_scale = 85;
+          else if (ping_bit_depth == 4)
+             bkgd_scale = 17;
+          if (ping_bit_depth <= 8)
+             bkgd_scale *= 257;
+
+          ping_background->red *= bkgd_scale;
+          ping_background->green *= bkgd_scale;
+          ping_background->blue *= bkgd_scale;
+
+          if (logging != MagickFalse)
+            {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    bkgd_scale=%d.",bkgd_scale);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    ping_background=(%d,%d,%d).",ping_background->red,
+              ping_background->green,ping_background->blue);
+            }
+
           image->background_color.red=
             ScaleShortToQuantum(ping_background->red);
           image->background_color.green=
             ScaleShortToQuantum(ping_background->green);
           image->background_color.blue=
             ScaleShortToQuantum(ping_background->blue);
+
+          if (logging != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    image->background_color=(%d,%d,%d).",
+              image->background_color.red,
+              image->background_color.green,image->background_color.blue);
         }
     }
 #endif
