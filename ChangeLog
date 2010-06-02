@@ -13,7 +13,7 @@
   * Prevent coders/png.c from attempting to write an empty tRNS chunk.
 
 2010-05-25  6.6.2-1 Anthony Thyssen <A.Thyssen@griffith...>
-  * Finish for Square Array Rotates (off center origin rotate)
+  * Fix for Square Array Rotates (off center origin rotate)
   * Added HitAndMiss kernel Ridges2 to find 2 pixel thick ridges
   * Added FreiChen:0,{angle}  FreiChen:{angle} and FreiChen:-1 variations
     to complete this kernels definition

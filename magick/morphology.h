@@ -29,10 +29,9 @@ typedef enum
   UndefinedKernel,    /* equivelent to UnityKernel */
   UnityKernel,        /* The no-op or 'original image' kernel */
   GaussianKernel,     /* Convolution Kernels, Gaussian Based */
-  DOGKernel,
-  LOGKernel,
+  DoGKernel,
+  LoGKernel,
   BlurKernel,
-  DOBKernel,
   CometKernel,
   LaplacianKernel,    /* Convolution Kernels, by Name */
   SobelKernel,
