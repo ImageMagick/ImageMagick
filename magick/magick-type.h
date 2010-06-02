@@ -110,16 +110,19 @@ typedef unsigned int MagickStatusType;
 #if (MAGICKCORE_SIZEOF_UNSIGNED_LONG_LONG == 8)
 typedef long long MagickOffsetType;
 typedef unsigned long long MagickSizeType;
-#define MagickSizeFormat  "%10llu"
+#define MagickOffsetFormat  "lld"
+#define MagickSizeFormat  "llu"
 #else
 typedef ssize_t MagickOffsetType;
 typedef size_t MagickSizeType;
-#define MagickSizeFormat  "%10lu"
+#define MagickOffsetFormat  "ld"
+#define MagickSizeFormat  "lu"
 #endif
 #else
 typedef __int64 MagickOffsetType;
 typedef unsigned __int64 MagickSizeType;
-#define MagickSizeFormat  "%10llu"
+#define MagickOffsetFormat  "I64i"
+#define MagickSizeFormat  "I64u"
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
