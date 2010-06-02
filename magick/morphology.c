@@ -1294,6 +1294,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
+            kernel->type = type;
             kernel->values[3] = +MagickSQ2;
             kernel->values[5] = -MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
