@@ -574,18 +574,18 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       radius will be determined so as to produce the best minimal error
 %       result, which is usally much larger than is normally needed.
 %
-%    DOG:{radius},{sigma1},{sigma2}
+%    LoG:{radius},{sigma}
+%        "Laplacian of a Gaussian" or "Mexician Hat" Kernel.
+%        The supposed ideal edge detection, zero-summing kernel.
+%
+%        An alturnative to this kernel is to use a "DoG" with a sigma ratio of
+%        approx 1.6 (according to wikipedia).
+%
+%    DoG:{radius},{sigma1},{sigma2}
 %        "Difference of Gaussians" Kernel.
 %        As "Gaussian" but with a gaussian produced by 'sigma2' subtracted
 %        from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1.
 %        The result is a zero-summing kernel.
-%
-%    LOG:{radius},{sigma}
-%        "Laplacian of a Gaussian" or "Mexician Hat" Kernel.
-%        The supposed ideal edge detection, zero-summing kernel.
-%
-%        An alturnative to this kernel is to use a "DOG" with a sigma ratio of
-%        approx 1.6, which can also be applied as a 2 pass "DOB" (see below).
 %
 %    Blur:{radius},{sigma}[,{angle}]
 %       Generates a 1 dimensional or linear gaussian blur, at the angle given
@@ -599,15 +599,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       each other, is equivelent to a far larger "Gaussian" kernel with the
 %       same sigma value, However it is much faster to apply. This is how the
 %       "-blur" operator actually works.
-%
-%    DOB:{radius},{sigma1},{sigma2}[,{angle}]
-%        "Difference of Blurs" Kernel.
-%        As "Blur" but with the 1D gaussian produced by 'sigma2' subtracted
-%        from thethe 1D gaussian produced by 'sigma1'.
-%        The result is a  zero-summing kernel.
-%
-%        This can be used to generate a faster "DOG" convolution, in the same
-%        way "Blur" can.
 %
 %    Comet:{width},{sigma},{angle}
 %       Blur in one direction only, much like how a bright object leaves
@@ -644,8 +635,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %        Type 3 :  3x3 with center:4 edge:-2 corner:1
 %        Type 5 :  5x5 laplacian
 %        Type 7 :  7x7 laplacian
-%        Type 15 : 5x5 LOG (sigma approx 1.4)
-%        Type 19 : 9x9 LOG (sigma approx 1.4)
+%        Type 15 : 5x5 LoG (sigma approx 1.4)
+%        Type 19 : 9x9 LoG (sigma approx 1.4)
 %
 %    Sobel:{angle}
 %      Sobel 'Edge' convolution kernel (3x3)
@@ -679,9 +670,9 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %      the Sobel Kernel, but is designed to be isotropic. That is it takes
 %      into account the distance of the diagonal in the kernel.
 %
-%        Type 0: |   -1,     0,   1     |
-%                | -sqrt(2), 0, sqrt(2) |
-%                |   -1,     0,   1     |
+%        Type 0: |   1,     0,   -1     |
+%                | sqrt(2), 0, -sqrt(2) |
+%                |   1,     0,   -1     |
 %
 %      However this kernel is als at the heart of the FreiChen Edge Detection
 %      Process which uses a set of 9 specially weighted kernel.  These 9
@@ -692,37 +683,37 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %      from each other, both the direction and the strength of the edge can be
 %      determined.
 %
-%        Type 1: |   -1,     0,   1     |
-%                | -sqrt(2), 0, sqrt(2) | / 2*sqrt(2)
-%                |   -1,     0,   1     |
+%        Type 1: |   1,     0,   -1     |
+%                | sqrt(2), 0, -sqrt(2) | / 2*sqrt(2)
+%                |   1,     0,   -1     |
 %
-%        Type 2: | -1,  -sqrt(2), -1 |
-%                |  0,     0,      0 | / 2*sqrt(2)
-%                |  1,   sqrt(2),  1 |
+%        Type 2: | 1, sqrt(2), 1 |
+%                | 0,   0,     0 | / 2*sqrt(2)
+%                | 1, sqrt(2), 1 |
 %
-%        Type 3: | -sqrt(2), 1,   0     |
-%                |    1,     0,  -1     | / 2*sqrt(2)
-%                |    0,    -1, sqrt(2) |
+%        Type 3: | sqrt(2), -1,    0     |
+%                |  -1,      0,    1     | / 2*sqrt(2)
+%                |   0,      1, -sqrt(2) |
 %
 %        Type 4: |    0,     1, -sqrt(2) |
 %                |   -1,     0,     1    | / 2*sqrt(2)
 %                | sqrt(2), -1,     0    |
 %
-%        Type 5: |  0, 1,  0 |
-%                | -1, 0, -1 | / 2
-%                |  0, 1,  0 |
+%        Type 5: | 0, -1, 0 |
+%                | 1,  0, 1 | / 2
+%                | 0, -1, 0 |
 %
 %        Type 6: |  1, 0, -1 |
 %                |  0, 0,  0 | / 2
 %                | -1, 0,  1 |
 %
-%        Type 7: | -2, 1, -2 |
+%        Type 7: |  1, -2,  1 |
+%                | -2,  4, -2 | / 6
+%                | -1, -2,  1 |
+%
+%        Type 8: | -2, 1, -2 |
 %                |  1, 4,  1 | / 6
 %                | -2, 1, -2 |
-%
-%        Type 8: |  1, -2,  1 |
-%                | -2,  4, -2 | / 6
-%                |  1, -2,  1 |
 %
 %        Type 9: | 1, 1, 1 |
 %                | 1, 1, 1 | / 3
@@ -740,6 +731,14 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %      the default FreiChen (type 0) kernel.  As such  FreiChen:45  will look
 %      like a  Sobel:45  but with 'sqrt(2)' instead of '2' values.
 %
+%      WARNING: The above was layed out as per
+%          http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf
+%      But rotated 90 degrees so direction is from left rather than the top.
+%      I have yet to find any secondary confirmation of the above. The only
+%      other source found was actual source code at
+%          http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf
+%      Neigher paper defineds the kernels in a way that looks locical or
+%      correct when taken as a whole.
 %
 %  Boolean Kernels
 %
@@ -919,10 +918,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       break;
 #if 0 /* set to 1 to do a compile-time check that we haven't missed anything */
     case GaussianKernel:
-    case DOGKernel:
-    case LOGKernel:
+    case DoGKernel:
+    case LoGKernel:
     case BlurKernel:
-    case DOBKernel:
     case CometKernel:
     case DiamondKernel:
     case SquareKernel:
@@ -954,8 +952,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   switch(type) {
     /* Convolution Kernels */
     case GaussianKernel:
-    case DOGKernel:
-    case LOGKernel:
+    case DoGKernel:
+    case LoGKernel:
       { double
           sigma = fabs(args->sigma),
           sigma2 = fabs(args->xi),
@@ -963,7 +961,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         if ( args->rho >= 1.0 )
           kernel->width = (size_t)args->rho*2+1;
-        else if ( (type != DOGKernel) || (sigma >= sigma2) )
+        else if ( (type != DoGKernel) || (sigma >= sigma2) )
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma);
         else
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma2);
@@ -981,8 +979,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
          * basied on the Error Function 'erf()' (intergral of a gaussian)
          */
 
-        if ( type == GaussianKernel || type == DOGKernel )
-          { /* Calculate a Gaussian,  OR positive half of a DOG */
+        if ( type == GaussianKernel || type == DoGKernel )
+          { /* Calculate a Gaussian,  OR positive half of a DoG */
             if ( sigma > MagickEpsilon )
               { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
                 B = 1.0/(Magick2PI*sigma*sigma);
@@ -997,7 +995,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               }
           }
 
-        if ( type == DOGKernel )
+        if ( type == DoGKernel )
           { /* Subtract a Negative Gaussian for "Difference of Gaussian" */
             if ( sigma2 > MagickEpsilon )
               { sigma = sigma2;                /* simplify loop expressions */
@@ -1011,7 +1009,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
           }
 
-        if ( type == LOGKernel )
+        if ( type == LoGKernel )
           { /* Calculate a Laplacian of a Gaussian - Or Mexician Hat */
             if ( sigma > MagickEpsilon )
               { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
@@ -1048,18 +1046,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     case BlurKernel:
-    case DOBKernel:
       { double
           sigma = fabs(args->sigma),
-          sigma2 = fabs(args->xi),
-          A, B;
+          alpha, beta;
 
         if ( args->rho >= 1.0 )
           kernel->width = (size_t)args->rho*2+1;
-        else if ( (type == BlurKernel) || (sigma >= sigma2) )
-          kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
         else
-          kernel->width = GetOptimalKernelWidth1D(args->rho,sigma2);
+          kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
         kernel->height = 1;
         kernel->x = (ssize_t) (kernel->width-1)/2;
         kernel->y = 0;
@@ -1091,56 +1085,29 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* Calculate a Positive 1D Gaussian */
         if ( sigma > MagickEpsilon )
           { sigma *= KernelRank;               /* simplify loop expressions */
-            A = 1.0/(2.0*sigma*sigma);
-            B = 1.0/(MagickSQ2PI*sigma );
+            alpha = 1.0/(2.0*sigma*sigma);
+            beta= 1.0/(MagickSQ2PI*sigma );
             for ( u=-v; u <= v; u++) {
-              kernel->values[(u+v)/KernelRank] += exp(-((double)(u*u))*A)*B;
+              kernel->values[(u+v)/KernelRank] +=
+                              exp(-((double)(u*u))*alpha)*beta;
             }
           }
         else /* special case - generate a unity kernel */
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
-
-        /* Subtract a Second 1D Gaussian for "Difference of Blur" */
-        if ( type == DOBKernel )
-          {
-            if ( sigma2 > MagickEpsilon )
-              { sigma = sigma2*KernelRank;      /* simplify loop expressions */
-                A = 1.0/(2.0*sigma*sigma);
-                B = 1.0/(MagickSQ2PI*sigma);
-                for ( u=-v; u <= v; u++)
-                  kernel->values[(u+v)/KernelRank] -= exp(-((double)(u*u))*A)*B;
-              }
-            else /* limiting case - a unity (normalized Dirac) kernel */
-              kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
-          }
 #else
         /* Direct calculation without curve averaging */
 
         /* Calculate a Positive Gaussian */
         if ( sigma > MagickEpsilon )
-          { A = 1.0/(2.0*sigma*sigma);     /* simplify loop expressions */
-            B = 1.0/(MagickSQ2PI*sigma);
+          { alpha = 1.0/(2.0*sigma*sigma);    /* simplify loop expressions */
+            beta = 1.0/(MagickSQ2PI*sigma);
             for ( i=0, u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-              kernel->values[i] = exp(-((double)(u*u))*A)*B;
+              kernel->values[i] = exp(-((double)(u*u))*alpha)*beta;
           }
         else /* special case - generate a unity kernel */
           { (void) ResetMagickMemory(kernel->values,0, (size_t)
                          kernel->width*kernel->height*sizeof(double));
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
-          }
-
-        /* Subtract a Second 1D Gaussian for "Difference of Blur" */
-        if ( type == DOBKernel )
-          {
-            if ( sigma2 > MagickEpsilon )
-              { sigma = sigma2;                /* simplify loop expressions */
-                A = 1.0/(2.0*sigma*sigma);
-                B = 1.0/(MagickSQ2PI*sigma);
-                for ( i=0, u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-                  kernel->values[i] -= exp(-((double)(u*u))*A)*B;
-              }
-            else /* limiting case - a unity (normalized Dirac) kernel */
-              kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
           }
 #endif
         /* Note the above kernel may have been 'clipped' by a user defined
@@ -1160,7 +1127,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ScaleKernelInfo(kernel, 1.0, CorrelateNormalizeValue);
 
         /* rotate the 1D kernel by given angle */
-        RotateKernelInfo(kernel, (type == BlurKernel) ? args->xi : args->psi );
+        RotateKernelInfo(kernel, args->xi );
         break;
       }
     case CometKernel:
@@ -1257,11 +1224,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel=ParseKernelArray(
               "7:-10,-5,-2,-1,-2,-5,-10 -5,0,3,4,3,0,-5 -2,3,6,7,6,3,-2 -1,4,7,8,7,4,-1 -2,3,6,7,6,3,-2 -5,0,3,4,3,0,-5 -10,-5,-2,-1,-2,-5,-10" );
             break;
-          case 15:  /* a 5x5 LOG (sigma approx 1.4) */
+          case 15:  /* a 5x5 LoG (sigma approx 1.4) */
             kernel=ParseKernelArray(
               "5: 0,0,-1,0,0  0,-1,-2,-1,0  -1,-2,16,-2,-1  0,-1,-2,-1,0  0,0,-1,0,0");
             break;
-          case 19:  /* a 9x9 LOG (sigma approx 1.4) */
+          case 19:  /* a 9x9 LoG (sigma approx 1.4) */
             /* http://www.cscjournals.org/csc/manuscript/Journals/IJIP/volume3/Issue1/IJIP-15.pdf */
             kernel=ParseKernelArray(
               "9: 0,-1,-1,-2,-2,-2,-1,-1,0  -1,-2,-4,-5,-5,-5,-4,-2,-1  -1,-4,-5,-3,-0,-3,-5,-4,-1  -2,-5,-3,@12,@24,@12,-3,-5,-2  -2,-5,-0,@24,@40,@24,-0,-5,-2  -2,-5,-3,@12,@24,@12,-3,-5,-2  -1,-4,-5,-3,-0,-3,-5,-4,-1  -1,-2,-4,-5,-5,-5,-4,-2,-1  0,-1,-1,-2,-2,-2,-1,-1,0");
@@ -1274,7 +1241,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case SobelKernel:
       {
-        kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
+        kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1283,7 +1250,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case RobertsKernel:
       {
-        kernel=ParseKernelArray("3: 0,0,0  -1,1,0  0,0,0");
+        kernel=ParseKernelArray("3: 0,0,0  1,-1,0  0,0,0");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1292,7 +1259,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case PrewittKernel:
       {
-        kernel=ParseKernelArray("3: -1,1,1  0,0,0  -1,1,1");
+        kernel=ParseKernelArray("3: 1,0,-1  1,0,-1  1,0,-1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1301,7 +1268,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case CompassKernel:
       {
-        kernel=ParseKernelArray("3: -1,1,1  -1,-2,1  -1,1,1");
+        kernel=ParseKernelArray("3: 1,1,-1  1,-2,-1  1,1,-1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1310,7 +1277,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       }
     case KirschKernel:
       {
-        kernel=ParseKernelArray("3: -3,-3,5  -3,0,5  -3,-3,5");
+        kernel=ParseKernelArray("3: 5,-3,-3  5,0,-3  5,-3,-3");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
@@ -1318,30 +1285,31 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     case FreiChenKernel:
-      /* http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf */
-      /* http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf */
+      /* Direction is set to be left to right positive */
+      /* http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf -- RIGHT? */
+      /* http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf -- WRONG? */
       { switch ( (int) args->rho ) {
           default:
           case 0:
-            kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
+            kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
-            kernel->values[3] = -MagickSQ2;
-            kernel->values[5] = +MagickSQ2;
+            kernel->values[3] = +MagickSQ2;
+            kernel->values[5] = -MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 1:
-            kernel=ParseKernelArray("3: -1,0,1  -2,0,2  -1,0,1");
+            kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = -MagickSQ2;
-            kernel->values[5] = +MagickSQ2;
+            kernel->values[3] = +MagickSQ2;
+            kernel->values[5] = -MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 2:
-            kernel=ParseKernelArray("3: -1,-2,-1  0,0,0  1,2,1");
+            kernel=ParseKernelArray("3: 1,2,1  0,0,0  1,2,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
@@ -1351,12 +1319,12 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 3:
-            kernel=ParseKernelArray("3: -2,1,0  1,0,-1  0,-1,2");
+            kernel=ParseKernelArray("3: 2,-1,0  -1,0,1  0,1,-2");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0] = -MagickSQ2;
-            kernel->values[8] = +MagickSQ2;
+            kernel->values[0] = +MagickSQ2;
+            kernel->values[8] = -MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
@@ -1371,7 +1339,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
             break;
           case 5:
-            kernel=ParseKernelArray("3: 0,1,0  -1,0,-1  0,1,0");
+            kernel=ParseKernelArray("3: 0,-1,0  1,0,1  0,-1,0");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
@@ -1385,14 +1353,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/2.0, NoValue);
             break;
           case 7:
-            kernel=ParseKernelArray("3: -2,1,-2  1,4,1  -2,1,-2");
+            kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  -1,-2,1");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
             ScaleKernelInfo(kernel, 1.0/6.0, NoValue);
             break;
           case 8:
-            kernel=ParseKernelArray("3: 1,-2,1  -2,4,-2  1,-2,1");
+            kernel=ParseKernelArray("3: -2,1,-2  1,4,1  -2,1,-2");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
@@ -2970,7 +2938,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
                 }
             }
 
-      /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
+          /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
           changed = MorphologyPrimitive(curr_image, work_image, primative,
                         channel, this_kernel, bias, exception);
@@ -3296,7 +3264,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   switch (kernel->type) {
     /* These built-in kernels are cylindrical kernels, rotating is useless */
     case GaussianKernel:
-    case DOGKernel:
+    case DoGKernel:
+    case LoGKernel:
     case DiskKernel:
     case PeaksKernel:
     case LaplacianKernel:
@@ -3744,13 +3713,8 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
 %  value is usually provided by the user as a percentage value in the
 %  'convolve:scale' setting.
 %
-%  The resulting effect is to either convert a 'zero-summing' edge detection
-%  kernel (such as a "Laplacian", "DOG" or a "LOG") into a 'sharpening'
-%  kernel.
-%
-%  Alternativally by using a purely positive kernel, and using a negative
-%  post-normalizing scaling factor, you can convert a 'blurring' kernel (such
-%  as a "Gaussian") into a 'unsharp' kernel.
+%  The resulting effect is to convert the defined kernels into blended
+%  soft-blurs, unsharp kernels or into sharpening kernels.
 %
 %  The format of the UnityAdditionKernelInfo method is:
 %
