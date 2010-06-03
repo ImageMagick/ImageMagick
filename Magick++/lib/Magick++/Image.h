@@ -314,8 +314,8 @@ namespace Magick
     // Flood-fill color across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const size_t x_,
-                                    const size_t y_,
+    void            floodFillColor( const ssize_t x_,
+                                    const ssize_t y_,
             const Color &fillColor_ );
     void            floodFillColor( const Geometry &point_,
             const Color &fillColor_ );
@@ -323,8 +323,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const size_t x_,
-                                    const size_t y_,
+    void            floodFillColor( const ssize_t x_,
+                                    const ssize_t y_,
             const Color &fillColor_,
             const Color &borderColor_ );
     void            floodFillColor( const Geometry &point_,
@@ -333,16 +333,16 @@ namespace Magick
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement opacity value using method.
-    void            floodFillOpacity ( const size_t x_,
-                                       const size_t y_,
-                                       const size_t opacity_,
+    void            floodFillOpacity ( const ssize_t x_,
+                                       const ssize_t y_,
+                                       const unsigned int opacity_,
                                        const PaintMethod method_ );
 
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const size_t x_,
-                                      const size_t y_,
+    void            floodFillTexture( const ssize_t x_,
+                                      const ssize_t y_,
               const Image &texture_ );
     void            floodFillTexture( const Geometry &point_,
               const Image &texture_ );
@@ -350,8 +350,8 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const size_t x_,
-                                      const size_t y_,
+    void            floodFillTexture( const ssize_t x_,
+                                      const ssize_t y_,
               const Image &texture_,
               const Color &borderColor_ );
     void            floodFillTexture( const Geometry &point_,
@@ -449,7 +449,7 @@ namespace Magick
     
     // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
-             const size_t opacity_,
+             const unsigned int opacity_,
              const ssize_t x_, const ssize_t y_,
              const PaintMethod method_ );
 
@@ -493,7 +493,7 @@ namespace Magick
     // to QuantumRange. The defines OpaqueOpacity and TransparentOpacity are
     // available to specify completely opaque or completely
     // transparent, respectively.
-    void            opacity ( const size_t opacity_ );
+    void            opacity ( const unsigned int opacity_ );
 
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
@@ -1085,11 +1085,11 @@ typedef struct _ImageStatistics
     Image           penTexture ( void  ) const;
 
     // Get/set pixel color at location x & y.
-    void            pixelColor ( const size_t x_,
-                                 const size_t y_,
+    void            pixelColor ( const ssize_t x_,
+                                 const ssize_t y_,
          const Color &color_ );
-    Color           pixelColor ( const size_t x_,
-                                 const size_t y_ ) const;
+    Color           pixelColor ( const ssize_t x_,
+                                 const ssize_t y_ ) const;
 
     // Add or remove a named profile to/from the image. Remove the
     // profile by passing an empty Blob (e.g. Blob()). Valid names are

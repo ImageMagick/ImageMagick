@@ -387,7 +387,7 @@ typedef struct _MngInfo
   RenderingIntent
     global_srgb_intent;
 
-  size_t
+  unsigned int
     delay,
     global_plte_length,
     global_trns_length,
@@ -2199,11 +2199,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       int
         max_sample;
 
+      size_t
+        one=1;
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG tRNS chunk.");
 
-      max_sample = (1 << ping_bit_depth) - 1;
+      max_sample = (one << ping_bit_depth) - 1;
 
       if ((ping_color_type == PNG_COLOR_TYPE_GRAY &&
           (int)ping_trans_color->gray > max_sample) ||
@@ -4352,7 +4355,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   mng_info->global_plte[i].green=p[3*i+1];
                   mng_info->global_plte[i].blue=p[3*i+2];
                 }
-                mng_info->global_plte_length=length/3;
+                mng_info->global_plte_length=(unsigned int) (length/3);
               }
 #ifdef MNG_LOOSE
             for ( ; i < 256; i++)
@@ -4381,7 +4384,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for ( ; i < 256; i++)
               mng_info->global_trns[i]=255;
 #endif
-            mng_info->global_trns_length=length;
+            mng_info->global_trns_length=(usnigned int) length;
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
@@ -6877,8 +6880,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
       if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
+           size_t one = 1;
            ping_bit_depth=1;
-           while ((int) (1 << ping_bit_depth) < (ssize_t) image_colors)
+           while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
              ping_bit_depth <<= 1;
 
            if (logging != MagickFalse)
@@ -7056,6 +7060,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE &&
         ImageIsGray(image) && (!image_matte || image_depth >= 8))
       {
+        size_t one=1;
         if (image_matte != MagickFalse)
             ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         else
@@ -7067,7 +7072,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
         if (image_colors == 0 || image_colors-1 > MaxColormapSize)
-          image_colors=1 << image_depth;
+          image_colors=one << image_depth;
         if (image_depth > 8)
           ping_bit_depth=16;
         else
@@ -7078,7 +7083,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 if(!mng_info->write_png_depth)
                   {
                     ping_bit_depth=1;
-                    while ((int) (1 << ping_bit_depth)
+                    while ((int) (one << ping_bit_depth)
                         < (ssize_t) image_colors)
                       ping_bit_depth <<= 1;
                   }
@@ -7293,7 +7298,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          png_color_16
            background;
 
-         maxval=(png_uint_16) ((1 << ping_bit_depth)-1);
+         size_t
+           one=1;
+
+         maxval=(png_uint_16) ((ine << ping_bit_depth)-1);
 
 
          background.gray=(png_uint_16)
@@ -8496,7 +8504,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           (void) WriteBlobMSBULong(image,4L);
           PNGType(chunk,mng_gAMA);
           LogPNGChunk((int) logging,mng_gAMA,4L);
-          PNGLong(chunk+4,(size_t) (100000*image->gamma+0.5));
+          PNGLong(chunk+4,(png_uint_32) (100000*image->gamma+0.5));
           (void) WriteBlob(image,8,chunk);
           (void) WriteBlobMSBULong(image,crc32(0,chunk,8));
         }
@@ -8513,17 +8521,17 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           PNGType(chunk,mng_cHRM);
           LogPNGChunk((int) logging,mng_cHRM,32L);
           primary=image->chromaticity.white_point;
-          PNGLong(chunk+4,(size_t) (100000*primary.x+0.5));
-          PNGLong(chunk+8,(size_t) (100000*primary.y+0.5));
+          PNGLong(chunk+4,(png_uint_32) (100000*primary.x+0.5));
+          PNGLong(chunk+8,(png_uint_32) (100000*primary.y+0.5));
           primary=image->chromaticity.red_primary;
-          PNGLong(chunk+12,(size_t) (100000*primary.x+0.5));
-          PNGLong(chunk+16,(size_t) (100000*primary.y+0.5));
+          PNGLong(chunk+12,(png_uint_32) (100000*primary.x+0.5));
+          PNGLong(chunk+16,(png_uint_32) (100000*primary.y+0.5));
           primary=image->chromaticity.green_primary;
-          PNGLong(chunk+20,(size_t) (100000*primary.x+0.5));
-          PNGLong(chunk+24,(size_t) (100000*primary.y+0.5));
+          PNGLong(chunk+20,(png_uint_32) (100000*primary.x+0.5));
+          PNGLong(chunk+24,(png_uint_32) (100000*primary.y+0.5));
           primary=image->chromaticity.blue_primary;
-          PNGLong(chunk+28,(size_t) (100000*primary.x+0.5));
-          PNGLong(chunk+32,(size_t) (100000*primary.y+0.5));
+          PNGLong(chunk+28,(png_uint_32) (100000*primary.x+0.5));
+          PNGLong(chunk+32,(png_uint_32) (100000*primary.y+0.5));
           (void) WriteBlob(image,36,chunk);
           (void) WriteBlobMSBULong(image,crc32(0,chunk,36));
         }
@@ -8538,9 +8546,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       LogPNGChunk((int) logging,mng_pHYs,9L);
       if (image->units == PixelsPerInchResolution)
         {
-          PNGLong(chunk+4,(size_t)
+          PNGLong(chunk+4,(png_uint_32)
             (image->x_resolution*100.0/2.54+0.5));
-          PNGLong(chunk+8,(size_t)
+          PNGLong(chunk+8,(png_uint_32)
             (image->y_resolution*100.0/2.54+0.5));
           chunk[12]=1;
         }
@@ -8548,16 +8556,16 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         {
           if (image->units == PixelsPerCentimeterResolution)
             {
-              PNGLong(chunk+4,(size_t)
+              PNGLong(chunk+4,(png_uint_32)
                 (image->x_resolution*100.0+0.5));
-              PNGLong(chunk+8,(size_t)
+              PNGLong(chunk+8,(png_uint_32)
                 (image->y_resolution*100.0+0.5));
               chunk[12]=1;
             }
           else
             {
-              PNGLong(chunk+4,(size_t) (image->x_resolution+0.5));
-              PNGLong(chunk+8,(size_t) (image->y_resolution+0.5));
+              PNGLong(chunk+4,(png_uint_32) (image->x_resolution+0.5));
+              PNGLong(chunk+8,(png_uint_32) (image->y_resolution+0.5));
               chunk[12]=0;
             }
         }
@@ -9337,7 +9345,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
              (void) WriteBlobMSBULong(image,4L);
              PNGType(chunk,mng_gAMA);
              LogPNGChunk((int) logging,mng_gAMA,4L);
-             PNGLong(chunk+4,(size_t) (100000*image->gamma+0.5));
+             PNGLong(chunk+4,(png_uint_32) (100000*image->gamma+0.5));
              (void) WriteBlob(image,8,chunk);
              (void) WriteBlobMSBULong(image,crc32(0,chunk,8));
              mng_info->have_write_global_gama=MagickTrue;
@@ -9354,17 +9362,17 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
              PNGType(chunk,mng_cHRM);
              LogPNGChunk((int) logging,mng_cHRM,32L);
              primary=image->chromaticity.white_point;
-             PNGLong(chunk+4,(size_t) (100000*primary.x+0.5));
-             PNGLong(chunk+8,(size_t) (100000*primary.y+0.5));
+             PNGLong(chunk+4,(png_uint_32) (100000*primary.x+0.5));
+             PNGLong(chunk+8,(png_uint_32) (100000*primary.y+0.5));
              primary=image->chromaticity.red_primary;
-             PNGLong(chunk+12,(size_t) (100000*primary.x+0.5));
-             PNGLong(chunk+16,(size_t) (100000*primary.y+0.5));
+             PNGLong(chunk+12,(png_uint_32) (100000*primary.x+0.5));
+             PNGLong(chunk+16,(png_uint_32) (100000*primary.y+0.5));
              primary=image->chromaticity.green_primary;
-             PNGLong(chunk+20,(size_t) (100000*primary.x+0.5));
-             PNGLong(chunk+24,(size_t) (100000*primary.y+0.5));
+             PNGLong(chunk+20,(png_uint_32) (100000*primary.x+0.5));
+             PNGLong(chunk+24,(png_uint_32) (100000*primary.y+0.5));
              primary=image->chromaticity.blue_primary;
-             PNGLong(chunk+28,(size_t) (100000*primary.x+0.5));
-             PNGLong(chunk+32,(size_t) (100000*primary.y+0.5));
+             PNGLong(chunk+28,(png_uint_32) (100000*primary.x+0.5));
+             PNGLong(chunk+32,(png_uint_32) (100000*primary.y+0.5));
              (void) WriteBlob(image,36,chunk);
              (void) WriteBlobMSBULong(image,crc32(0,chunk,36));
              mng_info->have_write_global_chrm=MagickTrue;
@@ -9380,9 +9388,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
          LogPNGChunk((int) logging,mng_pHYs,9L);
          if (image->units == PixelsPerInchResolution)
            {
-             PNGLong(chunk+4,(size_t)
+             PNGLong(chunk+4,(png_uint_32)
                (image->x_resolution*100.0/2.54+0.5));
-             PNGLong(chunk+8,(size_t)
+             PNGLong(chunk+8,(png_uint_32)
                (image->y_resolution*100.0/2.54+0.5));
              chunk[12]=1;
            }
@@ -9390,16 +9398,16 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
            {
              if (image->units == PixelsPerCentimeterResolution)
                {
-                 PNGLong(chunk+4,(size_t)
+                 PNGLong(chunk+4,(png_uint_32)
                    (image->x_resolution*100.0+0.5));
-                 PNGLong(chunk+8,(size_t)
+                 PNGLong(chunk+8,(png_uint_32)
                    (image->y_resolution*100.0+0.5));
                  chunk[12]=1;
                }
              else
                {
-                 PNGLong(chunk+4,(size_t) (image->x_resolution+0.5));
-                 PNGLong(chunk+8,(size_t) (image->y_resolution+0.5));
+                 PNGLong(chunk+4,(png_uint_32) (image->x_resolution+0.5));
+                 PNGLong(chunk+8,(png_uint_32) (image->y_resolution+0.5));
                  chunk[12]=0;
                }
            }

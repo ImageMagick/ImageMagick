@@ -227,7 +227,7 @@ static int FindColor(PixelPacket *pixel)
 %
 */
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
+static inline size_t MagickMax(const size_t x,const size_t y)
 {
   if (x > y)
     return(x);

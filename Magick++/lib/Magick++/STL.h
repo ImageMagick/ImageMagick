@@ -71,7 +71,7 @@ namespace Magick
   private:
     size_t _width;
     size_t _height;
-    size_t _offset;
+    ssize_t _offset;
   };
   
   // Add noise to image with specified noise type
@@ -228,9 +228,9 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    size_t _opacityRed;
-    size_t _opacityGreen;
-    size_t _opacityBlue;
+    unsigned int _opacityRed;
+    unsigned int _opacityGreen;
+    unsigned int _opacityBlue;
     Color _penColor;
   };
 
@@ -904,8 +904,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    ssize_t _columns;
-    ssize_t _rows;
+    size_t _columns;
+    size_t _rows;
   };
 
   // Rotate image counter-clockwise by specified number of degrees.
