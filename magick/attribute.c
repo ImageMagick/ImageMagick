@@ -897,7 +897,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       if ((channel & GreenChannel) != 0)
         q->green=SetPixelDepth(q->green,scale);
       if ((channel & BlueChannel) != 0)
-        q->green=SetPixelDepth(q->blue,scale);
+        q->blue=SetPixelDepth(q->blue,scale);
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
         q->opacity=SetPixelDepth(q->opacity,scale);
       if (((channel & IndexChannel) != 0) &&
