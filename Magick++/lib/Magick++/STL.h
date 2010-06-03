@@ -485,8 +485,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    size_t   _x;
-    size_t   _y;
+    ssize_t   _x;
+    ssize_t   _y;
     Color          _fillColor;
     Color          _borderColor;
   };
