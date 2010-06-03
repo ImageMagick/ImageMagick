@@ -7301,7 +7301,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          size_t
            one=1;
 
-         maxval=(png_uint_16) ((ine << ping_bit_depth)-1);
+         maxval=(png_uint_16) ((one << ping_bit_depth)-1);
 
 
          background.gray=(png_uint_16)
