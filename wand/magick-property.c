@@ -2503,7 +2503,7 @@ WandExport MagickBooleanType MagickSetPage(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g%+.20gx%+.20g",
+  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
     (double) width,(double) height,(double) x,(double) y);
   (void) CloneString(&wand->image_info->page,geometry);
   return(MagickTrue);

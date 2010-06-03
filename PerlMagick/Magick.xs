@@ -4355,7 +4355,7 @@ Get(ref,...)
                 break;
               page=GetImageBoundingBox(image,&image->exception);
               (void) FormatMagickString(geometry,MaxTextExtent,
-                "%.20gx%.20g%+.20gx%+.20g",(double) page.width,(double)
+                "%.20gx%.20g%+.20g%+.20g",(double) page.width,(double)
                 page.height,(double) page.x,(double) page.y);
               s=newSVpv(geometry,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5017,7 +5017,7 @@ Get(ref,...)
                     geometry[MaxTextExtent];
 
                   (void) FormatMagickString(geometry,MaxTextExtent,
-                    "%.20gx%.20g%+.20gx%+.20g",(double) image->page.width,
+                    "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,
                     (double) image->page.height,(double) image->page.x,(double)
                     image->page.y);
                   s=newSVpv(geometry,0);
@@ -8310,7 +8310,7 @@ Mogrify(ref,...)
             Composite two images (normal composition).
           */
           (void) FormatMagickString(composite_geometry,MaxTextExtent,
-            "%.20gx%.20g%+.20gx%+.20g",(double) composite_image->columns,
+            "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,
             (double) composite_image->rows,(double) geometry.x,(double)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,

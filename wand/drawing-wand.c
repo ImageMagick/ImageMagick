@@ -4027,7 +4027,7 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
     }
   (void) FormatMagickString(key,MaxTextExtent,"%s",wand->pattern_id);
   (void) SetImageArtifact(wand->image,key,wand->mvg+wand->pattern_offset);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g%+.20gx%+.20g",
+  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
     (double) wand->pattern_bounds.width,(double) wand->pattern_bounds.height,
     (double) wand->pattern_bounds.x,(double) wand->pattern_bounds.y);
   (void) SetImageArtifact(wand->image,key,geometry);

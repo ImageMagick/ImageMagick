@@ -332,7 +332,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->rows);
       if ((image->page.width != 0) || (image->page.height != 0) ||
           (image->page.x != 0) || (image->page.y != 0))
-        (void) fprintf(file,"%.20gx%.20g%+.20gx%+.20g ",(double)
+        (void) fprintf(file,"%.20gx%.20g%+.20g%+.20g ",(double)
           image->page.width,(double) image->page.height,(double) image->page.x,
           (double) image->page.y);
       (void) fprintf(file,"%.20g-bit ",(double) image->depth);
@@ -399,7 +399,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       GetMagickDescription(magick_info));
   (void) fprintf(file,"  Class: %s\n",MagickOptionToMnemonic(MagickClassOptions,
     (ssize_t) image->storage_class));
-  (void) fprintf(file,"  Geometry: %.20gx%.20g%+.20gx%+.20g\n",(double)
+  (void) fprintf(file,"  Geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
     image->columns,(double) image->rows,(double) image->tile_offset.x,(double)
     image->tile_offset.y);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
@@ -716,7 +716,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if ((image->extract_info.width*image->extract_info.height) != 0)
-    (void) fprintf(file,"  Tile geometry: %.20gx%.20g%+.20gx%+.20g\n",(double)
+    (void) fprintf(file,"  Tile geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
       image->extract_info.width,(double) image->extract_info.height,(double)
       image->extract_info.x,(double) image->extract_info.y);
   (void) fprintf(file,"  Interlace: %s\n",MagickOptionToMnemonic(
@@ -737,7 +737,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickComposeOptions,(ssize_t) image->compose));
   if ((image->page.width != 0) || (image->page.height != 0) ||
       (image->page.x != 0) || (image->page.y != 0))
-    (void) fprintf(file,"  Page geometry: %.20gx%.20g%+.20gx%+.20g\n",(double)
+    (void) fprintf(file,"  Page geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
       image->page.width,(double) image->page.height,(double)
       image->page.x,(double) image->page.y);
   if ((image->page.x != 0) || (image->page.y != 0))

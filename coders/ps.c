@@ -1431,7 +1431,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatMagickString(page_geometry,MaxTextExtent,
-          "%.20gx%.20g%+.20gx%+.20g",(double) image->page.width,(double)
+          "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,(double)
           image->page.height,(double) image->page.x,(double) image->page.y);
       else
         if ((image->gravity != UndefinedGravity) &&

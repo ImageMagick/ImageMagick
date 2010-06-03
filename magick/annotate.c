@@ -1665,7 +1665,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       crop_info.y=(ssize_t) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
         0.5);
       (void) FormatMagickString(geometry,MaxTextExtent,
-        "%.20gx%.20g%+.20gx%+.20g",(double) crop_info.width,(double)
+        "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
         crop_info.height,(double) crop_info.x,(double) crop_info.y);
       (void) TransformImage(&annotate_image,geometry,(char *) NULL);
     }
@@ -1957,7 +1957,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
   (void) FormatMagickString(annotate_info.geometry,MaxTextExtent,
-    "%.20gx%.20g%+.20gx%+.20g",(double) width,(double) height,
+    "%.20gx%.20g%+.20g%+.20g",(double) width,(double) height,
     ceil(offset->x-0.5),ceil(offset->y-metrics->ascent-metrics->descent+
     draw_info->interline_spacing-0.5));
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
