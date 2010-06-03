@@ -620,8 +620,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Format: OS/2 Bitmap");
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Geometry: %lux%lu",(unsigned long) bmp_info.width,
-              (unsigned long) bmp_info.height);
+              "  Geometry: %.20gx%.20g",(double) bmp_info.width,(double)
+              bmp_info.height);
           }
       }
     else
@@ -648,10 +648,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Format: MS Windows bitmap");
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Geometry: %lux%lu",(unsigned long) bmp_info.width,
-              (unsigned long) bmp_info.height);
+              "  Geometry: %.20gx%.20g",(double) bmp_info.width,(double)
+              bmp_info.height);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Bits per pixel: %lu",(unsigned long) bmp_info.bits_per_pixel);
+              "  Bits per pixel: %.20g",(double) bmp_info.bits_per_pixel);
             switch ((int) bmp_info.compression)
             {
               case BI_RGB:
@@ -857,7 +857,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Reading colormap of %lu colors",(unsigned long) image->colors);
+            "  Reading colormap of %.20g colors",(double) image->colors);
         if (AcquireImageColormap(image,image->colors) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         bmp_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
@@ -907,7 +907,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Reading pixels (%lu bytes)",(unsigned long) length);
+            "  Reading pixels (%.20g bytes)",(double) length);
         count=ReadBlob(image,length,pixels);
         if (count != (ssize_t) length)
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
@@ -1830,7 +1830,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (image->debug != MagickFalse)
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "   Writing BMP version %ld datastream",(long) type);
+          "   Writing BMP version %.20g datastream",(double) type);
         if (image->storage_class == DirectClass)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Storage class=DirectClass");
@@ -1838,7 +1838,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Storage class=PseudoClass");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "   Image depth=%lu",(unsigned long) image->depth);
+          "   Image depth=%.20g",(double) image->depth);
         if (image->matte != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Matte=True");
@@ -1846,7 +1846,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Matte=MagickFalse");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "   BMP bits_per_pixel=%lu",(unsigned long) bmp_info.bits_per_pixel);
+          "   BMP bits_per_pixel=%.20g",(double) bmp_info.bits_per_pixel);
         switch ((int) bmp_info.compression)
         {
            case BI_RGB:
@@ -2001,7 +2001,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Colormap: %lu entries",(unsigned long) image->colors);
+            "  Colormap: %.20g entries",(double) image->colors);
         bmp_colormap=(unsigned char *) AcquireQuantumMemory((size_t) (1UL <<
           bmp_info.bits_per_pixel),4*sizeof(*bmp_colormap));
         if (bmp_colormap == (unsigned char *) NULL)

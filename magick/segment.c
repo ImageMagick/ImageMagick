@@ -451,16 +451,16 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         cluster_threshold);
       (void) fprintf(stdout,"\tWeighting Exponent = %g\n",(double)
         weighting_exponent);
-      (void) fprintf(stdout,"\tTotal Number of Clusters = %lu\n\n",
-        (unsigned long) number_clusters);
+      (void) fprintf(stdout,"\tTotal Number of Clusters = %.20g\n\n",(double)
+        number_clusters);
       /*
         Print the total number of points per cluster.
       */
       (void) fprintf(stdout,"\n\nNumber of Vectors Per Cluster\n");
       (void) fprintf(stdout,"=============================\n\n");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        (void) fprintf(stdout,"Cluster #%ld = %ld\n",(long) cluster->id,
-          (long) cluster->count);
+        (void) fprintf(stdout,"Cluster #%.20g = %.20g\n",(double) cluster->id,
+          (double) cluster->count);
       /*
         Print the cluster extents.
       */
@@ -469,11 +469,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stdout,"\n\nCluster #%ld\n\n",(long) cluster->id);
-        (void) fprintf(stdout,"%ld-%ld  %ld-%ld  %ld-%ld\n",(long)
-          cluster->red.left,(long) cluster->red.right,(long)
-          cluster->green.left,(long) cluster->green.right,(long)
-          cluster->blue.left,(long) cluster->blue.right);
+        (void) fprintf(stdout,"\n\nCluster #%.20g\n\n",(double) cluster->id);
+        (void) fprintf(stdout,"%.20g-%.20g  %.20g-%.20g  %.20g-%.20g\n",(double)
+          cluster->red.left,(double) cluster->red.right,(double)
+          cluster->green.left,(double) cluster->green.right,(double)
+          cluster->blue.left,(double) cluster->blue.right);
       }
       /*
         Print the cluster center values.
@@ -483,7 +483,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stdout,"\n\nCluster #%ld\n\n",(long) cluster->id);
+        (void) fprintf(stdout,"\n\nCluster #%.20g\n\n",(double) cluster->id);
         (void) fprintf(stdout,"%g  %g  %g\n",(double)
           cluster->red.center,(double) cluster->green.center,(double)
           cluster->blue.center);

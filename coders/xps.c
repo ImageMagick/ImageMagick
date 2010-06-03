@@ -263,8 +263,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu",
-    (unsigned long) page.width,(unsigned long) page.height);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g",(double)
+    page.width,(double) page.height);
   if (image_info->monochrome != MagickFalse)
     delegate_info=GetDelegateInfo("xps:mono",(char *) NULL,exception);
   else
@@ -282,20 +282,20 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.width=(size_t) floor(page.width*image->y_resolution/delta.x+0.5);
   page.height=(size_t) floor(page.height*image->y_resolution/delta.y+
     0.5);
-  (void) FormatMagickString(options,MaxTextExtent,"-g%lux%lu ",
-    (unsigned long) page.width,(unsigned long) page.height);
+  (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+    page.width,(double) page.height);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
     {
       if (read_info->number_scenes != 1)
-        (void) FormatMagickString(options,MaxTextExtent,"-dLastPage=%lu",
-          (unsigned long) (read_info->scene+read_info->number_scenes));
+        (void) FormatMagickString(options,MaxTextExtent,"-dLastPage=%.20g",
+          (double) (read_info->scene+read_info->number_scenes));
       else
         (void) FormatMagickString(options,MaxTextExtent,
-          "-dFirstPage=%lu -dLastPage=%lu",(unsigned long) read_info->scene+1,
-          (unsigned long) (read_info->scene+read_info->number_scenes));
+          "-dFirstPage=%.20g -dLastPage=%.20g",(double) read_info->scene+1,
+          (double) (read_info->scene+read_info->number_scenes));
       read_info->number_scenes=0;
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';

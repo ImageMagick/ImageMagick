@@ -1027,8 +1027,8 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
       }
       if ( map->levels[i] < 0 || map->levels[i] > map->divisor ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "XmlInvalidContent", "<level> %ld out of range, map \"%s\"",
-          (long) map->levels[i],map_id);
+          "XmlInvalidContent", "<level> %.20g out of range, map \"%s\"",
+          (double) map->levels[i],map_id);
         thresholds = DestroyXMLTree(thresholds);
         map = DestroyThresholdMap(map);
         return(map);
@@ -1461,7 +1461,7 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
 #endif
 
 #if 0
-printf("DEBUG levels  r=%ld g=%ld b=%ld a=%ld i=%ld\n",
+printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
      levels.red, levels.green, levels.blue, levels.opacity, levels.index);
 #endif
 

@@ -614,7 +614,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           blob=(jas_stream_memobj_t *) icc_stream->obj_;
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Profile: ICC, %lu bytes",(unsigned long) blob->len_);
+              "Profile: ICC, %.20g bytes",(double) blob->len_);
           profile=AcquireStringInfo(blob->len_);
           SetStringInfoDatum(profile,blob->buf_);
           icc_profile=(StringInfo *) GetImageProfile(image,"icc");

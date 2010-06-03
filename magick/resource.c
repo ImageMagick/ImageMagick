@@ -678,15 +678,15 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MaxTextExtent);
   if (resource_info.time_limit != MagickResourceInfinity)
-    (void) FormatMagickString(time_limit,MaxTextExtent,"%lu",(unsigned long)
+    (void) FormatMagickString(time_limit,MaxTextExtent,"%.20g",(double)
       resource_info.time_limit);
   (void) fprintf(file,"File         Area       Memory          Map"
     "         Disk    Thread         Time\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
-  (void) fprintf(file,"%4lu  %10sB  %10sB  %10sB  %10sB    %6lu  %11s\n",
-    (unsigned long) resource_info.file_limit,area_limit,memory_limit,map_limit,
-    disk_limit,(unsigned long) resource_info.thread_limit,time_limit);
+  (void) fprintf(file,"%4g  %10sB  %10sB  %10sB  %10sB    %6g  %11s\n",(double)
+    resource_info.file_limit,area_limit,memory_limit,map_limit,disk_limit,
+    (double) resource_info.thread_limit,time_limit);
   (void) fflush(file);
   UnlockSemaphoreInfo(resource_semaphore);
   return(MagickTrue);

@@ -927,8 +927,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows=(size_t) height;
     image->depth=(size_t) bits_per_sample;
     if (image->debug != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %lu",
-        (unsigned long) image->depth);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
+        (double) image->depth);
     lsb_first=1;
     image->endian=MSBEndian;
     if ((int) (*(char *) &lsb_first) != 0)

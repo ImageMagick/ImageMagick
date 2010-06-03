@@ -385,8 +385,8 @@ static double *GenerateCoefficients(const Image *image,
       }
       if ( number_arguments < 1+i*cp_size ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-               "InvalidArgument", "%s : 'require at least %ld CPs'",
-               "Polynomial", (long) i);
+               "InvalidArgument", "%s : 'require at least %.20g CPs'",
+               "Polynomial", (double) i);
         return((double *) NULL);
       }
       break;
@@ -463,8 +463,8 @@ static double *GenerateCoefficients(const Image *image,
       if ( number_arguments%cp_size != 0 ||
            number_arguments < cp_size ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-               "InvalidArgument", "%s : 'require at least %ld CPs'",
-               "Affine", 1L);
+               "InvalidArgument", "%s : 'require at least %.20g CPs'",
+               "Affine", 1.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -740,8 +740,8 @@ static double *GenerateCoefficients(const Image *image,
       if ( number_arguments%cp_size != 0 ||
            number_arguments < cp_size*4 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "InvalidArgument", "%s : 'require at least %ld CPs'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method), 4L);
+              "InvalidArgument", "%s : 'require at least %.20g CPs'",
+              MagickOptionToMnemonic(MagickDistortOptions, *method), 4.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -856,8 +856,8 @@ static double *GenerateCoefficients(const Image *image,
       if ( number_arguments%cp_size != 0 ||
            number_arguments < cp_size*4 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "InvalidArgument", "%s : 'require at least %ld CPs'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method), 4L);
+              "InvalidArgument", "%s : 'require at least %.20g CPs'",
+              MagickOptionToMnemonic(MagickDistortOptions, *method), 4.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -1298,8 +1298,8 @@ static double *GenerateCoefficients(const Image *image,
       if ( number_arguments%cp_size != 0 ||
            number_arguments < cp_size ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "InvalidArgument", "%s : 'require at least %ld CPs'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method), 1L);
+              "InvalidArgument", "%s : 'require at least %.20g CPs'",
+              MagickOptionToMnemonic(MagickDistortOptions, *method), 1.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -1650,9 +1650,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
     /* Set destination image size and virtual offset */
     if ( bestfit || viewport_given ) {
-      (void) FormatMagickString(image_gen, MaxTextExtent,"  -size %lux%lu "
-        "-page %+ld%+ld xc: +insert \\\n",(unsigned long) geometry.width,
-        (unsigned long) geometry.height,(long) geometry.x,(long) geometry.y);
+      (void) FormatMagickString(image_gen, MaxTextExtent,"  -size %.20gx%.20g "
+        "-page %+.20gx%+.20g xc: +insert \\\n",(double) geometry.width,
+        (double) geometry.height,(double) geometry.x,(double) geometry.y);
       lookup="v.p{ xx-v.page.x-.5, yy-v.page.x-.5 }";
     }
     else {
@@ -1811,7 +1811,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         fprintf(stderr, "Arc Distort, Internal Coefficients:\n");
         for ( i=0; i<5; i++ )
-          fprintf(stderr, "  c%ld = %+lf\n", (long) i, coeff[i]);
+          fprintf(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
         fprintf(stderr, "Arc Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x; jj=j+page.y;\n");
@@ -1829,7 +1829,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         fprintf(stderr, "Polar Distort, Internal Coefficents\n");
         for ( i=0; i<8; i++ )
-          fprintf(stderr, "  c%ld = %+lf\n", (long) i, coeff[i]);
+          fprintf(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
         fprintf(stderr, "Polar Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
@@ -1848,7 +1848,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         fprintf(stderr, "DePolar Distort, Internal Coefficents\n");
         for ( i=0; i<8; i++ )
-          fprintf(stderr, "  c%ld = %+lf\n", (long) i, coeff[i]);
+          fprintf(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
         fprintf(stderr, "DePolar Distort, FX Equivelent:\n");
         fprintf(stderr, "%s", image_gen);
         fprintf(stderr, "  -fx 'aa=(i+.5)*%lf %+lf;\n", coeff[6], -coeff[4] );

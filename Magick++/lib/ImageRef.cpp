@@ -59,7 +59,7 @@ Magick::ImageRef::~ImageRef( void )
   if( _id > -1 )
     {
       char id[MaxTextExtent];
-      sprintf(id,"%ld",(long) _id);
+      sprintf(id,"%.20g",(double) _id);
       DeleteImageRegistry( id );
       _id=-1;
     }
@@ -97,7 +97,7 @@ void Magick::ImageRef::id ( const ssize_t id_ )
   if( _id > -1 )
     {
       char id[MaxTextExtent];
-      sprintf(id,"%ld",(long) _id);
+      sprintf(id,"%.20g",(double) _id);
       DeleteImageRegistry( id );
     }
   _id = id_;

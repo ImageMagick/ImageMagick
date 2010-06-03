@@ -228,21 +228,21 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       }
       if (image->page.x)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"X: %ld\n",(long) 
+        (void) FormatMagickString(buffer,MaxTextExtent,"X: %.20g\n",(double) 
           image->page.x);
         (void) WriteBlobString(image,buffer);
       }
       if (image->page.y)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"Y: %ld\n",(long) 
+        (void) FormatMagickString(buffer,MaxTextExtent,"Y: %.20g\n",(double) 
           image->page.y);
         (void) WriteBlobString(image,buffer);
       }
-      (void) FormatMagickString(buffer,MaxTextExtent,"Width: %lu\n",
-        (unsigned long) (image->columns+(image->columns % 2)));
+      (void) FormatMagickString(buffer,MaxTextExtent,"Width: %.20g\n",
+        (double) (image->columns+(image->columns % 2)));
       (void) WriteBlobString(image,buffer);
-      (void) FormatMagickString(buffer,MaxTextExtent,"Height: %lu\n",
-        (unsigned long) image->rows);
+      (void) FormatMagickString(buffer,MaxTextExtent,"Height: %.20g\n",
+        (double) image->rows);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\n");
     }

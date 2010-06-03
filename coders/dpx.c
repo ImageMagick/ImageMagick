@@ -900,18 +900,18 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dpx.television.interlace=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.interlace != 0)
-        (void) FormatImageProperty(image,"dpx:television.interlace","%ld",
-          (long) dpx.television.interlace);
+        (void) FormatImageProperty(image,"dpx:television.interlace","%.20g",
+          (double) dpx.television.interlace);
       dpx.television.field_number=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.field_number != 0)
-        (void) FormatImageProperty(image,"dpx:television.field_number","%ld",
-          (long) dpx.television.field_number);
+        (void) FormatImageProperty(image,"dpx:television.field_number","%.20g",
+          (double) dpx.television.field_number);
       dpx.television.video_signal=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.video_signal != 0)
-        (void) FormatImageProperty(image,"dpx:television.video_signal","%ld",
-          (long) dpx.television.video_signal);
+        (void) FormatImageProperty(image,"dpx:television.video_signal","%.20g",
+          (double) dpx.television.video_signal);
       dpx.television.padding=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.padding != 0)

@@ -659,7 +659,8 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 /* is this useful? */
         }
 #if DEBUG
-        printf("now filling %ld x %ld\n", image->columns,image->rows);
+        printf("now filling %.20g x %.20g\n",(double) image->columns,(double)
+          image->rows);
 #endif
 
 
@@ -684,7 +685,8 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 
 
 #if DEBUG
-        printf("END: finished filling %ld x %ld\n", image->columns,image->rows);
+        printf("END: finished filling %.20g x %.20g\n",(double) image->columns,
+          (double) image->rows);
 #endif
 
         SyncImage(image);

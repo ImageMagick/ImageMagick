@@ -2044,9 +2044,8 @@ MagickExport void XDisplayImageInfo(Display *display,
     undo_image=GetPreviousImageInList(undo_image);
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) fprintf(file,"  bytes: %lumb\n",(unsigned long)
-    ((bytes+(1 << 19)) >> 20));
-  (void) fprintf(file,"  limit: %lumb\n\n",(unsigned long)
+  (void) fprintf(file,"  bytes: %.20gmb\n",(double) ((bytes+(1 << 19)) >> 20));
+  (void) fprintf(file,"  limit: %.20gmb\n\n",(double)
     resource_info->undo_cache);
   /*
     Write info about the image to a file.
@@ -5865,8 +5864,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         resource_info->image_info->texture != (char *) NULL ?
         resource_info->image_info->texture : "pattern:checkerboard",
         MaxTextExtent);
-      (void) FormatMagickString(size,MaxTextExtent,"%lux%lu",(unsigned long)
-        image->columns,(unsigned long) image->rows);
+      (void) FormatMagickString(size,MaxTextExtent,"%.20gx%.20g",(double)
+        image->columns,(double) image->rows);
       image_info->size=ConstantString(size);
       pattern=ReadImage(image_info,&image->exception);
       image_info=DestroyImageInfo(image_info);
@@ -6478,8 +6477,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         resource_info->image_info->texture != (char *) NULL ?
         resource_info->image_info->texture : "pattern:checkerboard",
         MaxTextExtent);
-      (void) FormatMagickString(size,MaxTextExtent,"%lux%lu",(unsigned long)
-        image->columns,(unsigned long) image->rows);
+      (void) FormatMagickString(size,MaxTextExtent,"%.20gx%.20g",(double)
+        image->columns,(double) image->rows);
       image_info->size=ConstantString(size);
       pattern=ReadImage(image_info,&image->exception);
       image_info=DestroyImageInfo(image_info);
@@ -7096,7 +7095,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
       while ((1 << i) <= (int) magnify)
         i++;
       (void) FormatMagickString(windows->magnify.name,MaxTextExtent,
-        "Magnify %luX",(unsigned long) i);
+        "Magnify %.20gX",(double) i);
       status=XStringListToTextProperty(&windows->magnify.name,1,&window_name);
       if (status != False)
         {
@@ -9266,7 +9265,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.undoCache",client_name);
-  (void) FormatMagickString(cache,MaxTextExtent,"%lu",(unsigned long)
+  (void) FormatMagickString(cache,MaxTextExtent,"%.20g",(double)
     resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
   (void) FormatMagickString(specifier,MaxTextExtent,"%s.usePixmap",client_name);

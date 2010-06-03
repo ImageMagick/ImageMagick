@@ -220,10 +220,10 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       elapsed_time=GetElapsedTime(timer);
       user_time=GetUserTime(timer);
       (void) fprintf(stderr,
-        "Performance: %lui %gips %0.3fu %ld:%02ld.%03ld\n",(unsigned long)
-        iterations,1.0*iterations/elapsed_time,user_time,(long)
-        (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
-        (long) (1000.0*(elapsed_time-floor(elapsed_time))));
+        "Performance: %.20gi %gips %0.3fu %.20g:%02g.%03g\n",(double)
+        iterations,1.0*iterations/elapsed_time,user_time,(double)
+        (elapsed_time/60.0),floor(fmod(elapsed_time,60.0)),(double)
+        (1000.0*(elapsed_time-floor(elapsed_time))));
     }
   timer=DestroyTimerInfo(timer);
   return(status);

@@ -919,7 +919,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       for (v=0; v < 6; v++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%ld: ",(long) v);
+        (void) FormatMagickString(format,MaxTextExtent,"%.20g: ",(double) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < 6; u++)
         {
@@ -1153,8 +1153,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
       case 'k': channel=BlackChannel; break;
       default: break;
     }
-  (void) FormatMagickString(key,MaxTextExtent,"%p.%ld.%s",(void *) image,
-    (long) channel,symbol);
+  (void) FormatMagickString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
+    (double) channel,symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
     return(QuantumScale*StringToDouble(value));
@@ -1165,8 +1165,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         depth;
 
       depth=GetImageChannelDepth(image,channel,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%lu",
-        (unsigned long) depth);
+      (void) FormatMagickString(statistic,MaxTextExtent,"%.20g",(double)
+        depth);
     }
   if (LocaleNCompare(symbol,"kurtosis",8) == 0)
     {
@@ -2419,9 +2419,9 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
-            (void) fprintf(fx_info->file,"%s[%ld,%ld].%s: %s=%.*g\n",
-              fx_info->images->filename,(long) x,(long) y,type,subexpression,
-              GetMagickPrecision(),(double) alpha);
+            (void) fprintf(fx_info->file,"%s[%.20g,%.20g].%s: %s=%.*g\n",
+              fx_info->images->filename,(double) x,(double) y,type,
+              subexpression,GetMagickPrecision(),(double) alpha);
           return(0.0);
         }
       break;

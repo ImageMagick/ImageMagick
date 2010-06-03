@@ -324,19 +324,19 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         if (image->debug != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              " scene    = %lu",(unsigned long) i);
+              " scene    = %.20g",(double) i);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   size   = %lu",(unsigned long) icon_info.size);
+              "   size   = %.20g",(double) icon_info.size);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   width  = %lu",(unsigned long) icon_file.directory[i].width);
+              "   width  = %.20g",(double) icon_file.directory[i].width);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   height = %lu",(unsigned long) icon_file.directory[i].height);
+              "   height = %.20g",(double) icon_file.directory[i].height);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   colors = %lu",(unsigned long ) icon_info.number_colors);
+              "   colors = %.20g",(double ) icon_info.number_colors);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   planes = %lu",(unsigned long) icon_info.planes);
+              "   planes = %.20g",(double) icon_info.planes);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   bpp    = %lu",(unsigned long) icon_info.bits_per_pixel);
+              "   bpp    = %.20g",(double) icon_info.bits_per_pixel);
           }
       if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel <= 16))
         {
