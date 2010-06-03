@@ -115,7 +115,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -126,7 +126,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -205,7 +205,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -216,7 +216,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -294,7 +294,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -305,7 +305,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -384,7 +384,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -395,7 +395,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -500,7 +500,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -517,7 +517,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -526,7 +526,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -537,7 +537,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       reference_image=DestroyImage(reference_image);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -549,7 +549,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -566,7 +566,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       blob=ImageToBlob(image_info,reference_image,&length,exception);
       if (blob == (unsigned char *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -580,7 +580,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       if (reconstruct_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -603,7 +603,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -711,7 +711,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -728,7 +728,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -737,7 +737,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -748,7 +748,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       reference_image=DestroyImage(reference_image);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -760,7 +760,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -775,7 +775,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -788,7 +788,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       reconstruct_image=ReadImage(image_info,exception);
       if (reconstruct_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -811,7 +811,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -912,7 +912,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -923,7 +923,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
       if (pixels == (unsigned char *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -934,7 +934,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
         exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           pixels=(unsigned char *) RelinquishMagickMemory(pixels);
           reference_image=DestroyImage(reference_image);
@@ -947,7 +947,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
           reference_image=DestroyImage(reference_image);
@@ -968,7 +968,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       if (status == MagickFalse)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           reference_image=DestroyImage(reference_image);
           continue;
@@ -982,7 +982,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
         {
-          (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+          (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
           (*fail)++;
           continue;
         }
@@ -1070,7 +1070,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -1081,7 +1081,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -1159,7 +1159,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
@@ -1170,7 +1170,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
       {
-        (void) fprintf(stdout,"... fail @ %s/%s/%u.\n",GetMagickModule());
+        (void) fprintf(stdout,"... fail @ %s/%s/%lu.\n",GetMagickModule());
         (*fail)++;
         continue;
       }
