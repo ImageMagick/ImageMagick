@@ -965,12 +965,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if (display_image->debug != MagickFalse)
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),
-        "Image: %s[%lu] %lux%lu ",image_list[0]->filename,
-        (unsigned long) image_list[0]->scene,(unsigned long)
-        image_list[0]->columns,(unsigned long) image_list[0]->rows);
+        "Image: %s[%.20g] %.20gx%.20g ",image_list[0]->filename,(double)
+        image_list[0]->scene,(double) image_list[0]->columns,(double)
+        image_list[0]->rows);
       if (image_list[0]->colors != 0)
-        (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
-          (unsigned long) image_list[0]->colors);
+        (void) LogMagickEvent(X11Event,GetMagickModule(),"%.20gc ",(double)
+          image_list[0]->colors);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%s",
         image_list[0]->magick);
     }
@@ -1088,11 +1088,11 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     if (display_image->debug != MagickFalse)
       {
         (void) LogMagickEvent(X11Event,GetMagickModule(),
-          "Image: [%lu] %s %ux%u ",(unsigned long) image_list[scene]->scene,
-          image_list[scene]->filename,columns,rows);
+          "Image: [%.20g] %s %.20gx%.20g ",(double) image_list[scene]->scene,
+          image_list[scene]->filename,(double) columns,(double) rows);
         if (image_list[scene]->colors != 0)
-          (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
-            (unsigned long) image_list[scene]->colors);
+          (void) LogMagickEvent(X11Event,GetMagickModule(),"%.20gc ",(double)
+            image_list[scene]->colors);
         (void) LogMagickEvent(X11Event,GetMagickModule(),"%s",
           image_list[scene]->magick);
       }
@@ -1535,12 +1535,12 @@ MagickExport Image *XAnimateImages(Display *display,
   if (display_image->debug != MagickFalse)
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),
-        "Image: %s[%lu] %lux%lu ",display_image->filename,(unsigned long)
-        display_image->scene,(unsigned long) display_image->columns,
-        (unsigned long) display_image->rows);
+        "Image: %s[%.20g] %.20gx%.20g ",display_image->filename,(double)
+        display_image->scene,(double) display_image->columns,(double)
+        display_image->rows);
       if (display_image->colors != 0)
-        (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
-          (unsigned long) display_image->colors);
+        (void) LogMagickEvent(X11Event,GetMagickModule(),"%.20gc ",(double)
+          display_image->colors);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%s",
         display_image->magick);
     }
@@ -1656,8 +1656,8 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
       (void) FormatMagickString(windows->image.name,MaxTextExtent,
-        "%s: %s[%lu of %lu]",MagickPackageName,filename,(unsigned long)
-        display_image->scene,(unsigned long) number_scenes);
+        "%s: %s[%.20g of %.20g]",MagickPackageName,filename,(double)
+        display_image->scene,(double) number_scenes);
       (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
     }
   if (resource_info->immutable != MagickFalse)
@@ -1935,11 +1935,11 @@ MagickExport Image *XAnimateImages(Display *display,
     if (image_list[scene]->debug != MagickFalse)
       {
         (void) LogMagickEvent(X11Event,GetMagickModule(),
-          "Image: [%lu] %s %ux%u ",(unsigned long) image_list[scene]->scene,
-          image_list[scene]->filename,columns,rows);
+          "Image: [%.20g] %s %.20gx%.20g ",(double) image_list[scene]->scene,
+          image_list[scene]->filename,(double) columns,(double) rows);
         if (image_list[scene]->colors != 0)
-          (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
-            (unsigned long) image_list[scene]->colors);
+          (void) LogMagickEvent(X11Event,GetMagickModule(),"%.20gc ",(double)
+            image_list[scene]->colors);
         (void) LogMagickEvent(X11Event,GetMagickModule(),"%s",
           image_list[scene]->magick);
       }
@@ -1963,8 +1963,8 @@ MagickExport Image *XAnimateImages(Display *display,
         while ((p > image_list[scene]->magick_filename) && (*(p-1) != '/'))
           p--;
         (void) FormatMagickString(windows->image.name,MaxTextExtent,
-          "%s: %s[%lu of %lu]",MagickPackageName,p,(unsigned long) scene+1,
-          (unsigned long) number_scenes);
+          "%s: %s[%.20g of %.20g]",MagickPackageName,p,(double) scene+1,
+          (double) number_scenes);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
     if (status != Success)
@@ -2082,8 +2082,8 @@ MagickExport Image *XAnimateImages(Display *display,
               while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
                 p--;
               (void) FormatMagickString(windows->image.name,MaxTextExtent,
-                "%s: %s[%lu of %lu]",MagickPackageName,p,(unsigned long)
-                scene+1,(unsigned long) number_scenes);
+                "%s: %s[%.20g of %.20g]",MagickPackageName,p,(double)
+                scene+1,(double) number_scenes);
               if (resource_info->title != (char *) NULL)
                 {
                   char
@@ -2931,8 +2931,8 @@ static MagickBooleanType XSaveImage(Display *display,
       /*
         Request JPEG quality from user.
       */
-      (void) FormatMagickString(quality,MaxTextExtent,"%lu",
-        (unsigned long) image_info->quality);
+      (void) FormatMagickString(quality,MaxTextExtent,"%.20g",(double)
+        image_info->quality);
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
       if (*quality == '\0')

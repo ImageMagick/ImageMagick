@@ -597,8 +597,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           if(x!=0)
             {
               (void) fprintf(stderr,
-                             "\nUnsupported WPG2 unaligned token RST x=%lu, please report!\n"
-                             ,(unsigned long) x);
+                             "\nUnsupported WPG2 unaligned token RST x=%.20g, please report!\n"
+                             ,(double) x);
               return(-3);
             }
           {

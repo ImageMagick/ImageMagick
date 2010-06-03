@@ -314,7 +314,8 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
 /*
-   printf("Length: %lu, Memory size: %lu\n", length,(size_t)(image->depth));
+   printf("Length: %.20g, Memory size: %.20g\n", (double) length,(double)
+     image->depth);
 */
      quantum_info=AcquireQuantumInfo(image_info,image);
      if (quantum_info == (QuantumInfo *) NULL)
@@ -325,8 +326,8 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
      pixels=GetQuantumPixels(quantum_info); 
      if(image->columns != ipl_info.width){
 /*
-     printf("Columns not set correctly!  Wanted: %lu, got: %lu\n",
-       ipl_info.width, image->columns);
+     printf("Columns not set correctly!  Wanted: %.20g, got: %.20g\n",
+       (double) ipl_info.width, (double) image->columns);
 */
      }
 

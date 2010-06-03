@@ -212,17 +212,17 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
         basename);
     }
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"<LocationX>%ld</LocationX>\n",
-    (long) image->page.x);
+  (void) FormatMagickString(buffer,MaxTextExtent,
+    "<LocationX>%.20g</LocationX>\n",(double) image->page.x);
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"<LocationY>%ld</LocationY>\n",
-    (long) image->page.y);
+  (void) FormatMagickString(buffer,MaxTextExtent,
+    "<LocationY>%.20g</LocationY>\n",(double) image->page.y);
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"<Width>%lu</Width>\n",
-    (unsigned long) (image->columns+(image->columns % 2)));
+  (void) FormatMagickString(buffer,MaxTextExtent,"<Width>%.20g</Width>\n",
+    (double) (image->columns+(image->columns % 2)));
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"<Height>%lu</Height>\n",
-    (unsigned long) image->rows);
+  (void) FormatMagickString(buffer,MaxTextExtent,"<Height>%.20g</Height>\n",
+    (double) image->rows);
   (void) WriteBlobString(image,buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,"<Depth>2</Depth>\n");
   (void) WriteBlobString(image,buffer);

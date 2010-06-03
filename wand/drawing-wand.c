@@ -562,8 +562,8 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
       "MemoryAllocationFailed",GetExceptionMessage(errno));
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"DrawingWand-%lu",
-    (unsigned long) clone_wand->id);
+  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"DrawingWand-%.20g",
+    (double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
   clone_wand->mvg=AcquireString(wand->mvg);
@@ -1033,7 +1033,7 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
       char
         buffer[MaxTextExtent];
 
-      (void) FormatMagickString(buffer,MaxTextExtent,"%ld bytes",
+      (void) FormatMagickString(buffer,MaxTextExtent,"%.20g bytes",(double)
         (4L*blob_length/3L+4L));
       ThrowDrawException(ResourceLimitWarning,"MemoryAllocationFailed",
         wand->name);
@@ -2471,7 +2471,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"font-weight",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+      (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
         CurrentContext->weight);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2544,7 +2544,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-miterlimit",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+      (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
         CurrentContext->miterlimit);
       (void) SetXMLTreeContent(child,value);
     }
@@ -4027,10 +4027,9 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
     }
   (void) FormatMagickString(key,MaxTextExtent,"%s",wand->pattern_id);
   (void) SetImageArtifact(wand->image,key,wand->mvg+wand->pattern_offset);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-    (unsigned long) wand->pattern_bounds.width,(unsigned long)
-    wand->pattern_bounds.height,(long) wand->pattern_bounds.x,
-    (long) wand->pattern_bounds.y);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g%+.20gx%+.20g",
+    (double) wand->pattern_bounds.width,(double) wand->pattern_bounds.height,
+    (double) wand->pattern_bounds.x,(double) wand->pattern_bounds.y);
   (void) SetImageArtifact(wand->image,key,geometry);
   wand->pattern_id=DestroyString(wand->pattern_id);
   wand->pattern_offset=0;
@@ -5125,7 +5124,7 @@ WandExport void DrawSetFontWeight(DrawingWand *wand,
       (CurrentContext->weight != font_weight))
     {
       CurrentContext->weight=font_weight;
-      (void) MvgPrintf(wand,"font-weight %lu\n",(unsigned long) font_weight);
+      (void) MvgPrintf(wand,"font-weight %.20g\n",(double) font_weight);
     }
 }
 
@@ -5610,8 +5609,7 @@ WandExport void DrawSetStrokeMiterLimit(DrawingWand *wand,
   if (CurrentContext->miterlimit != miterlimit)
     {
       CurrentContext->miterlimit=miterlimit;
-      (void) MvgPrintf(wand,"stroke-miterlimit %lu\n",(unsigned long)
-        miterlimit);
+      (void) MvgPrintf(wand,"stroke-miterlimit %.20g\n",(double) miterlimit);
     }
 }
 
@@ -6510,8 +6508,8 @@ WandExport void DrawSetViewbox(DrawingWand *wand,ssize_t x1,ssize_t y1,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"viewbox %ld %ld %ld %ld\n",(long) x1,(long) y1,
-    (long) x2,(long) y2);
+  (void) MvgPrintf(wand,"viewbox %.20g %.20g %.20g %.20g\n",(double) x1,
+    (double) y1,(double) x2,(double) y2);
 }
 
 /*
@@ -6586,8 +6584,8 @@ WandExport DrawingWand *NewDrawingWand(void)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatMagickString(wand->name,MaxTextExtent,"%s-%lu",DrawingWandId,
-    (unsigned long) wand->id);
+  (void) FormatMagickString(wand->name,MaxTextExtent,"%s-%.20g",DrawingWandId,
+    (double) wand->id);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->mvg=(char *) NULL;

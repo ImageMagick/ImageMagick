@@ -1380,9 +1380,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         read_info=DestroyImageInfo(read_info);
         if (tile_image == (Image *) NULL)
           continue;
-        (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu",
-          (unsigned long) MagickMax(image->columns,tile_image->columns),
-          (unsigned long) MagickMax(image->rows,tile_image->rows));
+        (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g",
+          (double) MagickMax(image->columns,tile_image->columns),
+          (double) MagickMax(image->rows,tile_image->rows));
         (void) SetImageExtent(image,
           MagickMax(image->columns,tile_image->columns),
           MagickMax(image->rows,tile_image->rows));

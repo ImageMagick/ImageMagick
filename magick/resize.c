@@ -797,7 +797,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         Output filter graph -- for graphing filter result.
       */
       support=GetResizeFilterSupport(resize_filter);
-      (void) printf("# support = %lg\n",support);
+      (void) printf("# support = %g\n",support);
       for (x=0.0; x <= support; x+=0.01f)
         (void) printf("%5.2lf\t%lf\n",x,(double) GetResizeFilterWeight(
           resize_filter,x));
@@ -3004,11 +3004,11 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
+      (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
         attributes.st_mtime);
       (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value);
     }
-  (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
+  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
   (void) ConcatenateMagickString(value,"B",MaxTextExtent);
@@ -3018,14 +3018,14 @@ MagickExport Image *ThumbnailImage(const Image *image,
   (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value);
   (void) SetImageProperty(thumbnail_image,"software",
     GetMagickVersion(&version));
-  (void) FormatMagickString(value,MaxTextExtent,"%lu",
-     (unsigned long) image->magick_columns);
+  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+    image->magick_columns);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value);
-  (void) FormatMagickString(value,MaxTextExtent,"%lu",(unsigned long)
+  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
     image->magick_rows);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value);
-  (void) FormatMagickString(value,MaxTextExtent,"%lu",
-    (unsigned long) GetImageListLength(image));
+  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+    GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
   return(thumbnail_image);
 }

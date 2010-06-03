@@ -539,12 +539,12 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
           Image
             *frame;
 
-          (void) FormatMagickString(p->filename,MaxTextExtent,"%s%lu.%s",
-            basename,(unsigned long) p->scene,WriteMPEGIntermediateFormat);
-          (void) FormatMagickString(filename,MaxTextExtent,"%s%lu.%s",
-            basename,(unsigned long) p->scene,WriteMPEGIntermediateFormat);
+          (void) FormatMagickString(p->filename,MaxTextExtent,"%s%.20g.%s",
+            basename,(double) p->scene,WriteMPEGIntermediateFormat);
+          (void) FormatMagickString(filename,MaxTextExtent,"%s%.20g.%s",
+            basename,(double) p->scene,WriteMPEGIntermediateFormat);
           (void) FormatMagickString(previous_image,MaxTextExtent,
-            "%s%lu.%s",basename,(unsigned long) p->scene,
+            "%s%.20g.%s",basename,(double) p->scene,
             WriteMPEGIntermediateFormat);
           frame=CloneImage(p,0,0,MagickTrue,&p->exception);
           if (frame == (Image *) NULL)
@@ -560,8 +560,8 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
         }
         default:
         {
-          (void) FormatMagickString(filename,MaxTextExtent,"%s%lu.%s",
-            basename,(unsigned long) p->scene,WriteMPEGIntermediateFormat);
+          (void) FormatMagickString(filename,MaxTextExtent,"%s%.20g.%s",
+            basename,(double) p->scene,WriteMPEGIntermediateFormat);
           if (length > 0)
             status=BlobToFile(filename,blob,length,&image->exception);
           break;
@@ -571,14 +571,13 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
         {
           if (status != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "%lu. Wrote %s file for scene %lu:",(unsigned long) i,
-              WriteMPEGIntermediateFormat,(unsigned long) p->scene);
+              "%.20g. Wrote %s file for scene %.20g:",(double) i,
+              WriteMPEGIntermediateFormat,(double) p->scene);
           else
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "%lu. Failed to write %s file for scene %lu:",(unsigned long) i,
-              WriteMPEGIntermediateFormat,(unsigned long) p->scene);
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",
-            filename);
+              "%.20g. Failed to write %s file for scene %.20g:",(double) i,
+              WriteMPEGIntermediateFormat,(double) p->scene);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",filename);
         }
     }
     p->scene=scene;
@@ -612,8 +611,8 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
     for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
     {
-      (void) FormatMagickString(p->filename,MaxTextExtent,"%s%lu.%s",
-        basename,(unsigned long) count++,WriteMPEGIntermediateFormat);
+      (void) FormatMagickString(p->filename,MaxTextExtent,"%s%.20g.%s",
+        basename,(double) count++,WriteMPEGIntermediateFormat);
       (void) RelinquishUniqueFileResource(p->filename);
     }
     (void) CopyMagickString(p->filename,image_info->filename,MaxTextExtent);

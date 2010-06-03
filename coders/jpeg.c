@@ -432,7 +432,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: ICC, %lu bytes",(unsigned long) length);
+      "Profile: ICC, %.20g bytes",(double) length);
   return(MagickTrue);
 }
 
@@ -528,7 +528,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: iptc, %lu bytes",(unsigned long) length);
+      "Profile: iptc, %.20g bytes",(double) length);
   return(MagickTrue);
 }
 
@@ -612,7 +612,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
       image->filename);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: %s, %lu bytes",name,(unsigned long) length);
+      "Profile: %s, %.20g bytes",name,(double) length);
   return(MagickTrue);
 }
 
@@ -737,7 +737,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
              image->quality=(size_t) i+1;
            if (image->debug != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "Quality: %ld (%s)",(long) i+1,(qvalue <= hash[i]) &&
+               "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
                (sum <= sums[i]) ? "exact" : "approximate");
            break;
          }
@@ -786,7 +786,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
                image->quality=(size_t) i+1;
              if (image->debug != MagickFalse)
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "Quality: %ld (%s)",(long) i+1,(qvalue <= hash[i]) &&
+                 "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
                  (sum <= sums[i]) ? "exact" : "approximate");
              break;
            }
@@ -1014,8 +1014,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_info.scale_denom=(unsigned int) scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
       if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Scale factor: %ld",
-          (long) scale_factor);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Scale factor: %.20g",(double) scale_factor);
     }
   precision=(size_t) jpeg_info.data_precision;
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
@@ -1127,7 +1127,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   JPEGSetImageQuality(&jpeg_info,image);
   JPEGSetImageSamplingFactor(&jpeg_info,image);
-  (void) FormatMagickString(value,MaxTextExtent,"%ld",(long)
+  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
     jpeg_info.out_color_space);
   (void) SetImageProperty(image,"jpeg:colorspace",value);
   if (image_info->ping != MagickFalse)
@@ -1590,8 +1590,8 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
         }
         xmp_profile=DestroyStringInfo(xmp_profile);
       }
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s profile: %lu bytes",
-      name,(unsigned long) GetStringInfoLength(profile));
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
     name=GetNextImageProfile(image);
   }
   custom_profile=DestroyStringInfo(custom_profile);
@@ -1780,8 +1780,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   jpeg_info.density_unit=(UINT8) 1;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Image resolution: %ld,%ld",(long) floor(image->x_resolution+0.5),
-      (long) floor(image->y_resolution+0.5));
+      "Image resolution: %.20g,%.20g",floor(image->x_resolution+0.5),
+      floor(image->y_resolution+0.5));
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
       /*
@@ -1919,8 +1919,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       else
         jpeg_set_quality(&jpeg_info,(int) image->quality,MagickTrue);
       if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %lu",
-          (unsigned long) image->quality);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %.20g",
+          (double) image->quality);
     }
   else
     {
@@ -2025,11 +2025,11 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Storage class: DirectClass");
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Depth: %lu",
-        (unsigned long) image->depth);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Depth: %.20g",
+        (double) image->depth);
       if (image->colors != 0)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Number of colors: %lu",(unsigned long) image->colors);
+          "Number of colors: %.20g",(double) image->colors);
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Number of colors: unspecified");

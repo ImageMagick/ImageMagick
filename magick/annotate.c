@@ -395,7 +395,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         undercolor_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         undercolor_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         (void) FormatMagickString(primitive,MaxTextExtent,
-          "rectangle 0,0 %g,%lu",metrics.origin.x,(unsigned long) height);
+          "rectangle 0,0 %g,%.20g",metrics.origin.x,(double) height);
         (void) CloneString(&undercolor_info->primitive,primitive);
         (void) DrawImage(image,undercolor_info);
         (void) DestroyDrawInfo(undercolor_info);
@@ -1621,8 +1621,8 @@ static MagickBooleanType RenderPostscript(Image *image,
   text=DestroyString(text);
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%ldx%ld+0+0!",(long)
-    floor(extent.x+0.5),(long) floor(extent.y+0.5));
+  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g+0+0!",
+    floor(extent.x+0.5),floor(extent.y+0.5));
   annotate_info=AcquireImageInfo();
   (void) FormatMagickString(annotate_info->filename,MaxTextExtent,"ps:%s",
     filename);
@@ -1664,9 +1664,9 @@ static MagickBooleanType RenderPostscript(Image *image,
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
       crop_info.y=(ssize_t) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
         0.5);
-      (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-        (unsigned long) crop_info.width,(unsigned long) crop_info.height,
-        (long) crop_info.x,(long) crop_info.y);
+      (void) FormatMagickString(geometry,MaxTextExtent,
+        "%.20gx%.20g%+.20gx%+.20g",(double) crop_info.width,(double)
+        crop_info.height,(double) crop_info.x,(double) crop_info.y);
       (void) TransformImage(&annotate_image,geometry,(char *) NULL);
     }
   metrics->pixels_per_em.x=(resolution.y/DefaultResolution)*
@@ -1957,8 +1957,8 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
   (void) FormatMagickString(annotate_info.geometry,MaxTextExtent,
-    "%lux%lu+%ld+%ld",(unsigned long) width,(unsigned long) height,(long)
-    ceil(offset->x-0.5),(long) ceil(offset->y-metrics->ascent-metrics->descent+
+    "%.20gx%.20g%+.20gx%+.20g",(double) width,(double) height,
+    ceil(offset->x-0.5),ceil(offset->y-metrics->ascent-metrics->descent+
     draw_info->interline_spacing-0.5));
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
   pixel.pen_color.green=ScaleQuantumToShort(draw_info->fill.green);

@@ -1061,9 +1061,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatMagickString(text,MaxTextExtent,"%lux%lu%+ld%+ld",
-            (unsigned long) geometry.width,(unsigned long) geometry.height,
-            (long) geometry.x,(long) geometry.y);
+          (void) FormatMagickString(text,MaxTextExtent,
+            "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+            geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
           draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
           draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
@@ -2040,8 +2040,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           image=msl_info->image[n];
           (void) FormatMagickString(composite_geometry,MaxTextExtent,
-            "%lux%lu%+ld%+ld",(unsigned long) composite_image->columns,
-            (unsigned long) composite_image->rows,(long) geometry.x,(long)
+            "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,
+            (double) composite_image->rows,(double) geometry.x,(double)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             &exception);
@@ -2651,9 +2651,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatMagickString(text,MaxTextExtent,"%lux%lu%+ld%+ld",
-            (unsigned long) geometry.width,(unsigned long) geometry.height,
-            (long) geometry.x,(long) geometry.y);
+          (void) FormatMagickString(text,MaxTextExtent,
+            "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+            geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
           draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
           draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
@@ -3265,8 +3265,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"height") == 0)
                   {
-                    (void) FormatMagickString(value,MaxTextExtent,"%lu",
-                      (unsigned long) msl_info->image[n]->rows);
+                    (void) FormatMagickString(value,MaxTextExtent,"%.20g",
+                      (double) msl_info->image[n]->rows);
                     (void) SetImageProperty(msl_info->attributes[n],key,value);
                     break;
                   }
@@ -3277,8 +3277,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"width") == 0)
                   {
-                    (void) FormatMagickString(value,MaxTextExtent,"%lu",
-                      (unsigned long) msl_info->image[n]->columns);
+                    (void) FormatMagickString(value,MaxTextExtent,"%.20g",
+                      (double) msl_info->image[n]->columns);
                     (void) SetImageProperty(msl_info->attributes[n],key,value);
                     break;
                   }
@@ -4794,9 +4794,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatMagickString(text,MaxTextExtent,"%lux%lu%+ld%+ld",
-            (unsigned long) geometry.width,(unsigned long) geometry.height,
-            (long) geometry.x,(long) geometry.y);
+          (void) FormatMagickString(text,MaxTextExtent,
+            "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+            geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
           draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
           draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
@@ -6048,13 +6048,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (image_option != (const char *) NULL)
                   flags=ParseAbsoluteGeometry(image_option,&geometry);
                 flags=ParseAbsoluteGeometry(value,&geometry);
-                (void) FormatMagickString(page,MaxTextExtent,"%lux%lu",
-                  (unsigned long) geometry.width,(unsigned long)
-                  geometry.height);
+                (void) FormatMagickString(page,MaxTextExtent,"%.20gx%.20g",
+                  (double) geometry.width,(double) geometry.height);
                 if (((flags & XValue) != 0) || ((flags & YValue) != 0))
                   (void) FormatMagickString(page,MaxTextExtent,
-                    "%lux%lu%+ld%+ld",(unsigned long) geometry.width,
-                    (unsigned long) geometry.height,(long) geometry.x,(long)
+                    "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,
+                    (double) geometry.height,(double) geometry.x,(double)
                     geometry.y);
                 (void) SetImageOption(msl_info->image_info[n],keyword,page);
                 msl_info->image_info[n]->page=GetPageGeometry(page);

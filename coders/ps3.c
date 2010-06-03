@@ -478,37 +478,37 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     default:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "currentfile %lu %lu "PS3_NoCompression" ByteStreamDecodeFilter\n",
-        (unsigned long) image->columns,(unsigned long) image->rows);
+        "currentfile %.20g %.20g "PS3_NoCompression" ByteStreamDecodeFilter\n",
+        (double) image->columns,(double) image->rows);
       break;
     }
     case FaxCompression:
     case Group4Compression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "currentfile %lu %lu "PS3_FaxCompression" ByteStreamDecodeFilter\n",
-        (unsigned long) image->columns,(unsigned long) image->rows);
+        "currentfile %.20g %.20g "PS3_FaxCompression" ByteStreamDecodeFilter\n",
+        (double) image->columns,(double) image->rows);
       break;
     }
     case LZWCompression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "currentfile %lu %lu "PS3_LZWCompression" ByteStreamDecodeFilter\n",
-        (unsigned long) image->columns,(unsigned long) image->rows);
+        "currentfile %.20g %.20g "PS3_LZWCompression" ByteStreamDecodeFilter\n",
+        (double) image->columns,(double) image->rows);
       break;
     }
     case RLECompression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "currentfile %lu %lu "PS3_RLECompression" ByteStreamDecodeFilter\n",
-        (unsigned long) image->columns,(unsigned long) image->rows);
+        "currentfile %.20g %.20g "PS3_RLECompression" ByteStreamDecodeFilter\n",
+        (double) image->columns,(double) image->rows);
       break;
     }
     case ZipCompression:
     {
       (void) FormatMagickString(buffer,MaxTextExtent,
-        "currentfile %lu %lu "PS3_ZipCompression" ByteStreamDecodeFilter\n",
-        (unsigned long) image->columns,(unsigned long) image->rows);
+        "currentfile %.20g %.20g "PS3_ZipCompression" ByteStreamDecodeFilter\n",
+        (double) image->columns,(double) image->rows);
       break;
     }
   }
@@ -939,15 +939,15 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         resolution.y=(size_t) (100.0*2.54*resolution.y+0.5)/100.0;
       }
     SetGeometry(image,&geometry);
-    (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu",
-      (unsigned long) image->columns,(unsigned long) image->rows);
+    (void) FormatMagickString(page_geometry,MaxTextExtent,"%.20gx%.20g",
+      (double) image->columns,(double) image->rows);
     if (image_info->page != (char *) NULL)
       (void) CopyMagickString(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatMagickString(page_geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
-          (unsigned long) image->page.width,(unsigned long) image->page.height,
-          (long) image->page.x,(long) image->page.y);
+        (void) FormatMagickString(page_geometry,MaxTextExtent,
+          "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,(double)
+          image->page.height,(double) image->page.x,(double) image->page.y);
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PS") == 0))
@@ -1045,8 +1045,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
             if (image_info->adjoin == MagickFalse)
               (void) CopyMagickString(buffer,"%%Pages: 1\n",MaxTextExtent);
             else
-              (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Pages: %lu\n",
-                (unsigned long) GetImageListLength(image));
+              (void) FormatMagickString(buffer,MaxTextExtent,
+                "%%%%Pages: %.20g\n",(double) GetImageListLength(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -1086,16 +1086,16 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         }
         (void)WriteBlobString(image,"%%EndProlog\n");
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page: 1 %lu\n",
-      (unsigned long) page);
+    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page: 1 %.20g\n",
+      (double) page);
     (void) WriteBlobString(image,buffer);
     /*
       Page bounding box.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "%%%%PageBoundingBox: %ld %ld %ld %ld\n",(long) geometry.x,(long)
-       geometry.y,geometry.x+(long) geometry.width,geometry.y+(long)
-       (geometry.height+text_size));
+      "%%%%PageBoundingBox: %.20g %.20g %.20g %.20g\n",(double) geometry.x,
+       (double) geometry.y,geometry.x+(double) geometry.width,geometry.y+
+       (double) (geometry.height+text_size));
     (void) WriteBlobString(image,buffer);
     /*
       Page process colors if not RGB.
@@ -1167,8 +1167,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     /*
       Translate, scale, and font point size.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,"%ld %ld\n%g %g\n%g\n",
-      (long) geometry.x,(long) geometry.y,scale.x,scale.y,pointsize);
+    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n%g %g\n%g\n",
+      (double) geometry.x,(double) geometry.y,scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     /*
       Output labels.
@@ -1215,8 +1215,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     /*
       Image columns, rows, and color space.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n%s\n",
-      (unsigned long) image->columns,(unsigned long) image->rows,
+    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n%s\n",
+      (double) image->columns,(double) image->rows,
       image->colorspace == CMYKColorspace ? PS3_CMYKColorspace :
       PS3_RGBColorspace);
     (void) WriteBlobString(image,buffer);
@@ -1471,8 +1471,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
             /*
               Number of colors in color map.
             */
-            (void) FormatMagickString(buffer,MaxTextExtent,"%lu\n",
-              (unsigned long) image->colors);
+            (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",
+              (double) image->colors);
             (void) WriteBlobString(image,buffer);
             /*
               Color map - uncompressed.

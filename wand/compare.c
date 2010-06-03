@@ -984,8 +984,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 (double) distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
-                (void) fprintf(stderr," @ %ld,%ld",(long)
-                  difference_image->page.x,(long) difference_image->page.y);
+                (void) fprintf(stderr," @ %.20g,%.20g",(double)
+                  difference_image->page.x,(double) difference_image->page.y);
               (void) fprintf(stderr,"\n");
               break;
             }
@@ -995,8 +995,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               (void) fprintf(stderr,"%g",distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
-                (void) fprintf(stderr," @ %ld,%ld",(long)
-                  difference_image->page.x,(long) difference_image->page.y);
+                (void) fprintf(stderr," @ %.20g,%.20g",(double)
+                  difference_image->page.x,(double) difference_image->page.y);
               (void) fprintf(stderr,"\n");
               break;
             }
@@ -1007,8 +1007,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 image->error.normalized_maximum_error);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
-                (void) fprintf(stderr," @ %ld,%ld",(long)
-                  difference_image->page.x,(long) difference_image->page.y);
+                (void) fprintf(stderr," @ %.20g,%.20g",(double)
+                  difference_image->page.x,(double) difference_image->page.y);
               (void) fprintf(stderr,"\n");
               break;
             }
@@ -1026,8 +1026,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           (void) fprintf(stderr,"Image: %s\n",image->filename);
           if ((reconstruct_image->columns != image->columns) ||
               (reconstruct_image->rows != image->rows))
-            (void) fprintf(stderr,"Offset: %ld,%ld\n",(long)
-              difference_image->page.x,(long) difference_image->page.y);
+            (void) fprintf(stderr,"Offset: %.20g,%.20g\n",(double)
+              difference_image->page.x,(double) difference_image->page.y);
           (void) fprintf(stderr,"  Channel distortion: %s\n",
             MagickOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
           switch (metric)

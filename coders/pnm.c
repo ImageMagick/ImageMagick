@@ -1570,8 +1570,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       {
         if (image->colorspace != RGBColorspace)
           (void) TransformImageColorspace(image,RGBColorspace);
-        (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n",
-          (unsigned long) image->columns,(unsigned long) image->rows);
+        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n",
+          (double) image->columns,(double) image->rows);
         (void) WriteBlobString(image,buffer);
       }
     else
@@ -1583,8 +1583,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           PAM header.
         */
         (void) FormatMagickString(buffer,MaxTextExtent,
-          "WIDTH %lu\nHEIGHT %lu\n",(unsigned long) image->columns,
-          (unsigned long) image->rows);
+          "WIDTH %.20g\nHEIGHT %.20g\n",(double) image->columns,(double)
+          image->rows);
         (void) WriteBlobString(image,buffer);
         quantum_type=GetQuantumType(image,&image->exception);
         switch (quantum_type)
@@ -1621,7 +1621,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->depth > 16)
           image->depth=16;
         (void) FormatMagickString(buffer,MaxTextExtent,
-          "DEPTH %lu\nMAXVAL %lu\n",(unsigned long) packet_size,(unsigned long)
+          "DEPTH %.20g\nMAXVAL %.20g\n",(double) packet_size,(double)
           GetQuantumRange(image->depth));
         (void) WriteBlobString(image,buffer);
         (void) FormatMagickString(buffer,MaxTextExtent,"TUPLTYPE %s\nENDHDR\n",
@@ -1853,7 +1853,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         if (image->depth > 8)
           image->depth=16;
-        (void) FormatMagickString(buffer,MaxTextExtent,"%lu\n",(unsigned long)
+        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double)
           GetQuantumRange(image->depth));
         (void) WriteBlobString(image,buffer);
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
@@ -1936,7 +1936,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         if (image->depth > 8)
           image->depth=16;
-        (void) FormatMagickString(buffer,MaxTextExtent,"%lu\n",(unsigned long)
+        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double)
           GetQuantumRange(image->depth));
         (void) WriteBlobString(image,buffer);
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);

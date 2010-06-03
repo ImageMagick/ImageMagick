@@ -1263,8 +1263,9 @@ static Image *OptimizeLayerFrames(const Image *image,
   while ( next != (const Image *) NULL )
   {
 #if 0 /*  For debuging */
-    printf("image %ld :- %d  %ldx%ld%+ld%+ld\n", i, disposals[i],
-           bounds[i].width, bounds[i].height, bounds[i].x, bounds[i].y );
+    printf("image %.20g :- %.20g  %.20gx%.20g%+.20gx%+.20g\n", (double) i,
+      (double) disposals[i],(double) bounds[i].width,(double)
+      bounds[i].height,(double) bounds[i].x,(double) bounds[i].y );
 #endif
     prev_image=CloneImage(next,0,0,MagickTrue,exception);
     if (prev_image == (Image *) NULL)

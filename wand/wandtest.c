@@ -447,18 +447,18 @@ int main(int argc,char **argv)
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   if (MagickGetNumberImages(magick_wand) != 5)
-    (void) fprintf(stderr,"read %lu images; expected 5\n",
-      (unsigned long) MagickGetNumberImages(magick_wand));
+    (void) fprintf(stderr,"read %.20g images; expected 5\n",
+      (double) MagickGetNumberImages(magick_wand));
   (void) fprintf(stdout,"Iterate forward...\n");
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),(unsigned long)
+    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+      MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Iterate reverse...\n");
   while (MagickPreviousImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),(unsigned long)
+    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+      MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Remove scene 1...\n");
   (void) MagickSetIteratorIndex(magick_wand,1);
@@ -468,8 +468,8 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),(unsigned long)
+    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+      MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Insert scene 1 back in sequence...\n");
   (void) MagickSetIteratorIndex(magick_wand,0);
@@ -478,8 +478,8 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),(unsigned long)
+    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+      MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Set scene 2 to scene 1...\n");
   (void) MagickSetIteratorIndex(magick_wand,2);
@@ -489,8 +489,8 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %ld scene %lu\n",(long)
-      MagickGetIteratorIndex(magick_wand),(unsigned long)
+    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+      MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Apply image processing options...\n");
   status=MagickCropImage(magick_wand,60,60,10,10);

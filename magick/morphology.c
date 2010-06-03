@@ -499,7 +499,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
       /* Error handling -- this is not proper error handling! */
       if ( new_kernel == (KernelInfo *) NULL ) {
-        fprintf(stderr, "Failed to parse kernel number #%lu\n",(unsigned long)
+        fprintf(stderr, "Failed to parse kernel number #%.20g\n",(double)
           kernel_number);
         if ( kernel != (KernelInfo *) NULL )
           kernel=DestroyKernelInfo(kernel);
@@ -2908,13 +2908,13 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         /* Extra information for debugging compound operations */
         if ( verbose == MagickTrue ) {
           if ( stage_limit > 1 )
-            (void) FormatMagickString(v_info, MaxTextExtent, "%s:%lu.%lu -> ",
-             MagickOptionToMnemonic(MagickMorphologyOptions, method),
-             (unsigned long) method_loop,(unsigned long) stage_loop);
+            (void) FormatMagickString(v_info,MaxTextExtent,"%s:%.20g.%.20g -> ",
+             MagickOptionToMnemonic(MagickMorphologyOptions,method),(double)
+             method_loop,(double) stage_loop);
           else if ( primative != method )
-            (void) FormatMagickString(v_info, MaxTextExtent, "%s:%lu -> ",
-               MagickOptionToMnemonic(MagickMorphologyOptions, method),
-               (unsigned long) method_loop);
+            (void) FormatMagickString(v_info, MaxTextExtent, "%s:%.20g -> ",
+              MagickOptionToMnemonic(MagickMorphologyOptions, method),(double)
+              method_loop);
           else
             v_info[0] = '\0';
         }
@@ -2949,11 +2949,11 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( verbose == MagickTrue ) {
             if ( kernel_loop > 1 )
               fprintf(stderr, "\n"); /* add end-of-line from previous */
-            fprintf(stderr, "%s%s%s:%lu.%lu #%lu => Changed %lu", v_info,
-                MagickOptionToMnemonic(MagickMorphologyOptions, primative),
-                 ( this_kernel == rflt_kernel ) ? "*" : "",
-               (unsigned long) method_loop+kernel_loop-1,(unsigned long)
-               kernel_number,(unsigned long) count,(unsigned long) changed);
+            (void) fprintf(stderr, "%s%s%s:%.20g.%.20g #%.20g => Changed %.20g",
+              v_info,MagickOptionToMnemonic(MagickMorphologyOptions,
+              primative),(this_kernel == rflt_kernel ) ? "*" : "",
+              (double) (method_loop+kernel_loop-1),(double) kernel_number,
+              (double) count,(double) changed);
           }
           /* prepare next loop */
           { Image *tmp = work_image;   /* swap images for iteration */
@@ -2966,7 +2966,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         } /* End Loop 4: Iterate the kernel with primative */
 
         if ( verbose == MagickTrue && kernel_changed != changed )
-          fprintf(stderr, "   Total %lu",(unsigned long) kernel_changed);
+          fprintf(stderr, "   Total %.20g",(double) kernel_changed);
         if ( verbose == MagickTrue && stage_loop < stage_limit )
           fprintf(stderr, "\n"); /* add end-of-line before looping */
 

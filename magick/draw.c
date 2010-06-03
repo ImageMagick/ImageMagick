@@ -416,8 +416,8 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
   p=polygon_info->edges;
   for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
   {
-    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      edge %lu:",
-     (unsigned long) i);
+    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      edge %.20g:",
+      (double) i);
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      direction: %s",
       p->direction != MagickFalse ? "down" : "up");
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      ghostline: %s",
@@ -2422,9 +2422,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 (void) SetImageArtifact(image,key,token);
                 (void) FormatMagickString(key,MaxTextExtent,"%s-geometry",name);
                 (void) FormatMagickString(geometry,MaxTextExtent,
-                  "%lux%lu%+ld%+ld",(unsigned long) bounds.width,
-                  (unsigned long) bounds.height,(long) bounds.x,
-                  (long) bounds.y);
+                  "%.20gx%.20g%+.20gx%+.20g",(double) bounds.width,(double)
+                  bounds.height,(double) bounds.x,(double) bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
                 GetMagickToken(q,&q,token);
                 break;
@@ -4060,34 +4059,34 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     case PointPrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "PointPrimitive %ld,%ld %s",(long) x,(long) y,
+        "PointPrimitive %.20g,%.20g %s",(double) x,(double) y,
         methods[primitive_info->method]);
       return;
     }
     case ColorPrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "ColorPrimitive %ld,%ld %s",(long) x,(long) y,
+        "ColorPrimitive %.20g,%.20g %s",(double) x,(double) y,
         methods[primitive_info->method]);
       return;
     }
     case MattePrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "MattePrimitive %ld,%ld %s",(long) x,(long) y,
+        "MattePrimitive %.20g,%.20g %s",(double) x,(double) y,
         methods[primitive_info->method]);
       return;
     }
     case TextPrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "TextPrimitive %ld,%ld",(long) x,(long) y);
+        "TextPrimitive %.20g,%.20g",(double) x,(double) y);
       return;
     }
     case ImagePrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "ImagePrimitive %ld,%ld",(long) x,(long) y);
+        "ImagePrimitive %.20g,%.20g",(double) x,(double) y);
       return;
     }
     default:
@@ -4104,28 +4103,28 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
       {
         coordinates=(ssize_t) primitive_info[i].coordinates;
         (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-          "    begin open (%ld)",(long) coordinates);
+          "    begin open (%.20g)",(double) coordinates);
         p=point;
       }
     point=primitive_info[i].point;
     if ((fabs(q.x-point.x) > MagickEpsilon) ||
         (fabs(q.y-point.y) > MagickEpsilon))
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "      %ld: %.18g,%.18g",(long) coordinates,point.x,point.y);
+        "      %.20g: %.18g,%.18g",(double) coordinates,point.x,point.y);
     else
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "      %ld: %g,%g (duplicate)",(long) coordinates,point.x,point.y);
+        "      %.20g: %g,%g (duplicate)",(double) coordinates,point.x,point.y);
     q=point;
     coordinates--;
     if (coordinates > 0)
       continue;
     if ((fabs(p.x-point.x) > MagickEpsilon) ||
         (fabs(p.y-point.y) > MagickEpsilon))
-      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end last (%ld)",
-        (long) coordinates);
+      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end last (%.20g)",
+        (double) coordinates);
     else
-      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end open (%ld)",
-        (long) coordinates);
+      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end open (%.20g)",
+        (double) coordinates);
   }
 }
 
@@ -4482,9 +4481,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       geometry.x=x;
       geometry.y=y;
       (void) FormatMagickString(composite_geometry,MaxTextExtent,
-        "%lux%lu%+ld%+ld",(unsigned long) composite_image->columns,
-        (unsigned long) composite_image->rows,(long) geometry.x,(long)
-        geometry.y);
+        "%.20gx%.20g%+.20gx%+.20g",(double) composite_image->columns,(double)
+        composite_image->rows,(double) geometry.x,(double) geometry.y);
       (void) ParseGravityGeometry(image,composite_geometry,&geometry,
         &image->exception);
       affine=draw_info->affine;

@@ -516,11 +516,11 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
     Write X bitmap header.
   */
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_width %lu\n",
-    basename,(unsigned long) image->columns);
+  (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_width %.20g\n",
+    basename,(double) image->columns);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_height %lu\n",
-    basename,(unsigned long) image->rows);
+  (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_height %.20g\n",
+    basename,(double) image->rows);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
   (void) FormatMagickString(buffer,MaxTextExtent,
     "static char %s_bits[] = {\n",basename);

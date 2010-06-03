@@ -659,8 +659,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     if (image->matte != MagickFalse)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "# ImageMagick pixel enumeration: %lu,%lu,%lu,%s\n",(unsigned long)
-      image->columns,(unsigned long) image->rows,(unsigned long)
+      "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
+      image->columns,(double) image->rows,(double)
       GetQuantumRange(image->depth),colorspace);
     (void) WriteBlobString(image,buffer);
     GetMagickPixelPacket(image,&pixel);
@@ -672,8 +672,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"%ld,%ld: ",(long) x,
-          (long) y);
+        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+          x,(double) y);
         (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
