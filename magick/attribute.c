@@ -350,10 +350,8 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
             scale;
 
           status=0;
-          scale=1;
-          if (current_depth[id] < QuantumDepth)
-            scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-
-              current_depth[id]));
+          scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-
+            current_depth[id]));
           if ((channel & RedChannel) != 0)
             status|=(QuantumAny) p->red != GetPixelDepth(p->red,scale);
           if ((channel & GreenChannel) != 0)
@@ -407,10 +405,8 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
           scale;
 
         status=0;
-        scale=1;
-        if (current_depth[id] < QuantumDepth)
-          scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-
-            current_depth[id]));
+        scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-
+          current_depth[id]));
         if ((channel & RedChannel) != 0)
           status|=(QuantumAny) p->red != GetPixelDepth(p->red,scale);
         if ((channel & GreenChannel) != 0)
@@ -866,9 +862,8 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
     Scale pixels to desired depth.
   */
   status=MagickTrue;
-  scale=1;
-  if (depth < QuantumDepth)
-    scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-depth));
+  scale=QuantumRange/((QuantumAny) QuantumRange >> (MAGICKCORE_QUANTUM_DEPTH-
+    depth));
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
