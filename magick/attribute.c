@@ -350,8 +350,8 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
             scale;
 
           status=0;
-          scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-
-            current_depth[id]));
+          scale=QuantumRange/((QuantumAny) QuantumRange >>
+            (MAGICKCORE_QUANTUM_DEPTH-current_depth[id]));
           if ((channel & RedChannel) != 0)
             status|=(QuantumAny) p->red != GetPixelDepth(p->red,scale);
           if ((channel & GreenChannel) != 0)
@@ -405,8 +405,8 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
           scale;
 
         status=0;
-        scale=QuantumRange/((QuantumAny) QuantumRange >> (QuantumDepth-
-          current_depth[id]));
+        scale=QuantumRange/((QuantumAny) QuantumRange >>
+          (MAGICKCORE_QUANTUM_DEPTH-current_depth[id]));
         if ((channel & RedChannel) != 0)
           status|=(QuantumAny) p->red != GetPixelDepth(p->red,scale);
         if ((channel & GreenChannel) != 0)
