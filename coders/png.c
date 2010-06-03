@@ -4384,7 +4384,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for ( ; i < 256; i++)
               mng_info->global_trns[i]=255;
 #endif
-            mng_info->global_trns_length=(usnigned int) length;
+            mng_info->global_trns_length=(unsigned int) length;
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
