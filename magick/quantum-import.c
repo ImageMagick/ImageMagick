@@ -198,7 +198,7 @@ static inline const unsigned char *PushQuantumPixel(
   register ssize_t
     i;
 
-  register size_t
+  register unsigned int
     quantum_bits;
 
   *quantum=(QuantumAny) 0;
