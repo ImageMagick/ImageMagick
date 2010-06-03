@@ -84,7 +84,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Emboss.miff', 'Emboss', 
 testFilterCompare('input.miff',  q//, 'reference/filter/Equalize.miff', 'Equalize', q//, 0.03, 1.03);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.5/, 0.002, 0.2);
+testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.5/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Flip.miff', 'Flip', q//, 0.004, 0.4);
@@ -96,7 +96,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Flop.miff', 'Flop', q//,
 testFilterCompare('input.miff',  q//, 'reference/filter/Frame.miff', 'Frame', q/'15x15+3+3'/, 0.4, 1.04);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Gamma.miff', 'Gamma', q/1.6/, 0.003, 0.4);
+testFilterCompare('input.miff',  q//, 'reference/filter/Gamma.miff', 'Gamma', q/1.6/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/GaussianBlur.miff', 'GaussianBlur', q/'0.0x1.5'/, 0.004, 0.4);
@@ -126,7 +126,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulat
 testFilterCompare('input.miff',  q//, 'reference/filter/QuantizeMono.miff', 'Quantize', q/colorspace=>'gray',colors=>2,dither=>'false'/, 0.3, 1.03);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/MotionBlur.miff', 'MotionBlur', q/'0x13+10-10'/, 0.003, 0.4);
+testFilterCompare('input.miff',  q//, 'reference/filter/MotionBlur.miff', 'MotionBlur', q/'0x13+10-10'/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Negate.miff', 'Negate', q//, 0.004, 0.4);
@@ -189,7 +189,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/SigmoidalContrast.miff',
 testFilterCompare('input.miff',  q//, 'reference/filter/Solarize.miff', 'Solarize', q//, 0.004, 0.4);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Swirl.miff', 'Swirl', q/90/, 0.002, 0.2);
+testFilterCompare('input.miff',  q//, 'reference/filter/Swirl.miff', 'Swirl', q/90/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Threshold.miff', 'Threshold', q/90%/, 0.004, 0.4);
