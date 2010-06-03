@@ -109,8 +109,8 @@ namespace Magick
   private:
     size_t  _width;
     size_t  _height;
-    size_t  _xOff;
-    size_t  _yOff;
+    ssize_t  _xOff;
+    ssize_t  _yOff;
     bool          _xNegative;
     bool          _yNegative;
     bool          _isValid;

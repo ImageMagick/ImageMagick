@@ -902,6 +902,9 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           }
         else
           {
+            size_t
+              one;
+
             /*
               Colormapped ICON raster.
             */
@@ -912,7 +915,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               icon_info.bits_per_pixel=4;
             if (next->colors <= 2)
               icon_info.bits_per_pixel=1;
-            icon_info.number_colors=1 << icon_info.bits_per_pixel;
+            one=1;
+            icon_info.number_colors=one << icon_info.bits_per_pixel;
             if (icon_info.number_colors < next->colors)
               {
                 (void) SetImageStorageClass(next,DirectClass);
@@ -1126,17 +1130,17 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         icon_file.directory[scene].bits_per_pixel=icon_info.bits_per_pixel;
         icon_file.directory[scene].size=icon_info.size;
         icon_file.directory[scene].offset=(size_t) TellBlob(image);
-        (void) WriteBlobLSBLong(image,(size_t) 40);
-        (void) WriteBlobLSBLong(image,(size_t) icon_info.width);
-        (void) WriteBlobLSBLong(image,(size_t) icon_info.height*2);
+        (void) WriteBlobLSBLong(image,(unsigned int) 40);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.width);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.height*2);
         (void) WriteBlobLSBShort(image,icon_info.planes);
         (void) WriteBlobLSBShort(image,icon_info.bits_per_pixel);
-        (void) WriteBlobLSBLong(image,icon_info.compression);
-        (void) WriteBlobLSBLong(image,icon_info.image_size);
-        (void) WriteBlobLSBLong(image,icon_info.x_pixels);
-        (void) WriteBlobLSBLong(image,icon_info.y_pixels);
-        (void) WriteBlobLSBLong(image,icon_info.number_colors);
-        (void) WriteBlobLSBLong(image,icon_info.colors_important);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.compression);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.image_size);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.x_pixels);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.y_pixels);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.number_colors);
+        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.colors_important);
         if (next->storage_class == PseudoClass)
           {
             unsigned char
