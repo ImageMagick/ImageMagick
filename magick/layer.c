@@ -1263,7 +1263,7 @@ static Image *OptimizeLayerFrames(const Image *image,
   while ( next != (const Image *) NULL )
   {
 #if 0 /*  For debuging */
-    printf("image %.20g :- %.20g  %.20gx%.20g%+.20gx%+.20g\n", (double) i,
+    printf("image %.20g :- %.20g  %.20gx%.20g%+.20g%+.20g\n", (double) i,
       (double) disposals[i],(double) bounds[i].width,(double)
       bounds[i].height,(double) bounds[i].x,(double) bounds[i].y );
 #endif

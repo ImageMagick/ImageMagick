@@ -2704,7 +2704,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image geometry.
         */
-        q+=FormatMagickString(q,extent,"%.20gx%.20g%+.20gx%+.20g",(double)
+        q+=FormatMagickString(q,extent,"%.20gx%.20g%+.20g%+.20g",(double)
           image->page.width,(double) image->page.height,(double)
           image->page.x,(double) image->page.y);
         break;
@@ -3111,7 +3111,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image bounding box.
         */
         page=GetImageBoundingBox(image,&image->exception);
-        q+=FormatMagickString(q,MaxTextExtent,"%.20gx%.20g%+.20gx%+.20g",
+        q+=FormatMagickString(q,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
           (double) page.width,(double) page.height,(double) page.x,(double)
           page.y);
         break;

@@ -3700,7 +3700,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         geometry.y=i/2;
         (void) RaiseImage(preview_image,&geometry,MagickTrue);
         (void) FormatMagickString(label,MaxTextExtent,
-          "raise %.20gx%.20g%+.20gx%+.20g",(double) geometry.width,(double)
+          "raise %.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
           geometry.height,(double) geometry.x,(double) geometry.y);
         break;
       }

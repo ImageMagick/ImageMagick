@@ -2422,7 +2422,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 (void) SetImageArtifact(image,key,token);
                 (void) FormatMagickString(key,MaxTextExtent,"%s-geometry",name);
                 (void) FormatMagickString(geometry,MaxTextExtent,
-                  "%.20gx%.20g%+.20gx%+.20g",(double) bounds.width,(double)
+                  "%.20gx%.20g%+.20g%+.20g",(double) bounds.width,(double)
                   bounds.height,(double) bounds.x,(double) bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
                 GetMagickToken(q,&q,token);
@@ -4481,7 +4481,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       geometry.x=x;
       geometry.y=y;
       (void) FormatMagickString(composite_geometry,MaxTextExtent,
-        "%.20gx%.20g%+.20gx%+.20g",(double) composite_image->columns,(double)
+        "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,(double)
         composite_image->rows,(double) geometry.x,(double) geometry.y);
       (void) ParseGravityGeometry(image,composite_geometry,&geometry,
         &image->exception);

@@ -3081,7 +3081,7 @@ static MagickBooleanType XChopImage(Display *display,
         if (windows->info.mapped == MagickFalse)
           (void) XMapWindow(display,windows->info.id);
         (void) FormatMagickString(text,MaxTextExtent,
-          " %.20gx%.20g%+.20gx%+.20g",(double) chop_info.width,(double)
+          " %.20gx%.20g%+.20g%+.20g",(double) chop_info.width,(double)
           chop_info.height,(double) chop_info.x,(double) chop_info.y);
         XInfoWidget(display,windows,text);
         XHighlightLine(display,windows->image.id,
@@ -4826,7 +4826,7 @@ static MagickBooleanType XCropImage(Display *display,
           if (windows->info.mapped == MagickFalse)
             (void) XMapWindow(display,windows->info.id);
           (void) FormatMagickString(text,MaxTextExtent,
-            " %.20gx%.20g%+.20gx%+.20g",(double) crop_info.width,(double)
+            " %.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
             crop_info.height,(double) crop_info.x,(double) crop_info.y);
           XInfoWidget(display,windows,text);
           XHighlightRectangle(display,windows->image.id,
@@ -4919,7 +4919,7 @@ static MagickBooleanType XCropImage(Display *display,
             Display pointer position.
           */
           (void) FormatMagickString(text,MaxTextExtent,
-            " %.20gx%.20g%+.20gx%+.20g",(double) crop_info.width,(double)
+            " %.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
             crop_info.height,(double) crop_info.x,(double) crop_info.y);
           XInfoWidget(display,windows,text);
         }
@@ -5203,7 +5203,7 @@ static MagickBooleanType XCropImage(Display *display,
             Set primary selection.
           */
           (void) FormatMagickString(text,MaxTextExtent,
-            "%.20gx%.20g%+.20gx%+.20g",(double) crop_info.width,(double)
+            "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
             crop_info.height,(double) crop_info.x,(double) crop_info.y);
           request=(&(event.xselectionrequest));
           (void) XChangeProperty(request->display,request->requestor,
@@ -5908,7 +5908,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 Display info and draw drawing rectangle.
               */
               (void) FormatMagickString(text,MaxTextExtent,
-                " %.20gx%.20g%+.20gx%+.20g",(double) rectangle_info.width,
+                " %.20gx%.20g%+.20g%+.20g",(double) rectangle_info.width,
                 (double) rectangle_info.height,(double) rectangle_info.x,
                 (double) rectangle_info.y);
               XInfoWidget(display,windows,text);
@@ -5932,7 +5932,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 Display info and draw drawing rectangle.
               */
               (void) FormatMagickString(text,MaxTextExtent,
-                " %.20gx%.20g%+.20gx%+.20g",(double) rectangle_info.width,
+                " %.20gx%.20g%+.20g%+.20g",(double) rectangle_info.width,
                 (double) rectangle_info.height,(double) rectangle_info.x,
                 (double) rectangle_info.y);
               XInfoWidget(display,windows,text);
@@ -11322,7 +11322,7 @@ static MagickBooleanType XROIImage(Display *display,
           if (windows->info.mapped == MagickFalse)
             (void) XMapWindow(display,windows->info.id);
           (void) FormatMagickString(text,MaxTextExtent,
-            " %.20gx%.20g%+.20gx%+.20g",(double) roi_info.width,(double)
+            " %.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
             roi_info.height,(double) roi_info.x,(double) roi_info.y);
           XInfoWidget(display,windows,text);
           XHighlightRectangle(display,windows->image.id,
@@ -11418,7 +11418,7 @@ static MagickBooleanType XROIImage(Display *display,
             Display pointer position.
           */
           (void) FormatMagickString(text,MaxTextExtent,
-            " %.20gx%.20g%+.20gx%+.20g",(double) roi_info.width,(double)
+            " %.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
             roi_info.height,(double) roi_info.x,(double) roi_info.y);
           XInfoWidget(display,windows,text);
         }
@@ -11758,7 +11758,7 @@ static MagickBooleanType XROIImage(Display *display,
             Set primary selection.
           */
           (void) FormatMagickString(text,MaxTextExtent,
-            "%.20gx%.20g%+.20gx%+.20g",(double) roi_info.width,(double)
+            "%.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
             roi_info.height,(double) roi_info.x,(double) roi_info.y);
           request=(&(event.xselectionrequest));
           (void) XChangeProperty(request->display,request->requestor,
@@ -12779,7 +12779,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       /*
         Display info on cropping rectangle.
       */
-      (void) FormatMagickString(text,MaxTextExtent," %.20gx%.20g%+.20gx%+.20g",
+      (void) FormatMagickString(text,MaxTextExtent," %.20gx%.20g%+.20g%+.20g",
         (double) crop_info->width,(double) crop_info->height,(double)
         crop_info->x,(double) crop_info->y);
       XInfoWidget(display,windows,text);

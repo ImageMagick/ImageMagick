@@ -4734,7 +4734,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-      "%s[%.20gx%.20g%+.20gx%+.20g]",cache_info->filename,(double)
+      "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
       nexus_info->region.x,(double) nexus_info->region.y);
   return(MagickTrue);
@@ -4865,7 +4865,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-      "%s[%.20gx%.20g%+.20gx%+.20g]",cache_info->filename,(double)
+      "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
       nexus_info->region.x,(double) nexus_info->region.y);
   return(MagickTrue);
@@ -5450,7 +5450,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-      "%s[%.20gx%.20g%+.20gx%+.20g]",cache_info->filename,(double)
+      "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
       nexus_info->region.x,(double) nexus_info->region.y);
   return(MagickTrue);
@@ -5581,7 +5581,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
   if ((cache_info->debug != MagickFalse) &&
       (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-      "%s[%.20gx%.20g%+.20gx%+.20g]",cache_info->filename,(double)
+      "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
       nexus_info->region.x,(double) nexus_info->region.y);
   return(MagickTrue);
