@@ -633,7 +633,7 @@ Magick::DrawableFont::DrawableFont ( const std::string &font_ )
 }
 Magick::DrawableFont::DrawableFont ( const std::string &family_,
                                      Magick::StyleType style_,
-                                     const size_t weight_,
+                                     const unsigned int weight_,
                                      Magick::StretchType stretch_ )
   : _font(),
     _family(family_),

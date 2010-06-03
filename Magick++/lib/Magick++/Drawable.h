@@ -934,7 +934,7 @@ public:
 
   DrawableFont ( const std::string &family_,
                  StyleType style_,
-                 const size_t weight_,
+                 const unsigned int weight_,
                  StretchType stretch_ );
   DrawableFont ( const DrawableFont& original_ );
 
