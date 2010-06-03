@@ -822,7 +822,7 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    size_t _opacity;
+    unsigned int _opacity;
   };
 
   // Change color of opaque pixel to specified pen color.

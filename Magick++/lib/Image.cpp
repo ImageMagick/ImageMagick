@@ -2875,10 +2875,10 @@ Magick::Geometry Magick::Image::density ( void ) const
       ssize_t y_resolution=72;
 
       if (constImage()->x_resolution > 0.0)
-        x_resolution=static_cast<size_t>(constImage()->x_resolution + 0.5);
+        x_resolution=static_cast<ssize_t>(constImage()->x_resolution + 0.5);
 
       if (constImage()->y_resolution > 0.0)
-        y_resolution=static_cast<size_t>(constImage()->y_resolution + 0.5);
+        y_resolution=static_cast<ssize_t>(constImage()->y_resolution + 0.5);
 
       return Geometry(x_resolution,y_resolution);
     }
