@@ -209,7 +209,7 @@ static inline unsigned char *PopQuantumLongPixel(QuantumState *quantum_state,
   register ssize_t
     i;
 
-  size_t
+  unsigned int
     quantum_bits;
 
   if (quantum_state->bits == 0U)
