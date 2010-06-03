@@ -67,7 +67,7 @@ int main(int argc,char **argv)
 #define ThrowAPIException(wand) \
 { \
   description=MagickGetException(wand,&severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  (void) fprintf(stderr,"%s %s %u %s\n",GetMagickModule(),description); \
   description=(char *) MagickRelinquishMemory(description); \
   exit(-1); \
 }
