@@ -678,7 +678,7 @@ void Magick::mapImage::operator()( Magick::Image &image_ ) const
 
 // Floodfill designated area with a matte value
 Magick::matteFloodfillImage::matteFloodfillImage( const Color &target_ ,
-                                                  const size_t matte_,
+                                                  const unsigned int matte_,
                                                   const ssize_t x_, const ssize_t y_,
                                                   const PaintMethod method_ )
   : _target( target_ ),

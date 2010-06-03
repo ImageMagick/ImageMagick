@@ -716,7 +716,7 @@ namespace Magick
   {
   public:
     matteFloodfillImage( const Color &target_ ,
-       const size_t matte_,
+       const unsigned int matte_,
        const ssize_t x_, const ssize_t y_,
        const PaintMethod method_ );
 
@@ -724,7 +724,7 @@ namespace Magick
 
   private:
     Color         _target;
-    size_t  _matte;
+    unsigned int  _matte;
     ssize_t           _x;
     ssize_t           _y;
     PaintMethod   _method;
