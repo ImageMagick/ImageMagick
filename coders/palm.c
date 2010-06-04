@@ -439,8 +439,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           }
         else
           if (compressionType == PALM_COMPRESSION_SCANLINE)
-            {  
+            {
+              size_t
+                one;
+
               /* TODO move out of loop! */
+              one=1;
               image->compression=FaxCompression;
               for (i=0; i < (ssize_t) bytes_per_row; i+=8)
               {
@@ -448,7 +452,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 byte=1UL*MagickMin((ssize_t) bytes_per_row-i,8);
                 for (bit=0; bit < byte; bit++)
                 {
-                  if ((y == 0) || (count & (1 << (7 - bit))))
+                  if ((y == 0) || (count & (one << (7 - bit))))
                     one_row[i+bit]=(unsigned char) ReadBlobByte(image);
                   else
                     one_row[i+bit]=lastrow[i+bit];

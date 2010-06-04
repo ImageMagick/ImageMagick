@@ -250,7 +250,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colors=tga_info.colormap_length;
         else
           {
-            image->colors=0x01U << tga_info.bits_per_pixel;
+            size_t
+              one;
+
+            one=1;
+            image->colors=one << tga_info.bits_per_pixel;
             if (AcquireImageColormap(image,image->colors) == MagickFalse)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }

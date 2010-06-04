@@ -1097,7 +1097,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           Write out line start and length tables and runlength-encoded pixels.
         */
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
-          (void) WriteBlobMSBLong(image,(size_t) offsets[i]);
+          (void) WriteBlobMSBLong(image,(unsigned int) offsets[i]);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
           (void) WriteBlobMSBLong(image,(unsigned int) runlength[i]);
         (void) WriteBlob(image,number_packets,packets);

@@ -788,8 +788,8 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           sun_info.depth=1;
           sun_info.length=(unsigned int) (((image->columns+7) >> 3)*
             image->rows);
-          sun_info.length+=((image->columns/8)+(image->columns % 8 ? 1 : 0)) %
-            2 ? image->rows : 0;
+          sun_info.length+=(unsigned int) (((image->columns/8)+(image->columns %
+            8 ? 1 : 0)) % 2 ? image->rows : 0);
         }
       else
         {
@@ -798,7 +798,8 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           sun_info.depth=8;
           sun_info.length=(unsigned int) number_pixels;
-          sun_info.length+=image->columns & 0x01 ? image->rows : 0;
+          sun_info.length+=(unsigned int) (image->columns & 0x01 ? image->rows :
+            0);
           sun_info.maptype=RMT_EQUAL_RGB;
           sun_info.maplength=(unsigned int) (3*image->colors);
         }
