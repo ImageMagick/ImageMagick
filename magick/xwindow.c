@@ -1148,11 +1148,14 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
     *map_type,
     *visual_type;
 
-  ssize_t
-    visual_mask;
-
   register int
     i;
+
+  size_t
+    one;
+
+  ssize_t
+    visual_mask;
 
   static int
     number_visuals;
@@ -1176,8 +1179,9 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
   visual_mask=VisualScreenMask;
   visual_template.screen=XDefaultScreen(display);
   visual_template.depth=XDefaultDepth(display,XDefaultScreen(display));
+  one=1;
   if ((resource_info->immutable != MagickFalse) && (resource_info->colors != 0))
-    if (resource_info->colors <= (1UL << (size_t) visual_template.depth))
+    if (resource_info->colors <= (one << (size_t) visual_template.depth))
       visual_mask|=VisualDepthMask;
   if (visual_type != (char *) NULL)
     {
@@ -1779,7 +1783,7 @@ MagickExport void XDelay(Display *display,const size_t milliseconds)
   if (milliseconds == 0)
     return;
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  Sleep(milliseconds);
+  Sleep((long) milliseconds);
 #elif defined(vms)
   {
     float
@@ -4272,7 +4276,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                       (~(window_info[id].visual->blue_mask)+1);
                     for (i=0; i < (int) number_colors; i++)
                     {
-                      colors[i].pixel=red | green | blue;
+                      colors[i].pixel=(unsigned long) (red | green | blue);
                       colors[i].pad='\0';
                       red+=red_bit;
                       if (red > window_info[id].visual->red_mask)
