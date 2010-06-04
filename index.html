@@ -162,7 +162,9 @@
 
 <p>The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: <a href="www/api.html#ada">G2F</a> (Ada), <a href="www/api.html#c">MagickCore</a> (C), <a href="www/api.html#c">MagickWand</a> (C), <a href="www/api.html#ch">ChMagick</a> (Ch), <a href="www/api.html#com+">ImageMagickObject</a> (COM+), <a href="www/api.html#c++">Magick++</a> (C++), <a href="www/api.html#java">JMagick</a> (Java), <a href="www/api.html#lisp">L-Magick</a> (Lisp), <a href="www/api.html#neko">NMagick</a> (Neko/haXe), <a href="www/api.html#dot-net">MagickNet</a> (.NET), <a href="www/api.html#pascal">PascalMagick</a> (Pascal),  <a href="www/api.html#perl">PerlMagick</a> (Perl), <a href="www/api.html#php">MagickWand for PHP</a> (PHP),  <a href="www/api.html#php">IMagick</a> (PHP), <a href="www/api.html#python">PythonMagick</a> (Python), <a href="www/api.html#ruby">RMagick</a> (Ruby), or <a href="www/api.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <em>automagically</em>.</p>
 
-<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute. Its <a href="http://www.imagemagick.org/www/license.html" rel="license">license</a> is compatible with the <a href="http://www.fsf.org/licensing/licenses/">GPL</a>.  It runs on all major operating systems.</p>
+<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style <a href="http://www.imagemagick.org/www/license.html" rel="license">license</a>,  approved by the <a href="http://www.opensource.org/">OSI</a>.</p>
+
+<p>The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="http://www.valgrind.org">memory and thread</a> error detection to help prevent exploits.</p>
 </div>
 
 <div class="siz-mod-head">
@@ -184,17 +186,18 @@
   <li>Special effects: blur, sharpen, threshold, or tint an image.</li>
   <li>Animation: create a GIF animation sequence from a group of images.</li>
   <li>Text &amp; comments: insert descriptive or artistic text in an image.</li>
-  <li><a href="www/identify.html">Image identification</a>: describe the format and properties of an image.</li>
+  <li><a href="www/identify.html">Image identification</a>: describe the format and attributes of an image.</li>
   <li><a href="www/composite.html">Composite</a>: overlap one image over another.</li>
   <li><a href="www/montage.html">Montage</a>: juxtapose image thumbnails on an image canvas.</li>
+  <li><a href="http://www.imagemagick.org/Usage/morphology/">Morphology of shapes</a>: extract features, describe shapes and recognize patterns in images.</li>
   <li><a href="www/motion-picture.html">Motion picture support</a>: read and write the common image formats used in digital film work.</li>
   <li><a href="www/fx.html">Image calculator</a>: apply a mathematical expression to an image or image channels.</li>
   <li><a href="http://www.imagemagick.org/Usage/fourier">Discrete Fourier transform</a>: implements the forward and inverse DFT.</li>
   <li><a href="www/high-dynamic-range.html">High dynamic-range images</a>: accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</li>
   <li><a href="www/cipher.html">Encipher or decipher an image</a>: convert ordinary images into unintelligible gibberish and back again.</li>
-  <li>Virtual pixel support: convenient access to pixels outside the image region.</li>
+  <li><a href="www/architecture.html#virtual-pixels">Virtual pixel support</a>: convenient access to pixels outside the image region.</li>
   <li><a href="www/architecture.html#tera-pixel">Large image support</a>: read, process, or write mega-, giga-, or tera-pixel image sizes.</li>
-  <li><a href="www/architecture.html#threads">Threads of execution support</a>: ImageMagick is thread safe and most internal algorithms are OpenMP-enabled to take advantage of speed-ups offered by the dual and quad-core processor technologies.</li>
+  <li><a href="www/architecture.html#threads">Threads of execution support</a>: ImageMagick is thread safe and most internal algorithms are OpenMP-enabled to take advantage of speed-ups offered by multicore processor chips.</li>
   <li><a href="www/architecture.html#distributed">Heterogeneous distributed processing</a>: certain algorithms are OpenCL-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</li>
 </ul>
 

@@ -141,9 +141,6 @@
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
-<div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
-</div>
 </div>
 </div>
 
@@ -152,10 +149,21 @@
 
 <div class="main">
 
-<ul><dt>2010-05-28  6.6.2.1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<ul><dt>2010-05-25  6.6.2-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Replaced '^' morphology kernel rotation with two varients '>' and '<'</li>
+  <li> Hopefully finally settled the kernel defintion of 'Skeleton' to    correctly thin down ANY starting image, as symetrically as posible.</li>
+  <li> Spelling correction:  Manhatten -&gt; Manhattan</li><br />
+<dt>2010-06-01  6.6.2-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Properly scale color components of the PNG bKGD chunk.</li>
+  <li> Prevent MNG divide by zero in calculation of frame_timeout.  Set    both frame_delay and frame_timeout to infinite when ticks_per_second    is zero, as required by the MNG spec.</li><br />
+<dt>2010-05-31  6.6.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Add x:silent option to prevent beeps when reading the X image format.</li>
+  <li> Recognize TTF for GetMagicInfo().</li>
+  <li> Ensure the +set option deletes the image artifact.</li><br />
+<dt>2010-05-28  6.6.2-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Prevent coders/png.c from attempting to write an empty tRNS chunk.</li><br />
-<dt>2010-05-25  6.6.2.1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Finish for Square Array Rotates (off center origin rotate)</li>
+<dt>2010-05-25  6.6.2-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Fix for Square Array Rotates (off center origin rotate)</li>
   <li> Added HitAndMiss kernel Ridges2 to find 2 pixel thick ridges</li>
   <li> Added FreiChen:0,{angle}  FreiChen:{angle} and FreiChen:-1 variations    to complete this kernels definition</li><br />
 <dt>2010-05-24  6.6.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -164,14 +172,14 @@
   <li> Compute the proper DPX user data field size.</li>
   <li> Do not interpret a format specifier when enclosed in brackets (e.g.    rose_tile_%[filename:tile].gif.</li>
   <li> Use 64-bit types when compiling with the 64-bit Visual C++ compiler under    Windows.</li>
-  <li> Prevent MNG divide by zero (refererce    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16320).</li><br />
-<dt>2010-05-23  6.6.2.0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Prevent MNG divide by zero in calculation of frame_delay (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16320).</li><br />
+<dt>2010-05-23  6.6.2-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Third Re-write of MorphologyApply() to better handle compound methods.</li>
   <li> Implemented  -set option:morphology:compose for merging results of    multiple kernels. "None" means re-iterate results with next kernel.    While "Undefined" means to use the internal default for a method.    Thinning, Thickening, HitAndMiss, Convolve, Correlate defaults to "None"    while HitAndMiss defaults to "Lighten" (union of all kernel results).    Other morphology methods defaults still to be decided.</li>
   <li> Added HitAndMiss Kernel: Ridges  (find ridges and pixel width lines)</li>
   <li> Rotation Expansion of single kernels '^' and '@' flags in arguments    EG: -set option:showkernel 1 -morphology Convolve 'Blur:0x2^'</li>
   <li> ExpandKernelInfo() (rotation expand) now groks symmetrical kernels.    So the above will only produce a list of 2 kernels, not 4 kernels</li><br />
-<dt>2010-05-18  6.6.2.0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2010-05-18  6.6.2-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Separation of internal function MorphologyAppy() from    MorphologyImageChannel() to calls to convolve without user settings.</li>
   <li> Rewrite of MorphologyApply() to output better 'verbose' messages</li>
   <li> Better handling of Gaussian tyle filters (bug fixes)</li>
@@ -551,7 +559,7 @@
 <dt>2009-07-01  6.5.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Add -blue-shift option.</li>
   <li> Add compression flag for each channel of a PSD layer.</li>
-  <li> Implement experimental forward and inverse fourier transforms (contributed    by Sean Burke and Fred Weinhaus).  The -fft / -ifft option is not ready for    prime time just yet.</li>
+  <li> Implement experimental forward and inverse Fourier transforms (contributed    by Sean Burke and Fred Weinhaus).  The -fft / -ifft option is not ready for    prime time just yet.</li>
   <li> Support -cdl (color decision list) option.</li>
   <li> Support breaks in Chinese characters which traditionally do not include    spaces.</li>
   <li> Don't process directories as filenames when using wildcard paths    (i.e. logo[1]/png).</li><br />
@@ -1551,7 +1559,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
