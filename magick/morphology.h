@@ -58,7 +58,7 @@ typedef enum
   SkeletonKernel,
   MatKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */
-  ManhattenKernel,
+  ManhattanKernel,
   EuclideanKernel,
   TestKernel,         /* Kernel being tested as posible addition */
   UserDefinedKernel   /* User Specified Kernel Array */

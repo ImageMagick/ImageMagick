@@ -1077,16 +1077,16 @@ static const OptionInfo
     { "Edges", (ssize_t) EdgesKernel, MagickFalse },
     { "Corners", (ssize_t) CornersKernel, MagickFalse },
     { "Ridges", (ssize_t) RidgesKernel, MagickFalse },
-    { "Ridges2", (ssize_t) Ridges2Kernel, MagickFalse },
+    { "Ridges2", (ssize_t) Ridges2Kernel, MagickTrue },  /* experimental */
     { "LineEnds", (ssize_t) LineEndsKernel, MagickFalse },
     { "LineJunctions", (ssize_t) LineJunctionsKernel, MagickFalse },
     { "ConvexHull", (ssize_t) ConvexHullKernel, MagickFalse },
     { "Skeleton", (ssize_t) SkeletonKernel, MagickFalse },
-    { "Mat", (ssize_t) MatKernel, MagickTrue },      /* experimental */
+    { "Mat", (ssize_t) MatKernel, MagickTrue },         /* experimental */
     { "Chebyshev", (ssize_t) ChebyshevKernel, MagickFalse },
-    { "Manhatten", (ssize_t) ManhattenKernel, MagickFalse },
+    { "Manhattan", (ssize_t) ManhattanKernel, MagickFalse },
     { "Euclidean", (ssize_t) EuclideanKernel, MagickFalse },
-    { "Test", (ssize_t) TestKernel, MagickTrue },    /* experimental */
+    { "Test", (ssize_t) TestKernel, MagickTrue },       /* experimental */
     { "User Defined", (ssize_t) UserDefinedKernel, MagickTrue }, /* internal */
     { (char *) NULL, (ssize_t) UndefinedKernel, MagickFalse }
   },
