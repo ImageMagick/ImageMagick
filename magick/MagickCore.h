@@ -48,6 +48,11 @@ extern "C" {
 
 #if defined(WIN32) || defined(WIN64)
 #  define MAGICKCORE_WINDOWS_SUPPORT
+#if defined(_WIN64) 
+ typedef __int64 ssize_t;
+#else
+ typedef long ssize_t;
+#endif
 #else
 #  define MAGICKCORE_POSIX_SUPPORT
 #endif 
