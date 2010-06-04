@@ -112,7 +112,8 @@ static inline double MagickMax(const double x,const double y)
 /* Currently these are only internal to this module */
 static void
   CalcKernelMetaData(KernelInfo *),
-  ExpandKernelInfo(KernelInfo *, const double),
+  ExpandMirrorKernelInfo(KernelInfo *),
+  ExpandRotateKernelInfo(KernelInfo *, const double),
   RotateKernelInfo(KernelInfo *, double);
 
 
@@ -163,20 +164,16 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %
 %  Input kernel defintion strings can consist of any of three types.
 %
-%    "name:args"
+%    "name:args[[@><]"
 %         Select from one of the built in kernels, using the name and
 %         geometry arguments supplied.  See AcquireKernelBuiltIn()
 %
-%    "WxH[+X+Y][^@]:num, num, num ..."
+%    "WxH[+X+Y][@><]:num, num, num ..."
 %         a kernel of size W by H, with W*H floating point numbers following.
 %         the 'center' can be optionally be defined at +X+Y (such that +0+0
 %         is top left corner). If not defined the pixel in the center, for
 %         odd sizes, or to the immediate top or left of center for even sizes
 %         is automatically selected.
-%
-%         If a '^' is included the kernel expanded with 90-degree rotations,
-%         While a '@' will allow you to expand a 3x3 kernel using 45-degree
-%         circular rotates.
 %
 %    "num, num, num, num, ..."
 %         list of floating point numbers defining an 'old style' odd sized
@@ -191,6 +188,13 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %
 %  Any extra ';' characters, at start, end or between kernel defintions are
 %  simply ignored.
+%
+%  The special flags will expand a single kernel, into a list of rotated
+%  kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree
+%  cyclic rotations, while a '>' will generate a list of 90-degree rotations.
+%  The '<' also exands using 90-degree rotates, but giving a 180-degree
+%  reflected kernel before the +/- 90-degree rotations, which can be important
+%  for Thinning operations.
 %
 %  Note that 'name' kernels will start with an alphabetic character while the
 %  new kernel specification has a ':' character in its specification string.
@@ -358,9 +362,11 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     return(DestroyKernelInfo(kernel));
 
   if ( (flags & AreaValue) != 0 )         /* '@' symbol in kernel size */
-    ExpandKernelInfo(kernel, 45.0);
-  else if ( (flags & MinimumValue) != 0 ) /* '^' symbol in kernel size */
-    ExpandKernelInfo(kernel, 90.0);
+    ExpandRotateKernelInfo(kernel, 45.0); /* cyclic rotate 3x3 kernels */
+  else if ( (flags & GreaterValue) != 0 ) /* '>' symbol in kernel args */
+    ExpandRotateKernelInfo(kernel, 90.0); /* 90 degree rotate of kernel */
+  else if ( (flags & LessValue) != 0 )    /* '<' symbol in kernel args */
+    ExpandMirrorKernelInfo(kernel);       /* 90 degree mirror rotate */
 
   return(kernel);
 }
@@ -458,9 +464,11 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
   /* global expand to rotated kernel list - only for single kernels */
   if ( kernel->next == (KernelInfo *) NULL ) {
     if ( (flags & AreaValue) != 0 )         /* '@' symbol in kernel args */
-      ExpandKernelInfo(kernel, 45.0);
-    else if ( (flags & MinimumValue) != 0 ) /* '^' symbol in kernel args */
-      ExpandKernelInfo(kernel, 90.0);
+      ExpandRotateKernelInfo(kernel, 45.0);
+    else if ( (flags & GreaterValue) != 0 ) /* '>' symbol in kernel args */
+      ExpandRotateKernelInfo(kernel, 90.0);
+    else if ( (flags & LessValue) != 0 )    /* '<' symbol in kernel args */
+      ExpandMirrorKernelInfo(kernel);
   }
 
   return(kernel);
@@ -1231,7 +1239,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           case 19:  /* a 9x9 LoG (sigma approx 1.4) */
             /* http://www.cscjournals.org/csc/manuscript/Journals/IJIP/volume3/Issue1/IJIP-15.pdf */
             kernel=ParseKernelArray(
-              "9: 0,-1,-1,-2,-2,-2,-1,-1,0  -1,-2,-4,-5,-5,-5,-4,-2,-1  -1,-4,-5,-3,-0,-3,-5,-4,-1  -2,-5,-3,@12,@24,@12,-3,-5,-2  -2,-5,-0,@24,@40,@24,-0,-5,-2  -2,-5,-3,@12,@24,@12,-3,-5,-2  -1,-4,-5,-3,-0,-3,-5,-4,-1  -1,-2,-4,-5,-5,-5,-4,-2,-1  0,-1,-1,-2,-2,-2,-1,-1,0");
+              "9: 0,-1,-1,-2,-2,-2,-1,-1,0  -1,-2,-4,-5,-5,-5,-4,-2,-1  -1,-4,-5,-3,-0,-3,-5,-4,-1  -2,-5,-3,12,24,12,-3,-5,-2  -2,-5,-0,24,40,24,-0,-5,-2  -2,-5,-3,12,24,12,-3,-5,-2  -1,-4,-5,-3,-0,-3,-5,-4,-1  -1,-2,-4,-5,-5,-5,-4,-2,-1  0,-1,-1,-2,-2,-2,-1,-1,0");
             break;
         }
         if (kernel == (KernelInfo *) NULL)
@@ -1576,7 +1584,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0); /* Create a list of 4 rotated kernels */
+        ExpandMirrorKernelInfo(kernel); /* mirror expansion of other kernels */
         break;
       }
     case CornersKernel:
@@ -1585,7 +1593,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0); /* Create a list of 4 rotated kernels */
+        ExpandRotateKernelInfo(kernel, 90.0); /* Expand 90 degree rotations */
         break;
       }
     case RidgesKernel:
@@ -1594,7 +1602,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
+        ExpandRotateKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
         break;
       }
     case Ridges2Kernel:
@@ -1605,17 +1613,17 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0); /* 4 rotated kernels */
+        ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotated kernels */
 #if 0
         /* 2 pixel diagonaly thick - 4 rotates - not needed? */
-        new_kernel=ParseKernelArray("4x4^:0,-,-,- -,1,-,- -,-,1,- -,-,-,0'");
+        new_kernel=ParseKernelArray("4x4>:0,-,-,- -,1,-,- -,-,1,- -,-,-,0'");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90.0);  /* 4 rotated kernels */
+        ExpandRotateKernelInfo(new_kernel, 90.0);  /* 4 rotated kernels */
         LastKernelInfo(kernel)->next = new_kernel;
 #endif
-        /* kernels to find a stepped 'thick' line - 4 rotates * mirror */
+        /* kernels to find a stepped 'thick' line, 4 rotates * mirror */
         /* Unfortunatally we can not yet rotate a non-square kernel */
         /* But then we can't flip a non-symetrical kernel either */
         new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
@@ -1668,13 +1676,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0);
+        ExpandRotateKernelInfo(kernel, 90.0);
         /* append second set of 4 kernels */
         new_kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,0,1");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90.0);
+        ExpandRotateKernelInfo(new_kernel, 90.0);
         LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
@@ -1687,13 +1695,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 45.0);
+        ExpandRotateKernelInfo(kernel, 45.0);
         /* append second set of 4 kernels */
         new_kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90.0);
+        ExpandRotateKernelInfo(new_kernel, 90.0);
         LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
@@ -1706,49 +1714,56 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 45.0);
+        ExpandRotateKernelInfo(kernel, 45.0);
         /* append the mirror versions too */
         new_kernel=ParseKernelArray("3: 1,1,1  1,0,-  -,-,0");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
-        ExpandKernelInfo(new_kernel, 45.0);
+        ExpandRotateKernelInfo(new_kernel, 45.0);
         LastKernelInfo(kernel)->next = new_kernel;
         break;
       }
     case SkeletonKernel:
       { /* what is the best form for skeletonization by thinning? */
-#if 1
-        /* Full Corner rotated to form edges too */
-        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
+#if 0
+        /* Use a edge/corner pruning method to generate a skeleton.
+        ** This actually works, but tends to generate slightly thick
+        ** diagonals.  Later thinning of those diagonals results in
+        ** asymetrically thining.
+        */
+        kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 45);
+        ExpandRotateKernelInfo(kernel, 45);
+        break;
+      }
 #endif
-#if 0
-        /* As last but thin the edges before looking for corners */
+#if 1
+        /* This is like simple 'Edge' thinning, but with a extra two
+        ** kernels (3 x 4 rotates => 12) to finish off the pruning
+        ** of the diagonal lines.
+        */
         KernelInfo
           *new_kernel;
         kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = type;
-        ExpandKernelInfo(kernel, 90.0);
-        new_kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,1");
+        new_kernel=ParseKernelArray("3: 0,0,0  0,1,1  1,1,-");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
         new_kernel->type = type;
-        ExpandKernelInfo(new_kernel, 90.0);
         LastKernelInfo(kernel)->next = new_kernel;
-#endif
-#if 0
-        kernel=AcquireKernelInfo("Edges;Corners");
-#endif
-#if 0
-        kernel=AcquireKernelInfo("Corners;Edges");
-#endif
+        new_kernel=ParseKernelArray("3: 0,0,0  1,1,0  -,1,1");
+        if (new_kernel == (KernelInfo *) NULL)
+          return(DestroyKernelInfo(kernel));
+        new_kernel->type = type;
+        LastKernelInfo(kernel)->next = new_kernel;
+        ExpandMirrorKernelInfo(kernel);
         break;
+#endif
       }
     case MatKernel: /* experimental - MAT from a Distance Gradient */
       {
@@ -1759,7 +1774,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
         kernel->type = RidgesKernel;
-        ExpandKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
+        ExpandRotateKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
         /* Plus the 2 pixel ridges kernel - no diagonal */
         new_kernel=AcquireKernelBuiltIn(Ridges2Kernel,args);
         if (new_kernel == (KernelInfo *) NULL)
@@ -1923,7 +1938,6 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 %    o kernel: the Morphology/Convolution kernel to be destroyed
 %
 */
-
 MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 {
   assert(kernel != (KernelInfo *) NULL);
@@ -1941,21 +1955,96 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     E x p a n d K e r n e l I n f o                                         %
+%     E x p a n d M i r r o r K e r n e l I n f o                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExpandKernelInfo() takes a single kernel, and expands it into a list
-%  of kernels each incrementally rotated the angle given.
+%  ExpandMirrorKernelInfo() takes a single kernel, and expands it into a
+%  sequence of 90-degree rotated kernels but providing a reflected 180
+%  rotatation, before the -/+ 90-degree rotations.
+%
+%  This special rotation order produces a better, more symetrical thinning of
+%  objects.
+%
+%  The format of the ExpandMirrorKernelInfo method is:
+%
+%      void ExpandMirrorKernelInfo(KernelInfo *kernel)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the Morphology/Convolution kernel
+%
+% This function is only internel to this module, as it is not finalized,
+% especially with regard to non-orthogonal angles, and rotation of larger
+% 2D kernels.
+*/
+
+#if 0
+static void FlopKernelInfo(KernelInfo *kernel)
+    { /* Do a Flop by reversing each row. */
+      size_t
+        y;
+      register ssize_t
+        x,r;
+      register double
+        *k,t;
+
+      for ( y=0, k=kernel->values; y < kernel->height; y++, k+=kernel->width)
+        for ( x=0, r=kernel->width-1; x<kernel->width/2; x++, r--)
+          t=k[x],  k[x]=k[r],  k[r]=t;
+
+      kernel->x = kernel->width - kernel->x - 1;
+      angle = fmod(angle+180.0, 360.0);
+    }
+#endif
+
+static void ExpandMirrorKernelInfo(KernelInfo *kernel)
+{
+  KernelInfo
+    *clone,
+    *last;
+
+  last = kernel;
+
+  clone = CloneKernelInfo(last);
+  RotateKernelInfo(clone, 180);   /* flip */
+  LastKernelInfo(last)->next = clone;
+  last = clone;
+
+  clone = CloneKernelInfo(last);
+  RotateKernelInfo(clone, 90);   /* transpose */
+  LastKernelInfo(last)->next = clone;
+  last = clone;
+
+  clone = CloneKernelInfo(last);
+  RotateKernelInfo(clone, 180);  /* flop */
+  LastKernelInfo(last)->next = clone;
+
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     E x p a n d R o t a t e K e r n e l I n f o                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ExpandRotateKernelInfo() takes a kernel list, and expands it by rotating
+%  incrementally by the angle given, until the first kernel repeats.
 %
 %  WARNING: 45 degree rotations only works for 3x3 kernels.
 %  While 90 degree roatations only works for linear and square kernels
 %
-%  The format of the RotateKernelInfo method is:
+%  The format of the ExpandRotateKernelInfo method is:
 %
-%      void ExpandKernelInfo(KernelInfo *kernel, double angle)
+%      void ExpandRotateKernelInfo(KernelInfo *kernel, double angle)
 %
 %  A description of each parameter follows:
 %
@@ -1997,7 +2086,7 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
   return MagickTrue;
 }
 
-static void ExpandKernelInfo(KernelInfo *kernel, const double angle)
+static void ExpandRotateKernelInfo(KernelInfo *kernel, const double angle)
 {
   KernelInfo
     *clone,
@@ -2009,10 +2098,10 @@ static void ExpandKernelInfo(KernelInfo *kernel, const double angle)
     RotateKernelInfo(clone, angle);
     if ( SameKernelInfo(kernel, clone) == MagickTrue )
       break;
-    last->next = clone;
+    LastKernelInfo(last)->next = clone;
     last = clone;
   }
-  clone = DestroyKernelInfo(clone); /* This was the same as the first - junk */
+  clone = DestroyKernelInfo(clone); /* kernel has repeated - junk the clone */
   return;
 }
 
@@ -3331,8 +3420,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   if ( 45.0 < fmod(angle, 180.0)  && fmod(angle,180.0) <= 135.0 )
     {
       if ( kernel->width == 1 || kernel->height == 1 )
-        { /* Do a transpose of the image, which results in a 90
-          ** degree rotation of a 1 dimentional kernel
+        { /* Do a transpose of a 1 dimentional kernel,
+          ** which results in a fast 90 degree rotation of some type.
           */
           ssize_t
             t;
@@ -3405,24 +3494,6 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
    * performed here, posibily with a linear kernel restriction.
    */
 
-#if 0
-    { /* Do a Flop by reversing each row.
-       */
-      size_t
-        y;
-      register ssize_t
-        x,r;
-      register double
-        *k,t;
-
-      for ( y=0, k=kernel->values; y < kernel->height; y++, k+=kernel->width)
-        for ( x=0, r=kernel->width-1; x<kernel->width/2; x++, r--)
-          t=k[x],  k[x]=k[r],  k[r]=t;
-
-      kernel->x = kernel->width - kernel->x - 1;
-      angle = fmod(angle+180.0, 360.0);
-    }
-#endif
   return;
 }
 
