@@ -35,7 +35,9 @@ typedef struct _QuantumState
     inverse_scale;
 
   unsigned int
-    pixel,
+    pixel;
+
+  size_t
     bits;
 
   const unsigned int

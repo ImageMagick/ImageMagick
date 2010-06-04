@@ -198,7 +198,7 @@ static inline const unsigned char *PushQuantumPixel(
   register ssize_t
     i;
 
-  register unsigned int
+  register size_t
     quantum_bits;
 
   *quantum=(QuantumAny) 0;
@@ -207,15 +207,16 @@ static inline const unsigned char *PushQuantumPixel(
     if (quantum_state->bits == 0UL)
       {
         quantum_state->pixel=(*pixels++);
-        quantum_state->bits=8U;
+        quantum_state->bits=8UL;
       }
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_state->bits)
       quantum_bits=quantum_state->bits;
-    i-=(ssize_t) quantum_bits;
+    i-=quantum_bits;
     quantum_state->bits-=quantum_bits;
-    *quantum=(*quantum << quantum_bits) | ((quantum_state->pixel >>
-      quantum_state->bits) &~ ((~0U) << quantum_bits));
+    *quantum=(unsigned int) ((*quantum << quantum_bits) |
+      ((quantum_state->pixel >> quantum_state->bits) &~ ((~0UL) <<
+      quantum_bits)));
   }
   return(pixels);
 }
