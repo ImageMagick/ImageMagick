@@ -827,7 +827,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  bits=8/(ssize_t) bits_per_pixel-1;  /* start at most significant bits */
+  bits=8/(int) bits_per_pixel-1;  /* start at most significant bits */
   literal=0;
   repeat=0;
   q=runlength;
@@ -882,7 +882,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
                   literal-=0x80;
                 }
             }
-        bits=8/(ssize_t) bits_per_pixel-1;
+        bits=8/(int) bits_per_pixel-1;
         buffer[literal+repeat]=0x00;
       }
     }

@@ -419,7 +419,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
-                    (void) WriteBlobMSBLong(ofile,(size_t) diff);
+                    (void) WriteBlobMSBLong(ofile,(unsigned int) diff);
                     offset=SeekBlob(ofile,currentpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
@@ -447,7 +447,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                   }
                 if (recnum != IPTC_ID)
                   {
-                    (void) WriteBlobMSBLong(ofile, (size_t) len);
+                    (void) WriteBlobMSBLong(ofile, (unsigned int) len);
                     outputlen += 4;
 
                     next=0;
@@ -465,7 +465,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
-                    (void) WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
+                    (void) WriteBlobMSBLong(ofile,0xFFFFFFFFU);
                     outputlen += 4;
                     savedolen = outputlen;
                   }
@@ -506,7 +506,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
       offset=SeekBlob(ofile,savedpos,SEEK_SET);
       if (offset < 0)
         return(-1);
-      (void) WriteBlobMSBLong(ofile,(size_t) diff);
+      (void) WriteBlobMSBLong(ofile,(unsigned int) diff);
       offset=SeekBlob(ofile,currentpos,SEEK_SET);
       if (offset < 0)
         return(-1);
@@ -695,7 +695,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
-                    (void) WriteBlobMSBLong(ofile,(size_t) diff);
+                    (void) WriteBlobMSBLong(ofile,(unsigned int) diff);
                     offset=SeekBlob(ofile,currentpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
@@ -723,7 +723,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                   }
                 if (recnum != IPTC_ID)
                   {
-                    (void) WriteBlobMSBLong(ofile,(size_t) len);
+                    (void) WriteBlobMSBLong(ofile,(unsigned int) len);
                     outputlen += 4;
 
                     next=0;
@@ -741,7 +741,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
-                    (void) WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
+                    (void) WriteBlobMSBLong(ofile,0xFFFFFFFFU);
                     outputlen += 4;
                     savedolen = outputlen;
                   }
@@ -781,7 +781,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
       offset=SeekBlob(ofile,savedpos,SEEK_SET);
       if (offset < 0)
         return(-1);
-      (void) WriteBlobMSBLong(ofile,(size_t) diff);
+      (void) WriteBlobMSBLong(ofile,(unsigned int) diff);
       offset=SeekBlob(ofile,currentpos,SEEK_SET);
       if (offset < 0)
         return(-1);

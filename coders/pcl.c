@@ -688,7 +688,8 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
     *previous_pixels;
 
   size_t
-    density;
+    density,
+    one;
 
   /*
     Open output image file.
@@ -712,6 +713,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       density=(size_t) geometry.rho;
     }
   scene=0;
+  one=1;
   do
   {
     if (image->colorspace != RGBColorspace)
@@ -783,7 +785,8 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
               ScaleQuantumToChar(image->colormap[i].blue),(double) i);
             (void) WriteBlobString(image,buffer);
           }
-          for ( ; i < (1L << bits_per_pixel); i++)
+          one=1;
+          for ( ; i < (ssize_t) (one << bits_per_pixel); i++)
           {
             (void) FormatMagickString(buffer,MaxTextExtent,"\033*v%.20gI",
               (double) i);

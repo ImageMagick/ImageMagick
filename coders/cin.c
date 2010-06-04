@@ -1028,12 +1028,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   value=GetCINProperty(image_info,image,"cin:origination.x_offset");
   if (value != (const char *) NULL)
     cin.origination.x_offset=StringToLong(value);
-  offset+=WriteBlobLong(image,(size_t) cin.origination.x_offset);
+  offset+=WriteBlobLong(image,(unsigned int) cin.origination.x_offset);
   cin.origination.y_offset=0UL;
   value=GetCINProperty(image_info,image,"cin:origination.y_offset");
   if (value != (const char *) NULL)
     cin.origination.y_offset=StringToLong(value);
-  offset+=WriteBlobLong(image,(size_t) cin.origination.y_offset);
+  offset+=WriteBlobLong(image,(unsigned int) cin.origination.y_offset);
   value=GetCINProperty(image_info,image,"cin:origination.filename");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.filename,value,

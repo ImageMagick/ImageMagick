@@ -2206,7 +2206,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG tRNS chunk.");
 
-      max_sample = (one << ping_bit_depth) - 1;
+      max_sample = (int) ((one << ping_bit_depth) - 1);
 
       if ((ping_color_type == PNG_COLOR_TYPE_GRAY &&
           (int)ping_trans_color->gray > max_sample) ||
