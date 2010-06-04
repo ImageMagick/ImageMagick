@@ -212,7 +212,7 @@ static inline const unsigned char *PushQuantumPixel(
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_state->bits)
       quantum_bits=quantum_state->bits;
-    i-=quantum_bits;
+    i-=(ssize_t) quantum_bits;
     quantum_state->bits-=quantum_bits;
     *quantum=(unsigned int) ((*quantum << quantum_bits) |
       ((quantum_state->pixel >> quantum_state->bits) &~ ((~0UL) <<
