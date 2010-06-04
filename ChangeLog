@@ -2,6 +2,7 @@
   * Replaced '^' morphology kernel rotation with two varients '>' and '<'
   * Hopefully finally settled the kernel defintion of 'Skeleton' to
     correctly thin down ANY starting image, as symetrically as posible.
+  * Spelling correction:  Manhatten -> Manhattan
 
 2010-06-01  6.6.2-2 Glenn Randers-Pehrson <glennrp@image...>
   * Properly scale color components of the PNG bKGD chunk.

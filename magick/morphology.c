@@ -446,7 +446,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
         args.xi = 1.0;
       break;
     case ChebyshevKernel:
-    case ManhattenKernel:
+    case ManhattanKernel:
     case EuclideanKernel:
       if ( (flags & HeightValue) == 0 )           /* no distance scale */
         args.sigma = 100.0;                       /* default distance scaling */
@@ -852,8 +852,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       'square' like distance function, but one where diagonals are closer
 %       than expected.
 %
-%    Manhatten:[{radius}][x{scale}[%!]]
-%       Manhatten Distance (also known as Rectilinear Distance, or the Taxi
+%    Manhattan:[{radius}][x{scale}[%!]]
+%       Manhattan Distance (also known as Rectilinear Distance, or the Taxi
 %       Cab metric), is the distance needed when you can only travel in
 %       orthogonal (horizontal or vertical) only.  It is the distance a 'Rook'
 %       in chess would travel. It results in a diamond like distances, where
@@ -874,7 +874,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       To allow the use of fractional distances that you get with diagonals
 %       the actual distance is scaled by a fixed value which the user can
 %       provide.  This is not actually nessary for either ""Chebyshev" or
-%       "Manhatten" distance kernels, but is done for all three distance
+%       "Manhattan" distance kernels, but is done for all three distance
 %       kernels.  If no scale is provided it is set to a value of 100,
 %       allowing for a maximum distance measurement of 655 pixels using a Q16
 %       version of IM, from any edge.  However for small images this can
@@ -939,7 +939,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case RingKernel:
     case PeaksKernel:
     case ChebyshevKernel:
-    case ManhattenKernel:
+    case ManhattanKernel:
     case EuclideanKernel:
 #else
     default:
@@ -1803,7 +1803,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->maximum = kernel->values[0];
         break;
       }
-    case ManhattenKernel:
+    case ManhattanKernel:
       {
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
@@ -3360,7 +3360,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     case PeaksKernel:
     case LaplacianKernel:
     case ChebyshevKernel:
-    case ManhattenKernel:
+    case ManhattanKernel:
     case EuclideanKernel:
       return;
 
