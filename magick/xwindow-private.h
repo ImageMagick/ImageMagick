@@ -433,7 +433,7 @@ typedef struct _XWindowInfo
   void
     *segment_info;
 
-  size_t
+  long
     mask;
 
   MagickBooleanType

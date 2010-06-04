@@ -829,7 +829,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
             entry=MWTable+((runlength/64)-1);
           else
             entry=EXTable+(MagickMin((size_t) runlength,2560)-1792)/64;
-          runlength-=(ssize_t) entry->count;
+          runlength-=(long) entry->count;
           HuffmanOutputCode(entry);
         }
       entry=TWTable+MagickMin((size_t) runlength,63);
@@ -849,7 +849,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
               entry=MBTable+((runlength/64)-1);
               if (runlength >= 1792)
                 entry=EXTable+(MagickMin((size_t) runlength,2560)-1792)/64;
-              runlength-=(ssize_t) entry->count;
+              runlength-=(long) entry->count;
               HuffmanOutputCode(entry);
             }
           entry=TBTable+MagickMin((size_t) runlength,63);
