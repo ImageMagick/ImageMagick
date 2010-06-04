@@ -188,7 +188,7 @@ static inline unsigned char *PopQuantumPixel(QuantumState *quantum_state,
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_state->bits)
       quantum_bits=quantum_state->bits;
-    i-=quantum_bits;
+    i-=(ssize_t) quantum_bits;
     if (quantum_state->bits == 8UL)
       *pixels='\0';
     quantum_state->bits-=quantum_bits;
