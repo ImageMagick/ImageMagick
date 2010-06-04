@@ -2075,7 +2075,7 @@ MagickExport int NTTruncateFile(int file,off_t length)
   DWORD
     file_pointer;
 
-  ssize_t
+  long
     file_handle,
     high,
     low;
@@ -2083,8 +2083,8 @@ MagickExport int NTTruncateFile(int file,off_t length)
   file_handle=_get_osfhandle(file);
   if (file_handle == -1L)
     return(-1);
-  low=(ssize_t) (length & 0xffffffffUL);
-  high=(ssize_t) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);
+  low=(long) (length & 0xffffffffUL);
+  high=(long) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);
   file_pointer=SetFilePointer((HANDLE) file_handle,low,&high,FILE_BEGIN);
   if ((file_pointer == 0xFFFFFFFF) && (GetLastError() != NO_ERROR))
     return(-1);
