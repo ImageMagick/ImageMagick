@@ -2550,8 +2550,9 @@ static size_t MorphologyPrimitive(const Image *image, Image
             ** neighbourhoods, 0.0 for background, and 1.0 for foreground
             ** with either Nan or 0.5 values for don't care.
             **
-            ** Note that this can produce negative results, though really
-            ** only a positive match has any real value.
+            ** Note that this will never produce a meaningless negative
+            ** result.  Such results can cause Thinning/Thicken to not work
+            ** correctly when used against a greyscale image.
             */
             k = kernel->values;
             k_pixels = p;
@@ -2583,7 +2584,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
               k_pixels += image->columns+kernel->width;
               k_indexes += image->columns+kernel->width;
             }
-            /* Pattern Match  only if min fg larger than min bg pixels */
+            /* Pattern Match if difference is positive */
             min.red     -= max.red;     Maximize( min.red,     0.0 );
             min.green   -= max.green;   Maximize( min.green,   0.0 );
             min.blue    -= max.blue;    Maximize( min.blue,    0.0 );
@@ -2708,12 +2709,12 @@ static size_t MorphologyPrimitive(const Image *image, Image
           result.index   -= min.index;
           break;
         case ThickenMorphology:
-          /* Union with original image (maximize) - or should this be + */
-          Maximize( result.red,     min.red );
-          Maximize( result.green,   min.green );
-          Maximize( result.blue,    min.blue );
-          Maximize( result.opacity, min.opacity );
-          Maximize( result.index,   min.index );
+          /* Add the pattern matchs to the original */
+          result.red     += min.red;
+          result.green   += min.green;
+          result.blue    += min.blue;
+          result.opacity += min.opacity;
+          result.index   += min.index;
           break;
         default:
           /* result directly calculated or assigned */
