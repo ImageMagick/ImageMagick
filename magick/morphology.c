@@ -2177,13 +2177,17 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  a list of multiple kernels.
 %
 %  It is basically equivelent to as MorphologyImageChannel() (see below) but
-%  without user controls, that that function extracts and applies to kernels
-%  and morphology methods.
+%  without any user controls.  This allows internel programs to use this
+%  function, to actually perform a specific task without posible interference
+%  by any API user supplied settings.
+%
+%  It is MorphologyImageChannel() task to extract any such user controls, and
+%  pass them to this function for processing.
 %
 %  More specifically kernels are not normalized/scaled/blended by the
-%  'convolve:scale' Image Artifact (-set setting), and the convolve bias
-%  (-bias setting or image->bias) is passed directly to this function,
-%  and not extracted from an image.
+%  'convolve:scale' Image Artifact (setting), nor is the convolve bias
+%  (-bias setting or image->bias) loooked at, but must be supplied from the
+%  function arguments.
 %
 %  The format of the MorphologyApply method is:
 %
@@ -3248,7 +3252,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   if ( method == ConvolveMorphology ||  method == CorrelateMorphology )
     {
       artifact = GetImageArtifact(image,"convolve:scale");
-      if ( artifact != (char *)NULL ) {
+      if ( artifact != (const char *)NULL ) {
         if ( curr_kernel == kernel )
           curr_kernel = CloneKernelInfo(kernel);
         if (curr_kernel == (KernelInfo *) NULL) {
