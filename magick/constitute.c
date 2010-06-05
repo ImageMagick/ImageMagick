@@ -909,6 +909,9 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   register const char
     *p;
 
+  /*
+    Skip over header (e.g. data:image/gif;base64,).
+  */
   image=NewImageList();
   for (p=content; (*p != ',') && (*p != '\0'); p++) ;
   if (*p == '\0')

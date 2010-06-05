@@ -1,3 +1,6 @@
+2010-06-06  6.6.2-3 Cristy  <quetzlzacatenango@image...>
+  * Reset image filename when reading inline images.
+
 2010-05-25  6.6.2-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced '^' morphology kernel rotation with two varients '>' and '<'
   * Hopefully finally settled the kernel defintion of 'Skeleton' to
