@@ -2374,6 +2374,7 @@ MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
 MogrifyDelegate = @MogrifyDelegate@
+MrSIDDecodeDelegate = @MrSIDDecodeDelegate@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
