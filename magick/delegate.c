@@ -117,7 +117,7 @@ static const char
     "  <delegate decode=\"rad\" command=\"&quot;ra_pfm&quot; &quot;%i&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"rgba\" encode=\"rle\" mode=\"encode\" command=\"&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;\"/>"
     "  <delegate decode=\"scan\" command=\"&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;\"/>"
-    "  <delegate encode=\"show\" stealth=\"True\" spawn=\"True\" command=\"&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %g -title &quot;%l of %f&quot; &quot;temporary:%i&quot;\"/>"
+    "  <delegate encode=\"show\" spawn=\"True\" command=\"&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %g -title &quot;%l of %f&quot; &quot;temporary:%i&quot;\"/>"
     "  <delegate decode=\"shtml\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"svg\" command=\"&quot;rsvg&quot; &quot;%i&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"txt\" encode=\"ps\" mode=\"bi\" command=\"&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;\"/>"

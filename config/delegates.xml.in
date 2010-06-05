@@ -101,7 +101,7 @@
   <delegate decode="rgba" encode="rle" mode="encode" command="&quot;@RLEEncodeDelegate@&quot; -o &quot;%o&quot; -v &quot;%i&quot;"/>
   <delegate decode="scan" command="&quot;@SCANDecodeDelegate@&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="scanx" command="&quot;@SCANDecodeDelegate@&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="miff" encode="show" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; -delay 0 -window-group %[group] -title &quot;%l of %f&quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; -delay 0 -window-group %[group] -title &quot;%l of %f&quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="shtml" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="svg" command="&quot;@RSVGDecodeDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="txt" encode="ps" mode="bi" command="&quot;@TXTDelegate@&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
