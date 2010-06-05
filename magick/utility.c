@@ -788,12 +788,6 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         filelist=StringToArgv(files,&number_images);
         files=DestroyString(files);
         number_files=(size_t) number_images;
-        if (filelist != (char **) NULL)
-          {
-            number_files--;
-            for (j=0; j < (ssize_t) number_files; j++)
-              filelist[j]=filelist[j+1];
-          }
         count--;
       }
     if (filelist == (char **) NULL)
