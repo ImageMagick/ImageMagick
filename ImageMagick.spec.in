@@ -12,7 +12,7 @@ Source0:        ftp://ftp.imagemagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
-BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel
+BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
 BuildRequires:  ghostscript-devel, djvulibre-devel
 BuildRequires:  libwmf-devel, jasper-devel, libtool-ltdl-devel
 BuildRequires:  libX11-devel, libXext-devel, libXt-devel
@@ -23,7 +23,11 @@ ImageMagick is a software suite to create, edit, and compose bitmap images. It c
 
 The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), nMagick (Neko/haXe), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically.
 
-ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.
+ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style license, approved by the OSI.
+
+The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory and thread error detection to help prevent exploits.ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style license, approved by the OSI.
+
+The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory and thread error detection to help prevent exploits.
 
 %package devel
 Summary: Library links and header files for ImageMagick application development
