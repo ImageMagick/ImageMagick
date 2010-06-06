@@ -1,6 +1,6 @@
 /* slist.h -- generalised singly linked lists
 
-   Copyright (C) 2000, 2004 Free Software Foundation, Inc.
+   Copyright (C) 2000, 2004, 2009 Free Software Foundation, Inc.
    Written by Gary V. Vaughan, 2000
 
    NOTE: The canonical source of this file is maintained with the
@@ -48,6 +48,8 @@ or obtained by writing to the Free Software Foundation, Inc.,
 #  define LT_SCOPE
 #endif
 
+#include <stddef.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -65,7 +67,7 @@ LT_SCOPE SList *slist_concat	(SList *head, SList *tail);
 LT_SCOPE SList *slist_cons	(SList *item, SList *slist);
 
 LT_SCOPE SList *slist_delete	(SList *slist, void (*delete_fct) (void *item));
-LT_SCOPE void *	slist_remove	(SList **phead, SListCallback *find,
+LT_SCOPE SList *slist_remove	(SList **phead, SListCallback *find,
 				 void *matchdata);
 LT_SCOPE SList *slist_reverse	(SList *slist);
 LT_SCOPE SList *slist_sort	(SList *slist, SListCompare *compare,

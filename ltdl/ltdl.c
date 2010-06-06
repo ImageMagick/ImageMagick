@@ -208,7 +208,7 @@ LT_BEGIN_C_DECLS
 LT_SCOPE const lt_dlvtable *	get_vtable (lt_user_data data);
 LT_END_C_DECLS
 #ifdef HAVE_LIBDLLOADER
-extern lt_dlsymlist		preloaded_symbols;
+extern lt_dlsymlist		preloaded_symbols[];
 #endif
 
 /* Initialize libltdl. */
@@ -234,7 +234,7 @@ lt_dlinit (void)
 #ifdef HAVE_LIBDLLOADER
       if (!errors)
 	{
-	  errors += lt_dlpreload (&preloaded_symbols);
+	  errors += lt_dlpreload (preloaded_symbols);
 	}
 
       if (!errors)
@@ -994,7 +994,7 @@ trim (char **dest, const char *str)
 
   FREE (*dest);
 
-  if (!end)
+  if (!end || end == str)
     return 1;
 
   if (len > 3 && str[0] == '\'')
@@ -1265,7 +1265,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
       if (vtable)
 	{
 	  /* name + "." + libext + NULL */
-	  archive_name = MALLOC (char, LT_STRLEN (name) + LT_STRLEN (libext) + 2);
+	  archive_name = MALLOC (char, LT_STRLEN (name) + strlen (libext) + 2);
 	  *phandle = (lt_dlhandle) lt__zalloc (sizeof (struct lt__handle));
 
 	  if ((*phandle == NULL) || (archive_name == NULL))
@@ -1487,7 +1487,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 }
 
 
-/* If the last error messge store was `FILE_NOT_FOUND', then return
+/* If the last error message stored was `FILE_NOT_FOUND', then return
    non-zero.  */
 static int
 file_not_found (void)
@@ -1507,7 +1507,7 @@ file_not_found (void)
 static int
 has_library_ext (const char *filename)
 {
-  char *	ext     = 0;
+  const char *	ext     = 0;
 
   assert (filename);
 
@@ -1615,6 +1615,9 @@ lt_dlopenadvise (const char *filename, lt_dladvise advise)
 {
   lt_dlhandle	handle	= 0;
   int		errors	= 0;
+  const char *	saved_error	= 0;
+
+  LT__GETERROR (saved_error);
 
   /* Can't have symbols hidden and visible at the same time!  */
   if (advise && advise->is_symlocal && advise->is_symglobal)
@@ -1651,6 +1654,7 @@ lt_dlopenadvise (const char *filename, lt_dladvise advise)
 
 #if defined(LT_MODULE_EXT)
       /* Try appending SHLIB_EXT.   */
+      LT__SETERRORSTR (saved_error);
       errors = try_dlopen (&handle, filename, shlib_ext, advise);
 
       /* As before, if the file was found but loading failed, return now
@@ -2062,7 +2066,7 @@ lt_dlerror (void)
   LT__GETERROR (error);
   LT__SETERRORSTR (0);
 
-  return error ? error : NULL;
+  return error;
 }
 
 static int
