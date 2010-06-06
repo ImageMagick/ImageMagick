@@ -34,6 +34,7 @@ $call Make cmyk.c
 $call Make cut.c
 $call Make dcm.c
 $call Make dds.c
+$call Make debug.c
 $call Make dib.c
 $call Make dng.c
 $call Make dps.c
@@ -133,8 +134,8 @@ $call Make scr.c
 $deass magick
 $deass wand
 $library/create libCoders.olb art,avs,bmp,braille,clip,clipboard,cip,cmyk, -
-  cut,dcm,dds,dib,dng,dps,dpx,emf,ept,exr,fax,fits,fpx,gif,gradient,gray, -
-  hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2,label,cals, -
+  cut,dcm,dds,debug,dib,dng,dps,dpx,emf,ept,exr,fax,fits,fpx,gif,gradient, -
+  gray,hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2,label,cals, -
   caption,palm,map,mat,matte, -
   meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg,null,otb,pattern,pcd,pcl,pcx,pdb, -
   pdf,pes,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,raw,rgb,rla,rle, -
