@@ -1,3 +1,6 @@
+2010-06-06  6.6.2-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Don't decode pixels in coders/png.c when image->ping is set.
+
 2010-06-06  6.6.2-3 Cristy  <quetzlzacatenango@image...>
   * Reset image filename when reading inline images.
 
