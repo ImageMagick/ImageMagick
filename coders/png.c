@@ -2348,8 +2348,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   */
   if (image->delay != 0)
     mng_info->scenes_found++;
-  if ((image_info->number_scenes != 0) && (mng_info->scenes_found > (ssize_t)
-      (image_info->first_scene+image_info->number_scenes)))
+  if ((image->ping != MagickFalse) || (
+      (image_info->number_scenes != 0) && (mng_info->scenes_found > (ssize_t)
+      (image_info->first_scene+image_info->number_scenes))))
     {
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
