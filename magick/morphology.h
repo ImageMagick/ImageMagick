@@ -51,12 +51,10 @@ typedef enum
   EdgesKernel,
   CornersKernel,
   RidgesKernel,
-  Ridges2Kernel,
   LineEndsKernel,
   LineJunctionsKernel,
   ConvexHullKernel,
   SkeletonKernel,
-  MatKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */
   ManhattanKernel,
   EuclideanKernel,
