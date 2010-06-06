@@ -304,9 +304,9 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         alpha=QuantumScale*((double) QuantumRange-q->opacity);
-        q->red=HDRIClampToQuantum(alpha*q->red);
-        q->green=HDRIClampToQuantum(alpha*q->green);
-        q->blue=HDRIClampToQuantum(alpha*q->blue);
+        q->red=ClampToQuantum(alpha*q->red);
+        q->green=ClampToQuantum(alpha*q->green);
+        q->blue=ClampToQuantum(alpha*q->blue);
         q++;
       }
     }

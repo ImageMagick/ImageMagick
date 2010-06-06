@@ -1233,11 +1233,12 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 }
 
 static MagickRealType
-  FxEvaluateSubexpression(FxInfo *,const ChannelType,const ssize_t,const ssize_t,
-    const char *,MagickRealType *,ExceptionInfo *);
+  FxEvaluateSubexpression(FxInfo *,const ChannelType,const ssize_t,
+    const ssize_t,const char *,MagickRealType *,ExceptionInfo *);
 
 static inline MagickRealType FxMax(FxInfo *fx_info,const ChannelType channel,
-  const ssize_t x,const ssize_t y,const char *expression,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const char *expression,
+  ExceptionInfo *exception)
 {
   MagickRealType
     alpha,
@@ -1248,7 +1249,8 @@ static inline MagickRealType FxMax(FxInfo *fx_info,const ChannelType channel,
 }
 
 static inline MagickRealType FxMin(FxInfo *fx_info,ChannelType channel,
-  const ssize_t x,const ssize_t y,const char *expression,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const char *expression,
+  ExceptionInfo *exception)
 {
   MagickRealType
     alpha,
@@ -1286,7 +1288,8 @@ static inline const char *FxSubexpression(const char *expression,
 }
 
 static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
-  const ssize_t x,const ssize_t y,const char *expression,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const char *expression,
+  ExceptionInfo *exception)
 {
   char
     *q,
@@ -2050,8 +2053,8 @@ static const char *FxOperatorPrecedence(const char *expression,
 }
 
 static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
-  const ChannelType channel,const ssize_t x,const ssize_t y,const char *expression,
-  MagickRealType *beta,ExceptionInfo *exception)
+  const ChannelType channel,const ssize_t x,const ssize_t y,
+  const char *expression,MagickRealType *beta,ExceptionInfo *exception)
 {
   char
     *q,
@@ -2772,8 +2775,8 @@ MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
 }
 
 MagickExport MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
-  const ChannelType channel,const ssize_t x,const ssize_t y,MagickRealType *alpha,
-  ExceptionInfo *exception)
+  const ChannelType channel,const ssize_t x,const ssize_t y,
+  MagickRealType *alpha,ExceptionInfo *exception)
 {
   MagickRealType
     beta;

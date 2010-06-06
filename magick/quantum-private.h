@@ -168,19 +168,6 @@ static inline float HalfToSinglePrecision(const unsigned short half)
   return(map.single_precision);
 }
 
-static inline Quantum HDRIClampToQuantum(const MagickRealType value)
-{
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) value);
-#else
-  if (value <= 0.0)
-    return((Quantum) 0);
-  if (value >= (MagickRealType) QuantumRange)
-    return((Quantum) QuantumRange);
-  return((Quantum) (value+0.5));
-#endif
-}
-
 static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
   const EndianType endian,QuantumState *quantum_state)
 {
