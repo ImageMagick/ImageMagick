@@ -706,7 +706,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         p++;
       }
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+        image->rows);
       if (status == MagickFalse)
         break;
     }

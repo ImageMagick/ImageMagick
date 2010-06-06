@@ -91,6 +91,7 @@ MAGICK_CODER_SRCS = \
 	coders/cut.c \
 	coders/dcm.c \
 	coders/dds.c \
+	coders/debug.c \
 	coders/dib.c \
 	coders/dng.c \
 	coders/dot.c \
@@ -202,6 +203,7 @@ coders_LTLIBRARIES = \
 	coders/cut.la \
 	coders/dcm.la \
 	coders/dds.la \
+	coders/debug.la \
 	coders/dib.la \
 	coders/dng.la \
 	coders/dot.la \
@@ -384,6 +386,12 @@ coders_dds_la_SOURCES      = coders/dds.c
 coders_dds_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_dds_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_dds_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# DEBUG coder module
+coders_debug_la_SOURCES      = coders/debug.c
+coders_debug_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_debug_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_debug_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # DIB coder module
 coders_dib_la_SOURCES      = coders/dib.c

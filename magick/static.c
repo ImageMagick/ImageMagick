@@ -180,6 +180,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterCUTImage();
   (void) RegisterDCMImage();
   (void) RegisterDDSImage();
+  (void) RegisterDEBUGImage();
   (void) RegisterDIBImage();
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   (void) RegisterDJVUImage();
@@ -347,6 +348,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterCUTImage();
   UnregisterDCMImage();
   UnregisterDDSImage();
+  UnregisterDEBUGImage();
   UnregisterDIBImage();
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   UnregisterDJVUImage();
