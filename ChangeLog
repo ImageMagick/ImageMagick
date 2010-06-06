@@ -8,7 +8,7 @@
 2010-05-25  6.6.2-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced '^' morphology kernel rotation with two varients '>' and '<'
   * Hopefully finally settled the kernel defintion of 'Skeleton' to
-    correctly thin down ANY starting image, as symetrically as posible.
+    correctly thin down ANY starting image, as symetrically as possible.
   * Spelling correction:  Manhatten -> Manhattan
 
 2010-06-01  6.6.2-2 Glenn Randers-Pehrson <glennrp@image...>
@@ -223,7 +223,7 @@
   * Fixed bug in equal-size tile cropping, when image has a page offset.
 
 2010-03-31  6.6.1-0 Cristy  <quetzlzacatenango@image...>
-  * The -recolor 4x4 matrix is now interpretted properly (previously it
+  * The -recolor 4x4 matrix is now interpreted properly (previously it
     summed rather than attenuating the alpha channel).
   * Support writing 1-bit PSD images.
   * Support LCMS 2.0.
@@ -336,7 +336,7 @@
   * Addition Third-level Subtractive Morphology Methods:
     EdgeIn, EdgeOut, Edge, TopHat, BottomHat
   * Ensuring original kernels passed to morphology are cloned before being
-    modifified for use by specific methods (EG: convolve scale/normalize)
+    modified for use by specific methods (EG: convolve scale/normalize)
 
 2010-02-03  6.5.9-2 Cristy  <quetzlzacatenango@image...>
   * display -immutable to display transparent image without a checkboard.
@@ -1184,7 +1184,7 @@
 2008-12-28  6.4.8-4 Rick Mabry  <rick.mabry@anony...>
   * Patch magick/display.c and PerlMagick/ContrastStretchImage() to return the
     same results as the -contrast-stretch option.
-  * ContrastStretchImageChannel() no longer interpretted as Contast() by
+  * ContrastStretchImageChannel() no longer interpreted as Contast() by
     MogrifyRegion() in PerlMagick.
 
 2008-12-28  6.4.8-3 Rick Mabry  <rick.mabry@anony...>
