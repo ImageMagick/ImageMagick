@@ -3392,7 +3392,7 @@ void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
 				 const Color &color_ )
 {
   // Test arguments to ensure they are within the image.
-  if ( y_ > rows() || x_ > columns() )
+  if ( y_ > (ssize_t) rows() || x_ > (ssize_t) columns() )
     throwExceptionExplicit( OptionError,
 	    "Access outside of image boundary" );
       
