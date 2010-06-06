@@ -299,32 +299,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=HDRIClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=HDRIClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->green=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=HDRIClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->blue=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=HDRIClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->opacity=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=HDRIClampToQuantum(QuantumRange*magnitude_source[i]);
+          indexes[x]=ClampToQuantum(QuantumRange*magnitude_source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=HDRIClampToQuantum(QuantumRange*magnitude_source[i]);
+          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
@@ -352,32 +352,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=HDRIClampToQuantum(QuantumRange*phase_source[i]);
+          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=HDRIClampToQuantum(QuantumRange*phase_source[i]);
+          q->green=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=HDRIClampToQuantum(QuantumRange*phase_source[i]);
+          q->blue=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=HDRIClampToQuantum(QuantumRange*phase_source[i]);
+          q->opacity=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=HDRIClampToQuantum(QuantumRange*phase_source[i]);
+          indexes[x]=ClampToQuantum(QuantumRange*phase_source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=HDRIClampToQuantum(QuantumRange*phase_source[i]);
+          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
@@ -1074,32 +1074,32 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=HDRIClampToQuantum(QuantumRange*source[i]);
+          q->red=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case GreenChannel:
         {
-          q->green=HDRIClampToQuantum(QuantumRange*source[i]);
+          q->green=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case BlueChannel:
         {
-          q->blue=HDRIClampToQuantum(QuantumRange*source[i]);
+          q->blue=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=HDRIClampToQuantum(QuantumRange*source[i]);
+          q->opacity=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=HDRIClampToQuantum(QuantumRange*source[i]);
+          indexes[x]=ClampToQuantum(QuantumRange*source[i]);
           break;
         }
         case GrayChannels:
         {
-          q->red=HDRIClampToQuantum(QuantumRange*source[i]);
+          q->red=ClampToQuantum(QuantumRange*source[i]);
           q->green=q->red;
           q->blue=q->red;
           break;
