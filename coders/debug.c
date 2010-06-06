@@ -249,6 +249,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
               (double) (QuantumRange-pixel.opacity));
             (void) ConcatenateMagickString(tuple,alpha,MaxTextExtent);
           }
+        (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");
         p++;
       }
