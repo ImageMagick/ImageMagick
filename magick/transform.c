@@ -911,7 +911,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   progress=0;
   image_view=AcquireCacheView(image);
   flip_view=AcquireCacheView(flip_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) flip_image->rows; y++)
@@ -931,8 +931,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(flip_view,0,(ssize_t) (flip_image->rows-y-1),
-      flip_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(flip_view,0,(ssize_t) (flip_image->rows-y-
+      1),flip_image->columns,1,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
@@ -1031,7 +1031,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   progress=0;
   image_view=AcquireCacheView(image);
   flop_view=AcquireCacheView(flop_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) flop_image->rows; y++)
