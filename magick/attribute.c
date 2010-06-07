@@ -163,7 +163,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   SetMagickPixelPacket(image,p,GetCacheViewAuthenticIndexQueue(image_view),
     &target[1]);
   GetMagickPixelPacket(image,&target[2]);
-  p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,exception);
+  p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
+    exception);
   SetMagickPixelPacket(image,p,GetCacheViewAuthenticIndexQueue(image_view),
     &target[2]);
   status=MagickTrue;
