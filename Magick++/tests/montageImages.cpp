@@ -44,7 +44,7 @@ int main( int /*argc*/, char ** /*argv*/)
     montageImages( &montage, imageList.begin(), imageList.end(), montageOpts );
 
     {
-      Geometry targetGeometry(128, 126 );
+      Geometry targetGeometry(120, 120 );
       if ( montage[0].montageGeometry() != targetGeometry )
         {
           ++failures;
@@ -58,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/)
         }
     }
 
-    if ( montage[0].columns() != 768 || montage[0].rows() != 504 )
+    if ( montage[0].columns() != 720 || montage[0].rows() != 480 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
@@ -93,7 +93,7 @@ int main( int /*argc*/, char ** /*argv*/)
       }
 
     {
-      Geometry targetGeometry( 66, 70 );
+      Geometry targetGeometry( 62, 66 );
       if ( montage[0].montageGeometry() != targetGeometry )
         {
           ++failures;
@@ -107,7 +107,7 @@ int main( int /*argc*/, char ** /*argv*/)
         }
     }
 
-    if ( montage[0].columns() != 136 || montage[0].rows() != 70 )
+    if ( montage[0].columns() != 128 || montage[0].rows() != 66 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
