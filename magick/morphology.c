@@ -850,19 +850,35 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Find any peak larger than the pixels the fall between the two radii.
 %       The default ring of pixels is as per "Ring".
 %    Edges
-%       Find edges of a binary shape
+%       Find flat orthogonal edges of a binary shape
 %    Corners
-%       Find corners of a binary shape
-%    Ridges:type
-%       Find single pixel ridges or thin lines
-%    LineEnds
+%       Find 90 degree corners of a binary shape
+%    LineEnds:type
 %       Find end points of lines (for pruning a skeletion)
+%       Two types of lines ends (default to both) can be searched for
+%         Type 0: All line ends
+%         Type 1: single kernel for 4-conneected line ends
+%         Type 2: single kernel for simple line ends
 %    LineJunctions
 %       Find three line junctions (within a skeletion)
+%         Type 0: all line junctions
+%         Type 1: Y Junction kernel
+%         Type 2: Diagonal T Junction kernel
+%         Type 3: Orthogonal T Junction kernel
+%         Type 4: Diagonal X Junction kernel
+%         Type 5: Orthogonal + Junction kernel
+%    Ridges:type
+%       Find single pixel ridges or thin lines
+%         Type 1: Fine single pixel thick lines and ridges
+%         Type 2: Find two pixel thick lines and ridges
 %    ConvexHull
 %       Octagonal thicken kernel, to generate convex hulls of 45 degrees
 %    Skeleton:type
 %       Traditional skeleton generating kernels.
+%         Type 1: Tradional Skeleton kernel (4 connected skeleton)
+%         Type 2: HIPR2 Skeleton kernel (8 connected skeleton)
+%         Type 3: Experimental Variation to try to present left-right symmetry
+%         Type 4: Experimental Variation to preserve left-right symmetry
 %
 %  Distance Measuring Kernels
 %
@@ -943,10 +959,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case CompassKernel:
     case KirschKernel:
     case FreiChenKernel:
-    case CornersKernel:    /* Hit and Miss kernels */
+    case EdgesKernel:       /* Hit and Miss kernels */
+    case CornersKernel:
     case LineEndsKernel:
     case LineJunctionsKernel:
-    case EdgesKernel:
     case RidgesKernel:
     case ConvexHullKernel:
     case SkeletonKernel:
@@ -1653,40 +1669,78 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     case LineEndsKernel:
-      {
-        KernelInfo
-          *new_kernel;
-        kernel=ParseKernelArray("3: 0,0,0  0,1,0  -,1,-");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandRotateKernelInfo(kernel, 90.0);
-        /* append second set of 4 kernels */
-        new_kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,0,1");
-        if (new_kernel == (KernelInfo *) NULL)
-          return(DestroyKernelInfo(kernel));
-        new_kernel->type = type;
-        ExpandRotateKernelInfo(new_kernel, 90.0);
-        LastKernelInfo(kernel)->next = new_kernel;
+      { /* Kernels for finding the end of thin lines */
+        switch ( (int) args->rho ) {
+          case 0:
+          default:
+            /* set of kernels to find all end of lines */
+            kernel=AcquireKernelInfo("LineEnds:1>;LineEnds:2>");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            break;
+          case 1:
+            /* kernel for 4-connected line ends - no rotation */
+            kernel=ParseKernelArray("3: 0,0,0  0,1,0  -,1,-");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+         case 2:
+            /* kernel to add for 8-connected lines - no rotation */
+            kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,0,1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+        }
         break;
       }
     case LineJunctionsKernel:
-      {
-        KernelInfo
-          *new_kernel;
-        /* first set of 4 kernels */
-        kernel=ParseKernelArray("3: -,1,-  -,1,-  1,-,1");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandRotateKernelInfo(kernel, 45.0);
-        /* append second set of 4 kernels */
-        new_kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
-        if (new_kernel == (KernelInfo *) NULL)
-          return(DestroyKernelInfo(kernel));
-        new_kernel->type = type;
-        ExpandRotateKernelInfo(new_kernel, 90.0);
-        LastKernelInfo(kernel)->next = new_kernel;
+      { /* kernels for finding the junctions of multiple lines */
+        switch ( (int) args->rho ) {
+          case 0:
+          default:
+            /* set of kernels to find all line junctions */
+            kernel=AcquireKernelInfo("LineJunctions:1@;LineJunctions:2>");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            break;
+          case 1:
+            /* Y Junction */
+            kernel=ParseKernelArray("3: 1,-,1  -,1,-  -,1,-");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+          case 2:
+            /* Diagonal T Junctions */
+            kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+          case 3:
+            /* Orthogonal T Junctions */
+            kernel=ParseKernelArray("3: -,-,-  1,1,1  -,1,-");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+          case 4:
+            /* Diagonal X Junctions */
+            kernel=ParseKernelArray("3: 1,-,1  -,1,-  1,-,1");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+          case 5:
+            /* Orthogonal X Junctions - minimal diamond kernel */
+            kernel=ParseKernelArray("3: -,1,-  1,1,1  -,1,-");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            break;
+        }
         break;
       }
     case RidgesKernel:
@@ -1708,16 +1762,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               return(kernel);
             kernel->type = type;
             ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotated kernels */
-#if 0
-            /* 2 pixel diagonaly thick - 4 rotates - not needed? */
-            new_kernel=ParseKernelArray("4x4>:0,-,-,- -,1,-,- -,-,1,- -,-,-,0'");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            ExpandRotateKernelInfo(new_kernel, 90.0);  /* 4 rotated kernels */
-            LastKernelInfo(kernel)->next = new_kernel;
-#endif
-            /* kernels to find a stepped 'thick' line, 4 rotates + mirrors */
+
+            /* Kernels to find a stepped 'thick' line, 4 rotates + mirrors */
             /* Unfortunatally we can not yet rotate a non-square kernel */
             /* But then we can't flip a non-symetrical kernel either */
             new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
@@ -1774,7 +1820,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           return(kernel);
         kernel->type = type;
         ExpandRotateKernelInfo(kernel, 45.0);
-        /* append the mirror versions too */
+        /* append the mirror versions too - no flip function yet */
         new_kernel=ParseKernelArray("3: 1,1,1  1,0,-  -,-,0");
         if (new_kernel == (KernelInfo *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -1880,6 +1926,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             new_kernel->type = type;
             LastKernelInfo(kernel)->next = new_kernel;
             ExpandMirrorKernelInfo(kernel);
+            /* Append a set of corner kernels */
+            new_kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
+            if (new_kernel == (KernelInfo *) NULL)
+              return(DestroyKernelInfo(kernel));
+            new_kernel->type = type;
+            ExpandRotateKernelInfo(new_kernel, 90.0);
+            LastKernelInfo(kernel)->next = new_kernel;
             break;
         }
         break;
