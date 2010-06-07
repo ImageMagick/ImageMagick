@@ -630,7 +630,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     crop_indexes=GetCacheViewAuthenticIndexQueue(crop_view);
-    (void) CopyMagickMemory(q,p,(size_t) crop_image->columns*sizeof(*q));
+    (void) CopyMagickMemory(q,p,(size_t) crop_image->columns*sizeof(*p));
     if ((indexes != (IndexPacket *) NULL) &&
         (crop_indexes != (IndexPacket *) NULL))
       (void) CopyMagickMemory(crop_indexes,indexes,(size_t) crop_image->columns*
