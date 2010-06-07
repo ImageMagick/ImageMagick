@@ -600,7 +600,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   progress=0;
   image_view=AcquireCacheView(image);
   crop_view=AcquireCacheView(crop_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) crop_image->rows; y++)
@@ -642,7 +642,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp critical (MagickCore_CropImage)
 #endif
         proceed=SetImageProgress(image,CropImageTag,progress++,image->rows);
@@ -954,7 +954,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp critical (MagickCore_FlipImage)
 #endif
         proceed=SetImageProgress(image,FlipImageTag,progress++,image->rows);
