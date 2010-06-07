@@ -2279,8 +2279,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY))
     {
+      size_t
+        one;
+
       image->storage_class=PseudoClass;
-      image->colors=1UL << ping_bit_depth;
+      one=1;
+      image->colors=one << ping_bit_depth;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
       if (image->colors > 256)
         image->colors=256;
@@ -7182,8 +7186,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             /* color_type is PNG_COLOR_TYPE_PALETTE */
             if (!mng_info->write_png_depth)
               {
+                size_t
+                  one;
+
                 ping_bit_depth=1;
-                while ((1UL << ping_bit_depth) < number_colors)
+                one=1;
+                while ((one << ping_bit_depth) < number_colors)
                   ping_bit_depth <<= 1;
               }
             ping_num_trans=0;

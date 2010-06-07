@@ -883,7 +883,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
                 MagickMax(1*image->colors-1,1));
             byte|=color << bit;
             if (bit != 0)
-              bit-=(ssize_t) bits_per_pixel;
+              bit-=(unsigned char) bits_per_pixel;
             else
               {
                 *ptr++=byte;
