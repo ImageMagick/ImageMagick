@@ -2752,7 +2752,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       /*
         Tile texture onto the image background.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture->rows)
@@ -2780,7 +2780,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(MAGICKCORE_FUTURE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp critical (MagickCore_TextureImage)
 #endif
             proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType)
