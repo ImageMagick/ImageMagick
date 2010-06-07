@@ -410,8 +410,8 @@ void Magick::Image::annotate ( const std::string &text_,
   if ( boundingArea_.isValid() ){
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
-        FormatMagickString( boundingArea, MaxTextExtent, "+%u+%u",
-                      boundingArea_.xOff(), boundingArea_.yOff() );
+        FormatMagickString( boundingArea, MaxTextExtent, "%+.20g%+.20g",
+          (double) boundingArea_.xOff(), (double) boundingArea_.yOff() );
       }
     else
       {

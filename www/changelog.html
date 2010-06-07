@@ -141,6 +141,9 @@
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
+<div  class="sponsor">
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+</div>
 </div>
 </div>
 
@@ -149,9 +152,14 @@
 
 <div class="main">
 
-<ul><dt>2010-05-25  6.6.2-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<ul><dt>2010-06-06  6.6.2-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Don't decode pixels in coders/png.c when image->ping is set.</li><br />
+<dt>2010-06-06  6.6.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Reset image filename when reading inline images.</li>
+  <li> Don't clamp floating point values for HDRI-enabled ImageMagick.</li><br />
+<dt>2010-05-25  6.6.2-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Replaced '^' morphology kernel rotation with two varients '>' and '<'</li>
-  <li> Hopefully finally settled the kernel defintion of 'Skeleton' to    correctly thin down ANY starting image, as symetrically as posible.</li>
+  <li> Hopefully finally settled the kernel defintion of 'Skeleton' to    correctly thin down ANY starting image, as symetrically as possible.</li>
   <li> Spelling correction:  Manhatten -&gt; Manhattan</li><br />
 <dt>2010-06-01  6.6.2-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Properly scale color components of the PNG bKGD chunk.</li>
@@ -279,7 +287,7 @@
 <dt>2010-03-31  6.6.1-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Fixed bug in equal-size tile cropping, when image has a page offset.</li><br />
 <dt>2010-03-31  6.6.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> The -recolor 4x4 matrix is now interpretted properly (previously it    summed rather than attenuating the alpha channel).</li>
+  <li> The -recolor 4x4 matrix is now interpreted properly (previously it    summed rather than attenuating the alpha channel).</li>
   <li> Support writing 1-bit PSD images.</li>
   <li> Support LCMS 2.0.</li>
   <li> Improved WMF support under Windows.</li><br />
@@ -350,7 +358,7 @@
 <dt>2010-02-07  6.5.9-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Final testing and fixing of basic morphology operators</li>
   <li> Addition Third-level Subtractive Morphology Methods:    EdgeIn, EdgeOut, Edge, TopHat, BottomHat</li>
-  <li> Ensuring original kernels passed to morphology are cloned before being    modifified for use by specific methods (EG: convolve scale/normalize)</li><br />
+  <li> Ensuring original kernels passed to morphology are cloned before being    modified for use by specific methods (EG: convolve scale/normalize)</li><br />
 <dt>2010-02-03  6.5.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> display -immutable to display transparent image without a checkboard.</li><br />
 <dt>2010-01-27  6.5.9-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -831,7 +839,7 @@
   <li> Calculate the kurtosis and skewness of image channels (reference    http://amartyosscrapbook.blogspot.com/2008/12/formulas-used-to-calculate-kurtosis-and.html).</li><br />
 <dt>2008-12-28  6.4.8-4 Rick Mabry  &lt;rick.mabry@anony...&gt;</dt>
   <li> Patch magick/display.c and PerlMagick/ContrastStretchImage() to return the    same results as the -contrast-stretch option.</li>
-  <li> ContrastStretchImageChannel() no longer interpretted as Contast() by    MogrifyRegion() in PerlMagick.</li><br />
+  <li> ContrastStretchImageChannel() no longer interpreted as Contast() by    MogrifyRegion() in PerlMagick.</li><br />
 <dt>2008-12-28  6.4.8-3 Rick Mabry  &lt;rick.mabry@anony...&gt;</dt>
   <li> Reverse argument and option in Throw*InvalidArgumentException()    macro for proper exception message.</li>
   <li> Recognize negative geometries for -shear and -annotate (.e.g. 45x-30).</li>
