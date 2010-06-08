@@ -1315,6 +1315,12 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 0.25, NoValue);
             break;
         }
+        if ( fabs(args->sigma) > MagickEpsilon )
+          /* Rotate by correctly supplied 'angle' */
+          RotateKernelInfo(kernel, args->sigma);
+        else if ( args->rho > 30.0 || args->rho < -30.0 )
+          /* Rotate by out of bounds 'type' */
+          RotateKernelInfo(kernel, args->rho);
         break;
       }
     case RobertsKernel:
@@ -3431,10 +3437,11 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   if ( artifact != (const char *) NULL)
     ShowKernelInfo(curr_kernel);
 
-  /* override the default handling of multi-kernel morphology results
-   * if 'Undefined' use the default method
-   * if 'None' (default for 'Convolve') re-iterate previous result
-   * otherwise merge resulting images using compose method given
+  /* Override the default handling of multi-kernel morphology results
+   * If 'Undefined' use the default method
+   * If 'None' (default for 'Convolve') re-iterate previous result
+   * Otherwise merge resulting images using compose method given.
+   * Default for 'HitAndMiss' is 'Lighten'.
    */
   compose = UndefinedCompositeOp;  /* use default for method */
   artifact = GetImageArtifact(image,"morphology:compose");
