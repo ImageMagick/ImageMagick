@@ -130,9 +130,9 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     return((Image *) NULL);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->magick,"PS",MaxTextExtent);
+  (void) CopyMagickString(read_info->magick,"SVG",MaxTextExtent);
   (void) AcquireUniqueFilename(read_info->filename);
-  (void) FormatMagickString(command,MaxTextExtent,"-Tps2 -o%s %s",
+  (void) FormatMagickString(command,MaxTextExtent,"-Tsvg -o%s %s",
     read_info->filename,image_info->filename);
   graph=agread(GetBlobFileHandle(image));
   if (graph == (graph_t *) NULL)
@@ -142,10 +142,10 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     gvLayout(graphic_context,graph,(char *) "dot");
   else
     gvLayout(graphic_context,graph,(char *) option);
-  gvRenderFilename(graphic_context,graph,(char *) "ps2",read_info->filename);
+  gvRenderFilename(graphic_context,graph,(char *) "svg",read_info->filename);
   gvFreeLayout(graphic_context,graph);
   /*
-    Read Postscript graph.
+    Read SVG graph.
   */
   image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
