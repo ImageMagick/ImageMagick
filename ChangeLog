@@ -1,3 +1,6 @@
+2010-06-08  6.6.2-4 Cristy  <quetzlzacatenango@image...>
+  * End of string sentinal is \n not \r.
+
 2010-06-06  6.6.2-3 Glenn Randers-Pehrson <glennrp@image...>
   * Don't decode pixels in coders/png.c when image->ping is set.
 
