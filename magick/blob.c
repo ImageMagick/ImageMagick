@@ -3328,9 +3328,11 @@ MagickExport char *ReadBlobString(Image *image,char *string)
         break;
       }
     string[i]=(char) (*p);
-    if ((string[i] == '\n') || (string[i] == '\r'))
+    if ((string[i] == '\r') || (string[i] == '\n'))
       break;
   }
+  if (string[i] == '\r')
+    (void) ReadBlobStream(image,1,buffer,&count);
   string[i]='\0';
   return(string);
 }
