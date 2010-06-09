@@ -274,17 +274,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline QuantumAny GetPixelDepth(const Quantum pixel,
-  const QuantumAny scale)
-{
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((QuantumAny) (scale*(pixel/scale)));
-#else
-  return((QuantumAny) (scale*(pixel/scale)+0.5));
-#endif
-}
-
 MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 {
   return(GetImageChannelDepth(image,AllChannels,exception));
@@ -348,17 +337,19 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
             status;
 
           QuantumAny
-            scale;
+            range;
 
           status=0;
-          scale=QuantumRange/((QuantumAny) QuantumRange >>
-            (MAGICKCORE_QUANTUM_DEPTH-current_depth[id]));
+          range=GetQuantumRange(current_depth[id]);
           if ((channel & RedChannel) != 0)
-            status|=(QuantumAny) p->red != GetPixelDepth(p->red,scale);
+            status|=p->red != ScaleAnyToQuantum(ScaleQuantumToAny(p->red,
+              range),range);
           if ((channel & GreenChannel) != 0)
-            status|=(QuantumAny) p->green != GetPixelDepth(p->green,scale);
+            status|=p->green != ScaleAnyToQuantum(ScaleQuantumToAny(p->green,
+              range),range);
           if ((channel & BlueChannel) != 0)
-            status|=(QuantumAny) p->blue != GetPixelDepth(p->blue,scale);
+            status|=p->blue != ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,
+              range),range);
           if (status == 0)
             break;
           current_depth[id]++;
@@ -403,22 +394,26 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
           status;
 
         QuantumAny
-          scale;
+          range;
 
         status=0;
-        scale=QuantumRange/((QuantumAny) QuantumRange >>
-          (MAGICKCORE_QUANTUM_DEPTH-current_depth[id]));
+        range=GetQuantumRange(current_depth[id]);
         if ((channel & RedChannel) != 0)
-          status|=(QuantumAny) p->red != GetPixelDepth(p->red,scale);
+          status|=p->red != ScaleAnyToQuantum(ScaleQuantumToAny(p->red,range),
+            range);
         if ((channel & GreenChannel) != 0)
-          status|=(QuantumAny) p->green != GetPixelDepth(p->green,scale);
+          status|=p->green != ScaleAnyToQuantum(ScaleQuantumToAny(p->green,
+            range),range);
         if ((channel & BlueChannel) != 0)
-          status|=(QuantumAny) p->blue != GetPixelDepth(p->blue,scale);
+          status|=p->blue != ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,range),
+            range);
         if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-          status|=(QuantumAny) p->opacity != GetPixelDepth(p->opacity,scale);
+          status|=p->opacity != ScaleAnyToQuantum(ScaleQuantumToAny(p->opacity,
+            range),range);
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          status|=(QuantumAny) indexes[x] != GetPixelDepth(indexes[x],scale);
+          status|=indexes[x] != ScaleAnyToQuantum(ScaleQuantumToAny(indexes[x],
+            range),range);
         if (status == 0)
           break;
         current_depth[id]++;
@@ -818,13 +813,6 @@ MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
 %    o depth: the image depth.
 %
 */
-
-static inline Quantum SetPixelDepth(const Quantum pixel,
-  const QuantumAny scale)
-{
-  return((Quantum) (scale*(pixel/scale)));
-}
-
 MagickExport MagickBooleanType SetImageDepth(Image *image,
   const size_t depth)
 {
@@ -847,7 +835,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
     status;
 
   QuantumAny
-    scale;
+    range;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -863,8 +851,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
     Scale pixels to desired depth.
   */
   status=MagickTrue;
-  scale=QuantumRange/((QuantumAny) QuantumRange >> (MAGICKCORE_QUANTUM_DEPTH-
-    depth));
+  range=GetQuantumRange(depth);
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -894,16 +881,16 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=SetPixelDepth(q->red,scale);
+        q->red=ScaleAnyToQuantum(ScaleQuantumToAny(q->red,range),range);
       if ((channel & GreenChannel) != 0)
-        q->green=SetPixelDepth(q->green,scale);
+        q->green=ScaleAnyToQuantum(ScaleQuantumToAny(q->green,range),range);
       if ((channel & BlueChannel) != 0)
-        q->blue=SetPixelDepth(q->blue,scale);
+        q->blue=ScaleAnyToQuantum(ScaleQuantumToAny(q->blue,range),range);
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        q->opacity=SetPixelDepth(q->opacity,scale);
+        q->opacity=ScaleAnyToQuantum(ScaleQuantumToAny(q->opacity,range),range);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        indexes[x]=SetPixelDepth(indexes[x],scale);
+        indexes[x]=ScaleAnyToQuantum(ScaleQuantumToAny(indexes[x],range),range);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -915,9 +902,6 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   image_view=DestroyCacheView(image_view);
   if (image->storage_class == PseudoClass)
     {
-      QuantumAny
-        range;
-
       register ssize_t
         i;
 
@@ -925,20 +909,20 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
         *restrict p;
 
       p=image->colormap;
-      range=GetQuantumRange(depth);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
-          p->red=SetPixelDepth(p->red,scale);
+          p->red=ScaleAnyToQuantum(ScaleQuantumToAny(p->red,range),range);
         if ((channel & GreenChannel) != 0)
-          p->green=SetPixelDepth(p->green,scale);
+          p->green=ScaleAnyToQuantum(ScaleQuantumToAny(p->green,range),range);
         if ((channel & BlueChannel) != 0)
-          p->blue=SetPixelDepth(p->blue,scale);
+          p->blue=ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,range),range);
         if ((channel & OpacityChannel) != 0)
-          p->opacity=SetPixelDepth(p->opacity,scale);
+          p->opacity=ScaleAnyToQuantum(ScaleQuantumToAny(p->opacity,range),
+            range);
         p++;
       }
     }
