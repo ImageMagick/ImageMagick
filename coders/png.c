@@ -5234,17 +5234,17 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image->columns > 1)
                    magnified_width += mng_info->magn_mr;
                 if (image->columns > 2)
-                   magnified_width += (image->columns-2)*(mng_info->magn_mx);
+                   magnified_width += (png_uint_32) ((image->columns-2)*(mng_info->magn_mx));
               }
             else
               {
-                magnified_width=image->columns;
+                magnified_width=(png_uint_32) image->columns;
                 if (image->columns > 1)
                    magnified_width += mng_info->magn_ml-1;
                 if (image->columns > 2)
                    magnified_width += mng_info->magn_mr-1;
                 if (image->columns > 3)
-                   magnified_width += (image->columns-3)*(mng_info->magn_mx-1);
+                   magnified_width += (png_uint_32) ((image->columns-3)*(mng_info->magn_mx-1));
               }
             if (mng_info->magn_methy == 1)
               {
@@ -5256,13 +5256,13 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               {
-                magnified_height=image->rows;
+                magnified_height=(png_uint_32) image->rows;
                 if (image->rows > 1)
                    magnified_height += mng_info->magn_mt-1;
                 if (image->rows > 2)
                    magnified_height += mng_info->magn_mb-1;
                 if (image->rows > 3)
-                   magnified_height += (image->rows-3)*(mng_info->magn_my-1);
+                   magnified_height += (png_uint_32) ((image->rows-3)*(mng_info->magn_my-1));
               }
             if (magnified_height > image->rows ||
                 magnified_width > image->columns)
@@ -6546,8 +6546,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 # endif
 #endif
   x=0;
-  ping_width=image->columns;
-  ping_height=image->rows;
+  ping_width=(png_uint_32) image->columns;
+  ping_height=(png_uint_32) image->rows;
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
      image_depth=8;
   if (mng_info->write_png_depth != 0)
@@ -8411,8 +8411,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   (void) WriteBlobMSBULong(image,16L);  /* chunk data length=16 */
   PNGType(chunk,mng_JHDR);
   LogPNGChunk((int) logging,mng_JHDR,16L);
-  PNGLong(chunk+4,image->columns);
-  PNGLong(chunk+8,image->rows);
+  PNGLong(chunk+4,(png_uint_32) image->columns);
+  PNGLong(chunk+8,(png_uint_32) image->rows);
   chunk[12]=jng_color_type;
   chunk[13]=8;  /* sample depth */
   chunk[14]=8; /*jng_image_compression_method */
@@ -9205,7 +9205,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
                mng_info->ticks_per_second=0;
            }
          if (final_delay != 0)
-           mng_info->ticks_per_second=1UL*image->ticks_per_second/final_delay;
+           mng_info->ticks_per_second=(png_uint_32) (image->ticks_per_second/final_delay);
          if (final_delay > 50)
            mng_info->ticks_per_second=2;
          if (final_delay > 75)
@@ -9232,8 +9232,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
      (void) WriteBlobMSBULong(image,28L);  /* chunk data length=28 */
      PNGType(chunk,mng_MHDR);
      LogPNGChunk((int) logging,mng_MHDR,28L);
-     PNGLong(chunk+4,mng_info->page.width);
-     PNGLong(chunk+8,mng_info->page.height);
+     PNGLong(chunk+4,(png_uint_32) mng_info->page.width);
+     PNGLong(chunk+8,(png_uint_32) mng_info->page.height);
      PNGLong(chunk+12,mng_info->ticks_per_second);
      PNGLong(chunk+16,0L);  /* layer count=unknown */
      PNGLong(chunk+20,0L);  /* frame count=unknown */
@@ -9610,7 +9610,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
              image->delay)/MagickMax(image->ticks_per_second,1)));
            (void) WriteBlob(image,14,chunk);
            (void) WriteBlobMSBULong(image,crc32(0,chunk,14));
-           mng_info->delay=image->delay;
+           mng_info->delay=(png_uint_32) image->delay;
          }
        mng_info->old_framing_mode=mng_info->framing_mode;
      }
