@@ -829,11 +829,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) fprintf(file,"  Properties:\n");
       while (property != (const char *) NULL)
       {
-        (void) fprintf(file,"    %c",*property);
-        if (strlen(property) > 1)
-          (void) fprintf(file,"%s: ",property+1);
-        if (strlen(property) > 80)
-          (void) fputc('\n',file);
+        (void) fprintf(file,"    %s: ",property);
         value=GetImageProperty(image,property);
         if (value != (const char *) NULL)
           (void) fprintf(file,"%s\n",value);
@@ -1039,11 +1035,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) fprintf(file,"  Artifacts:\n");
       while (artifact != (const char *) NULL)
       {
-        (void) fprintf(file,"    %c",*artifact);
-        if (strlen(artifact) > 1)
-          (void) fprintf(file,"%s: ",artifact+1);
-        if (strlen(artifact) > 80)
-          (void) fputc('\n',file);
+        (void) fprintf(file,"    %s: ",artifact);
         value=GetImageArtifact(image,artifact);
         if (value != (const char *) NULL)
           (void) fprintf(file,"%s\n",value);
@@ -1060,11 +1052,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) fprintf(file,"  Registry:\n");
       while (registry != (const char *) NULL)
       {
-        (void) fprintf(file,"    %c",*registry);
-        if (strlen(registry) > 1)
-          (void) fprintf(file,"%s: ",registry+1);
-        if (strlen(registry) > 80)
-          (void) fputc('\n',file);
+        (void) fprintf(file,"    %s: ",registry);
         value=(const char *) GetImageRegistry(StringRegistryType,registry,
           &image->exception);
         if (value != (const char *) NULL)
