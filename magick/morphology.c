@@ -1317,16 +1317,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 0.25, NoValue);
             break;
         }
-#else
-      { /* Simple Sobel kernel */
-        kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        RotateKernelInfo(kernel, args->rho);
-        break;
-      }
-#endif
         if ( fabs(args->sigma) > MagickEpsilon )
           /* Rotate by correctly supplied 'angle' */
           RotateKernelInfo(kernel, args->sigma);
@@ -1335,6 +1325,16 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           RotateKernelInfo(kernel, args->rho);
         break;
       }
+#else
+      { /* Simple Sobel Kernel */
+        kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
+        if (kernel == (KernelInfo *) NULL)
+          return(kernel);
+        kernel->type = type;
+        RotateKernelInfo(kernel, args->rho);
+        break;
+      }
+#endif
     case RobertsKernel:
       {
         kernel=ParseKernelArray("3: 0,0,0  1,-1,0  0,0,0");
