@@ -18,8 +18,13 @@ Introduction to ImageMagick
   images dynamically and automagically.
 
   ImageMagick is free software delivered as a ready-to-run binary distribution
-  or as source code that you may freely use, copy, modify, and distribute. Its
-  license is compatible with the GPL. It runs on all major operating systems.
+  or as source code that you may freely use, copy, modify, and distribute in
+  both open and proprietary applications. It is distributed under an Apache
+  2.0-style license, approved by the OSI.
+
+  The ImageMagick development process ensures a stable API and ABI. Before
+  each ImageMagick release, we perform a comprehensive security assessment
+  that includes memory and thread error detection to help prevent exploits.
 
 Features and Capabilities
 
@@ -37,6 +42,10 @@ Features and Capabilities
     * Image identification: describe the format and properties of an image
     * Composite: overlap one image over another
     * Montage: juxtapose image thumbnails on an image canvas
+    * Generalized pixel distortion: correct for, or induce image distortions
+      including perspective.
+    * Morphology of shapes: extract features, describe shapes and recognize
+      patterns in images.
     * Motion picture support: read and write the common image formats used in
       digital film work
     * Image calculator: apply a mathematical expression to an image or image
