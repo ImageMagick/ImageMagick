@@ -1702,6 +1702,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
          case 2:
             /* kernel to add for 8-connected lines - no rotation */
@@ -1709,6 +1710,15 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
+            break;
+         case 3:
+            /* kernel to add for orthogonal line ends - does not find corners */
+            kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,1,0");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
         }
         break;
@@ -1729,6 +1739,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
           case 2:
             /* Diagonal T Junctions */
@@ -1736,6 +1747,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
           case 3:
             /* Orthogonal T Junctions */
@@ -1743,6 +1755,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
           case 4:
             /* Diagonal X Junctions */
@@ -1750,6 +1763,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
           case 5:
             /* Orthogonal X Junctions - minimal diamond kernel */
@@ -1757,6 +1771,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
             break;
         }
         break;
