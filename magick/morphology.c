@@ -1720,6 +1720,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->type = type;
             RotateKernelInfo(kernel, args->sigma);
             break;
+         case 4:
+            /* traditional line end - fails on last T end */
+            kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,-,-");
+            if (kernel == (KernelInfo *) NULL)
+              return(kernel);
+            kernel->type = type;
+            RotateKernelInfo(kernel, args->sigma);
+            break;
         }
         break;
       }
