@@ -1698,7 +1698,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             break;
           case 1:
             /* kernel for 4-connected line ends - no rotation */
-            kernel=ParseKernelArray("3: 0,0,0  0,1,0  -,1,-");
+            kernel=ParseKernelArray("3: 0,0,-  0,1,1  0,0,-");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
@@ -1714,7 +1714,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             break;
          case 3:
             /* kernel to add for orthogonal line ends - does not find corners */
-            kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,1,0");
+            kernel=ParseKernelArray("3: 0,0,0  0,1,1  0,0,0");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
@@ -1722,7 +1722,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             break;
          case 4:
             /* traditional line end - fails on last T end */
-            kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,-,-");
+            kernel=ParseKernelArray("3: 0,0,0  0,1,-  0,0,-");
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
