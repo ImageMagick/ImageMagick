@@ -2197,6 +2197,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   Image *image,const BlobMode mode,ExceptionInfo *exception)
 {
   char
+    extension[MaxTextExtent],
     filename[MaxTextExtent];
 
   const char
@@ -2328,6 +2329,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       return(MagickTrue);
     }
 #endif
+  GetPathComponent(image->filename,ExtensionPath,extension);
   if (*type == 'w')
     {
       (void) CopyMagickString(filename,image->filename,MaxTextExtent);
@@ -2344,11 +2346,9 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                (GetNextImageInList(image) != (Image *) NULL)))
             {
               char
-                extension[MaxTextExtent],
                 path[MaxTextExtent];
 
               GetPathComponent(image->filename,RootPath,path);
-              GetPathComponent(image->filename,ExtensionPath,extension);
               if (*extension == '\0')
                 (void) FormatMagickString(filename,MaxTextExtent,"%s-%.20g",
                   path,(double) image->scene);
@@ -2362,127 +2362,134 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
         }
     }
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
-  if (((strlen(filename) > 2) &&
-       (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)) ||
-      ((strlen(filename) > 3) &&
-       (LocaleCompare(filename+strlen(filename)-3,".gz") == 0)) ||
-      ((strlen(filename) > 4) &&
-       (LocaleCompare(filename+strlen(filename)-4,".wmz") == 0)) ||
-      ((strlen(filename) > 5) &&
-       (LocaleCompare(filename+strlen(filename)-5,".svgz") == 0)))
+  if (image_info->file != (FILE *) NULL)
     {
-      image->blob->file=(FILE *) gzopen(filename,type);
-      if (image->blob->file != (FILE *) NULL)
-        image->blob->type=ZipStream;
+      image->blob->file=image_info->file;
+      image->blob->type=FileStream;
+      image->blob->exempt=MagickTrue;
     }
   else
-#endif
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-    if ((strlen(filename) > 4) &&
-        (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
+    if (*type == 'r')
       {
-        image->blob->file=(FILE *) BZ2_bzopen(filename,type);
+        image->blob->file=(FILE *) OpenMagickStream(filename,type);
         if (image->blob->file != (FILE *) NULL)
-          image->blob->type=BZipStream;
-      }
-    else
-#endif
-      if (image_info->file != (FILE *) NULL)
-        {
-          image->blob->file=image_info->file;
-          image->blob->type=FileStream;
-          image->blob->exempt=MagickTrue;
-        }
-      else
-        {
-          image->blob->file=(FILE *) OpenMagickStream(filename,type);
-          if (image->blob->file != (FILE *) NULL)
-            {
-              image->blob->type=FileStream;
-#if defined(MAGICKCORE_HAVE_SETVBUF)
-              (void) setvbuf(image->blob->file,(char *) NULL,(int) _IOFBF,
-                16384);
-#endif
-              if (*type == 'r')
-                {
-                  size_t
-                    count;
-
-                  unsigned char
-                    magick[3];
-
-                  (void) ResetMagickMemory(magick,0,sizeof(magick));
-                  count=fread(magick,1,sizeof(magick),image->blob->file);
-                  (void) rewind(image->blob->file);
-                  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                     "  read %.20g magic header bytes",(double) count);
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
-                  if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
-                      ((int) magick[2] == 0x08))
-                    {
-                      (void) fclose(image->blob->file);
-                      image->blob->file=(FILE *) gzopen(filename,type);
-                      if (image->blob->file != (FILE *) NULL)
-                        image->blob->type=ZipStream;
-                     }
-#endif
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-                  if (strncmp((char *) magick,"BZh",3) == 0)
-                    {
-                      (void) fclose(image->blob->file);
-                      image->blob->file=(FILE *) BZ2_bzopen(filename,type);
-                      if (image->blob->file != (FILE *) NULL)
-                        image->blob->type=BZipStream;
-                    }
-#endif
-                }
-            }
-        }
-    if ((image->blob->type == FileStream) && (*type == 'r'))
-      {
-        const MagickInfo
-          *magick_info;
-
-        ExceptionInfo
-          *sans_exception;
-
-        struct stat
-          *properties;
-
-        sans_exception=AcquireExceptionInfo();
-        magick_info=GetMagickInfo(image_info->magick,sans_exception);
-        sans_exception=DestroyExceptionInfo(sans_exception);
-        properties=(&image->blob->properties);
-        if ((magick_info != (const MagickInfo *) NULL) &&
-            (GetMagickBlobSupport(magick_info) != MagickFalse) &&
-            (properties->st_size <= MagickMaxBufferExtent))
           {
             size_t
-              length;
+              count;
 
-            void
-              *blob;
+            unsigned char
+              magick[3];
 
-            length=(size_t) properties->st_size;
-            blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
-            if (blob != (void *) NULL)
+            image->blob->type=FileStream;
+#if defined(MAGICKCORE_HAVE_SETVBUF)
+            (void) setvbuf(image->blob->file,(char *) NULL,(int) _IOFBF,
+              16384);
+#endif
+            (void) ResetMagickMemory(magick,0,sizeof(magick));
+            count=fread(magick,1,sizeof(magick),image->blob->file);
+            (void) rewind(image->blob->file);
+            (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+               "  read %.20g magic header bytes",(double) count);
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+            if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
+                ((int) magick[2] == 0x08))
               {
-                /*
-                  Format supports blobs-- use memory-mapped I/O.
-                */
-                if (image_info->file != (FILE *) NULL)
-                  image->blob->exempt=MagickFalse;
-                else
-                  {
-                    (void) fclose(image->blob->file);
-                    image->blob->file=(FILE *) NULL;
-                  }
-                AttachBlob(image->blob,blob,length);
-                image->blob->mapped=MagickTrue;
+                (void) fclose(image->blob->file);
+                image->blob->file=(FILE *) gzopen(filename,type);
+                if (image->blob->file != (FILE *) NULL)
+                  image->blob->type=ZipStream;
+               }
+#endif
+#if defined(MAGICKCORE_BZLIB_DELEGATE)
+            if (strncmp((char *) magick,"BZh",3) == 0)
+              {
+                (void) fclose(image->blob->file);
+                image->blob->file=(FILE *) BZ2_bzopen(filename,type);
+                if (image->blob->file != (FILE *) NULL)
+                  image->blob->type=BZipStream;
               }
+#endif
+          if (image->blob->type == FileStream)
+            {
+              const MagickInfo
+                *magick_info;
+
+              ExceptionInfo
+                *sans_exception;
+
+              struct stat
+                *properties;
+
+              sans_exception=AcquireExceptionInfo();
+              magick_info=GetMagickInfo(image_info->magick,sans_exception);
+              sans_exception=DestroyExceptionInfo(sans_exception);
+              properties=(&image->blob->properties);
+              if ((magick_info != (const MagickInfo *) NULL) &&
+                  (GetMagickBlobSupport(magick_info) != MagickFalse) &&
+                  (properties->st_size <= MagickMaxBufferExtent))
+                {
+                  size_t
+                    length;
+
+                  void
+                    *blob;
+
+                  length=(size_t) properties->st_size;
+                  blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
+                  if (blob != (void *) NULL)
+                    {
+                      /*
+                        Format supports blobs-- use memory-mapped I/O.
+                      */
+                      if (image_info->file != (FILE *) NULL)
+                        image->blob->exempt=MagickFalse;
+                      else
+                        {
+                          (void) fclose(image->blob->file);
+                          image->blob->file=(FILE *) NULL;
+                        }
+                      AttachBlob(image->blob,blob,length);
+                      image->blob->mapped=MagickTrue;
+                    }
+                }
+            }
           }
-      }
+        }
+      else
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+        if ((LocaleCompare(extension,"Z") == 0) ||
+            (LocaleCompare(extension,"gz") == 0) ||
+            (LocaleCompare(extension,"wmz") == 0) ||
+            (LocaleCompare(extension,"svgz") == 0))
+          {
+            if (mode == WriteBinaryBlobMode)
+              type="wb";
+            image->blob->file=(FILE *) gzopen(filename,type);
+            if (image->blob->file != (FILE *) NULL)
+              image->blob->type=ZipStream;
+          }
+        else
+#endif
+#if defined(MAGICKCORE_BZLIB_DELEGATE)
+          if (LocaleCompare(extension,".bz2") == 0)
+            {
+              image->blob->file=(FILE *) BZ2_bzopen(filename,type);
+              if (image->blob->file != (FILE *) NULL)
+                image->blob->type=BZipStream;
+            }
+          else
+#endif
+            {
+              image->blob->file=(FILE *) OpenMagickStream(filename,type);
+              if (image->blob->file != (FILE *) NULL)
+                {
+                  image->blob->type=FileStream;
+#if defined(MAGICKCORE_HAVE_SETVBUF)
+                  (void) setvbuf(image->blob->file,(char *) NULL,(int) _IOFBF,
+                    16384);
+#endif
+                }
+       }
   image->blob->status=MagickFalse;
   if (image->blob->type != UndefinedStream)
     image->blob->size=GetBlobSize(image);
