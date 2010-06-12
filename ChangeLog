@@ -1,3 +1,7 @@
+2010-06-12  6.6.2-5 Cristy  <quetzlzacatenango@image...>
+  * mogrify -format properly handles compressed image filename (e.g.
+    -format jpg logo.png.bz2).
+
 2010-06-12  6.6.2-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix transprancy handling for Morphology Convolve
   * Adjustments of Hit And Miss and Edge Detection kernel definitions

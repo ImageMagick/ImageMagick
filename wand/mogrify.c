@@ -4062,7 +4062,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               path,*DirectorySeparator,filename);
           }
         if (format != (char *) NULL)
-          AppendImageFormat(format,images->filename);
+          {
+            (void) CopyMagickString(images->filename,images->magick_filename,
+              MaxTextExtent);
+            AppendImageFormat(format,images->filename);
+          }
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
         if (global_colormap != MagickFalse)
