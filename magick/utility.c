@@ -266,6 +266,7 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
 MagickExport void AppendImageFormat(const char *format,char *filename)
 {
   char
+    extension[MaxTextExtent],
     root[MaxTextExtent];
 
   assert(format != (char *) NULL);
@@ -280,6 +281,20 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
 
       (void) FormatMagickString(message,MaxTextExtent,"%s:%s",format,filename);
       (void) CopyMagickString(filename,message,MaxTextExtent);
+      return;
+    }
+  GetPathComponent(filename,ExtensionPath,extension);
+  if ((LocaleCompare(extension,"Z") == 0) ||
+      (LocaleCompare(extension,"bz2") == 0) ||
+      (LocaleCompare(extension,"gz") == 0) ||
+      (LocaleCompare(extension,"wmz") == 0) ||
+      (LocaleCompare(extension,"svgz") == 0))
+    {
+      GetPathComponent(filename,RootPath,root);
+      (void) CopyMagickString(filename,root,MaxTextExtent);
+      GetPathComponent(filename,RootPath,root);
+      (void) FormatMagickString(filename,MaxTextExtent,"%s.%s.%s",root,format,
+        extension);
       return;
     }
   GetPathComponent(filename,RootPath,root);
