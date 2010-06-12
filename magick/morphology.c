@@ -2550,7 +2550,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
         min,
         max;
 
-      /* Copy input to ouput image for unused channels
+      /* Copy input image to the output image for unused channels
        * This removes need for 'cloning' a new image every iteration
        */
       *q = p[r];
@@ -2615,15 +2615,15 @@ static size_t MorphologyPrimitive(const Image *image, Image
             ** For more details of Correlation vs Convolution see
             **   http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
-            if (((channel & SyncChannels) != 0 ) &&
-                      (image->matte == MagickTrue))
+            if ( ((channel & SyncChannels) != 0 ) &&
+                                 (image->matte == MagickTrue) )
               { /* Channel has a 'Sync' Flag, and Alpha Channel enabled.
                 ** Weight the color channels with Alpha Channel so that
                 ** transparent pixels are not part of the results.
                 */
                 MagickRealType
-                  alpha,  /* color channel weighting : kernel*alpha  */
-                  gamma;  /* divisor, sum of weighting values */
+                  alpha,  /* alpha weighting of colors : kernel*alpha  */
+                  gamma;  /* divisor, sum of color weighting values */
 
                 gamma=0.0;
                 k = &kernel->values[ kernel->width*kernel->height-1 ];
@@ -2638,24 +2638,25 @@ static size_t MorphologyPrimitive(const Image *image, Image
                     result.red     += alpha*k_pixels[u].red;
                     result.green   += alpha*k_pixels[u].green;
                     result.blue    += alpha*k_pixels[u].blue;
-                    result.opacity += (*k)*(QuantumRange-k_pixels[u].opacity);
+                    result.opacity += (*k)*k_pixels[u].opacity;
                     if ( image->colorspace == CMYKColorspace)
                       result.index   += alpha*k_indexes[u];
                   }
                   k_pixels += image->columns+kernel->width;
                   k_indexes += image->columns+kernel->width;
                 }
+                /* Sync'ed channels, all channels are modified */
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-                result.red *= gamma;
-                result.green *= gamma;
-                result.blue *= gamma;
-                result.opacity *= gamma;
-                result.index *= gamma;
+                q->red = ClampToQuantum(gamma*result.red);
+                q->green = ClampToQuantum(gamma*result.green);
+                q->blue = ClampToQuantum(gamma*result.blue);
+                q->opacity = ClampToQuantum(result.opacity);
+                if (image->colorspace == CMYKColorspace)
+                  q_indexes[x] = ClampToQuantum(gamma*result.index);
               }
             else
-              {
-                /* No 'Sync' flag, or no Alpha involved.
-                ** Convolution is simple individual channel weigthed sum.
+              { /* No 'Sync' involved.
+                ** Convolution is simple greyscale channel operation
                 */
                 k = &kernel->values[ kernel->width*kernel->height-1 ];
                 k_pixels = p;
@@ -2666,13 +2667,25 @@ static size_t MorphologyPrimitive(const Image *image, Image
                     result.red     += (*k)*k_pixels[u].red;
                     result.green   += (*k)*k_pixels[u].green;
                     result.blue    += (*k)*k_pixels[u].blue;
-                    result.opacity += (*k)*(QuantumRange-k_pixels[u].opacity);
+                    result.opacity += (*k)*k_pixels[u].opacity;
                     if ( image->colorspace == CMYKColorspace)
                       result.index   += (*k)*k_indexes[u];
                   }
                   k_pixels += image->columns+kernel->width;
                   k_indexes += image->columns+kernel->width;
                 }
+                if ((channels & RedChannel) != 0)
+                  q->red = ClampToQuantum(result.red);
+                if ((channels & GreenChannel) != 0)
+                  q->green = ClampToQuantum(result.green);
+                if ((channels & BlueChannel) != 0)
+                  q->blue = ClampToQuantum(result.blue);
+                if ((channels & OpacityChannel) != 0
+                    && image->matte == MagickTrue )
+                  q->opacity = ClampToQuantum(result.opacity);
+                if ((channels & IndexChannel) != 0
+                    && image->colorspace == CMYKColorspace)
+                  q_indexes[x] = ClampToQuantum(result.index);
               }
             break;
 
@@ -2792,7 +2805,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
             /* Select Pixel with Minimum Intensity within kernel neighbourhood
             **
             ** WARNING: the intensity test fails for CMYK and does not
-            ** take into account the moderating effect of teh alpha channel
+            ** take into account the moderating effect of the alpha channel
             ** on the intensity.
             **
             ** NOTE that the kernel is not reflected for this operation!
@@ -2919,6 +2932,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
       /* Assign the resulting pixel values - Clamping Result */
       switch ( method ) {
         case UndefinedMorphology:
+        case ConvolveMorphology:
         case DilateIntensityMorphology:
         case ErodeIntensityMorphology:
           break;  /* full pixel was directly assigned - not a channel method */
@@ -2944,7 +2958,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
           || ( p[r].opacity != q->opacity )
           || ( image->colorspace == CMYKColorspace &&
                   p_indexes[r] != q_indexes[x] ) )
-        changed++;  /* The pixel had some value changed! */
+        changed++;  /* The pixel was changed in some way! */
       p++;
       q++;
     } /* x */
