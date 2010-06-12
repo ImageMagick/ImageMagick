@@ -2674,16 +2674,16 @@ static size_t MorphologyPrimitive(const Image *image, Image
                   k_pixels += image->columns+kernel->width;
                   k_indexes += image->columns+kernel->width;
                 }
-                if ((channels & RedChannel) != 0)
+                if ((channel & RedChannel) != 0)
                   q->red = ClampToQuantum(result.red);
-                if ((channels & GreenChannel) != 0)
+                if ((channel & GreenChannel) != 0)
                   q->green = ClampToQuantum(result.green);
-                if ((channels & BlueChannel) != 0)
+                if ((channel & BlueChannel) != 0)
                   q->blue = ClampToQuantum(result.blue);
-                if ((channels & OpacityChannel) != 0
+                if ((channel & OpacityChannel) != 0
                     && image->matte == MagickTrue )
                   q->opacity = ClampToQuantum(result.opacity);
-                if ((channels & IndexChannel) != 0
+                if ((channel & IndexChannel) != 0
                     && image->colorspace == CMYKColorspace)
                   q_indexes[x] = ClampToQuantum(result.index);
               }
