@@ -1,3 +1,7 @@
+2010-06-12  6.6.2-4 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fix transprancy handling for Morphology Convolve
+  * Adjustments of Hit And Miss and Edge Detection kernel definitions
+
 2010-06-08  6.6.2-4 Cristy  <quetzlzacatenango@image...>
   * End of string sentinal is \n not \r.
 
@@ -10,8 +14,7 @@
 
 2010-05-25  6.6.2-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced '^' morphology kernel rotation with two varients '>' and '<'
-  * Hopefully finally settled the kernel defintion of 'Skeleton' to
-    correctly thin down ANY starting image, as symetrically as possible.
+  * 'Skeleton' variant to thin down images as symetrically as possible.
   * Spelling correction:  Manhatten -> Manhattan
 
 2010-06-01  6.6.2-2 Glenn Randers-Pehrson <glennrp@image...>
