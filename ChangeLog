@@ -1,4 +1,4 @@
-2010-06-12  6.6.2-4 Anthony Thyssen <A.Thyssen@griffith...>
+2010-06-12  6.6.2-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix transprancy handling for Morphology Convolve
   * Adjustments of Hit And Miss and Edge Detection kernel definitions
 
