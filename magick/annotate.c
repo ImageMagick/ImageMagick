@@ -1285,10 +1285,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         image_view=AcquireCacheView(image);
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
-          ssize_t
-            x_offset,
-            y_offset;
-
           MagickBooleanType
             active,
             sync;
@@ -1307,6 +1303,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
           register unsigned char
             *p;
+
+          ssize_t
+            x_offset,
+            y_offset;
 
           if (status == MagickFalse)
             continue;
