@@ -50,15 +50,15 @@ typedef enum
   PeaksKernel,         /* Hit And Miss Kernels */
   EdgesKernel,
   CornersKernel,
-  RidgesKernel,
+  ThinDiagonalsKernel,
   LineEndsKernel,
   LineJunctionsKernel,
+  RidgesKernel,
   ConvexHullKernel,
   SkeletonKernel,
   ChebyshevKernel,    /* Distance Measuring Kernels */
   ManhattanKernel,
   EuclideanKernel,
-  TestKernel,         /* Kernel being tested as posible addition */
   UserDefinedKernel   /* User Specified Kernel Array */
 } KernelInfoType;
 

@@ -5,6 +5,7 @@
 2010-06-12  6.6.2-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix transprancy handling for Morphology Convolve
   * Adjustments of Hit And Miss and Edge Detection kernel definitions
+  * Added 'ThinDiagonals' Thinning Kernel + two sub-types
 
 2010-06-08  6.6.2-4 Cristy  <quetzlzacatenango@image...>
   * End of string sentinal is \n not \r.
