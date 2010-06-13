@@ -1,5 +1,5 @@
-%define VERSION  @PACKAGE_VERSION@
-%define Patchlevel  @PACKAGE_RELEASE@
+%global VERSION  @PACKAGE_VERSION@
+%global Patchlevel  @PACKAGE_RELEASE@
 
 Name:           @PACKAGE_NAME@
 Version:        %{VERSION}
