@@ -2600,7 +2600,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
         */
         *q = p[r];
         if (image->colorspace == CMYKColorspace)
-          q_indexes[x] = p_indexes[r];
+          q_indexes[y] = p_indexes[r];
 
         /* Set the bias of the weighted average output */
         result.red     =
@@ -2941,7 +2941,6 @@ static size_t MorphologyPrimitive(const Image *image, Image
               k_indexes += image->columns+kernel->width;
             }
             break;
-
 
         case DilateMorphology:
             /* Maximum Value within kernel neighbourhood
