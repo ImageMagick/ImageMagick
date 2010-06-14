@@ -8,6 +8,7 @@
 2010-06-12  6.6.2-5 Cristy  <quetzlzacatenango@image...>
   * mogrify -format properly handles compressed image filename (e.g.
     -format jpg logo.png.bz2).
+  * Respect +dither option when saving to the GIF image format.
 
 2010-06-08  6.6.2-4 Cristy  <quetzlzacatenango@image...>
   * End of string sentinal is \n not \r.
