@@ -2539,11 +2539,12 @@ static size_t MorphologyPrimitive(const Image *image, Image
     **
     ** Anthony Thyssen, 14 June 2010
     */
+    register ssize_t
+      x;
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-    register ssize_t
-      x;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register const PixelPacket
