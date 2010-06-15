@@ -146,7 +146,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110901000240 -->
 </div>
 </div>
 </div>
@@ -284,14 +284,15 @@ channel data, to create an alpha channel, or to perform other operations on the 
   </tr>
 
   <tr valign="top">
-    <td valign="top"><kbd>Activate</kbd>&nbsp; or
-    <kbd>Activate</kbd></td>
+    <td valign="top"><kbd>Activate</kbd> or <kbd>On</kbd></td>
     <td valign="top">
-       Enable the image's transparency channel.  Use the <kbd>Set</kbd> argument instead if the alpha channel has not yet been initialized.</td></tr>
+       Enable the image's transparency channel. Note normally <kbd>Set</kbd>
+       should be used instead of this, unless you specifically need to
+       preserve existing (but specifically turned <kbd>Off</kbd>) transparency
+       channel. </td></tr>
 
   <tr valign="top">
-    <td valign="top"><kbd>Deactivate</kbd>&nbsp; or
-    <kbd>Deactivate</kbd></td>
+    <td valign="top"><kbd>Deactivate</kbd> or <kbd>Off</kbd></td>
     <td valign="top">
        Disables the image's transparency channel. Does not delete or change the
        existing data, just turns off the use of that data.</td></tr>
@@ -299,39 +300,40 @@ channel data, to create an alpha channel, or to perform other operations on the 
   <tr valign="top">
     <td valign="top"><kbd>Set</kbd></td>
     <td valign="top">
-       Activates the alpha/matte channel and if it was previously
-       turned off resets the channel to opaque.  If the image already had the
-       alpha channel turned on, it will have no effect.</td></tr>
+       Activates the alpha/matte channel. If it was previously turned off
+       then it also resets the channel to opaque.  If the image already had
+       the alpha channel turned on, it will have no effect.</td></tr>
 
   <tr valign="top">
     <td valign="top"><kbd>Opaque</kbd></td>
     <td valign="top">
-       Enables the alpha/matte channel and forces it to be fully opaque. </td></tr>
+       Enables the alpha/matte channel and forces it to be fully opaque.
+       </td></tr>
 
   <tr valign="top">
     <td valign="top"><kbd>Transparent</kbd></td>
     <td valign="top">
        Activates the alpha/matte channel and forces it to be fully
-       transparent. This effectively creates a fully transparent image the same
-       size as the original and with all its original RGB data still intact,
-       but fully transparent. </td></tr>
+       transparent. This effectively creates a fully transparent image the
+       same size as the original and with all its original RGB data still
+       intact, but fully transparent. </td></tr>
 
   <tr valign="top">
     <td valign="top"><kbd>Extract</kbd></td>
     <td valign="top">
        Copies the alpha channel values into all the color channels and turns
-       '<kbd>Off</kbd>' the the image's transparency, so as to generate a
-       gray-scale mask of the image's shape. This is the inverse of
-       '<kbd>Copy</kbd>'. </td></tr>
+       '<kbd>Off</kbd>' the the image's transparency, so as to generate
+       a gray-scale mask of the image's shape. The alpha channel data is left
+       intact just deactivated.  This is the inverse of '<kbd>Copy</kbd>'.
+       </td></tr>
 
   <tr valign="top">
     <td valign="top"><kbd>Copy</kbd></td>
     <td valign="top">
        Turns '<kbd>On</kbd>' the alpha/matte channel, then copies the
-       gray-scale intensity of the image, as an alpha mask, into the alpha
-       channel, converting a gray-scale mask into a transparent shaped image
-       ready to be colored appropriately. The color channels are not modified.
-       </td></tr>
+       gray-scale intensity of the image, into the alpha channel, converting
+       a gray-scale mask into a transparent shaped mask ready to be colored
+       appropriately. The color channels are not modified.  </td></tr>
 
   <tr valign="top">
     <td valign="top"><kbd>Shape</kbd></td>
@@ -353,12 +355,9 @@ channel data, to create an alpha channel, or to perform other operations on the 
 </table>
 
 <p>Note that while the <a href="#matte" >+matte</a> operation is the same as
-"<kbd><a href="#alpha" >-alpha</a> off</kbd>", the <a href="#matte"
+"<kbd><a href="#alpha" >-alpha</a> Off</kbd>", the <a href="#matte"
 >-matte</a> operation is the same as "<kbd><a href="#alpha" >-alpha</a>
-set</kbd>" and not "<kbd><a href="#alpha" >-alpha</a> on</kbd>".  That is,
-"<kbd><a href="#alpha" >-alpha</a> set</kbd>" will ensure that the written
-image is opaque if the original image had no transparency channel enabled,
-regardless if transparency data is already present. </p>
+Set</kbd>" and not "<kbd><a href="#alpha" >-alpha</a> On</kbd>".  </p>
 
 
 <div style="margin: auto;">
@@ -717,19 +716,19 @@ pixels which are outside the image proper are blurred into the final result.
 <p>Here is an example color correction collection:</p>
 
 <pre class="text">
-&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;ColorCorrectionCollection xmlns="urn:ASC:CDL:v1.2">
-  &lt;ColorCorrection id="cc06668">
-    &lt;SOPNode>
-      &lt;Slope> 0.9 1.2 0.5 &lt;/Slope>
-      &lt;Offset> 0.4 -0.5 0.6 &lt;/Offset>
-      &lt;Power> 1.0 0.8 1.5 &lt;/Power>
-    &lt;/SOPNode>
-    &lt;SATNode>
-      &lt;Saturation> 0.85 &lt;/Saturation>
-    &lt;/SATNode>
-  &lt;/ColorCorrection>
-&lt;/ColorCorrectionCollection>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;ColorCorrectionCollection xmlns="urn:ASC:CDL:v1.2"&gt;
+  &lt;ColorCorrection id="cc06668"&gt;
+    &lt;SOPNode&gt;
+      &lt;Slope&gt; 0.9 1.2 0.5 &lt;/Slope&gt;
+      &lt;Offset&gt; 0.4 -0.5 0.6 &lt;/Offset&gt;
+      &lt;Power&gt; 1.0 0.8 1.5 &lt;/Power&gt;
+    &lt;/SOPNode&gt;
+    &lt;SATNode&gt;
+      &lt;Saturation&gt; 0.85 &lt;/Saturation&gt;
+    &lt;/SATNode&gt;
+  &lt;/ColorCorrection&gt;
+&lt;/ColorCorrectionCollection&gt;
 </pre>
 
 <div style="margin: auto;">
@@ -756,35 +755,51 @@ you can either use </p>
 </p>
 
 <p>All the channels that is present in an image can be specified using the
-special channel type <kbd>All</kbd>. </p>
+special channel type <kbd>All</kbd>. Not all operators are 'channel capable',
+but generally any operators that are generally 'grey-scale' image operators,
+will understand this setting.  See individual operator documentation. </p>
+
+<br>
 
 <p>On top of the normal channel selection a extra flag can be specified,
 '<kbd>Sync</kbd>'.  This is turned on by default and if set means that
-operators that understand this flag should perform: normal cross-channel
-syncronization of the channels. If not specified, then most channel operators
-will apply their image processing operations to each individual channel (as
-specified by the rest of the <a href="#channel">-channel</a> setting)
-completely independantally from each other. </p>
+operators that understand this flag should perform: cross-channel
+syncronization of the channels. If not specified, then most grey-scale
+operators will apply their image processing operations to each individual
+channel (as specified by the rest of the <a href="#channel">-channel</a>
+setting) completely independantally from each other. </p>
 
 <p>For example for operators such as <a href="#auto-level">-auto-level</a> and
 <a href="#auto-gamma">-auto-gamma</a> the color channels will be modified
 together in exactly the same way so that colors will remain in-sync. Without
 it being set, then each channel will be modified separatally and
-independantally. </p>
+independantally, which may produce color distortion. </p>
 
-<p>Other operations will use the '<kbd>Sync</kbd>' flag to mean syncronize the
-alpha channel handling with the color channels.  If not specified, then the
-operator will not treat the alpha channel as special. </p>
+<p>The <a href="#morphology">-morphology</a> '<kdb>Convolve</kdb>' method
+and the <a href="#compose">-compose</a> mathematical methods, also understands
+the '<kbd>Sync</kbd>' flag to modify the behaviour of pixel colors according
+to the alpha channel (if present). That is to say it will modify the image
+processing with the understanding that fully-transparent colors should not
+contribute to the final result. </p>
+
+Basically, by default, operators work with color channels in syncronous, and
+treats transparency as special, unless the <a href="#channel">-channel</a>
+setting is modified so as to remove the effect of the '<kbd>Sync</kbd>' flag.
+How each operator does this depends on that operators current implementation.
+Not all operators understands this flag at this time, but that is changing.
+</p>
 
 <p>To print a complete list of channel types, use <a href="#list">-list
 channel</a>.</p>
 
+<br>
 
 <p>By default, ImageMagick sets <a href="#channel">-channel</a> to the value
-'<kbd>RGB,sync</kbd>', which specifies that operators act on all channels
-except the opacity channel, and that all the color channels are to be modified
-in exactly the same way.  The 'plus' form <a href="#channel" >+channel</a>
-will reset the value back to this default. </p>
+'<kbd>RGBK,sync</kbd>', which specifies that operators act on all color
+channels except the transparency channel, and that all the color channels are
+to be modified in exactly the same way, with a understanding of transprancy
+(depending on the operation being applied).  The 'plus' form <a
+href="#channel" >+channel</a> will reset the value back to this default. </p>
 
 <p>Options that are affected by the <a href="#channel" >-channel</a> setting
 include the following.
@@ -796,7 +811,8 @@ include the following.
 <a href="#clamp">-clamp</a>,
 <a href="#clut">-clut</a>,
 <a href="#combine">-combine</a>,
-<a href="#composite">-composite</a> (Math compose methods only),
+<a href="#composite">-composite</a> (Mathematical compose methods only),
+<a href="#convolve">-convolve</a>,
 <a href="#contrast-stretch">-contrast-stretch</a>,
 <a href="#evaluate">-evaluate</a>,
 <a href="#function">-function</a>,
@@ -804,12 +820,13 @@ include the following.
 <a href="#gaussian-blur">-gaussian-blur</a>,
 <a href="#hald-clut">-hald-clut</a>,
 <a href="#motion-blur">-motion-blur</a>,
+<a href="#morphology">-morphology</a>,
 <a href="#negate">-negate</a>,
 <a href="#normalize">-normalize</a>,
 <a href="#ordered-dither">-ordered-dither</a>,
 <a href="#radial-blur">-radial-blur</a>,
 <a href="#random-threshold">-random-threshold</a>,
-<a href="#separate">-separate</a>, and
+<a href="#separate">-separate</a>,
 <a href="#threshold">-threshold</a>, and
 <a href="#white-threshold">-white-threshold</a>.
 </p>
@@ -820,9 +837,9 @@ href="#channel" >-channel</a> setting (including the equivelent of the
 default). These operators have yet to be made to understand the newer 'Sync'
 flag. </p>
 
-<p>For example <a href="#threshold">-threshold</a> will by default
-gray-scale the image before thresholding, if no <a href="#channel"
->-channel</a> setting has been defined. </p>
+<p>For example <a href="#threshold">-threshold</a> will by default gray-scale
+the image before thresholding, if no <a href="#channel" >-channel</a> setting
+has been defined. This is not 'Sync flag controlled, yet. </p>
 
 <p>Also some operators such as <a href="#blur">-blur</a>, <a
 href="#gaussian-blur">-gaussian-blur</a>, will modify their handling of the
@@ -830,13 +847,15 @@ color channels if the '<kbd>alpha</kbd>' channel is also enabled by <a
 href="#channel" >-channel</a>.  Generally this done to ensure that
 fully-transparent colors are treated as being fully-transparent, and thus any
 underlying 'hidden' color has no effect on the final results.  Typically
-resulting in 'halo' effects. </p>
+resulting in 'halo' effects. The newer <a href="#morphology">-morphology</a>
+convolution equivelents however does have a understanding of the 'Sync' flag
+and will thus handle transparency correctly by default. </p>
 
-<p>As a alpha channel is optional within images some operators will read the
+<p>As a alpha channel is optional within images, some operators will read the
 color channels of an image as a greyscale alpha mask, when the image has no
-alpha channel present, but the <a href="#channel" >-channel</a> setting tells
-the operator to apply the alpha channel. The <a href="#clut">-clut</a>
-operator is a good example of this. </p>
+alpha channel present, and the <a href="#channel" >-channel</a> setting tells
+the operator to apply the operation using alpha channels. The <a
+href="#clut">-clut</a> operator is a good example of this. </p>
 
 
 <div style="margin: auto;">
@@ -3726,14 +3745,15 @@ animation, or a fully-'coalesced' animation sequence. </p>
   </tr>
 
 
-  <tr><td></td><td>The <a href="#geometry" >-geometry</a> offset is adjusted according to
-        <a href="#gravity" >-gravity</a> in accordance of the virtual canvas
-        size of the first image in each list. Unlike a normal <a
+  <tr><td></td>
+    <td>The <a href="#geometry" >-geometry</a> offset is adjusted according
+        to <a href="#gravity" >-gravity</a> in accordance of the virtual
+        canvas size of the first image in each list. Unlike a normal <a
         href="#composite" >-composite</a> operation, the canvas offset is also
-        added to the final composite positioning of each image. </td>
-  </tr>
+        added to the final composite positioning of each image. </td> </tr>
 
-  <tr><td></td><td>If one of the image lists only contains one image, that image is
+  <tr><td></td>
+    <td>If one of the image lists only contains one image, that image is
         applied to all the images in the other image list, regardless of which
         list it is. In this case it is the image meta-data of the list which
         preserved.  </td>
@@ -3760,11 +3780,13 @@ animation, or a fully-'coalesced' animation sequence. </p>
         image will have a zero virtual canvas offset. </td>
   </tr>
 
-  <tr><td></td><td>This usally used as one of the final 'image layering' operations
+  <tr><td></td>
+    <td>This usally used as one of the final 'image layering' operations
         overlaying all the prepared image layers into a final image. </td>
   </tr>
 
-  <tr><td></td><td>For a single image this method can also be used to fillout a virtual
+  <tr><td></td>
+    <td>For a single image this method can also be used to fillout a virtual
         canvas with real pixels, or to underlay a opaque color to remove
         transparency from an image.</td>
   </tr>
@@ -4136,7 +4158,9 @@ normalization of mathematical images. </p>
   VirtualPixel
 </pre>
 
-<p>These lists vary depending on your version of ImageMagick. Use "<kbd>-list list</kbd>" to get a complete listing of all the "<kbd>-list</kbd>" arguments available:</p>
+<p>These lists vary depending on your version of ImageMagick. Use "<kbd>-list
+list</kbd>" to get a complete listing of all the "<kbd>-list</kbd>" arguments
+available:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list list</span></p>
 <div style="margin: auto;">
@@ -4145,9 +4169,11 @@ normalization of mathematical images. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Specify format for debug log.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option specifies the format for the log printed when the <a href="#debug">-debug</a> option is active.</p>
+<p>This option specifies the format for the log printed when the <a
+href="#debug">-debug</a> option is active.</p>
 
-<p>You can display the following components by embedding special format characters:</p>
+<p>You can display the following components by embedding special format
+characters:</p>
 
 <pre class="text">
    %d   domain
@@ -4175,7 +4201,9 @@ normalization of mathematical images. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>add Netscape loop extension to your GIF animation.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Set iterations to zero to repeat the animation an infinite number of times, otherwise the animation repeats itself up to <em class="arg">iterations</em> times.</p>
+<p>Set iterations to zero to repeat the animation an infinite number of times,
+otherwise the animation repeats itself up to <em class="arg">iterations</em>
+times.</p>
 
 <div style="margin: auto;">
   <h4><a name="lowlight-color" id="lowlight-color"></a>-lowlight-color <em class="arg">color</em></h4>
@@ -4207,7 +4235,11 @@ normalization of mathematical images. </p>
   blue
 </pre>
 
-<p>The <em class="arg">X server</em> must support the <em class="arg">Standard Colormap</em> you choose, otherwise an error occurs.  Use <kbd>list</kbd> as the type and <kbd>display</kbd> searches the list of colormap types in <kbd>top-to-bottom</kbd> order until one is located. See <em class="arg">xstdcmap(1)</em> for one way of creating Standard Colormaps.</p>
+<p>The <em class="arg">X server</em> must support the <em class="arg">Standard
+Colormap</em> you choose, otherwise an error occurs.  Use <kbd>list</kbd> as
+the type and <kbd>display</kbd> searches the list of colormap types in
+<kbd>top-to-bottom</kbd> order until one is located. See <em
+class="arg">xstdcmap(1)</em> for one way of creating Standard Colormaps.</p>
 
 
 <div style="margin: auto;">
@@ -4232,7 +4264,9 @@ normalization of mathematical images. </p>
   p        pad component (always 0)
 </pre>
 
-<p>You can specify as many of these components as needed in any order (e.g. bgr).  The components can repeat as well (e.g. rgbr).</p>
+<p>You can specify as many of these components as needed in any order (e.g.
+bgr).  The components can repeat as well (e.g. rgbr).</p>
+
 
 <div style="margin: auto;">
   <h4><a name="mask" id="mask"></a>-mask
@@ -4251,7 +4285,8 @@ normalization of mathematical images. </p>
 
 <p>The color is specified using the format described under the <a href="#fill">-fill</a> option.</p>
 
-<p>The default matte color is <kbd>#BDBDBD</kbd>, <span style="background-color: #bdbdbd;">this shade of gray</span>.</p>
+<p>The default matte color is <kbd>#BDBDBD</kbd>, <span
+style="background-color: #bdbdbd;">this shade of gray</span>.</p>
 
 <div style="margin: auto;">
   <h4><a name="maximum" id="maximum"></a>-maximum</h4>
@@ -4274,26 +4309,29 @@ normalization of mathematical images. </p>
 <p>Choose from:</p>
 
 <pre class="text">
- AE    absolute number of different pixels
- MAE   mean absolute error (normalized), average channel error distance
- MEPP  mean error per pixel (normalized mean error, normalized peak error)
- MSE   mean error squared, average of the channel error squared
- PAE   peak absolute (normalize peak absolute)
- PSNR  peak signal to noise ratio
- RMSE  root mean squared (normalized root mean squared)
+ AE      absolute error count, number of different pixels (-fuzz effected)
+ MAE     mean absolute error (normalized), average channel error distance
+ MEPP    mean error per pixel (normalized mean error, normalized peak error)
+ MSE     mean error squared, average of the channel error squared
+ PAE     peak absolute (normalize peak absolute)
+ PSNR    peak signal to noise ratio
+ RMSE    root mean squared (normalized root mean squared)
 </pre>
 
 <p>The '<kbd>AE</kbd>' or absolute count of pixels that are different, can be
 controled using a <a href="#fuzz" >-fuzz</a> factor to ignore pixels which
 only changed by a small amount.  The '<kbd>PAE</kbd>' can be used to find the
 size of the <a href="#fuzz" >-fuzz</a> factor needed to make all pixels
-'similar'. </p>
+'similar', while '<kbd>MAE</kbd>' can be used to find out the factor needed
+for about half the pixels to be similar. </p>
 
 <p>The '<kbd>MEPP</kbd>' metric returns three different metrics
 ('<kbd>MAE</kbd>', '<kbd>MAE</kbd>' normalized, and '<kbd>PAE</kbd>'
-normalized) from the single comparision run. </p>
+normalized) from a single comparision run. </p>
 
-<p>To print a complete list of metrics, use the <a href="#list">-list metrics</a> option.</p>
+<p>To print a complete list of metrics, use the <a href="#list">-list
+metrics</a> option.</p>
+
 
 <div style="margin: auto;">
   <h4><a name="minimum" id="minimum"></a>-minimum</h4>
@@ -4308,18 +4346,20 @@ normalized) from the single comparision run. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Mode of operation.</td><td style='text-align:right;'>[<a href="../www/montage.html">montage</a>]</td></tr></table>
 
-<p>Choose the <em class="arg">value</em> from these styles: <kbd>Frame, Unframe, or Concatenate</kbd></p>
+<p>Choose the <em class="arg">value</em> from these styles: <kbd>Frame,
+Unframe, or Concatenate</kbd></p>
 
-<p>Use the <a href="#list" >-list</a> option with a '<kbd>Mode</kbd>'
-argument for a list of <a href="#mode" >-mode</a> arguments available
-in your ImageMagick installation.</p>
+<p>Use the <a href="#list" >-list</a> option with a '<kbd>Mode</kbd>' argument
+for a list of <a href="#mode" >-mode</a> arguments available in your
+ImageMagick installation.</p>
 
 
 <div style="margin: auto;">
   <h4><a name="modulate" id="modulate"></a>-modulate <em class="arg">brightness</em>[,<em class="arg">saturation</em>,<em class="arg">hue</em>]</h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Vary the <em class="arg">brightness</em>, <em class="arg">saturation</em>, and <em class="arg">hue</em> of an image.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Vary the <em class="arg">brightness</em>, <em
+class="arg">saturation</em>, and <em class="arg">hue</em> of an image.</td><td style='text-align:right;'></td></tr></table>
 
 <p>The arguments are given as a percentages of variation. A value of 100 means
 no change, and any missing values are taken to mean 100.</p>
