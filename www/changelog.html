@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20110101000120 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 </div>
 </div>
@@ -152,7 +152,15 @@
 
 <div class="main">
 
-<ul><dt>2010-06-08  6.6.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-06-14  6.6.2-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Fix transprancy handling for Morphology Convolve</li>
+  <li> Adjustments of Hit And Miss and Edge Detection kernel definitions</li>
+  <li> Added 'ThinDiagonals' Thinning Kernel + two sub-types</li>
+  <li> Handling for Convolution of 1-D vertical kernels.    However this was removed (using #if-#endif) as I found it slower in tests!</li><br />
+<dt>2010-06-12  6.6.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> mogrify -format properly handles compressed image filename (e.g.    -format jpg logo.png.bz2).</li>
+  <li> Respect +dither option when saving to the GIF image format.</li><br />
+<dt>2010-06-08  6.6.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> End of string sentinal is \n not \r.</li><br />
 <dt>2010-06-06  6.6.2-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Don't decode pixels in coders/png.c when image->ping is set.</li><br />
@@ -161,7 +169,7 @@
   <li> Don't clamp floating point values for HDRI-enabled ImageMagick.</li><br />
 <dt>2010-05-25  6.6.2-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Replaced '^' morphology kernel rotation with two varients '>' and '<'</li>
-  <li> Hopefully finally settled the kernel defintion of 'Skeleton' to    correctly thin down ANY starting image, as symetrically as possible.</li>
+  <li> 'Skeleton' variant to thin down images as symetrically as possible.</li>
   <li> Spelling correction:  Manhatten -&gt; Manhattan</li><br />
 <dt>2010-06-01  6.6.2-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Properly scale color components of the PNG bKGD chunk.</li>
