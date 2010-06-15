@@ -528,8 +528,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
     Create a reduced color image.
   */
   if ((cube_info->quantize_info->dither != MagickFalse) &&
-      (cube_info->quantize_info->dither_method != NoDitherMethod) &&
-      (cube_info->quantize_info->dither_method != UndefinedDitherMethod))
+      (cube_info->quantize_info->dither_method != NoDitherMethod))
     (void) DitherImage(image,cube_info);
   else
     {
