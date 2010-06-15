@@ -6733,7 +6733,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 image_info->dither=MagickFalse;
-                (void) SetImageOption(image_info,option+1,"undefined");
+                (void) SetImageOption(image_info,option+1,"none");
                 break;
               }
             (void) SetImageOption(image_info,option+1,argv[i+1]);
