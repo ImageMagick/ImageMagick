@@ -533,7 +533,7 @@ namespace Magick
   using MagickCore::AcquireMagickMemory;
   using MagickCore::AcquireQuantumInfo;
   using MagickCore::AcquireString;
-	using MagickCore::AcquireStringInfo;
+  using MagickCore::AcquireStringInfo;
   using MagickCore::AdaptiveBlurImage;
   using MagickCore::AdaptiveThresholdImage;
   using MagickCore::AddNoiseImage;
@@ -567,6 +567,7 @@ namespace Magick
   using MagickCore::CoderWarning;
   using MagickCore::ColorDecisionListImage;
   using MagickCore::ColorizeImage;
+  using MagickCore::ColorMatrixImage;
   using MagickCore::ColorPacket;
   using MagickCore::CompositeImage;
   using MagickCore::ConfigureError;
@@ -698,6 +699,7 @@ namespace Magick
   using MagickCore::ExceptionType;
   using MagickCore::ExportImagePixels;
   using MagickCore::ExportQuantumPixels;
+  using MagickCore::ExtentImage;
   using MagickCore::FileOpenError;
   using MagickCore::FileOpenFatalError;
   using MagickCore::FileOpenWarning;
