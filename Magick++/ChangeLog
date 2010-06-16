@@ -1,3 +1,6 @@
+2010-06-16  6.6.2-2 Cristy  <quetzlzacatenango@image...>
+  * Patch for compile problem in mapImages of the STL header.
+
 2010-02-21  6.5.9-10 Cristy  <quetzlzacatenango@image...>
   * Add extent() to extend the image as defined by the geometry, gravity, and
 	  image background color.
