@@ -1248,6 +1248,7 @@ with_jbig
 with_jpeg
 with_jp2
 with_lcms
+with_lcms2
 with_lqr
 with_openexr
 with_png
@@ -1992,7 +1993,8 @@ Optional Packages:
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG-2000 support
-  --without-lcms          disable LCMS support
+  --without-lcms          disable lcms (v1.1X) support
+  --without-lcms2         disable lcms (v2.X) support
   --without-lqr           disable Liquid Rescale support
   --without-openexr       disable OpenEXR support
   --without-png           disable PNG support
@@ -9706,13 +9708,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:9709: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:9711: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:9712: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:9714: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:9715: output\"" >&5)
+  (eval echo "\"\$as_me:9717: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -10903,7 +10905,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 10906 "configure"' > conftest.$ac_ext
+  echo '#line 10908 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -12988,11 +12990,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12991: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12993: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12995: \$? = $ac_status" >&5
+   echo "$as_me:12997: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13327,11 +13329,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13330: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13332: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13334: \$? = $ac_status" >&5
+   echo "$as_me:13336: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13432,11 +13434,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13435: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13437: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13439: \$? = $ac_status" >&5
+   echo "$as_me:13441: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13487,11 +13489,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13490: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13492: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13494: \$? = $ac_status" >&5
+   echo "$as_me:13496: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15857,7 +15859,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 15860 "configure"
+#line 15862 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15953,7 +15955,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 15956 "configure"
+#line 15958 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17909,11 +17911,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17912: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17914: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17916: \$? = $ac_status" >&5
+   echo "$as_me:17918: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18008,11 +18010,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18011: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18013: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18015: \$? = $ac_status" >&5
+   echo "$as_me:18017: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18060,11 +18062,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18063: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18065: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18067: \$? = $ac_status" >&5
+   echo "$as_me:18069: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -19472,7 +19474,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 19475 "configure"
+#line 19477 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28037,6 +28039,7 @@ fi
 #
 # Check for LCMS delegate library.
 #
+# Disable LCMS.
 
 # Check whether --with-lcms was given.
 if test "${with_lcms+set}" = set; then :
@@ -28045,23 +28048,37 @@ else
   with_lcms='yes'
 fi
 
-
-if test "$with_lcms" != 'yes'; then
+if test "$with_lcms" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms=$with_lcms "
 fi
 
-have_lcms='no'
+# Disable LCMS2.
+
+# Check whether --with-lcms2 was given.
+if test "${with_lcms2+set}" = set; then :
+  withval=$with_lcms2; with_lcms2=$withval
+else
+  with_lcms2='yes'
+fi
+
+if test "$with_lcms2" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms2=$with_lcms2 "
+fi
+
+have_lcms2='no'
 LCMS_LIBS=''
-if test "$with_lcms" != 'no'; then
+if test "$with_lcms2" != 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS v2" >&5
+$as_echo_n "checking for LCMS v2... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
     failed=0
     passed=0
     have_lcms_header='no'
+
+    # Check for <lcms2.h>
     ac_fn_c_check_header_mongrel "$LINENO" "lcms2.h" "ac_cv_header_lcms2_h" "$ac_includes_default"
 if test "x$ac_cv_header_lcms2_h" = x""yes; then :
   have_lcms_header='yes'
@@ -28069,29 +28086,36 @@ fi
 
 
     if test "$have_lcms_header" = 'yes'; then
-        passed=`expr $passed + 1`
 
 $as_echo "#define HAVE_LCMS2_H 1" >>confdefs.h
 
-    else
-        ac_fn_c_check_header_mongrel "$LINENO" "lcms/lcms2.h" "ac_cv_header_lcms_lcms2_h" "$ac_includes_default"
-if test "x$ac_cv_header_lcms_lcms2_h" = x""yes; then :
+       passed=`expr $passed + 1`
+    fi
+
+    # Check for <lcms2/lcms2.h)
+    if test "$have_lcms_header" != 'yes'; then
+      ac_fn_c_check_header_mongrel "$LINENO" "lcms2/lcms2.h" "ac_cv_header_lcms2_lcms2_h" "$ac_includes_default"
+if test "x$ac_cv_header_lcms2_lcms2_h" = x""yes; then :
   have_lcms_header='yes'
 fi
 
 
-        if test "$have_lcms_header" = 'yes'; then
-            passed=`expr $passed + 1`
+      if test "$have_lcms_header" = 'yes'; then
+        passed=`expr $passed + 1`
 
-$as_echo "#define HAVE_LCMS_LCMS2_H 1" >>confdefs.h
+$as_echo "#define HAVE_LCMS2_LCMS2_H 1" >>confdefs.h
 
-        else
-            failed=`expr $failed + 1`
-        fi
+      fi
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cmsOpenProfileFromMem in -llcms2" >&5
-$as_echo_n "checking for cmsOpenProfileFromMem in -llcms2... " >&6; }
-if test "${ac_cv_lib_lcms2_cmsOpenProfileFromMem+set}" = set; then :
+
+    # Failed to find lcms header?
+    if test "$have_lcms_header" != 'yes'; then
+      failed=`expr $failed + 1`
+    fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cmsSetLogErrorHandler in -llcms2" >&5
+$as_echo_n "checking for cmsSetLogErrorHandler in -llcms2... " >&6; }
+if test "${ac_cv_lib_lcms2_cmsSetLogErrorHandler+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -28105,96 +28129,111 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char cmsOpenProfileFromMem ();
+char cmsSetLogErrorHandler ();
 int
 main ()
 {
-return cmsOpenProfileFromMem ();
+return cmsSetLogErrorHandler ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_lcms2_cmsOpenProfileFromMem=yes
+  ac_cv_lib_lcms2_cmsSetLogErrorHandler=yes
 else
-  ac_cv_lib_lcms2_cmsOpenProfileFromMem=no
+  ac_cv_lib_lcms2_cmsSetLogErrorHandler=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lcms2_cmsOpenProfileFromMem" >&5
-$as_echo "$ac_cv_lib_lcms2_cmsOpenProfileFromMem" >&6; }
-if test "x$ac_cv_lib_lcms2_cmsOpenProfileFromMem" = x""yes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lcms2_cmsSetLogErrorHandler" >&5
+$as_echo "$ac_cv_lib_lcms2_cmsSetLogErrorHandler" >&6; }
+if test "x$ac_cv_lib_lcms2_cmsSetLogErrorHandler" = x""yes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LCMS2 package is complete" >&5
-$as_echo_n "checking if LCMS2 package is complete... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LCMS v2 package is complete" >&5
+$as_echo_n "checking if LCMS v2 package is complete... " >&6; }
     if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+      if test $failed -gt 0; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
-            have_lcms='no (failed tests)'
-        else
-            LCMS_LIBS='-llcms2'
-            LIBS="$LCMS_LIBS $LIBS"
-
-$as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        have_lcms2='no (failed tests)'
+      else
+        LCMS_LIBS='-llcms2'
+        LIBS="$LCMS_LIBS $LIBS"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-            have_lcms='yes'
-        fi
+        have_lcms2='yes'
+      fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     fi
 fi
 
+#
+# Check for LCMS v1 (1.11 or later)
+#
+if test $have_lcms2 = 'yes'; then
+  with_lcms='no'
+fi
+
+have_lcms='no'
 if test "$with_lcms" != 'no'; then
-if test "$have_lcms" == 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS v1.1X" >&5
+$as_echo_n "checking for LCMS v1.1X... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
     failed=0
     passed=0
     have_lcms_header='no'
-    ac_fn_c_check_header_mongrel "$LINENO" "lcms.h" "ac_cv_header_lcms_h" "$ac_includes_default"
+
+    # Check for <lcms.h>
+    if test "$have_lcms_header" != 'yes'; then
+      ac_fn_c_check_header_mongrel "$LINENO" "lcms.h" "ac_cv_header_lcms_h" "$ac_includes_default"
 if test "x$ac_cv_header_lcms_h" = x""yes; then :
   have_lcms_header='yes'
 fi
 
 
-    if test "$have_lcms_header" = 'yes'; then
+      if test "$have_lcms_header" = 'yes'; then
         passed=`expr $passed + 1`
 
 $as_echo "#define HAVE_LCMS_H 1" >>confdefs.h
 
-    else
-        ac_fn_c_check_header_mongrel "$LINENO" "lcms/lcms.h" "ac_cv_header_lcms_lcms_h" "$ac_includes_default"
+      fi
+    fi
+
+    # Check for <lcms/lcms.h>
+    if test "$have_lcms_header" != 'yes'; then
+      ac_fn_c_check_header_mongrel "$LINENO" "lcms/lcms.h" "ac_cv_header_lcms_lcms_h" "$ac_includes_default"
 if test "x$ac_cv_header_lcms_lcms_h" = x""yes; then :
   have_lcms_header='yes'
 fi
 
 
-        if test "$have_lcms_header" = 'yes'; then
-            passed=`expr $passed + 1`
+      if test "$have_lcms_header" = 'yes'; then
+        passed=`expr $passed + 1`
 
 $as_echo "#define HAVE_LCMS_LCMS_H 1" >>confdefs.h
 
-        else
-            failed=`expr $failed + 1`
-        fi
+      fi
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cmsOpenProfileFromMem in -llcms" >&5
-$as_echo_n "checking for cmsOpenProfileFromMem in -llcms... " >&6; }
-if test "${ac_cv_lib_lcms_cmsOpenProfileFromMem+set}" = set; then :
+
+    # Failed to find lcms header?
+    if test "$have_lcms_header" != 'yes'; then
+      failed=`expr $failed + 1`
+    fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cmsSetErrorHandler in -llcms" >&5
+$as_echo_n "checking for cmsSetErrorHandler in -llcms... " >&6; }
+if test "${ac_cv_lib_lcms_cmsSetErrorHandler+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -28208,27 +28247,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char cmsOpenProfileFromMem ();
+char cmsSetErrorHandler ();
 int
 main ()
 {
-return cmsOpenProfileFromMem ();
+return cmsSetErrorHandler ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_lcms_cmsOpenProfileFromMem=yes
+  ac_cv_lib_lcms_cmsSetErrorHandler=yes
 else
-  ac_cv_lib_lcms_cmsOpenProfileFromMem=no
+  ac_cv_lib_lcms_cmsSetErrorHandler=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lcms_cmsOpenProfileFromMem" >&5
-$as_echo "$ac_cv_lib_lcms_cmsOpenProfileFromMem" >&6; }
-if test "x$ac_cv_lib_lcms_cmsOpenProfileFromMem" = x""yes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lcms_cmsSetErrorHandler" >&5
+$as_echo "$ac_cv_lib_lcms_cmsSetErrorHandler" >&6; }
+if test "x$ac_cv_lib_lcms_cmsSetErrorHandler" = x""yes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
@@ -28237,32 +28276,35 @@ fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LCMS package is complete" >&5
 $as_echo_n "checking if LCMS package is complete... " >&6; }
     if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+      if test $failed -gt 0; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
-            have_lcms='no (failed tests)'
-        else
-            LCMS_LIBS='-llcms'
-            LIBS="$LCMS_LIBS $LIBS"
-
-$as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        have_lcms='no (failed tests)'
+      else
+        LCMS_LIBS='-llcms'
+        LIBS="$LCMS_LIBS $LIBS"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-            have_lcms='yes'
-        fi
+        have_lcms='yes'
+      fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     fi
 fi
-fi
- if test "$have_lcms" = 'yes'; then
+
+ if test "$have_lcms2" = 'yes' -o "$have_lcms" = 'yes'; then
   LCMS_DELEGATE_TRUE=
   LCMS_DELEGATE_FALSE='#'
 else
   LCMS_DELEGATE_TRUE='#'
   LCMS_DELEGATE_FALSE=
+fi
+
+if test "$have_lcms2" = 'yes' -o "$have_lcms" = 'yes'; then
+
+$as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
+
 fi
 
 
@@ -32432,6 +32474,7 @@ if test "$have_jpeg"       = 'yes'; then
   if test "$have_png"      = 'yes'; then DELEGATES="$DELEGATES jng"; fi
 fi
 if test "$have_jp2"        = 'yes'; then DELEGATES="$DELEGATES jp2"; fi
+if test "$have_lcms2"      = 'yes'; then DELEGATES="$DELEGATES lcms2"; fi
 if test "$have_lcms"       = 'yes'; then DELEGATES="$DELEGATES lcms"; fi
 if test "$have_lqr"        = 'yes'; then DELEGATES="$DELEGATES lqr"; fi
 if test "$have_ffmpeg"     = 'yes'; then DELEGATES="$DELEGATES mpeg"; fi
@@ -35649,7 +35692,8 @@ Graphviz          --with-gvc=$with_gvc		$have_gvc
 JBIG              --with-jbig=$with_jbig		$have_jbig
 JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
 JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-LCMS              --with-lcms=$with_lcms		$have_lcms
+LCMS v1           --with-lcms=$with_lcms		$have_lcms
+LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
 LQR               --with-lqr=$with_lqr		$have_lqr
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
@@ -35720,7 +35764,8 @@ Graphviz          --with-gvc=$with_gvc		$have_gvc
 JBIG              --with-jbig=$with_jbig		$have_jbig
 JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
 JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-LCMS              --with-lcms=$with_lcms		$have_lcms
+LCMS v1           --with-lcms=$with_lcms		$have_lcms
+LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
 LQR               --with-lqr=$with_lqr		$have_lqr
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr

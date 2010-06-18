@@ -14,7 +14,7 @@
 #
 #  Copyright (C) 2003 - 2008 GraphicsMagick Group
 
-AC_PREREQ(2.63)
+AC_PREREQ(2.64)
 AC_INIT([ImageMagick],[6.6.2],[http://www.imagemagick.org],[ImageMagick])
 AC_CONFIG_SRCDIR([magick/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
@@ -2097,97 +2097,134 @@ dnl ===========================================================================
 #
 # Check for LCMS delegate library.
 #
+# Disable LCMS.
 AC_ARG_WITH(lcms,
-    [AC_HELP_STRING([--without-lcms],
-                    [disable LCMS support])],
-    [with_lcms=$withval],
-    [with_lcms='yes'])
-
-if test "$with_lcms" != 'yes'; then
+        [  --without-lcms          disable lcms (v1.1X) support],
+        [with_lcms=$withval],
+        [with_lcms='yes'])
+if test "$with_lcms" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms=$with_lcms "
 fi
 
-have_lcms='no'
+# Disable LCMS2.
+AC_ARG_WITH(lcms2,
+        [  --without-lcms2         disable lcms (v2.X) support],
+        [with_lcms2=$withval],
+        [with_lcms2='yes'])
+if test "$with_lcms2" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms2=$with_lcms2 "
+fi
+
+have_lcms2='no'
 LCMS_LIBS=''
-if test "$with_lcms" != 'no'; then
+if test "$with_lcms2" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for LCMS])
-    AC_MSG_RESULT([])
+    AC_MSG_CHECKING([for LCMS v2])
+    AC_MSG_RESULT()
     failed=0
     passed=0
     have_lcms_header='no'
+
+    # Check for <lcms2.h>
     AC_CHECK_HEADER(lcms2.h,have_lcms_header='yes',,)
     if test "$have_lcms_header" = 'yes'; then
-        passed=`expr $passed + 1`
-        AC_DEFINE(HAVE_LCMS2_H,1,Define if you have the <lcms2.h> header file.)
-    else
-        AC_CHECK_HEADER(lcms/lcms2.h,have_lcms_header='yes',,)
-        if test "$have_lcms_header" = 'yes'; then
-            passed=`expr $passed + 1`
-            AC_DEFINE(HAVE_LCMS_LCMS2_H,1,Define if you have the <lcms/lcms2.h> header file.)
-        else
-            failed=`expr $failed + 1`
-        fi
+       AC_DEFINE(HAVE_LCMS2_H,1,Define if you have the <lcms2.h> header file.)
+       passed=`expr $passed + 1`
     fi
-    AC_CHECK_LIB(lcms2,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING([if LCMS2 package is complete])
+
+    # Check for <lcms2/lcms2.h)
+    if test "$have_lcms_header" != 'yes'; then
+      AC_CHECK_HEADER(lcms2/lcms2.h,have_lcms_header='yes',,)
+      if test "$have_lcms_header" = 'yes'; then
+        passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS2_LCMS2_H,1,Define if you have the <lcms2/lcms2.h> header file.)
+      fi
+    fi
+
+    # Failed to find lcms header?
+    if test "$have_lcms_header" != 'yes'; then
+      failed=`expr $failed + 1`
+    fi
+
+    AC_CHECK_LIB(lcms2,cmsSetLogErrorHandler,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if LCMS v2 package is complete)
     if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_lcms='no (failed tests)'
-        else
-            LCMS_LIBS='-llcms2'
-            LIBS="$LCMS_LIBS $LIBS"
-            AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
-            AC_MSG_RESULT([yes])
-            have_lcms='yes'
-        fi
+      if test $failed -gt 0; then
+        AC_MSG_RESULT(no -- some components failed test)
+        have_lcms2='no (failed tests)'
+      else
+        LCMS_LIBS='-llcms2'
+        LIBS="$LCMS_LIBS $LIBS"
+        AC_MSG_RESULT(yes)
+        have_lcms2='yes'
+      fi
     else
-        AC_MSG_RESULT([no])
+      AC_MSG_RESULT(no)
     fi
 fi
 
+#
+# Check for LCMS v1 (1.11 or later)
+#
+if test $have_lcms2 = 'yes'; then
+  with_lcms='no'
+fi
+
+have_lcms='no'
 if test "$with_lcms" != 'no'; then
-if test "$have_lcms" == 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for LCMS])
-    AC_MSG_RESULT([])
+    AC_MSG_CHECKING([for LCMS v1.1X])
+    AC_MSG_RESULT()
     failed=0
     passed=0
     have_lcms_header='no'
-    AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
-    if test "$have_lcms_header" = 'yes'; then
+
+    # Check for <lcms.h>
+    if test "$have_lcms_header" != 'yes'; then
+      AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
+      if test "$have_lcms_header" = 'yes'; then
         passed=`expr $passed + 1`
         AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
-    else
-        AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
-        if test "$have_lcms_header" = 'yes'; then
-            passed=`expr $passed + 1`
-            AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
-        else
-            failed=`expr $failed + 1`
-        fi
+      fi
     fi
-    AC_CHECK_LIB(lcms,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING([if LCMS package is complete])
+
+    # Check for <lcms/lcms.h>
+    if test "$have_lcms_header" != 'yes'; then
+      AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
+      if test "$have_lcms_header" = 'yes'; then
+        passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
+      fi
+    fi
+
+    # Failed to find lcms header?
+    if test "$have_lcms_header" != 'yes'; then
+      failed=`expr $failed + 1`
+    fi
+
+    AC_CHECK_LIB(lcms,cmsSetErrorHandler,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if LCMS package is complete)
     if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_lcms='no (failed tests)'
-        else
-            LCMS_LIBS='-llcms'
-            LIBS="$LCMS_LIBS $LIBS"
-            AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
-            AC_MSG_RESULT([yes])
-            have_lcms='yes'
-        fi
+      if test $failed -gt 0; then
+        AC_MSG_RESULT(no -- some components failed test)
+        have_lcms='no (failed tests)'
+      else
+        LCMS_LIBS='-llcms'
+        LIBS="$LCMS_LIBS $LIBS"
+        AC_MSG_RESULT(yes)
+        have_lcms='yes'
+      fi
     else
-        AC_MSG_RESULT([no])
+      AC_MSG_RESULT(no)
     fi
 fi
+
+AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms2" = 'yes' -o "$have_lcms" = 'yes')
+if test "$have_lcms2" = 'yes' -o "$have_lcms" = 'yes'; then
+  AC_DEFINE(LCMS_DELEGATE,1,[Define if you have LCMS (v1.11 or later) library])
 fi
-AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms" = 'yes')
 AC_SUBST(LCMS_LIBS)
+
 
 dnl ===========================================================================
 
@@ -3263,6 +3300,7 @@ if test "$have_jpeg"       = 'yes'; then
   if test "$have_png"      = 'yes'; then DELEGATES="$DELEGATES jng"; fi
 fi
 if test "$have_jp2"        = 'yes'; then DELEGATES="$DELEGATES jp2"; fi
+if test "$have_lcms2"      = 'yes'; then DELEGATES="$DELEGATES lcms2"; fi
 if test "$have_lcms"       = 'yes'; then DELEGATES="$DELEGATES lcms"; fi
 if test "$have_lqr"        = 'yes'; then DELEGATES="$DELEGATES lqr"; fi
 if test "$have_ffmpeg"     = 'yes'; then DELEGATES="$DELEGATES mpeg"; fi
@@ -3448,7 +3486,8 @@ Graphviz          --with-gvc=$with_gvc		$have_gvc
 JBIG              --with-jbig=$with_jbig		$have_jbig
 JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
 JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-LCMS              --with-lcms=$with_lcms		$have_lcms
+LCMS v1           --with-lcms=$with_lcms		$have_lcms
+LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
 LQR               --with-lqr=$with_lqr		$have_lqr
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr

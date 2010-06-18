@@ -77,9 +77,7 @@
 /*
   Define declarations.
 */
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-#define cmsUInt32Number  DWORD
+#if !defined(LCMS_VERSION) || (LCMS_VERSION < 2000)
 #define cmsSigCmykData icSigCmykData
 #define cmsSigGrayData icSigGrayData
 #define cmsSigLabData icSigLabData
@@ -89,7 +87,13 @@
 #define cmsSigYCbCrData icSigYCbCrData
 #define cmsSigLinkClass icSigLinkClass
 #define cmsColorSpaceSignature icColorSpaceSignature
-#endif
+#define cmsUInt32Number  DWORD
+#define cmsSetLogErrorHandler(handler)  cmsSetErrorHandler(handler)
+#define cmsCreateTransformTHR(context,source_profile,source_type, \
+  target_profile,target_type,intent,flags)  cmsCreateTransform(source_profile, \
+  source_type,target_profile,target_type,intent,flags);
+#define cmsOpenProfileFromMemTHR(context,profile,length) \
+  cmsOpenProfileFromMem(profile,length)
 #endif
 
 /*
@@ -412,8 +416,8 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(
   (void) ResetMagickMemory(transform,0,number_threads*sizeof(*transform));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    transform[i]=cmsCreateTransform(source_profile,source_type,target_profile,
-      target_type,intent,flags);
+    transform[i]=cmsCreateTransformTHR(image,source_profile,source_type,
+      target_profile,target_type,intent,flags);
     if (transform[i] == (cmsHTRANSFORM) NULL)
       return(DestroyTransformThreadSet(transform));
   }
@@ -807,23 +811,27 @@ static MagickBooleanType SetsRGBImageProfile(Image *image)
 }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
 #if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
-static void LCMSErrorHandler(cmsContext context,cmsUInt32Number severity,
+static void LCMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
   const char *message)
 {
-  (void) context;
-  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
+  Image
+    *image;
+
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%u, %s",
     severity,message != (char *) NULL ? message : "no message");
+  image=(Image *) context;
+  if (image != (Image *) NULL)
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      ImageWarning,"UnableToTransformColorspace","`%s'",image->filename);
+
 }
-#endif
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-#if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
-static int LCMSErrorHandler(int severity,const char *message)
+#else
+static int LCMSExceptionHandler(int severity,const char *message)
 {
   (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
     severity,message != (char *) NULL ? message : "no message");
   return(1);
 }
-#endif
 #endif
 #endif
 
@@ -944,18 +952,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         /*
           Transform pixel colors as defined by the color profiles.
         */
-#if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
-        cmsSetLogErrorHandler(LCMSErrorHandler);
-#endif
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-#if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
-        cmsSetErrorHandler(LCMSErrorHandler);
-#else
-        (void) cmsErrorAction(LCMS_ERROR_SHOW);
-#endif
-#endif
-        source_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-          (cmsUInt32Number) GetStringInfoLength(profile));
+        cmsSetLogErrorHandler(LCMSExceptionHandler);
+        source_profile=cmsOpenProfileFromMemTHR(image,
+          GetStringInfoDatum(profile),(cmsUInt32Number)
+          GetStringInfoLength(profile));
         if (source_profile == (cmsHPROFILE) NULL)
           ThrowBinaryException(ResourceLimitError,
             "ColorspaceColorProfileMismatch",name);
@@ -1014,7 +1014,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (icc_profile != (StringInfo *) NULL)
               {
                 target_profile=source_profile;
-                source_profile=cmsOpenProfileFromMem(
+                source_profile=cmsOpenProfileFromMemTHR(image,
                   GetStringInfoDatum(icc_profile),(cmsUInt32Number)
                   GetStringInfoLength(icc_profile));
                 if (source_profile == (cmsHPROFILE) NULL)
