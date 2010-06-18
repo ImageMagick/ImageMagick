@@ -1912,6 +1912,12 @@ static const char *FxOperatorPrecedence(const char *expression,
           }
         break;
       }
+      case '#':
+      {
+        while (isxdigit((int) ((unsigned char) *(expression+1))) != 0)
+          expression++;
+        break;
+      }
       default:
         break;
     }
