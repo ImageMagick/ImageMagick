@@ -548,6 +548,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               /*
                 Display image to X server.
               */
+              if (resource_info.delay != 0)
+                image->delay=resource_info.delay;
               nexus=XDisplayImage(display,&resource_info,argv,argc,&image,
                 &state);
               status&=nexus != (Image *) NULL;
@@ -744,7 +746,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowDisplayInvalidArgumentException(option,argv[i]);
-            resource_info.border_width=(unsigned int) StringToUnsignedLong(argv[i]);
+            resource_info.border_width=(unsigned int)
+              StringToUnsignedLong(argv[i]);
             break;
           }
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);
