@@ -1,3 +1,8 @@
+2010-06-17  6.6.2-6 Cristy  <quetzlzacatenango@image...>
+  * Support new label:pointsize property.
+  * Miscellany->Slide Show, in the display program, now cycles through the
+    image sequence.
+
 2010-06-14  6.6.2-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix transprancy handling for Morphology Convolve
   * Adjustments of Hit And Miss and Edge Detection kernel definitions

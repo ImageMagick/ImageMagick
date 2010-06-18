@@ -229,7 +229,7 @@ push(@$images,$gradient);
 print "Grayscale...\n";
 $example=$model->Clone();
 $example->Label('Grayscale');
-$example->Quantize(colorspace=>'gray');
+$example->Set(type=>'gray');
 push(@$images,$example);
 
 print "Implode...\n";

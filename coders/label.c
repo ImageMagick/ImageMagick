@@ -194,6 +194,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) AnnotateImage(image,draw_info);
+  if (image_info->pointsize == 0.0)
+    {
+      char
+        pointsize[MaxTextExtent];
+
+      (void) FormatMagickString(pointsize,MaxTextExtent,"%.20g",
+        draw_info->pointsize);
+      (void) SetImageProperty(image,"label:pointsize",pointsize);
+    }
   draw_info=DestroyDrawInfo(draw_info);
   return(GetFirstImageInList(image));
 }
