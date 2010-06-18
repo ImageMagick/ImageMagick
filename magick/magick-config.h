@@ -379,13 +379,13 @@
 /* Define if you have the <lcms2.h> header file. */
 /* #undef HAVE_LCMS2_H */
 
+/* Define if you have the <lcms2/lcms2.h> header file. */
+/* #undef HAVE_LCMS2_LCMS2_H */
+
 /* Define if you have the <lcms.h> header file. */
 #ifndef MAGICKCORE_HAVE_LCMS_H
 #define MAGICKCORE_HAVE_LCMS_H 1
 #endif
-
-/* Define if you have the <lcms/lcms2.h> header file. */
-/* #undef HAVE_LCMS_LCMS2_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -1038,7 +1038,7 @@
 #define MAGICKCORE_JPEG_DELEGATE 1
 #endif
 
-/* Define if you have LCMS library */
+/* Define if you have LCMS (v1.11 or later) library */
 #ifndef MAGICKCORE_LCMS_DELEGATE
 #define MAGICKCORE_LCMS_DELEGATE 1
 #endif

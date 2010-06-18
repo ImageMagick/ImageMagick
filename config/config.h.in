@@ -254,11 +254,11 @@
 /* Define if you have the <lcms2.h> header file. */
 #undef HAVE_LCMS2_H
 
+/* Define if you have the <lcms2/lcms2.h> header file. */
+#undef HAVE_LCMS2_LCMS2_H
+
 /* Define if you have the <lcms.h> header file. */
 #undef HAVE_LCMS_H
-
-/* Define if you have the <lcms/lcms2.h> header file. */
-#undef HAVE_LCMS_LCMS2_H
 
 /* Define if you have the <lcms/lcms.h> header file. */
 #undef HAVE_LCMS_LCMS_H
@@ -685,7 +685,7 @@
 /* Define if you have JPEG library */
 #undef JPEG_DELEGATE
 
-/* Define if you have LCMS library */
+/* Define if you have LCMS (v1.11 or later) library */
 #undef LCMS_DELEGATE
 
 /* Directory where architecture-dependent files live. */
