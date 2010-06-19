@@ -199,7 +199,11 @@
 /*
   Define declarations.
 */
+#if !defined(__APPLE__) && !defined(TARGET_OS_IPHONE)
 #define CacheShift  2
+#else
+#define CacheShift  3
+#endif
 #define ErrorQueueLength  16
 #define MaxNodes  266817
 #define MaxTreeDepth  8
