@@ -487,11 +487,11 @@ MagickExport Image *AppendImages(const Image *image,
       register IndexPacket
         *restrict append_indexes;
 
-      register ssize_t
-        x;
-
       register PixelPacket
         *restrict q;
+
+      register ssize_t
+        x;
 
       if (status == MagickFalse)
         continue;
@@ -1031,11 +1031,11 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
     register const PixelPacket
       *restrict p;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -1708,14 +1708,14 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         const char
           *value;
 
-        ssize_t
-          depth;
-
         register char
           *r;
 
         register ssize_t
           i;
+
+        ssize_t
+          depth;
 
         /*
           Image option.
@@ -1812,14 +1812,14 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   MagickPixelPacket
     zero;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2096,11 +2096,11 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2301,11 +2301,11 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2551,9 +2551,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       IndexPacket
         index;
 
-      ssize_t
-        y;
-
       MagickBooleanType
         status;
 
@@ -2562,6 +2559,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 
       PixelPacket
         pixel;
+
+      ssize_t
+        y;
 
       /*
         Set transparent pixels to background color.
@@ -2588,11 +2588,11 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         register IndexPacket
           *restrict indexes;
 
-        register ssize_t
-          x;
-
         register PixelPacket
           *restrict q;
+
+        register ssize_t
+          x;
 
         if (status == MagickFalse)
           continue;
@@ -2723,9 +2723,6 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -2734,6 +2731,9 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
 
   PixelPacket
     pixel;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -2764,11 +2764,11 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2827,11 +2827,11 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -2853,11 +2853,11 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -3507,11 +3507,11 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -3526,11 +3526,11 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -3840,12 +3840,12 @@ MagickExport MagickBooleanType SyncImage(Image *image)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     range_exception,
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -3871,11 +3871,11 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
