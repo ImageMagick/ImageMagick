@@ -1,4 +1,4 @@
-2010-06-17  6.6.2-6 Cristy  <quetzlzacatenango@image...>
+2010-06-17  6.6.2-7 Cristy  <quetzlzacatenango@image...>
   * Support new label:pointsize property.
   * Miscellany->Slide Show, in the display program, now cycles through the
     image sequence.
@@ -8,6 +8,9 @@
   * Command line operators no longer affected by settings that appear after
     them (e.g. -splice 10x0+0+0 -gravity center).
   * Compute the proper DPX user data field size.
+
+2010-06-15  6.6.2-6 Cristy  <quetzlzacatenango@image...>
+  * Fix some nits to keep the clang compiler happy.
 
 2010-06-14  6.6.2-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix transprancy handling for Morphology Convolve
