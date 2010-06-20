@@ -196,7 +196,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
           }
         status=command(image_info,argc,argv,metadata,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  # pragma omp critical (MagickCore_Launch_Command)
+  # pragma omp critical (MagickCore_CommandGenesis)
 #endif
         {
           if (exception->severity != UndefinedException)
@@ -224,6 +224,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
         iterations,1.0*iterations/elapsed_time,user_time,(double)
         (elapsed_time/60.0),floor(fmod(elapsed_time,60.0)),(double)
         (1000.0*(elapsed_time-floor(elapsed_time))));
+      (void) fflush(stderr);
     }
   timer=DestroyTimerInfo(timer);
   return(status);
