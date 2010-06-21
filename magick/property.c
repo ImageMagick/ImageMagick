@@ -1979,8 +1979,7 @@ MagickExport const char *GetImageProperty(const Image *image,
         image->properties);
       return(p);
     }
-  if ((image->properties != (void *) NULL) &&
-      (LocaleNCompare("fx:",property,3) != 0))
+  if (image->properties != (void *) NULL)
     {
       p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
         image->properties,property);
@@ -2022,11 +2021,9 @@ MagickExport const char *GetImageProperty(const Image *image,
     case 'F':
     case 'f':
     {
-      if ((LocaleNCompare("fx:",property,3) == 0) ||
-          (LocaleNCompare("fxc:",property,4) == 0))
+      if (LocaleNCompare("fx:",property,3) == 0)
         {
-          fx_info=AcquireFxInfo(image,property+
-            (LocaleNCompare("fx:",property,3) == 0 ? 3 : 4));
+          fx_info=AcquireFxInfo(image,property+3);
           status=FxEvaluateExpression(fx_info,&alpha,exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
