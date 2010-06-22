@@ -397,9 +397,12 @@ WandExport MagickBooleanType PixelClearIteratorException(
 %      pixels.
 %
 */
-WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
-  const ssize_t y,const size_t width,const size_t height)
+WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
+  const ssize_t x,const ssize_t y,const size_t width,const size_t height)
 {
+  CacheView
+    *view;
+
   const char
     *quantum;
 
@@ -411,9 +414,6 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t 
 
   size_t
     depth;
-
-  CacheView
-    *view;
 
   assert(wand != (MagickWand *) NULL);
   depth=MAGICKCORE_QUANTUM_DEPTH;
