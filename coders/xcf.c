@@ -444,7 +444,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   exception=(&image->exception);
   for (i=0; i < (ssize_t) bytes_per_pixel; i++)
   {
-    q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,exception);
+    q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
+      exception);
     size=(MagickOffsetType) tile_image->rows*tile_image->columns;
     while (size > 0)
     {
