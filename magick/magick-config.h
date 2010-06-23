@@ -160,9 +160,7 @@
 #endif
 
 /* define if bool is a built-in type */
-#ifndef MAGICKCORE_HAVE_BOOL
-#define MAGICKCORE_HAVE_BOOL /**/
-#endif
+/* #undef HAVE_BOOL */
 
 /* Define to 1 if you have the `cimag' function. */
 #ifndef MAGICKCORE_HAVE_CIMAG
@@ -435,9 +433,7 @@
 #endif
 
 /* define if the compiler implements L"widestring" */
-#ifndef MAGICKCORE_HAVE_LSTRING
-#define MAGICKCORE_HAVE_LSTRING /**/
-#endif
+/* #undef HAVE_LSTRING */
 
 /* Define this if a modern libltdl is already installed */
 #ifndef MAGICKCORE_HAVE_LTDL
@@ -486,14 +482,10 @@
 #endif
 
 /* define if the compiler implements namespaces */
-#ifndef MAGICKCORE_HAVE_NAMESPACES
-#define MAGICKCORE_HAVE_NAMESPACES /**/
-#endif
+/* #undef HAVE_NAMESPACES */
 
 /* Define if g++ supports namespace std. */
-#ifndef MAGICKCORE_HAVE_NAMESPACE_STD
-#define MAGICKCORE_HAVE_NAMESPACE_STD /**/
-#endif
+/* #undef HAVE_NAMESPACE_STD */
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
@@ -679,9 +671,7 @@
 #endif
 
 /* define if the compiler supports ISO C++ standard library */
-#ifndef MAGICKCORE_HAVE_STD_LIBS
-#define MAGICKCORE_HAVE_STD_LIBS /**/
-#endif
+/* #undef HAVE_STD_LIBS */
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #ifndef MAGICKCORE_HAVE_STRCASECMP
