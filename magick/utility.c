@@ -1718,7 +1718,8 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   /*
     Save the current and change to the new directory.
   */
-  buffer=(struct dirent *) AcquireAlignedMemory(1,sizeof(*buffer)+FILENAME_MAX+1);
+  buffer=(struct dirent *) AcquireAlignedMemory(1,sizeof(*buffer)+
+    FILENAME_MAX+1);
   if (buffer == (struct dirent *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   while ((MagickReadDirectory(current_directory,buffer,&entry) == 0) &&
@@ -1758,9 +1759,6 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
         }
 #endif
         filelist[*number_entries]=(char *) AcquireString(entry->d_name);
-        if (IsPathDirectory(entry->d_name) > 0)
-          (void) ConcatenateMagickString(filelist[*number_entries],
-            DirectorySeparator,MaxTextExtent);
         (*number_entries)++;
       }
   }
