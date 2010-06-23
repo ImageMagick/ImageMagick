@@ -1,6 +1,8 @@
 2010-06-22  6.6.2-8 Cristy  <quetzlzacatenango@image...>
   * Skip byte when DDS bitcount is 32 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16487).
+  * Montage now uses final background setting (e.g. montage -background none ...
+    -background lightblue show:).
 
 2010-06-17  6.6.2-7 Cristy  <quetzlzacatenango@image...>
   * Support new label:pointsize property.
