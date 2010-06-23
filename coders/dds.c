@@ -790,6 +790,8 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
       q->blue  = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
       q->green = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
       q->red   = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
+      if (dds_info->pixelformat.rgb_bitcount == 32)
+        (void) ReadBlobByte(image);
       q++;
     }
     
