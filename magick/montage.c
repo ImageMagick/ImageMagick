@@ -579,6 +579,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   */
   tile_image=AcquireImage(NULL);
   montage=AcquireImage(clone_info);
+  montage->background_color=montage_info->background_color;
   montage->scene=0;
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
@@ -881,6 +882,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         montage=GetNextImageInList(montage);
+        montage->background_color=montage_info->background_color;
         image_list+=tiles_per_page;
         number_images-=tiles_per_page;
       }
@@ -891,7 +893,5 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   master_list=(Image **) RelinquishMagickMemory(master_list);
   draw_info=DestroyDrawInfo(draw_info);
   clone_info=DestroyImageInfo(clone_info);
-  while (GetPreviousImageInList(montage) != (Image *) NULL)
-    montage=GetPreviousImageInList(montage);
-  return(montage);
+  return(GetFirstImageInList(montage));
 }
