@@ -4,6 +4,7 @@
   * Montage now uses final background setting (e.g. montage -background none ...
     -background lightblue show:).
   * Do not annotate directory paths in ListFiles().
+  * Reset the image matte for png:color-type=2.
 
 2010-06-17  6.6.2-7 Cristy  <quetzlzacatenango@image...>
   * Support new label:pointsize property.
