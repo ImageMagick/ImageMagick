@@ -168,7 +168,13 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
-  InitializeCriticalSection(&semaphore_info->mutex);
+  status=InitializeCriticalSection(&semaphore_info->mutex,0x0400);
+  if (status == 0)
+    {
+      errno=status;
+      ThrowFatalException(ResourceLimitFatalError,
+        "UnableToInitializeSemaphore");
+     }
 #endif
   semaphore_info->id=GetMagickThreadId();
   semaphore_info->reference_count=0;
