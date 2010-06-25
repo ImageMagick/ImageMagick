@@ -38,7 +38,6 @@ extern "C" {
 }
 #define FinalizeImageSettings(image_info,image,advance) \
 { \
-  ResetImageOptions(image_info); \
   FireImageStack(MagickTrue,advance,MagickTrue); \
   if (image != (Image *) NULL) \
     { \
