@@ -148,7 +148,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  anywhere within that array of values.
 %
 %  Previously IM was restricted to a square of odd size using the exact
-%  center as origin, this is no ssize_ter the case, and any rectangular kernel
+%  center as origin, this is no longer the case, and any rectangular kernel
 %  with any value being declared the origin. This in turn allows the use of
 %  highly asymmetrical kernels.
 %
@@ -2104,7 +2104,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %
 %  CloneKernelInfo() creates a new clone of the given Kernel List so that its
 %  can be modified without effecting the original.  The cloned kernel should
-%  be destroyed using DestoryKernelInfo() when no ssize_ter needed.
+%  be destroyed using DestoryKernelInfo() when no longer needed.
 %
 %  The format of the CloneKernelInfo method is:
 %
