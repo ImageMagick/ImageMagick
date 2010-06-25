@@ -984,7 +984,7 @@ done_reading:
     image->columns=image->rows=0;
     image->colors=0;    
 
-      /* row scan buffer is no ssize_ter needed */
+      /* row scan buffer is no longer needed */
     RelinquishMagickMemory(BImgBuff);
     BImgBuff = NULL;
   }
