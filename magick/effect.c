@@ -2723,7 +2723,7 @@ static void AddNodeMedianPixelList(MedianPixelList *pixel_list,
   list->nodes[color].signature=pixel_list->signature;
   list->nodes[color].count=1;
   /*
-    Determine where it bessize_ts in the list.
+    Determine where it belongs in the list.
   */
   search=65536UL;
   for (level=list->level; level >= 0; level--)

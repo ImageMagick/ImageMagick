@@ -208,7 +208,7 @@ static void
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Classify() defines one or more classes.  Each pixel is thresholded to
-%  determine which class it bessize_ts to.  If the class is not identified it is
+%  determine which class it belongs to.  If the class is not identified it is
 %  assigned to the closest class based on the fuzzy c-Means technique.
 %
 %  The format of the Classify method is:
