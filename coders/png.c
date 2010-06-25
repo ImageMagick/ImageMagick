@@ -6493,7 +6493,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   mng_info->IsPalette=image->storage_class == PseudoClass && 
-            image_colors <= 256 && !IsOpaqueImage(image,&image->exception);
+    image_colors <= 256 && !IsOpaqueImage(image,&image->exception);
   mng_info->optimize=image_info->type == OptimizeType;
 
   /*
@@ -6825,6 +6825,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ||
               ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
             image_matte=MagickTrue;
+          if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
+            (void) SetImageType(image,PaletteType);
         }
       else
         {
