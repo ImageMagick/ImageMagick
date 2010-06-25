@@ -2187,7 +2187,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     E x p a n d M i r r o r K e r n e l I n f o                             %
++     E x p a n d M i r r o r K e r n e l I n f o                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2262,7 +2262,7 @@ static void ExpandMirrorKernelInfo(KernelInfo *kernel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     E x p a n d R o t a t e K e r n e l I n f o                             %
++     E x p a n d R o t a t e K e r n e l I n f o                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
