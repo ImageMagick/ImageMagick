@@ -141,7 +141,7 @@ static void
 %
 %  ClassifyImageColors() builds a populated CubeInfo tree for the specified
 %  image.  The returned tree should be deallocated using DestroyCubeInfo()
-%  once it is no ssize_ter needed.
+%  once it is no longer needed.
 %
 %  The format of the ClassifyImageColors() method is:
 %
