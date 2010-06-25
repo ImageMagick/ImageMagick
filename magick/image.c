@@ -1740,13 +1740,13 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         value=(const char *) NULL;
         if ((image_info != (const ImageInfo *) NULL) &&
             (image != (const Image *) NULL))
-          value=GetMagickProperty(image_info,image,pattern+9);
+          value=GetMagickProperty(image_info,image,pattern);
         else
           if (image != (Image *) NULL)
-            value=GetImageProperty(image,pattern+9);
+            value=GetImageProperty(image,pattern);
           else
             if (image_info != (ImageInfo *) NULL)
-              value=GetImageOption(image_info,pattern+9);
+              value=GetImageOption(image_info,pattern);
         if (value == (const char *) NULL)
           break;
         q--;
