@@ -5,8 +5,6 @@
     -background lightblue show:).
   * Do not annotate directory paths in ListFiles().
   * Reset the image matte for png:color-type=2.
-  * Filename escapes must start with the filename: namespace (e.g.
-    %[filename:filename]_orig.gif').
 
 2010-06-17  6.6.2-7 Cristy  <quetzlzacatenango@image...>
   * Support new label:pointsize property.
