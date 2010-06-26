@@ -8,11 +8,11 @@
 %                       I    M   M  A   A  G   G  E                           %
 %                     IIIII  M   M  A   A   GGGG  EEEEE                       %
 %                                                                             %
-%                        V   V  IIIII  EEEEE  W   W                           %
-%                        V   V    I    E      W   W                           %
-%                        V   V    I    EEE    W W W                           %
-%                         V V     I    E      WW WW                           %
-%                          V    IIIII  EEEEE  W   W                           %
+%                         V   V  IIIII  EEEEE  W   W                          %
+%                         V   V    I    E      W   W                          %
+%                         V   V    I    EEE    W W W                          %
+%                          V V     I    E      WW WW                          %
+%                           V    IIIII  EEEEE  W   W                          %
 %                                                                             %
 %                                                                             %
 %                       MagickCore Image View Methods                         %
@@ -259,8 +259,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       *restrict destination_indexes;
 
     register ssize_t
-      id,
-      x;
+      id;
 
     register PixelPacket
       *restrict destination_pixels;
@@ -276,14 +275,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(source->view);
-    for (x=0; x < (ssize_t) source->region.width; x++)
-      ;
-    if (source_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
-    if (source_image->storage_class == PseudoClass)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
     duplex_pixels=GetCacheViewVirtualPixels(duplex->view,duplex->region.x,y,
       duplex->region.width,1,duplex->exception);
     if (duplex_pixels == (const PixelPacket *) NULL)
@@ -292,14 +283,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         continue;
       }
     duplex_indexes=GetCacheViewVirtualIndexQueue(duplex->view);
-    for (x=0; x < (ssize_t) duplex->region.width; x++)
-      ;
-    if (duplex_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) duplex->region.width; x++)
-        ;
-    if (duplex_image->storage_class == PseudoClass)
-      for (x=0; x < (ssize_t) duplex->region.width; x++)
-        ;
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->region.x,y,destination->region.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -308,21 +291,8 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         continue;
       }
     destination_indexes=GetCacheViewAuthenticIndexQueue(destination->view);
-    for (x=0; x < (ssize_t) destination->region.width; x++)
-      ;
-    if (destination_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
-    if (destination_image->storage_class == PseudoClass)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
     if (transfer(source,duplex,destination,context) == MagickFalse)
       status=MagickFalse;
-    for (x=0; x < (ssize_t) destination->region.width; x++)
-      ;
-    if (destination_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
       {
@@ -345,6 +315,66 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       }
   }
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e V i e w A u t h e n t i c I n d e x e s                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageViewPixels() returns the pixel view authentic indexes.
+%
+%  The format of the GetImageViewAuthenticPixels method is:
+%
+%      IndexPacket *GetImageViewAuthenticIndexes(const ImageView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+MagickExport IndexPacket *GetImageViewAuthenticIndexes(
+  const ImageView *pixel_view)
+{
+  assert(pixel_view != (ImageView *) NULL);
+  assert(pixel_view->signature == MagickSignature);
+  return(GetCacheViewAuthenticIndexQueue(pixel_view->view));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e V i e w A u t h e n t i c P i x e l s                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageViewPixels() returns the pixel view authentic pixels.
+%
+%  The format of the GetImageViewAuthenticPixels method is:
+%
+%      PixelPacket *GetImageViewAuthenticPixels(const ImageView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+MagickExport PixelPacket *GetImageViewAuthenticPixels(
+  const ImageView *pixel_view)
+{
+  assert(pixel_view != (ImageView *) NULL);
+  assert(pixel_view->signature == MagickSignature);
+  return(GetCacheViewAuthenticPixelQueue(pixel_view->view));
 }
 
 /*
@@ -506,8 +536,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
       *pixels;
 
     register ssize_t
-      id,
-      x;
+      id;
 
     if (status == MagickFalse)
       continue;
@@ -520,14 +549,6 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(source->view);
-    for (x=0; x < (ssize_t) source->region.width; x++)
-      ;
-    if (source_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
-    if (source_image->storage_class == PseudoClass)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
     if (get(source,context) == MagickFalse)
       status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -545,39 +566,6 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
       }
   }
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e V i e w P i x e l s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageViewPixels() returns the pixel view pixel_wands.
-%
-%  The format of the GetImageViewPixels method is:
-%
-%      PixelImage *GetImageViewPixels(const ImageView *pixel_view)
-%
-%  A description of each parameter follows:
-%
-%    o pixel_view: the pixel view.
-%
-*/
-MagickExport PixelPacket **GetImageViewPixels(const ImageView *pixel_view)
-{
-  ssize_t
-    id;
-
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  id=GetOpenMPThreadId();
-  return((PixelPacket **) NULL);
 }
 
 /*
@@ -607,6 +595,67 @@ MagickExport Image *GetImageViewImage(const ImageView *pixel_view)
   assert(pixel_view != (ImageView *) NULL);
   assert(pixel_view->signature == MagickSignature);
   return(pixel_view->image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e V i e w V i r t u a l I n d e x e s                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageViewPixels() returns the pixel view virtual indexes.
+%
+%  The format of the GetImageViewVirtualPixels method is:
+%
+%      const IndexPacket *GetImageViewVirtualIndexes(
+%        const ImageView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+MagickExport const IndexPacket *GetImageViewVirtualIndexes(
+  const ImageView *pixel_view)
+{
+  assert(pixel_view != (ImageView *) NULL);
+  assert(pixel_view->signature == MagickSignature);
+  return(GetCacheViewVirtualIndexQueue(pixel_view->view));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e V i e w V i r t u a l P i x e l s                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageViewPixels() returns the pixel view virtual pixels.
+%
+%  The format of the GetImageViewVirtualPixels method is:
+%
+%      const PixelPacket *GetImageViewVirtualPixels(const ImageView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+MagickExport const PixelPacket *GetImageViewVirtualPixels(
+  const ImageView *pixel_view)
+{
+  assert(pixel_view != (ImageView *) NULL);
+  assert(pixel_view->signature == MagickSignature);
+  return(GetCacheViewVirtualPixelQueue(pixel_view->view));
 }
 
 /*
@@ -906,8 +955,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
       *restrict indexes;
 
     register ssize_t
-      id,
-      x;
+      id;
 
     register PixelPacket
       *restrict pixels;
@@ -927,11 +975,6 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
     indexes=GetCacheViewAuthenticIndexQueue(destination->view);
     if (set(destination,context) == MagickFalse)
       status=MagickFalse;
-    for (x=0; x < (ssize_t) destination->region.width; x++)
-      ;
-    if (destination_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
       {
@@ -1048,8 +1091,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
       *restrict destination_indexes;
 
     register ssize_t
-      id,
-      x;
+      id;
 
     register PixelPacket
       *restrict destination_pixels;
@@ -1065,14 +1107,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(source->view);
-    for (x=0; x < (ssize_t) source->region.width; x++)
-      ;
-    if (source_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
-    if (source_image->storage_class == PseudoClass)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->region.x,y,destination->region.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -1081,21 +1115,8 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
         continue;
       }
     destination_indexes=GetCacheViewAuthenticIndexQueue(destination->view);
-    for (x=0; x < (ssize_t) destination->region.width; x++)
-      ;
-    if (destination_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
-    if (destination_image->storage_class == PseudoClass)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
     if (transfer(source,destination,context) == MagickFalse)
       status=MagickFalse;
-    for (x=0; x < (ssize_t) destination->region.width; x++)
-      ;
-    if (destination_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) destination->region.width; x++)
-        ;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
       {
@@ -1197,8 +1218,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
       *restrict indexes;
 
     register ssize_t
-      id,
-      x;
+      id;
 
     register PixelPacket
       *restrict pixels;
@@ -1216,18 +1236,8 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(source->view);
-    for (x=0; x < (ssize_t) source->region.width; x++)
-      ;
-    if (source_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
     if (update(source,context) == MagickFalse)
       status=MagickFalse;
-    for (x=0; x < (ssize_t) source->region.width; x++)
-      ;
-    if (source_image->colorspace == CMYKColorspace)
-      for (x=0; x < (ssize_t) source->region.width; x++)
-        ;
     if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
       {
         InheritException(source->exception,GetCacheViewException(source->view));

@@ -36,6 +36,12 @@ typedef MagickBooleanType
 extern MagickExport char
   *GetImageViewException(const ImageView *,ExceptionType *);
 
+extern MagickExport const IndexPacket
+  *GetImageViewVirtualIndexes(const ImageView *);
+
+extern MagickExport const PixelPacket
+  *GetImageViewVirtualPixels(const ImageView *);
+
 extern MagickExport Image
   *GetImageViewImage(const ImageView *);
 
@@ -45,6 +51,9 @@ extern MagickExport ImageView
   *NewImageView(Image *),
   *NewImageViewRegion(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t);
+
+extern MagickExport IndexPacket
+  *GetImageViewAuthenticIndexes(const ImageView *);
 
 extern MagickExport MagickBooleanType
   DuplexTransferImageViewIterator(ImageView *,ImageView *,ImageView *,
@@ -57,7 +66,7 @@ extern MagickExport MagickBooleanType
   UpdateImageViewIterator(ImageView *,UpdateImageViewMethod,void *);
 
 extern MagickExport PixelPacket
-  **GetImageViewPixels(const ImageView *);
+  *GetImageViewAuthenticPixels(const ImageView *);
 
 extern MagickExport size_t
   GetImageViewHeight(const ImageView *),
