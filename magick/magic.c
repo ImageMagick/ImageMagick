@@ -132,6 +132,7 @@ static const MagicMapInfo
     { "JPEG", 0, MagickString("\377\330\377") },
     { "JPC", 0, MagickString("\377\117") },
     { "JP2", 4, MagickString("\152\120\040\040\015") },
+    { "MAT", 0, MagickString("MATLAB 5.0 MAT-file,") },
     { "MIFF", 0, MagickString("Id=ImageMagick") },
     { "MIFF", 0, MagickString("id=ImageMagick") },
     { "MNG", 0, MagickString("\212MNG\r\n\032\n") },

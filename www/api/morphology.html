@@ -142,7 +142,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -152,7 +152,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#** This macro  IsNaN">** This macro  IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#ExpandMirrorKernelInfo">ExpandMirrorKernelInfo</a> &bull; <a href="#ExpandRotateKernelInfo">ExpandRotateKernelInfo</a> &bull; <a href="#MorphologyApply">MorphologyApply</a> &bull; <a href="#MorphologyImageChannel">MorphologyImageChannel</a> &bull; <a href="#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="#ZeroKernelNans">ZeroKernelNans</a>]</p>
+<p class="navigation-index">[<a href="#** This macro  IsNaN">** This macro  IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#MorphologyApply">MorphologyApply</a> &bull; <a href="#MorphologyImageChannel">MorphologyImageChannel</a> &bull; <a href="#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="#ZeroKernelNans">ZeroKernelNans</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
 _8c.html" target="source" name="** This macro  IsNaN">** This macro  IsNaN</a></h2>
@@ -168,7 +168,7 @@ _8c.html" target="source" name="AcquireKernelInfo">AcquireKernelInfo</a></h2>
 
 <p>The kernel so generated can be any rectangular array of floating point values (doubles) with the 'control point' or 'pixel being affected' anywhere within that array of values.</p></ol>
 
-<p>Previously IM was restricted to a square of odd size using the exact center as origin, this is no ssize_ter the case, and any rectangular kernel with any value being declared the origin. This in turn allows the use of highly asymmetrical kernels.</p></ol>
+<p>Previously IM was restricted to a square of odd size using the exact center as origin, this is no longer the case, and any rectangular kernel with any value being declared the origin. This in turn allows the use of highly asymmetrical kernels.</p></ol>
 
 <p>The floating point values in the kernel can also include a special value known as 'nan' or 'not a number' to indicate that this value is not part of the kernel array. This allows you to shaped the kernel within its rectangular area. That is 'nan' values provide a 'mask' for the kernel shape.  However at least one non-nan value must be provided for correct working of a kernel.</p></ol>
 
@@ -376,7 +376,7 @@ _8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></
 _8c.html" target="source" name="CloneKernelInfo">CloneKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>CloneKernelInfo() creates a new clone of the given Kernel List so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no ssize_ter needed.</p></ol>
+<p>CloneKernelInfo() creates a new clone of the given Kernel List so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no longer needed.</p></ol>
 
 <p>The format of the CloneKernelInfo method is:</p>
 
@@ -407,51 +407,6 @@ _8c.html" target="source" name="DestroyKernelInfo">DestroyKernelInfo</a></h2>
 <h5>kernel</h5>
 <ol><p>the Morphology/Convolution kernel to be destroyed</p></ol>
 
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="ExpandMirrorKernelInfo">ExpandMirrorKernelInfo</a></h2>
-<div class="doc-section">
-
-<p>ExpandMirrorKernelInfo() takes a single kernel, and expands it into a sequence of 90-degree rotated kernels but providing a reflected 180 rotatation, before the -/+ 90-degree rotations.</p></ol>
-
-<p>This special rotation order produces a better, more symetrical thinning of objects.</p></ol>
-
-<p>The format of the ExpandMirrorKernelInfo method is:</p>
-
-<pre class="code">
-  void ExpandMirrorKernelInfo(KernelInfo *kernel)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel</p></ol>
-
-<p>This function is only internel to this module, as it is not finalized, especially with regard to non-orthogonal angles, and rotation of larger 2D kernels. </p>
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="ExpandRotateKernelInfo">ExpandRotateKernelInfo</a></h2>
-<div class="doc-section">
-
-<p>ExpandRotateKernelInfo() takes a kernel list, and expands it by rotating incrementally by the angle given, until the first kernel repeats.</p></ol>
-
-<p>WARNING: 45 degree rotations only works for 3x3 kernels. While 90 degree roatations only works for linear and square kernels</p></ol>
-
-<p>The format of the ExpandRotateKernelInfo method is:</p>
-
-<pre class="code">
-  void ExpandRotateKernelInfo(KernelInfo *kernel, double angle)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel</p></ol>
-
-<h5>angle</h5>
-<ol><p>angle to rotate in degrees</p></ol>
-
-<p>This function is only internel to this module, as it is not finalized, especially with regard to non-orthogonal angles, and rotation of larger 2D kernels. </p>
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
 _8c.html" target="source" name="MorphologyApply">MorphologyApply</a></h2>
