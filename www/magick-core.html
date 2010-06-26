@@ -143,7 +143,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 </div>
 </div>
@@ -192,6 +192,7 @@
   <li><a href="../www/api/animate.html">Interactively Animate an Image Sequence</a></li>
   <li><a href="../www/api/cipher.html">Convert to and from Cipher Pixels</a></li>
   <li><a href="../www/api/list.html">Working with Image Lists</a></li>
+  <li><a href="../www/api/image-view.html">Image View Methods</a></li>
   <li><a href="../www/api/cache.html">Get or Set Image Pixels</a></li>
   <li><a href="../www/api/cache-view.html">Working with Cache Views</a></li>
   <li><a href="../www/api/stream.html">The Pixel FIFO</a></li>
@@ -278,6 +279,107 @@
     MagickCoreTerminus();
     return(0);
   }
+</pre>
+</div>
+<p>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../www/source/image-contrast.c">image-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+
+<div class="viewport">
+<pre class="code">
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;math.h>
+#include &lt;wand/MagickCore.h>
+
+static MagickBooleanType SigmoidalContrast(ImageView *pixel_view,
+  void *context)
+{
+#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
+#define SigmoidalContrast(x) \
+  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+
+  MagickPixelPacket
+    pixel;
+
+  PixelWand
+    **pixels;
+
+  register long
+    x;
+
+  pixels=GetImageViewPixels(contrast_view);
+  for (x=0; x &lt; (long) GetImageViewWidth(contrast_view); x++)
+  {
+    PixelGetMagickColor(pixels[x],&amp;pixel);
+    pixel.red=SigmoidalContrast(pixel.red);
+    pixel.green=SigmoidalContrast(pixel.green);
+    pixel.blue=SigmoidalContrast(pixel.blue);
+    pixel.index=SigmoidalContrast(pixel.index);
+    PixelSetMagickColor(contrast_pixels[x],&amp;pixel);
+  }
+  return(MagickTrue);
+}
+
+int main(int argc,char **argv)
+{
+#define ThrowImageException(image) \
+{ \
+  char \
+    *description; \
+ \
+  ExceptionType \
+    severity; \
+ \
+  description=GetImageException(image,&amp;severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=(char *) MagickRelinquishMemory(description); \
+  exit(-1); \
+}
+
+  ImageView
+    *contrast_view;
+
+  MagickBooleanType
+    status;
+
+  MagickPixelPacket
+    pixel;
+
+  MagickWand
+    *contrast_image;
+
+  if (argc != 3)
+    {
+      (void) fprintf(stdout,"Usage: %s image sigmoidal-image\n",argv[0]);
+      exit(0);
+    }
+  /*
+    Read an image.
+  */
+  MagickCoreGenesis();
+  contrast_image=NewMagickWand();
+  status=MagickReadImage(contrast_image,argv[1]);
+  if (status == MagickFalse)
+    ThrowWandException(contrast_image);
+  /*
+    Sigmoidal non-linearity contrast control.
+  */
+  contrast_view=NewImageView(contrast_image);
+  if (contrast_view == (ImageView *) NULL)
+    ThrowWandException(contrast_image);
+  status=UpdateImageViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
+  if (status == MagickFalse)
+    ThrowWandException(contrast_image);
+  contrast_view=DestroyImageView(contrast_view);
+  /*
+    Write the image then destroy it.
+  */
+  status=kWriteImages(contrast_image,argv[2],MagickTrue);
+  if (status == MagickFalse)
+    ThrowWandException(contrast_image);
+  contrast_image=DestroyMagickWand(contrast_image);
+  MagickCoreTerminus();
+  return(0);
+}
 </pre>
 </div>
 
