@@ -178,7 +178,7 @@ MagickExport ImageView *DestroyImageView(ImageView *pixel_view)
 %  canvas-- that is no negative offsets or widths or heights that exceed the
 %  image dimension are permitted.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -449,7 +449,7 @@ MagickExport size_t GetImageViewHeight(const ImageView *pixel_view)
 %  or widths or heights that exceed the image dimension.  Any updates to
 %  the pixels in your callback are ignored.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -843,7 +843,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
 %  undefined and any settings you make in the callback method are automagically
 %  synced back to your image.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -975,7 +975,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 %  is no negative offsets or widths or heights that exceed the image dimension
 %  are permitted.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -1137,7 +1137,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 %  heights that exceed the image dimension are permitted.  Updates to pixels
 %  in your callback are automagically synced back to the image.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
