@@ -1346,16 +1346,17 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/geometry.c magick/geometry.h magick/hashmap.c \
 	magick/hashmap.h magick/histogram.c magick/histogram.h \
 	magick/identify.c magick/identify.h magick/image.c \
-	magick/image.h magick/image-private.h magick/layer.c \
-	magick/layer.h magick/list.c magick/list.h magick/locale.c \
-	magick/locale_.h magick/log.c magick/log.h magick/mac.h \
-	magick/magic.c magick/magic.h magick/magick.c \
-	magick/magick-config.h magick/magick-type.h magick/magick.h \
-	magick/matrix.c magick/matrix.h magick/memory.c \
-	magick/memory_.h magick/methods.h magick/mime.c magick/mime.h \
-	magick/module.c magick/module.h magick/monitor.c \
-	magick/monitor.h magick/monitor-private.h magick/montage.c \
-	magick/montage.h magick/morphology.c magick/morphology.h \
+	magick/image.h magick/image-private.h magick/image-view.c \
+	magick/image-view.h magick/layer.c magick/layer.h \
+	magick/list.c magick/list.h magick/locale.c magick/locale_.h \
+	magick/log.c magick/log.h magick/mac.h magick/magic.c \
+	magick/magic.h magick/magick.c magick/magick-config.h \
+	magick/magick-type.h magick/magick.h magick/matrix.c \
+	magick/matrix.h magick/memory.c magick/memory_.h \
+	magick/methods.h magick/mime.c magick/mime.h magick/module.c \
+	magick/module.h magick/monitor.c magick/monitor.h \
+	magick/monitor-private.h magick/montage.c magick/montage.h \
+	magick/morphology.c magick/morphology.h \
 	magick/morphology-private.h magick/nt-base.h \
 	magick/nt-feature.h magick/option.c magick/option.h \
 	magick/paint.c magick/paint.h magick/pixel.c magick/pixel.h \
@@ -1452,6 +1453,7 @@ am__objects_2 = magick/magick_libMagickCore_la-accelerate.lo \
 	magick/magick_libMagickCore_la-histogram.lo \
 	magick/magick_libMagickCore_la-identify.lo \
 	magick/magick_libMagickCore_la-image.lo \
+	magick/magick_libMagickCore_la-image-view.lo \
 	magick/magick_libMagickCore_la-layer.lo \
 	magick/magick_libMagickCore_la-list.lo \
 	magick/magick_libMagickCore_la-locale.lo \
@@ -1663,10 +1665,10 @@ am__objects_18 = wand/wand_libMagickWand_la-animate.lo \
 	wand/wand_libMagickWand_la-mogrify.lo \
 	wand/wand_libMagickWand_la-montage.lo \
 	wand/wand_libMagickWand_la-pixel-iterator.lo \
-	wand/wand_libMagickWand_la-pixel-view.lo \
 	wand/wand_libMagickWand_la-pixel-wand.lo \
 	wand/wand_libMagickWand_la-stream.lo \
-	wand/wand_libMagickWand_la-wand.lo
+	wand/wand_libMagickWand_la-wand.lo \
+	wand/wand_libMagickWand_la-wand-view.lo
 am_wand_libMagickWand_la_OBJECTS = $(am__objects_18)
 wand_libMagickWand_la_OBJECTS = $(am_wand_libMagickWand_la_OBJECTS)
 wand_libMagickWand_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -3817,6 +3819,8 @@ MAGICK_BASE_SRCS = \
 	magick/image.c \
 	magick/image.h \
 	magick/image-private.h \
+	magick/image-view.c \
+	magick/image-view.h \
 	magick/layer.c \
 	magick/layer.h \
 	magick/list.c \
@@ -3990,6 +3994,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/histogram.h \
 	magick/identify.h \
 	magick/image.h \
+	magick/image-view.h \
 	magick/layer.h \
 	magick/list.h \
 	magick/locale_.h \
@@ -4149,8 +4154,6 @@ WAND_SOURCES = \
 	wand/montage.h \
 	wand/pixel-iterator.c \
 	wand/pixel-iterator.h \
-	wand/pixel-view.c \
-	wand/pixel-view.h \
 	wand/pixel-wand.c \
 	wand/pixel-wand.h \
 	wand/pixel-wand-private.h \
@@ -4158,7 +4161,9 @@ WAND_SOURCES = \
 	wand/stream.h \
 	wand/studio.h \
 	wand/wand.c \
-	wand/wand.h
+	wand/wand.h \
+	wand/wand-view.c \
+	wand/wand-view.h 
 
 WAND_INCLUDE_HDRS = \
 	wand/MagickWand.h \
@@ -5533,6 +5538,8 @@ magick/magick_libMagickCore_la-identify.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-image.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-image-view.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-layer.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-list.lo: magick/$(am__dirstamp) \
@@ -5903,13 +5910,13 @@ wand/wand_libMagickWand_la-montage.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-pixel-iterator.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
-wand/wand_libMagickWand_la-pixel-view.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-pixel-wand.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-stream.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-wand.lo: wand/$(am__dirstamp) \
+	wand/$(DEPDIR)/$(am__dirstamp)
+wand/wand_libMagickWand_la-wand-view.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/libMagickWand.la: $(wand_libMagickWand_la_OBJECTS) $(wand_libMagickWand_la_DEPENDENCIES) wand/$(am__dirstamp)
 	$(AM_V_CCLD)$(wand_libMagickWand_la_LINK) -rpath $(libdir) $(wand_libMagickWand_la_OBJECTS) $(wand_libMagickWand_la_LIBADD) $(LIBS)
@@ -6822,6 +6829,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libMagickCore_la-histogram.lo
 	-rm -f magick/magick_libMagickCore_la-identify.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-identify.lo
+	-rm -f magick/magick_libMagickCore_la-image-view.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-image-view.lo
 	-rm -f magick/magick_libMagickCore_la-image.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-image.lo
 	-rm -f magick/magick_libMagickCore_la-layer.$(OBJEXT)
@@ -6971,12 +6980,12 @@ mostlyclean-compile:
 	-rm -f wand/wand_libMagickWand_la-montage.lo
 	-rm -f wand/wand_libMagickWand_la-pixel-iterator.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-pixel-iterator.lo
-	-rm -f wand/wand_libMagickWand_la-pixel-view.$(OBJEXT)
-	-rm -f wand/wand_libMagickWand_la-pixel-view.lo
 	-rm -f wand/wand_libMagickWand_la-pixel-wand.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-pixel-wand.lo
 	-rm -f wand/wand_libMagickWand_la-stream.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-stream.lo
+	-rm -f wand/wand_libMagickWand_la-wand-view.$(OBJEXT)
+	-rm -f wand/wand_libMagickWand_la-wand-view.lo
 	-rm -f wand/wand_libMagickWand_la-wand.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-wand.lo
 	-rm -f wand/wandtest.$(OBJEXT)
@@ -7302,6 +7311,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-hashmap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-histogram.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-identify.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-image-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-layer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-list.Plo@am__quote@
@@ -7383,9 +7393,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-mogrify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-pixel-iterator.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-pixel-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-pixel-wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-stream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-wand-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wandtest.Po@am__quote@
 
@@ -8711,6 +8721,14 @@ magick/magick_libMagickCore_la-image.lo: magick/image.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/image.c' object='magick/magick_libMagickCore_la-image.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-image.lo `test -f 'magick/image.c' || echo '$(srcdir)/'`magick/image.c
+
+magick/magick_libMagickCore_la-image-view.lo: magick/image-view.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-image-view.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-image-view.Tpo -c -o magick/magick_libMagickCore_la-image-view.lo `test -f 'magick/image-view.c' || echo '$(srcdir)/'`magick/image-view.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-image-view.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-image-view.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/image-view.c' object='magick/magick_libMagickCore_la-image-view.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-image-view.lo `test -f 'magick/image-view.c' || echo '$(srcdir)/'`magick/image-view.c
 
 magick/magick_libMagickCore_la-layer.lo: magick/layer.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-layer.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-layer.Tpo -c -o magick/magick_libMagickCore_la-layer.lo `test -f 'magick/layer.c' || echo '$(srcdir)/'`magick/layer.c
@@ -10160,14 +10178,6 @@ wand/wand_libMagickWand_la-pixel-iterator.lo: wand/pixel-iterator.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-pixel-iterator.lo `test -f 'wand/pixel-iterator.c' || echo '$(srcdir)/'`wand/pixel-iterator.c
 
-wand/wand_libMagickWand_la-pixel-view.lo: wand/pixel-view.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-pixel-view.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-pixel-view.Tpo -c -o wand/wand_libMagickWand_la-pixel-view.lo `test -f 'wand/pixel-view.c' || echo '$(srcdir)/'`wand/pixel-view.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libMagickWand_la-pixel-view.Tpo wand/$(DEPDIR)/wand_libMagickWand_la-pixel-view.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wand/pixel-view.c' object='wand/wand_libMagickWand_la-pixel-view.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-pixel-view.lo `test -f 'wand/pixel-view.c' || echo '$(srcdir)/'`wand/pixel-view.c
-
 wand/wand_libMagickWand_la-pixel-wand.lo: wand/pixel-wand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-pixel-wand.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-pixel-wand.Tpo -c -o wand/wand_libMagickWand_la-pixel-wand.lo `test -f 'wand/pixel-wand.c' || echo '$(srcdir)/'`wand/pixel-wand.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libMagickWand_la-pixel-wand.Tpo wand/$(DEPDIR)/wand_libMagickWand_la-pixel-wand.Plo
@@ -10191,6 +10201,14 @@ wand/wand_libMagickWand_la-wand.lo: wand/wand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wand/wand.c' object='wand/wand_libMagickWand_la-wand.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-wand.lo `test -f 'wand/wand.c' || echo '$(srcdir)/'`wand/wand.c
+
+wand/wand_libMagickWand_la-wand-view.lo: wand/wand-view.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-wand-view.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-wand-view.Tpo -c -o wand/wand_libMagickWand_la-wand-view.lo `test -f 'wand/wand-view.c' || echo '$(srcdir)/'`wand/wand-view.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libMagickWand_la-wand-view.Tpo wand/$(DEPDIR)/wand_libMagickWand_la-wand-view.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wand/wand-view.c' object='wand/wand_libMagickWand_la-wand-view.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-wand-view.lo `test -f 'wand/wand-view.c' || echo '$(srcdir)/'`wand/wand-view.c
 
 tests/tests_validate-validate.o: tests/validate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_validate_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_validate-validate.o -MD -MP -MF tests/$(DEPDIR)/tests_validate-validate.Tpo -c -o tests/tests_validate-validate.o `test -f 'tests/validate.c' || echo '$(srcdir)/'`tests/validate.c

@@ -159,6 +159,7 @@ extern "C" {
 #include "magick/histogram.h"
 #include "magick/identify.h"
 #include "magick/image.h"
+#include "magick/image-view.h"
 #include "magick/layer.h"
 #include "magick/list.h"
 #include "magick/locale_.h"
