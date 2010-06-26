@@ -59,6 +59,7 @@ $call Make hashmap.c
 $call Make histogram.c
 $call Make identify.c
 $call Make image.c
+$call Make image-view.c
 $call Make layer.c
 $call Make list.c
 $call Make locale.c
@@ -140,9 +141,9 @@ $library/create libMagick.olb -
   cipher, client, coder, color, colormap, colorspace, compare, composite, -
   compress, configure, constitute, decorate, delegate, deprecate, display, -
   distort, draw, effect, enhance, exception, feature, fourier, fx, gem, -
-  geometry, hashmap, histogram, identify, image, layer, list, locale, log, -
-  magic, magick, matrix, memory, mime, module, monitor, montage, morphology, -
-  option, paint, pixel, PreRvIcccm, profile, quantize, quantum, -
+  geometry, hashmap, histogram, identify, image, image-view, layer, list, -
+  locale, log, magic, magick, matrix, memory, mime, module, monitor, montage, -
+  morphology, option, paint, pixel, PreRvIcccm, profile, quantize, quantum, -
   quantum-export, quantum-import,random, registry, resample, resize, resource, -
   segment, semaphore, shear, signature, splay-tree, static, stream, string, -
   thread, timer, token, transform, threshold, type, utility, version, vms, -

@@ -137,9 +137,9 @@ typedef struct _MagickWand
 #include "wand/mogrify.h"
 #include "wand/montage.h"
 #include "wand/pixel-iterator.h"
-#include "wand/pixel-view.h"
 #include "wand/pixel-wand.h"
 #include "wand/stream.h"
+#include "wand/wand-view.h"
 
 extern WandExport char
   *MagickGetException(const MagickWand *,ExceptionType *);

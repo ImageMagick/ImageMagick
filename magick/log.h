@@ -44,14 +44,15 @@ typedef enum
   DeprecateEvent = 0x00040,
   DrawEvent = 0x00080,
   ExceptionEvent = 0x00100,
-  LocaleEvent = 0x00200,
-  ModuleEvent = 0x00400,
-  PolicyEvent = 0x00800,
-  ResourceEvent = 0x01000,
-  TransformEvent = 0x02000,
-  UserEvent = 0x04000,
-  WandEvent = 0x08000,
-  X11Event = 0x10000,
+  ImageEvent = 0x00200,
+  LocaleEvent = 0x00400,
+  ModuleEvent = 0x00800,
+  PolicyEvent = 0x01000,
+  ResourceEvent = 0x02000,
+  TransformEvent = 0x04000,
+  UserEvent = 0x09000,
+  WandEvent = 0x10000,
+  X11Event = 0x20000,
   AllEvents = 0x7fffffff
 } LogEventType;
 

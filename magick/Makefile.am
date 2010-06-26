@@ -142,6 +142,8 @@ MAGICK_BASE_SRCS = \
 	magick/image.c \
 	magick/image.h \
 	magick/image-private.h \
+	magick/image-view.c \
+	magick/image-view.h \
 	magick/layer.c \
 	magick/layer.h \
 	magick/list.c \
@@ -320,6 +322,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/histogram.h \
 	magick/identify.h \
 	magick/image.h \
+	magick/image-view.h \
 	magick/layer.h \
 	magick/list.h \
 	magick/locale_.h \

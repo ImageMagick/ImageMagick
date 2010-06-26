@@ -53,8 +53,6 @@ WAND_SOURCES = \
 	wand/montage.h \
 	wand/pixel-iterator.c \
 	wand/pixel-iterator.h \
-	wand/pixel-view.c \
-	wand/pixel-view.h \
 	wand/pixel-wand.c \
 	wand/pixel-wand.h \
 	wand/pixel-wand-private.h \
@@ -62,7 +60,9 @@ WAND_SOURCES = \
 	wand/stream.h \
 	wand/studio.h \
 	wand/wand.c \
-	wand/wand.h
+	wand/wand.h \
+	wand/wand-view.c \
+	wand/wand-view.h 
 
 WAND_INCLUDE_HDRS = \
 	wand/MagickWand.h \
