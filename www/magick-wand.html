@@ -162,7 +162,7 @@
   <li><a href="../www/api/magick-property.html">Set or Get Magick Wand Properties</a></li>
   <li><a href="../www/api/magick-image.html">Magick Wand Image Methods</a></li>
   <li><a href="../www/api/pixel-iterator.html">Pixel Iterator Methods</a></li>
-  <li><a href="../www/api/pixel-view.html">Pixel View Methods</a></li>
+  <li><a href="../www/api/wand-view.html">Wand View Methods</a></li>
   <li><a href="../www/api/pixel-wand.html">Pixel Wand Methods</a></li>
   <li><a href="../www/api/drawing-wand.html">Image Vector Drawing</a></li>
   <li><a href="../www/api/magick-deprecate.html">Deprecated Methods</a></li>
@@ -347,7 +347,7 @@ int main(int argc,char **argv)
 }
 </pre>
 </div>
-<p>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing pixel views.  The <a href="../www/source/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+<p>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../www/source/wand-contrast.c">wand-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
 <div class="viewport">
 <pre class="code">
@@ -356,7 +356,7 @@ int main(int argc,char **argv)
 #include &lt;math.h>
 #include &lt;wand/MagickWand.h>
 
-static MagickBooleanType SigmoidalContrast(PixelView *pixel_view,
+static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
   void *context)
 {
 #define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
@@ -372,8 +372,8 @@ static MagickBooleanType SigmoidalContrast(PixelView *pixel_view,
   register long
     x;
 
-  pixels=GetPixelViewPixels(contrast_view);
-  for (x=0; x &lt; (long) GetPixelViewWidth(contrast_view); x++)
+  pixels=GetWandViewPixels(contrast_view);
+  for (x=0; x &lt; (long) GetWandViewWidth(contrast_view); x++)
   {
     PixelGetMagickColor(pixels[x],&amp;pixel);
     pixel.red=SigmoidalContrast(pixel.red);
@@ -410,7 +410,7 @@ int main(int argc,char **argv)
   MagickWand
     *contrast_wand;
 
-  PixelView
+  WandView
     *contrast_view;
 
   if (argc != 3)
@@ -429,13 +429,13 @@ int main(int argc,char **argv)
   /*
     Sigmoidal non-linearity contrast control.
   */
-  contrast_view=NewPixelView(contrast_wand);
-  if (contrast_view == (PixelView *) NULL)
+  contrast_view=NewWandView(contrast_wand);
+  if (contrast_view == (WandView *) NULL)
     ThrowWandException(contrast_wand);
-  status=UpdatePixelViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
+  status=UpdateWandViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
   if (status == MagickFalse)
     ThrowWandException(contrast_wand);
-  contrast_view=DestroyPixelView(contrast_view);
+  contrast_view=DestroyWandView(contrast_view);
   /*
     Write the image then destroy it.
   */
@@ -455,7 +455,7 @@ int main(int argc,char **argv)
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

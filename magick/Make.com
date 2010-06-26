@@ -116,7 +116,7 @@ $ call Make analyze.c
 $ set default [-.wand]
 $ call Make drawing-wand.c
 $ call Make pixel-wand.c
-$ call Make pixel-view.c
+$ call Make wand-view.c
 $ call Make conjure.c
 $ call Make convert.c
 $ call Make import.c
@@ -148,7 +148,7 @@ $library/create libMagick.olb -
   segment, semaphore, shear, signature, splay-tree, static, stream, string, -
   thread, timer, token, transform, threshold, type, utility, version, vms, -
   widget, xwindow, statistic, policy, prepress, property, xml-tree, -
-	[-.filters]analyze,[-.wand]drawing-wand, pixel-wand, pixel-view, conjure, -
+	[-.filters]analyze,[-.wand]drawing-wand, pixel-wand, wand-view, conjure, -
   convert,import, mogrify, animate-wand, compare-wand, composite-wand, -
   display-wand,identify-wand,montage-wand
 $exit
