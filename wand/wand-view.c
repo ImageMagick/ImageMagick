@@ -2,11 +2,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                         W   W   AAA   N   N  DDDD                           %
-%                         W   W  A   A  NN  N  D   D                          %
-%                         W W W  AAAAA  N N N  D   D                          %
-%                         WW WW  A   A  N  NN  D   D                          %
-%                         W   W  A   A  N   N  DDDD                           %
+%                        W   W   AAA   N   N  DDDD                            %
+%                        W   W  A   A  NN  N  D   D                           %
+%                        W W W  AAAAA  N N N  D   D                           %
+%                        WW WW  A   A  N  NN  D   D                           %
+%                        W   W  A   A  N   N  DDDD                            %
 %                                                                             %
 %                        V   V  IIIII  EEEEE  W   W                           %
 %                        V   V    I    E      W   W                           %
@@ -224,7 +224,7 @@ WandExport WandView *DestroyWandView(WandView *pixel_view)
 %  canvas-- that is no negative offsets or widths or heights that exceed the
 %  image dimension are permitted.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -250,9 +250,9 @@ WandExport WandView *DestroyWandView(WandView *pixel_view)
 %    o context: the user defined context.
 %
 */
-WandExport MagickBooleanType DuplexTransferWandViewIterator(
-  WandView *source,WandView *duplex,WandView *destination,
-  DuplexTransferWandViewMethod transfer,void *context)
+WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
+  WandView *duplex,WandView *destination,DuplexTransferWandViewMethod transfer,
+  void *context)
 {
 #define DuplexTransferWandViewTag  "WandView/DuplexTransfer"
 
@@ -502,7 +502,7 @@ WandExport size_t GetWandViewHeight(const WandView *pixel_view)
 %  or widths or heights that exceed the image dimension.  Any updates to
 %  the pixels in your callback are ignored.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -944,7 +944,7 @@ WandExport WandView *NewWandViewRegion(MagickWand *wand,const ssize_t x,
 %  undefined and any settings you make in the callback method are automagically
 %  synced back to your image.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -1076,7 +1076,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
 %  is no negative offsets or widths or heights that exceed the image dimension
 %  are permitted.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
@@ -1240,7 +1240,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 %  heights that exceed the image dimension are permitted.  Updates to pixels
 %  in your callback are automagically synced back to the image.
 %
-%  Use this pragma:
+%  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
 %
