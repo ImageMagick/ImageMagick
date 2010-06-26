@@ -41,10 +41,10 @@ fi
 
 if test -x PerlMagick -a -f Makefile.aperl ; then
   # Static build test incantation
-  ${MAKE} -f Makefile.aperl CC='@CC@' test
+  ${MAKE} -f Makefile.aperl CC='@CC@' TEST_VERBOSE=1 test
 elif test -f Makefile -a -f Magick.o; then
   # Shared build test incantation
-  ${MAKE} CC='@CC@' test
+  ${MAKE} CC='@CC@' TEST_VERBOSE=1 test
 else
   echo 'PerlMagick has not been built!'
   exit 1

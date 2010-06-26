@@ -269,8 +269,8 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
           break;
       }
   }
-  file=close(file)-1;
-  if (i < length)
+  file=close(file);
+  if ((file == -1) || (i < length))
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
       return(MagickFalse);
@@ -868,11 +868,17 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
         if ((size_t) (i+count) >= extent)
           break;
       }
-      file=close(file)-1;
+      file=close(file);
       if (blob == (unsigned char *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
+          return((unsigned char *) NULL);
+        }
+      if (file == -1)
+        {
+          blob=(unsigned char *) RelinquishMagickMemory(blob);
+          ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
           return((unsigned char *) NULL);
         }
       *length=MagickMin(i+count,extent);
@@ -919,8 +925,13 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
           return((unsigned char *) NULL);
         }
     }
-  file=close(file)-1;
   blob[*length]='\0';
+  file=close(file);
+  if (file == -1)
+    {
+      blob=(unsigned char *) RelinquishMagickMemory(blob);
+      ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
+    }
   return(blob);
 }
 
@@ -1036,7 +1047,10 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
         break;
       }
   }
-  file=close(file)-1;
+  file=close(file);
+  if (file == -1)
+    ThrowFileException(&image->exception,BlobError,"UnableToWriteBlob",
+      filename);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   return(MagickTrue);
 }
@@ -1568,9 +1582,9 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     if (i < length)
       break;
   }
-  file=close(file)-1;
+  file=close(file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  if (i < length)
+  if ((file == -1) || (i < length))
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
       return(MagickFalse);
@@ -1870,7 +1884,9 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
     status=WriteBlobStream(image,(size_t) count,buffer) == count ? MagickTrue :
       MagickFalse;
   }
-  file=close(file)-1;
+  file=close(file);
+  if (file == -1)
+    ThrowFileException(exception,FileOpenError,"UnableToWriteBlob",filename);
   (void) RelinquishUniqueFileResource(filename);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(status);

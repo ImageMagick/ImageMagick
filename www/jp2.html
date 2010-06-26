@@ -168,6 +168,9 @@
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert wizard.png -define jp2:cblkwidth=64 -define jp2:cblkheight=32  \ <br/>
   -define jp2:nomct -define jp2:numrlvls=4 -define jp2:rate=0.015625 wizard.jpc</span></p>
+<p>Here we convert a giga-byte TIFF image to JPEG-2000 with a reduced memory footprint:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert frame-00038.tif -define jp2:tilewidth=256 -define jp2:tileheight=256 frame-00038.jp2</span></p>
 <p>Here is a complete list of JPEG-2000 encoding options:</p>
 
 <dl class="doc">
