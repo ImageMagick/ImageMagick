@@ -179,6 +179,12 @@ MagickExport ImageView *DestroyImageView(ImageView *image_view)
 %  canvas-- that is no negative offsets or widths or heights that exceed the
 %  image dimension are permitted.
 %
+%  The callback signature is:
+%
+%      MagickBooleanType DuplexTransferImageViewMethod(const ImageView *source,
+%        const ImageView *duplex,ImageView *destination,const ssize_t y,
+%        const int thread_id,void *context)
+%
 %  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
@@ -507,6 +513,11 @@ MagickExport Image *GetImageViewImage(const ImageView *image_view)
 %  or widths or heights that exceed the image dimension.  Any updates to
 %  the pixels in your callback are ignored.
 %
+%  The callback signature is:
+%
+%      MagickBooleanType GetImageViewMethod(const ImageView *source,
+%        const ssize_t y,const int thread_id,void *context)
+%
 %  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
@@ -575,7 +586,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(source->view);
-    if (get(source,context) == MagickFalse)
+    if (get(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -839,6 +850,11 @@ MagickExport void SetImageViewDescription(ImageView *image_view,
 %  undefined and any settings you make in the callback method are automagically
 %  synced back to your image.
 %
+%  The callback signature is:
+%
+%      MagickBooleanType SetImageViewMethod(ImageView *destination,
+%        const ssize_t y,const int thread_id,void *context)
+%
 %  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
@@ -918,7 +934,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(destination->view);
-    if (set(destination,context) == MagickFalse)
+    if (set(destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
@@ -962,6 +978,12 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 %  However, the destination image view is confined to the image canvas-- that
 %  is no negative offsets or widths or heights that exceed the image dimension
 %  are permitted.
+%
+%  The callback signature is:
+%
+%      MagickBooleanType TransferImageViewMethod(const ImageView *source,
+%        ImageView *destination,const ssize_t y,const int thread_id,
+%        void *context)
 %
 %  Use this pragma if the view is not single threaded:
 %
@@ -1100,6 +1122,11 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 %  confined to the image canvas-- that is no negative offsets or widths or
 %  heights that exceed the image dimension are permitted.  Updates to pixels
 %  in your callback are automagically synced back to the image.
+%
+%  The callback signature is:
+%
+%      MagickBooleanType UpdateImageViewMethod(ImageView *source,
+%        const ssize_t y,const int thread_id,void *context)
 %
 %  Use this pragma if the view is not single threaded:
 %

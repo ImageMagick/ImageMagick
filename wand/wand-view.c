@@ -221,6 +221,12 @@ WandExport WandView *DestroyWandView(WandView *wand_view)
 %  canvas-- that is no negative offsets or widths or heights that exceed the
 %  image dimension are permitted.
 %
+%  The callback signature is:
+%
+%      MagickBooleanType DuplexTransferImageViewMethod(const WandView *source,
+%        const WandView *duplex,WandView *destination,const ssize_t y,
+%        const int thread_id,void *context)
+%
 %  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
@@ -497,6 +503,11 @@ WandExport RectangleInfo GetWandViewExtent(const WandView *wand_view)
 %  or widths or heights that exceed the image dimension.  Any updates to
 %  the pixels in your callback are ignored.
 %
+%  The callback signature is:
+%
+%      MagickBooleanType GetImageViewMethod(const WandView *source,
+%        const ssize_t y,const int thread_id,void *context)
+%
 %  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
@@ -574,7 +585,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->extent.width; x++)
         PixelSetIndex(source->pixel_wands[id][x],indexes[x]);
-    if (get(source,context) == MagickFalse)
+    if (get(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -884,6 +895,11 @@ MagickExport void SetWandViewDescription(WandView *wand_view,
 %  undefined and any settings you make in the callback method are automagically
 %  synced back to your image.
 %
+%  The callback signature is:
+%
+%      MagickBooleanType SetImageViewMethod(ImageView *destination,
+%        const ssize_t y,const int thread_id,void *context)
+%
 %  Use this pragma if the view is not single threaded:
 %
 %    #pragma omp critical
@@ -964,7 +980,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(destination->view);
-    if (set(destination,context) == MagickFalse)
+    if (set(destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) destination->extent.width; x++)
       PixelGetQuantumColor(destination->pixel_wands[id][x],pixels+x);
@@ -1013,6 +1029,12 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
 %  However, the destination wand view is confined to the image canvas-- that
 %  is no negative offsets or widths or heights that exceed the image dimension
 %  are permitted.
+%
+%  The callback signature is:
+%
+%      MagickBooleanType TransferImageViewMethod(const WandView *source,
+%        WandView *destination,const ssize_t y,const int thread_id,
+%        void *context)
 %
 %  Use this pragma if the view is not single threaded:
 %
@@ -1175,6 +1197,11 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 %  confined to the image canvas-- that is no negative offsets or widths or
 %  heights that exceed the image dimension are permitted.  Updates to pixels
 %  in your callback are automagically synced back to the image.
+%
+%  The callback signature is:
+%
+%      MagickBooleanType UpdateImageViewMethod(WandView *source,const ssize_t y,
+%        const int thread_id,void *context)
 %
 %  Use this pragma if the view is not single threaded:
 %
