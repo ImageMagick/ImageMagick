@@ -865,6 +865,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
     image=ReadOneDJVUImage(lc,i,image_info,exception);
     if (image == (Image *) NULL)
       break;
+    image->scene=i;
     AppendImageToList(&images,CloneImageList(image,exception));
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))

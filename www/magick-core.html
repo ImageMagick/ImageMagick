@@ -143,7 +143,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 </div>
 </div>
@@ -291,11 +291,14 @@
 #include &lt;magick/MagickCore.h>
 
 static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
-  void *context)
+  const ssize_t y,const int id,void *context)
 {
 #define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define SigmoidalContrast(x) \
   (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+
+  RectangleInfo
+    extent;
 
   register IndexPacket
     *indexes;
@@ -306,8 +309,9 @@ static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
   register ssize_t
     x;
 
+  extent=GetImageViewExtent(contrast_view);
   pixels=GetImageViewAuthenticPixels(contrast_view);
-  for (x=0; x &lt; (ssize_t) GetImageViewWidth(contrast_view); x++)
+  for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
   {
     pixels[x].red=RoundToQuantum(SigmoidalContrast(pixels[x].red));
     pixels[x].green=RoundToQuantum(SigmoidalContrast(pixels[x].green));
@@ -316,7 +320,7 @@ static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
   }
   indexes=GetImageViewAuthenticIndexes(contrast_view);
   if (indexes != (IndexPacket *) NULL)
-    for (x=0; x &lt; (ssize_t) GetImageViewWidth(contrast_view); x++)
+    for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
       indexes[x]=(IndexPacket) RoundToQuantum(SigmoidalContrast(indexes[x]));
   return(MagickTrue);
 }
@@ -329,9 +333,19 @@ int main(int argc,char **argv)
   CatchException(exception); \
   if (contrast_image != (Image *) NULL) \
     contrast_image=DestroyImage(contrast_image); \
-  exception=DestroyExceptionInfo(exception); \
-  image_info=DestroyImageInfo(image_info); \
-  MagickCoreTerminus(); \
+  exit(-1); \
+}
+#define ThrowViewException(view) \
+{ \
+  char \
+    *description; \
+ \
+  ExceptionType \
+    severity; \
+ \
+  description=GetImageViewException(view,&severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=DestroyString(description); \
   exit(-1); \
 }
 

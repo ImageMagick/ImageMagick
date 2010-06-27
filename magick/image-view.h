@@ -27,11 +27,12 @@ typedef struct _ImageView
 
 typedef MagickBooleanType
   (*DuplexTransferImageViewMethod)(const ImageView *,const ImageView *,
-    ImageView *,void *),
+    ImageView *,const ssize_t,const int,void *),
   (*GetImageViewMethod)(const ImageView *,void *),
   (*SetImageViewMethod)(ImageView *,void *),
-  (*TransferImageViewMethod)(const ImageView *,ImageView *,void *),
-  (*UpdateImageViewMethod)(ImageView *,void *);
+  (*TransferImageViewMethod)(const ImageView *,ImageView *,const ssize_t,
+    const int,void *),
+  (*UpdateImageViewMethod)(ImageView *,const ssize_t,const int,void *);
 
 extern MagickExport char
   *GetImageViewException(const ImageView *,ExceptionType *);
@@ -68,13 +69,11 @@ extern MagickExport MagickBooleanType
 extern MagickExport PixelPacket
   *GetImageViewAuthenticPixels(const ImageView *);
 
-extern MagickExport size_t
-  GetImageViewHeight(const ImageView *),
-  GetImageViewWidth(const ImageView *);
+extern MagickExport RectangleInfo
+  GetImageViewExtent(const ImageView *);
 
-extern MagickExport ssize_t
-  GetImageViewX(const ImageView *),
-  GetImageViewY(const ImageView *);
+extern MagickExport void
+  SetImageViewDescription(ImageView *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

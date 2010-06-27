@@ -108,7 +108,7 @@ static inline size_t GetOpenMPMaximumThreads(void)
 #endif
 }
 
-static inline ssize_t GetOpenMPThreadId(void)
+static inline int GetOpenMPThreadId(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   return(omp_get_thread_num());

@@ -5,6 +5,8 @@
     -background lightblue show:).
   * Do not annotate directory paths in ListFiles().
   * Reset the image matte for png:color-type=2.
+  * Add the ImageView API.
+  * Fix DJVU coder to read one page (e.g. 'image.djvu[2]').
 
 2010-06-17  6.6.2-7 Cristy  <quetzlzacatenango@image...>
   * Support new label:pointsize property.

@@ -357,11 +357,14 @@ int main(int argc,char **argv)
 #include &lt;wand/MagickWand.h>
 
 static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
-  void *context)
+  const ssize_t y,const int id,void *context)
 {
 #define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define SigmoidalContrast(x) \
   (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+
+  RectangleInfo
+    extent;
 
   MagickPixelPacket
     pixel;
@@ -372,8 +375,9 @@ static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
   register long
     x;
 
+  extent=GetWandViewExtent(contrast_view);
   pixels=GetWandViewPixels(contrast_view);
-  for (x=0; x &lt; (long) GetWandViewWidth(contrast_view); x++)
+  for (x=0; x &lt; (long) (extent.width-extent.height); x++)
   {
     PixelGetMagickColor(pixels[x],&amp;pixel);
     pixel.red=SigmoidalContrast(pixel.red);
@@ -387,19 +391,26 @@ static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
 
 int main(int argc,char **argv)
 {
-#define ThrowWandException(wand) \
+#define ThrowViewException(view) \
 { \
-  char \
-    *description; \
- \
-  ExceptionType \
-    severity; \
- \
-  description=MagickGetException(wand,&amp;severity); \
+  description=GetWandViewException(view,&severity); \
   (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
   description=(char *) MagickRelinquishMemory(description); \
   exit(-1); \
 }
+#define ThrowWandException(wand) \
+{ \
+  description=MagickGetException(wand,&severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=(char *) MagickRelinquishMemory(description); \
+  exit(-1); \
+}
+
+  char
+    *description;
+
+  ExceptionType
+    severity;
 
   MagickBooleanType
     status;
