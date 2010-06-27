@@ -89,34 +89,34 @@ struct _ImageView
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageView() makes a copy of the specified pixel view.
+%  CloneImageView() makes a copy of the specified image view.
 %
 %  The format of the CloneImageView method is:
 %
-%      ImageView *CloneImageView(const ImageView *pixel_view)
+%      ImageView *CloneImageView(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
-MagickExport ImageView *CloneImageView(const ImageView *pixel_view)
+MagickExport ImageView *CloneImageView(const ImageView *image_view)
 {
   ImageView
     *clone_view;
 
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
   clone_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*clone_view));
   if (clone_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
   clone_view->exception=AcquireExceptionInfo();
-  InheritException(clone_view->exception,pixel_view->exception);
-  clone_view->view=CloneCacheView(pixel_view->view);
-  clone_view->region=pixel_view->region;
-  clone_view->number_threads=pixel_view->number_threads;
-  clone_view->debug=pixel_view->debug;
+  InheritException(clone_view->exception,image_view->exception);
+  clone_view->view=CloneCacheView(image_view->view);
+  clone_view->region=image_view->region;
+  clone_view->number_threads=image_view->number_threads;
+  clone_view->debug=image_view->debug;
   clone_view->signature=MagickSignature;
   return(clone_view);
 }
@@ -132,31 +132,26 @@ MagickExport ImageView *CloneImageView(const ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageView() deallocates memory associated with a pixel view.
+%  DestroyImageView() deallocates memory associated with a image view.
 %
 %  The format of the DestroyImageView method is:
 %
-%      ImageView *DestroyImageView(ImageView *pixel_view,
-%        const size_t number_wands,const size_t number_threads)
+%      ImageView *DestroyImageView(ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
-%
-%    o number_wand: the number of pixel wands.
-%
-%    o number_threads: number of threads.
+%    o image_view: the image view.
 %
 */
-MagickExport ImageView *DestroyImageView(ImageView *pixel_view)
+MagickExport ImageView *DestroyImageView(ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  pixel_view->view=DestroyCacheView(pixel_view->view);
-  pixel_view->exception=DestroyExceptionInfo(pixel_view->exception);
-  pixel_view->signature=(~MagickSignature);
-  pixel_view=(ImageView *) RelinquishMagickMemory(pixel_view);
-  return(pixel_view);
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  image_view->view=DestroyCacheView(image_view->view);
+  image_view->exception=DestroyExceptionInfo(image_view->exception);
+  image_view->signature=(~MagickSignature);
+  image_view=(ImageView *) RelinquishMagickMemory(image_view);
+  return(image_view);
 }
 
 /*
@@ -170,11 +165,11 @@ MagickExport ImageView *DestroyImageView(ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DuplexTransferImageViewIterator() iterates over three pixel views in
+%  DuplexTransferImageViewIterator() iterates over three image views in
 %  parallel and calls your transfer method for each scanline of the view.  The
 %  source and duplex pixel region is not confined to the image canvas-- that is
 %  you can include negative offsets or widths or heights that exceed the image
-%  dimension.  However, the destination pixel view is confined to the image
+%  dimension.  However, the destination image view is confined to the image
 %  canvas-- that is no negative offsets or widths or heights that exceed the
 %  image dimension are permitted.
 %
@@ -193,11 +188,11 @@ MagickExport ImageView *DestroyImageView(ImageView *pixel_view)
 %
 %  A description of each parameter follows:
 %
-%    o source: the source pixel view.
+%    o source: the source image view.
 %
-%    o duplex: the duplex pixel view.
+%    o duplex: the duplex image view.
 %
-%    o destination: the destination pixel view.
+%    o destination: the destination image view.
 %
 %    o transfer: the transfer callback method.
 %
@@ -328,23 +323,23 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewPixels() returns the pixel view authentic indexes.
+%  GetImageViewAuthenticIndexes() returns the image view authentic indexes.
 %
 %  The format of the GetImageViewAuthenticPixels method is:
 %
-%      IndexPacket *GetImageViewAuthenticIndexes(const ImageView *pixel_view)
+%      IndexPacket *GetImageViewAuthenticIndexes(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
 MagickExport IndexPacket *GetImageViewAuthenticIndexes(
-  const ImageView *pixel_view)
+  const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(GetCacheViewAuthenticIndexQueue(pixel_view->view));
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(GetCacheViewAuthenticIndexQueue(image_view->view));
 }
 
 /*
@@ -358,23 +353,23 @@ MagickExport IndexPacket *GetImageViewAuthenticIndexes(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewPixels() returns the pixel view authentic pixels.
+%  GetImageViewAuthenticPixels() returns the image view authentic pixels.
 %
 %  The format of the GetImageViewAuthenticPixels method is:
 %
-%      PixelPacket *GetImageViewAuthenticPixels(const ImageView *pixel_view)
+%      PixelPacket *GetImageViewAuthenticPixels(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
 MagickExport PixelPacket *GetImageViewAuthenticPixels(
-  const ImageView *pixel_view)
+  const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(GetCacheViewAuthenticPixelQueue(pixel_view->view));
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(GetCacheViewAuthenticPixelQueue(image_view->view));
 }
 
 /*
@@ -389,44 +384,44 @@ MagickExport PixelPacket *GetImageViewAuthenticPixels(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageViewException() returns the severity, reason, and description of any
-%  error that occurs when utilizing a pixel view.
+%  error that occurs when utilizing a image view.
 %
 %  The format of the GetImageViewException method is:
 %
-%      char *GetImageViewException(const PixelImage *pixel_view,
+%      char *GetImageViewException(const PixelImage *image_view,
 %        ExceptionType *severity)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel pixel_view.
+%    o image_view: the pixel image_view.
 %
 %    o severity: the severity of the error is returned here.
 %
 */
-MagickExport char *GetImageViewException(const ImageView *pixel_view,
+MagickExport char *GetImageViewException(const ImageView *image_view,
   ExceptionType *severity)
 {
   char
     *description;
 
-  assert(pixel_view != (const ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
+  assert(image_view != (const ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
   assert(severity != (ExceptionType *) NULL);
-  *severity=pixel_view->exception->severity;
+  *severity=image_view->exception->severity;
   description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *description='\0';
-  if (pixel_view->exception->reason != (char *) NULL)
+  if (image_view->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
-      pixel_view->exception->severity,pixel_view->exception->reason),
+      image_view->exception->severity,image_view->exception->reason),
         MaxTextExtent);
-  if (pixel_view->exception->description != (char *) NULL)
+  if (image_view->exception->description != (char *) NULL)
     {
       (void) ConcatenateMagickString(description," (",MaxTextExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
-        pixel_view->exception->severity,pixel_view->exception->description),
+        image_view->exception->severity,image_view->exception->description),
         MaxTextExtent);
       (void) ConcatenateMagickString(description,")",MaxTextExtent);
     }
@@ -444,22 +439,51 @@ MagickExport char *GetImageViewException(const ImageView *pixel_view,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewHeight() returns the pixel view height.
+%  GetImageViewHeight() returns the image view height.
 %
 %  The format of the GetImageViewHeight method is:
 %
-%      size_t GetImageViewHeight(const ImageView *pixel_view)
+%      size_t GetImageViewHeight(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
-MagickExport size_t GetImageViewHeight(const ImageView *pixel_view)
+MagickExport size_t GetImageViewHeight(const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(pixel_view->region.height);
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(image_view->region.height);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e V i e w I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageViewImage() returns the image associated with the image view.
+%
+%  The format of the GetImageViewImage method is:
+%
+%      MagickCore *GetImageViewImage(const ImageView *image_view)
+%
+%  A description of each parameter follows:
+%
+%    o image_view: the image view.
+%
+*/
+MagickExport Image *GetImageViewImage(const ImageView *image_view)
+{
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(image_view->image);
 }
 
 /*
@@ -473,7 +497,7 @@ MagickExport size_t GetImageViewHeight(const ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewIterator() iterates over the pixel view in parallel and calls
+%  GetImageViewIterator() iterates over the image view in parallel and calls
 %  your get method for each scanline of the view.  The pixel region is
 %  not confined to the image canvas-- that is you can include negative offsets
 %  or widths or heights that exceed the image dimension.  Any updates to
@@ -493,7 +517,7 @@ MagickExport size_t GetImageViewHeight(const ImageView *pixel_view)
 %
 %  A description of each parameter follows:
 %
-%    o source: the source pixel view.
+%    o source: the source image view.
 %
 %    o get: the get callback method.
 %
@@ -573,59 +597,30 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e V i e w W a n d                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageViewImage() returns the magick wand associated with the pixel view.
-%
-%  The format of the GetImageViewImage method is:
-%
-%      MagickCore *GetImageViewImage(const ImageView *pixel_view)
-%
-%  A description of each parameter follows:
-%
-%    o pixel_view: the pixel view.
-%
-*/
-MagickExport Image *GetImageViewImage(const ImageView *pixel_view)
-{
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(pixel_view->image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t I m a g e V i e w V i r t u a l I n d e x e s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewPixels() returns the pixel view virtual indexes.
+%  GetImageViewVirtualIndexes() returns the image view virtual indexes.
 %
-%  The format of the GetImageViewVirtualPixels method is:
+%  The format of the GetImageViewVirtualIndexes method is:
 %
 %      const IndexPacket *GetImageViewVirtualIndexes(
-%        const ImageView *pixel_view)
+%        const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
 MagickExport const IndexPacket *GetImageViewVirtualIndexes(
-  const ImageView *pixel_view)
+  const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(GetCacheViewVirtualIndexQueue(pixel_view->view));
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(GetCacheViewVirtualIndexQueue(image_view->view));
 }
 
 /*
@@ -639,23 +634,23 @@ MagickExport const IndexPacket *GetImageViewVirtualIndexes(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewPixels() returns the pixel view virtual pixels.
+%  GetImageViewVirtualPixels() returns the image view virtual pixels.
 %
 %  The format of the GetImageViewVirtualPixels method is:
 %
-%      const PixelPacket *GetImageViewVirtualPixels(const ImageView *pixel_view)
+%      const PixelPacket *GetImageViewVirtualPixels(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
 MagickExport const PixelPacket *GetImageViewVirtualPixels(
-  const ImageView *pixel_view)
+  const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(GetCacheViewVirtualPixelQueue(pixel_view->view));
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(GetCacheViewVirtualPixelQueue(image_view->view));
 }
 
 /*
@@ -669,22 +664,22 @@ MagickExport const PixelPacket *GetImageViewVirtualPixels(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewWidth() returns the pixel view width.
+%  GetImageViewWidth() returns the image view width.
 %
 %  The format of the GetImageViewWidth method is:
 %
-%      size_t GetImageViewWidth(const ImageView *pixel_view)
+%      size_t GetImageViewWidth(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
-MagickExport size_t GetImageViewWidth(const ImageView *pixel_view)
+MagickExport size_t GetImageViewWidth(const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(pixel_view->region.width);
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(image_view->region.width);
 }
 
 /*
@@ -698,22 +693,22 @@ MagickExport size_t GetImageViewWidth(const ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewX() returns the pixel view x offset.
+%  GetImageViewX() returns the image view x offset.
 %
 %  The format of the GetImageViewX method is:
 %
-%      ssize_t GetImageViewX(const ImageView *pixel_view)
+%      ssize_t GetImageViewX(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
-MagickExport ssize_t GetImageViewX(const ImageView *pixel_view)
+MagickExport ssize_t GetImageViewX(const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(pixel_view->region.x);
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(image_view->region.x);
 }
 
 /*
@@ -727,22 +722,22 @@ MagickExport ssize_t GetImageViewX(const ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageViewY() returns the pixel view y offset.
+%  GetImageViewY() returns the image view y offset.
 %
 %  The format of the GetImageViewY method is:
 %
-%      ssize_t GetImageViewY(const ImageView *pixel_view)
+%      ssize_t GetImageViewY(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
-MagickExport ssize_t GetImageViewY(const ImageView *pixel_view)
+MagickExport ssize_t GetImageViewY(const ImageView *image_view)
 {
-  assert(pixel_view != (ImageView *) NULL);
-  assert(pixel_view->signature == MagickSignature);
-  return(pixel_view->region.y);
+  assert(image_view != (ImageView *) NULL);
+  assert(image_view->signature == MagickSignature);
+  return(image_view->region.y);
 }
 
 /*
@@ -756,23 +751,23 @@ MagickExport ssize_t GetImageViewY(const ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsImageView() returns MagickTrue if the the parameter is verified as a pixel
-%  view container.
+%  IsImageView() returns MagickTrue if the the parameter is verified as a image
+%  view object.
 %
 %  The format of the IsImageView method is:
 %
-%      MagickBooleanType IsImageView(const ImageView *pixel_view)
+%      MagickBooleanType IsImageView(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_view: the pixel view.
+%    o image_view: the image view.
 %
 */
-MagickExport MagickBooleanType IsImageView(const ImageView *pixel_view)
+MagickExport MagickBooleanType IsImageView(const ImageView *image_view)
 {
-  if (pixel_view == (const ImageView *) NULL)
+  if (image_view == (const ImageView *) NULL)
     return(MagickFalse);
-  if (pixel_view->signature != MagickSignature)
+  if (image_view->signature != MagickSignature)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -788,8 +783,8 @@ MagickExport MagickBooleanType IsImageView(const ImageView *pixel_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NewImageView() returns a pixel view required for all other methods in the
-%  Pixel View API.
+%  NewImageView() returns a image view required for all other methods in the
+%  Image View API.
 %
 %  The format of the NewImageView method is:
 %
@@ -803,23 +798,23 @@ MagickExport MagickBooleanType IsImageView(const ImageView *pixel_view)
 MagickExport ImageView *NewImageView(Image *image)
 {
   ImageView
-    *pixel_view;
+    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  pixel_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*pixel_view));
-  if (pixel_view == (ImageView *) NULL)
+  image_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*image_view));
+  if (image_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
-  pixel_view->exception=AcquireExceptionInfo();
-  pixel_view->image=image;
-  pixel_view->view=AcquireCacheView(pixel_view->image);
-  pixel_view->region.width=image->columns;
-  pixel_view->region.height=image->rows;
-  pixel_view->number_threads=GetOpenMPMaximumThreads();
-  pixel_view->debug=IsEventLogging();
-  pixel_view->signature=MagickSignature;
-  return(pixel_view);
+  (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
+  image_view->exception=AcquireExceptionInfo();
+  image_view->image=image;
+  image_view->view=AcquireCacheView(image_view->image);
+  image_view->region.width=image->columns;
+  image_view->region.height=image->rows;
+  image_view->number_threads=GetOpenMPMaximumThreads();
+  image_view->debug=IsEventLogging();
+  image_view->signature=MagickSignature;
+  return(image_view);
 }
 
 /*
@@ -833,8 +828,8 @@ MagickExport ImageView *NewImageView(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NewImageViewRegion() returns a pixel view required for all other methods
-%  in the Pixel View API.
+%  NewImageViewRegion() returns a image view required for all other methods
+%  in the Image View API.
 %
 %  The format of the NewImageViewRegion method is:
 %
@@ -853,25 +848,25 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
   const ssize_t y,const size_t width,const size_t height)
 {
   ImageView
-    *pixel_view;
+    *image_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  pixel_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*pixel_view));
-  if (pixel_view == (ImageView *) NULL)
+  image_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*image_view));
+  if (image_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
-  pixel_view->exception=AcquireExceptionInfo();
-  pixel_view->view=AcquireCacheView(pixel_view->image);
-  pixel_view->image=image;
-  pixel_view->region.width=width;
-  pixel_view->region.height=height;
-  pixel_view->region.x=x;
-  pixel_view->region.y=y;
-  pixel_view->number_threads=GetOpenMPMaximumThreads();
-  pixel_view->debug=IsEventLogging();
-  pixel_view->signature=MagickSignature;
-  return(pixel_view);
+  (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
+  image_view->exception=AcquireExceptionInfo();
+  image_view->view=AcquireCacheView(image_view->image);
+  image_view->image=image;
+  image_view->region.width=width;
+  image_view->region.height=height;
+  image_view->region.x=x;
+  image_view->region.y=y;
+  image_view->number_threads=GetOpenMPMaximumThreads();
+  image_view->debug=IsEventLogging();
+  image_view->signature=MagickSignature;
+  return(image_view);
 }
 
 /*
@@ -885,7 +880,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageViewIterator() iterates over the pixel view in parallel and calls
+%  SetImageViewIterator() iterates over the image view in parallel and calls
 %  your set method for each scanline of the view.  The pixel region is
 %  confined to the image canvas-- that is no negative offsets or widths or
 %  heights that exceed the image dimension.  The pixels are initiallly
@@ -906,7 +901,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
 %
 %  A description of each parameter follows:
 %
-%    o destination: the pixel view.
+%    o destination: the image view.
 %
 %    o set: the set callback method.
 %
@@ -1010,11 +1005,11 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  TransferImageViewIterator() iterates over two pixel views in parallel and
+%  TransferImageViewIterator() iterates over two image views in parallel and
 %  calls your transfer method for each scanline of the view.  The source pixel
 %  region is not confined to the image canvas-- that is you can include
 %  negative offsets or widths or heights that exceed the image dimension.
-%  However, the destination pixel view is confined to the image canvas-- that
+%  However, the destination image view is confined to the image canvas-- that
 %  is no negative offsets or widths or heights that exceed the image dimension
 %  are permitted.
 %
@@ -1032,9 +1027,9 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 %
 %  A description of each parameter follows:
 %
-%    o source: the source pixel view.
+%    o source: the source image view.
 %
-%    o destination: the destination pixel view.
+%    o destination: the destination image view.
 %
 %    o transfer: the transfer callback method.
 %
@@ -1152,7 +1147,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UpdateImageViewIterator() iterates over the pixel view in parallel and calls
+%  UpdateImageViewIterator() iterates over the image view in parallel and calls
 %  your update method for each scanline of the view.  The pixel region is
 %  confined to the image canvas-- that is no negative offsets or widths or
 %  heights that exceed the image dimension are permitted.  Updates to pixels
@@ -1172,7 +1167,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 %
 %  A description of each parameter follows:
 %
-%    o source: the source pixel view.
+%    o source: the source image view.
 %
 %    o update: the update callback method.
 %
@@ -1217,11 +1212,11 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      id;
-
     register PixelPacket
       *restrict pixels;
+
+    register ssize_t
+      id;
 
     if (status == MagickFalse)
       continue;
@@ -1230,8 +1225,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
       source->region.width,1,exception);
     if (pixels == (PixelPacket *) NULL)
       {
-        InheritException(source->exception,GetCacheViewException(
-          source->view));
+        InheritException(source->exception,GetCacheViewException(source->view));
         status=MagickFalse;
         continue;
       }
