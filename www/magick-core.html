@@ -143,7 +143,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -281,41 +281,43 @@
   }
 </pre>
 </div>
-<p>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../www/source/image-contrast.c">image-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+<p>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../www/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
 <div class="viewport">
 <pre class="code">
 #include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
-#include &lt;wand/MagickCore.h>
+#include &lt;magick/MagickCore.h>
 
-static MagickBooleanType SigmoidalContrast(ImageView *pixel_view,
+static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
   void *context)
 {
 #define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define SigmoidalContrast(x) \
   (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
 
-  MagickPixelPacket
-    pixel;
+  register IndexPacket
+    *indexes;
 
-  PixelWand
-    **pixels;
+  register PixelPacket
+    *pixels;
 
-  register long
+  register ssize_t
     x;
 
-  pixels=GetImageViewPixels(contrast_view);
-  for (x=0; x &lt; (long) GetImageViewWidth(contrast_view); x++)
+  pixels=GetImageViewAuthenticPixels(contrast_view);
+  for (x=0; x &lt; (ssize_t) GetImageViewWidth(contrast_view); x++)
   {
-    PixelGetMagickColor(pixels[x],&amp;pixel);
-    pixel.red=SigmoidalContrast(pixel.red);
-    pixel.green=SigmoidalContrast(pixel.green);
-    pixel.blue=SigmoidalContrast(pixel.blue);
-    pixel.index=SigmoidalContrast(pixel.index);
-    PixelSetMagickColor(contrast_pixels[x],&amp;pixel);
+    pixels[x].red=RoundToQuantum(SigmoidalContrast(pixels[x].red));
+    pixels[x].green=RoundToQuantum(SigmoidalContrast(pixels[x].green));
+    pixels[x].blue=RoundToQuantum(SigmoidalContrast(pixels[x].blue));
+    pixels[x].opacity=RoundToQuantum(SigmoidalContrast(pixels[x].opacity));
   }
+  indexes=GetImageViewAuthenticIndexes(contrast_view);
+  if (indexes != (IndexPacket *) NULL)
+    for (x=0; x &lt; (ssize_t) GetImageViewWidth(contrast_view); x++)
+      indexes[x]=(IndexPacket) RoundToQuantum(SigmoidalContrast(indexes[x]));
   return(MagickTrue);
 }
 
@@ -323,29 +325,30 @@ int main(int argc,char **argv)
 {
 #define ThrowImageException(image) \
 { \
-  char \
-    *description; \
  \
-  ExceptionType \
-    severity; \
- \
-  description=GetImageException(image,&amp;severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
+  CatchException(exception); \
+  if (contrast_image != (Image *) NULL) \
+    contrast_image=DestroyImage(contrast_image); \
+  exception=DestroyExceptionInfo(exception); \
+  image_info=DestroyImageInfo(image_info); \
+  MagickCoreTerminus(); \
   exit(-1); \
 }
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *contrast_image;
+
+  ImageInfo
+    *image_info;
 
   ImageView
     *contrast_view;
 
   MagickBooleanType
     status;
-
-  MagickPixelPacket
-    pixel;
-
-  MagickWand
-    *contrast_image;
 
   if (argc != 3)
     {
@@ -355,28 +358,32 @@ int main(int argc,char **argv)
   /*
     Read an image.
   */
-  MagickCoreGenesis();
-  contrast_image=NewMagickWand();
-  status=MagickReadImage(contrast_image,argv[1]);
-  if (status == MagickFalse)
-    ThrowWandException(contrast_image);
+  MagickCoreGenesis(*argv,MagickTrue);
+  image_info=AcquireImageInfo();
+  (void) CopyMagickString(image_info->filename,argv[1],MaxTextExtent);
+  exception=AcquireExceptionInfo();
+  contrast_image=ReadImage(image_info,exception);
+  if (contrast_image == (Image *) NULL)
+    ThrowImageException(contrast_image);
   /*
     Sigmoidal non-linearity contrast control.
   */
   contrast_view=NewImageView(contrast_image);
   if (contrast_view == (ImageView *) NULL)
-    ThrowWandException(contrast_image);
+    ThrowImageException(contrast_image);
   status=UpdateImageViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
   if (status == MagickFalse)
-    ThrowWandException(contrast_image);
+    ThrowImageException(contrast_image);
   contrast_view=DestroyImageView(contrast_view);
   /*
     Write the image then destroy it.
   */
-  status=kWriteImages(contrast_image,argv[2],MagickTrue);
+  status=WriteImages(image_info,contrast_image,argv[2],exception);
   if (status == MagickFalse)
-    ThrowWandException(contrast_image);
-  contrast_image=DestroyMagickWand(contrast_image);
+    ThrowImageException(contrast_image);
+  contrast_image=DestroyImage(contrast_image);
+  exception=DestroyExceptionInfo(exception);
+  image_info=DestroyImageInfo(image_info);
   MagickCoreTerminus();
   return(0);
 }
