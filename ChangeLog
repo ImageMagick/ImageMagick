@@ -1,3 +1,8 @@
+2010-06-27  6.6.2-9 Cristy  <quetzlzacatenango@image...>
+  * Add the ImageView API.
+  * Fix DJVU coder to read one page (e.g. 'image.djvu[2]').
+  * Support -define png:bit-depth=1 -define png:color-type=3 for PNG format.
+
 2010-06-22  6.6.2-8 Cristy  <quetzlzacatenango@image...>
   * Skip byte when DDS bitcount is 32 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16487).
@@ -5,8 +10,6 @@
     -background lightblue show:).
   * Do not annotate directory paths in ListFiles().
   * Reset the image matte for png:color-type=2.
-  * Add the ImageView API.
-  * Fix DJVU coder to read one page (e.g. 'image.djvu[2]').
 
 2010-06-17  6.6.2-7 Cristy  <quetzlzacatenango@image...>
   * Support new label:pointsize property.

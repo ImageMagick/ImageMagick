@@ -6658,6 +6658,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   */
   matte=image_matte;
   old_bit_depth=0;
+  if ((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE)
+    mng_info->write_png8=MagickTrue;
   if (mng_info->write_png8)
     {
       ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
@@ -6825,8 +6827,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ||
               ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
             image_matte=MagickTrue;
-          if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
-            (void) SetImageType(image,PaletteType);
         }
       else
         {
@@ -7558,7 +7558,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   ping_color_type);
             }
         }
-      png_error(ping,
+      if (0) png_error(ping,
         "Cannot write image with defined PNG:bit-depth or PNG:color-type.");
     }
 
