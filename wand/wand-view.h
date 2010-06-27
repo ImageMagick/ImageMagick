@@ -28,8 +28,8 @@ typedef struct _WandView
 typedef MagickBooleanType
   (*DuplexTransferWandViewMethod)(const WandView *,const WandView *,WandView *,
     const ssize_t,const int,void *),
-  (*GetWandViewMethod)(const WandView *,void *),
-  (*SetWandViewMethod)(WandView *,void *),
+  (*GetWandViewMethod)(const WandView *,const ssize_t,const int,void *),
+  (*SetWandViewMethod)(WandView *,const ssize_t,const int,void *),
   (*TransferWandViewMethod)(const WandView *,WandView *,const ssize_t,
     const int,void *),
   (*UpdateWandViewMethod)(WandView *,const ssize_t,const int,void *);

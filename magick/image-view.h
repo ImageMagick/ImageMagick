@@ -28,8 +28,8 @@ typedef struct _ImageView
 typedef MagickBooleanType
   (*DuplexTransferImageViewMethod)(const ImageView *,const ImageView *,
     ImageView *,const ssize_t,const int,void *),
-  (*GetImageViewMethod)(const ImageView *,void *),
-  (*SetImageViewMethod)(ImageView *,void *),
+  (*GetImageViewMethod)(const ImageView *,const ssize_t,const int,void *),
+  (*SetImageViewMethod)(ImageView *,const ssize_t,const int,void *),
   (*TransferImageViewMethod)(const ImageView *,ImageView *,const ssize_t,
     const int,void *),
   (*UpdateImageViewMethod)(ImageView *,const ssize_t,const int,void *);
