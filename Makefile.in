@@ -4184,9 +4184,9 @@ WAND_INCLUDE_HDRS = \
 	wand/mogrify.h \
 	wand/montage.h \
 	wand/pixel-iterator.h \
-	wand/pixel-view.h \
 	wand/pixel-wand.h \
-	wand/stream.h
+	wand/stream.h \
+	wand/wand-view.h
 
 WAND_NOINST_HDRS = \
   wand/mogrify-private.h \
