@@ -27,11 +27,12 @@ typedef struct _WandView
 
 typedef MagickBooleanType
   (*DuplexTransferWandViewMethod)(const WandView *,const WandView *,WandView *,
-    void *),
+    const ssize_t,const int,void *),
   (*GetWandViewMethod)(const WandView *,void *),
   (*SetWandViewMethod)(WandView *,void *),
-  (*TransferWandViewMethod)(const WandView *,WandView *,void *),
-  (*UpdateWandViewMethod)(WandView *,void *);
+  (*TransferWandViewMethod)(const WandView *,WandView *,const ssize_t,
+    const int,void *),
+  (*UpdateWandViewMethod)(WandView *,const ssize_t,const int,void *);
 
 extern WandExport char
   *GetWandViewException(const WandView *,ExceptionType *);
@@ -48,23 +49,21 @@ extern WandExport MagickBooleanType
 extern WandExport MagickWand
   *GetWandViewWand(const WandView *);
 
+extern WandExport PixelWand
+  **GetWandViewPixels(const WandView *);
+
+extern WandExport RectangleInfo
+  GetWandViewExtent(const WandView *);
+
+extern WandExport void
+  SetWandViewDescription(WandView *,const char *);
+
 extern WandExport WandView
   *CloneWandView(const WandView *),
   *DestroyWandView(WandView *),
   *NewWandView(MagickWand *),
-  *NewWandViewRegion(MagickWand *,const ssize_t,const ssize_t,const size_t,
+  *NewWandViewExtent(MagickWand *,const ssize_t,const ssize_t,const size_t,
     const size_t);
-
-extern WandExport PixelWand
-  **GetWandViewPixels(const WandView *);
-
-extern WandExport size_t
-  GetWandViewHeight(const WandView *),
-  GetWandViewWidth(const WandView *);
-
-extern WandExport ssize_t
-  GetWandViewX(const WandView *),
-  GetWandViewY(const WandView *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

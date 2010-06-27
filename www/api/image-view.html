@@ -141,9 +141,6 @@
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
-<div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/" title="Online-Magazin">Online-Magazin</a><!-- 20101101000200 -->
-</div>
 </div>
 </div>
 
@@ -152,7 +149,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#CloneImageView">CloneImageView</a> &bull; <a href="#DestroyImageView">DestroyImageView</a> &bull; <a href="#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> &bull; <a href="#GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a> &bull; <a href="#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> &bull; <a href="#GetImageViewException">GetImageViewException</a> &bull; <a href="#GetImageViewHeight">GetImageViewHeight</a> &bull; <a href="#GetImageViewImage">GetImageViewImage</a> &bull; <a href="#GetImageViewIterator">GetImageViewIterator</a> &bull; <a href="#GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a> &bull; <a href="#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> &bull; <a href="#GetImageViewWidth">GetImageViewWidth</a> &bull; <a href="#GetImageViewX">GetImageViewX</a> &bull; <a href="#GetImageViewY">GetImageViewY</a> &bull; <a href="#IsImageView">IsImageView</a> &bull; <a href="#NewImageView">NewImageView</a> &bull; <a href="#NewImageViewRegion">NewImageViewRegion</a> &bull; <a href="#SetImageViewIterator">SetImageViewIterator</a> &bull; <a href="#TransferImageViewIterator">TransferImageViewIterator</a> &bull; <a href="#UpdateImageViewIterator">UpdateImageViewIterator</a>]</p>
+<p class="navigation-index">[<a href="#CloneImageView">CloneImageView</a> &bull; <a href="#DestroyImageView">DestroyImageView</a> &bull; <a href="#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> &bull; <a href="#GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a> &bull; <a href="#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> &bull; <a href="#GetImageViewException">GetImageViewException</a> &bull; <a href="#GetImageViewExtent">GetImageViewExtent</a> &bull; <a href="#GetImageViewImage">GetImageViewImage</a> &bull; <a href="#GetImageViewIterator">GetImageViewIterator</a> &bull; <a href="#GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a> &bull; <a href="#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> &bull; <a href="#IsImageView">IsImageView</a> &bull; <a href="#NewImageView">NewImageView</a> &bull; <a href="#NewImageViewRegion">NewImageViewRegion</a> &bull; <a href="#SetImageViewIterator">SetImageViewIterator</a> &bull; <a href="#TransferImageViewIterator">TransferImageViewIterator</a> &bull; <a href="#UpdateImageViewIterator">UpdateImageViewIterator</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
 _8c.html" target="source" name="CloneImageView">CloneImageView</a></h2>
@@ -194,7 +191,7 @@ _8c.html" target="source" name="DestroyImageView">DestroyImageView</a></h2>
 _8c.html" target="source" name="DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a></h2>
 <div class="doc-section">
 
-<p>DuplexTransferImageViewIterator() iterates over three image views in parallel and calls your transfer method for each scanline of the view.  The source and duplex pixel region is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p></ol>
+<p>DuplexTransferImageViewIterator() iterates over three image views in parallel and calls your transfer method for each scanline of the view.  The source and duplex pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p></ol>
 
 <p>Use this pragma if the view is not single threaded:</p>
 
@@ -289,15 +286,15 @@ _8c.html" target="source" name="GetImageViewException">GetImageViewException</a>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
-_8c.html" target="source" name="GetImageViewHeight">GetImageViewHeight</a></h2>
+_8c.html" target="source" name="GetImageViewExtent">GetImageViewExtent</a></h2>
 <div class="doc-section">
 
-<p>GetImageViewHeight() returns the image view height.</p></ol>
+<p>GetImageViewExtent() returns the image view extent.</p></ol>
 
-<p>The format of the GetImageViewHeight method is:</p>
+<p>The format of the GetImageViewExtent method is:</p>
 
 <pre class="code">
-  size_t GetImageViewHeight(const ImageView *image_view)
+  RectangleInfo GetImageViewExtent(const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
@@ -328,7 +325,7 @@ _8c.html" target="source" name="GetImageViewImage">GetImageViewImage</a></h2>
 _8c.html" target="source" name="GetImageViewIterator">GetImageViewIterator</a></h2>
 <div class="doc-section">
 
-<p>GetImageViewIterator() iterates over the image view in parallel and calls your get method for each scanline of the view.  The pixel region is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  Any updates to the pixels in your callback are ignored.</p></ol>
+<p>GetImageViewIterator() iterates over the image view in parallel and calls your get method for each scanline of the view.  The pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  Any updates to the pixels in your callback are ignored.</p></ol>
 
 <p>Use this pragma if the view is not single threaded:</p>
 
@@ -395,60 +392,6 @@ _8c.html" target="source" name="GetImageViewVirtualPixels">GetImageViewVirtualPi
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
-_8c.html" target="source" name="GetImageViewWidth">GetImageViewWidth</a></h2>
-<div class="doc-section">
-
-<p>GetImageViewWidth() returns the image view width.</p></ol>
-
-<p>The format of the GetImageViewWidth method is:</p>
-
-<pre class="code">
-  size_t GetImageViewWidth(const ImageView *image_view)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image_view</h5>
-<ol><p>the image view.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
-_8c.html" target="source" name="GetImageViewX">GetImageViewX</a></h2>
-<div class="doc-section">
-
-<p>GetImageViewX() returns the image view x offset.</p></ol>
-
-<p>The format of the GetImageViewX method is:</p>
-
-<pre class="code">
-  ssize_t GetImageViewX(const ImageView *image_view)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image_view</h5>
-<ol><p>the image view.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
-_8c.html" target="source" name="GetImageViewY">GetImageViewY</a></h2>
-<div class="doc-section">
-
-<p>GetImageViewY() returns the image view y offset.</p></ol>
-
-<p>The format of the GetImageViewY method is:</p>
-
-<pre class="code">
-  ssize_t GetImageViewY(const ImageView *image_view)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image_view</h5>
-<ol><p>the image view.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
 _8c.html" target="source" name="IsImageView">IsImageView</a></h2>
 <div class="doc-section">
 
@@ -470,7 +413,7 @@ _8c.html" target="source" name="IsImageView">IsImageView</a></h2>
 _8c.html" target="source" name="NewImageView">NewImageView</a></h2>
 <div class="doc-section">
 
-<p>NewImageView() returns a image view required for all other methods in the Pixel View API.</p></ol>
+<p>NewImageView() returns a image view required for all other methods in the Image View API.</p></ol>
 
 <p>The format of the NewImageView method is:</p>
 
@@ -488,7 +431,7 @@ _8c.html" target="source" name="NewImageView">NewImageView</a></h2>
 _8c.html" target="source" name="NewImageViewRegion">NewImageViewRegion</a></h2>
 <div class="doc-section">
 
-<p>NewImageViewRegion() returns a image view required for all other methods in the Pixel View API.</p></ol>
+<p>NewImageViewRegion() returns a image view required for all other methods in the Image View API.</p></ol>
 
 <p>The format of the NewImageViewRegion method is:</p>
 
@@ -503,14 +446,14 @@ _8c.html" target="source" name="NewImageViewRegion">NewImageViewRegion</a></h2>
 <ol><p>the magick wand.</p></ol>
 
 <h5>x,y,columns,rows</h5>
-<ol><p>These values define the perimeter of a region of pixel_wands view.</p></ol>
+<ol><p>These values define the perimeter of a extent of pixel_wands view.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view
 _8c.html" target="source" name="SetImageViewIterator">SetImageViewIterator</a></h2>
 <div class="doc-section">
 
-<p>SetImageViewIterator() iterates over the image view in parallel and calls your set method for each scanline of the view.  The pixel region is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension.  The pixels are initiallly undefined and any settings you make in the callback method are automagically synced back to your image.</p></ol>
+<p>SetImageViewIterator() iterates over the image view in parallel and calls your set method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension.  The pixels are initiallly undefined and any settings you make in the callback method are automagically synced back to your image.</p></ol>
 
 <p>Use this pragma if the view is not single threaded:</p>
 
@@ -543,7 +486,7 @@ _8c.html" target="source" name="SetImageViewIterator">SetImageViewIterator</a></
 _8c.html" target="source" name="TransferImageViewIterator">TransferImageViewIterator</a></h2>
 <div class="doc-section">
 
-<p>TransferImageViewIterator() iterates over two image views in parallel and calls your transfer method for each scanline of the view.  The source pixel region is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p></ol>
+<p>TransferImageViewIterator() iterates over two image views in parallel and calls your transfer method for each scanline of the view.  The source pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p></ol>
 
 <p>Use this pragma if the view is not single threaded:</p>
 
@@ -579,7 +522,7 @@ _8c.html" target="source" name="TransferImageViewIterator">TransferImageViewIter
 _8c.html" target="source" name="UpdateImageViewIterator">UpdateImageViewIterator</a></h2>
 <div class="doc-section">
 
-<p>UpdateImageViewIterator() iterates over the image view in parallel and calls your update method for each scanline of the view.  The pixel region is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.  Updates to pixels in your callback are automagically synced back to the image.</p></ol>
+<p>UpdateImageViewIterator() iterates over the image view in parallel and calls your update method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.  Updates to pixels in your callback are automagically synced back to the image.</p></ol>
 
 <p>Use this pragma if the view is not single threaded:</p>
 
