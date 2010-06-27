@@ -548,7 +548,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               /*
                 Display image to X server.
               */
-              if (resource_info.delay != 0)
+              if (resource_info.delay != 1)
                 image->delay=resource_info.delay;
               nexus=XDisplayImage(display,&resource_info,argv,argc,&image,
                 &state);
