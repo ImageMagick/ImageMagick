@@ -32,6 +32,21 @@ extern "C" {
 typedef struct _DrawingWand
   *DrawContext;
 
+typedef struct _PixelView
+  PixelView;
+
+typedef MagickBooleanType
+  (*DuplexTransferPixelViewMethod)(const PixelView *,const PixelView *,
+    PixelView *,void *),
+  (*GetPixelViewMethod)(const PixelView *,void *),
+  (*SetPixelViewMethod)(PixelView *,void *),
+  (*TransferPixelViewMethod)(const PixelView *,PixelView *,void *),
+  (*UpdatePixelViewMethod)(PixelView *,void *);
+
+extern WandExport char
+  *GetPixelViewException(const PixelView *,ExceptionType *)
+    magick_attribute((deprecated));
+
 extern WandExport double
   DrawGetFillAlpha(const DrawingWand *) magick_attribute((deprecated)),
   DrawGetStrokeAlpha(const DrawingWand *) magick_attribute((deprecated));
@@ -50,6 +65,11 @@ extern WandExport ssize_t
   MagickGetImageIndex(MagickWand *) magick_attribute((deprecated));
 
 extern WandExport MagickBooleanType
+  DuplexTransferPixelViewIterator(PixelView *,PixelView *,PixelView *,
+    DuplexTransferPixelViewMethod,void *) magick_attribute((deprecated)),
+  GetPixelViewIterator(PixelView *,GetPixelViewMethod,void *)
+    magick_attribute((deprecated)),
+  IsPixelView(const PixelView *) magick_attribute((deprecated)),
   MagickClipPathImage(MagickWand *,const char *,const MagickBooleanType)
     magick_attribute((deprecated)),
   MagickColorFloodfillImage(MagickWand *,const PixelWand *,const double,
@@ -92,13 +112,20 @@ extern WandExport MagickBooleanType
     const size_t,const char *,const StorageType,const void *)
     magick_attribute((deprecated)),
   MagickTransparentImage(MagickWand *,const PixelWand *,const double,
-    const double) magick_attribute((deprecated));
+    const double) magick_attribute((deprecated)),
+  SetPixelViewIterator(PixelView *,SetPixelViewMethod,void *)
+    magick_attribute((deprecated)),
+  TransferPixelViewIterator(PixelView *,PixelView *,TransferPixelViewMethod,
+    void *) magick_attribute((deprecated)),
+  UpdatePixelViewIterator(PixelView *,UpdatePixelViewMethod,void *)
+    magick_attribute((deprecated));
 
 extern WandExport MagickWand
-  *MagickAverageImages(MagickWand *),
+  *GetPixelViewWand(const PixelView *) magick_attribute((deprecated)),
+  *MagickAverageImages(MagickWand *) magick_attribute((deprecated)),
   *MagickFlattenImages(MagickWand *) magick_attribute((deprecated)),
-  *MagickMaximumImages(MagickWand *),
-  *MagickMinimumImages(MagickWand *),
+  *MagickMaximumImages(MagickWand *) magick_attribute((deprecated)),
+  *MagickMinimumImages(MagickWand *) magick_attribute((deprecated)),
   *MagickMosaicImages(MagickWand *) magick_attribute((deprecated)),
   *MagickRegionOfInterestImage(MagickWand *,const size_t,const size_t,
     const ssize_t,const ssize_t) magick_attribute((deprecated));
@@ -106,8 +133,24 @@ extern WandExport MagickWand
 extern WandExport MagickSizeType
   MagickGetImageSize(MagickWand *) magick_attribute((deprecated));
 
+extern WandExport PixelView
+  *ClonePixelView(const PixelView *) magick_attribute((deprecated)),
+  *DestroyPixelView(PixelView *) magick_attribute((deprecated)),
+  *NewPixelView(MagickWand *) magick_attribute((deprecated)),
+  *NewPixelViewRegion(MagickWand *,const ssize_t,const ssize_t,const size_t,
+    const size_t) magick_attribute((deprecated));
+
 extern WandExport PixelWand
+  **GetPixelViewPixels(const PixelView *) magick_attribute((deprecated)),
   **PixelGetNextRow(PixelIterator *) magick_attribute((deprecated));
+
+extern WandExport size_t
+  GetPixelViewHeight(const PixelView *) magick_attribute((deprecated)),
+  GetPixelViewWidth(const PixelView *) magick_attribute((deprecated));
+
+extern WandExport ssize_t
+  GetPixelViewX(const PixelView *) magick_attribute((deprecated)),
+  GetPixelViewY(const PixelView *) magick_attribute((deprecated));
 
 extern WandExport unsigned char
   *MagickWriteImageBlob(MagickWand *,size_t *) magick_attribute((deprecated));
