@@ -3488,7 +3488,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_value=XGetResourceClass(database,client_name,"confirmEdit",
     (char *) "False");
   resource_info->confirm_edit=IsMagickTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"delay",(char *) "0");
+  resource_value=XGetResourceClass(database,client_name,"delay",(char *) "1");
   resource_info->delay=(unsigned int) StringToUnsignedLong(resource_value);
   resource_info->display_gamma=XGetResourceClass(database,client_name,
     "displayGamma",(char *) "2.2");
