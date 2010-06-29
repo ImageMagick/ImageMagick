@@ -1,5 +1,5 @@
 2010-06-28  6.6.2-10 Cristy  <quetzlzacatenango@image...>
-  * Properly detect the TIFF image format endianess.
+  * Support the tiff:fill-order define.
   * Filters are case sensitive (e.g. reduce-Colors).
 
 2010-06-27  6.6.2-9 Cristy  <quetzlzacatenango@image...>
