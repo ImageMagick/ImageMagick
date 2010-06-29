@@ -859,6 +859,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   {
     if (0 && (image_info->verbose != MagickFalse))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
+    (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
+      "lsb" : "msb");
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGEWIDTH,&width);
@@ -1667,7 +1669,7 @@ ModuleExport size_t RegisterTIFFImage(void)
 
   MagickInfo
     *entry;
-  
+
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
     tiff_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(tiff_semaphore);
@@ -2380,6 +2382,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   CompressionType
     compression;
 
+  EndianType
+    endian_type;
+
   ssize_t
     y;
 
@@ -2442,7 +2447,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   (void) MagickSetThreadValue(tiff_exception,&image->exception);
   error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  switch (image_info->endian)
+  endian_type=UndefinedEndian;
+  option=GetImageOption(image_info,"tiff:endian");
+  if (option != (const char *) NULL)
+    {
+      if (LocaleNCompare(option,"msb",3) == 0)
+        endian_type=MSBEndian;
+      if (LocaleNCompare(option,"lsb",3) == 0)
+        endian_type=LSBEndian;;
+    }
+  switch (endian_type)
   {
     case LSBEndian: mode="wl"; break;
     case MSBEndian: mode="wb"; break;
@@ -2450,7 +2464,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   }
 #if defined(TIFF_VERSION_BIG)
   if (LocaleCompare(image_info->magick,"TIFF64") == 0)
-    switch (image_info->endian)
+    switch (endian_type)
     {
       case LSBEndian: mode="wl8"; break;
       case MSBEndian: mode="wb8"; break;
