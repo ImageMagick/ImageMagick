@@ -928,7 +928,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
-    image->endian=TIFFIsBigEndian(tiff) != 0 ? MSBEndian : LSBEndian;
+    image->endian=TIFFIsBigEndian(tiff) == 0 ? MSBEndian : LSBEndian;
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
