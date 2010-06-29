@@ -782,8 +782,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   uint16
     compress_tag,
     bits_per_sample,
-    endian,
     extra_samples,
+    fill_order,
     interlace,
     max_sample_value,
     min_sample_value,
@@ -803,9 +803,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *pixels;
-
-  size_t
-    lsb_first;
 
   /*
     Open image.
@@ -863,7 +860,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGEWIDTH,&width);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGELENGTH,&height);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
+    (void) SetImageProperty(image,"tiff:fill_order",
+      fill_order == FILLORDER_LSB2MSB ? "lsb" : "msb");
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
@@ -929,10 +928,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
-    lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
+    image->endian=TIFFIsBigEndian(tiff) != 0 ? MSBEndian : LSBEndian;
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
@@ -1591,9 +1587,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (image->storage_class == PseudoClass)
       image->depth=GetImageDepth(image,exception);
-    image->endian=MSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      image->endian=LSBEndian;
     if ((photometric == PHOTOMETRIC_LOGL) ||
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
@@ -1667,7 +1660,7 @@ ModuleExport size_t RegisterTIFFImage(void)
 
   MagickInfo
     *entry;
-  
+
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
     tiff_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(tiff_semaphore);
@@ -2415,7 +2408,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   uint16
     bits_per_sample,
     compress_tag,
-    endian,
+    fill_order,
     photometric;
 
   uint32
@@ -2423,9 +2416,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *pixels;
-
-  size_t
-    lsb_first;
 
   /*
     Open TIFF file.
@@ -2665,44 +2655,30 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 }
           }
       }
-    switch (image->endian)
-    {
-      case LSBEndian:
-      {
-        endian=FILLORDER_LSB2MSB;
-        break;
-      }
-      case MSBEndian:
-      {
-        endian=FILLORDER_MSB2LSB;
-        break;
-      }
-      case UndefinedEndian:
-      default:
-      {
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
-        break;
-      }
-    }
-    lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
     if ((compress_tag == COMPRESSION_CCITTFAX3) &&
         (photometric != PHOTOMETRIC_MINISWHITE))
       {
         compress_tag=COMPRESSION_NONE;
-        endian=FILLORDER_MSB2LSB;
+        fill_order=FILLORDER_MSB2LSB;
       }
     else
       if ((compress_tag == COMPRESSION_CCITTFAX4) &&
          (photometric != PHOTOMETRIC_MINISWHITE))
        {
          compress_tag=COMPRESSION_NONE;
-         endian=FILLORDER_MSB2LSB;
+         fill_order=FILLORDER_MSB2LSB;
        }
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,endian);
+    option=GetImageProperty(image,"tiff:fill-order");
+    if (option != (const char *) NULL)
+      {
+        if (LocaleNCompare(option,"msb",3) == 0)
+          fill_order=FILLORDER_MSB2LSB;
+        if (LocaleNCompare(option,"lsb",3) == 0)
+          fill_order=FILLORDER_LSB2MSB;
+      }
+    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,quantum_info->depth);
     if (image->matte != MagickFalse)
       {
@@ -2966,8 +2942,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -3175,9 +3151,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (0 && (image_info->verbose == MagickTrue))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
     (void) TIFFWriteDirectory(tiff);
-    image->endian=MSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      image->endian=LSBEndian;
     image=SyncNextImageInList(image);
     if (image == (Image *) NULL)
       break;
