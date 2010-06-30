@@ -2272,8 +2272,8 @@ MagickExport Cache GetImagePixelCache(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,const ssize_t x,
-  const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
+  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2382,7 +2382,8 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
 %
 */
 MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
-  const ssize_t x,const ssize_t y,MagickPixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,MagickPixelPacket *pixel,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
