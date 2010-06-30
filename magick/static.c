@@ -116,7 +116,10 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
     image_filter=(ImageFilterHandler *) NULL;
     if (LocaleCompare("analyze",tag) == 0)
       image_filter=(ImageFilterHandler *) analyzeImage;
-    if (image_filter != (ImageFilterHandler *) NULL)
+    if (image_filter == (ImageFilterHandler *) NULL)
+      (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+        "UnableToLoadModule","`%s'",tag);
+    else
       {
         size_t
           signature;
