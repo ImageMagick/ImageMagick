@@ -1448,8 +1448,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t) (width/
-      2L),image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),image->columns+width,width,exception);
     q=GetCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
