@@ -67,7 +67,7 @@ typedef ModuleExport size_t
   ImageFilterHandler(Image **,const int,const char **,ExceptionInfo *);
 
 extern MagickExport char
-  **GetModuleList(const char *,size_t *,ExceptionInfo *);
+  **GetModuleList(const char *,const MagickModuleType,size_t *,ExceptionInfo *);
 
 extern MagickExport const ModuleInfo
   **GetModuleInfoList(const char *,size_t *,ExceptionInfo *);
