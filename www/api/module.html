@@ -243,14 +243,17 @@ _8c.html" target="source" name="GetModuleList">GetModuleList</a></h2>
 <p>The format of the GetModuleList function is:</p>
 
 <pre class="text">
-  char **GetModuleList(const char *pattern,size_t *number_modules,
-    ExceptionInfo *exception)
+  char **GetModuleList(const char *pattern,const MagickModuleType type,
+    size_t *number_modules,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p></ol>
 
 <h5>pattern</h5>
 <ol><p>Specifies a pointer to a text string containing a pattern.</p></ol>
+
+<h5>type</h5>
+<ol><p>choose from MagickImageCoderModule or MagickImageFilterModule.</p></ol>
 
 <h5>number_modules</h5>
 <ol><p>This integer returns the number of modules in the list.</p></ol>

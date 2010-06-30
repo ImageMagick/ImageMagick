@@ -964,7 +964,7 @@ convert \( -size 15x15 xc:black xc:white -append \) \
     <td valign="top"><a href="http://www.remotesensing.org/libtiff/">TIFF</a></td>
     <td valign="top">RW</td>
     <td valign="top">Tagged Image File Format</td>
-    <td valign="top">Also known as <kbd>TIF</kbd>. Requires <a href="ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <kbd>-define tiff:rows-per-strip=8</kbd>).  To define the tile geometry, use for example, <kbd>-define tiff:tile-geometry=128x128</kbd>. To specify a <em>signed</em> format, use  <kbd>-define quantum:format=signed</kbd>. To specify a single-precision floating-point format, use <kbd>-define quantum:format=floating-point</kbd>.  Set the depth to 64 for a double-precision floating-point format.  Use <kbd>-define quantum:polarity=min-is-black</kbd> or <kbd>-define quantum:polarity=min-is-white</kbd> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <kbd>-define tiff:alpha=unassociated</kbd>.  You can choose to read the EXIF profile with this option: <kbd>-define tiff:exif=true</kbd>.</td>
+    <td valign="top">Also known as <kbd>TIF</kbd>. Requires <a href="ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <kbd>-define tiff:rows-per-strip=8</kbd>).  To define the tile geometry, use for example, <kbd>-define tiff:tile-geometry=128x128</kbd>. To specify a <em>signed</em> format, use  <kbd>-define quantum:format=signed</kbd>. To specify a single-precision floating-point format, use <kbd>-define quantum:format=floating-point</kbd>.  Set the depth to 64 for a double-precision floating-point format.  Use <kbd>-define quantum:polarity=min-is-black</kbd> or <kbd>-define quantum:polarity=min-is-white</kbd> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <kbd>-define tiff:alpha=unassociated</kbd>.  Set the fill order with <kbd>-define tiff:fill-order=msb|lsb</kbd>. Set the TIFF endianess with <kbd>-define tiff:endian=msb|lsb</kbd>. You can choose to read the EXIF profile with this option: <kbd>-define tiff:exif=true</kbd>.</td>
   </tr>
 
   <tr>
@@ -1768,7 +1768,7 @@ convert \( -size 15x15 xc:black xc:white -append \) \
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
