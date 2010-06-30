@@ -4061,6 +4061,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
+        if (format != (char *) NULL)
+          (void) CopyMagickString(images->filename,images->magick_filename,
+            MaxTextExtent);
         if (path != (char *) NULL)
           {
             GetPathComponent(option,TailPath,filename);
@@ -4068,11 +4071,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               path,*DirectorySeparator,filename);
           }
         if (format != (char *) NULL)
-          {
-            (void) CopyMagickString(images->filename,images->magick_filename,
-              MaxTextExtent);
-            AppendImageFormat(format,images->filename);
-          }
+          AppendImageFormat(format,images->filename);
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
         if (global_colormap != MagickFalse)

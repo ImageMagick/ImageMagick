@@ -1,6 +1,8 @@
 2010-06-28  6.6.2-10 Cristy  <quetzlzacatenango@image...>
   * Support the tiff:fill-order define.
   * Filters are case sensitive (e.g. reduce-Colors).
+  * Restore mogrify's -path option.
+  * The -list module option lists image coders and image filters.
 
 2010-06-27  6.6.2-9 Cristy  <quetzlzacatenango@image...>
   * Add the ImageView API.
