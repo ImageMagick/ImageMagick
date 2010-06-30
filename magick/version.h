@@ -27,16 +27,16 @@ extern "C" {
 */
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2010 ImageMagick Studio LLC"
-#define MagickLibVersion  0x662
-#define MagickLibVersionText  "6.6.2"
+#define MagickLibVersion  0x663
+#define MagickLibVersionText  "6.6.3"
 #define MagickLibVersionNumber  4,0,0
-#define MagickLibAddendum  "-10"
+#define MagickLibAddendum  "-0"
 #define MagickLibInterface  4
 #define MagickLibMinInterface  4
-#define MagickReleaseDate  "2010-06-29"
+#define MagickReleaseDate  "2010-06-30"
 #define MagickChangeDate   "20100628"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
-#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.6.2/index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.6.3/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
 #define MagickQuantumRange  "255"
