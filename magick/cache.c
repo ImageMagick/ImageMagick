@@ -116,8 +116,8 @@ static const PixelPacket
   *GetVirtualPixelsCache(const Image *);
 
 static MagickBooleanType
-  GetOneAuthenticPixelFromCache(Image *,const ssize_t,const ssize_t,PixelPacket *,
-    ExceptionInfo *),
+  GetOneAuthenticPixelFromCache(Image *,const ssize_t,const ssize_t,
+    PixelPacket *,ExceptionInfo *),
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,PixelPacket *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
