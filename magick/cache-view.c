@@ -385,8 +385,8 @@ MagickExport ClassType GetCacheViewStorageClass(const CacheView *cache_view)
 %
 */
 MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
-  const ssize_t x,const ssize_t y,const size_t columns,
-  const size_t rows,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
 {
   Cache
     cache;
@@ -444,8 +444,8 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
-  ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,
+  PixelPacket *pixel,ExceptionInfo *exception)
 {
   Cache
     cache;
@@ -749,8 +749,8 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixels(
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
-  ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,
+  PixelPacket *pixel,ExceptionInfo *exception)
 {
   const PixelPacket
     *pixels;
@@ -870,8 +870,8 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
 %
 */
 MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
-  const ssize_t x,const ssize_t y,const size_t columns,
-  const size_t rows,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
 {
   Cache
     cache;
