@@ -2172,22 +2172,21 @@ MagickExport Cache GetImagePixelCache(Image *image,
   static MagickSizeType
     time_limit = 0;
 
+  static time_t
+    cache_timer = 0;
+
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (time_limit == 0)
-    time_limit=GetMagickResourceLimit(TimeResource);
-  if (time_limit != MagickResourceInfinity)
-    {
-      static time_t
-        cache_timer = 0;
-
-      if (cache_timer == 0)
-        cache_timer=time((time_t *) NULL);
-      if ((MagickSizeType) (time((time_t *) NULL)-cache_timer) >= time_limit)
-        ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
-    }
   status=MagickTrue;
   LockSemaphoreInfo(image->semaphore);
+  if (time_limit == 0)
+    {
+      time_limit=GetMagickResourceLimit(TimeResource);
+      cache_timer=time((time_t *) NULL);
+    }
+  if ((time_limit != MagickResourceInfinity) &&
+      ((MagickSizeType) (time((time_t *) NULL)-cache_timer) >= time_limit))
+    ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   destroy=MagickFalse;
