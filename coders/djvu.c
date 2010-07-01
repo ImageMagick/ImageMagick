@@ -415,7 +415,8 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                 if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
                                         break;
                         }
-                SyncImage(image);
+                if (!image->ping)
+                  SyncImage(image);
         } else {
 #if DEBUG
                 printf("%s: expanding PHOTO page/image\n", __FUNCTION__);
@@ -689,7 +690,8 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
           (double) image->rows);
 #endif
 
-        SyncImage(image);
+        if (!image->ping)
+          SyncImage(image);
         quantum_info=DestroyQuantumInfo(quantum_info);
         /* indexes=GetAuthenticIndexQueue(image); */
         /* mmc: ??? Convert PNM pixels to runlength-encoded MIFF packets. */
