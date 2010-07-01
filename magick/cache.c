@@ -69,6 +69,11 @@
 #endif
 
 /*
+  Define declarations.
+*/
+#define CacheTick(offset,extent)  QuantumTick((MagickOffsetType) offset,extent)
+
+/*
   Typedef declarations.
 */
 typedef struct _MagickModulo
@@ -3392,7 +3397,8 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
     {
       length=(MagickSizeType) MagickMin(cache_info->columns-(x+u),columns-u);
       if ((((x+u) < 0) || ((x+u) >= (ssize_t) cache_info->columns)) ||
-          (((y+v) < 0) || ((y+v) >= (ssize_t) cache_info->rows)) || (length == 0))
+          (((y+v) < 0) || ((y+v) >= (ssize_t) cache_info->rows)) ||
+          (length == 0))
         {
           MagickModulo
             x_modulo,
@@ -3725,8 +3731,8 @@ MagickExport const PixelPacket *GetVirtualPixelQueue(const Image *image)
 %
 */
 MagickExport const PixelPacket *GetVirtualPixels(const Image *image,
-  const ssize_t x,const ssize_t y,const size_t columns,
-  const size_t rows,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -4421,8 +4427,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
 %
 */
 MagickExport PixelPacket *QueueAuthenticNexus(Image *image,const ssize_t x,
-  const ssize_t y,const size_t columns,const size_t rows,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+  const ssize_t y,const size_t columns,const size_t rows,NexusInfo *nexus_info,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -4733,7 +4739,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
       "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
@@ -4864,7 +4870,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
       "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
@@ -5449,7 +5455,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
       "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
@@ -5580,7 +5586,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       break;
   }
   if ((cache_info->debug != MagickFalse) &&
-      (QuantumTick((MagickOffsetType) nexus_info->region.y,cache_info->rows) != MagickFalse))
+      (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
       "%s[%.20gx%.20g%+.20g%+.20g]",cache_info->filename,(double)
       nexus_info->region.width,(double) nexus_info->region.height,(double)
