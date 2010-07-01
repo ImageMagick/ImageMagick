@@ -1,3 +1,6 @@
+2010-07-01  6.6.3-0 Chris Madison  <madisonblu@gmail...>
+  * Pinging the DJVU image format no longer faults.
+
 2010-06-28  6.6.2-10 Cristy  <quetzlzacatenango@image...>
   * Support the tiff:fill-order define.
   * Filters are case sensitive (e.g. reduce-Colors).
