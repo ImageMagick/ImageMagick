@@ -1,5 +1,6 @@
 2010-07-01  6.6.3-0 Chris Madison  <madisonblu@gmail...>
   * Pinging the DJVU image format no longer faults.
+  * Check for time-limit-exceeded in only one thread.
 
 2010-06-28  6.6.2-10 Cristy  <quetzlzacatenango@image...>
   * Support the tiff:fill-order define.
