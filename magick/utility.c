@@ -1779,6 +1779,73 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k D e l a y                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickDelay() suspends program execution for the number of milliseconds
+%  specified.
+%
+%  The format of the Delay method is:
+%
+%      void MagickDelay(const MagickSizeType milliseconds)
+%
+%  A description of each parameter follows:
+%
+%    o milliseconds: Specifies the number of milliseconds to delay before
+%      returning.
+%
+*/
+MagickExport void MagickDelay(const MagickSizeType milliseconds)
+{
+  if (milliseconds == 0)
+    return;
+#if defined(MAGICKCORE_HAVE_NANOSLEEP)
+  {
+    struct timespec
+      timer;
+
+    timer.tv_sec=(time_t) (milliseconds/1000);
+    timer.tv_nsec=(milliseconds % 1000)*1000*1000;
+    (void) nanosleep(&timer,(struct timespec *) NULL);
+  }
+#elif defined(MAGICKCORE_HAVE_USLEEP)
+  usleep(1000*milliseconds);
+#elif defined(MAGICKCORE_HAVE_SELECT)
+  {
+    struct timeval
+      timer;
+
+    timer.tv_sec=(long) milliseconds/1000;
+    timer.tv_usec=(long) (milliseconds % 1000)*1000;
+    (void) select(0,(XFD_SET *) NULL,(XFD_SET *) NULL,(XFD_SET *) NULL,&timer);
+  }
+#elif defined(MAGICKCORE_HAVE_POLL)
+  (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  Sleep((long) milliseconds);
+#elif defined(vms)
+  {
+    float
+      timer;
+
+    timer=milliseconds/1000.0;
+    lib$wait(&timer);
+  }
+#elif defined(__BEOS__)
+  snooze(1000*milliseconds);
+#else
+# error "Time delay method not defined."
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  M u l t i l i n e C e n s u s                                              %
 %                                                                             %
 %                                                                             %
