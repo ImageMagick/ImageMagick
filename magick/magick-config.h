@@ -495,6 +495,11 @@
 #define MAGICKCORE_HAVE_NAMESPACE_STD /**/
 #endif
 
+/* Define to 1 if you have the `nanosleep' function. */
+#ifndef MAGICKCORE_HAVE_NANOSLEEP
+#define MAGICKCORE_HAVE_NANOSLEEP 1
+#endif
+
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
 

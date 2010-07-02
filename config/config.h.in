@@ -330,6 +330,9 @@
 /* Define if g++ supports namespace std. */
 #undef HAVE_NAMESPACE_STD
 
+/* Define to 1 if you have the `nanosleep' function. */
+#undef HAVE_NANOSLEEP
+
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
 

@@ -69,7 +69,8 @@ extern MagickExport void
   AppendImageFormat(const char *,char *),
   ChopPathComponents(char *,const size_t),
   ExpandFilename(char *),
-  GetPathComponent(const char *,PathType,char *);
+  GetPathComponent(const char *,PathType,char *),
+  MagickDelay(const MagickSizeType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

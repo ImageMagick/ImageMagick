@@ -1780,36 +1780,7 @@ MagickExport void XDelay(Display *display,const size_t milliseconds)
 {
   assert(display != (Display *) NULL);
   (void) XFlush(display);
-  if (milliseconds == 0)
-    return;
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  Sleep((long) milliseconds);
-#elif defined(vms)
-  {
-    float
-      timer;
-
-    timer=milliseconds/1000.0;
-    lib$wait(&timer);
-  }
-#elif defined(MAGICKCORE_HAVE_USLEEP)
-  usleep(1000*milliseconds);
-#elif defined(MAGICKCORE_HAVE_SELECT)
-  {
-    struct timeval
-      timer;
-
-    timer.tv_sec=(ssize_t) milliseconds/1000;
-    timer.tv_usec=(ssize_t) (milliseconds % 1000)*1000;
-    (void) select(0,(XFD_SET *) NULL,(XFD_SET *) NULL,(XFD_SET *) NULL,&timer);
-  }
-#elif defined(MAGICKCORE_HAVE_POLL)
-  (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
-#elif defined(__BEOS__)
-  snooze(1000*milliseconds);
-#else
-# error "Time delay method not defined."
-#endif
+  MagickDelay(milliseconds);
 }
 
 /*

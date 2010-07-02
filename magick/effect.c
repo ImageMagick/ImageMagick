@@ -326,8 +326,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
           i=(ssize_t) width;
       if ((i & 0x01) != 0)
         i--;
-      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) (width-i)/2L),y-(ssize_t)
-        ((width-i)/2L),width-i,width-i,exception);
+      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) (width-i)/2L),y-
+        (ssize_t) ((width-i)/2L),width-i,width-i,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
