@@ -1971,6 +1971,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       double
         validity;  /* how mathematically valid is this the mapping */
 
+      int
+        id;
+
       MagickBooleanType
         sync;
 
@@ -1986,8 +1989,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         *restrict indexes;
 
       register ssize_t
-        i,
-        id;
+        i;
 
       register PixelPacket
         *restrict q;
