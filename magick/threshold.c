@@ -1713,6 +1713,9 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        int
+          id;
+
         MagickBooleanType
           sync;
 
@@ -1720,7 +1723,6 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
           *restrict indexes;
 
         register ssize_t
-          id,
           x;
 
         register PixelPacket
@@ -1790,11 +1792,13 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     register IndexPacket
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket

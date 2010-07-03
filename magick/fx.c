@@ -343,6 +343,9 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
@@ -356,7 +359,6 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       *restrict noise_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -2949,6 +2951,9 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
 #endif
   for (y=0; y < (ssize_t) fx_image->rows; y++)
   {
+    int
+      id;
+
     MagickRealType
       alpha;
 
@@ -2956,7 +2961,6 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
       *restrict fx_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -3155,6 +3159,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -3168,7 +3175,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       *restrict implode_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -4269,6 +4275,9 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) random_image->rows; y++)
   {
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -4276,7 +4285,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -4878,6 +4886,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -4891,7 +4902,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       *restrict swirl_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -5346,6 +5356,9 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 #endif
   for (y=0; y < (ssize_t) wave_image->rows; y++)
   {
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -5353,7 +5366,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket

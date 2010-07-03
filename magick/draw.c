@@ -1177,6 +1177,9 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 #endif
   for (y=(ssize_t) ceil(edge.y1-0.5); y <= (ssize_t) floor(edge.y2+0.5); y++)
   {
+    int
+      id;
+
     ssize_t
       x_offset;
 
@@ -1191,7 +1194,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -1203,8 +1205,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     inverse_edge=AffineEdge(source,&inverse_affine,(double) y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-0.5),y,
-      (size_t) ((ssize_t) floor(inverse_edge.x2+0.5)-(ssize_t) floor(
+    q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-
+      0.5),y,(size_t) ((ssize_t) floor(inverse_edge.x2+0.5)-(ssize_t) floor(
       inverse_edge.x1+0.5)+1),1,exception);
     if (q == (PixelPacket *) NULL)
       continue;
@@ -3939,6 +3941,9 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 #endif
   for (y=(ssize_t) ceil(bounds.y1-0.5); y <= (ssize_t) floor(bounds.y2+0.5); y++)
   {
+    int
+      id;
+
     MagickRealType
       fill_opacity,
       stroke_opacity;
@@ -3948,7 +3953,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       stroke_color;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket

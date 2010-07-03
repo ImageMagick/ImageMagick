@@ -463,6 +463,9 @@ MagickExport Image *EvaluateImages(const Image *images,
     const Image
       *next;
 
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -471,7 +474,6 @@ MagickExport Image *EvaluateImages(const Image *images,
 
     register ssize_t
       i,
-      id,
       x;
 
     register MagickPixelPacket
@@ -617,11 +619,13 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     register IndexPacket
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket

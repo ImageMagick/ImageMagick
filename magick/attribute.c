@@ -369,6 +369,9 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     register const IndexPacket
       *restrict indexes;
 
@@ -376,7 +379,6 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
       *restrict p;
 
     register ssize_t
-      id,
       x;
 
     if (status == MagickFalse)
