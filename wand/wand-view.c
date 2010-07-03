@@ -291,6 +291,9 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
@@ -306,7 +309,6 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
       *restrict destination_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -556,6 +558,9 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     register const IndexPacket
       *indexes;
 
@@ -563,7 +568,6 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
       *pixels;
 
     register ssize_t
-      id,
       x;
 
     if (status == MagickFalse)
@@ -628,7 +632,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
 */
 WandExport PixelWand **GetWandViewPixels(const WandView *wand_view)
 {
-  ssize_t
+  int
     id;
 
   assert(wand_view != (WandView *) NULL);
@@ -954,6 +958,9 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
@@ -961,7 +968,6 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -1094,6 +1100,9 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
@@ -1107,7 +1116,6 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
       *restrict destination_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -1257,11 +1265,13 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     register IndexPacket
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket

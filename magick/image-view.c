@@ -249,6 +249,9 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
@@ -262,9 +265,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 
     register IndexPacket
       *restrict destination_indexes;
-
-    register ssize_t
-      id;
 
     register PixelPacket
       *restrict destination_pixels;
@@ -566,14 +566,14 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     register const IndexPacket
       *indexes;
 
     register const PixelPacket
       *pixels;
-
-    register ssize_t
-      id;
 
     if (status == MagickFalse)
       continue;
@@ -909,14 +909,14 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
     register IndexPacket
       *restrict indexes;
-
-    register ssize_t
-      id;
 
     register PixelPacket
       *restrict pixels;
@@ -1043,6 +1043,9 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     MagickBooleanType
       sync;
 
@@ -1054,9 +1057,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 
     register IndexPacket
       *restrict destination_indexes;
-
-    register ssize_t
-      id;
 
     register PixelPacket
       *restrict destination_pixels;
@@ -1182,14 +1182,14 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
+    int
+      id;
+
     register IndexPacket
       *restrict indexes;
 
     register PixelPacket
       *restrict pixels;
-
-    register ssize_t
-      id;
 
     if (status == MagickFalse)
       continue;
