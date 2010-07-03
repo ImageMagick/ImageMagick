@@ -789,7 +789,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           *exception;
 
         int
-          number_images;
+          length;
 
         /*
           Generate file list from file list (e.g. @filelist.txt).
@@ -800,10 +800,14 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         if (files == (char *) NULL)
           continue;
         StripString(files);
-        filelist=StringToArgv(files,&number_images);
+        filelist=StringToArgv(files,&length);
+        if (filelist == (char **) NULL)
+          continue;
         files=DestroyString(files);
-        number_files=(size_t) number_images;
-        count--;
+        filelist[0]=DestroyString(filelist[0]);
+        for (j=0; j < (ssize_t) (length-1); j++)
+          filelist[j]=filelist[j+1];
+        number_files=(size_t) length-1;
       }
     if (filelist == (char **) NULL)
       continue;
