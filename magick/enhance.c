@@ -742,6 +742,9 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -749,7 +752,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -2327,6 +2329,9 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
     HaldInfo
       point;
 
+    int
+      id;
+
     MagickPixelPacket
       pixel,
       pixel1,
@@ -2338,7 +2343,6 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket

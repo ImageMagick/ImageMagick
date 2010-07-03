@@ -1866,13 +1866,15 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 #endif
   for (channel=0; channel <= 3; channel++)
   {
+    int
+      id;
+
     ssize_t
       j,
       y;
 
     register ssize_t
       i,
-      id,
       x;
 
     register Quantum
@@ -2947,6 +2949,9 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) median_image->rows; y++)
   {
+    int
+      id;
+
     register const IndexPacket
       *restrict indexes;
 
@@ -2957,7 +2962,6 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       *restrict median_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -2965,8 +2969,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t) (width/
-      2L),image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(median_view,0,y,median_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -4302,6 +4306,9 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) noise_image->rows; y++)
   {
+    int
+      id;
+
     register const IndexPacket
       *restrict indexes;
 
@@ -4312,7 +4319,6 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       *restrict noise_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -4320,8 +4326,8 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t) (width/
-      2L),image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(noise_view,0,y,noise_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -5200,6 +5206,9 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
   {
+    int
+      id;
+
     MagickPixelPacket
       pixel;
 
@@ -5207,7 +5216,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
