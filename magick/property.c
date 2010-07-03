@@ -576,7 +576,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
     *name='\0';
   sub_number=1;
   if (*name == '#')
-    sub_number=StringToLong(&name[1]);
+    sub_number=(ssize_t) StringToLong(&name[1]);
   sub_number=MagickMax(sub_number,1L);
   resource=(char *) NULL;
   status=MagickFalse;

@@ -1222,6 +1222,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #endif
             for (y=0; y < (ssize_t) image->rows; y++)
             {
+              int
+                id;
+
               MagickBooleanType
                 sync;
 
@@ -1229,7 +1232,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 *restrict indexes;
 
               register ssize_t
-                id,
                 x;
 
               register PixelPacket
