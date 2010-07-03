@@ -612,14 +612,31 @@ the background image is weighted by the exact opposite amount. That is a
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Reduce image noise and reduce detail levels.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Convolve the image with a Gaussian or normal distribution.  The formula is:</p>
+<p>Convolve the image with a Gaussian or normal distribution using the given
+<em class="arg" >Sigma</em> value.  The formula is:</p>
 
 <div class="eqn"><img alt="gaussian distribution" width="243px" height="42px" src="../images/gaussian-blur.png"/>
 </div>
 
-<p>Where <i>r</i> is the blur radius (<i>r</i><sup>2</sup> = <i>u</i><sup>2</sup> + <i>v</i><sup>2</sup>), and &sigma; is the standard deviation of the Gaussian distribution.  As a guideline, set <i>r</i> to approximately 3&sigma;.  If a radius of 0 is specified, ImageMagick selects a suitable radius for you.</p>
+<p>The <em class="arg" >Sigma</em> value is the important argument, and
+determines the actual amount of bluring that will take place. </p>
 
-<p>This option differs from <a href="#gaussian-blur">-gaussian-blur</a> simply by taking advantage of the separability properties of the distribution.  Here we apply a single-dimensional Gaussian matrix in the horizontal direction, then repeat the process in the vertical direction.</p>
+<p>The <em class="arg" >Radius</em> is only used to determine the size of the
+array which will hold the calculated gaussian distribution. It should be an
+integer.  If not given, or set to zero, IM will calculate the largest posible
+radius that will provide meaningful results for the Gaussian distribution.
+</p>
+
+<p>The larger the <em class="arg" >Radius</em> the radius the slower the
+operation is. However too small a <em class="arg" >Radius</em>, and sever
+aliasing effects may result.  As a guideline, <em class="arg" >Radius</em>
+should be at least twice the <em class="arg" >Sigma</em> value, though three
+times will produce a more accurite result. </p>
+
+<p>This option differs from <a href="#gaussian-blur">-gaussian-blur</a> simply
+by taking advantage of the separability properties of the distribution.  Here
+we apply a single-dimensional Gaussian matrix in the horizontal direction,
+then repeat the process in the vertical direction.</p>
 
 <p>The <a href="#virtual-pixel">-virtual-pixel</a> setting will determine how
 pixels which are outside the image proper are blurred into the final result.
@@ -3366,12 +3383,26 @@ All these values can be adjusted via the arguments.
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Blur the image with a Gaussian operator.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Convolve the image with a Gaussian or normal distribution.  The formula is:</p>
+<p>Convolve the image with a Gaussian or normal distribution using the given
+<em class="arg" >Sigma</em> value.  The formula is:</p>
 
 <div class="eqn"><img alt="gaussian distribution" width="243px" height="42px" src="../images/gaussian-blur.png"/>
 </div>
 
-<p>where <i>r</i> is the blur radius (<i>r</i><sup>2</sup> = <i>u</i><sup>2</sup> + <i>v</i><sup>2</sup>), and &sigma; is the standard deviation of the Gaussian distribution.  As a guideline, set <i>r</i> to approximately 3&sigma;.  Specify a radius of 0 and ImageMagick selects a suitable radius for you.</p>
+<p>The <em class="arg" >Sigma</em> value is the important argument, and
+determines the actual amount of bluring that will take place. </p>
+
+<p>The <em class="arg" >Radius</em> is only used to determine the size of the
+array which will hold the calculated gaussian distribution. It should be an
+integer.  If not given, or set to zero, IM will calculate the largest posible
+radius that will provide meaningful results for the Gaussian distribution.
+</p>
+
+<p>The larger the <em class="arg" >Radius</em> the radius the slower the
+operation is. However too small a <em class="arg" >Radius</em>, and sever
+aliasing effects may result.  As a guideline, <em class="arg" >Radius</em>
+should be at least twice the <em class="arg" >Sigma</em> value, though three
+times will produce a more accurite result. </p>
 
 <p>This differs from the faster <a href="#blur">-blur</a> operator in that a
 full 2-dimentional convolution is used to generate the weighted average of the
@@ -5986,7 +6017,7 @@ percentage, which defaults to 100 percent (no color change). </p>
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>

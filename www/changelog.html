@@ -152,7 +152,11 @@
 
 <div class="main">
 
-<ul><dt>2010-06-28  6.6.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-07-01  6.6.3-0 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
+  <li> Pinging the DJVU image format no longer faults.</li>
+  <li> Check for time-limit-exceeded in only one thread.</li>
+  <li> Reading filenames from a file (e.g. @filenames) no longer includes the    utility name (side effect of StringToArgv() method).</li><br />
+<dt>2010-06-28  6.6.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Support the tiff:fill-order define.</li>
   <li> Filters are case sensitive (e.g. reduce-Colors).</li>
   <li> Restore mogrify's -path option.</li>
@@ -1600,7 +1604,7 @@
  <!--    <span id="linkbar-west">&nbsp;</span>  -->
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
