@@ -389,8 +389,8 @@ static MagickBooleanType InterpolateResampleFilter(
         alpha[16],
         gamma;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,resample_filter->exception);
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,
+        (ssize_t) floor(y)-1,4,4,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -435,8 +435,8 @@ static MagickBooleanType InterpolateResampleFilter(
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,resample_filter->exception);
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,
+        (ssize_t) floor(y)-1,4,4,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -480,8 +480,8 @@ static MagickBooleanType InterpolateResampleFilter(
         delta,
         epsilon;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),(ssize_t)
-        floor(y),2,2,resample_filter->exception);
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),
+        (ssize_t) floor(y),2,2,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -537,6 +537,9 @@ static MagickBooleanType InterpolateResampleFilter(
     }
     case FilterInterpolatePixel:
     {
+      CacheView
+        *filter_view;
+
       Image
         *excerpt_image,
         *filter_image;
@@ -546,9 +549,6 @@ static MagickBooleanType InterpolateResampleFilter(
 
       RectangleInfo
         geometry;
-
-      CacheView
-        *filter_view;
 
       geometry.width=4L;
       geometry.height=4L;
@@ -584,8 +584,8 @@ static MagickBooleanType InterpolateResampleFilter(
       MagickPixelPacket
         pixels[1];
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),(ssize_t)
-        floor(y),1,1,resample_filter->exception);
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),
+        (ssize_t) floor(y),1,1,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -609,8 +609,8 @@ static MagickBooleanType InterpolateResampleFilter(
         delta,
         luminance;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),(ssize_t)
-        floor(y),2,2,resample_filter->exception);
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x),
+        (ssize_t) floor(y),2,2,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -750,10 +750,6 @@ static MagickBooleanType InterpolateResampleFilter(
     }
     case SplineInterpolatePixel:
     {
-      ssize_t
-        j,
-        n;
-
       MagickPixelPacket
         pixels[16];
 
@@ -766,8 +762,12 @@ static MagickBooleanType InterpolateResampleFilter(
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,resample_filter->exception);
+      ssize_t
+        j,
+        n;
+
+      p=GetCacheViewVirtualPixels(resample_filter->view,(ssize_t) floor(x)-1,
+        (ssize_t) floor(y)-1,4,4,resample_filter->exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -787,7 +787,8 @@ static MagickBooleanType InterpolateResampleFilter(
           alpha[n]=1.0;
           if (resample_filter->image->matte != MagickFalse)
             {
-              alpha[n]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
+              alpha[n]=QuantumScale*((MagickRealType)
+                GetAlphaPixelComponent(p));
               pixels[n].red*=alpha[n];
               pixels[n].green*=alpha[n];
               pixels[n].blue*=alpha[n];
