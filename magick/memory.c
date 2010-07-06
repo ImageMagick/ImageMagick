@@ -512,6 +512,7 @@ MagickExport void *CopyMagickMemory(void *destination,const void *source,
     switch (size)
     {
       default: return(memcpy(destination,source,size));
+      case 8: *q++=(*p++);
       case 7: *q++=(*p++);
       case 6: *q++=(*p++);
       case 5: *q++=(*p++);
