@@ -1,3 +1,8 @@
+2010-07-07  6.6.3-1 Glenn Randers-Pehrson <glennrp@image...>
+  * The PNG decoder failed to handle the tRNS chunk properly for grayscale
+    images where the png bit_depth was not the same as the quantum depth,
+    and the transparent color was not black.
+
 2010-07-01  6.6.3-0 Chris Madison  <madisonblu@gmail...>
   * Pinging the DJVU image format no longer faults.
   * Check for time-limit-exceeded in only one thread.
