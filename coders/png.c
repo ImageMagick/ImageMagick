@@ -2230,11 +2230,26 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           transparent_color.opacity= (Quantum) (ping_trans_color->gray);
           if (ping_color_type == PNG_COLOR_TYPE_GRAY)
             {
-              if (ping_bit_depth < 8)
-                {
-                  transparent_color.opacity=(Quantum) (((
-                    ping_trans_color->gray)*255)/max_sample);
-                }
+#if (MAGICKCORE_QUANTUM_DEPTH == 8)
+              if (ping_bit_depth < MAGICKCORE_QUANTUM_DEPTH)
+#endif
+              transparent_color.opacity=(Quantum) (
+                  ping_trans_color->gray *
+                  (QuantumRange/((1UL << ping_bit_depth)-1)));
+
+#if (MAGICKCORE_QUANTUM_DEPTH == 8)  /* This needs testing. */
+              else /* Reducing tRNS values from 16 to 8 merges some values */
+                transparent_color.opacity=(Quantum) (
+                    ping_trans_color->gray *
+                    (((1UL << ping_bit_depth)-1)/QuantumRange));
+#endif
+              if (logging != MagickFalse)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Raw tRNS graylevel is %d.",ping_trans_color->gray);
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    scaled graylevel is %d.",transparent_color.opacity);
+              }
               transparent_color.red=transparent_color.opacity;
               transparent_color.green=transparent_color.opacity;
               transparent_color.blue=transparent_color.opacity;
@@ -6890,6 +6905,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
            size_t one = 1;
            ping_bit_depth=1;
+
+           if (image->colors == 0)
+           {
+              /* DO SOMETHING */       
+              (void) ThrowMagickException(&image->exception,
+                 GetMagickModule(),CoderError,
+                "image has 0 colors", "`%s'","");
+           }
+
+              if (logging != MagickFalse)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  SyncImage.2.");
            while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
              ping_bit_depth <<= 1;
 
