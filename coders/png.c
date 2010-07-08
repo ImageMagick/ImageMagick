@@ -242,6 +242,16 @@ static png_byte FARDATA mng_tIME[5]={116,  73,  77,  69, (png_byte) '\0'};
 static png_byte FARDATA mng_zTXt[5]={122,  84,  88, 116, (png_byte) '\0'};
 */
 
+typedef struct _UShortPixelPacket
+{
+  unsigned short
+    red,
+    green,
+    blue,
+    opacity,
+    index;
+} UShortPixelPacket;
+
 typedef struct _MngBox
 {
   long
@@ -1673,7 +1683,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   MagickBooleanType
     status;
 
-  PixelPacket
+  UShortPixelPacket
     transparent_color;
 
   png_bytep
@@ -2224,24 +2234,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
       else
         {
-          transparent_color.red= (Quantum)(ping_trans_color->red);
-          transparent_color.green= (Quantum) (ping_trans_color->green);
-          transparent_color.blue= (Quantum) (ping_trans_color->blue);
-          transparent_color.opacity= (Quantum) (ping_trans_color->gray);
+          transparent_color.red= (unsigned short)(ping_trans_color->red);
+          transparent_color.green= (unsigned short) (ping_trans_color->green);
+          transparent_color.blue= (unsigned short) (ping_trans_color->blue);
+          transparent_color.opacity= (unsigned short) (ping_trans_color->gray);
+
           if (ping_color_type == PNG_COLOR_TYPE_GRAY)
             {
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
               if (ping_bit_depth < MAGICKCORE_QUANTUM_DEPTH)
 #endif
-              transparent_color.opacity=(Quantum) (
+              transparent_color.opacity=(unsigned short) (
                   ping_trans_color->gray *
-                  (QuantumRange/((1UL << ping_bit_depth)-1)));
+                  (65535L/((1UL << ping_bit_depth)-1)));
 
-#if (MAGICKCORE_QUANTUM_DEPTH == 8)  /* This needs testing. */
-              else /* Reducing tRNS values from 16 to 8 merges some values */
-                transparent_color.opacity=(Quantum) (
-                    (ping_trans_color->gray *
-                    QuantumRange)/((1UL << ping_bit_depth)-1));
+#if (MAGICKCORE_QUANTUM_DEPTH == 8)
+              else
+                transparent_color.opacity=(unsigned short) (
+                    (ping_trans_color->gray * 65535L)/
+                   ((1UL << ping_bit_depth)-1));
 #endif
               if (logging != MagickFalse)
               {
@@ -2821,7 +2832,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       {
          for (x=0; x < (int) image->colors; x++)
          {
-            if (image->colormap[x].red == transparent_color.opacity)
+            if (ScaleQuantumToShort(image->colormap[x].red) ==
+                transparent_color.opacity)
             {
                image->colormap[x].opacity = (Quantum) TransparentOpacity;
             }
@@ -2842,9 +2854,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
           for (x=(ssize_t) image->columns-1; x >= 0; x--)
           {
-            if (ScaleQuantumToChar(q->red) == transparent_color.red &&
-                ScaleQuantumToChar(q->green) == transparent_color.green &&
-                ScaleQuantumToChar(q->blue) == transparent_color.blue)
+            if (ScaleQuantumToShort(q->red) == transparent_color.red &&
+                ScaleQuantumToShort(q->green) == transparent_color.green &&
+                ScaleQuantumToShort(q->blue) == transparent_color.blue)
                q->opacity=(Quantum) TransparentOpacity;
             else
               SetOpacityPixelComponent(q,OpaqueOpacity);
@@ -2889,7 +2901,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 q->red=image->colormap[(ssize_t) indexpacket].red;
                 q->green=q->red;
                 q->blue=q->red;
-                if (q->red == transparent_color.opacity)
+                if (ScaleQuantomToShort(q->red) == transparent_color.opacity)
                   q->opacity=(Quantum) TransparentOpacity;
                 else
                   SetOpacityPixelComponent(q,OpaqueOpacity);
@@ -2899,9 +2911,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         else
           for (x=(ssize_t) image->columns-1; x >= 0; x--)
           {
-            if (ScaleQuantumToChar(q->red) == transparent_color.red &&
-                ScaleQuantumToChar(q->green) == transparent_color.green &&
-                ScaleQuantumToChar(q->blue) == transparent_color.blue)
+            if (ScaleQuantumToShort(q->red) == transparent_color.red &&
+                ScaleQuantumToShort(q->green) == transparent_color.green &&
+                ScaleQuantumToShort(q->blue) == transparent_color.blue)
                q->opacity=(Quantum) TransparentOpacity;
             else
               SetOpacityPixelComponent(q,OpaqueOpacity);
