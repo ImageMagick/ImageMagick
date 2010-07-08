@@ -2240,8 +2240,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)  /* This needs testing. */
               else /* Reducing tRNS values from 16 to 8 merges some values */
                 transparent_color.opacity=(Quantum) (
-                    ping_trans_color->gray *
-                    (((1UL << ping_bit_depth)-1)/QuantumRange));
+                    (ping_trans_color->gray *
+                    QuantumRange)/((1UL << ping_bit_depth)-1));
 #endif
               if (logging != MagickFalse)
               {
