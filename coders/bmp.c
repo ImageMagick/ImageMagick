@@ -910,7 +910,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             "  Reading pixels (%.20g bytes)",(double) length);
         count=ReadBlob(image,length,pixels);
         if (count != (ssize_t) length)
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          {
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          }
       }
     else
       {
@@ -919,8 +923,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,
-            "UnableToRunlengthDecodeImage");
+          {
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            ThrowReaderException(CorruptImageError,
+              "UnableToRunlengthDecodeImage");
+          }
       }
     /*
       Initialize image structure.
@@ -1119,8 +1126,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageError,
-            "UnrecognizedImageCompression");
+          {
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            ThrowReaderException(CorruptImageError,
+              "UnrecognizedImageCompression");
+          }
         bytes_per_line=2*(image->columns+image->columns % 2);
         image->storage_class=DirectClass;
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
@@ -1214,8 +1224,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
-          ThrowReaderException(CorruptImageError,
-            "UnrecognizedImageCompression");
+          {
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            ThrowReaderException(CorruptImageError,
+              "UnrecognizedImageCompression");
+          }
         bytes_per_line=4*(image->columns);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
@@ -1266,7 +1279,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
+      {
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (EOFBlob(image) != MagickFalse)

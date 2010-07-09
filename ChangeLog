@@ -1,3 +1,7 @@
+2010-07-09  6.6.3-1 Cristy  <quetzlzacatenango@image...>
+  * Fix memory leak in for corrupt BMP images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16600).
+
 2010-07-07  6.6.3-1 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG decoder failed to handle the tRNS chunk properly for grayscale
     images where the png bit_depth was not the same as the quantum depth,
