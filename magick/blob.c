@@ -868,7 +868,8 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
         if ((size_t) (i+count) >= extent)
           break;
       }
-      file=close(file);
+      if (LocaleCompare(filename,"-") != 0)
+        file=close(file);
       if (blob == (unsigned char *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -892,7 +893,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
-      file=close(file)-1;
+      file=close(file);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
       return((unsigned char *) NULL);
@@ -926,7 +927,8 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
         }
     }
   blob[*length]='\0';
-  file=close(file);
+  if (LocaleCompare(filename,"-") != 0)
+    file=close(file);
   if (file == -1)
     {
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1582,7 +1584,8 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     if (i < length)
       break;
   }
-  file=close(file);
+  if (LocaleCompare(filename,"-") != 0)
+    file=close(file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   if ((file == -1) || (i < length))
     {

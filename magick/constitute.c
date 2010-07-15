@@ -772,7 +772,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       timestamp);
     (void) SetImageProperty(next,"date:create",timestamp);
     if (read_info->verbose != MagickFalse)
-      (void) IdentifyImage(next,stdout,MagickFalse);
+      (void) IdentifyImage(next,stderr,MagickFalse);
     image=next;
   }
   read_info=DestroyImageInfo(read_info);
@@ -1093,6 +1093,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               /*
                 A seekable stream is required by the encoder.
               */
+              write_info->adjoin=MagickTrue;
               (void) CopyMagickString(write_info->filename,image->filename,
                 MaxTextExtent);
               (void) AcquireUniqueFilename(image->filename);
