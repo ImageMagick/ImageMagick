@@ -741,7 +741,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       image->page.width,(double) image->page.height,(double)
       image->page.x,(double) image->page.y);
   if ((image->page.x != 0) || (image->page.y != 0))
-    (void) fprintf(file,"  Origin geometry: %+.20gx%+.20g\n",(double)
+    (void) fprintf(file,"  Origin geometry: %+.20g%+.20g\n",(double)
       image->page.x,(double) image->page.y);
   (void) fprintf(file,"  Dispose: %s\n",MagickOptionToMnemonic(
     MagickDisposeOptions,(ssize_t) image->dispose));
