@@ -2876,8 +2876,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
-            (void) SegmentImage(*image,(*image)->colorspace,mogrify_info->verbose,
-              geometry_info.rho,geometry_info.sigma);
+            (void) SegmentImage(*image,(*image)->colorspace,
+              mogrify_info->verbose,geometry_info.rho,geometry_info.sigma);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -3393,6 +3393,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               }
             (void) SetImageArtifact(*image,"identify:unique-colors","true");
+            (void) SetImageArtifact(*image,"identify:verbose","true");
             break;
           }
         if (LocaleCompare("unique-colors",option+1) == 0)
