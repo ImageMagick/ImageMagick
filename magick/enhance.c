@@ -3607,8 +3607,8 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
     black_point,
     white_point;
 
-  black_point=(double) image->columns*image->rows*0.02;
-  white_point=(double) image->columns*image->rows*0.99;
+  black_point=(double) image->columns*image->rows*0.001;
+  white_point=(double) image->columns*image->rows*0.999;
   return(ContrastStretchImageChannel(image,channel,black_point,white_point));
 }
 

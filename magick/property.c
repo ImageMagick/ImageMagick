@@ -3258,6 +3258,9 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 MagickExport MagickBooleanType SetImageProperty(Image *image,
   const char *property,const char *value)
 {
+  ExceptionInfo
+    *exception;
+
   MagickBooleanType
     status;
 
@@ -3275,11 +3278,17 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   if ((value == (const char *) NULL) || (*value == '\0'))
     return(DeleteImageProperty(image,property));
   status=MagickTrue;
+  exception=(&image->exception);
   switch (*property)
   {
     case 'B':
     case 'b':
     {
+      if (LocaleCompare(property,"background") == 0)
+        {
+          (void) QueryColorDatabase(value,&image->background_color,exception);
+          break;
+        }
       if (LocaleCompare(property,"bias") == 0)
         {
           image->bias=SiPrefixToDouble(value,QuantumRange);
@@ -3349,7 +3358,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             if ((flags & LessValue) != 0)
               {
                 if (image->delay < (size_t) floor(geometry_info.rho+0.5))
-                  image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
+                  image->ticks_per_second=(ssize_t)
+                    floor(geometry_info.sigma+0.5);
               }
             else
               image->delay=(size_t) floor(geometry_info.rho+0.5);
@@ -3461,8 +3471,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
 
           image_info=AcquireImageInfo();
           (void) CopyMagickString(image_info->filename,value,MaxTextExtent);
-          (void) SetImageInfo(image_info,1,&image->exception);
-          profile=FileToStringInfo(image_info->filename,~0UL,&image->exception);
+          (void) SetImageInfo(image_info,1,exception);
+          profile=FileToStringInfo(image_info->filename,~0UL,exception);
           if (profile != (StringInfo *) NULL)
             status=SetImageProfile(image,image_info->magick,profile);
           image_info=DestroyImageInfo(image_info);
