@@ -169,7 +169,7 @@ ModuleExport size_t RegisterGRADIENTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadGRADIENTImage;
   entry->adjoin=MagickFalse;
   entry->raw=MagickTrue;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Gradual linear passing from one shade to "
     "another");
   entry->module=ConstantString("GRADIENT");
@@ -178,7 +178,7 @@ ModuleExport size_t RegisterGRADIENTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadGRADIENTImage;
   entry->adjoin=MagickFalse;
   entry->raw=MagickTrue;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Gradual radial passing from one shade to "
     "another");
   entry->module=ConstantString("GRADIENT");

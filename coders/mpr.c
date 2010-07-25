@@ -136,7 +136,7 @@ ModuleExport size_t RegisterMPRImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPRImage;
   entry->encoder=(EncodeImageHandler *) WriteMPRImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("Magick Persistent Registry");
   entry->module=ConstantString("MPR");
@@ -145,7 +145,7 @@ ModuleExport size_t RegisterMPRImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPRImage;
   entry->encoder=(EncodeImageHandler *) WriteMPRImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("Magick Persistent Registry");
   entry->module=ConstantString("MPRI");

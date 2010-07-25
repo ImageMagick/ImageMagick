@@ -255,14 +255,14 @@ ModuleExport size_t RegisterPLASMAImage(void)
   entry=SetMagickInfo("PLASMA");
   entry->decoder=(DecodeImageHandler *) ReadPlasmaImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Plasma fractal image");
   entry->module=ConstantString("PLASMA");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FRACTAL");
   entry->decoder=(DecodeImageHandler *) ReadPlasmaImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Plasma fractal image");
   entry->module=ConstantString("PLASMA");
   (void) RegisterMagickInfo(entry);
