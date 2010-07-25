@@ -190,7 +190,7 @@ ModuleExport size_t RegisterXCImage(void)
   entry=SetMagickInfo("XC");
   entry->decoder=(DecodeImageHandler *) ReadXCImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
   entry->description=ConstantString("Constant image uniform color");

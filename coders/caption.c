@@ -254,7 +254,7 @@ ModuleExport size_t RegisterCAPTIONImage(void)
   entry=SetMagickInfo("CAPTION");
   entry->decoder=(DecodeImageHandler *) ReadCAPTIONImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Image caption");
   entry->module=ConstantString("CAPTION");
   (void) RegisterMagickInfo(entry);

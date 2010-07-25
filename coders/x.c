@@ -146,7 +146,7 @@ ModuleExport size_t RegisterXImage(void)
   entry->decoder=(DecodeImageHandler *) ReadXImage;
   entry->encoder=(EncodeImageHandler *) WriteXImage;
 #endif
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("X Image");
   entry->module=ConstantString("X");
   (void) RegisterMagickInfo(entry);

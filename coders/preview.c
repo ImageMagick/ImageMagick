@@ -101,7 +101,7 @@ ModuleExport size_t RegisterPREVIEWImage(void)
   entry=SetMagickInfo("PREVIEW");
   entry->encoder=(EncodeImageHandler *) WritePreviewImage;
   entry->adjoin=MagickFalse;
-  entry->format_type=ExplicitFormatType;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString(
     "Show a preview an image enhancement, effect, or f/x");
   entry->module=ConstantString("PREVIEW");
