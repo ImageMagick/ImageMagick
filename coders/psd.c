@@ -517,8 +517,8 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
 static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
   const ssize_t type,const MagickOffsetType *offsets,ExceptionInfo *exception)
 {
-  ssize_t
-    y;
+  ColorspaceType
+    colorspace;
 
   Quantum
     pixel;
@@ -539,7 +539,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
     packet_size;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *compact_pixels,
@@ -583,6 +584,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           image->filename);
       (void) ResetMagickMemory(compact_pixels,0,length*sizeof(*compact_pixels));
     }
+  colorspace=image->colorspace;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     if (image->compression != RLECompression)
@@ -673,6 +675,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
   }
+  image->colorspace=colorspace;
   if (image->compression == RLECompression)
     compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
