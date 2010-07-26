@@ -305,16 +305,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   if (option != (const char *) NULL)
     image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
       MagickFalse,option);
-  option=GetImageOption(image_info,"page");
-  if (option != (const char *) NULL)
-    {
-      char
-        *geometry;
-
-      geometry=GetPageGeometry(option);
-      flags=ParseAbsoluteGeometry(geometry,&image->page);
-      geometry=DestroyString(geometry);
-    }
   return(image);
 }
 
@@ -4017,8 +4007,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     property[MaxTextExtent];
 
   const char
-    *value,
-    *option;
+    *option,
+    *value;
 
   GeometryInfo
     geometry_info;
@@ -4127,6 +4117,16 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     image->orientation=(OrientationType) ParseMagickOption(
       MagickOrientationOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"page");
+  if (option != (const char *) NULL)
+    {
+      char
+        *geometry;
+
+      geometry=GetPageGeometry(option);
+      flags=ParseAbsoluteGeometry(geometry,&image->page);
+      geometry=DestroyString(geometry);
+    }
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
     image->quality=StringToUnsignedLong(option);
