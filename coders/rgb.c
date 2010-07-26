@@ -643,7 +643,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw red, green, and blue samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -652,7 +651,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw red, blue, and green samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -661,7 +659,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw green, red, and blue samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -670,7 +667,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw green, blue, and red samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -679,7 +675,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw blue, red, and green samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -688,7 +683,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw blue, green, and red samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -697,7 +691,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw blue, green, red and alpha samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -706,7 +699,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw red, green, blue, and alpha samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
@@ -715,7 +707,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw red, green, blue, and opacity "
     "samples");
   entry->module=ConstantString("RGB");

@@ -145,8 +145,7 @@ const double
 MagickExport Image *AcquireImage(const ImageInfo *image_info)
 {
   const char
-    *option,
-    *value;
+    *option;
 
   Image
     *image;
