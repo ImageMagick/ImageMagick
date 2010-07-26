@@ -316,7 +316,6 @@ ModuleExport size_t RegisterGRAYImage(void)
   entry->encoder=(EncodeImageHandler *) WriteGRAYImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw gray samples");
   entry->module=ConstantString("GRAY");
   (void) RegisterMagickInfo(entry);
