@@ -1707,6 +1707,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
   entry->adjoin=MagickFalse;
+  entry->format_type=ImplicitFormatType;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Raw CCITT Group4");
