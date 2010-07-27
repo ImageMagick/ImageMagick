@@ -42,7 +42,7 @@
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
-<div class="eastbar">
+<div class="westbar">
 
 <div class="menu">
   <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
@@ -133,26 +133,44 @@
   <a title="Sponsor: Deko.net" href="http://www.deko.net">Deko.net</a><!-- 201101010600 Peterssen-->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Kredit" href="http://www.online-kredit-index.de">Kredit</a><!-- 201007010120 Buchhorn -->
-</div>
-<div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.print24.de/">Druckerei</a><!-- 201009010720 -->
 </div>
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/" title="Webdesign">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+</div>
 </div>
 </div>
 </div>
 
-
+<div class="eastbar">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    /* 160x600, created 7/27/10 */
+    google_ad_slot = "0574824969";
+    google_ad_width = 160;
+    google_ad_height = 600;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 
 <div class="main">
 
-<ul><dt>2010-07-01  6.6.3-0 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
+<ul><dt>2010-07-25  6.6.3-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Don't "ping" a PNG image if it is embedded in a MNG.  Otherwise the    reader tries to read MNG chunks from the interior of the embedded PNG,    resulting in an erroneous "corrupted image" message.</li><br />
+<dt>2010-07-09  6.6.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix memory leak in for corrupt BMP images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16600).</li>
+  <li> Repair several issues when writing to stdout (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16620).</li>
+  <li> A GIF image with the .bgr extention is still a GIF (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16662).</li><br />
+<dt>2010-07-07  6.6.3-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> The PNG decoder failed to handle the tRNS chunk properly for grayscale    images where the png bit_depth was not the same as the quantum depth,    and the transparent color was not black.</li><br />
+<dt>2010-07-01  6.6.3-0 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <li> Pinging the DJVU image format no longer faults.</li>
   <li> Check for time-limit-exceeded in only one thread.</li>
   <li> Reading filenames from a file (e.g. @filenames) no longer includes the    utility name (side effect of StringToArgv() method).</li><br />
@@ -1601,10 +1619,10 @@
 </div>
 
 <div id="linkbar">
- <!--    <span id="linkbar-west">&nbsp;</span>  -->
+    <span id="linkbar-west">&nbsp;</span>
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    <a href="http://studio.webbyland.com/ImageMagick/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
