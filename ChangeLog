@@ -1,6 +1,7 @@
 2010-07-27  6.6.3-2 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminate useless message about assuming zero delay when writing
-    a single-frame MNG.
+    a single-frame MNG, and changed it from Error to Warning when
+    writing a multiple-frame MNG.
 
 2010-07-25  6.6.3-1 Glenn Randers-Pehrson <glennrp@image...>
   * Don't "ping" a PNG image if it is embedded in a MNG.  Otherwise the
