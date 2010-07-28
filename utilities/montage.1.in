@@ -43,6 +43,7 @@ Image Settings:
   \-identify            identify the format and characteristics of the image
   \-interlace type      type of image interlacing scheme
   \-interpolate method  pixel color interpolation method
+  \-kerning value       set the space between two letters
   \-label string        assign a label to an image
   \-limit type value    pixel cache resource limit
   \-matte               store matte channel if the image has one

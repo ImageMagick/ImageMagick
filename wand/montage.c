@@ -163,6 +163,7 @@ static MagickBooleanType MontageUsage(void)
       "-identify            identify the format and characteristics of the image",
       "-interlace type      type of image interlacing scheme",
       "-interpolate method  pixel color interpolation method",
+      "-kerning value       set the space between two letters",
       "-label string        assign a label to an image",
       "-limit type value    pixel cache resource limit",
       "-mattecolor color    frame color",
@@ -1062,6 +1063,21 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (interpolate < 0)
               ThrowMontageException(OptionError,"UnrecognizedInterpolateMethod",
                 argv[i]);
+            break;
+          }
+        ThrowMontageException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'k':
+      {
+        if (LocaleCompare("kerning",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowMontageException(OptionError,"UnrecognizedOption",option)

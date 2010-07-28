@@ -53,6 +53,7 @@ Image Settings:
   \-intent type         type of rendering intent when managing the image color
   \-interlace type      type of image interlacing scheme
   \-interpolate method  pixel color interpolation method
+  \-kerning value       set the space between two letters
   \-label string        assign a label to an image
   \-limit type value    pixel cache resource limit
   \-loop iterations     add Netscape loop extension to your GIF animation
