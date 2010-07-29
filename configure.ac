@@ -2736,6 +2736,7 @@ RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg'
 SCANDecodeDelegateDefault='scanimage'
 TXTDelegateDefault='enscript'
+UniconverterDelegateDefault='uniconvertor'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
@@ -2783,6 +2784,7 @@ AC_PATH_PROG(RMDelegate, "$RMDelegateDefault", "$RMDelegateDefault")
 AC_PATH_PROG(RSVGDecodeDelegate, "$RSVGDecodeDelegateDefault", "$RSVGDecodeDelegateDefault")
 AC_PATH_PROG(SCANDecodeDelegate, "$SCANDecodeDelegateDefault", "$SCANDecodeDelegateDefault")
 AC_PATH_PROG(TXTDelegate, "$TXTDelegateDefault", "$TXTDelegateDefault")
+AC_PATH_PROG(UniconvertorDelegate, "$UniconvertorDelegateDefault", "$UniconvertorDelegateDefault")
 AC_PATH_PROG(WMFDecodeDelegate, "$WMFDecodeDelegateDefault", "$WMFDecodeDelegateDefault")
 AC_PATH_PROG(WWWDecodeDelegate, "$WWWDecodeDelegateDefault", "$WWWDecodeDelegateDefault")
 AC_PATH_PROG(XPSDelegate, "$XPSDelegateDefault", "$XPSDelegateDefault")
@@ -2953,6 +2955,7 @@ if test "$with_frozenpaths" != 'yes'; then
   SCANDecodeDelegate="$SCANDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
+  UniconvertorDelegate="$UniconvertorDelegateDefault"
   WMFDecodeDelegate="$WMFDecodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
@@ -2998,6 +3001,7 @@ AC_SUBST(RMDelegate)
 AC_SUBST(SCANDecodeDelegate)
 AC_SUBST(ShowImageDelegate)
 AC_SUBST(TXTDelegate)
+AC_SUBST(UniconvertorDelegate)
 AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(XPSDelegate)

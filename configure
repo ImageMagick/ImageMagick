@@ -672,6 +672,7 @@ ZipDelegate
 XPSDelegate
 WWWDecodeDelegate
 WMFDecodeDelegate
+UniconvertorDelegate
 TXTDelegate
 SCANDecodeDelegate
 RSVGDecodeDelegate
@@ -29511,6 +29512,7 @@ RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg'
 SCANDecodeDelegateDefault='scanimage'
 TXTDelegateDefault='enscript'
+UniconverterDelegateDefault='uniconvertor'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
@@ -31203,6 +31205,47 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of ""$UniconvertorDelegateDefault"", so it can be a program name with args.
+set dummy "$UniconvertorDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_UniconvertorDelegate+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $UniconvertorDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_UniconvertorDelegate="$UniconvertorDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_UniconvertorDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_UniconvertorDelegate" && ac_cv_path_UniconvertorDelegate=""$UniconvertorDelegateDefault""
+  ;;
+esac
+fi
+UniconvertorDelegate=$ac_cv_path_UniconvertorDelegate
+if test -n "$UniconvertorDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UniconvertorDelegate" >&5
+$as_echo "$UniconvertorDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
 # Extract the first word of ""$WMFDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$WMFDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -31539,6 +31582,7 @@ if test "$with_frozenpaths" != 'yes'; then
   SCANDecodeDelegate="$SCANDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
+  UniconvertorDelegate="$UniconvertorDelegateDefault"
   WMFDecodeDelegate="$WMFDecodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
@@ -31546,6 +31590,7 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
+
 
 
 
