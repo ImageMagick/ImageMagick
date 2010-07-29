@@ -4967,7 +4967,7 @@ WandExport char *MagickGetImageFilename(MagickWand *wand)
 %
 %  The format of the MagickGetImageFormat method is:
 %
-%      const char MagickGetImageFormat(MagickWand *wand)
+%      const char *MagickGetImageFormat(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %

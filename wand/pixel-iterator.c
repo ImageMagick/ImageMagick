@@ -278,7 +278,7 @@ WandExport MagickBooleanType IsPixelIterator(const PixelIterator *iterator)
 %
 %  The format of the NewPixelIterator method is:
 %
-%      PixelIterator NewPixelIterator(MagickWand *wand)
+%      PixelIterator *NewPixelIterator(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
