@@ -61,9 +61,9 @@
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command="&quot;@ConvertDelegate@&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;@AutotraceDecodeDelegate@&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
   <delegate decode="avi:decode" stealth="True" command="&quot;@AVIDecodeDelegate@&quot; &quot;%i&quot; -really-quiet -ao null -vo png:z=3"/>
-  <delegate decode="blender" command="&quot;@BlenderDecoderDelegate@&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;@ConvertDelegate@&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
+  <delegate decode="blender" command="&quot;@BlenderDecodeDelegate@&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;@ConvertDelegate@&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
   <delegate decode="browse" stealth="True" spawn="True" command="&quot;@BrowseDelegate@&quot; http://www.imagemagick.org/"/>
-  <delegate decode="cdr" command="&quot;@UniconvertorDecodeDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="cdr" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="cgm" thread-support="False" command="&quot;@CGMDecodeDelegate@&quot; -d ps -oC &lt; &quot;%i&quot; &gt; &quot;%o&quot; 2&gt; &quot;%Z&quot;"/>
   <delegate decode="dvi" command="&quot;@DVIDecodeDelegate@&quot; -q -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="dng:decode" command="&quot;@DNGDecodeDelegate@&quot; --silent --wb=camera --black-point=auto --exposure=auto --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
