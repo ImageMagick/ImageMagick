@@ -1183,10 +1183,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       status=OpenBlob(write_info,image,ReadBinaryBlobMode,&image->exception);
       if (status != MagickFalse)
         status=ImageToFile(image,write_info->filename,&image->exception);
+      (void) CloseBlob(image);
       (void) RelinquishUniqueFileResource(image->filename);
       (void) CopyMagickString(image->filename,write_info->filename,
         MaxTextExtent);
-      (void) CloseBlob(image);
     }
   if ((LocaleCompare(write_info->magick,"info") != 0) &&
       (write_info->verbose != MagickFalse))
