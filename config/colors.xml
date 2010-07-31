@@ -16,7 +16,7 @@
   255, blue = 255, and alpha = 0).
 -->
 <colormap>
-  <!-- <color name="none" color="rgba(0,0,0,0)" compliance="SVG"/> -->
+  <!-- <color name="none" color="rgba(0,0,0,0)" compliance="SVG, XPM"/> -->
   <!-- <color name="black" color="rgb(0,0,0)" compliance="SVG, X11, XPM"/> -->
   <!-- <color name="red" color="rgb(255,0,0)" compliance="SVG, X11, XPM"/> -->
   <!-- <color name="magenta" color="rgb(255,0,255)" compliance="SVG, X11, XPM"/> -->

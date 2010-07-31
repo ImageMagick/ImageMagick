@@ -85,9 +85,13 @@ extern MagickExport MagickBooleanType
   IsOpacitySimilar(const Image *,const PixelPacket *,const PixelPacket *),
   IsOpaqueImage(const Image *,ExceptionInfo *),
   ListColorInfo(FILE *,ExceptionInfo *),
+  QueryColorCompliance(const char *,const ComplianceType,PixelPacket *,
+    ExceptionInfo *),
   QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *),
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
     ExceptionInfo *),
+  QueryMagickColorCompliance(const char *,const ComplianceType,
+    MagickPixelPacket *,ExceptionInfo *),
   QueryMagickColor(const char *,MagickPixelPacket *,ExceptionInfo *),
   QueryMagickColorname(const Image *,const MagickPixelPacket *,
     const ComplianceType,char *,ExceptionInfo *);
