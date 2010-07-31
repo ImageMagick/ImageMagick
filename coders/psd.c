@@ -664,6 +664,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         }
         case 4:
         {
+          if ((image->colorspace == RGBColorspace) && (channels > 3))
+            break;
           q->opacity=(Quantum) (QuantumRange-pixel);
           break;
         }

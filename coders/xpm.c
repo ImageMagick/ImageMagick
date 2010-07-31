@@ -384,7 +384,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=DirectClass;
         image->matte=MagickTrue;
       }
-    if (QueryColorDatabase(target,&image->colormap[j],exception) == MagickFalse)
+    status=QueryColorCompliance(target,XPMCompliance,&image->colormap[j],
+      exception);
+    if (status == MagickFalse)
       break;
   }
   if (j < (ssize_t) image->colors)
@@ -519,8 +521,7 @@ ModuleExport void UnregisterXPMImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure WritePICONImage() writes an image to a file in the Personal Icon
-%  format.
+%  WritePICONImage() writes an image to a file in the Personal Icon format.
 %
 %  The format of the WritePICONImage method is:
 %
@@ -827,7 +828,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure WriteXPMImage() writes an image to a file in the X pixmap format.
+%  WriteXPMImage() writes an image to a file in the X pixmap format.
 %
 %  The format of the WriteXPMImage method is:
 %
@@ -838,7 +839,6 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 %    o image_info: the image info.
 %
 %    o image:  The image.
-%
 %
 */
 static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
