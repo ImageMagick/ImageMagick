@@ -354,13 +354,33 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 {
                   switch (quantum_type)
                   {
-                    case CyanQuantum: SetRedPixelComponent(q,GetRedPixelComponent(p)); break;
-                    case MagentaQuantum: SetGreenPixelComponent(q,GetGreenPixelComponent(p)); break;
-                    case YellowQuantum: SetBluePixelComponent(q,GetBluePixelComponent(p)); break;
-                    case BlackQuantum: indexes[x]=
-                      canvas_indexes[image->extract_info.x+x];; break;
-                    case OpacityQuantum: SetOpacityPixelComponent(q,GetOpacityPixelComponent(p)); break;
-                    default: break;
+                    case CyanQuantum:
+                    {
+                      SetCyanPixelComponent(q,GetCyanPixelComponent(p));
+                      break;
+                    }
+                    case MagentaQuantum:
+                    {
+                      SetMagentaPixelComponent(q,GetMagentaPixelComponent(p));
+                      break;
+                    }
+                    case YellowQuantum:
+                    {
+                      SetYellowPixelComponent(q,GetYellowPixelComponent(p));
+                      break;
+                    }
+                    case BlackQuantum:
+                    {
+                      indexes[x]=canvas_indexes[image->extract_info.x+x];
+                      break;
+                    }
+                    case OpacityQuantum:
+                    {
+                      SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                      break;
+                    }
+                    default:
+                      break;
                   }
                   p++;
                   q++;
