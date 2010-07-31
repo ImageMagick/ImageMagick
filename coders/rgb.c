@@ -441,12 +441,29 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   switch(quantum_types[i])
                   {
-                    case RedQuantum:    SetRedPixelComponent(q,GetRedPixelComponent(p));         break;
-                    case GreenQuantum:  SetGreenPixelComponent(q,GetGreenPixelComponent(p));     break;
-                    case BlueQuantum:   SetBluePixelComponent(q,GetBluePixelComponent(p));       break;
+                    case RedQuantum:
+                    {
+                      SetRedPixelComponent(q,GetRedPixelComponent(p));
+                      break;
+                    }
+                    case GreenQuantum:
+                    {
+                      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                      break;
+                    }
+                    case BlueQuantum:
+                    {
+                      SetBluePixelComponent(q,GetBluePixelComponent(p));
+                      break;
+                    }
                     case OpacityQuantum:
-                    case AlphaQuantum:  SetOpacityPixelComponent(q,GetOpacityPixelComponent(p)); break;
-                    default:                                   break;
+                    case AlphaQuantum:
+                    {
+                      SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                      break;
+                    }
+                    default:
+                      break;
                   }
                   p++;
                   q++;

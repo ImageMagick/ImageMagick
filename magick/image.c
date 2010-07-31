@@ -263,21 +263,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
     ClonePixelCacheMethods(image->cache,image_info->cache);
   (void) SetImageVirtualPixelMethod(image,image_info->virtual_pixel_method);
   (void) SyncImageSettings(image_info,image);
-  option=GetImageOption(image_info,"density");
-  if (option != (const char *) NULL)
-    {
-      GeometryInfo
-        geometry_info;
-
-      /*
-        Set image density.
-      */
-      flags=ParseGeometry(option,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
-    }
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
@@ -4066,6 +4051,21 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     image->debug=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,
       MagickFalse,option);
+  option=GetImageOption(image_info,"density");
+  if (option != (const char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      /*
+        Set image density.
+      */
+      flags=ParseGeometry(option,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+    }
   option=GetImageOption(image_info,"depth");
   if (option != (const char *) NULL)
     image->depth=StringToUnsignedLong(option);
