@@ -688,8 +688,10 @@ static const PixelPacket *GetVirtualPixelStream(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((x < 0) || (y < 0) || ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
-      ((y+(ssize_t) rows) > (ssize_t) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) ||
+      ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
+      ((y+(ssize_t) rows) > (ssize_t) image->rows) ||
+      (columns == 0) || (rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
@@ -1126,7 +1128,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
       */
       stream_info->pixels=(unsigned char *) ResizeQuantumMemory(
         stream_info->pixels,length,sizeof(*stream_info->pixels));
-      if (pixels == (unsigned char *) NULL)
+      if (stream_info->pixels == (unsigned char *) NULL)
         return(0);
       stream_info->image=image;
       write_info=CloneImageInfo(stream_info->image_info);
@@ -1160,8 +1162,8 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
   */
   (void) StreamImagePixels(stream_info,image,stream_info->exception);
   length=packet_size*extract_info.width;
-  count=WriteBlob(stream_info->stream,length,stream_info->pixels+
-    packet_size*extract_info.x);
+  count=WriteBlob(stream_info->stream,length,stream_info->pixels+packet_size*
+    extract_info.x);
   stream_info->y++;
   return(count == 0 ? 0 : columns);
 }

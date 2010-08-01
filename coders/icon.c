@@ -571,7 +571,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           default:
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-        (void) SyncImage(image);
+        if (image_info->ping == MagickFalse)
+          (void) SyncImage(image);
         if (icon_info.bits_per_pixel != 32)
           {
             /*
