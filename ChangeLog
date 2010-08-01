@@ -1,4 +1,7 @@
-2010-07-31  6.6.3-1 Cristy  <quetzlzacatenango@image...>
+2010-08-01  6.6.3-3 Cristy  <quetzlzacatenango@image...>
+  * Eliminate bogus "invalid colormap index" when pinging ICO images.
+
+2010-07-31  6.6.3-2 Cristy  <quetzlzacatenango@image...>
   * Only use the first alpha channel in PSD image.
   * Only use XPM complying colors for XPM images (e.g. green is rgb(0,255,0)).
 
