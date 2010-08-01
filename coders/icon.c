@@ -280,8 +280,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         if (png == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         (void) CopyMagickMemory(png,"\211PNG\r\n\032\n\000\000\000\015",12);
-        count=ReadBlob(image,length,png+12);
-        if (count != (ssize_t) length)
+        count=ReadBlob(image,length-12,png+12);
+        if (count != (ssize_t) (length-12))
           {
             png=(unsigned char *) RelinquishMagickMemory(png);
             ThrowReaderException(CorruptImageError,
@@ -320,7 +320,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         image->rows=(size_t) icon_file.directory[i].height;
         if ((ssize_t) image->rows > icon_info.height)
           image->rows=(size_t) icon_info.height;
-        image->depth=8;
+        image->depth=icon_info.bits_per_pixel;
         if (image->debug != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
