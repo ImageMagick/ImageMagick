@@ -3367,6 +3367,17 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
           break;
         }
+      if (LocaleCompare(property,"density") == 0)
+        {
+          GeometryInfo
+            geometry_info;
+
+          flags=ParseGeometry(value,&geometry_info);
+          image->x_resolution=geometry_info.rho;
+          image->y_resolution=geometry_info.sigma;
+          if ((flags & SigmaValue) == 0)
+            image->y_resolution=image->x_resolution;
+        }
       if (LocaleCompare(property,"depth") == 0)
         {
           image->depth=StringToUnsignedLong(value);
@@ -3512,6 +3523,24 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           geometry=GetPageGeometry(value);
           flags=ParseAbsoluteGeometry(geometry,&image->tile_offset);
           geometry=DestroyString(geometry);
+          break;
+        }
+      status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
+        ConstantString(property),ConstantString(value));
+      break;
+    }
+    case 'U':
+    case 'u':
+    {
+      if (LocaleCompare(property,"units") == 0)
+        {
+          ssize_t
+            units;
+
+          units=ParseMagickOption(MagickResolutionOptions,MagickFalse,value);
+          if (units < 0)
+            break;
+          image->units=(ResolutionType) units;
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
