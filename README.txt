@@ -75,3 +75,4 @@ Features and Capabilities
   see Fred's ImageMagick Scripts: a plethora of command-line scripts that
   perform geometric transforms, blurs, sharpens, edging, noise removal,
   and color manipulations.
+
