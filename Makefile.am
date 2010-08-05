@@ -203,11 +203,6 @@ check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
 # drd: valgrind's newer thread error detector
 drd:
-  $(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
-    --quiet $(VALGRIND_EXTRA_OPTS)' check
-
-# drd: valgrind's newer thread error detector
-drd:
 	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
 	  --quiet $(VALGRIND_EXTRA_OPTS)' check
 

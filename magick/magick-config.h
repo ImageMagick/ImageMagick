@@ -54,9 +54,7 @@
 #endif
 
 /* Define if you have DJVU library */
-#ifndef MAGICKCORE_DJVU_DELEGATE
-#define MAGICKCORE_DJVU_DELEGATE 1
-#endif
+/* #undef DJVU_DELEGATE */
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
@@ -78,9 +76,7 @@
 #endif
 
 /* Define if you have FFTW library */
-#ifndef MAGICKCORE_FFTW_DELEGATE
-#define MAGICKCORE_FFTW_DELEGATE 1
-#endif
+/* #undef FFTW_DELEGATE */
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
@@ -383,9 +379,7 @@
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS_H
-#define MAGICKCORE_HAVE_LCMS_H 1
-#endif
+/* #undef HAVE_LCMS_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -547,6 +541,11 @@
 /* Define to 1 if you have the `posix_memalign' function. */
 #ifndef MAGICKCORE_HAVE_POSIX_MEMALIGN
 #define MAGICKCORE_HAVE_POSIX_MEMALIGN 1
+#endif
+
+/* Define to 1 if you have the `posix_spawnp' function. */
+#ifndef MAGICKCORE_HAVE_POSIX_SPAWNP
+#define MAGICKCORE_HAVE_POSIX_SPAWNP 1
 #endif
 
 /* Define to 1 if you have the `pow' function. */
@@ -1034,9 +1033,7 @@
 /* #undef JBIG_DELEGATE */
 
 /* Define if you have JPEG version 2 "Jasper" library */
-#ifndef MAGICKCORE_JP2_DELEGATE
-#define MAGICKCORE_JP2_DELEGATE 1
-#endif
+/* #undef JP2_DELEGATE */
 
 /* Define if you have JPEG library */
 #ifndef MAGICKCORE_JPEG_DELEGATE
@@ -1044,9 +1041,7 @@
 #endif
 
 /* Define if you have LCMS (v1.11 or later) library */
-#ifndef MAGICKCORE_LCMS_DELEGATE
-#define MAGICKCORE_LCMS_DELEGATE 1
-#endif
+/* #undef LCMS_DELEGATE */
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
@@ -1072,7 +1067,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/alliance/lib:/usr/lib64/atlas:/usr/lib64/kicad:/usr/lib64/llvm:/usr/lib64/mysql:/usr/lib64/octave-3.2.4:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
 #endif
 
 /* The archive extension */
@@ -1168,9 +1163,7 @@
 #endif
 
 /* Define if you have RSVG library */
-#ifndef MAGICKCORE_RSVG_DELEGATE
-#define MAGICKCORE_RSVG_DELEGATE 1
-#endif
+/* #undef RSVG_DELEGATE */
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
@@ -1313,9 +1306,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-#ifndef MAGICKCORE_WMF_DELEGATE
-#define MAGICKCORE_WMF_DELEGATE 1
-#endif
+/* #undef WMF_DELEGATE */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

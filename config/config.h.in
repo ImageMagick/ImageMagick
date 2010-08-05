@@ -366,6 +366,9 @@
 /* Define to 1 if you have the `posix_memalign' function. */
 #undef HAVE_POSIX_MEMALIGN
 
+/* Define to 1 if you have the `posix_spawnp' function. */
+#undef HAVE_POSIX_SPAWNP
+
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
 
