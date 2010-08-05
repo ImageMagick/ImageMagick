@@ -1,7 +1,7 @@
 /* loader-loadlibrary.c --  dynamic linking for Win32
 
    Copyright (C) 1998, 1999, 2000, 2004, 2005, 2006,
-                 2007, 2008, 2010 Free Software Foundation, Inc.
+                 2007, 2008 Free Software Foundation, Inc.
    Written by Thomas Tanner, 1998
 
    NOTE: The canonical source of this file is maintained with the
@@ -98,32 +98,12 @@ get_vtable (lt_user_data loader_data)
 
 #include <windows.h>
 
-#define LOCALFREE(mem)					     LT_STMT_START { \
-	if (mem) { LocalFree ((void *)mem); mem = NULL; }    } LT_STMT_END
-#define LOADLIB__SETERROR(errmsg) LT__SETERRORSTR (loadlibraryerror (errmsg))
-#define LOADLIB_SETERROR(errcode) LOADLIB__SETERROR (LT__STRERROR (errcode))
-
-static const char *loadlibraryerror (const char *default_errmsg);
-static DWORD WINAPI wrap_getthreaderrormode (void);
-static DWORD WINAPI fallback_getthreaderrormode (void);
-static BOOL WINAPI wrap_setthreaderrormode (DWORD mode, DWORD *oldmode);
-static BOOL WINAPI fallback_setthreaderrormode (DWORD mode, DWORD *oldmode);
-
-typedef DWORD (WINAPI getthreaderrormode_type) (void);
-typedef BOOL (WINAPI setthreaderrormode_type) (DWORD, DWORD *);
-
-static getthreaderrormode_type *getthreaderrormode = wrap_getthreaderrormode;
-static setthreaderrormode_type *setthreaderrormode = wrap_setthreaderrormode;
-static char *error_message = 0;
-
-
 /* A function called through the vtable when this loader is no
    longer needed by the application.  */
 static int
 vl_exit (lt_user_data LT__UNUSED loader_data)
 {
   vtable = NULL;
-  LOCALFREE (error_message);
   return 0;
 }
 
@@ -176,7 +156,7 @@ vm_open (lt_user_data LT__UNUSED loader_data, const char *filename,
 	  /* Append a `.' to stop Windows from adding an
 	     implicit `.dll' extension. */
 	  if (!len)
-	    len = strlen (wpath);
+	    len = LT_STRLEN (wpath);
 
 	  if (len + 1 >= MAX_PATH)
 	    {
@@ -190,18 +170,16 @@ vm_open (lt_user_data LT__UNUSED loader_data, const char *filename,
     }
 
   {
-    /* Silence dialog from LoadLibrary on some failures. */
-    DWORD errormode = getthreaderrormode ();
-    DWORD last_error;
-
-    setthreaderrormode (errormode | SEM_FAILCRITICALERRORS, NULL);
+    /* Silence dialog from LoadLibrary on some failures.
+       No way to get the error mode, but to set it,
+       so set it twice to preserve any previous flags. */
+    UINT errormode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    SetErrorMode(errormode | SEM_FAILCRITICALERRORS);
 
     module = LoadLibrary (wpath);
 
     /* Restore the error mode. */
-    last_error = GetLastError ();
-    setthreaderrormode (errormode, NULL);
-    SetLastError (last_error);
+    SetErrorMode(errormode);
   }
 
   /* libltdl expects this function to fail if it is unable
@@ -229,9 +207,7 @@ vm_open (lt_user_data LT__UNUSED loader_data, const char *filename,
           }
       }
 
-    if (!module)
-      LOADLIB_SETERROR (CANNOT_OPEN);
-    else if (cur)
+    if (cur || !module)
       {
         LT__SETERROR (CANNOT_OPEN);
         module = 0;
@@ -249,9 +225,9 @@ vm_close (lt_user_data LT__UNUSED loader_data, lt_module module)
 {
   int errors = 0;
 
-  if (FreeLibrary ((HMODULE) module) == 0)
+  if (FreeLibrary((HMODULE) module) == 0)
     {
-      LOADLIB_SETERROR (CANNOT_CLOSE);
+      LT__SETERROR (CANNOT_CLOSE);
       ++errors;
     }
 
@@ -268,102 +244,8 @@ vm_sym (lt_user_data LT__UNUSED loader_data, lt_module module, const char *name)
 
   if (!address)
     {
-      LOADLIB_SETERROR (SYMBOL_NOT_FOUND);
+      LT__SETERROR (SYMBOL_NOT_FOUND);
     }
 
   return address;
-}
-
-
-
-/* --- HELPER FUNCTIONS --- */
-
-
-/* Return the windows error message, or the passed in error message on
-   failure. */
-static const char *
-loadlibraryerror (const char *default_errmsg)
-{
-  size_t len;
-  LOCALFREE (error_message);
-
-  FormatMessageA (FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                  FORMAT_MESSAGE_FROM_SYSTEM |
-                  FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL,
-                  GetLastError (),
-                  0,
-                  (char *) &error_message,
-                  0, NULL);
-
-  /* Remove trailing CRNL */
-  len = LT_STRLEN (error_message);
-  if (len && error_message[len - 1] == '\n')
-    error_message[--len] = LT_EOS_CHAR;
-  if (len && error_message[len - 1] == '\r')
-    error_message[--len] = LT_EOS_CHAR;
-
-  return len ? error_message : default_errmsg;
-}
-
-/* A function called through the getthreaderrormode variable which checks
-   if the system supports GetThreadErrorMode (or GetErrorMode) and arranges
-   for it or a fallback implementation to be called directly in the future.
-   The selected version is then called. */
-static DWORD WINAPI
-wrap_getthreaderrormode (void)
-{
-  HMODULE kernel32 = GetModuleHandleA ("kernel32.dll");
-  getthreaderrormode
-    = (getthreaderrormode_type *) GetProcAddress (kernel32,
-						  "GetThreadErrorMode");
-  if (!getthreaderrormode)
-    getthreaderrormode
-      = (getthreaderrormode_type *) GetProcAddress (kernel32,
-						    "GetErrorMode");
-  if (!getthreaderrormode)
-    getthreaderrormode = fallback_getthreaderrormode;
-  return getthreaderrormode ();
-}
-
-/* A function called through the getthreaderrormode variable for cases
-   where the system does not support GetThreadErrorMode or GetErrorMode */
-static DWORD WINAPI
-fallback_getthreaderrormode (void)
-{
-  /* Prior to Windows Vista, the only way to get the current error
-     mode was to set a new one. In our case, we are setting a new
-     error mode right after "getting" it while ignoring the error
-     mode in effect when setting the new error mode, so that's
-     fairly ok. */
-  return (DWORD) SetErrorMode (SEM_FAILCRITICALERRORS);
-}
-
-/* A function called through the setthreaderrormode variable which checks
-   if the system supports SetThreadErrorMode and arranges for it or a
-   fallback implementation to be called directly in the future.
-   The selected version is then called. */
-static BOOL WINAPI
-wrap_setthreaderrormode (DWORD mode, DWORD *oldmode)
-{
-  HMODULE kernel32 = GetModuleHandleA ("kernel32.dll");
-  setthreaderrormode
-    = (setthreaderrormode_type *) GetProcAddress (kernel32,
-						  "SetThreadErrorMode");
-  if (!setthreaderrormode)
-    setthreaderrormode = fallback_setthreaderrormode;
-  return setthreaderrormode (mode, oldmode);
-}
-
-/* A function called through the setthreaderrormode variable for cases
-   where the system does not support SetThreadErrorMode. */
-static BOOL WINAPI
-fallback_setthreaderrormode (DWORD mode, DWORD *oldmode)
-{
-  /* Prior to Windows 7, there was no way to set the thread local error
-     mode, so set the process global error mode instead. */
-  DWORD old = (DWORD) SetErrorMode (mode);
-  if (oldmode)
-    *oldmode = old;
-  return TRUE;
 }
