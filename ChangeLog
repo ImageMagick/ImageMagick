@@ -1,3 +1,6 @@
+2010-08-05  6.6.3-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Properly map PNG intent to image->rendering_intent
+
 2010-08-01  6.6.3-3 Cristy  <quetzlzacatenango@image...>
   * Eliminate bogus "invalid colormap index" when pinging ICO images.
   * Support -set density / units.

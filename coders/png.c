@@ -476,6 +476,42 @@ static MagickBooleanType
   WriteJNGImage(const ImageInfo *,Image *);
 #endif
 
+static int
+PNG_RenderingIntent_from_Magick_RenderingIntent(const RenderingIntent intent)
+{  
+  switch (intent)
+  {
+    case PerceptualIntent:
+       return 0;
+    case RelativeIntent:
+       return 1;
+    case SaturationIntent:
+       return 2;
+    case AbsoluteIntent:
+       return 3;
+    default:
+       return -1;
+  }
+}
+
+static RenderingIntent
+PNG_RenderingIntent_to_Magick_RenderingIntent(const int png_intent)
+{  
+  switch (png_intent)
+  {
+    case 0:
+      return PerceptualIntent;
+    case 1:
+      return RelativeIntent;
+    case 2:
+      return SaturationIntent;
+    case 3:
+      return AbsoluteIntent;
+    default:
+      return UndefinedIntent;
+    }
+}
+
 static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 {
   if (x > y)
@@ -1953,14 +1989,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       intent;
 
     if (mng_info->have_global_srgb)
-      image->rendering_intent=(RenderingIntent)
-        (mng_info->global_srgb_intent+1);
+      image->rendering_intent=PNG_RenderingIntent_to_Magick_RenderingIntent(
+        mng_info->global_srgb_intent);
     if (png_get_sRGB(ping,ping_info,&intent))
       {
-        image->rendering_intent=(RenderingIntent) (intent+1);
+        image->rendering_intent=PNG_RenderingIntent_to_Magick_RenderingIntent(
+          intent);
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Reading PNG sRGB chunk: rendering_intent: %d",intent+1);
+            "    Reading PNG sRGB chunk: rendering_intent: %d",intent);
       }
   }
 #endif
@@ -2009,9 +2046,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG cHRM chunk.");
     }
-  if (image->rendering_intent)
+  if (image->rendering_intent != UndefinedIntent)
     {
-      png_set_sRGB(ping,ping_info,image->rendering_intent-1);
+      png_set_sRGB(ping,ping_info,
+         PNG_RenderingIntent_from_Magick_RenderingIntent(
+         image->rendering_intent));
       png_set_gAMA(ping,ping_info,0.45455f);
       png_set_cHRM(ping,ping_info,
                   0.6400f, 0.3300f, 0.3000f, 0.6000f,
@@ -3588,7 +3627,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 1)
           {
-            image->rendering_intent=(RenderingIntent) (p[0]+1);
+            image->rendering_intent=
+              PNG_RenderingIntent_to_Magick_RenderingIntent(p[0]);
             image->gamma=0.45455f;
             image->chromaticity.red_primary.x=0.6400f;
             image->chromaticity.red_primary.y=0.3300f;
@@ -4471,7 +4511,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length)
               {
-                mng_info->global_srgb_intent=(RenderingIntent) (p[0]+1);
+                mng_info->global_srgb_intent=
+                  PNG_RenderingIntent_to_Magick_RenderingIntent(p[0]);
                 mng_info->have_global_srgb=MagickTrue;
               }
             else
@@ -7509,7 +7550,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Setting up sRGB chunk");
-      (void) png_set_sRGB(ping,ping_info,(int) (image->rendering_intent-1));
+      (void) png_set_sRGB(ping,ping_info,(
+        PNG_RenderingIntent_from_Magick_RenderingIntent(
+        image->rendering_intent)));
       png_set_gAMA(ping,ping_info,0.45455);
     }
   if ((!mng_info->write_mng) || (!png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
@@ -8539,9 +8582,13 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       PNGType(chunk,mng_sRGB);
       LogPNGChunk((int) logging,mng_sRGB,1L);
       if (image->rendering_intent != UndefinedIntent)
-        chunk[4]=(unsigned char) (image->rendering_intent-1);
+        chunk[4]=(unsigned char)
+          PNG_RenderingIntent_from_Magick_RenderingIntent(
+          (image->rendering_intent));
       else
-        chunk[4]=(unsigned char) (PerceptualIntent-1);
+        chunk[4]=(unsigned char)
+          PNG_RenderingIntent_from_Magick_RenderingIntent(
+          (PerceptualIntent));
       (void) WriteBlob(image,5,chunk);
       (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
     }
@@ -9382,9 +9429,13 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
          PNGType(chunk,mng_sRGB);
          LogPNGChunk((int) logging,mng_sRGB,1L);
          if (image->rendering_intent != UndefinedIntent)
-           chunk[4]=(unsigned char) (image->rendering_intent-1);
+           chunk[4]=(unsigned char)
+             PNG_RenderingIntent_from_Magick_RenderingIntent(
+             (image->rendering_intent));
          else
-           chunk[4]=(unsigned char) (PerceptualIntent-1);
+           chunk[4]=(unsigned char)
+             PNG_RenderingIntent_from_Magick_RenderingIntent(
+             (PerceptualIntent));
          (void) WriteBlob(image,5,chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
          mng_info->have_write_global_srgb=MagickTrue;
