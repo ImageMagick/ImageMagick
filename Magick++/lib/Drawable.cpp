@@ -1042,7 +1042,7 @@ Magick::DrawableDashArray::DrawableDashArray
 }
 Magick::DrawableDashArray::~DrawableDashArray( void )
 {
-  delete _dasharray;
+  delete [] _dasharray;
   _size = 0;
   _dasharray = 0;
 }
