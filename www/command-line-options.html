@@ -128,6 +128,9 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+  <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+</div>
+<div  class="sponsor">
   <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
 </div>
 <div  class="sponsor">
@@ -153,7 +156,6 @@
   <script type="text/javascript">
   <!--
     google_ad_client = "pub-3129977114552745";
-    /* 160x600, created 7/27/10 */
     google_ad_slot = "0574824969";
     google_ad_width = 160;
     google_ad_height = 600;
@@ -4886,13 +4888,13 @@ CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&m
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>JPEG/MIFF/PNG compression level.</td><td style='text-align:right;'></td></tr></table>
 
-<p>For the JPEG and MPEG image formats, quality is 0 (lowest image quality and highest compression) to 100 (best quality but least effective compression). The default is to use the estimate quality of your input image otherwise 85. Use the <a href="#sampling-factor">-sampling-factor</a> option to specify the factors for chroma downsampling.</p>
+<p>For the JPEG and MPEG image formats, quality is 1 (lowest image quality and highest compression) to 100 (best quality but least effective compression). The default is to use the estimate quality of your input image otherwise 92. Use the <a href="#sampling-factor">-sampling-factor</a> option to specify the factors for chroma downsampling.</p>
 
 <p>For the MIFF image format, quality/10 is the zlib compression level, which is 0 (worst but fastest compression) to 9 (best but slowest). It has no effect on the image appearance, since the compression is always lossless.</p>
 
-<p>For the JPEG-2000 image format, quality is mapped using a non-linear equation to the compression ratio required by the Jasper library. This non-linear equation is intended to loosely approximate the quality provided by the JPEG v1 format. The default quality value 85 results in a request for 16:1 compression. The quality value 100 results in a request for non-lossy compression.</p>
+<p>For the JPEG-2000 image format, quality is mapped using a non-linear equation to the compression ratio required by the Jasper library. This non-linear equation is intended to loosely approximate the quality provided by the JPEG v1 format. The default quality value 100, a request for non-lossy compression.  A quality of 75 results in a request for 16:1 compression.</p>
 
-<p>For the MNG and PNG image formats, the quality value sets the zlib compression level (quality / 10) and filter-type (quality % 10). Compression levels range from 0 (fastest compression) to 100 (best but slowest). For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.</p>
+<p>For the MNG and PNG image formats, the quality value sets the zlib compression level (quality / 10) and filter-type (quality % 10). Compression levels range from 0 (fastest compression) to 100 (best but slowest). For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.  The default is PNG is 75.</p>
 
 <p>If filter-type is 4 or less, the specified filter-type is used for all scanlines:</p>
 
@@ -4910,7 +4912,7 @@ CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&m
 
 <p>Only if the output is MNG, if filter-type is 7, the LOCO color transformation and adaptive filtering with <em class="arg">minimum-sum-of-absolute-values</em> are used.</p>
 
-<p>The default is quality is 85, which means nearly the best compression with adaptive filtering. The quality setting has no effect on the appearance of PNG and MNG images, since the compression is always lossless.</p>
+<p>The default is quality is 92, which means nearly the best compression with adaptive filtering. The quality setting has no effect on the appearance of PNG and MNG images, since the compression is always lossless.</p>
 
 <p>For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
 
