@@ -1306,7 +1306,9 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-/* #undef WMF_DELEGATE */
+#ifndef MAGICKCORE_WMF_DELEGATE
+#define MAGICKCORE_WMF_DELEGATE 1
+#endif
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
