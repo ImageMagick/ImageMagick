@@ -944,35 +944,35 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
           {
             *q='\0';
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 7;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 7;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 6);
+            *q|=(((int) pixel != 0 ? black : white) << 6);
             p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 5;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 5;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 4);
+            *q|=(((int) pixel != 0 ? black : white) << 4);
             p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 3;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 3;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 2);
+            *q|=(((int) pixel != 0 ? black : white) << 2);
             p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 1;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 1;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 0);
+            *q|=(((int) pixel != 0 ? black : white) << 0);
             p++;
             q++;
           }
           if ((number_pixels % 4) != 0)
             {
               *q='\0';
-              for (bit=3; bit >= (ssize_t) (4-(number_pixels % 4)); bit-=2)
+              for (bit=0; bit <= (ssize_t) (number_pixels % 4); bit+=2)
               {
-                *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) <<
-                  (bit+4);
+                *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) <<
+                  (7-bit);
                 pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 :
                   0x01);
-                *q|=(((int) pixel != 0 ? 0x00 : 0x01) << (unsigned char)
-                  (bit+4-1));
+                *q|=(((int) pixel != 0 ? black : white) << (unsigned char)
+                  (7-bit-1));
                 p++;
               }
               q++;

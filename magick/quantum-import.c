@@ -1071,13 +1071,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             }
             p++;
           }
-          for (bit=0; bit < (ssize_t) (number_pixels % 4); bit+=2)
+          for (bit=0; bit <= (ssize_t) (number_pixels % 4); bit+=2)
           {
             pixel=(unsigned char) (((*p) & (1 << (7-bit))) != 0 ? 0x00 : 0x01);
-            q->red=(Quantum) (pixel == 0 ? 0 : QuantumRange);
+            q->red=(Quantum) (pixel != 0 ? 0 : QuantumRange);
             q->green=q->red;
             q->blue=q->red;
-            q->opacity=(Quantum) (((*p) & (1UL << (unsigned char) (6-bit))) == 0
+            q->opacity=(Quantum) (((*p) & (1UL << (unsigned char) (6-bit))) != 0
               ? TransparentOpacity : OpaqueOpacity);
             q++;
           }

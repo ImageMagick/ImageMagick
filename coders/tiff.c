@@ -2989,8 +2989,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
