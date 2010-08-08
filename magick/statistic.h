@@ -30,7 +30,8 @@ typedef struct _ChannelStatistics
   double
     minima,
     maxima,
-    mean, standard_deviation,
+    mean,
+    standard_deviation,
     kurtosis,
     skewness;
 } ChannelStatistics;

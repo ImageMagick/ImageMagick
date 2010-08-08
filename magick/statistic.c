@@ -1078,7 +1078,8 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
           *standard_deviation+=(double) p->blue*GetBluePixelComponent(p);
           area++;
         }
-      if ((channel & OpacityChannel) != 0)
+      if (((channel & OpacityChannel) != 0) &&
+          (image->matte != MagickFalse))
         {
           *mean+=GetOpacityPixelComponent(p);
           *standard_deviation+=(double) p->opacity*GetOpacityPixelComponent(p);
@@ -1643,7 +1644,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[AllChannels].kurtosis+=channel_statistics[i].kurtosis;
     channel_statistics[AllChannels].skewness+=channel_statistics[i].skewness;
   }
-  channels=4;
+  channels=3;
+  if (image->matte != MagickFalse)
+    channels++;
   if (image->colorspace == CMYKColorspace)
     channels++;
   channel_statistics[AllChannels].mean/=channels;
