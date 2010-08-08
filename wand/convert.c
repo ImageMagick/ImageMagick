@@ -622,13 +622,18 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("affine",option+1) == 0)
           {
+            KernelInfo
+              *kernel_info;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("alpha",option+1) == 0)
@@ -947,13 +952,18 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("color-matrix",option+1) == 0)
           {
+            KernelInfo
+              *kernel_info;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)
@@ -1048,34 +1058,18 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             char
               token[MaxTextExtent];
 
+            KernelInfo
+              *kernel_info;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-#if 1
-            (void) token;
-            if (IsGeometry(argv[i]) == MagickFalse)
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
-#else
-            /* Allow the use of built-in kernels like 'gaussian'
-             * These may not work for kernels with 'nan' values, like 'diamond'
-             */
-            GetMagickToken(argv[i],NULL,token);
-            if (isalpha((int) (unsigned char) *token) != 0)
-              {
-                ssize_t
-                op;
-
-                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
-                if (op < 0)
-                  ThrowConvertException(OptionError,"UnrecognizedKernelType",
-                       token);
-              }
-            else
-              if (IsGeometry(argv[i]) == MagickFalse)
-                ThrowConvertInvalidArgumentException(option,argv[i]);
-#endif
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -1974,6 +1968,9 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             char
               token[MaxTextExtent];
 
+            KernelInfo
+              *kernel_info;
+
             ssize_t
               op;
 
@@ -1988,21 +1985,10 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            GetMagickToken(argv[i],NULL,token);
-            if (isalpha((int) ((unsigned char) *token)) != 0)
-              {
-                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
-                if (op < 0)
-                  ThrowConvertException(OptionError,"UnrecognizedKernelType",
-                    token);
-              }
-#if 0
-  /* DO NOT ENABLE, geometry can not handle user defined kernels
-   * which include 'nan' values, though '-' are acceptable.
-   */
-            else if (IsGeometry(argv[i]) == MagickFalse)
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
-#endif
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("mosaic",option+1) == 0)
