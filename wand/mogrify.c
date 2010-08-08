@@ -4150,13 +4150,18 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("affine",option+1) == 0)
           {
+            KernelInfo
+              *kernel_info;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("alpha",option+1) == 0)
@@ -4426,13 +4431,18 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("color-matrix",option+1) == 0)
           {
+            KernelInfo
+              *kernel_info;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)
@@ -4511,34 +4521,18 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             char
               token[MaxTextExtent];
 
+            KernelInfo
+              *kernel_info;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-#if 1
-            (void) token;
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
-#else
-            /* Allow the use of built-in kernels like 'gaussian'
-             * These may not work for kernels with 'nan' values, like 'diamond'
-             */
-            GetMagickToken(argv[i],NULL,token);
-            if ( isalpha((int)token[0]) )
-              {
-                ssize_t
-                op;
-
-                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
-                if (op < 0)
-                  ThrowMogrifyException(OptionError,"UnrecognizedKernelType",
-                       token);
-              }
-            /* geometry current returns invalid if 'nan' values are used */
-            else if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
-#endif
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -5408,11 +5402,14 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("morphology",option+1) == 0)
           {
-            ssize_t
-              op;
-
             char
               token[MaxTextExtent];
+
+            KernelInfo
+              *kernel_info;
+
+            ssize_t
+              op;
 
             i++;
             if (i == (ssize_t) argc)
@@ -5425,14 +5422,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            GetMagickToken(argv[i],NULL,token);
-            if (isalpha((int) ((unsigned char) *token)) != 0)
-              {
-                op=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
-                if (op < 0)
-                  ThrowMogrifyException(OptionError,"UnrecognizedKernelType",
-                    token);
-              }
+            kernel_info=AcquireKernelInfo(argv[i]);
+            if (kernel_info == (KernelInfo *) NULL)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("mosaic",option+1) == 0)
