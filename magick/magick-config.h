@@ -1067,7 +1067,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
 #endif
 
 /* The archive extension */
@@ -1306,9 +1306,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-#ifndef MAGICKCORE_WMF_DELEGATE
-#define MAGICKCORE_WMF_DELEGATE 1
-#endif
+/* #undef WMF_DELEGATE */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

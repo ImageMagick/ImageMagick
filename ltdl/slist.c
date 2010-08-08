@@ -1,6 +1,6 @@
 /* slist.c -- generalised singly linked lists
 
-   Copyright (C) 2000, 2004, 2007, 2008 Free Software Foundation, Inc.
+   Copyright (C) 2000, 2004, 2007, 2008, 2009 Free Software Foundation, Inc.
    Written by Gary V. Vaughan, 2000
 
    NOTE: The canonical source of this file is maintained with the
@@ -32,6 +32,7 @@ or obtained by writing to the Free Software Foundation, Inc.,
 
 #include "slist.h"
 #include <stddef.h>
+#include <stdlib.h>
 
 static SList *	slist_sort_merge    (SList *left, SList *right,
 				     SListCompare *compare, void *userdata);
@@ -73,7 +74,7 @@ slist_delete (SList *head, void (*delete_fct) (void *item))
            the stale item, you should probably return that from FIND if
 	   it makes a successful match.  Don't forget to slist_unbox()
 	   every item in a boxed list before operating on its contents.   */
-void *
+SList *
 slist_remove (SList **phead, SListCallback *find, void *matchdata)
 {
   SList *stale = 0;
@@ -107,7 +108,7 @@ slist_remove (SList **phead, SListCallback *find, void *matchdata)
 	}
     }
 
-  return result;
+  return (SList *) result;
 }
 
 /* Call FIND repeatedly with each element of SLIST and MATCHDATA, until
@@ -313,6 +314,9 @@ slist_sort (SList *slist, SListCompare *compare, void *userdata)
   /* Be sure that LEFT and RIGHT never contain the same item.  */
   left = slist;
   right = slist->next;
+
+  if (!right)
+    return left;
 
   /* Skip two items with RIGHT and one with SLIST, until RIGHT falls off
      the end.  SLIST must be about half way along.  */
