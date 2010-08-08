@@ -7133,7 +7133,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               }
             image_info->orientation=(OrientationType) ParseMagickOption(
               MagickOrientationOptions,MagickFalse,argv[i+1]);
-            (void) SetImageOption(image_info,option+1,"undefined");
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
       }
