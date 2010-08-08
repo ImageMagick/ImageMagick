@@ -4518,9 +4518,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
-            char
-              token[MaxTextExtent];
-
             KernelInfo
               *kernel_info;
 
