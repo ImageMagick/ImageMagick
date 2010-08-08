@@ -1153,6 +1153,11 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
                   MaxTextExtent);
                 (void) ConcatenateMagickString(font_path,token,MaxTextExtent);
                 path=ConstantString(font_path);
+                if (IsPathAccessible(path) == MagickFalse)
+                  {
+                    path=DestroyString(path);
+                    path=ConstantString(token);
+                  }
               }
             type_info->glyphs=path;
             break;

@@ -1030,80 +1030,82 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
   const ChannelType channel,double *mean,double *standard_deviation,
   ExceptionInfo *exception)
 {
-  double
-    area;
+  ChannelStatistics
+    *channel_statistics;
 
-  ssize_t
-    y;
+  size_t
+    channels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  *mean=0.0;
-  *standard_deviation=0.0;
-  area=0.0;
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const IndexPacket
-      *restrict indexes;
-
-    register const PixelPacket
-      *restrict p;
-
-    register ssize_t
-      x;
-
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if ((channel & RedChannel) != 0)
-        {
-          *mean+=GetRedPixelComponent(p);
-          *standard_deviation+=(double) p->red*GetRedPixelComponent(p);
-          area++;
-        }
-      if ((channel & GreenChannel) != 0)
-        {
-          *mean+=GetGreenPixelComponent(p);
-          *standard_deviation+=(double) p->green*GetGreenPixelComponent(p);
-          area++;
-        }
-      if ((channel & BlueChannel) != 0)
-        {
-          *mean+=GetBluePixelComponent(p);
-          *standard_deviation+=(double) p->blue*GetBluePixelComponent(p);
-          area++;
-        }
-      if (((channel & OpacityChannel) != 0) &&
-          (image->matte != MagickFalse))
-        {
-          *mean+=GetOpacityPixelComponent(p);
-          *standard_deviation+=(double) p->opacity*GetOpacityPixelComponent(p);
-          area++;
-        }
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        {
-          *mean+=indexes[x];
-          *standard_deviation+=(double) indexes[x]*indexes[x];
-          area++;
-        }
-      p++;
-    }
-  }
-  if (y < (ssize_t) image->rows)
+  channel_statistics=GetImageChannelStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
-  if (area != 0)
+  channels=0;
+  channel_statistics[AllChannels].mean=0.0;
+  channel_statistics[AllChannels].standard_deviation=0.0;
+  if ((channel & RedChannel) != 0)
     {
-      *mean/=area;
-      *standard_deviation/=area;
+      channel_statistics[AllChannels].mean+=
+        channel_statistics[RedChannel].mean;
+      channel_statistics[AllChannels].standard_deviation+=
+        channel_statistics[RedChannel].variance-
+        channel_statistics[RedChannel].mean*
+        channel_statistics[RedChannel].mean;
+      channels++;
     }
-  *standard_deviation=sqrt(*standard_deviation-(*mean*(*mean)));
-  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  if ((channel & GreenChannel) != 0)
+    {
+      channel_statistics[AllChannels].mean+=
+        channel_statistics[GreenChannel].mean;
+      channel_statistics[AllChannels].standard_deviation+=
+        channel_statistics[GreenChannel].variance-
+        channel_statistics[GreenChannel].mean*
+        channel_statistics[GreenChannel].mean;
+      channels++;
+    }
+  if ((channel & BlueChannel) != 0)
+    {
+      channel_statistics[AllChannels].mean+=
+        channel_statistics[BlueChannel].mean;
+      channel_statistics[AllChannels].standard_deviation+=
+        channel_statistics[BlueChannel].variance-
+        channel_statistics[BlueChannel].mean*
+        channel_statistics[BlueChannel].mean;
+      channels++;
+    }
+  if (((channel & OpacityChannel) != 0) &&
+      (image->matte != MagickFalse))
+    {
+      channel_statistics[AllChannels].mean+=
+        channel_statistics[OpacityChannel].mean;
+      channel_statistics[AllChannels].standard_deviation+=
+        channel_statistics[OpacityChannel].variance-
+        channel_statistics[OpacityChannel].mean*
+        channel_statistics[OpacityChannel].mean;
+      channels++;
+    }
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
+    {
+      channel_statistics[AllChannels].mean+=
+        channel_statistics[BlackChannel].mean;
+      channel_statistics[AllChannels].standard_deviation+=
+        channel_statistics[BlackChannel].variance-
+        channel_statistics[BlackChannel].mean*
+        channel_statistics[BlackChannel].mean;
+      channels++;
+    }
+  channel_statistics[AllChannels].mean/=channels;
+  channel_statistics[AllChannels].standard_deviation=
+    sqrt(channel_statistics[AllChannels].standard_deviation/channels);
+  *mean=channel_statistics[AllChannels].mean;
+  *standard_deviation=channel_statistics[AllChannels].standard_deviation;
+  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    channel_statistics);
+  return(MagickTrue);
 }
 
 /*
@@ -1423,9 +1425,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     *channel_statistics;
 
   double
-    area,
-    sum_squares,
-    sum_cubes;
+    area;
 
   ssize_t
     y;
@@ -1462,10 +1462,6 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].depth=1;
     channel_statistics[i].maxima=(-1.0E-37);
     channel_statistics[i].minima=1.0E+37;
-    channel_statistics[i].mean=0.0;
-    channel_statistics[i].standard_deviation=0.0;
-    channel_statistics[i].kurtosis=0.0;
-    channel_statistics[i].skewness=0.0;
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1554,8 +1550,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         channel_statistics[RedChannel].minima=(double) GetRedPixelComponent(p);
       if ((double) p->red > channel_statistics[RedChannel].maxima)
         channel_statistics[RedChannel].maxima=(double) GetRedPixelComponent(p);
-      channel_statistics[RedChannel].mean+=GetRedPixelComponent(p);
-      channel_statistics[RedChannel].standard_deviation+=(double) p->red*
+      channel_statistics[RedChannel].sum+=GetRedPixelComponent(p);
+      channel_statistics[RedChannel].sum_squared+=(double) p->red*
         GetRedPixelComponent(p);
       channel_statistics[RedChannel].kurtosis+=(double) p->red*p->red*
         p->red*GetRedPixelComponent(p);
@@ -1567,8 +1563,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       if ((double) p->green > channel_statistics[GreenChannel].maxima)
         channel_statistics[GreenChannel].maxima=(double)
           GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].mean+=GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].standard_deviation+=(double) p->green*
+      channel_statistics[GreenChannel].sum+=GetGreenPixelComponent(p);
+      channel_statistics[GreenChannel].sum_squared+=(double) p->green*
         GetGreenPixelComponent(p);
       channel_statistics[GreenChannel].kurtosis+=(double) p->green*p->green*
         p->green*GetGreenPixelComponent(p);
@@ -1580,8 +1576,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       if ((double) p->blue > channel_statistics[BlueChannel].maxima)
         channel_statistics[BlueChannel].maxima=(double)
           GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].mean+=GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].standard_deviation+=(double) p->blue*
+      channel_statistics[BlueChannel].sum+=GetBluePixelComponent(p);
+      channel_statistics[BlueChannel].sum_squared+=(double) p->blue*
         GetBluePixelComponent(p);
       channel_statistics[BlueChannel].kurtosis+=(double) p->blue*p->blue*
         p->blue*GetBluePixelComponent(p);
@@ -1595,8 +1591,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           if ((double) p->opacity > channel_statistics[OpacityChannel].maxima)
             channel_statistics[OpacityChannel].maxima=(double)
               GetOpacityPixelComponent(p);
-          channel_statistics[OpacityChannel].mean+=GetOpacityPixelComponent(p);
-          channel_statistics[OpacityChannel].standard_deviation+=(double)
+          channel_statistics[OpacityChannel].sum+=GetOpacityPixelComponent(p);
+          channel_statistics[OpacityChannel].sum_squared+=(double)
             p->opacity*GetOpacityPixelComponent(p);
           channel_statistics[OpacityChannel].kurtosis+=(double) p->opacity*
             p->opacity*p->opacity*GetOpacityPixelComponent(p);
@@ -1609,8 +1605,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             channel_statistics[BlackChannel].minima=(double) indexes[x];
           if ((double) indexes[x] > channel_statistics[BlackChannel].maxima)
             channel_statistics[BlackChannel].maxima=(double) indexes[x];
-          channel_statistics[BlackChannel].mean+=indexes[x];
-          channel_statistics[BlackChannel].standard_deviation+=(double)
+          channel_statistics[BlackChannel].sum+=indexes[x];
+          channel_statistics[BlackChannel].sum_squared+=(double)
             indexes[x]*indexes[x];
           channel_statistics[BlackChannel].kurtosis+=(double) indexes[x]*
             indexes[x]*indexes[x]*indexes[x];
@@ -1624,8 +1620,13 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   area=(double) image->columns*image->rows;
   for (i=0; i < AllChannels; i++)
   {
-    channel_statistics[i].mean/=area;
-    channel_statistics[i].standard_deviation/=area;
+    channel_statistics[i].sum/=area;
+    channel_statistics[i].sum_squared/=area;
+    channel_statistics[i].mean=channel_statistics[i].sum;
+    channel_statistics[i].variance=channel_statistics[i].sum_squared;
+    channel_statistics[i].standard_deviation=sqrt(
+      channel_statistics[i].variance-(channel_statistics[i].mean*
+      channel_statistics[i].mean));
     channel_statistics[i].kurtosis/=area;
     channel_statistics[i].skewness/=area;
   }
@@ -1638,9 +1639,15 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[AllChannels].minima,channel_statistics[i].minima);
     channel_statistics[AllChannels].maxima=MagickMax(
       channel_statistics[AllChannels].maxima,channel_statistics[i].maxima);
+    channel_statistics[AllChannels].sum+=channel_statistics[i].sum;
+    channel_statistics[AllChannels].sum_squared+=
+      channel_statistics[i].sum_squared;
     channel_statistics[AllChannels].mean+=channel_statistics[i].mean;
+    channel_statistics[AllChannels].variance+=channel_statistics[i].variance-
+      channel_statistics[i].mean*channel_statistics[i].mean;
     channel_statistics[AllChannels].standard_deviation+=
-      channel_statistics[i].standard_deviation;
+      channel_statistics[i].variance-channel_statistics[i].mean*
+      channel_statistics[i].mean;
     channel_statistics[AllChannels].kurtosis+=channel_statistics[i].kurtosis;
     channel_statistics[AllChannels].skewness+=channel_statistics[i].skewness;
   }
@@ -1649,19 +1656,16 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channels++;
   if (image->colorspace == CMYKColorspace)
     channels++;
+  channel_statistics[AllChannels].sum/=channels;
+  channel_statistics[AllChannels].sum_squared/=channels;
   channel_statistics[AllChannels].mean/=channels;
-  channel_statistics[AllChannels].standard_deviation/=channels;
+  channel_statistics[AllChannels].variance/=channels;
+  channel_statistics[AllChannels].standard_deviation=
+    sqrt(channel_statistics[AllChannels].standard_deviation/channels);
   channel_statistics[AllChannels].kurtosis/=channels;
   channel_statistics[AllChannels].skewness/=channels;
   for (i=0; i <= AllChannels; i++)
   {
-    sum_squares=0.0;
-    sum_squares=channel_statistics[i].standard_deviation;
-    sum_cubes=0.0;
-    sum_cubes=channel_statistics[i].skewness;
-    channel_statistics[i].standard_deviation=sqrt(
-      channel_statistics[i].standard_deviation-
-       (channel_statistics[i].mean*channel_statistics[i].mean));
     if (channel_statistics[i].standard_deviation == 0.0)
       {
         channel_statistics[i].kurtosis=0.0;
@@ -1670,18 +1674,17 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     else
       {
         channel_statistics[i].skewness=(channel_statistics[i].skewness-
-          3.0*channel_statistics[i].mean*sum_squares+
+          3.0*channel_statistics[i].mean*channel_statistics[i].sum_squared+
           2.0*channel_statistics[i].mean*channel_statistics[i].mean*
-          channel_statistics[i].mean)/
-          (channel_statistics[i].standard_deviation*
+          channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
            channel_statistics[i].standard_deviation*
            channel_statistics[i].standard_deviation);
         channel_statistics[i].kurtosis=(channel_statistics[i].kurtosis-
-          4.0*channel_statistics[i].mean*sum_cubes+
-          6.0*channel_statistics[i].mean*channel_statistics[i].mean*sum_squares-
-          3.0*channel_statistics[i].mean*channel_statistics[i].mean*
-          1.0*channel_statistics[i].mean*channel_statistics[i].mean)/
-          (channel_statistics[i].standard_deviation*
+          4.0*channel_statistics[i].mean*channel_statistics[i].skewness+
+          6.0*channel_statistics[i].mean*channel_statistics[i].mean*
+          channel_statistics[i].sum_squared-3.0*channel_statistics[i].mean*
+          channel_statistics[i].mean*1.0*channel_statistics[i].mean*
+          channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
            channel_statistics[i].standard_deviation*
            channel_statistics[i].standard_deviation*
            channel_statistics[i].standard_deviation)-3.0;

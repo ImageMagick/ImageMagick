@@ -156,6 +156,7 @@ MAGICK_CPPFLAGS=$CPPFLAGS_USER
 MAGICK_PCFLAGS=$CPPFLAGS_USER
 MAGICK_LDFLAGS=''
 MAGICK_LIBS=''
+MAGICK_FEATURES=''
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -397,12 +398,21 @@ AC_OPENMP([C])
 CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 AC_SUBST(OPENMP_CFLAGS)
+case $ac_cv_prog_c_openmp in #(
+  "none needed" | unsupported)
+    ;; #(
+  *)
+  MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
+esac
 
 # Enable support for OpenCL
 AX_OPENCL([C])
 CFLAGS="$CL_CFLAGS $CFLAGS"
 LIBS="$CL_LIBS $LIBS"
 AC_SUBST(CL_CFLAGS)
+if test "_OPENCL" = '1'; then
+  MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
+fi
 
 ########
 #
@@ -566,6 +576,7 @@ MAGICK_HDRI=""
 if test "$enable_hdri" = 'yes'; then
     MAGICK_HDRI="HDRI"
     AC_DEFINE(HDRI_SUPPORT,1,[accurately represent the wide range of intensity levels in real scenes])
+    MAGICK_FEATURES="HDRI $MAGICK_FEATURES"
 fi
 AC_SUBST(MAGICK_HDRI)dnl
 
@@ -3424,6 +3435,7 @@ AC_SUBST(MAGICK_CPPFLAGS)
 AC_SUBST(MAGICK_PCFLAGS)
 AC_SUBST(MAGICK_LDFLAGS)
 AC_SUBST(MAGICK_LIBS)
+AC_SUBST(MAGICK_FEATURES)
 
 # Set configured scripts to executable.
 AC_CONFIG_COMMANDS([default],[],[])
@@ -3526,4 +3538,5 @@ Options used to compile and link:
   LIBS            = $MAGICK_LIBS
   CXX             = $CXX
   CXXFLAGS        = $CXXFLAGS
+  FEATURES        = $MAGICK_FEATURES
 ])

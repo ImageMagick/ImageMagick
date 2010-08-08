@@ -9,7 +9,7 @@
   <configure name="NAME" value="ImageMagick"/>
   <configure name="LIB_VERSION" value="0x663"/>
   <configure name="LIB_VERSION_NUMBER" value="6,6,3,4"/>
-  <configure name="RELEASE_DATE" value="2010-08-06"/>
+  <configure name="RELEASE_DATE" value="2010-08-08"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
@@ -25,6 +25,7 @@
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
+  <configure name="FEATURES" value="OpenMP "/>
   <configure name="DELEGATES" value="bzlib fontconfig freetype jpeg jng png tiff x11 xml wmf zlib"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2010 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
