@@ -2964,10 +2964,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif /* not balfour */
       image->storage_class=DirectClass;
     }
-#if (MAGICKCORE_QUANTUM_DEPTH == 8)
-  if (image->depth > 8)
-    image->depth=8;
-#endif
+  if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+      (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
+    image->colorspace=GRAYColorspace;
   if (png_get_text(ping,ping_info,&text,&num_text) != 0)
     for (i=0; i < (ssize_t) num_text; i++)
     {

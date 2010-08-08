@@ -1,3 +1,9 @@
+2010-08-07  6.6.3-4 Cristy  <quetzlzacatenango@image...>
+  * The orient option sometimes improperly set "undefined" (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16795).
+  * Only list orientation options for the -list orientation option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16801).
+
 2010-08-05  6.6.3-3 Glenn Randers-Pehrson <glennrp@image...>
   * Properly map PNG intent to image->rendering_intent
 

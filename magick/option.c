@@ -1301,7 +1301,8 @@ static const OptionInfo
     { "LeftTop", (ssize_t) LeftTopOrientation, MagickFalse },
     { "RightTop", (ssize_t) RightTopOrientation, MagickFalse },
     { "RightBottom", (ssize_t) RightBottomOrientation, MagickFalse },
-    { "LeftBottom", (ssize_t) LeftBottomOrientation, MagickFalse }
+    { "LeftBottom", (ssize_t) LeftBottomOrientation, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedOrientation, MagickFalse }
   },
   PolicyDomainOptions[] =
   {
@@ -1311,7 +1312,8 @@ static const OptionInfo
     { "Filter", (ssize_t) FilterPolicyDomain, MagickFalse },
     { "Path", (ssize_t) PathPolicyDomain, MagickFalse },
     { "Resource", (ssize_t) ResourcePolicyDomain, MagickFalse },
-    { "System", (ssize_t) SystemPolicyDomain, MagickFalse }
+    { "System", (ssize_t) SystemPolicyDomain, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedPolicyDomain, MagickFalse }
   },
   PolicyRightsOptions[] =
   {
@@ -1319,7 +1321,8 @@ static const OptionInfo
     { "None", (ssize_t) NoPolicyRights, MagickFalse },
     { "Read", (ssize_t) ReadPolicyRights, MagickFalse },
     { "Write", (ssize_t) WritePolicyRights, MagickFalse },
-    { "Execute", (ssize_t) ExecutePolicyRights, MagickFalse }
+    { "Execute", (ssize_t) ExecutePolicyRights, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedPolicyRights, MagickFalse }
   },
   PreviewOptions[] =
   {
