@@ -5,6 +5,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16801).
   * Return proper standard deviation for combined channels (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16786).
+  * Handle transparency properly for the PSD image format.
 
 2010-08-05  6.6.3-3 Glenn Randers-Pehrson <glennrp@image...>
   * Properly map PNG intent to image->rendering_intent
