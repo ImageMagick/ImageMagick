@@ -2357,6 +2357,7 @@ MAGICK_CONFIGURE_SRC_PATH = @MAGICK_CONFIGURE_SRC_PATH@
 MAGICK_CPPFLAGS = @MAGICK_CPPFLAGS@
 MAGICK_CXXFLAGS = @MAGICK_CXXFLAGS@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_FEATURES = @MAGICK_FEATURES@
 MAGICK_FILTER_MODULE_PATH = @MAGICK_FILTER_MODULE_PATH@
 MAGICK_HDRI = @MAGICK_HDRI@
 MAGICK_LDFLAGS = @MAGICK_LDFLAGS@
@@ -2530,7 +2531,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 ltdl_LIBOBJS = @ltdl_LIBOBJS@
 ltdl_LTLIBOBJS = @ltdl_LTLIBOBJS@
 mandir = @mandir@
@@ -2730,7 +2730,7 @@ CONFIG_EXTRA_DIST = \
 	config/type-windows.xml.in \
 	config/type.xml.in
 
-LTDL_VERSION_INFO = -version-info 9:2:2
+LTDL_VERSION_INFO = -version-info 9:1:2
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \

@@ -30,7 +30,10 @@ typedef struct _ChannelStatistics
   double
     minima,
     maxima,
+    sum,
+    sum_squared,
     mean,
+    variance,
     standard_deviation,
     kurtosis,
     skewness;

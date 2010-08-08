@@ -38,35 +38,33 @@ extern "C" {
 #define GetAlphaPixelComponent(p) (QuantumRange-(p)->opacity)
 #define GetIndexPixelComponent(p) ((p)->index)
 
-#define SetRedPixelComponent(q,component) ((q)->red=(component))
-#define SetGreenPixelComponent(q,component) ((q)->green=(component))
-#define SetBluePixelComponent(q,component) ((q)->blue=(component))
-#define SetOpacityPixelComponent(q,component) ((q)->opacity=(component))
-#define SetAlphaPixelComponent(q,component) \
-  ((q)->opacity=(QuantumRange-(component)))
-#define SetIndexPixelComponent(q,component) ((q)->index=(component))
+#define SetRedPixelComponent(q,value) ((q)->red=(value))
+#define SetGreenPixelComponent(q,value) ((q)->green=(value))
+#define SetBluePixelComponent(q,value) ((q)->blue=(value))
+#define SetOpacityPixelComponent(q,value) ((q)->opacity=(value))
+#define SetAlphaPixelComponent(q,value) ((q)->opacity=(QuantumRange-(value)))
+#define SetIndexPixelComponent(q,value) ((q)->index=(value))
 
 #define GetGrayPixelComponent(p) ((p)->red)
-#define SetGrayPixelComponent(q,component) \
-  ((q)->red=(q)->green=(q)->blue=(component))
+#define SetGrayPixelComponent(q,value) ((q)->red=(q)->green=(q)->blue=(value))
 
 #define GetYPixelComponent(p) ((p)->red)
 #define GetCbPixelComponent(p) ((p)->green)
 #define GetCrPixelComponent(p) ((p)->blue)
 
-#define SetYPixelComponent(q,component) ((q)->red=(component))
-#define SetCbPixelComponent(q,component) ((q)->green=(component))
-#define SetCrPixelComponent(q,component) ((q)->blue=(component))
+#define SetYPixelComponent(q,value) ((q)->red=(value))
+#define SetCbPixelComponent(q,value) ((q)->green=(value))
+#define SetCrPixelComponent(q,value) ((q)->blue=(value))
 
 #define GetCyanPixelComponent(p) ((p)->red)
 #define GetMagentaPixelComponent(p) ((p)->green)
 #define GetYellowPixelComponent(p) ((p)->blue)
-#define GetBlackPixelComponent(p) ((p)->opacity)
+#define GetBlackPixelComponent(x) (indexes[x])
 
-#define SetCyanPixelComponent(q,component) ((q)->red=(component))
-#define SetMagentaPixelComponent(q,component) ((q)->green=(component))
-#define SetYellowPixelComponent(q,component) ((q)->blue=(component))
-#define SetBlackPixelComponent(q,component) ((q)->opacity=(component))
+#define SetCyanPixelComponent(q,value) ((q)->red=(value))
+#define SetMagentaPixelComponent(q,value) ((q)->green=(value))
+#define SetYellowPixelComponent(q,value) ((q)->blue=(value))
+#define SetBlackPixelComponent(x,value) (indexes[x]=(value))
 
 typedef struct _DoublePixelPacket
 {

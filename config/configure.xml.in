@@ -25,6 +25,7 @@
   <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="@DISTCHECK_CONFIG_FLAGS@"/>
   <configure name="HOST" value="@host@"/>
+  <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
   <configure name="DELEGATES" value="@DELEGATES@"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2010 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
