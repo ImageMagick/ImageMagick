@@ -4160,7 +4160,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
@@ -4441,7 +4441,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
@@ -4531,7 +4531,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
@@ -5424,7 +5424,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
