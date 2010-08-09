@@ -139,6 +139,7 @@ static MagickBooleanType CompareUsage(void)
       "-size geometry       width and height of image",
       "-transparent-color color",
       "                     transparent color",
+      "-subimage-search     search for subimage",
       "-type type           image type",
       "-verbose             print detailed information about the image",
       "-version             print version information",
@@ -225,13 +226,10 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
-    j,
-    k;
-
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    subimage_search;
 
   MagickStatusType
     status;
@@ -244,6 +242,10 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
 
   register ssize_t
     i;
+
+  ssize_t
+    j,
+    k;
 
   /*
     Set defaults.
@@ -282,6 +284,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   pend=MagickFalse;
   reconstruct_image=NewImageList();
   status=MagickTrue;
+  subimage_search=MagickFalse;
   /*
     Compare an image.
   */
@@ -836,6 +839,16 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("subimage-search",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                subimage_search=MagickFalse;
+                break;
+              }
+            subimage_search=MagickTrue;
+            break;
+          }
         ThrowCompareException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
@@ -929,39 +942,43 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     difference_image=CompareImageChannels(image,reconstruct_image,channels,
       metric,&distortion,exception);
   else
-    if (similarity_image != (Image *) NULL)
-      {
-        Image
-          *composite_image;
+    if (subimage_search == MagickFalse)
+      difference_image=CompareImageChannels(image,reconstruct_image,channels,
+        metric,&distortion,exception);
+    else
+      if (similarity_image != (Image *) NULL)
+        {
+          Image
+            *composite_image;
 
-        /*
-          Determine if reconstructed image is a subimage of the image.
-        */
-        composite_image=CloneImage(image,0,0,MagickTrue,exception);
-        if (composite_image == (Image *) NULL)
-          difference_image=CompareImageChannels(image,reconstruct_image,
-            channels,metric,&distortion,exception);
-        else
-          {
-            (void) CompositeImage(composite_image,CopyCompositeOp,
-              reconstruct_image,offset.x,offset.y);
-            difference_image=CompareImageChannels(image,composite_image,
+          /*
+            Determine if reconstructed image is a subimage of the image.
+          */
+          composite_image=CloneImage(image,0,0,MagickTrue,exception);
+          if (composite_image == (Image *) NULL)
+            difference_image=CompareImageChannels(image,reconstruct_image,
               channels,metric,&distortion,exception);
-            if (difference_image != (Image *) NULL)
-              {
-                difference_image->page.x=offset.x;
-                difference_image->page.y=offset.y;
-              }
-            composite_image=DestroyImage(composite_image);
-          }
-        if (difference_image == (Image *) NULL)
-          similarity_image=DestroyImage(similarity_image);
-        else
-          {
-            AppendImageToList(&difference_image,similarity_image);
-            similarity_image=(Image *) NULL;
-          }
-      }
+          else
+            {
+              (void) CompositeImage(composite_image,CopyCompositeOp,
+                reconstruct_image,offset.x,offset.y);
+              difference_image=CompareImageChannels(image,composite_image,
+                channels,metric,&distortion,exception);
+              if (difference_image != (Image *) NULL)
+                {
+                  difference_image->page.x=offset.x;
+                  difference_image->page.y=offset.y;
+                }
+              composite_image=DestroyImage(composite_image);
+            }
+          if (difference_image == (Image *) NULL)
+            similarity_image=DestroyImage(similarity_image);
+          else
+            {
+              AppendImageToList(&difference_image,similarity_image);
+              similarity_image=(Image *) NULL;
+            }
+        }
   if (difference_image == (Image *) NULL)
     status=0;
   else

@@ -608,6 +608,8 @@ static const OptionInfo
     { "-strokewidth", 1L, MagickFalse },
     { "+style", 0L, MagickFalse },
     { "-style", 1L, MagickFalse },
+    { "+subimage-search", 0L, MagickFalse },
+    { "-subimage-search", 0L, MagickFalse },
     { "+swap", 0L, MagickFalse },
     { "-swap", 1L, MagickFalse },
     { "+swirl", 0L, MagickFalse },

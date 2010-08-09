@@ -43,6 +43,7 @@ Image Settings:
   \-seed value          seed a new sequence of pseudo-random numbers
   \-set attribute value set an image attribute
   \-size geometry       width and height of image
+  \-subimage-search     search for subimage
   \-transparent-color color
                        transparent color
   \-type type           image type
