@@ -542,7 +542,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             } while (c != EOF);
             *p='\0';
             p=options;
-            while (isspace((int) ((unsigned char) c)) != 0)
+            while ((isspace((int) ((unsigned char) c)) != 0) && (c != EOF))
               c=ReadBlobByte(image);
             if (c == (int) '=')
               {
