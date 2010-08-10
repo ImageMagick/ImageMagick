@@ -34,7 +34,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16600).
   * Repair several issues when writing to stdout (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16620).
-  * A GIF image with the .bgr extention is still a GIF (reference
+  * A GIF image with the .bgr extension is still a GIF (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16662).
 
 2010-07-07  6.6.3-1 Glenn Randers-Pehrson <glennrp@image...>
@@ -103,8 +103,8 @@
   * Don't clamp floating point values for HDRI-enabled ImageMagick.
 
 2010-05-25  6.6.2-2 Anthony Thyssen <A.Thyssen@griffith...>
-  * Replaced '^' morphology kernel rotation with two varients '>' and '<'
-  * 'Skeleton' variant to thin down images as symetrically as possible.
+  * Replaced '^' morphology kernel rotation with two variants '>' and '<'
+  * 'Skeleton' variant to thin down images as symmetrically as possible.
   * Spelling correction:  Manhatten -> Manhattan
 
 2010-06-01  6.6.2-2 Glenn Randers-Pehrson <glennrp@image...>
@@ -153,7 +153,7 @@
     So the above will only produce a list of 2 kernels, not 4 kernels
 
 2010-05-18  6.6.2-0 Anthony Thyssen <A.Thyssen@griffith...>
-  * Separation of internal function MorphologyAppy() from
+  * Separation of internal function MorphologyApply() from
     MorphologyImageChannel() to calls to convolve without user settings.
   * Rewrite of MorphologyApply() to output better 'verbose' messages
   * Better handling of Gaussian tyle filters (bug fixes)
