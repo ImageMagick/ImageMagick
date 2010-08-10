@@ -7639,7 +7639,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   ping_color_type);
             }
         }
-      if (0) png_error(ping,
+      png_warning(ping,
         "Cannot write image with defined PNG:bit-depth or PNG:color-type.");
     }
 
