@@ -1553,10 +1553,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[RedChannel].sum+=GetRedPixelComponent(p);
       channel_statistics[RedChannel].sum_squared+=(double) p->red*
         GetRedPixelComponent(p);
-      channel_statistics[RedChannel].kurtosis+=(double) p->red*p->red*
-        p->red*GetRedPixelComponent(p);
-      channel_statistics[RedChannel].skewness+=(double) p->red*p->red*
+      channel_statistics[RedChannel].sum_cubed+=(double) p->red*p->red*
         GetRedPixelComponent(p);
+      channel_statistics[RedChannel].sum_fourth_power+=(double) p->red*p->red*
+        p->red*GetRedPixelComponent(p);
       if ((double) p->green < channel_statistics[GreenChannel].minima)
         channel_statistics[GreenChannel].minima=(double)
           GetGreenPixelComponent(p);
@@ -1566,10 +1566,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[GreenChannel].sum+=GetGreenPixelComponent(p);
       channel_statistics[GreenChannel].sum_squared+=(double) p->green*
         GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].kurtosis+=(double) p->green*p->green*
-        p->green*GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].skewness+=(double) p->green*p->green*
+      channel_statistics[GreenChannel].sum_cubed+=(double) p->green*p->green*
         GetGreenPixelComponent(p);
+      channel_statistics[GreenChannel].sum_fourth_power+=(double) p->green*
+        p->green*p->green*GetGreenPixelComponent(p);
       if ((double) p->blue < channel_statistics[BlueChannel].minima)
         channel_statistics[BlueChannel].minima=(double)
           GetBluePixelComponent(p);
@@ -1579,10 +1579,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[BlueChannel].sum+=GetBluePixelComponent(p);
       channel_statistics[BlueChannel].sum_squared+=(double) p->blue*
         GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].kurtosis+=(double) p->blue*p->blue*
-        p->blue*GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].skewness+=(double) p->blue*p->blue*
+      channel_statistics[BlueChannel].sum_cubed+=(double) p->blue*p->blue*
         GetBluePixelComponent(p);
+      channel_statistics[BlueChannel].sum_fourth_power+=(double) p->blue*
+        p->blue*p->blue*GetBluePixelComponent(p);
       if (image->matte != MagickFalse)
         {
           if ((double) p->opacity < channel_statistics[OpacityChannel].minima)
@@ -1594,10 +1594,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[OpacityChannel].sum+=GetOpacityPixelComponent(p);
           channel_statistics[OpacityChannel].sum_squared+=(double)
             p->opacity*GetOpacityPixelComponent(p);
-          channel_statistics[OpacityChannel].kurtosis+=(double) p->opacity*
-            p->opacity*p->opacity*GetOpacityPixelComponent(p);
-          channel_statistics[OpacityChannel].skewness+=(double) p->opacity*
+          channel_statistics[OpacityChannel].sum_cubed+=(double) p->opacity*
             p->opacity*GetOpacityPixelComponent(p);
+          channel_statistics[OpacityChannel].sum_fourth_power+=(double)
+            p->opacity*p->opacity*p->opacity*GetOpacityPixelComponent(p);
         }
       if (image->colorspace == CMYKColorspace)
         {
@@ -1608,10 +1608,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[BlackChannel].sum+=indexes[x];
           channel_statistics[BlackChannel].sum_squared+=(double)
             indexes[x]*indexes[x];
-          channel_statistics[BlackChannel].kurtosis+=(double) indexes[x]*
-            indexes[x]*indexes[x]*indexes[x];
-          channel_statistics[BlackChannel].skewness+=(double) indexes[x]*
+          channel_statistics[BlackChannel].sum_cubed+=(double) indexes[x]*
             indexes[x]*indexes[x];
+          channel_statistics[BlackChannel].sum_fourth_power+=(double)
+            indexes[x]*indexes[x]*indexes[x]*indexes[x];
         }
       x++;
       p++;
@@ -1622,13 +1622,13 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   {
     channel_statistics[i].sum/=area;
     channel_statistics[i].sum_squared/=area;
+    channel_statistics[i].sum_cubed/=area;
+    channel_statistics[i].sum_fourth_power/=area;
     channel_statistics[i].mean=channel_statistics[i].sum;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(channel_statistics[i].mean*
       channel_statistics[i].mean));
-    channel_statistics[i].kurtosis/=area;
-    channel_statistics[i].skewness/=area;
   }
   for (i=0; i < AllChannels; i++)
   {
@@ -1642,14 +1642,15 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[AllChannels].sum+=channel_statistics[i].sum;
     channel_statistics[AllChannels].sum_squared+=
       channel_statistics[i].sum_squared;
+    channel_statistics[AllChannels].sum_cubed+=channel_statistics[i].sum_cubed;
+    channel_statistics[AllChannels].sum_fourth_power+=
+      channel_statistics[i].sum_fourth_power;
     channel_statistics[AllChannels].mean+=channel_statistics[i].mean;
     channel_statistics[AllChannels].variance+=channel_statistics[i].variance-
       channel_statistics[i].mean*channel_statistics[i].mean;
     channel_statistics[AllChannels].standard_deviation+=
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
-    channel_statistics[AllChannels].kurtosis+=channel_statistics[i].kurtosis;
-    channel_statistics[AllChannels].skewness+=channel_statistics[i].skewness;
   }
   channels=3;
   if (image->matte != MagickFalse)
@@ -1658,6 +1659,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channels++;
   channel_statistics[AllChannels].sum/=channels;
   channel_statistics[AllChannels].sum_squared/=channels;
+  channel_statistics[AllChannels].sum_cubed/=channels;
+  channel_statistics[AllChannels].sum_fourth_power/=channels;
   channel_statistics[AllChannels].mean/=channels;
   channel_statistics[AllChannels].variance/=channels;
   channel_statistics[AllChannels].standard_deviation=
@@ -1667,28 +1670,22 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (i=0; i <= AllChannels; i++)
   {
     if (channel_statistics[i].standard_deviation == 0.0)
-      {
-        channel_statistics[i].kurtosis=0.0;
-        channel_statistics[i].skewness=0.0;
-      }
-    else
-      {
-        channel_statistics[i].skewness=(channel_statistics[i].skewness-
-          3.0*channel_statistics[i].mean*channel_statistics[i].sum_squared+
-          2.0*channel_statistics[i].mean*channel_statistics[i].mean*
-          channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
-           channel_statistics[i].standard_deviation*
-           channel_statistics[i].standard_deviation);
-        channel_statistics[i].kurtosis=(channel_statistics[i].kurtosis-
-          4.0*channel_statistics[i].mean*channel_statistics[i].skewness+
-          6.0*channel_statistics[i].mean*channel_statistics[i].mean*
-          channel_statistics[i].sum_squared-3.0*channel_statistics[i].mean*
-          channel_statistics[i].mean*1.0*channel_statistics[i].mean*
-          channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
-           channel_statistics[i].standard_deviation*
-           channel_statistics[i].standard_deviation*
-           channel_statistics[i].standard_deviation)-3.0;
-      }
+      continue;
+    channel_statistics[i].skewness=(channel_statistics[i].sum_cubed-
+      3.0*channel_statistics[i].mean*channel_statistics[i].sum_squared+
+      2.0*channel_statistics[i].mean*channel_statistics[i].mean*
+      channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
+      channel_statistics[i].standard_deviation*
+      channel_statistics[i].standard_deviation);
+    channel_statistics[i].kurtosis=(channel_statistics[i].sum_fourth_power-
+      4.0*channel_statistics[i].mean*channel_statistics[i].sum_cubed+
+      6.0*channel_statistics[i].mean*channel_statistics[i].mean*
+      channel_statistics[i].sum_squared-3.0*channel_statistics[i].mean*
+      channel_statistics[i].mean*1.0*channel_statistics[i].mean*
+      channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
+      channel_statistics[i].standard_deviation*
+      channel_statistics[i].standard_deviation*
+      channel_statistics[i].standard_deviation)-3.0;
   }
   return(channel_statistics);
 }
