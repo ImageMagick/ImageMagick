@@ -1,3 +1,7 @@
+2010-08-10  6.6.3-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Emit a warning if the PNG encoder can't satisfy the color type and
+    bit depth requested with a "-define" directive.
+
 2010-08-07  6.6.3-4 Cristy  <quetzlzacatenango@image...>
   * The orient option sometimes improperly set "undefined" (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16795).
