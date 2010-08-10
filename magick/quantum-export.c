@@ -946,19 +946,19 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             *q='\0';
             *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 7;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 6);
+            *q|=(((int) pixel == 0 ? 0x00 : 0x01) << 6);
             p++;
             *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 5;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 4);
+            *q|=(((int) pixel == 0 ? 0x00 : 0x01) << 4);
             p++;
             *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 3;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 2);
+            *q|=(((int) pixel == 0 ? 0x00 : 0x01) << 2);
             p++;
             *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 1;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
-            *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 0);
+            *q|=(((int) pixel == 0 ? 0x00 : 0x01) << 0);
             p++;
             q++;
           }
@@ -971,7 +971,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
                   (7-bit);
                 pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 :
                   0x01);
-                *q|=(((int) pixel != 0 ? 0x00 : 0x01) << (unsigned char)
+                *q|=(((int) pixel == 0 ? 0x00 : 0x01) << (unsigned char)
                   (7-bit-1));
                 p++;
               }
