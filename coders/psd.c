@@ -1998,7 +1998,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
     *icc_profile;
 
   MagickBooleanType
-    matte,
     status;
 
   PSDInfo
@@ -2309,10 +2308,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   /*
     Write composite image.
   */
-  matte=image->matte;
-  image->matte=MagickFalse;
   status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
-  image->matte=matte;
   (void) CloseBlob(image);
   return(status);
 }
