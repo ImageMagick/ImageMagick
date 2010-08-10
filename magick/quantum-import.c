@@ -1066,7 +1066,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               q->green=q->red;
               q->blue=q->red;
               q->opacity=(Quantum) (((*p) & (1UL << (unsigned char) (6-bit)))
-                == 0 ? TransparentOpacity : OpaqueOpacity);
+                != 0 ? TransparentOpacity : OpaqueOpacity);
               q++;
             }
             p++;

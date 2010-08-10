@@ -944,19 +944,19 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
           {
             *q='\0';
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 7;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 7;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
             *q|=(((int) pixel != 0 ? black : white) << 6);
             p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 5;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 5;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
             *q|=(((int) pixel != 0 ? black : white) << 4);
             p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 3;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 3;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
             *q|=(((int) pixel != 0 ? black : white) << 2);
             p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 1;
+            *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) << 1;
             pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 : 0x01);
             *q|=(((int) pixel != 0 ? black : white) << 0);
             p++;
@@ -967,7 +967,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
               *q='\0';
               for (bit=0; bit <= (ssize_t) (number_pixels % 4); bit+=2)
               {
-                *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) <<
+                *q|=(PixelIntensityToQuantum(p) > threshold ? black : white) <<
                   (7-bit);
                 pixel=(unsigned char) (p->opacity == OpaqueOpacity ? 0x00 :
                   0x01);
