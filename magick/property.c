@@ -2031,8 +2031,8 @@ MagickExport const char *GetImageProperty(const Image *image,
               char
                 value[MaxTextExtent];
 
-              (void) FormatMagickString(value,MaxTextExtent,"%g",(double)
-                alpha);
+              (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+                GetMagickPrecision(),(double) alpha);
               (void) SetImageProperty((Image *) image,property,value);
             }
           p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
@@ -2281,7 +2281,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelRange(image,image_info->channel,&minimum,
             &maximum,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",maximum);
+          (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),maximum);
           break;
         }
       if (LocaleNCompare("mean",property,4) == 0)
@@ -2304,7 +2305,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 
           (void) GetImageChannelRange(image,image_info->channel,&minimum,
             &maximum,&image->exception);
-          (void) FormatMagickString(value,MaxTextExtent,"%g",minimum);
+          (void) FormatMagickString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),minimum);
           break;
         }
       break;
