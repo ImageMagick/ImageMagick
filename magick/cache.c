@@ -201,8 +201,8 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   GetPixelCacheMethods(&cache_info->methods);
-  cache_info->reference_count=1;
   cache_info->semaphore=AllocateSemaphoreInfo();
+  cache_info->reference_count=1;
   cache_info->disk_semaphore=AllocateSemaphoreInfo();
   cache_info->debug=IsEventLogging();
   cache_info->signature=MagickSignature;
@@ -2215,6 +2215,8 @@ MagickExport Cache GetImagePixelCache(Image *image,
             Clone pixel cache.
           */
           clone_image=(*image);
+          clone_image.semaphore=AllocateSemaphoreInfo();
+          clone_image.reference_count=1;
           clone_image.cache=ClonePixelCache(cache_info);
           clone_info=(CacheInfo *) clone_image.cache;
           status=ClonePixelCacheNexus(cache_info,clone_info,exception);
@@ -2233,6 +2235,7 @@ MagickExport Cache GetImagePixelCache(Image *image,
                     }
                 }
             }
+          DestroySemaphoreInfo(&clone_image.semaphore);
         }
       UnlockSemaphoreInfo(cache_info->semaphore);
     }
