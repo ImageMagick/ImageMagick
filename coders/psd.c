@@ -2202,8 +2202,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
 
     (void) SetPSDSize(&psd_info,image,layer_info_size+
       (psd_info.version == 1 ? 8 : 16));
-    if (image->colorspace == CMYKColorspace)
-      layer_info_size++;
     if ((layer_info_size/2) != ((layer_info_size+1)/2))
       rounded_layer_info_size=layer_info_size+1;
     else
