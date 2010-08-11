@@ -200,6 +200,11 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
   {
     case UndefinedEvaluateOperator:
       break;
+    case AbsEvaluateOperator:
+    {
+      result=(MagickRealType) fabs((double) (pixel+value));
+      break;
+    }
     case AddEvaluateOperator:
     {
       result=(MagickRealType) (pixel+value);
