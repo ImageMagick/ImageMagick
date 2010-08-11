@@ -891,6 +891,7 @@ static const OptionInfo
   EvaluateOptions[] =
   {
     { "Undefined", (ssize_t) UndefinedEvaluateOperator, MagickTrue },
+    { "Abs", (ssize_t) AbsEvaluateOperator, MagickFalse },
     { "Add", (ssize_t) AddEvaluateOperator, MagickFalse },
     { "AddModulus", (ssize_t) AddModulusEvaluateOperator, MagickFalse },
     { "And", (ssize_t) AndEvaluateOperator, MagickFalse },

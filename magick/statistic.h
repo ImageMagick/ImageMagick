@@ -70,7 +70,8 @@ typedef enum
   CosineEvaluateOperator,
   SineEvaluateOperator,
   AddModulusEvaluateOperator,
-  MeanEvaluateOperator
+  MeanEvaluateOperator,
+  AbsEvaluateOperator
 } MagickEvaluateOperator;
 
 typedef enum
