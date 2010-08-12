@@ -2707,6 +2707,14 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         }
       if (LocaleCompare(expression,"Transparent") == 0)
         return(0.0);
+      if (LocaleNCompare(expression,"trunc",5) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+            exception);
+          alpha=alpha < 0.0 ? ceil((double) alpha) : 0.0 < alpha ?
+            floor((double) alpha) : alpha;
+          return(alpha);
+        }
       if (LocaleCompare(expression,"t") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;
