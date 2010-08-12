@@ -587,18 +587,27 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
   colorspace=image->colorspace;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    if (image->compression != RLECompression)
-      count=ReadBlob(image,packet_size*image->columns,pixels);
+    if (image->depth == 1)
+      {
+        count=ReadBlob(image,(image->columns+7)/8,pixels);
+        if (count < (ssize_t) ((image->columns+7)/8))
+          break;
+      }
     else
       {
-        count=ReadBlob(image,(size_t) offsets[y],compact_pixels);
-        if (count != (ssize_t) offsets[y])
+        if (image->compression != RLECompression)
+          count=ReadBlob(image,packet_size*image->columns,pixels);
+        else
+          {
+            count=ReadBlob(image,(size_t) offsets[y],compact_pixels);
+            if (count != (ssize_t) offsets[y])
+              break;
+            count=DecodePSDPixels((size_t) offsets[y],compact_pixels,
+              (ssize_t) image->depth,packet_size*image->columns,pixels);
+          }
+        if (count < (ssize_t) (packet_size*image->columns))
           break;
-        count=DecodePSDPixels((size_t) offsets[y],compact_pixels,
-          (ssize_t) image->depth,packet_size*image->columns,pixels);
       }
-    if (count < (ssize_t) (packet_size*image->columns))
-      break;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
@@ -638,6 +647,24 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
               q->red=image->colormap[(ssize_t) indexes[x]].red;
               q->green=image->colormap[(ssize_t) indexes[x]].green;
               q->blue=image->colormap[(ssize_t) indexes[x]].blue;
+              if (image->depth == 1)
+                {
+                  ssize_t
+                    bit;
+
+                  for (bit=0; bit < (image->columns % 8); bit++)
+                  {
+                    indexes[x]=((pixel & (0x01 << (7-bit))) != 0 ? 0 : 255);
+                    *q=image->colormap[(ssize_t) indexes[x]];
+                    q->red=image->colormap[(ssize_t) indexes[x]].red;
+                    q->green=image->colormap[(ssize_t) indexes[x]].green;
+                    q->blue=image->colormap[(ssize_t) indexes[x]].blue;
+                    q++;
+                    x++;
+                  }
+                  q--;
+                  x--;
+                }
             }
           break;
         }

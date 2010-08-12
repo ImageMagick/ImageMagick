@@ -734,7 +734,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           }
           for (bit=0; bit < (ssize_t) (number_pixels % 8); bit++)
           {
-            q->red=(((*p) & (1 << (7-bit))) == 0 ? black : white);
+            q->red=(((*p) & (0x01 << (7-bit))) == 0 ? black : white);
             q->green=q->red;
             q->blue=q->red;
             q++;
