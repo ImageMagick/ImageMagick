@@ -724,15 +724,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.blue_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.blue_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            sum=bmp_info.red_primary.x+bmp_info.red_primary.x+
+            sum=bmp_info.red_primary.x+bmp_info.red_primary.y+
               bmp_info.red_primary.z;
             image->chromaticity.red_primary.x/=sum;
             image->chromaticity.red_primary.y/=sum;
-            sum=bmp_info.green_primary.x+bmp_info.green_primary.x+
+            sum=bmp_info.green_primary.x+bmp_info.green_primary.y+
               bmp_info.green_primary.z;
             image->chromaticity.green_primary.x/=sum;
             image->chromaticity.green_primary.y/=sum;
-            sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x+
+            sum=bmp_info.blue_primary.x+bmp_info.blue_primary.y+
               bmp_info.blue_primary.z;
             image->chromaticity.blue_primary.x/=sum;
             image->chromaticity.blue_primary.y/=sum;
@@ -805,8 +805,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"UnrecognizedNumberOfColors");
         bmp_info.number_colors=0;
       }
-    if (bmp_info.compression > 3)
-      ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
       ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
