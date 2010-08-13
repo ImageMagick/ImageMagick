@@ -2,20 +2,17 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
-  <style type="text/css" media="all">
-    @import url("../www/magick.css");
-  </style>
-  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
-  <title>ImageMagick: Changelog</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
+  <title>ImageMagick: Changelog</title/>
   <meta http-equiv="Content-Language" content="en-US"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Application-name" content="ImageMagick"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="changelog, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
-  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -24,6 +21,12 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2010 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <style type="text/css" media="all">
+    @import url("../www/magick.css");
+  </style>
 </head>
 
 <body id="www-imagemagick-org">
@@ -164,7 +167,11 @@
 
 <div class="main">
 
-<ul><dt>2010-08-07  6.6.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-08-12  6.6.3-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> The -fx 2e+6/1e+5 argument no longer returns the wrong results (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16833).</li><br />
+<dt>2010-08-10  6.6.3-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Emit a warning if the PNG encoder can't satisfy the color type and    bit depth requested with a "-define" directive.</li><br />
+<dt>2010-08-07  6.6.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The orient option sometimes improperly set "undefined" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16795).</li>
   <li> Only list orientation options for the -list orientation option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16801).</li>
   <li> Return proper standard deviation for combined channels (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16786).</li>
@@ -185,7 +192,7 @@
 <dt>2010-07-09  6.6.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fix memory leak in for corrupt BMP images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16600).</li>
   <li> Repair several issues when writing to stdout (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16620).</li>
-  <li> A GIF image with the .bgr extention is still a GIF (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16662).</li><br />
+  <li> A GIF image with the .bgr extension is still a GIF (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16662).</li><br />
 <dt>2010-07-07  6.6.3-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> The PNG decoder failed to handle the tRNS chunk properly for grayscale    images where the png bit_depth was not the same as the quantum depth,    and the transparent color was not black.</li><br />
 <dt>2010-07-01  6.6.3-0 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
@@ -231,8 +238,8 @@
   <li> Reset image filename when reading inline images.</li>
   <li> Don't clamp floating point values for HDRI-enabled ImageMagick.</li><br />
 <dt>2010-05-25  6.6.2-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Replaced '^' morphology kernel rotation with two varients '>' and '<'</li>
-  <li> 'Skeleton' variant to thin down images as symetrically as possible.</li>
+  <li> Replaced '^' morphology kernel rotation with two variants '>' and '<'</li>
+  <li> 'Skeleton' variant to thin down images as symmetrically as possible.</li>
   <li> Spelling correction:  Manhatten -&gt; Manhattan</li><br />
 <dt>2010-06-01  6.6.2-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Properly scale color components of the PNG bKGD chunk.</li>
@@ -261,7 +268,7 @@
   <li> Rotation Expansion of single kernels '^' and '@' flags in arguments    EG: -set option:showkernel 1 -morphology Convolve 'Blur:0x2^'</li>
   <li> ExpandKernelInfo() (rotation expand) now groks symmetrical kernels.    So the above will only produce a list of 2 kernels, not 4 kernels</li><br />
 <dt>2010-05-18  6.6.2-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Separation of internal function MorphologyAppy() from    MorphologyImageChannel() to calls to convolve without user settings.</li>
+  <li> Separation of internal function MorphologyApply() from    MorphologyImageChannel() to calls to convolve without user settings.</li>
   <li> Rewrite of MorphologyApply() to output better 'verbose' messages</li>
   <li> Better handling of Gaussian tyle filters (bug fixes)</li>
   <li> Bug fix and optimization of kernel size calculations in "gem.c"</li>

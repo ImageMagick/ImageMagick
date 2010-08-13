@@ -6,20 +6,17 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U=" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" />
-  <style type="text/css" media="all">
-    @import url("../www/magick.css");
-  </style>
-  <link rel="shortcut icon" href="../images/wand.ico"  type="images/vnd.microsoft.icon"/>
-  <title>ImageMagick: Command-line Options</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
+  <title>ImageMagick: Command-line Options</title/>
   <meta http-equiv="Content-Language" content="en-US"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Application-name" content="ImageMagick"/>
+  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="command-line, options, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
-  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -28,6 +25,12 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2010 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <style type="text/css" media="all">
+    @import url("../www/magick.css");
+  </style>
 </head>
 
 <body id="www-imagemagick-org">
@@ -146,7 +149,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -2810,6 +2813,7 @@ matrix.</p>
   </thead>
   <tbody>
 
+    <tr><td>Abs </td>             <td>Add <em class="arg">value</em> to pixels and return absolute value. </td></tr>
     <tr><td>Add </td>             <td>Add <em class="arg">value</em> to pixels. </td></tr>
     <tr><td>AddModulus </td>      <td>Add <em class="arg">value</em> to pixels modulo <em class="QR">QuantumRange</em>.</td></tr>
     <tr><td>And  </td>            <td>Binary AND of pixels with <em class="arg">value</em>.</td></tr>
@@ -4894,7 +4898,7 @@ CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&m
 
 <p>For the JPEG-2000 image format, quality is mapped using a non-linear equation to the compression ratio required by the Jasper library. This non-linear equation is intended to loosely approximate the quality provided by the JPEG v1 format. The default quality value 100, a request for non-lossy compression.  A quality of 75 results in a request for 16:1 compression.</p>
 
-<p>For the MNG and PNG image formats, the quality value sets the zlib compression level (quality / 10) and filter-type (quality % 10). Compression levels range from 0 (fastest compression) to 100 (best but slowest). For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.  The default is PNG is 75.</p>
+<p>For the MNG and PNG image formats, the quality value sets the zlib compression level (quality / 10) and filter-type (quality % 10). For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.  The default PNG compression is 75.</p>
 
 <p>If filter-type is 4 or less, the specified filter-type is used for all scanlines:</p>
 
@@ -4912,19 +4916,21 @@ CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&m
 
 <p>Only if the output is MNG, if filter-type is 7, the LOCO color transformation and adaptive filtering with <em class="arg">minimum-sum-of-absolute-values</em> are used.</p>
 
-<p>The default is quality is 92, which means nearly the best compression with adaptive filtering. The quality setting has no effect on the appearance of PNG and MNG images, since the compression is always lossless.</p>
+<p>The quality setting has no effect on the appearance of PNG and MNG images, since the compression is always lossless.</p>
 
 <p>For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
-
-<p>When writing a JNG image with transparency, two quality values are required, one for the main image and one for the grayscale image that conveys the alpha channel. These are written as a single integer equal to the main image quality plus 1000 times the opacity quality. For example, if you want to use quality 85 for the main image and quality 90 to compress the opacity data, use <a href="#quality">-quality 90085</a>.</p>
 
 <div style="margin: auto;">
   <h4><a name="quantize" id="quantize"></a>-quantize <em class="arg">colorspace</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>reduce colors in this colorspace.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>reduce colors using this colorspace.</td><td style='text-align:right;'></td></tr></table>
 
-<p>To print a complete list of colorspaces, use the <a href="#list">-list colorspace</a> option.</p>
+<p>This setting defines the colorspace used to sort out and reduce the number
+of colors needed by an image (for later dithering) by operators such as <a
+href="#colors" >-colors</a>, Note that color reducion also happens
+automatically when saving images to color-limited image file formats, such as
+GIF, and PNG8.</p>
 
 
 <div style="margin: auto;">
