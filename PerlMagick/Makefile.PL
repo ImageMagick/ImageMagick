@@ -125,7 +125,7 @@ EOF
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/bzlib fontconfig freetype jpeg jng png tiff x11 xml zlib/) {
+foreach $delegate (qw/bzlib fontconfig freetype jpeg jng jp2 png tiff x11 xml zlib/) {
   if ( -d "t/$delegate" ) {
     if ( defined($ENV{'DISPLAY'}) && ($^O ne 'MSWin32') ) {
       if ( defined $ENV{'DISPLAY'} ) {
