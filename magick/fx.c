@@ -98,6 +98,7 @@
 #define NotEqualOperator 0xfa
 #define LogicalAndOperator 0xfb
 #define LogicalOrOperator 0xfc
+#define ExponentialNotation 0xfd
 
 struct _FxInfo
 {
@@ -190,29 +191,28 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
       (strstr(fx_info->expression,"e-") != (char *) NULL))
     {
       /*
-        Convert scientific notation.  '*' and '/' have the same precedence so
-        2e+6/1e+5 fails, instead use '@' to ensure proper results.
+        Convert scientific notation.
       */
-      (void) SubstituteString(&fx_info->expression,"0e+","0@10^");
-      (void) SubstituteString(&fx_info->expression,"1e+","1@10^");
-      (void) SubstituteString(&fx_info->expression,"2e+","2@10^");
-      (void) SubstituteString(&fx_info->expression,"3e+","3@10^");
-      (void) SubstituteString(&fx_info->expression,"4e+","4@10^");
-      (void) SubstituteString(&fx_info->expression,"5e+","5@10^");
-      (void) SubstituteString(&fx_info->expression,"6e+","6@10^");
-      (void) SubstituteString(&fx_info->expression,"7e+","7@10^");
-      (void) SubstituteString(&fx_info->expression,"8e+","8@10^");
-      (void) SubstituteString(&fx_info->expression,"9e+","9@10^");
-      (void) SubstituteString(&fx_info->expression,"0e-","0@10^-");
-      (void) SubstituteString(&fx_info->expression,"1e-","1@10^-");
-      (void) SubstituteString(&fx_info->expression,"2e-","2@10^-");
-      (void) SubstituteString(&fx_info->expression,"3e-","3@10^-");
-      (void) SubstituteString(&fx_info->expression,"4e-","4@10^-");
-      (void) SubstituteString(&fx_info->expression,"5e-","5@10^-");
-      (void) SubstituteString(&fx_info->expression,"6e-","6@10^-");
-      (void) SubstituteString(&fx_info->expression,"7e-","7@10^-");
-      (void) SubstituteString(&fx_info->expression,"8e-","8@10^-");
-      (void) SubstituteString(&fx_info->expression,"9e-","9@10^-");
+      (void) SubstituteString(&fx_info->expression,"0e+","0**10^");
+      (void) SubstituteString(&fx_info->expression,"1e+","1**10^");
+      (void) SubstituteString(&fx_info->expression,"2e+","2**10^");
+      (void) SubstituteString(&fx_info->expression,"3e+","3**10^");
+      (void) SubstituteString(&fx_info->expression,"4e+","4**10^");
+      (void) SubstituteString(&fx_info->expression,"5e+","5**10^");
+      (void) SubstituteString(&fx_info->expression,"6e+","6**10^");
+      (void) SubstituteString(&fx_info->expression,"7e+","7**10^");
+      (void) SubstituteString(&fx_info->expression,"8e+","8**10^");
+      (void) SubstituteString(&fx_info->expression,"9e+","9**10^");
+      (void) SubstituteString(&fx_info->expression,"0e-","0**10^-");
+      (void) SubstituteString(&fx_info->expression,"1e-","1**10^-");
+      (void) SubstituteString(&fx_info->expression,"2e-","2**10^-");
+      (void) SubstituteString(&fx_info->expression,"3e-","3**10^-");
+      (void) SubstituteString(&fx_info->expression,"4e-","4**10^-");
+      (void) SubstituteString(&fx_info->expression,"5e-","5**10^-");
+      (void) SubstituteString(&fx_info->expression,"6e-","6**10^-");
+      (void) SubstituteString(&fx_info->expression,"7e-","7**10^-");
+      (void) SubstituteString(&fx_info->expression,"8e-","8**10^-");
+      (void) SubstituteString(&fx_info->expression,"9e-","9**10^-");
     }
   /*
     Convert complex to simple operators.
@@ -234,6 +234,8 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   (void) SubstituteString(&fx_info->expression,"&&",fx_op);
   *fx_op=(char) LogicalOrOperator;
   (void) SubstituteString(&fx_info->expression,"||",fx_op);
+  *fx_op=(char) ExponentialNotation;
+  (void) SubstituteString(&fx_info->expression,"**",fx_op);
   return(fx_info);
 }
 
@@ -1852,6 +1854,7 @@ static const char *FxOperatorPrecedence(const char *expression,
     NullPrecedence,
     BitwiseComplementPrecedence,
     ExponentPrecedence,
+    ExponentialNotationPrecedence,
     MultiplyPrecedence,
     AdditionPrecedence,
     ShiftPrecedence,
@@ -2011,6 +2014,11 @@ static const char *FxOperatorPrecedence(const char *expression,
           precedence=LogicalOrPrecedence;
           break;
         }
+        case ExponentialNotation:
+        {
+          precedence=ExponentialNotationPrecedence;
+          break;
+        }
         case ':':
         case '?':
         {
@@ -2116,7 +2124,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           return(*beta);
         }
         case '*':
-        case '@':
+        case ExponentialNotation:
         {
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
           return(alpha*(*beta));
