@@ -933,52 +933,49 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     ThrowCompareException(OptionError,"MissingAnImageFilename",argv[i]);
   image=GetImageFromList(image,0);
   reconstruct_image=GetImageFromList(image,1);
-  similarity_image=SimilarityImage(image,reconstruct_image,&offset,
-    &similarity_metric,exception);
-  if (similarity_metric > dissimilarity_threshold)
-    ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
+  if (subimage_search != MagickFalse)
+    {
+      similarity_image=SimilarityImage(image,reconstruct_image,&offset,
+        &similarity_metric,exception);
+      if (similarity_metric > dissimilarity_threshold)
+        ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
+    }
   if ((reconstruct_image->columns == image->columns) &&
       (reconstruct_image->rows == image->rows))
     difference_image=CompareImageChannels(image,reconstruct_image,channels,
       metric,&distortion,exception);
   else
-    if (subimage_search == MagickFalse)
-      difference_image=CompareImageChannels(image,reconstruct_image,channels,
-        metric,&distortion,exception);
-    else
-      if (similarity_image != (Image *) NULL)
-        {
-          Image
-            *composite_image;
+    if (similarity_image != (Image *) NULL)
+      {
+        Image
+          *composite_image;
 
-          /*
-            Determine if reconstructed image is a subimage of the image.
-          */
-          composite_image=CloneImage(image,0,0,MagickTrue,exception);
-          if (composite_image == (Image *) NULL)
-            difference_image=CompareImageChannels(image,reconstruct_image,
+        /*
+          Determine if reconstructed image is a subimage of the image.
+        */
+        composite_image=CloneImage(image,0,0,MagickTrue,exception);
+        if (composite_image == (Image *) NULL)
+          difference_image=CompareImageChannels(image,reconstruct_image,
+            channels,metric,&distortion,exception);
+        else
+          {
+            (void) CompositeImage(composite_image,CopyCompositeOp,
+              reconstruct_image,offset.x,offset.y);
+            difference_image=CompareImageChannels(image,composite_image,
               channels,metric,&distortion,exception);
-          else
-            {
-              (void) CompositeImage(composite_image,CopyCompositeOp,
-                reconstruct_image,offset.x,offset.y);
-              difference_image=CompareImageChannels(image,composite_image,
-                channels,metric,&distortion,exception);
-              if (difference_image != (Image *) NULL)
-                {
-                  difference_image->page.x=offset.x;
-                  difference_image->page.y=offset.y;
-                }
-              composite_image=DestroyImage(composite_image);
-            }
-          if (difference_image == (Image *) NULL)
-            similarity_image=DestroyImage(similarity_image);
-          else
-            {
-              AppendImageToList(&difference_image,similarity_image);
-              similarity_image=(Image *) NULL;
-            }
-        }
+            if (difference_image != (Image *) NULL)
+              {
+                difference_image->page.x=offset.x;
+                difference_image->page.y=offset.y;
+              }
+            composite_image=DestroyImage(composite_image);
+          }
+        if (difference_image != (Image *) NULL)
+          {
+            AppendImageToList(&difference_image,similarity_image);
+            similarity_image=(Image *) NULL;
+          }
+      }
   if (difference_image == (Image *) NULL)
     status=0;
   else
