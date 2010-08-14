@@ -1404,9 +1404,6 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   similarity=0.0;
   image_view=AcquireCacheView(image);
   reference_view=AcquireCacheView(reference);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
-#endif
   for (y=0; y < (ssize_t) reference->rows; y++)
   {
     register const IndexPacket
@@ -1460,9 +1457,6 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
             reference_indexes[x]);
           thread_similarity+=distance*distance;
         }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_GetSimilarityMetric)
-#endif
       similarity+=thread_similarity;
       p++;
       q++;
@@ -1506,8 +1500,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
   *similarity_metric=1.0;
-  if ((reference->columns > image->columns) ||
-      (reference->rows > image->rows))
+  if ((reference->columns > image->columns) || (reference->rows > image->rows))
     ThrowImageException(ImageError,"ImageSizeDiffers");
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
     image->rows-reference->rows+1,MagickTrue,exception);
