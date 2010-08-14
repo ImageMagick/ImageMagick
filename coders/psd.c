@@ -654,7 +654,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
 
                   for (bit=0; bit < (image->columns % 8); bit++)
                   {
-                    indexes[x]=((pixel & (0x01 << (7-bit))) != 0 ? 0 : 255);
+                    indexes[x]=((((unsigned char) pixel) & (0x01 << (7-bit)))
+                      != 0 ? 0 : 255);
                     *q=image->colormap[(ssize_t) indexes[x]];
                     q->red=image->colormap[(ssize_t) indexes[x]].red;
                     q->green=image->colormap[(ssize_t) indexes[x]].green;
