@@ -1,6 +1,7 @@
 2010-08-13  6.6.3-6 Cristy  <quetzlzacatenango@image...>
   * The AdobeRgb.tif TIFF image no longer faults under Windows (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16838).
+  * Add -subimage-search option to the compare utility.
 
 2010-08-12  6.6.3-5 Cristy  <quetzlzacatenango@image...>
   * The -fx 2e+6/1e+5 argument no longer returns the wrong results (reference
@@ -18,7 +19,6 @@
   * Return proper standard deviation for combined channels (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16786).
   * Handle transparency properly for the PSD image format.
-  * Add -subimage-search option to the compare utility.
 
 2010-08-05  6.6.3-3 Glenn Randers-Pehrson <glennrp@image...>
   * Properly map PNG intent to image->rendering_intent
