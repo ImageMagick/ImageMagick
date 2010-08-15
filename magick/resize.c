@@ -254,15 +254,15 @@ static MagickRealType Kaiser(const MagickRealType x,
 static MagickRealType Lagrange(const MagickRealType x,
   const ResizeFilter *resize_filter)
 {
-  ssize_t
-    n,
-    order;
-
   MagickRealType
     value;
 
   register ssize_t
     i;
+
+  ssize_t
+    n,
+    order;
 
   /*
     Lagrange Piece-Wise polynomial fit of Sinc: N is the 'order' of the
@@ -464,15 +464,15 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     filter_type,
     window_type;
 
-  ssize_t
-    option;
-
   MagickRealType
     B,
     C;
 
   register ResizeFilter
     *resize_filter;
+
+  ssize_t
+    option;
 
   /*
     Table Mapping given Filter, into  Weighting and Windowing functions.  A
@@ -648,8 +648,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   artifact=GetImageArtifact(image,"filter:filter");
   if (artifact != (const char *) NULL)
     {
-      option=ParseMagickOption(MagickFilterOptions,MagickFalse,
-        artifact);
+      option=ParseMagickOption(MagickFilterOptions,MagickFalse,artifact);
       if ((UndefinedFilter < option) && (option < SentinelFilter))
         {
           /*
@@ -672,16 +671,15 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
-          option=ParseMagickOption(MagickFilterOptions,MagickFalse,
-            artifact);
+          option=ParseMagickOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
               if (option != LanczosFilter)
                 window_type=(FilterTypes) option;
-             else
-               window_type=cylindrical != MagickFalse ? BesselFilter :
-                 SincFilter;
-           }
+              else
+                window_type=cylindrical != MagickFalse ? BesselFilter :
+                  SincFilter;
+            }
         }
     }
   else
@@ -797,11 +795,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         Output filter graph -- for graphing filter result.
       */
       support=GetResizeFilterSupport(resize_filter);
-      (void) printf("# support = %g\n",support);
+      (void) fprintf(stdout,"# support = %g\n",support);
       for (x=0.0; x <= support; x+=0.01f)
-        (void) printf("%5.2lf\t%lf\n",x,(double) GetResizeFilterWeight(
+        (void) fprintf(stdout,"%5.2lf\t%lf\n",x,(double) GetResizeFilterWeight(
           resize_filter,x));
-      (void) printf("%5.2lf\t%lf\n",support,0.0);
+      (void) fprintf(stdout,"%5.2lf\t%lf\n",support,0.0);
     }
   return(resize_filter);
 }
@@ -821,9 +819,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 %
 %  The format of the AdaptiveResizeImage method is:
 %
-%      Image *AdaptiveResizeImage(const Image *image,
-%        const size_t columns,const size_t rows,
-%        ExceptionInfo *exception)
+%      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -847,9 +844,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
   Image
     *resize_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -861,6 +855,9 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 
   ResampleFilter
     *resample_filter;
+
+  ssize_t
+    y;
 
   /*
     Adaptively resize image.
@@ -1388,10 +1385,10 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=(size_t) (x_resolution*image->columns/
-    (image->x_resolution == 0.0 ? 72.0 : image->x_resolution)+0.5);
-  height=(size_t) (y_resolution*image->rows/
-    (image->y_resolution == 0.0 ? 72.0 : image->y_resolution)+0.5);
+  width=(size_t) (x_resolution*image->columns/(image->x_resolution == 0.0 ?
+    72.0 : image->x_resolution)+0.5);
+  height=(size_t) (y_resolution*image->rows/(image->y_resolution == 0.0 ?
+    72.0 : image->y_resolution)+0.5);
   resample_image=ResizeImage(image,width,height,filter,blur,exception);
   if (resample_image != (Image *) NULL)
     {
@@ -1436,9 +1433,9 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *LiquidRescaleImage(const Image *image,
-  const size_t columns,const size_t rows,
-  const double delta_x,const double rigidity,ExceptionInfo *exception)
+MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
+  const size_t rows,const double delta_x,const double rigidity,
+  ExceptionInfo *exception)
 {
 #define LiquidRescaleImageTag  "Rescale/Image"
 
@@ -1589,9 +1586,9 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 }
 #else
 MagickExport Image *LiquidRescaleImage(const Image *image,
-  const size_t magick_unused(columns),
-  const size_t magick_unused(rows),const double magick_unused(delta_x),
-  const double magick_unused(rigidity),ExceptionInfo *exception)
+  const size_t magick_unused(columns),const size_t magick_unused(rows),
+  const double magick_unused(delta_x),const double magick_unused(rigidity),
+  ExceptionInfo *exception)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1641,8 +1638,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 %
 %    o filter: Image filter to use.
 %
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
-%            Typically set this to 1.0.
+%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.  Typically set
+%      this to 1.0.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1715,7 +1712,7 @@ static inline double MagickMin(const double x,const double y)
 
 static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   const Image *image,Image *resize_image,const MagickRealType x_factor,
-  const MagickSizeType span,MagickOffsetType *quantum,ExceptionInfo *exception)
+  const MagickSizeType span,MagickOffsetType *offset,ExceptionInfo *exception)
 {
 #define ResizeImageTag  "Resize/Image"
 
@@ -1729,9 +1726,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   ContributionInfo
     **restrict contributions;
 
-  ssize_t
-    x;
-
   MagickBooleanType
     status;
 
@@ -1741,6 +1735,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   MagickRealType
     scale,
     support;
+
+  ssize_t
+    x;
 
   /*
     Apply filter to resize horizontally from image to resize image.
@@ -1778,11 +1775,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 #endif
   for (x=0; x < (ssize_t) resize_image->columns; x++)
   {
-    ssize_t
-      n,
-      start,
-      stop;
-
     MagickRealType
       center,
       density;
@@ -1804,6 +1796,11 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 
     register PixelPacket
       *restrict q;
+
+    ssize_t
+      n,
+      start,
+      stop;
 
     if (status == MagickFalse)
       continue;
@@ -1831,9 +1828,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }
-    p=GetCacheViewVirtualPixels(image_view,contribution[0].pixel,0,
-      (size_t) (contribution[n-1].pixel-contribution[0].pixel+1),
-      image->rows,exception);
+    p=GetCacheViewVirtualPixels(image_view,contribution[0].pixel,0,(size_t)
+      (contribution[n-1].pixel-contribution[0].pixel+1),image->rows,exception);
     q=QueueCacheViewAuthenticPixels(resize_view,x,0,1,resize_image->rows,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -1845,9 +1841,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
     for (y=0; y < (ssize_t) resize_image->rows; y++)
     {
-      ssize_t
-        j;
-
       MagickPixelPacket
         pixel;
 
@@ -1856,6 +1849,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 
       register ssize_t
         i;
+
+      ssize_t
+        j;
 
       pixel=zero;
       if (image->matte == MagickFalse)
@@ -1946,7 +1942,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_HorizontalFilter)
 #endif
-        proceed=SetImageProgress(image,ResizeImageTag,(*quantum)++,span);
+        proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1959,7 +1955,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 
 static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   const Image *image,Image *resize_image,const MagickRealType y_factor,
-  const MagickSizeType span,MagickOffsetType *quantum,ExceptionInfo *exception)
+  const MagickSizeType span,MagickOffsetType *offset,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -1971,9 +1967,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   ContributionInfo
     **restrict contributions;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -1984,8 +1977,11 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     scale,
     support;
 
+  ssize_t
+    y;
+
   /*
-    Apply filter to resize vertically from image to resize_image.
+    Apply filter to resize vertically from image to resize image.
   */
   scale=MagickMax(1.0/y_factor,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
@@ -2020,11 +2016,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
-    ssize_t
-      n,
-      start,
-      stop;
-
     MagickRealType
       center,
       density;
@@ -2041,11 +2032,16 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     register IndexPacket
       *restrict resize_indexes;
 
+    register PixelPacket
+      *restrict q;
+
     register ssize_t
       x;
 
-    register PixelPacket
-      *restrict q;
+    ssize_t
+      n,
+      start,
+      stop;
 
     if (status == MagickFalse)
       continue;
@@ -2074,8 +2070,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           contribution[i].weight*=density;
       }
     p=GetCacheViewVirtualPixels(image_view,0,contribution[0].pixel,
-      image->columns,(size_t) (contribution[n-1].pixel-
-      contribution[0].pixel+1),exception);
+      image->columns,(size_t) (contribution[n-1].pixel-contribution[0].pixel+1),
+      exception);
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2087,9 +2083,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      ssize_t
-        j;
-
       MagickPixelPacket
         pixel;
 
@@ -2098,6 +2091,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 
       register ssize_t
         i;
+
+      ssize_t
+        j;
 
       pixel=zero;
       if (image->matte == MagickFalse)
@@ -2188,7 +2184,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_VerticalFilter)
 #endif
-        proceed=SetImageProgress(image,ResizeImageTag,(*quantum)++,span);
+        proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2212,6 +2208,9 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
     *filter_image,
     *resize_image;
 
+  MagickOffsetType
+    offset;
+
   MagickRealType
     x_factor,
     y_factor;
@@ -2224,9 +2223,6 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
 
   ResizeFilter
     *resize_filter;
-
-  MagickOffsetType
-    quantum;
 
   /*
     Acquire resize image.
@@ -2271,22 +2267,22 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   /*
     Resize image.
   */
-  quantum=0;
+  offset=0;
   if ((x_factor*y_factor) > WorkLoadFactor)
     {
       span=(MagickSizeType) (filter_image->columns+rows);
       status=HorizontalFilter(resize_filter,image,filter_image,x_factor,span,
-        &quantum,exception);
+        &offset,exception);
       status&=VerticalFilter(resize_filter,filter_image,resize_image,y_factor,
-        span,&quantum,exception);
+        span,&offset,exception);
     }
   else
     {
       span=(MagickSizeType) (filter_image->rows+columns);
       status=VerticalFilter(resize_filter,image,filter_image,y_factor,span,
-        &quantum,exception);
+        &offset,exception);
       status&=HorizontalFilter(resize_filter,filter_image,resize_image,x_factor,
-        span,&quantum,exception);
+        span,&offset,exception);
     }
   /*
     Free resources.
@@ -2396,9 +2392,6 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
 #endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
-    ssize_t
-      y_offset;
-
     register const IndexPacket
       *restrict indexes;
 
@@ -2414,9 +2407,13 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     register PixelPacket
       *restrict q;
 
+    ssize_t
+      y_offset;
+
     if (status == MagickFalse)
       continue;
-    y_offset=(ssize_t) (((MagickRealType) y+0.5)*image->rows/sample_image->rows);
+    y_offset=(ssize_t) (((MagickRealType) y+0.5)*image->rows/
+      sample_image->rows);
     p=GetCacheViewVirtualPixels(image_view,0,y_offset,image->columns,1,
       exception);
     q=QueueCacheViewAuthenticPixels(sample_view,0,y,sample_image->columns,1,
@@ -2500,10 +2497,6 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   Image
     *scale_image;
 
-  ssize_t
-    number_rows,
-    y;
-
   MagickBooleanType
     next_column,
     next_row,
@@ -2523,6 +2516,10 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
 
   register ssize_t
     i;
+
+  ssize_t
+    number_rows,
+    y;
 
   /*
     Initialize scaled image attributes.
@@ -2592,15 +2589,15 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     register IndexPacket
       *restrict scale_indexes;
 
-    register ssize_t
-      x;
-
     register MagickPixelPacket
       *restrict s,
       *restrict t;
 
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     q=QueueCacheViewAuthenticPixels(scale_view,0,y,scale_image->columns,1,
       exception);
@@ -2636,7 +2633,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         */
         while (scale.y < span.y)
         {
-          if ((next_row != MagickFalse) && (number_rows < (ssize_t) image->rows))
+          if ((next_row != MagickFalse) &&
+              (number_rows < (ssize_t) image->rows))
             {
               /*
                 Read a new scanline.
@@ -2653,7 +2651,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
                 if (image->matte != MagickFalse)
                   x_vector[x].opacity=(MagickRealType)
-                   GetOpacityPixelComponent(p);
+                    GetOpacityPixelComponent(p);
                 if (indexes != (IndexPacket *) NULL)
                   x_vector[x].index=(MagickRealType) indexes[x];
                 p++;
@@ -2926,8 +2924,8 @@ MagickExport void SetResizeFilterSupport(ResizeFilter *resize_filter,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ThumbnailImage(const Image *image,
-  const size_t columns,const size_t rows,ExceptionInfo *exception)
+MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
 #define SampleFactor  5
 
@@ -2944,11 +2942,11 @@ MagickExport Image *ThumbnailImage(const Image *image,
     x_factor,
     y_factor;
 
-  struct stat
-    attributes;
-
   size_t
     version;
+
+  struct stat
+    attributes;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
