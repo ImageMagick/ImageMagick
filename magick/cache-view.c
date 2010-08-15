@@ -303,11 +303,11 @@ MagickExport ExceptionInfo *GetCacheViewException(const CacheView *cache_view)
 */
 MagickExport MagickSizeType GetCacheViewExtent(const CacheView *cache_view)
 {
-  ssize_t
-    id;
-
   MagickSizeType
     extent;
+
+  ssize_t
+    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -391,11 +391,11 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
   Cache
     cache;
 
-  ssize_t
-    id;
-
   PixelPacket
     *pixels;
+
+  ssize_t
+    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -447,11 +447,11 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   Cache
     cache;
 
-  ssize_t
-    id;
-
   PixelPacket
     *pixels;
+
+  ssize_t
+    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -538,11 +538,11 @@ MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
 */
 MagickExport PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
 {
-  ssize_t
-    id;
-
   PixelPacket
     *pixels;
+
+  ssize_t
+    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -662,8 +662,7 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixelQueue(
 %
 %      const PixelPacket *GetCacheViewVirtualPixels(
 %        const CacheView *cache_view,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows,
-%        ExceptionInfo *exception)
+%        const size_t columns,const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -849,11 +848,11 @@ MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
   Cache
     cache;
 
-  ssize_t
-    id;
-
   PixelPacket
     *pixels;
+
+  ssize_t
+    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -972,18 +971,14 @@ MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
 MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
   CacheView *cache_view,ExceptionInfo *exception)
 {
-  ssize_t
-    id;
-
   MagickBooleanType
     status;
 
+  ssize_t
+    id;
+
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-if (0)
-  if (cache_view->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      cache_view->image->filename);
   id=GetOpenMPThreadId();
   assert(id < (ssize_t) cache_view->number_threads);
   status=SyncAuthenticPixelCacheNexus(cache_view->image,

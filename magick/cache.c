@@ -250,11 +250,11 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
 MagickExport NexusInfo **AcquirePixelCacheNexus(
   const size_t number_threads)
 {
-  register ssize_t
-    i;
-
   NexusInfo
     **nexus_info;
+
+  register ssize_t
+    i;
 
   nexus_info=(NexusInfo **) AcquireAlignedMemory(number_threads,
     sizeof(*nexus_info));
@@ -422,12 +422,12 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     *restrict nexus_indexes,
     *restrict indexes;
 
-  register ssize_t
-    i;
-
   register PixelPacket
     *restrict p,
     *restrict q;
+
+  register ssize_t
+    i;
 
   /*
     Apply clip mask.
@@ -584,14 +584,14 @@ static MagickBooleanType ClonePixelCacheNexus(CacheInfo *destination,
   MagickSizeType
     number_pixels;
 
-  register ssize_t
-    i;
-
   register const NexusInfo
     *p;
 
   register NexusInfo
     *q;
+
+  register ssize_t
+    i;
 
   status=MagickTrue;
   for (i=0; i < (ssize_t) source->number_threads; i++)
@@ -878,11 +878,11 @@ static MagickBooleanType CloneDiskToDiskPixelCache(CacheInfo *clone_info,
   MagickSizeType
     length;
 
-  register ssize_t
-    y;
-
   register PixelPacket
     *restrict pixels;
+
+  register ssize_t
+    y;
 
   size_t
     columns,
@@ -1043,12 +1043,12 @@ static MagickBooleanType CloneDiskToMemoryPixelCache(CacheInfo *clone_info,
   MagickSizeType
     length;
 
-  register ssize_t
-    y;
-
   register PixelPacket
     *restrict pixels,
     *restrict q;
+
+  register ssize_t
+    y;
 
   size_t
     columns,
@@ -1155,12 +1155,12 @@ static MagickBooleanType CloneMemoryToDiskPixelCache(CacheInfo *clone_info,
   MagickSizeType
     length;
 
-  register ssize_t
-    y;
-
   register PixelPacket
     *restrict p,
     *restrict pixels;
+
+  register ssize_t
+    y;
 
   size_t
     columns,
@@ -1302,18 +1302,16 @@ static MagickBooleanType CloneMemoryToDiskPixelCache(CacheInfo *clone_info,
 static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *magick_unused(exception))
 {
-  register ssize_t
-    y;
-
   register PixelPacket
     *restrict pixels,
     *restrict source_pixels;
 
-  size_t
-    length;
+  register ssize_t
+    y;
 
   size_t
     columns,
+    length,
     rows;
 
   if (cache_info->debug != MagickFalse)
@@ -1818,8 +1816,8 @@ static inline MagickBooleanType IsNexusInCore(const CacheInfo *cache_info,
   return(MagickTrue);
 }
 
-MagickExport PixelPacket *GetAuthenticPixelCacheNexus(Image *image,const ssize_t x,
-  const ssize_t y,const size_t columns,const size_t rows,
+MagickExport PixelPacket *GetAuthenticPixelCacheNexus(Image *image,
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
   NexusInfo *nexus_info,ExceptionInfo *exception)
 {
   CacheInfo
@@ -3281,12 +3279,12 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   register IndexPacket
     *restrict indexes;
 
+  register PixelPacket
+    *restrict q;
+
   register ssize_t
     u,
     v;
-
-  register PixelPacket
-    *restrict q;
 
   /*
     Acquire pixels.
@@ -3899,12 +3897,12 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     *restrict nexus_indexes,
     *restrict indexes;
 
-  register ssize_t
-    i;
-
   register PixelPacket
     *restrict p,
     *restrict q;
+
+  register ssize_t
+    i;
 
   /*
     Apply clip mask.
@@ -4057,10 +4055,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     status;
 
   size_t
+    columns,
     packet_size;
-
-  size_t
-    columns;
 
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -4289,11 +4285,11 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   Image
     clone_image;
 
-  ssize_t
-    page_size;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    page_size;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4766,11 +4762,11 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     length,
     number_pixels;
 
-  register ssize_t
-    y;
-
   register PixelPacket
     *restrict q;
+
+  register ssize_t
+    y;
 
   size_t
     rows;
