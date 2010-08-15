@@ -2045,8 +2045,8 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-y-1,
       image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(transpose_view,(ssize_t) (image->rows-y-1),0,
-      1,transpose_image->rows,exception);
+    q=QueueCacheViewAuthenticPixels(transpose_view,(ssize_t) (image->rows-y-1),
+      0,1,transpose_image->rows,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
