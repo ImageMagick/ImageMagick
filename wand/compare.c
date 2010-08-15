@@ -945,7 +945,10 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     difference_image=CompareImageChannels(image,reconstruct_image,channels,
       metric,&distortion,exception);
   else
-    if (similarity_image != (Image *) NULL)
+    if (similarity_image == (Image *) NULL)
+      ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
+        image->filename)
+    else
       {
         Image
           *composite_image;
