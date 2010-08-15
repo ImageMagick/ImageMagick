@@ -1,3 +1,7 @@
+2010-08-15  6.6.3-6 Cristy  <quetzlzacatenango@image...>
+  * Throw exception if image size differs for the compare program but the
+    -subimage-search option is not specified.
+
 2010-08-13  6.6.3-6 Cristy  <quetzlzacatenango@image...>
   * The AdobeRgb.tif TIFF image no longer faults under Windows (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16838).
