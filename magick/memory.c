@@ -186,6 +186,14 @@ static MagickBooleanType
 %    o quantum: the number of bytes in each quantum.
 %
 */
+
+static inline size_t MagickMax(const size_t x,const size_t y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
   size_t
@@ -202,7 +210,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *memory;
 
-    if (posix_memalign(&memory,AlignedSize,size) == 0)
+    if (posix_memalign(&memory,AlignedSize,MagickMax(size,AlignedSize)) == 0)
       return(memory);
   }
 #endif
