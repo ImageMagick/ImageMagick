@@ -4964,7 +4964,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
     if ((theta > 0.0) && (sweep == MagickFalse))
       theta-=(MagickRealType) (2.0*MagickPI);
   arc_segments=(size_t) ceil(fabs((double) (theta/(0.5*MagickPI+
-    MagickEpsilon)))-0.5);
+    MagickEpsilon))));
   p=primitive_info;
   for (i=0; i < (ssize_t) arc_segments; i++)
   {
