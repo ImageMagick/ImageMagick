@@ -169,6 +169,12 @@
 <div class="main">
 
 
+<p>This page descibed the Image composition methods that is used to define how
+two images should be merged together in various image operations.  For the
+Command Line API it is typically set using the <A
+HREF="../www/command-line-options.html#compose" >-compose</A> setting option. </p>
+
+
 <p>The description of composition uses abstract terminology in order to allow
 the description to be more precise, while avoiding constant values which are
 specific to a particular build configuration. Each image pixel is represented
@@ -285,8 +291,21 @@ floating-point mathematics rather than simple boolean operations.</p>
 </table>
 
 <p>Any of the 'Src-*' methods can also be specified without the 'Src-' part.
-For example the defaul compose method can be specified as just 'Over'.</p>
+For example the default compose method can be specified as just 'Over'.</p>
 
+<p>Many of these compose methods will clear the destination image which was
+not overlaid by the source image.  This is to be expected as part of that
+specific composition methods defintion. Seeing the You can disable this by
+setting the special <A HREF="../www/command-line-options.html#set" >-set</A>
+'option:compose:outside-overlay' to 'false' will turn off this behaviour. </p>
+
+<p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
+related method '<kbd>Copy</kbd>' has been provided. This is equivelent to the
+'<kbd>Src</kbd>'  with the special <A HREF="../www/command-line-options.html#set"
+>-set</A> option '<kbd>option:compose:outside-overlay</kbd>' set to
+'<kbd>false></kbd>'. </p>
+
+<br><br>
 
 <p>The following mathemathical composition methods are also available. </p>
 
@@ -376,21 +395,28 @@ For example the defaul compose method can be specified as just 'Over'.</p>
 </table>
 
 <p>Typically these use the default 'Over' alpha blending when transparencies
-are also involved, except for 'Plus' which uses a 'plus' alpha blending.
-This means the alpha channel is used to not only specify that all
-non-transparent parts of the input image is visible, but also applied color
-channel 'weighting' of the values. This also applied to the lighting
-composition methods below. </p>
+are also involved, except for 'Plus' which uses a 'plus' alpha blending.  This
+means the alpha channel  of both images will only be used to ensure that any
+visible input remains visible even in parts not overlaid. It also means that
+any values are weighted by the alpha channel of the input and output images.
+This 'Over' alpha blending is also applied to the lighting composition methods
+below. </p>
 
 <p>As of IM v6.6.1-6, if the special '<kbd>Sync</kbd>' flag is not specified
-(enabled by default) with the <a href="#channel" >-channel</a> setting, then
-the above mathematical compositions will nolonger syncronise its actiosn with
-the alpha channel.  Instead the math composition will be applied on an
-individual channel basis as defined by the <a href="#channel" >-channel</a>.
-this includes the alpha channel. </p>
+(enabled by default) with the <a href="../www/command-line-options.html#channel"
+>-channel</a> setting, then the above mathematical compositions will nolonger
+syncronise its actiosn with the alpha channel.  Instead the math composition
+will be applied on an individual channel basis as defined by the <a
+href="../www/command-line-options.html#channel"
+>-channel</a>.  This includes the alpha channel. This special usage
+allows you to perform true mathematics of the image channels, without alpha
+compostion effects, becomming involved. </p>
 
-<p>This special usage allows you to perform mathematics between images. </p>
+<p>This special flag is not applied to the lighting composition methods (see
+below) even though they are closely related to mathematical composition
+methods.</p>
 
+<br><br>
 
 <p>The following lighting composition methods are also available. </p>
 
@@ -497,6 +523,7 @@ this includes the alpha channel. </p>
 </table>
 
 
+<br><br>
 
 <p>Also included are these special purpose compose methods:</p>
 
@@ -506,6 +533,13 @@ this includes the alpha channel. </p>
     <th align="left" style="width: 8%">Method</th>
     <th align="left">Description</th>
   </tr>
+
+  <tr valign="top">
+    <td valign="top">copy</td>
+    <td valign="top">This is equivelent to the Duff-Porter composition method
+        '<kbd>Src,<kbd>' but withotu clearing the parts of the destination
+        image that is not overlaid.  </td>
+    </tr>
 
   <tr valign="top">
     <td valign="top">copy-*</td>
@@ -520,10 +554,15 @@ this includes the alpha channel. </p>
 
   <tr valign="top">
     <td valign="top">change-mask</td>
-    <td valign="top">Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="#fuzz">-fuzz</a> factor), with transparency. </td>
+    <td valign="top">Replace any destination pixel that is the similar to the
+    source images pixel (as defined by the current <a
+    href="../www/command-line-options.html#fuzz">-fuzz</a> factor), with transparency.
+    </td>
   </tr>
   </tbody>
 </table>
+
+<br><br>
 
 <p>On top of these composed methods are a few special ones that not only require
 the two images that are being merged or overlaid, but have some extra numerical
@@ -532,17 +571,20 @@ arguments, which are tabled below. </p>
 <p>In the "<code>composite</code>" command these composition methods are
 selected using special options with the arguments needed. They are usually,
 but not always, the same name as the composte 'method' they use, and replaces
-the normal use of the <a href="#compose" >-compose</a> setting in the
-"<code>composite</code>" command.  For example... </p>
+the normal use of the <a href="../www/command-line-options.html#compose" >-compose</a>
+setting in the "<code>composite</code>" command.  For example... </p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>composite ... -blend 50x50 ...</span></p>
 <p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
-these extra arguments to its <a href="#composite" >-composite</a> operator,
-using the special <a href="#set">-set</a> attribute of '<kbd class="arg">option:compose:args</kbd>'.  This means you can now make use of
-these special argumented <a href="#compose" >-compose</a> methods, those the
-argument and the method both need to be set separatally.  For example... </p>
+these extra arguments to its <a href="../www/command-line-options.html#composite"
+>-composite</a> operator, using the special <a
+href="../www/command-line-options.html#set">-set</a> attribute of '<kbd
+class="arg">option:compose:args</kbd>'.  This means you can now make use of
+these special argumented <a href="../www/command-line-options.html#compose"
+>-compose</a> methods, those the argument and the method both need to be set
+separatally.  For example... </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert ... -compose blend  -set option:compose:args 50x50  -composite ...</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert ... -compose blend  -set option:compose:args 50x50 -composite ...</span></p>
 <p>The following is a table of these special 'argumented' compose methods,
 with a brief summary of what they do. For more details see the equivalent
 "composite" command option name.  </p>
@@ -558,7 +600,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td valign="top">dissolve</td>
     <td valign="top">Arguments:
         <em class="arg">src_percent</em>[x<em class="arg">dst_percent</em>]
-    <br>Equivalent to "<code>composite</code>" <a href="#dissolve">-dissolve</a>
+    <br>Equivalent to "<code>composite</code>" <a href="../www/command-line-options.html#dissolve">-dissolve</a>
     <br>Dissolve the 'source' image by the percentage given before overlaying
         'over' the 'destination' image. If <em class="arg">src_percent</em> is
         greater than 100, it starts dissolving the main image so it will
@@ -572,7 +614,8 @@ with a brief summary of what they do. For more details see the equivalent
     <td valign="top">blend</td>
     <td valign="top">Arguments:
         <em class="arg">src_percent</em>[x<em class="arg">dst_percent</em>]
-    <br>Equivalent to "<code>composite</code>" <a href="#blend">-blend</a>
+    <br>Equivalent to "<code>composite</code>" <a
+        href="../www/command-line-options.html#blend">-blend</a>
     <br>Average the images together ('plus') according to the percentages
         given and each pixels transparency.  If only a single percentage value
         is given it sets the weight of the composite or 'source' image, while
@@ -590,11 +633,13 @@ with a brief summary of what they do. For more details see the equivalent
     <br>Merge the source and destination images according to the formula
     <br>&nbsp; &nbsp; &nbsp;<code>A*Sc*Dc + B*Sc + C*Dc + D</code>
     <br>Can be used to generate a custom composition method that would
-        otherwise need to be implemented using the slow <a href="#fx">-fx</a>
-        DIY image operator.   Added to ImageMagick version 6.5.4-3.
+        otherwise need to be implemented using the slow <a
+        href="../www/command-line-options.html#fx">-fx</a> DIY image operator.   Added
+        to ImageMagick version 6.5.4-3.
     <br>As of IM v6.6.1-6 this method will do per-channel math compositions
-        if the 'Sync' flag is removed from <a href="#channel" >-channel</a>,
-        just like all the other mathematical compostion methods above.
+        if the 'Sync' flag is removed from <a
+        href="../www/command-line-options.html#channel" >-channel</a>, just like all
+        the other mathematical compostion methods above.
     </td>
   </tr>
 
@@ -602,7 +647,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td valign="top">modulate</td>
     <td valign="top">Arguments:
         <em class="arg">brightness</em>[x<em class="arg">saturation</em>]
-    <br>Equivalent to "<code>composite</code>" <a href="#watermark">-watermark</a>
+    <br>Equivalent to "<code>composite</code>" <a href="../www/command-line-options.html#watermark">-watermark</a>
     <br>Take a grayscale image (with alpha mask) and modify the destination
         image's brightness according to watermark image's grayscale value and
         the <em class="arg">brightness</em> percentage.  The destinations
@@ -617,7 +662,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td valign="top">displace</td>
     <td valign="top">Arguments:
         <em class="arg">X-scale</em>[x<em class="arg">Y-scale</em>][!][%]
-    <br>Equivalent to "<code>composite</code>" <a href="#displace">-displace</a>
+    <br>Equivalent to "<code>composite</code>" <a href="../www/command-line-options.html#displace">-displace</a>
     <br>With this option, the 'overlay' image, and optionally the 'mask'
         image, is used as a relative displacement map, which is used to
         displace the lookup of what part of the destination image is seen at
@@ -668,8 +713,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td valign="top">Arguments:
         <em class="arg">Width</em>[x<em class="arg">Height</em
           >[+<em class="arg">Angle</em>]]
-    <br>Equivalent to "<code>composite</code>"
-        <a href="#blur-composite">-blur</a>
+    <br>Equivalent to "<code>composite</code>" <a href="../www/command-line-options.html#blur-composite">-blur</a>
     <br>A Variable Blur Mapping Composition method, where each pixel in the
         overlaid region is replaced with an Elliptical Weighted Average (EWA),
         with an ellipse (typically a circle) of the given sigma size, scaled
@@ -689,7 +733,7 @@ with a brief summary of what they do. For more details see the equivalent
 </table>
 
 <p>To print a complete list of all the available compose operators, use <a
-href="#list">-list compose</a>.</p>
+href="../www/command-line-options.html#list">-list compose</a>.</p>
 
 
 
