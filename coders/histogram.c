@@ -177,7 +177,7 @@ static inline size_t MagickMax(const size_t x,const size_t y)
 static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   Image *image)
 {
-#define HistogramDensity  "256x200"
+#define HistogramDensity  "256x100"
 
   ChannelType
     channel;
