@@ -1566,7 +1566,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             q->green=ScaleCharToQuantum((unsigned char) TIFFGetG(*p));
             q->blue=ScaleCharToQuantum((unsigned char) TIFFGetB(*p));
             if (image->matte != MagickFalse)
-              q->opacity=ScaleCharToQuantum((unsigned char) TIFFGetA(*p));
+              q->opacity=(Quantum) (QuantumRange-
+                ScaleCharToQuantum((unsigned char) TIFFGetA(*p)));
             p--;
             q--;
           }
