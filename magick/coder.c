@@ -96,6 +96,7 @@ static const CoderMapInfo
     { "B", "RAW" },
     { "BRF", "BRAILLE" },
     { "BGR", "RGB" },
+    { "BGRA", "RGB" },
     { "BRG", "RGB" },
     { "CMYKA", "CMYK" },
     { "C", "RAW" },
