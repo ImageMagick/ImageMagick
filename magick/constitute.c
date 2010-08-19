@@ -627,6 +627,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       timestamp[MaxTextExtent];
 
     const StringInfo
+      *option,
       *profile;
 
     next->taint=MagickFalse;
@@ -771,6 +772,34 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) FormatMagickTime(GetBlobProperties(next)->st_ctime,MaxTextExtent,
       timestamp);
     (void) SetImageProperty(next,"date:create",timestamp);
+    option=GetImageOption(image_info,"delay");
+    if (option != (const char *) NULL)
+      {
+        GeometryInfo
+          geometry_info;
+
+        flags=ParseGeometry(option,&geometry_info);
+        if ((flags & GreaterValue) != 0)
+          {
+            if (image->delay > (size_t) floor(geometry_info.rho+0.5))
+              image->delay=(size_t) floor(geometry_info.rho+0.5);
+          }
+        else
+          if ((flags & LessValue) != 0)
+            {
+              if (image->delay < (size_t) floor(geometry_info.rho+0.5))
+                image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+
+                  0.5);
+            }
+          else
+            image->delay=(size_t) floor(geometry_info.rho+0.5);
+        if ((flags & SigmaValue) != 0)
+          image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
+      }
+    option=GetImageOption(image_info,"dispose");
+    if (option != (const char *) NULL)
+      image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
+        MagickFalse,option);
     if (read_info->verbose != MagickFalse)
       (void) IdentifyImage(next,stderr,MagickFalse);
     image=next;
