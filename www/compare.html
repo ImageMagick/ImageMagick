@@ -205,7 +205,7 @@
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>compare -metric PSNR rose.jpg reconstruct.jpg difference.png</span><span class='crtout'>28.31</span></p>
 <p>If the reconstructed image is a subimage of the image, the compare program returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>compare -metric RMSE logo.png wizard.jpg similarity.gif</span><span class='crtout'>85.05 (0.00129778) @ 353,157</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.gif</span><span class='crtout'>85.05 (0.00129778) @ 353,157</span></p>
 <p>You can find additional examples of using <kbd>compare</kbd> in <a href="http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in <a href="http://www-106.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 <div style="margin: auto;">
