@@ -643,7 +643,6 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                 indexes[x]=(IndexPacket) ScaleQuantumToChar(pixel);
               else
                 indexes[x]=(IndexPacket) ScaleQuantumToShort(pixel);
-              *q=image->colormap[(ssize_t) indexes[x]];
               q->red=image->colormap[(ssize_t) indexes[x]].red;
               q->green=image->colormap[(ssize_t) indexes[x]].green;
               q->blue=image->colormap[(ssize_t) indexes[x]].blue;
@@ -656,7 +655,6 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                   {
                     indexes[x]=((((unsigned char) pixel) & (0x01 << (7-bit)))
                       != 0 ? 0 : 255);
-                    *q=image->colormap[(ssize_t) indexes[x]];
                     q->red=image->colormap[(ssize_t) indexes[x]].red;
                     q->green=image->colormap[(ssize_t) indexes[x]].green;
                     q->blue=image->colormap[(ssize_t) indexes[x]].blue;
@@ -679,7 +677,10 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         }
         case 2:
         {
-          q->blue=pixel;
+          if (image->storage_class == PseudoClass)
+            q->opacity=(Quantum) (QuantumRange-pixel);
+          else
+            q->blue=pixel;
           break;
         }
         case 3:
@@ -747,12 +748,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PSDInfo
     psd_info;
 
+  register PixelPacket
+    *q;
+
   register ssize_t
     i,
     x;
-
-  register PixelPacket
-    *q;
 
   ssize_t
     count;
@@ -839,7 +840,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  ImageColorMap allocated");
+          "  Image colormap allocated");
       image->colorspace=GRAYColorspace;
     }
   if (image->debug != MagickFalse)
