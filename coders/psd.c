@@ -1706,7 +1706,8 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
     (void) WriteBlobMSBShort(image,0);
   if (tmp_image->depth > 8)
     tmp_image->depth=16;
-  monochrome=IsMonochromeImage(image,&image->exception) && (image->depth == 1);
+  monochrome=IsMonochromeImage(image,&image->exception) && (image->depth == 1)
+    ? MagickTrue : MagickFalse;
   packet_size=tmp_image->depth > 8UL ? 2UL : 1UL;
   quantum_info=AcquireQuantumInfo(image_info,image);
   for (y=0; y < (ssize_t) tmp_image->rows; y++)
@@ -2103,7 +2104,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         Write depth & mode.
       */
       monochrome=IsMonochromeImage(image,&image->exception) &&
-        (image->depth == 1);
+        (image->depth == 1) ? MagickTrue : MagickFalse;
       (void) WriteBlobMSBShort(image,(unsigned short)
         (monochrome != MagickFalse ? 1 : image->depth > 8 ? 16 : 8));
       (void) WriteBlobMSBShort(image,monochrome != MagickFalse ?
