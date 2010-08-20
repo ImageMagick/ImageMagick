@@ -626,8 +626,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     char
       timestamp[MaxTextExtent];
 
+    const char
+      *option;
+
     const StringInfo
-      *option,
       *profile;
 
     next->taint=MagickFalse;
