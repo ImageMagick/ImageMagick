@@ -1138,9 +1138,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       method=ReadSingleSampleMethod;
-    if ((photometric == PHOTOMETRIC_RGB) &&
-        (bits_per_sample <= 8))
-      method=ReadGenericMethod;
     if ((photometric != PHOTOMETRIC_SEPARATED) &&
         (interlace == PLANARCONFIG_SEPARATE))
       method=ReadGenericMethod;
