@@ -440,7 +440,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
