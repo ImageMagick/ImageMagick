@@ -185,27 +185,23 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case 'R': quantum_types[i]=RedQuantum; break;
       case 'G': quantum_types[i]=GreenQuantum; break;
       case 'B': quantum_types[i]=BlueQuantum; break;
-      case 'A': quantum_types[i]=AlphaQuantum; break;
-      case 'O': quantum_types[i]=OpacityQuantum; break;
-      default: break;
+      case 'A':
+      {
+        quantum_types[i]=AlphaQuantum;
+        quantum_type=RGBAQuantum;
+        break;
+      }
+      case 'O':
+      {
+        quantum_types[i]=OpacityQuantum;
+        quantum_type=RGBOQuantum;
+        break;
+      }
+      default:
+        break;
     }
   }
   channels=i;
-  if (LocaleCompare(image_info->magick,"BGRA") == 0)
-    {
-      quantum_type=BGRAQuantum;
-      image->matte=MagickTrue;
-    }
-  if (LocaleCompare(image_info->magick,"RGBA") == 0)
-    {
-      quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
-    }
-  if (LocaleCompare(image_info->magick,"RGBO") == 0)
-    {
-      quantum_type=RGBOQuantum;
-      channels=4;
-    }
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
@@ -854,33 +850,29 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image)
         return(status);
     }
   quantum_type=RGBQuantum;
-  if (LocaleCompare(image_info->magick,"BGRA") == 0)
-    {
-      quantum_type=BGRAQuantum;
-      image->matte=MagickTrue;
-    }
-  if (LocaleCompare(image_info->magick,"RGBA") == 0)
-    {
-      quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
-    }
-  if (LocaleCompare(image_info->magick,"RGBO") == 0)
-    {
-      quantum_type=RGBOQuantum;
-      channels=4;
-    }
   for (i=0; i < 4; i++)
   {
     if (image_info->magick[i] == '\0')
       break;
     switch(image_info->magick[i])
     {
-      case 'R': quantum_types[i]=RedQuantum;     break;
-      case 'G': quantum_types[i]=GreenQuantum;   break;
-      case 'B': quantum_types[i]=BlueQuantum;    break;
-      case 'A': quantum_types[i]=AlphaQuantum;   break;
-      case 'O': quantum_types[i]=OpacityQuantum; break;
-      default: break;
+      case 'R': quantum_types[i]=RedQuantum; break;
+      case 'G': quantum_types[i]=GreenQuantum; break;
+      case 'B': quantum_types[i]=BlueQuantum; break;
+      case 'A':
+      {
+        quantum_types[i]=AlphaQuantum;
+        quantum_type=RGBAQuantum;
+        break;
+      }
+      case 'O':
+      {
+        quantum_types[i]=OpacityQuantum;
+        quantum_type=RGBOQuantum;
+        break;
+      }
+      default:
+        break;
     }
   }
   channels=i;
