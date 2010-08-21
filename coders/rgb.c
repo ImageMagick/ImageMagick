@@ -100,9 +100,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *canvas_image,
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -115,17 +112,19 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   QuantumType
     quantum_type;
 
+  Quantum
+    qx[4];
+
   register ssize_t
     i,
     j;
 
-  Quantum
-    qx[3];
-
   ssize_t
-    count;
+    count,
+    y;
 
   size_t
+    channels,
     length;
 
   unsigned char
@@ -136,9 +135,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     sfx[] = {0, 0};
-
-  int
-    channels = 3;
 
   /*
     Open image file.
@@ -180,22 +176,34 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
   quantum_type=RGBQuantum;
+  for (i=0; i < 4; i++)
+  {
+    if (image_info->magick[i] == '\0')
+      break;
+    switch(image_info->magick[i])
+    {
+      case 'R': quantum_types[i]=RedQuantum; break;
+      case 'G': quantum_types[i]=GreenQuantum; break;
+      case 'B': quantum_types[i]=BlueQuantum; break;
+      case 'A': quantum_types[i]=AlphaQuantum; break;
+      case 'O': quantum_types[i]=OpacityQuantum; break;
+      default: break;
+    }
+  }
+  channels=i;
+  if (LocaleCompare(image_info->magick,"BGRA") == 0)
+    {
+      quantum_type=BGRAQuantum;
+      image->matte=MagickTrue;
+    }
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     {
       quantum_type=RGBAQuantum;
       image->matte=MagickTrue;
-      channels=4;
     }
-  else if (LocaleCompare(image_info->magick,"BGRA") == 0)
-    {
-      quantum_type=BGRAQuantum;
-      image->matte=MagickTrue;
-      channels=4;
-    }
-  else if (LocaleCompare(image_info->magick,"RGBO") == 0)
+  if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
-      image->matte=MagickTrue;
       channels=4;
     }
   if (image_info->number_scenes != 0)
@@ -213,17 +221,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-  for (i=0; i < channels; i++)
-  {
-    switch(image_info->magick[i])
-    {
-      case 'R': quantum_types[i]=RedQuantum;     break;
-      case 'G': quantum_types[i]=GreenQuantum;   break;
-      case 'B': quantum_types[i]=BlueQuantum;    break;
-      case 'A': quantum_types[i]=AlphaQuantum;   break;
-      case 'O': quantum_types[i]=OpacityQuantum; break;
-    }
-  }
   count=0;
   length=0;
   scene=0;
@@ -290,17 +287,17 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 qx[0]=GetRedPixelComponent(p);
                 qx[1]=GetGreenPixelComponent(p);
                 qx[2]=GetBluePixelComponent(p);
-                for (i=0; i < 3; i++)
+                qx[3]=GetOpacityPixelComponent(p);
+                for (i=0; i < channels; i++)
                   switch(quantum_types[i])
                   {
-                    case RedQuantum:   q->red=qx[i];   break;
+                    case RedQuantum:  q->red=qx[i];  break;
                     case GreenQuantum: q->green=qx[i]; break;
-                    case BlueQuantum:  q->blue=qx[i];  break;
-                    default:                           break;
+                    case BlueQuantum: q->blue=qx[i]; break;
+                    case AlphaQuantum: q->opacity=qx[i]; break;
+                    case OpacityQuantum: q->opacity=qx[i]; break;
+                    default: break;
                   }
-                SetOpacityPixelComponent(q,OpaqueOpacity);
-                if (image->matte != MagickFalse)
-                  SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
                 p++;
                 q++;
               }
@@ -857,30 +854,36 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image)
         return(status);
     }
   quantum_type=RGBQuantum;
-  channels=3;
+  if (LocaleCompare(image_info->magick,"BGRA") == 0)
+    {
+      quantum_type=BGRAQuantum;
+      image->matte=MagickTrue;
+    }
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     {
       quantum_type=RGBAQuantum;
       image->matte=MagickTrue;
-      channels=4;
     }
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
-      image->matte=MagickTrue;
       channels=4;
     }
-  for (i=0; i < (ssize_t) channels; i++)
+  for (i=0; i < 4; i++)
   {
-    switch (image_info->magick[i])
+    if (image_info->magick[i] == '\0')
+      break;
+    switch(image_info->magick[i])
     {
       case 'R': quantum_types[i]=RedQuantum;     break;
       case 'G': quantum_types[i]=GreenQuantum;   break;
       case 'B': quantum_types[i]=BlueQuantum;    break;
       case 'A': quantum_types[i]=AlphaQuantum;   break;
       case 'O': quantum_types[i]=OpacityQuantum; break;
+      default: break;
     }
   }
+  channels=i;
   scene=0;
   do
   {
@@ -908,7 +911,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image)
           px;
 
         Quantum
-          *qx[3];
+          *qx[4];
 
         /*
           No interlacing:  RGBRGBRGBRGBRGBRGB...
@@ -932,13 +935,16 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image)
             qx[0]=&(q->red);
             qx[1]=&(q->green);
             qx[2]=&(q->blue);
-            for (i=0; i < 3; i++)
+            qx[3]=&(q->opacity);
+            for (i=0; i < channels; i++)
               switch (quantum_types[i])
               {
-                case RedQuantum:   *qx[i]=px.red;   break;
+                case RedQuantum: *qx[i]=px.red; break;
                 case GreenQuantum: *qx[i]=px.green; break;
-                case BlueQuantum:  *qx[i]=px.blue;  break;
-                default:                            break;
+                case BlueQuantum: *qx[i]=px.blue; break;
+                case AlphaQuantum: *qx[i]=px.opacity; break;
+                case OpacityQuantum: *qx[i]=px.opacity; break;
+                default: break;
               }
             q++;
           }
