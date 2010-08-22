@@ -782,7 +782,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  InsertImageInList() inserts the second image or image list into the first
-%  image list immediatally after the image pointed to.  The given image list
+%  image list immediately after the image pointed to.  The given image list
 %  pointer is unchanged unless previously empty.
 %
 %  The format of the InsertImageInList method is:
@@ -1062,9 +1062,11 @@ MagickExport void ReplaceImageInList(Image **images,Image *image)
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickSignature);
+  for ( ; image->next != (Image *) NULL; image=image->next) ;
   image->next=(*images)->next;
   if (image->next != (Image *) NULL)
     image->next->previous=image;
+  for ( ; image->previous != (Image *) NULL; image=image->previous) ;
   image->previous=(*images)->previous;
   if (image->previous != (Image *) NULL)
     image->previous->next=image;
