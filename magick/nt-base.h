@@ -29,6 +29,7 @@ extern "C" {
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #define _CRT_SECURE_NO_DEPRECATE  1
+#define _WIN32_WINNT 0x0501
 #include <windows.h>
 #include <wchar.h>
 #include <winuser.h>
