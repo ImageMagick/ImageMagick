@@ -4650,7 +4650,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
         if (files > 0)
-          slider_info.y+=(slider_info.id*(slider_info.max_y-
+          slider_info.y+=(int) (slider_info.id*(slider_info.max_y-
             slider_info.min_y+1)/files);
         if (slider_info.id != selection_info.id)
           {
