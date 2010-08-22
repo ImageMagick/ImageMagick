@@ -1659,7 +1659,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               else
                 kernel->values[i] = nan;
             }
-        kernel->minimum = kernel->minimum = (double) scale;
+        kernel->minimum = kernel->maximum = (double) scale;
         if ( type == PeaksKernel ) {
           /* set the central point in the middle */
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
