@@ -149,7 +149,7 @@
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -502,7 +502,6 @@ href="#channel" >+channel</a> setting is '<CODE>RGB,sync</CODE>', the
 '<CODE>sync</CODE>' will ensure that the color channels will be modified
 together by the same gamma value, preserving colors, and ignoring
 transparency. </p>
-
 
 
 <div style="margin: auto;">
@@ -1344,7 +1343,7 @@ class="arg">black-point %</em> pixels and white-out at most <em class="arg"
 the image's min and max values are stretched to 0 and <em class="QR"
 >QuantumRange</em>, respectively, without any loss of data due to burn-out or
 clipping at either end. This is not the same as <a href="#normalize"
->-normalize</a>, which is equivalent to <kbd>-contrast-stretch 2%x1%</kbd> (or
+>-normalize</a>, which is equivalent to <kbd>-contrast-stretch 0.15x0.05%</kbd> (or
 prior to ImageMagick 6.4.7-0, <kbd>-contrast-stretch 2%x99%</kbd>).</p>
 
 <p>Internally operator works by creating a histogram bin, and then uses that
@@ -1505,7 +1504,7 @@ colormap entry is shifted.</p>
 <dt>ps:imagemask</dt>
   <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create Postscript files that render bilevel images with the Postscript imagemask operator instead of the image operator.</dd><br />
 <dt>quantum:format=<em class="arg">type</em></dt>
-  <dd>Set the type to <kbd>floating-point</kbd> to specify a single precision floating-point format for raw files (e.g. GRAY:) or for MIFF and TIFF images in HDRI mode to preserve negative values.</dd>
+  <dd>Set the type to <kbd>floating-point</kbd> to specify a floating-point format for raw files (e.g. GRAY:) or for MIFF and TIFF images in HDRI mode to preserve negative values. If <a href="#depth">-depth</a> 16 is included, then the result will be single precision floating point format. If <a href="#depth">-depth</a> 32 is included, then the result will be double precision floating point format.</dd>
 </ul>
 
 <p>For example, to create a postscript file that will render only the black pixels of a bilevel image, use:</p>
@@ -5071,7 +5070,9 @@ values range from 0 to the maximum value the storage type can support.</p>
   <h4><a name="subimage-search" id="subimage-search"></a>-subimage-search</h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>search for subimage.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>search for subimage.</td><td style='text-align:right;'>[<a href="../www/compare.html">compare</a>]</td></tr></table>
+
+<p>This option is required to have compare search for the best match location of a small image within a larger image. This search will produce two images (or two frames). The first will be the "difference" image and the second will be the "match score" image. The brightest location in the latter is the location in the larger image where the (upper left corner of the) smaller image best matches.</p>
 
 <div style="margin: auto;">
   <h4><a name="swap" id="swap"></a>-swap <em class="arg">index,index</em></h4>
