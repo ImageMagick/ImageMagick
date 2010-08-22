@@ -42,7 +42,8 @@ extern "C" {
 #define SetGreenPixelComponent(q,value) ((q)->green=(value))
 #define SetBluePixelComponent(q,value) ((q)->blue=(value))
 #define SetOpacityPixelComponent(q,value) ((q)->opacity=(value))
-#define SetAlphaPixelComponent(q,value) ((q)->opacity=(QuantumRange-(value)))
+#define SetAlphaPixelComponent(q,value) \
+  ((q)->opacity=(Quantum) (QuantumRange-(value)))
 #define SetIndexPixelComponent(q,value) ((q)->index=(value))
 
 #define GetGrayPixelComponent(p) ((p)->red)

@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                            RRRR    GGGG  BBBB                               %
-%                            R   R  G      B   B                              %
-%                            RRRR   G  GG  BBBB                               %
-%                            R R    G   G  B   B                              %
-%                            R  R    GGG   BBBB                               %
+%                            BBBB    GGGG  RRRR                               %
+%                            B   B  G      R   R                              %
+%                            BBBB   G  GG  RRRR                               %
+%                            B   B  G   G  R R                                %
+%                            BBBB    GGG   R  R                               %
 %                                                                             %
 %                                                                             %
-%                     Read/Write Raw RGB Image Format                         %
+%                     Read/Write Raw BGR Image Format                         %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
@@ -66,26 +66,26 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteRGBImage(const ImageInfo *,Image *);
+  WriteBGRImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d R G B I m a g e                                                   %
+%   R e a d B G R I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadRGBImage() reads an image of raw RGB, RGBA, or RGBO samples and returns
+%  ReadBGRImage() reads an image of raw BGR, or BGRA samples and returns
 %  it.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
-%  The format of the ReadRGBImage method is:
+%  The format of the ReadBGRImage method is:
 %
-%      Image *ReadRGBImage(const ImageInfo *image_info,
+%      Image *ReadBGRImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -95,7 +95,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadRGBImage(const ImageInfo *image_info,
+static Image *ReadBGRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
@@ -167,15 +167,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
-  quantum_type=RGBQuantum;
-  if (LocaleCompare(image_info->magick,"RGBA") == 0)
+  quantum_type=BGRQuantum;
+  if (LocaleCompare(image_info->magick,"BGRA") == 0)
     {
-      quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
-    }
-  if (LocaleCompare(image_info->magick,"RGBO") == 0)
-    {
-      quantum_type=RGBOQuantum;
+      quantum_type=BGRAQuantum;
       image->matte=MagickTrue;
     }
   if (image_info->number_scenes != 0)
@@ -211,7 +206,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
       default:
       {
         /*
-          No interlacing:  RGBRGBRGBRGBRGBRGB...
+          No interlacing:  BGRBGRBGRBGRBGRBGR...
         */
         if (scene == 0)
           {
@@ -283,17 +278,15 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
         static QuantumType
           quantum_types[4] =
           {
-            RedQuantum,
-            GreenQuantum,
             BlueQuantum,
+            GreenQuantum,
+            RedQuantum,
             AlphaQuantum
           };
 
         /*
-          Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
+          Line interlacing:  BBB...GGG...RRR...RRR...GGG...BBB...
         */
-        if (LocaleCompare(image_info->magick,"RGBO") == 0)
-          quantum_types[3]=OpacityQuantum;
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
@@ -626,9 +619,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
       case PartitionInterlace:
       {
         /*
-          Partition interlacing:  RRRRRR..., GGGGGG..., BBBBBB...
+          Partition interlacing:  BBBBBB..., GGGGGG..., RRRRRR...
         */
-        AppendImageFormat("R",image->filename);
+        AppendImageFormat("B",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
           {
@@ -643,7 +636,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 "UnexpectedEndOfFile",image->filename);
               break;
             }
-        length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
+        length=GetQuantumExtent(canvas_image,quantum_info,BlueQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
             if (ReadBlob(image,length,pixels) != (ssize_t) length)
@@ -675,7 +668,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,RedQuantum,pixels,exception);
+            quantum_info,BlueQuantum,pixels,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -777,7 +770,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
               break;
           }
         (void) CloseBlob(image);
-        AppendImageFormat("B",image->filename);
+        AppendImageFormat("R",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
           {
@@ -785,7 +778,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
-        length=GetQuantumExtent(canvas_image,quantum_info,BlueQuantum);
+        length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
             if (ReadBlob(image,length,pixels) != (ssize_t) length)
@@ -817,7 +810,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,BlueQuantum,pixels,exception);
+            quantum_info,RedQuantum,pixels,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -969,53 +962,44 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r R G B I m a g e                                           %
+%   R e g i s t e r B G R I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterRGBImage() adds attributes for the RGB image format to
+%  RegisterBGRImage() adds attributes for the BGR image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterRGBImage method is:
+%  The format of the RegisterBGRImage method is:
 %
-%      size_t RegisterRGBImage(void)
+%      size_t RegisterBGRImage(void)
 %
 */
-ModuleExport size_t RegisterRGBImage(void)
+ModuleExport size_t RegisterBGRImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("RGB");
-  entry->decoder=(DecodeImageHandler *) ReadRGBImage;
-  entry->encoder=(EncodeImageHandler *) WriteRGBImage;
+  entry=SetMagickInfo("BGR");
+  entry->decoder=(DecodeImageHandler *) ReadBGRImage;
+  entry->encoder=(EncodeImageHandler *) WriteBGRImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->description=ConstantString("Raw red, green, and blue samples");
-  entry->module=ConstantString("RGB");
+  entry->description=ConstantString("Raw blue, green, and red samples");
+  entry->module=ConstantString("BGR");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("RGBA");
-  entry->decoder=(DecodeImageHandler *) ReadRGBImage;
-  entry->encoder=(EncodeImageHandler *) WriteRGBImage;
+  entry=SetMagickInfo("BGRA");
+  entry->decoder=(DecodeImageHandler *) ReadBGRImage;
+  entry->encoder=(EncodeImageHandler *) WriteBGRImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
-  entry->description=ConstantString("Raw red, green, blue, and alpha samples");
-  entry->module=ConstantString("RGB");
-  (void) RegisterMagickInfo(entry);
-  return(MagickImageCoderSignature);
-  entry=SetMagickInfo("RGBO");
-  entry->decoder=(DecodeImageHandler *) ReadRGBImage;
-  entry->encoder=(EncodeImageHandler *) WriteRGBImage;
-  entry->raw=MagickTrue;
-  entry->endian_support=MagickTrue;
-  entry->description=ConstantString("Raw red, green, blue, and opacity samples");
-  entry->module=ConstantString("RGB");
+  entry->description=ConstantString("Raw blue, green, red, and alpha samples");
+  entry->module=ConstantString("BGR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -1025,25 +1009,24 @@ ModuleExport size_t RegisterRGBImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r R G B I m a g e                                       %
+%   U n r e g i s t e r B G R I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterRGBImage() removes format registrations made by the RGB module
+%  UnregisterBGRImage() removes format registrations made by the BGR module
 %  from the list of supported formats.
 %
-%  The format of the UnregisterRGBImage method is:
+%  The format of the UnregisterBGRImage method is:
 %
-%      UnregisterRGBImage(void)
+%      UnregisterBGRImage(void)
 %
 */
-ModuleExport void UnregisterRGBImage(void)
+ModuleExport void UnregisterBGRImage(void)
 {
-  (void) UnregisterMagickInfo("RGBO");
-  (void) UnregisterMagickInfo("RGBA");
-  (void) UnregisterMagickInfo("RGB");
+  (void) UnregisterMagickInfo("BGRA");
+  (void) UnregisterMagickInfo("BGR");
 }
 
 /*
@@ -1051,18 +1034,18 @@ ModuleExport void UnregisterRGBImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e R G B I m a g e                                                 %
+%   W r i t e B G R I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteRGBImage() writes an image to a file in the RGB, RGBA, or RGBO
+%  WriteBGRImage() writes an image to a file in the BGR or BGRA
 %  rasterfile format.
 %
-%  The format of the WriteRGBImage method is:
+%  The format of the WriteBGRImage method is:
 %
-%      MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
+%      MagickBooleanType WriteBGRImage(const ImageInfo *image_info,
 %        Image *image)
 %
 %  A description of each parameter follows.
@@ -1072,7 +1055,7 @@ ModuleExport void UnregisterRGBImage(void)
 %    o image:  The image.
 %
 */
-static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
+static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,
   Image *image)
 {
   MagickBooleanType
@@ -1088,11 +1071,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
     quantum_type;
 
   ssize_t
-    count,
-    y;
+    count;
 
   size_t
-    length;
+    length,
+    y;
 
   unsigned char
     *pixels;
@@ -1115,26 +1098,21 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       if (status == MagickFalse)
         return(status);
     }
-  quantum_type=RGBQuantum;
-  if (LocaleCompare(image_info->magick,"RGBA") == 0)
+  quantum_type=BGRQuantum;
+  if (LocaleCompare(image_info->magick,"BGRA") == 0)
     {
-      quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
-    }
-  if (LocaleCompare(image_info->magick,"RGBO") == 0)
-    {
-      quantum_type=RGBOQuantum;
+      quantum_type=BGRAQuantum;
       image->matte=MagickTrue;
     }
   scene=0;
   do
   {
     /*
-      Convert MIFF to RGB raster pixels.
+      Convert MIFF to BGR raster pixels.
     */
     if (image->colorspace != RGBColorspace)
       (void) TransformImageColorspace(image,RGBColorspace);
-    if ((LocaleCompare(image_info->magick,"RGBA") == 0) &&
+    if ((LocaleCompare(image_info->magick,"BGRA") == 0) &&
         (image->matte == MagickFalse))
       (void) SetImageAlphaChannel(image,ResetAlphaChannel);
     quantum_info=AcquireQuantumInfo(image_info,image);
@@ -1147,7 +1125,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       default:
       {
         /*
-          No interlacing:  RGBRGBRGBRGBRGBRGB...
+          No interlacing:  BGRBGRBGRBGRBGRBGR...
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1175,7 +1153,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       case LineInterlace:
       {
         /*
-          Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
+          Line interlacing:  BBB...GGG...RRR...RRR...GGG...BBB...
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1186,7 +1164,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           if (p == (const PixelPacket *) NULL)
             break;
           length=ExportQuantumPixels(image,(const CacheView *) NULL,
-            quantum_info,RedQuantum,pixels,&image->exception);
+            quantum_info,BlueQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1196,22 +1174,14 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           if (count != (ssize_t) length)
             break;
           length=ExportQuantumPixels(image,(const CacheView *) NULL,
-            quantum_info,BlueQuantum,pixels,&image->exception);
+            quantum_info,RedQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
-          if (quantum_type == RGBAQuantum)
+          if (quantum_type == BGRAQuantum)
             {
               length=ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,AlphaQuantum,pixels,&image->exception);
-              count=WriteBlob(image,length,pixels);
-              if (count != (ssize_t) length)
-                break;
-            }
-          if (quantum_type == RGBOQuantum)
-            {
-              length=ExportQuantumPixels(image,(const CacheView *) NULL,
-                quantum_info,OpacityQuantum,pixels,&image->exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
                 break;
@@ -1291,7 +1261,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        if (quantum_type == RGBAQuantum)
+        if (quantum_type == BGRAQuantum)
           {
             for (y=0; y < (ssize_t) image->rows; y++)
             {
@@ -1328,9 +1298,9 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       case PartitionInterlace:
       {
         /*
-          Partition interlacing:  RRRRRR..., GGGGGG..., BBBBBB...
+          Partition interlacing:  BBBBBB..., GGGGGG..., RRRRRR...
         */
-        AppendImageFormat("R",image->filename);
+        AppendImageFormat("B",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,&image->exception);
         if (status == MagickFalse)
@@ -1344,7 +1314,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           if (p == (const PixelPacket *) NULL)
             break;
           length=ExportQuantumPixels(image,(const CacheView *) NULL,
-            quantum_info,RedQuantum,pixels,&image->exception);
+            quantum_info,BlueQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1382,7 +1352,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
               break;
           }
         (void) CloseBlob(image);
-        AppendImageFormat("B",image->filename);
+        AppendImageFormat("R",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,&image->exception);
         if (status == MagickFalse)
@@ -1396,7 +1366,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           if (p == (const PixelPacket *) NULL)
             break;
           length=ExportQuantumPixels(image,(const CacheView *) NULL,
-            quantum_info,BlueQuantum,pixels,&image->exception);
+            quantum_info,RedQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1408,7 +1378,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
               break;
           }
         (void) CloseBlob(image);
-        if (quantum_type == RGBAQuantum)
+        if (quantum_type == BGRAQuantum)
           {
             (void) CloseBlob(image);
             AppendImageFormat("A",image->filename);

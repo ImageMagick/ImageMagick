@@ -80,6 +80,7 @@ endif
 MAGICK_CODER_SRCS = \
 	coders/art.c \
 	coders/avs.c \
+	coders/bgr.c \
 	coders/bmp.c \
 	coders/braille.c \
 	coders/cals.c \
@@ -192,6 +193,7 @@ if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/art.la \
 	coders/avs.la \
+	coders/bgr.la \
 	coders/bmp.la \
 	coders/braille.la \
 	coders/cals.la \
@@ -314,6 +316,12 @@ coders_avs_la_SOURCES      = coders/avs.c
 coders_avs_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_avs_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_avs_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# BRG coder module
+coders_bgr_la_SOURCES      = coders/bgr.c
+coders_bgr_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_bgr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_bgr_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # BMP coder module
 coders_bmp_la_SOURCES      = coders/bmp.c
