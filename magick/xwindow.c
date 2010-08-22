@@ -7898,7 +7898,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           for (i=0; i < (ssize_t) image->colors; )
           {
             diversity[i].count<<=4;  /* increase this colors popularity */
-            i+=MagickMax((ssize_t) (image->colors >> 4),2);
+            i+=MagickMax((int) (image->colors >> 4),2);
           }
           diversity[image->colors-1].count<<=4;
           qsort((void *) diversity,image->colors,sizeof(*diversity),
@@ -8007,7 +8007,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               p=colors+image->colors;
               for (i=0; i < (ssize_t) retain_colors; i++)
               {
-                p->pixel=(size_t) i;
+                p->pixel=(int) i;
                 p++;
               }
               (void) XQueryColors(display,
@@ -8254,7 +8254,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
   size_hints=XAllocSizeHints();
   if (size_hints == (XSizeHints *) NULL)
     ThrowXWindowFatalException(XServerFatalError,"UnableToMakeXWindow",argv[0]);
-  size_hints->flags=(ssize_t) window_info->flags;
+  size_hints->flags=(int) window_info->flags;
   size_hints->x=window_info->x;
   size_hints->y=window_info->y;
   size_hints->width=(int) window_info->width;
@@ -9393,7 +9393,7 @@ MagickExport Window XWindowByID(Display *display,const Window root_window,
   if (id == 0)
     return(XSelectWindow(display,&rectangle_info));
   if (root_window == id)
-    return(id);
+    return(root_window);
   status=XQueryTree(display,root_window,&child,&child,&children,
     &number_children);
   if (status == False)
