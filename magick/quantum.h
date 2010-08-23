@@ -76,7 +76,8 @@ typedef enum
   CbYCrQuantum,
   CbYCrAQuantum,
   CMYKOQuantum,
-  BGRQuantum
+  BGRQuantum,
+  BGROQuantum
 } QuantumType;
 
 typedef struct _QuantumInfo
