@@ -247,8 +247,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
 %    o number_threads: the number of nexus threads.
 %
 */
-MagickExport NexusInfo **AcquirePixelCacheNexus(
-  const size_t number_threads)
+MagickExport NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 {
   NexusInfo
     **nexus_info;
