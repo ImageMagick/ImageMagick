@@ -405,7 +405,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  Windowed Sinc/Bessel Method
 %      Blackman     Hanning     Hamming
-%      Kaiser       Lancos (Sinc)
+%      Kaiser       Lanczos (Sinc)
 %
 %  FIR filters are used as is, and are limited by that filters support window
 %  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
