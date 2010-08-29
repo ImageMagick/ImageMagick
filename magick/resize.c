@@ -302,12 +302,64 @@ static MagickRealType Quadratic(const MagickRealType x,
 static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  /*
-    This function is actually a X-scaled Sinc(x) function.
-  */
+  MagickRealType
+    x_squared;
+
   if (x == 0.0)
     return(1.0);
-  return(sin(MagickPI*(double) x)/(MagickPI*(double) x));
+  x_squared=x*x;
+  if (x_squared <= 9.0)
+    {
+      MagickRealType
+        alpha;
+
+      /*
+        The following approximation of the sinc function over the interval
+        [-3,3], constructed by Nicolas Robidoux with the assistance of Chantal
+        Racette with a maximum relative error of 1.8e-14 over the interval.
+      */
+      alpha=(-0.2777777777777777484967514793229935886858e-1+x_squared*
+        (0.7883970992697542830560986463962874704581e-2+x_squared*
+        (-0.1014971048673801299627391800253629784307e-2+x_squared*
+        (0.7957975170651347522690517580617391446624e-4+x_squared*
+        (-0.4302064159535280660121265849050342513500e-5+x_squared*
+        (0.1720088580385734039018550565889345187441e-6+x_squared*
+        (-0.5325247340694045282279767977535166005127e-8+x_squared*
+        (0.1318969739543994035763170253658588795558e-9+x_squared*
+	(-0.2678779601269262783351382208935247318217e-11+x_squared*
+        (0.4547427567791873812472026076072662961706e-13+x_squared*
+        (-0.6542016827740848562863869296875889077432e-15+x_squared*
+        (0.7978989414064956224188997380470875190815e-17+x_squared*
+	(-0.7824271041263904097239661475065843020761e-19+x_squared*
+        (0.4764330182417253304763220033014732190061e-21))))))))))))));
+#if 0
+      /*
+        Maximum relative error of 1.0e-8 over the interval.
+      */
+      alpha=(-0.2777777749828003702607348742700210983971e-1+x_squared*
+        (0.7883967237692122941462552028914990810270e-2+x_squared*
+        (-0.1014962147766290313113433635286152701178e-3+x_squared*
+        (0.7957122890011771235521289628748676216784e-4+x_squared*
+        (-0.4297822393998422516448009437099172798829e-5+x_squared*
+        (0.1707846962680966498461068335001167780751e-6+x_squared*
+        (-0.5110955098479687596630062395922169657449e-8+x_squared*
+        (0.1091121789464303759146861882233623802483e-9+x_squared*
+        (-0.1270023023877167259514316150814763206939e-11)))))))));
+#endif
+#if 0
+      /*
+        Maximum relative error of 8.8e-5 over the interval.
+      */
+      alpha=(-0.2777533762119262916850997993215487249694e-1+x_squared*
+        (0.7871060719417389265828115362113334868483e-2+x_squared*
+        (-0.1002039946063031209329660819970837885402e-2+x_squared*
+        (0.7437810130466799848673421417105135076745e-4+x_squared*
+        (-0.3275486331327512805059915658357413415728e-5+x_squared*
+        (0.6742010644073333825302432891245471531150e-7))))));
+#endif
+      return((x_squared-1.0)*(x_squared-4.0)*(x_squared-9.0)*alpha);
+    }
+  return(sin(MagickPI*x)/(MagickPI*x));
 }
 
 static MagickRealType Triangle(const MagickRealType x,
