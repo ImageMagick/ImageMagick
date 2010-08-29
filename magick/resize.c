@@ -474,12 +474,12 @@ static MagickRealType Welsh(const MagickRealType x,
 %         resulting filter over the whole support range (with blur effect).
 %
 %  Set a true un-windowed Sinc filter with 10 lobes (very slow)
-%     -set option:filter:filter  Sinc
-%     -set option:filter:lobes   8
+%     -set option:filter:filter Sinc
+%     -set option:filter:lobes 8
 %
 %  For example force an 8 lobe Lanczos (Sinc or Bessel) filter...
 %     -filter Lanczos
-%     -set option:filter:lobes   8
+%     -set option:filter:lobes 8
 %
 %  The format of the AcquireResizeFilter method is:
 %
