@@ -303,7 +303,7 @@ static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    This function actually a X-scaled Sinc(x) function.
+    This function is actually a X-scaled Sinc(x) function.
   */
   if (x == 0.0)
     return(1.0);

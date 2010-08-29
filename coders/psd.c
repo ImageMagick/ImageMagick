@@ -2228,123 +2228,123 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   if (layer_count == 0)
     (void) SetPSDSize(&psd_info,image,0);
   else
-  {
-    CompressionType
-      compression;
-
-    (void) SetPSDSize(&psd_info,image,layer_info_size+
-      (psd_info.version == 1 ? 8 : 16));
-    if ((layer_info_size/2) != ((layer_info_size+1)/2))
-      rounded_layer_info_size=layer_info_size+1;
-    else
-      rounded_layer_info_size=layer_info_size;
-    (void) SetPSDSize(&psd_info,image,rounded_layer_info_size);
-    (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
-    layer_count=1;
-    compression=base_image->compression;
-    next_image=base_image;
-    while (next_image != NULL)
     {
-      next_image->compression=NoCompression;
-      (void) WriteBlobMSBLong(image,0);
-      (void) WriteBlobMSBLong(image,0);
-      (void) WriteBlobMSBLong(image,(unsigned int) next_image->rows);
-      (void) WriteBlobMSBLong(image,(unsigned int) next_image->columns);
-      packet_size=next_image->depth > 8 ? 2UL : 1UL;
-      channel_size=(unsigned int) ((packet_size*next_image->rows*
-        next_image->columns)+2);
-      if ((IsGrayImage(next_image,&image->exception) != MagickFalse) ||
-          (next_image->storage_class == PseudoClass))
-        {
-           (void) WriteBlobMSBShort(image,(unsigned short)
-             (next_image->matte != MagickFalse ? 2 : 1));
-           (void) WriteBlobMSBShort(image,0);
-           (void) SetPSDSize(&psd_info,image,channel_size);
-           if (next_image->matte != MagickFalse)
-             {
-               (void) WriteBlobMSBShort(image,(unsigned short) -1);
-               (void) SetPSDSize(&psd_info,image,channel_size);
-             }
-         }
-        else
-          if (next_image->colorspace != CMYKColorspace)
-            {
-              (void) WriteBlobMSBShort(image,(unsigned short)
-                (next_image->matte != MagickFalse ? 4 : 3));
-             (void) WriteBlobMSBShort(image,0);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             (void) WriteBlobMSBShort(image,1);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             (void) WriteBlobMSBShort(image,2);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             if (next_image->matte!= MagickFalse )
-               {
-                 (void) WriteBlobMSBShort(image,(unsigned short) -1);
-                 (void) SetPSDSize(&psd_info,image,channel_size);
-               }
-           }
-         else
-           {
-             (void) WriteBlobMSBShort(image,(unsigned short)
-               (next_image->matte ? 5 : 4));
-             (void) WriteBlobMSBShort(image,0);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             (void) WriteBlobMSBShort(image,1);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             (void) WriteBlobMSBShort(image,2);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             (void) WriteBlobMSBShort(image,3);
-             (void) SetPSDSize(&psd_info,image,channel_size);
-             if (next_image->matte)
-               {
-                 (void) WriteBlobMSBShort(image,(unsigned short) -1);
-                 (void) SetPSDSize(&psd_info,image,channel_size);
-               }
-           }
-      (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
-      (void) WriteBlob(image,4,(const unsigned char *)
-        CompositeOperatorToPSDBlendMode(next_image->compose));
-      (void) WriteBlobByte(image,255); /* layer opacity */
-      (void) WriteBlobByte(image,0);
-      (void) WriteBlobByte(image,1); /* layer propertys - visible, etc. */
-      (void) WriteBlobByte(image,0);
-      property=(const char *) GetImageProperty(next_image,"label");
-      if (property == (const char *) NULL)
-        {
-          (void) WriteBlobMSBLong(image,16);
-          (void) WriteBlobMSBLong(image,0);
-          (void) WriteBlobMSBLong(image,0);
-          (void) FormatMagickString((char *) layer_name,MaxTextExtent,"L%06ld",
-            (long) layer_count++);
-          WritePascalString( image, (char*)layer_name, 4 );
-        }
+      CompressionType
+        compression;
+
+      (void) SetPSDSize(&psd_info,image,layer_info_size+
+        (psd_info.version == 1 ? 8 : 16));
+      if ((layer_info_size/2) != ((layer_info_size+1)/2))
+        rounded_layer_info_size=layer_info_size+1;
       else
-        {
-          size_t
-            length;
+        rounded_layer_info_size=layer_info_size;
+      (void) SetPSDSize(&psd_info,image,rounded_layer_info_size);
+      (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
+      layer_count=1;
+      compression=base_image->compression;
+      next_image=base_image;
+      while (next_image != NULL)
+      {
+        next_image->compression=NoCompression;
+        (void) WriteBlobMSBLong(image,0);
+        (void) WriteBlobMSBLong(image,0);
+        (void) WriteBlobMSBLong(image,(unsigned int) next_image->rows);
+        (void) WriteBlobMSBLong(image,(unsigned int) next_image->columns);
+        packet_size=next_image->depth > 8 ? 2UL : 1UL;
+        channel_size=(unsigned int) ((packet_size*next_image->rows*
+          next_image->columns)+2);
+        if ((IsGrayImage(next_image,&image->exception) != MagickFalse) ||
+            (next_image->storage_class == PseudoClass))
+          {
+             (void) WriteBlobMSBShort(image,(unsigned short)
+               (next_image->matte != MagickFalse ? 2 : 1));
+             (void) WriteBlobMSBShort(image,0);
+             (void) SetPSDSize(&psd_info,image,channel_size);
+             if (next_image->matte != MagickFalse)
+               {
+                 (void) WriteBlobMSBShort(image,(unsigned short) -1);
+                 (void) SetPSDSize(&psd_info,image,channel_size);
+               }
+           }
+          else
+            if (next_image->colorspace != CMYKColorspace)
+              {
+                (void) WriteBlobMSBShort(image,(unsigned short)
+                  (next_image->matte != MagickFalse ? 4 : 3));
+               (void) WriteBlobMSBShort(image,0);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               (void) WriteBlobMSBShort(image,1);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               (void) WriteBlobMSBShort(image,2);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               if (next_image->matte!= MagickFalse )
+                 {
+                   (void) WriteBlobMSBShort(image,(unsigned short) -1);
+                   (void) SetPSDSize(&psd_info,image,channel_size);
+                 }
+             }
+           else
+             {
+               (void) WriteBlobMSBShort(image,(unsigned short)
+                 (next_image->matte ? 5 : 4));
+               (void) WriteBlobMSBShort(image,0);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               (void) WriteBlobMSBShort(image,1);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               (void) WriteBlobMSBShort(image,2);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               (void) WriteBlobMSBShort(image,3);
+               (void) SetPSDSize(&psd_info,image,channel_size);
+               if (next_image->matte)
+                 {
+                   (void) WriteBlobMSBShort(image,(unsigned short) -1);
+                   (void) SetPSDSize(&psd_info,image,channel_size);
+                 }
+             }
+        (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
+        (void) WriteBlob(image,4,(const unsigned char *)
+          CompositeOperatorToPSDBlendMode(next_image->compose));
+        (void) WriteBlobByte(image,255); /* layer opacity */
+        (void) WriteBlobByte(image,0);
+        (void) WriteBlobByte(image,1); /* layer propertys - visible, etc. */
+        (void) WriteBlobByte(image,0);
+        property=(const char *) GetImageProperty(next_image,"label");
+        if (property == (const char *) NULL)
+          {
+            (void) WriteBlobMSBLong(image,16);
+            (void) WriteBlobMSBLong(image,0);
+            (void) WriteBlobMSBLong(image,0);
+            (void) FormatMagickString((char *) layer_name,MaxTextExtent,
+              "L%06ld",(long) layer_count++);
+            WritePascalString( image, (char*)layer_name, 4 );
+          }
+        else
+          {
+            size_t
+              length;
 
-          length=strlen(property);
-          (void) WriteBlobMSBLong(image,(unsigned int) (length+(4-(length % 4))+
-            8));
-          (void) WriteBlobMSBLong(image,0);
-          (void) WriteBlobMSBLong(image,0);
-          WritePascalString(image,property,4);
-        }
-      next_image=GetNextImageInList(next_image);
+            length=strlen(property);
+            (void) WriteBlobMSBLong(image,(unsigned int) (length+(4-
+              (length % 4))+8));
+            (void) WriteBlobMSBLong(image,0);
+            (void) WriteBlobMSBLong(image,0);
+            WritePascalString(image,property,4);
+          }
+        next_image=GetNextImageInList(next_image);
+      }
+      /*
+        Now the image data!
+      */
+      next_image=base_image;
+      while (next_image != NULL)
+      {
+        status=WriteImageChannels(&psd_info,image_info,image,next_image,
+          MagickTrue);
+        next_image=GetNextImageInList(next_image);
+      }
+      (void) WriteBlobMSBLong(image,0);  /* user mask data */
+      base_image->compression=compression;
     }
-    /*
-      Now the image data!
-    */
-    next_image=base_image;
-    while (next_image != NULL)
-    {
-      status=WriteImageChannels(&psd_info,image_info,image,next_image,
-        MagickTrue);
-      next_image=GetNextImageInList(next_image);
-    }
-    (void) WriteBlobMSBLong(image,0);  /* user mask data */
-    base_image->compression=compression;
-  }
   /*
     Write composite image.
   */
