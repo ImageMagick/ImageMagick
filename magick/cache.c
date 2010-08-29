@@ -580,21 +580,18 @@ static MagickBooleanType ClonePixelCacheNexus(CacheInfo *destination,
   MagickBooleanType
     status;
 
-  MagickSizeType
-    number_pixels;
-
-  register const NexusInfo
-    *p;
-
-  register NexusInfo
-    *q;
-
   register ssize_t
     i;
 
   status=MagickTrue;
   for (i=0; i < (ssize_t) source->number_threads; i++)
   {
+    register const NexusInfo
+      *p;
+
+    register NexusInfo
+      *q;
+
     p=source->nexus_info[i];
     q=destination->nexus_info[i];
     q->mapped=p->mapped;
@@ -608,6 +605,9 @@ static MagickBooleanType ClonePixelCacheNexus(CacheInfo *destination,
         status=AcquireCacheNexusPixels(source,q,exception);
         if (status != MagickFalse)
           {
+            MagickSizeType
+              number_pixels;
+
             (void) CopyMagickMemory(q->cache,p->cache,(size_t) p->length);
             q->pixels=q->cache;
             q->indexes=(IndexPacket *) NULL;
