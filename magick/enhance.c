@@ -595,11 +595,11 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     double
       luma;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -751,11 +751,11 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -979,11 +979,11 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -1440,11 +1440,11 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -1621,11 +1621,11 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     register const PixelPacket
       *restrict p;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     /*
       Read another scan line.
@@ -1914,11 +1914,11 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2136,11 +2136,11 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2342,11 +2342,11 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2579,11 +2579,11 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
-    i;
-
   register double
     scale;
+
+  register ssize_t
+    i;
 
   ssize_t
     y;
@@ -2595,7 +2595,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  scale = (white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
+  scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2629,11 +2629,11 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2789,11 +2789,11 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2835,6 +2835,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
           status=MagickFalse;
       }
   }
+  image_view=DestroyCacheView(image_view);
   return(status);
 }
 
@@ -2989,11 +2990,6 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    black,
-    white,
-    y;
-
   MagickBooleanType
     status;
 
@@ -3003,6 +2999,11 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
 
   MagickSizeType
     number_pixels;
+
+  ssize_t
+    black,
+    white,
+    y;
 
   /*
     Allocate histogram and linear map.
@@ -3274,11 +3275,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -3446,11 +3447,11 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
         register IndexPacket
           *restrict indexes;
 
-        register ssize_t
-          x;
-
         register PixelPacket
           *restrict q;
+
+        register ssize_t
+          x;
 
         if (status == MagickFalse)
           continue;
@@ -3513,11 +3514,11 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -3780,11 +3781,11 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
