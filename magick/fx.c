@@ -2562,9 +2562,9 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) log((double) alpha));
         }
-      if (LocaleNCompare(expression,"logtwo",4) == 0)
+      if (LocaleNCompare(expression,"logtwo",6) == 0)
         {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+6,beta,
             exception);
           return((MagickRealType) log10((double) alpha))/log10(2.0);
         }

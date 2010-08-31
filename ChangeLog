@@ -6,6 +6,8 @@
     approximation of the sinc function over the interval [-3,3].
   * Eliminate a small memory leak in LevelizeImageChannel() (reference
 	  http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16951).
+  * Recognize -fx logtwo (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16958).
 
 2010-08-15  6.6.3-7 Cristy  <quetzlzacatenango@image...>
   * Throw exception if image size differs for the compare program but the
