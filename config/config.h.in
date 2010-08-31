@@ -106,6 +106,9 @@
 /* Define to 1 if you have the `atexit' function. */
 #undef HAVE_ATEXIT
 
+/* Define to 1 if you have the `atoll' function. */
+#undef HAVE_ATOLL
+
 /* define if bool is a built-in type */
 #undef HAVE_BOOL
 
@@ -129,6 +132,9 @@
 
 /* Define to 1 if you have the <complex.h> header file. */
 #undef HAVE_COMPLEX_H
+
+/* Define to 1 if you have the `ctime_r' function. */
+#undef HAVE_CTIME_R
 
 /* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
    you don't. */
@@ -218,6 +224,9 @@
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
+/* Define to 1 if you have the `getc_unlocked' function. */
+#undef HAVE_GETC_UNLOCKED
+
 /* Define to 1 if you have the `getdtablesize' function. */
 #undef HAVE_GETDTABLESIZE
 
@@ -277,6 +286,9 @@
 
 /* Define to 1 if you have the <linux/unistd.h> header file. */
 #undef HAVE_LINUX_UNISTD_H
+
+/* Define to 1 if you have the `lltostr' function. */
+#undef HAVE_LLTOSTR
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
@@ -386,6 +398,9 @@
 
 /* Define to 1 if you have the `pwrite' function. */
 #undef HAVE_PWRITE
+
+/* Define to 1 if you have the `qsort_r' function. */
+#undef HAVE_QSORT_R
 
 /* Define to 1 if you have the `raise' function. */
 #undef HAVE_RAISE
@@ -606,6 +621,9 @@
 /* Define to 1 if you don't have `tm_zone' but do have the external array
    `tzname'. */
 #undef HAVE_TZNAME
+
+/* Define to 1 if you have the `ulltostr' function. */
+#undef HAVE_ULLTOSTR
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
