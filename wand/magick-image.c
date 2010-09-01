@@ -443,6 +443,12 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
           return(MagickTrue);
         }
     }
+  if (sentinel->next == (Image *) NULL)
+    {
+      InsertImageInList(&sentinel,images);
+      wand->images=GetLastImageInList(images);
+      return(MagickTrue);
+    }
   InsertImageInList(&sentinel,images);
   wand->images=GetFirstImageInList(images);
   return(MagickTrue);
