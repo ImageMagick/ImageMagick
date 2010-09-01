@@ -303,59 +303,56 @@ static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   MagickRealType
-    alpha,
-    x_squared;
+    p,
+    xx;
 
   if (x == 0.0)
     return(1.0);
-  if (fabs((double) x) > 3.0)
+  if (fabs((double) x) > 4.0)
     return(sin(MagickPI*(double) x)/(MagickPI*x));
   /*
-    The following is an approximation of the sinc function over the interval
-    [-3,3], constructed by Nicolas Robidoux with the assistance of Chantal
-    Racette.  It has a maximum relative error of 1.8e-14 over the interval.
+    Approximations of the sinc function over the interval [-4,4] constructed
+    by Nicolas Robidoux with the assistance of Chantal Racette with funding
+    from the Natural Sciences and Engineering Research Council of Canada.
   */
-  x_squared=x*x;
-  alpha=(-0.2777777777777777484967514793229935886858e-1+x_squared*
-    (0.7883970992697542830560986463962874704581e-2+x_squared*
-    (-0.1014971048673801299627391800253629784307e-2+x_squared*
-    (0.7957975170651347522690517580617391446624e-4+x_squared*
-    (-0.4302064159535280660121265849050342513500e-5+x_squared*
-    (0.1720088580385734039018550565889345187441e-6+x_squared*
-    (-0.5325247340694045282279767977535166005127e-8+x_squared*
-    (0.1318969739543994035763170253658588795558e-9+x_squared*
-    (-0.2678779601269262783351382208935247318217e-11+x_squared*
-    (0.4547427567791873812472026076072662961706e-13+x_squared*
-    (-0.6542016827740848562863869296875889077432e-15+x_squared*
-    (0.7978989414064956224188997380470875190815e-17+x_squared*
-    (-0.7824271041263904097239661475065843020761e-19+x_squared*
-    (0.4764330182417253304763220033014732190061e-21))))))))))))));
-#if 0
-  /*
-    Maximum relative error of 1.0e-8 over the interval.
-  */
-  alpha=(-0.2777777749828003702607348742700210983971e-1+x_squared*
-    (0.7883967237692122941462552028914990810270e-2+x_squared*
-    (-0.1014962147766290313113433635286152701178e-3+x_squared*
-    (0.7957122890011771235521289628748676216784e-4+x_squared*
-    (-0.4297822393998422516448009437099172798829e-5+x_squared*
-    (0.1707846962680966498461068335001167780751e-6+x_squared*
-    (-0.5110955098479687596630062395922169657449e-8+x_squared*
-    (0.1091121789464303759146861882233623802483e-9+x_squared*
-    (-0.1270023023877167259514316150814763206939e-11)))))))));
+  xx=x*x;
+#if MAGICKCORE_QUANTUM_DEPTH <= 16
+  {
+    /*
+      Approximation with maximum relative error 6.3e-6 < 1/2^17.
+    */
+    const MagickRealType c0 = 0.173610016489197553621906385078711564924e-2L;
+    const MagickRealType c1 = -0.384186115075660162081071290162149315834e-3L;
+    const MagickRealType c2 = 0.393684603287860108352720146121813443561e-4L;
+    const MagickRealType c3 = -0.248947210682259168029030370205389323899e-5L;
+    const MagickRealType c4 = 0.107791837839662283066379987646635416692e-6L;
+    const MagickRealType c5 = -0.324874073895735800961260474028013982211e-8L;
+    const MagickRealType c6 = 0.628155216606695311524920882748052490116e-10L;
+    const MagickRealType c7 = -0.586110644039348333520104379959307242711e-12L;
+    p=c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*c7))))));
+  }
+#else
+  {
+    /*
+       Approximation with maximum relative error of 4.1e-11 < 1/2^33.
+    */
+    const MagickRealType c0 = 0.173611111104053387736747210985091995555e-2L;
+    const MagickRealType c1 = -0.384241241675270460704990597975054901693e-3L;
+    const MagickRealType c2 = 0.394206107585307194760735392082304221077e-4L;
+    const MagickRealType c3 = -0.250994418576941322440573445154577235099e-5L;
+    const MagickRealType c4 = 0.112006375446163666148081492819921348554e-6L;
+    const MagickRealType c5 = -0.374978898062694028977311290390107785130e-8L;
+    const MagickRealType c6 = 0.983871412287130403267322909960351120031e-10L;
+    const MagickRealType c7 = -0.208263021467529255455129616917897259775e-11L;
+    const MagickRealType c8 = 0.360360141255689825413969279496845105034e-13L;
+    const MagickRealType c9 = -0.500117812133871122182855704211250504815e-15L;
+    const MagickRealType c10 = 0.506270333308352987196209731044295839327e-17L;
+    const MagickRealType c11 = -0.277631746025848834036870351854616274324e-19L;
+    p=c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*(c9+xx*
+      (c10+xx*c11))))))))));
+  }
 #endif
-#if 0
-  /*
-    Maximum relative error of 8.8e-5 over the interval.
-  */
-  alpha=(-0.2777533762119262916850997993215487249694e-1+x_squared*
-    (0.7871060719417389265828115362113334868483e-2+x_squared*
-    (-0.1002039946063031209329660819970837885402e-2+x_squared*
-    (0.7437810130466799848673421417105135076745e-4+x_squared*
-    (-0.3275486331327512805059915658357413415728e-5+x_squared*
-    (0.6742010644073333825302432891245471531150e-7))))));
-#endif
-  return(alpha*(x_squared-1.0)*(x_squared-4.0)*(x_squared-9.0));
+  return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
 }
 
 static MagickRealType Triangle(const MagickRealType x,
