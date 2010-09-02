@@ -522,9 +522,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) sscanf(command,LanguageLevel " %lu",&language_level);
     if (LocaleNCompare(Pages,command,strlen(Pages)) == 0)
       (void) sscanf(command,Pages " %lu",&pages);
-    if (LocaleNCompare(ImageData,command,strlen(Pages)) == 0)
+    if (LocaleNCompare(ImageData,command,strlen(ImageData)) == 0)
       (void) sscanf(command,ImageData " %lu %lu",&columns,&rows);
-    if (LocaleNCompare(ICCProfile,command,strlen(PhotoshopProfile)) == 0)
+    if (LocaleNCompare(ICCProfile,command,strlen(ICCProfile)) == 0)
       {
         unsigned char
           *datum;
