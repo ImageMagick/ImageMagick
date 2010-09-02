@@ -1,3 +1,6 @@
+2010-09-02  6.6.4-0 el_supremo  <digipete@shaw...>
+  * Repair a few incorrect LocaleNCompare() calls (ttf.c, ps.c).
+
 2010-08-31  6.6.4-0 Cristy  <quetzlzacatenango@image...>
   * Path no longer closed if join style is round (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16943).
