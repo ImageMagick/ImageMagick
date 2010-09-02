@@ -581,12 +581,12 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   /*
     Image origination information.
   */
-  cin.origination.x_offset=(ssize_t) ReadBlobLong(image);
+  cin.origination.x_offset=(int) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.x_offset != ~0UL)
     (void) FormatImageProperty(image,"cin:origination.x_offset","%.20g",
       (double) cin.origination.x_offset);
-  cin.origination.y_offset=(ssize_t) ReadBlobLong(image);
+  cin.origination.y_offset=(int) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.y_offset != ~0UL)
     (void) FormatImageProperty(image,"cin:origination.y_offset","%.20g",

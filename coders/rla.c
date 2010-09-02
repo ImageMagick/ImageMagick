@@ -229,7 +229,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,24,(unsigned char *) rla_info.green_primary);
   count=ReadBlob(image,24,(unsigned char *) rla_info.blue_primary);
   count=ReadBlob(image,24,(unsigned char *) rla_info.white_point);
-  rla_info.job_number=(ssize_t) ReadBlobMSBLong(image);
+  rla_info.job_number=(int) ReadBlobMSBLong(image);
   count=ReadBlob(image,128,(unsigned char *) rla_info.name);
   count=ReadBlob(image,128,(unsigned char *) rla_info.description);
   count=ReadBlob(image,64,(unsigned char *) rla_info.program);
@@ -251,7 +251,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,36,(unsigned char *) rla_info.space);
   if ((size_t) count != 36)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-  rla_info.next=(ssize_t) ReadBlobMSBLong(image);
+  rla_info.next=(int) ReadBlobMSBLong(image);
   /*
     Initialize image structure.
   */
@@ -272,7 +272,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read offsets to each scanline data.
   */
   for (i=0; i < (ssize_t) image->rows; i++)
-    scanlines[i]=(ssize_t) ReadBlobMSBLong(image);
+    scanlines[i]=(int) ReadBlobMSBLong(image);
   /*
     Read image data.
   */

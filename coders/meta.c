@@ -2187,7 +2187,7 @@ static int format8BIM(Image *ifile, Image *ofile)
           return(-1);
       }
     }
-    count = (ssize_t) ReadBlobMSBLong(ifile);
+    count = (int) ReadBlobMSBLong(ifile);
     if (count < 0) return -1;
     /* make a buffer to hold the datand snag it from the input stream */
     str=(unsigned char *) AcquireQuantumMemory((size_t) count,sizeof(*str));

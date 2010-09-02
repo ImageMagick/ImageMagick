@@ -450,7 +450,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (runlength == (size_t *) NULL))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
-          offsets[i]=(ssize_t) ReadBlobMSBLong(image);
+          offsets[i]=(int) ReadBlobMSBLong(image);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
         {
           runlength[i]=ReadBlobMSBLong(image);
