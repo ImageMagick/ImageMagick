@@ -306,8 +306,6 @@ static MagickRealType Sinc(const MagickRealType x,
     p,
     xx;
 
-  if (x == 0.0)
-    return(1.0);
   if (fabs((double) x) > 4.0)
     return(sin(MagickPI*(double) x)/(MagickPI*x));
   /*
