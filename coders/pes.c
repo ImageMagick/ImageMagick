@@ -492,7 +492,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 4) || (LocaleNCompare((char *) magick,"#PES",4) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,4,version);
-  offset=(ssize_t) ReadBlobLSBLong(image);
+  offset=(int) ReadBlobLSBLong(image);
   for (i=0; i < (offset+36); i++)
     if (ReadBlobByte(image) == EOF)
       break;

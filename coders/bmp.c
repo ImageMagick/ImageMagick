@@ -711,7 +711,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read color management information.
             */
             bmp_info.alpha_mask=ReadBlobLSBLong(image);
-            bmp_info.colorspace=(ssize_t) ReadBlobLSBLong(image);
+            bmp_info.colorspace=(int) ReadBlobLSBLong(image);
             /*
               Decode 2^30 fixed point formatted CIE primaries.
             */

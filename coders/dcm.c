@@ -3494,7 +3494,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (stream_info->offsets == (ssize_t *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-            stream_info->offsets[i]=(ssize_t) ReadBlobLSBLong(image);
+            stream_info->offsets[i]=(int) ReadBlobLSBLong(image);
           offset=TellBlob(image);
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
@@ -3619,7 +3619,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (stream_info->offsets == (ssize_t *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-            stream_info->offsets[i]=(ssize_t) ReadBlobLSBLong(image);
+            stream_info->offsets[i]=(int) ReadBlobLSBLong(image);
           offset=TellBlob(image);
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
@@ -3647,7 +3647,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);
         for (i=0; i < 15; i++)
-           stream_info->segments[i]=(ssize_t) ReadBlobLSBLong(image);
+           stream_info->segments[i]=(int) ReadBlobLSBLong(image);
         stream_info->remaining-=64;
       }
     image->columns=(size_t) width;

@@ -300,8 +300,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         viff_info.rows=ReadBlobLSBLong(image);
         viff_info.columns=ReadBlobLSBLong(image);
         viff_info.subrows=ReadBlobLSBLong(image);
-        viff_info.x_offset=(ssize_t) ReadBlobLSBLong(image);
-        viff_info.y_offset=(ssize_t) ReadBlobLSBLong(image);
+        viff_info.x_offset=(int) ReadBlobLSBLong(image);
+        viff_info.y_offset=(int) ReadBlobLSBLong(image);
         viff_info.x_bits_per_pixel=(float) ReadBlobLSBLong(image);
         viff_info.y_bits_per_pixel=(float) ReadBlobLSBLong(image);
         viff_info.location_type=ReadBlobLSBLong(image);
@@ -324,8 +324,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         viff_info.rows=ReadBlobMSBLong(image);
         viff_info.columns=ReadBlobMSBLong(image);
         viff_info.subrows=ReadBlobMSBLong(image);
-        viff_info.x_offset=(ssize_t) ReadBlobMSBLong(image);
-        viff_info.y_offset=(ssize_t) ReadBlobMSBLong(image);
+        viff_info.x_offset=(int) ReadBlobMSBLong(image);
+        viff_info.y_offset=(int) ReadBlobMSBLong(image);
         viff_info.x_bits_per_pixel=(float) ReadBlobMSBLong(image);
         viff_info.y_bits_per_pixel=(float) ReadBlobMSBLong(image);
         viff_info.location_type=ReadBlobMSBLong(image);

@@ -152,7 +152,7 @@ static inline double GetFITSPixel(Image *image,int bits_per_pixel)
     case 4:
     {
       if (bits_per_pixel > 0)
-        return((double) ((ssize_t) ReadBlobLong(image)));
+        return((double) ((int) ReadBlobLong(image)));
       return((double) ReadBlobFloat(image));
     }
     case 8:

@@ -1892,7 +1892,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   /*
     This the offset to the first IFD.
   */
-  offset=(ssize_t) ReadProfileLong(endian,exif+4);
+  offset=(int) ReadProfileLong(endian,exif+4);
   if ((size_t) offset >= length)
     return(MagickFalse);
   directory=exif+offset;
@@ -1929,7 +1929,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format-1) >= EXIF_NUM_FORMATS)
         break;
-      components=(ssize_t) ReadProfileLong(endian,q+4);
+      components=(int) ReadProfileLong(endian,q+4);
       number_bytes=(size_t) components*format_bytes[format];
       if (number_bytes <= 4)
         p=q+8;
@@ -1941,7 +1941,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
           /*
             The directory entry contains an offset.
           */
-          offset=(ssize_t) ReadProfileLong(endian,q+8);
+          offset=(int) ReadProfileLong(endian,q+8);
           if ((size_t) (offset+number_bytes) > length)
             continue;
           p=(unsigned char *) (exif+offset);
