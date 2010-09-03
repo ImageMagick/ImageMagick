@@ -118,18 +118,16 @@ MagickExport char *AcquireString(const char *source)
   length=0;
   if (source != (char *) NULL)
     length+=strlen(source);
-  destination=(char *) NULL;
-  if (~length >= MaxTextExtent)
-    destination=(char *) AcquireQuantumMemory(length+MaxTextExtent,
-      sizeof(*destination));
+  if (~length < MaxTextExtent)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
+  destination=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+    sizeof(*destination));
   if (destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   *destination='\0';
   if (source != (char *) NULL)
-    {
-      (void) CopyMagickMemory(destination,source,length*sizeof(*destination));
-      destination[length]='\0';
-    }
+    (void) memcpy(destination,source,length*sizeof(*destination));
+  destination[length]='\0';
   return(destination);
 }
 
@@ -228,7 +226,8 @@ MagickExport char *CloneString(char **destination,const char *source)
     sizeof(*destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  (void) CopyMagickMemory(*destination,source,length*sizeof(*destination));
+  if (length != 0)
+    (void) memcpy(*destination,source,length*sizeof(*destination));
   (*destination)[length]='\0';
   return(*destination);
 }
@@ -265,8 +264,7 @@ MagickExport StringInfo *CloneStringInfo(const StringInfo *string_info)
   assert(string_info->signature == MagickSignature);
   clone_info=AcquireStringInfo(string_info->length);
   if (string_info->length != 0)
-    (void) CopyMagickMemory(clone_info->datum,string_info->datum,
-      string_info->length+1);
+    (void) memcpy(clone_info->datum,string_info->datum,string_info->length+1);
   return(clone_info);
 }
 
@@ -423,6 +421,7 @@ MagickExport MagickBooleanType ConcatenateString(char **destination,
   const char *source)
 {
   size_t
+    destination_length,
     length,
     source_length;
 
@@ -434,8 +433,9 @@ MagickExport MagickBooleanType ConcatenateString(char **destination,
       *destination=AcquireString(source);
       return(MagickTrue);
     }
-  length=strlen(*destination);
+  destination_length=strlen(*destination);
   source_length=strlen(source);
+  length=destination_length;
   if (~length < source_length)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
   length+=source_length;
@@ -445,8 +445,9 @@ MagickExport MagickBooleanType ConcatenateString(char **destination,
     sizeof(*destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
-  (void) ConcatenateMagickString(*destination,source,(length+1)*
-    sizeof(*destination));
+  if (source_length != 0)
+    (void) memcpy((*destination)+destination_length,source,source_length);
+  (*destination)[length]='\0';
   return(MagickTrue);
 }
 
@@ -490,8 +491,7 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
   if (~length < source->length)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
   SetStringInfoLength(string_info,length+source->length);
-  (void) CopyMagickMemory(string_info->datum+length,source->datum,
-    source->length);
+  (void) memcpy(string_info->datum+length,source->datum,source->length);
 }
 
 /*
@@ -560,7 +560,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   map=MapBlob(file,ReadMode,0,length);
   if (map != (void *) NULL)
     {
-      (void) CopyMagickMemory(string,map,length);
+      (void) memcpy(string,map,length);
       (void) UnmapBlob(map,length);
     }
   else
@@ -641,10 +641,8 @@ MagickExport char *ConstantString(const char *source)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   *destination='\0';
   if (source != (char *) NULL)
-    {
-      (void) CopyMagickMemory(destination,source,length*sizeof(*destination));
-      destination[length]='\0';
-    }
+    (void) memcpy(destination,source,length*sizeof(*destination));
+  destination[length]='\0';
   return(destination);
 }
 
@@ -1667,8 +1665,8 @@ MagickExport void SetStringInfo(StringInfo *string_info,
   if (string_info->length == 0)
     return;
   (void) ResetMagickMemory(string_info->datum,0,string_info->length);
-  (void) CopyMagickMemory(string_info->datum,source->datum,MagickMin(
-    string_info->length,source->length));
+  (void) memcpy(string_info->datum,source->datum,MagickMin(string_info->length,
+    source->length));
 }
 
 /*
@@ -1704,7 +1702,7 @@ MagickExport void SetStringInfoDatum(StringInfo *string_info,
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   if (string_info->length != 0)
-    (void) CopyMagickMemory(string_info->datum,source,string_info->length);
+    (void) memcpy(string_info->datum,source,string_info->length);
 }
 
 /*
@@ -1818,7 +1816,7 @@ MagickExport StringInfo *SplitStringInfo(StringInfo *string_info,
     return((StringInfo *) NULL);
   split_info=AcquireStringInfo(offset);
   SetStringInfo(split_info,string_info);
-  (void) CopyMagickMemory(string_info->datum,string_info->datum+offset,
+  (void) memcpy(string_info->datum,string_info->datum+offset,
     string_info->length-offset+MaxTextExtent);
   SetStringInfoLength(string_info,string_info->length-offset);
   return(split_info);
@@ -1860,8 +1858,7 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
     string=(char *) AcquireQuantumMemory(length+MaxTextExtent,sizeof(*string));
   if (string == (char *) NULL)
     return((char *) NULL);
-  (void) CopyMagickMemory(string,(char *) string_info->datum,length*
-    sizeof(*string));
+  (void) memcpy(string,(char *) string_info->datum,length*sizeof(*string));
   string[length]='\0';
   return(string);
 }
@@ -1962,7 +1959,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToConvertStringToARGV");
       }
-    (void) CopyMagickMemory(argv[i],p,(size_t) (q-p));
+    (void) memcpy(argv[i],p,(size_t) (q-p));
     argv[i][q-p]='\0';
     p=q;
     while ((isspace((int) ((unsigned char) *p)) == 0) && (*p != '\0'))
@@ -2181,7 +2178,7 @@ MagickExport char **StringToList(const char *text)
           sizeof(*textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
-        (void) CopyMagickMemory(textlist[i],p,(size_t) (q-p));
+        (void) memcpy(textlist[i],p,(size_t) (q-p));
         textlist[i][q-p]='\0';
         if (*q == '\r')
           q++;
@@ -2329,7 +2326,7 @@ MagickExport void StripString(char *message)
   if (q > p)
     if ((*q == '\'') || (*q == '"'))
       q--;
-  (void) CopyMagickMemory(message,p,(size_t) (q-p+1));
+  (void) memcpy(message,p,(size_t) (q-p+1));
   message[q-p+1]='\0';
   for (p=message; *p != '\0'; p++)
     if (*p == '\n')
@@ -2416,9 +2413,8 @@ MagickExport MagickBooleanType SubstituteString(char **string,
       Replace string.
     */
     if (search_extent != replace_extent)
-      (void) CopyMagickMemory(p+replace_extent,p+search_extent,
-        strlen(p+search_extent)+1);
-    (void) CopyMagickMemory(p,replace,replace_extent);
+      (void) memcpy(p+replace_extent,p+search_extent,strlen(p+search_extent)+1);
+    (void) memcpy(p,replace,replace_extent);
     p+=replace_extent-1;
   }
   return(status);
