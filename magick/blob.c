@@ -901,7 +901,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
   map=MapBlob(file,ReadMode,0,*length);
   if (map != (unsigned char *) NULL)
     {
-      (void) CopyMagickMemory(blob,map,*length);
+      (void) memcpy(blob,map,*length);
       (void) UnmapBlob(map,*length);
     }
   else
@@ -985,7 +985,7 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
         return(0);
     }
   q=image->blob->data+image->blob->offset;
-  (void) CopyMagickMemory(q,data,length);
+  (void) memcpy(q,data,length);
   image->blob->offset+=length;
   if (image->blob->offset >= (MagickOffsetType) image->blob->length)
     image->blob->length=(size_t) image->blob->offset;
@@ -2597,7 +2597,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
         ResourceLimitFatalError,"MemoryAllocationFailed","`%s'","");
       return((Image *) NULL);
     }
-  (void) CopyMagickMemory(ping_info->blob,blob,length);
+  (void) memcpy(ping_info->blob,blob,length);
   ping_info->length=length;
   ping_info->ping=MagickTrue;
   image=ReadStream(ping_info,&PingStream,exception);
@@ -2749,7 +2749,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       image->blob->offset+=count;
       if (count != (ssize_t) length)
         image->blob->eof=MagickTrue;
-      (void) CopyMagickMemory(q,p,(size_t) count);
+      (void) memcpy(q,p,(size_t) count);
       break;
     }
   }
@@ -4002,7 +4002,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
             }
         }
       q=image->blob->data+image->blob->offset;
-      (void) CopyMagickMemory(q,p,length);
+      (void) memcpy(q,p,length);
       image->blob->offset+=length;
       if (image->blob->offset >= (MagickOffsetType) image->blob->length)
         image->blob->length=(size_t) image->blob->offset;
