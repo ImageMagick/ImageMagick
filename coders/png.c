@@ -5319,7 +5319,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image->rows > 1)
                    magnified_height += mng_info->magn_mb;
                 if (image->rows > 2)
-                   magnified_height += (image->rows-2)*(mng_info->magn_my);
+                   magnified_height += (png_uint_32) ((image->rows-2)*(mng_info->magn_my));
               }
             else
               {
