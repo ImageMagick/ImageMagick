@@ -4,6 +4,8 @@
 2010-08-31  6.6.4-0 Cristy  <quetzlzacatenango@image...>
   * Path no longer closed if join style is round (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16943).
+  * Add case for BGRQuantum to GetQuantumExtent().
+  * Support no compression on PCX write.
 
 2010-08-23  6.6.3-10 Cristy  <quetzlzacatenango@image...>
   * Fixed bug in the raw BGRA coders (reference
