@@ -7647,7 +7647,6 @@ case ".$ac_cv_cflags_warn_all" in
  ;;
 esac
 
-$ac_includes_default
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether ${MAKE-make} sets \$(MAKE)" >&5
 $as_echo_n "checking whether ${MAKE-make} sets \$(MAKE)... " >&6; }
