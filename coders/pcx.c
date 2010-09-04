@@ -794,31 +794,39 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
   q=pixels;
   for (i=0; i < (ssize_t) pcx_info->planes; i++)
   {
-    previous=(*q++);
-    count=1;
-    for (x=0; x < (ssize_t) (pcx_info->bytes_per_line-1); x++)
-    {
-      packet=(*q++);
-      if ((packet == previous) && (count < 63))
-        {
-          count++;
-          continue;
-        }
-      if ((count > 1) || ((previous & 0xc0) == 0xc0))
-        {
-          count|=0xc0;
-          (void) WriteBlobByte(image,(unsigned char) count);
-        }
-      (void) WriteBlobByte(image,previous);
-      previous=packet;
-      count=1;
-    }
-    if ((count > 1) || ((previous & 0xc0) == 0xc0))
+    if (pcx_info->encoding == 0)
       {
-        count|=0xc0;
-        (void) WriteBlobByte(image,(unsigned char) count);
+        for (x=0; x < (ssize_t) pcx_info->bytes_per_line; x++)
+          (void) WriteBlobByte(image,(unsigned char) (*q++));
       }
-    (void) WriteBlobByte(image,previous);
+    else
+      {
+        previous=(*q++);
+        count=1;
+        for (x=0; x < (ssize_t) (pcx_info->bytes_per_line-1); x++)
+        {
+          packet=(*q++);
+          if ((packet == previous) && (count < 63))
+            {
+              count++;
+              continue;
+            }
+          if ((count > 1) || ((previous & 0xc0) == 0xc0))
+            {
+              count|=0xc0;
+              (void) WriteBlobByte(image,(unsigned char) count);
+            }
+          (void) WriteBlobByte(image,previous);
+          previous=packet;
+          count=1;
+        }
+        if ((count > 1) || ((previous & 0xc0) == 0xc0))
+          {
+            count|=0xc0;
+            (void) WriteBlobByte(image,(unsigned char) count);
+          }
+        (void) WriteBlobByte(image,previous);
+      }
   }
   return (MagickTrue);
 }
@@ -899,7 +907,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     */
     pcx_info.identifier=0x0a;
     pcx_info.version=5;
-    pcx_info.encoding=1;
+    pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
     pcx_info.bits_per_pixel=8;
     if ((image->storage_class == PseudoClass) &&
         (IsMonochromeImage(image,&image->exception) != MagickFalse))
@@ -976,8 +984,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < 58; i++)
       (void) WriteBlobByte(image,'\0');
     length=(size_t) pcx_info.bytes_per_line;
-    pcx_pixels=(unsigned char *) AcquireQuantumMemory(length,
-      pcx_info.planes*sizeof(*pcx_pixels));
+    pcx_pixels=(unsigned char *) AcquireQuantumMemory(length,pcx_info.planes*
+      sizeof(*pcx_pixels));
     if (pcx_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     q=pcx_pixels;
@@ -1033,7 +1041,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=(ssize_t) pcx_info.bytes_per_line; x != 0; x--)
                 {
-                  *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
+                  *q++=ScaleQuantumToChar((Quantum)
+                    (GetAlphaPixelComponent(p)));
                   p++;
                 }
                 break;
@@ -1121,8 +1130,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
