@@ -149,9 +149,13 @@ static MagickRealType Blackman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Blackman: 2rd Order cosine windowing function.
+    Blackman: 2rd Order cosine windowing function:
+      0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
+      Refactored by Chantal Racette and Nicolas Robidoux so it needs
+      only one trig call and five flops.
   */
-  return(0.42+0.5*cos(MagickPI*(double) x)+0.08*cos(2.0*MagickPI*(double) x));
+  const double alpha = cos(MagickPI*(double) x);
+  return(0.34+alpha*(0.5+alpha*0.16));
 }
 
 static MagickRealType Bohman(const MagickRealType x,
