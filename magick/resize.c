@@ -149,10 +149,11 @@ static MagickRealType Blackman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Blackman: 2rd Order cosine windowing function:
+    Blackman: 2nd order cosine windowing function:
       0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
-      Refactored by Chantal Racette and Nicolas Robidoux so it needs
-      only one trig call and five flops.
+
+    Refactored by Chantal Racette and Nicolas Robidoux to one trig call and
+    five flops.
   */
   const double alpha = cos(MagickPI*(double) x);
   return(0.34+alpha*(0.5+alpha*0.16));
@@ -306,22 +307,31 @@ static MagickRealType Quadratic(const MagickRealType x,
 static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  MagickRealType
-    p,
-    xx;
-
-  if (fabs((double) x) > 4.0)
-    return(sin(MagickPI*(double) x)/(MagickPI*x));
-  /*
-    Approximations of the sinc function over the interval [-4,4] constructed
-    by Nicolas Robidoux with the assistance of Chantal Racette with funding
-    from the Natural Sciences and Engineering Research Council of Canada.
-  */
-  xx=x*x;
-#if MAGICKCORE_QUANTUM_DEPTH <= 16
+  const double xd = x;
+  if (fabs(xd) > 4.0)
+    return(sin(MagickPI*xd)/(MagickPI*x));
   {
     /*
-      Approximation with maximum relative error 6.3e-6 < 1/2^17.
+      Approximations of the sinc function over the interval [-4,4]
+      constructed by Nicolas Robidoux and Chantal Racette with funding
+      from the Natural Sciences and Engineering Research Council of
+      Canada.
+    */
+    const MagickRealType xx = x*x;
+#if MAGICKCORE_QUANTUM_DEPTH <= 8
+    /*
+      Maximum relative error 8.9e-4 < 1/2^10.
+    */
+    const MagickRealType c0 = 0.173456131023616172130931138332417073143e-2L;
+    const MagickRealType c1 = -0.380364743836376263041954887553883370815e-3L;
+    const MagickRealType c2 = 0.374219191965003105059092491853033171168e-4L;
+    const MagickRealType c3 = -0.207789976431855699043820493597151957343e-5L;
+    const MagickRealType c4 = 0.643040460008483757431732461799962454945e-7L;
+    const MagickRealType c5 = -0.865087318355486581259138486910631069838e-9L;
+    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*c5))));
+#elif MAGICKCORE_QUANTUM_DEPTH <= 16
+    /*
+      Maximum relative error 6.3e-6 < 1/2^17.
     */
     const MagickRealType c0 = 0.173610016489197553621906385078711564924e-2L;
     const MagickRealType c1 = -0.384186115075660162081071290162149315834e-3L;
@@ -331,12 +341,11 @@ static MagickRealType Sinc(const MagickRealType x,
     const MagickRealType c5 = -0.324874073895735800961260474028013982211e-8L;
     const MagickRealType c6 = 0.628155216606695311524920882748052490116e-10L;
     const MagickRealType c7 = -0.586110644039348333520104379959307242711e-12L;
-    p=c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*c7))))));
-  }
+    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*
+      (c6+xx*c7))))));
 #else
-  {
     /*
-       Approximation with maximum relative error of 4.1e-11 < 1/2^33.
+       Maximum relative error 4.1e-11 < 1/2^34.
     */
     const MagickRealType c0 = 0.173611111104053387736747210985091995555e-2L;
     const MagickRealType c1 = -0.384241241675270460704990597975054901693e-3L;
@@ -350,18 +359,18 @@ static MagickRealType Sinc(const MagickRealType x,
     const MagickRealType c9 = -0.500117812133871122182855704211250504815e-15L;
     const MagickRealType c10 = 0.506270333308352987196209731044295839327e-17L;
     const MagickRealType c11 = -0.277631746025848834036870351854616274324e-19L;
-    p=c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*(c9+xx*
-      (c10+xx*c11))))))))));
-  }
+    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
+      (c7+xx*(c8+xx*(c9+xx*(c10+xx*c11))))))))));
 #endif
-  return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
+    return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
+  }
 }
 
 static MagickRealType Triangle(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    1rd order (linear) B-Spline,  bilinear interpolation, Tent 1D filter, or a
+    1st order (linear) B-Spline,  bilinear interpolation, Tent 1D filter, or a
     Bartlett 2D Cone filter.
   */
   if (x < 1.0)
