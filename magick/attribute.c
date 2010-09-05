@@ -591,14 +591,14 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
   ImageType
     type;
 
-  ssize_t
-    y;
-
   register const PixelPacket
     *p;
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

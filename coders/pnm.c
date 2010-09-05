@@ -1458,12 +1458,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
     *pixels,
     *q;
 
-  ssize_t
-    count;
-
   size_t
     extent,
     packet_size;
+
+  ssize_t
+    count;
 
   /*
     Open output image file.
