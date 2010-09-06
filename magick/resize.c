@@ -1671,7 +1671,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ResizeImage() scales an image to the desired dimensions, using the given
-%  filter (see AcquireFilterInfo() ).
+%  filter (see AcquireFilterInfo()).
 %
 %  If an undefined filter is given the filter defaults to Mitchell for a
 %  colormapped image, a image with a matte channel, or if the image is
@@ -1799,7 +1799,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   /*
     Apply filter to resize horizontally from image to resize image.
   */
-  scale=MagickMax(1.0/x_factor,1.0);
+  scale=MagickMax(1.0/x_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
   if (SetImageStorageClass(resize_image,storage_class) == MagickFalse)
@@ -2040,7 +2040,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   /*
     Apply filter to resize vertically from image to resize image.
   */
-  scale=MagickMax(1.0/y_factor,1.0);
+  scale=MagickMax(1.0/y_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
   if (SetImageStorageClass(resize_image,storage_class) == MagickFalse)
