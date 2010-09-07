@@ -7122,10 +7122,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 }
             p++;
             }
-            if (x != 0)
+            if (x >= 0)
                break;
           }
-          if (x != 0)
+          if (x >= 0)
             png_set_invalid(ping,ping_info,PNG_INFO_tRNS);
         }
       if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
