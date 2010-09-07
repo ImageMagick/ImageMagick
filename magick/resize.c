@@ -1538,7 +1538,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,MagickTrue,exception));
   if ((columns <= 2) || (rows <= 2))
-    return(ZoomImage(image,columns,rows,exception));
+    return(ResizeImage(image,columns,rows,image->filter,image->blur,exception));
   if ((columns >= (2*image->columns)) || (rows >= (2*image->rows)))
     {
       Image
@@ -3015,10 +3015,12 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   x_factor=(MagickRealType) columns/(MagickRealType) image->columns;
   y_factor=(MagickRealType) rows/(MagickRealType) image->rows;
   if ((x_factor*y_factor) > 0.1)
-    thumbnail_image=ZoomImage(image,columns,rows,exception);
+    thumbnail_image=ResizeImage(image,columns,rows,image->filter,image->blur,
+      exception);
   else
     if (((SampleFactor*columns) < 128) || ((SampleFactor*rows) < 128))
-      thumbnail_image=ZoomImage(image,columns,rows,exception);
+      thumbnail_image=ResizeImage(image,columns,rows,image->filter,
+        image->blur,exception);
     else
       {
         Image
@@ -3028,7 +3030,8 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
           exception);
         if (sample_image == (Image *) NULL)
           return((Image *) NULL);
-        thumbnail_image=ZoomImage(sample_image,columns,rows,exception);
+        thumbnail_image=ResizeImage(sample_image,columns,rows,image->filter,
+          image->blur,exception);
         sample_image=DestroyImage(sample_image);
       }
   if (thumbnail_image == (Image *) NULL)
@@ -3084,60 +3087,4 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
   return(thumbnail_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   Z o o m I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ZoomImage() creates a new image that is a scaled size of an existing one.
-%  It allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.  The Point filter gives fast pixel replication,
-%  Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower,
-%  very high-quality results.  See Graphic Gems III for details on this
-%  algorithm.
-%
-%  The filter member of the Image structure specifies which image filter to
-%  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
-%
-%  The format of the ZoomImage method is:
-%
-%      Image *ZoomImage(const Image *image,const size_t columns,
-%        const size_t rows,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o columns: An integer that specifies the number of columns in the zoom
-%      image.
-%
-%    o rows: An integer that specifies the number of rows in the scaled
-%      image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *ZoomImage(const Image *image,const size_t columns,
-  const size_t rows,ExceptionInfo *exception)
-{
-  Image
-    *zoom_image;
-
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  zoom_image=ResizeImage(image,columns,rows,image->filter,image->blur,
-    exception);
-  return(zoom_image);
 }

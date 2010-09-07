@@ -134,7 +134,9 @@ extern MagickExport Image
     magick_attribute((deprecated)),
   *ShiftImageList(Image **) magick_attribute((deprecated)),
   *SpliceImageList(Image *,const ssize_t,const size_t,const Image *,
-    ExceptionInfo *) magick_attribute((deprecated));
+    ExceptionInfo *) magick_attribute((deprecated)),
+  *ZoomImage(const Image *,const size_t,const size_t,ExceptionInfo *)
+    magick_attribute((deprecated));
 
 extern MagickExport IndexPacket
   *GetCacheViewIndexes(CacheView *) magick_attribute((deprecated)),

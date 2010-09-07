@@ -6882,4 +6882,60 @@ MagickExport IndexPacket ValidateColormapIndex(Image *image,
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.4.4");
   return(ConstrainColormapIndex(image,index));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Z o o m I m a g e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ZoomImage() creates a new image that is a scaled size of an existing one.
+%  It allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.  The Point filter gives fast pixel replication,
+%  Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower,
+%  very high-quality results.  See Graphic Gems III for details on this
+%  algorithm.
+%
+%  The filter member of the Image structure specifies which image filter to
+%  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
+%
+%  The format of the ZoomImage method is:
+%
+%      Image *ZoomImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o columns: An integer that specifies the number of columns in the zoom
+%      image.
+%
+%    o rows: An integer that specifies the number of rows in the scaled
+%      image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ZoomImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+{
+  Image
+    *zoom_image;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  zoom_image=ResizeImage(image,columns,rows,image->filter,image->blur,
+    exception);
+  return(zoom_image);
+}
 #endif
