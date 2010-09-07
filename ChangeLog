@@ -1,3 +1,8 @@
+2010-09-07  6.6.4-1 Anthony Thyssen <A.Thyssen@griffith...>
+  * Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of
+    the Sinc Trigonometric resize filter, as a proper filter to allow
+    direct comparision and speed testing of the filter.
+
 2010-09-02  6.6.4-0 el_supremo  <digipete@shaw...>
   * Repair a few incorrect LocaleNCompare() calls (ttf.c, ps.c).
 
