@@ -48,6 +48,7 @@ typedef enum
   LagrangeFilter,
   BohmanFilter,
   BartlettFilter,
+  SincPolynomialFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterTypes;
 

@@ -307,9 +307,21 @@ static MagickRealType Quadratic(const MagickRealType x,
 static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  /*
+    This function actually a X-scaled Sinc(x) function.
+  */
+  if (x == 0.0)
+    return(1.0);
+  return(sin(MagickPI*(double) x)/(MagickPI*(double) x));
+}
+
+static MagickRealType SincPolynomial(const MagickRealType x,
+  const ResizeFilter *magick_unused(resize_filter))
+{
   const double xd = x;
   if (fabs(xd) > 4.0)
     return(sin(MagickPI*xd)/(MagickPI*x));
+
   {
     /*
       Approximations of the sinc function over the interval [-4,4]
@@ -544,28 +556,29 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter, BoxFilter },  /* undefined */
-    { PointFilter,     BoxFilter },  /* special, nearest-neighbour filter */
-    { BoxFilter,       BoxFilter },  /* Box averaging Filter */
-    { TriangleFilter,  BoxFilter },  /* Linear Interpolation Filter */
-    { HermiteFilter,   BoxFilter },      /* Hermite interpolation filter */
-    { SincFilter,      HanningFilter },  /* Hanning -- Cosine-Sinc */
-    { SincFilter,      HammingFilter },  /* Hamming --  '' variation */
-    { SincFilter,      BlackmanFilter }, /* Blackman -- 2*Cosine-Sinc */
-    { GaussianFilter,  BoxFilter },      /* Gaussain Blurring filter */
-    { QuadraticFilter, BoxFilter },      /* Quadratic Gaussian approximation */
-    { CubicFilter,     BoxFilter },      /* Cubic Gaussian approximation */
-    { CatromFilter,    BoxFilter },      /* Cubic Interpolator */
-    { MitchellFilter,  BoxFilter },      /* 'ideal' Cubic Filter */
-    { LanczosFilter,   SincFilter },     /* Special, 3 lobed Sinc-Sinc */
-    { BesselFilter,    BlackmanFilter }, /* 3 lobed bessel -specific request */
-    { SincFilter,      BlackmanFilter }, /* 4 lobed sinc - specific request */
-    { SincFilter,      KaiserFilter },   /* Kaiser --  SqRoot-Sinc */
-    { SincFilter,      WelshFilter },    /* Welsh -- Parabolic-Sinc */
-    { SincFilter,      CubicFilter },    /* Parzen -- Cubic-Sinc */
-    { LagrangeFilter,  BoxFilter },      /* Lagrange self-windowing filter */
-    { SincFilter,      BohmanFilter },   /* Bohman -- 2*Cosine-Sinc */
-    { SincFilter,      TriangleFilter }  /* Bartlett -- Triangle-Sinc */
+    { UndefinedFilter,  BoxFilter },  /* undefined */
+    { PointFilter,      BoxFilter },  /* special, nearest-neighbour filter */
+    { BoxFilter,        BoxFilter },  /* Box averaging Filter */
+    { TriangleFilter,   BoxFilter },  /* Linear Interpolation Filter */
+    { HermiteFilter,    BoxFilter },      /* Hermite interpolation filter */
+    { SincFilter,       HanningFilter },  /* Hanning -- Cosine-Sinc */
+    { SincFilter,       HammingFilter },  /* Hamming --  '' variation */
+    { SincFilter,       BlackmanFilter }, /* Blackman -- 2*Cosine-Sinc */
+    { GaussianFilter,   BoxFilter },      /* Gaussain Blurring filter */
+    { QuadraticFilter,  BoxFilter },      /* Quadratic Gaussian approximation */
+    { CubicFilter,      BoxFilter },      /* Cubic Gaussian approximation */
+    { CatromFilter,     BoxFilter },      /* Cubic Interpolator */
+    { MitchellFilter,   BoxFilter },      /* 'ideal' Cubic Filter */
+    { LanczosFilter,    SincFilter },     /* Special, 3 lobed Sinc-Sinc */
+    { BesselFilter,     BlackmanFilter }, /* 3 lobed bessel -specific request */
+    { SincFilter,       BlackmanFilter }, /* 4 lobed sinc - specific request */
+    { SincFilter,       KaiserFilter },   /* Kaiser --  SqRoot-Sinc */
+    { SincFilter,       WelshFilter },    /* Welsh -- Parabolic-Sinc */
+    { SincFilter,       CubicFilter },    /* Parzen -- Cubic-Sinc */
+    { LagrangeFilter,   BoxFilter },      /* Lagrange self-windowing filter */
+    { SincFilter,       BohmanFilter },   /* Bohman -- 2*Cosine-Sinc */
+    { SincFilter,       TriangleFilter }, /* Bartlett -- Triangle-Sinc */
+    { SincPolynomialFilter, BlackmanFilter } /* Polynomial Approximated Sinc */
   };
   /*
     Table maping the filter/window function from the above table to the actual
@@ -604,7 +617,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicBC,   2.0f,  2.0f, 1.0f, 0.0f }, /* Parzen, B-Spline windowing */
     { Lagrange,  2.0f,  1.0f, 0.0f, 0.0f }, /* Lagrangian Filter */
     { Bohman,    1.0f,  1.0f, 0.0f, 0.0f }, /* Bohman, 2*Cosine windowing */
-    { Triangle,  1.0f,  1.0f, 0.0f, 0.0f }  /* Bartlett, Triangle windowing */
+    { Triangle,  1.0f,  1.0f, 0.0f, 0.0f }, /* Bartlett, Triangle windowing */
+    { SincPolynomial, 4.0f,  1.0f, 0.0f, 0.0f }  /* Poly Approx Sinc */
   };
   /*
     The known zero crossings of the Bessel() or the Jinc(x*PI) function found
