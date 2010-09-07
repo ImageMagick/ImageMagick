@@ -952,6 +952,7 @@ static const OptionInfo
     { "Point", (ssize_t) PointFilter, MagickFalse },
     { "Quadratic", (ssize_t) QuadraticFilter, MagickFalse },
     { "Sinc", (ssize_t) SincFilter, MagickFalse },
+    { "SincPolynomial", (ssize_t) SincPolynomialFilter, MagickFalse },
     { "Triangle", (ssize_t) TriangleFilter, MagickFalse },
     { "Welsh", (ssize_t) WelshFilter, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedFilter, MagickFalse }
