@@ -130,6 +130,8 @@ static MagickRealType
 %
 */
 
+#define MagickPIL 3.14159265358979323846264338327950288420L
+
 static MagickRealType Bessel(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
@@ -141,8 +143,8 @@ static MagickRealType Bessel(const MagickRealType x,
     http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
-    return((MagickRealType) (MagickPI/4.0));
-  return(BesselOrderOne(MagickPI*x)/(2.0*x));
+    return(0.25*MagickPIL);
+  return(BesselOrderOne(MagickPIL*x)/(x+x));
 }
 
 static MagickRealType Blackman(const MagickRealType x,
@@ -151,28 +153,30 @@ static MagickRealType Blackman(const MagickRealType x,
   /*
     Blackman: 2nd order cosine windowing function:
       0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
-
-    Refactored by Chantal Racette and Nicolas Robidoux to one trig call and
-    five flops.
+    Refactored by Chantal Racette and Nicolas Robidoux to one trig
+    call and five flops.
   */
-  const double alpha = cos(MagickPI*(double) x);
-  return(0.34+alpha*(0.5+alpha*0.16));
+  const double pix = MagickPIL*x;
+  const MagickRealType cospix = cos(pix);
+  return(0.34+cospix*(0.5+cospix*0.16));
 }
 
 static MagickRealType Bohman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Bohman: 2rd Order cosine windowing function.
+    Bohman: 2rd Order cosine windowing function:
+      (1-x) cos(pi x) + sin(pi x) / pi.
   */
-  return((1-x)*cos(MagickPI*(double) x)+sin(MagickPI*(double) x)/MagickPI);
+  const double pix = MagickPIL*x;
+  return((1-x)*cos(pix)+(1.0/MagickPIL)*sin(pix));
 }
 
 static MagickRealType Box(const MagickRealType magick_unused(x),
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Just return 1.0, filter will still be clipped by its support window.
+    Just return 1.0; the filter will be clipped by its support window.
   */
   return(1.0);
 }
@@ -221,25 +225,34 @@ static MagickRealType CubicBC(const MagickRealType x,
 static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  return(exp((double) (-2.0*x*x))*sqrt(2.0/MagickPI));
+  /*
+    Unnormalized Gaussian with variance sqrt(pi)/(4*sqrt(2)):
+      exp(-2 x^2/sqrt(pi/2))
+  */
+  const MagickRealType alpha = sqrt((double) (8.0/MagickPIL));
+  return(exp((double) (-alpha*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    A Cosine windowing function.
+    Cosine window function: .5 + .5 cos(pi x).
   */
-  return(0.5+0.5*cos(MagickPI*(double) x));
+  const double pix = MagickPIL*x;
+  const MagickRealType cospix = cos(pix);
+  return(0.5+0.5*cospix);
 }
 
 static MagickRealType Hamming(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    A offset Cosine windowing function.
+    Offset cosine window function: .54 + .46 cos(pi x).
   */
-  return(0.54+0.46*cos(MagickPI*(double) x));
+  const double pix = MagickPIL*x;
+  const MagickRealType cospix = cos(pix);
+  return(0.54+0.46*cospix);
 }
 
 static MagickRealType Kaiser(const MagickRealType x,
@@ -308,28 +321,34 @@ static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    This function actually a X-scaled Sinc(x) function.
+    X-scaled Sinc(x) function: sin(pi x)/(pi x).
   */
   if (x == 0.0)
     return(1.0);
-  return(sin(MagickPI*(double) x)/(MagickPI*(double) x));
+  {
+    const MagickRealType pix = MagickPIL*x;
+    const MagickRealType sinpix = sin((double) pix);
+    return(sinpix/pix);
+  }
 }
 
 static MagickRealType SincPolynomial(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  const double xd = x;
-  if (fabs(xd) > 4.0)
-    return(sin(MagickPI*xd)/(MagickPI*x));
-
+  /*
+    Approximations of the sinc function sin(pi x)/(pi x) over the
+    interval [-4,4] constructed by Nicolas Robidoux and Chantal
+    Racette with funding from the Natural Sciences and Engineering
+    Research Council of Canada.
+  */
+  const MagickRealType xx = x*x;
+  if (xx > 16.0)
+    {
+      const MagickRealType pix = MagickPIL*x;
+      const MagickRealType sinpix = sin((double) pix);
+      return(sinpix/pix);
+    }
   {
-    /*
-      Approximations of the sinc function over the interval [-4,4]
-      constructed by Nicolas Robidoux and Chantal Racette with funding
-      from the Natural Sciences and Engineering Research Council of
-      Canada.
-    */
-    const MagickRealType xx = x*x;
 #if MAGICKCORE_QUANTUM_DEPTH <= 8
     /*
       Maximum relative error 8.9e-4 < 1/2^10.
@@ -396,7 +415,7 @@ static MagickRealType Welsh(const MagickRealType x,
   /*
     Welsh parabolic windowing filter.
   */
-  if (x <  1.0)
+  if (x < 1.0)
     return(1.0-x*x);
   return(0.0);
 }
@@ -1306,7 +1325,7 @@ MagickExport MagickRealType GetResizeFilterWeight(
   */
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickSignature);
-  blur=fabs(x)/resize_filter->blur;  /* X offset with blur scaling */
+  blur=fabs((double) x)/resize_filter->blur;  /* X offset with blur scaling */
   if ((resize_filter->window_support < MagickEpsilon) ||
       (resize_filter->window == Box))
     scale=1.0;  /* Point/Box Filter -- avoid division by zero */
