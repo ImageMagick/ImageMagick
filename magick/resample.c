@@ -1399,10 +1399,10 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
      an othoginally alligned filter. How this effects results is still
      being worked out.
 
-     Future: Direct use of teh resize filters in "resize.c" to set the lookup
+     Future: Direct use of the resize filters in "resize.c" to set the lookup
      table, based on the filters working support window.
   */
-  r_scale = sqrt(1.0/(double)WLUT_WIDTH)/blur;
+  r_scale = sqrt(1.0/(double)(WLUT_WIDTH*blur));
   r_scale *= 2; /* for 2 pixel radius of Improved Elliptical Formula */
 
   switch ( filter ) {
@@ -1445,13 +1445,13 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
     /*
       Create Normal Gaussian 2D Filter Weighted Lookup Table.
       A normal EWA guassual lookup would use   exp(Q*ALPHA)
-      where  Q = distantce squared from 0.0 (center) to 1.0 (edge)
+      where  Q = distance squared from 0.0 (center) to 1.0 (edge)
       and    ALPHA = -4.0*ln(2.0)  ==>  -2.77258872223978123767
       However the table is of length 1024, and equates to a radius of 2px
       thus needs to be scaled by  ALPHA*4/1024 and any blur factor squared
     */
     /*r_scale = -2.77258872223978123767*4/WLUT_WIDTH/blur/blur;*/
-    r_scale = -2.77258872223978123767/WLUT_WIDTH/blur/blur;
+    r_scale = -2.77258872223978123767/(WLUT_WIDTH*blur*blur);
     for(Q=0; Q<WLUT_WIDTH; Q++)
       resample_filter->filter_lut[Q] = exp((double)Q*r_scale);
     resample_filter->support = WLUT_WIDTH;
@@ -1462,7 +1462,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
     /* Debug output of the filter weighting LUT
       Gnuplot the LUT with hoizontal adjusted to 'r' using...
         plot [0:2][-.2:1] "lut.dat" using (sqrt($0/1024)*2):1 with lines
-      THe filter values is normalized for comparision
+      The filter values is normalized for comparision
     */
     for(Q=0; Q<WLUT_WIDTH; Q++)
       printf("%lf\n", resample_filter->filter_lut[Q]
