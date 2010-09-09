@@ -1008,7 +1008,6 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->description=ConstantString("Raw red, green, blue, and alpha samples");
   entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
-  return(MagickImageCoderSignature);
   entry=SetMagickInfo("RGBO");
   entry->decoder=(DecodeImageHandler *) ReadRGBImage;
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;

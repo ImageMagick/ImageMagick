@@ -1,3 +1,6 @@
+2010-09-09  6.6.4-1 Cristy  <quetzlzacatenango@image...>
+  * The RGBO format is now listed as a supported format.
+
 2010-09-07  6.6.4-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of
     the Sinc Trigonometric resize filter, as a proper filter to allow
