@@ -397,20 +397,21 @@ AC_OPENMP([C])
 CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 AC_SUBST(OPENMP_CFLAGS)
-case $ac_cv_prog_c_openmp in #(
-  "none needed" | unsupported)
-    ;; #(
-  *)
-  MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
-esac
+if test "$enable_openmp" != no; then
+  if test "$ac_cv_prog_c_openmp" != 'unsupported'; then
+    MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
+  fi
+fi
 
 # Enable support for OpenCL
 AX_OPENCL([C])
 CFLAGS="$CL_CFLAGS $CFLAGS"
 LIBS="$CL_LIBS $LIBS"
 AC_SUBST(CL_CFLAGS)
-if test "_OPENCL" = '1'; then
-  MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
+if test "$enable_opencl" != no; then
+  if test "_OPENCL" = '1'; then
+    MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
+  fi
 fi
 
 ########

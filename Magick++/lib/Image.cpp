@@ -2294,9 +2294,11 @@ void Magick::Image::zoom( const Geometry &geometry_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    ZoomImage( image(),
+    ResizeImage( image(),
                width,
                height,
+               image()->filter,
+               image()->blur,
                &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -2370,26 +2372,20 @@ std::string Magick::Image::attribute ( const std::string name_ )
 }
 
 // Background color
-void Magick::Image::backgroundColor ( const Color &color_ )
+void Magick::Image::backgroundColor ( const Color &backgroundColor_ )
 {
   modifyImage();
 
-  if ( color_.isValid() )
+  if ( backgroundColor_.isValid() )
     {
-      image()->background_color.red   = color_.redQuantum();
-      image()->background_color.green = color_.greenQuantum();
-      image()->background_color.blue  = color_.blueQuantum();
-      image()->background_color.opacity  = color_.alphaQuantum();
+      image()->background_color = backgroundColor_;
     }
   else
     {
-      image()->background_color.red   = 0;
-      image()->background_color.green = 0;
-      image()->background_color.blue  = 0;
-      image()->background_color.opacity  = OpaqueOpacity;
+      image()->background_color = Color();
     }
 
-  options()->backgroundColor( color_ );
+  options()->backgroundColor( backgroundColor_ );
 }
 Magick::Color Magick::Image::backgroundColor ( void ) const
 {
@@ -2426,26 +2422,20 @@ size_t Magick::Image::baseRows ( void ) const
 }
 
 // Border color
-void Magick::Image::borderColor ( const Color &color_ )
+void Magick::Image::borderColor ( const Color &borderColor_ )
 {
   modifyImage();
 
-  if ( color_.isValid() )
+  if ( borderColor_.isValid() )
     {
-      image()->border_color.red   = color_.redQuantum();
-      image()->border_color.green = color_.greenQuantum();
-      image()->border_color.blue  = color_.blueQuantum();
-      image()->border_color.opacity  = color_.alphaQuantum();
+      image()->border_color = borderColor_;
     }
   else
     {
-      image()->border_color.red   = 0;
-      image()->border_color.green = 0;
-      image()->border_color.blue  = 0;
-      image()->border_color.opacity = OpaqueOpacity;
+      image()->border_color = Color();
     }
 
-  options()->borderColor( color_ );
+  options()->borderColor( borderColor_ );
 }
 Magick::Color Magick::Image::borderColor ( void ) const
 {
@@ -3251,22 +3241,14 @@ void Magick::Image::matteColor ( const Color &matteColor_ )
   
   if ( matteColor_.isValid() )
     {
-      image()->matte_color.red   = matteColor_.redQuantum();
-      image()->matte_color.green = matteColor_.greenQuantum();
-      image()->matte_color.blue  = matteColor_.blueQuantum();
-      image()->matte_color.opacity  = matteColor_.alphaQuantum();
-
-      options()->matteColor( matteColor_ ); 
+      image()->matte_color = matteColor_;
+      options()->matteColor( matteColor_ );
     }
   else
     {
       // Set to default matte color
       Color tmpColor( "#BDBDBD" );
-      image()->matte_color.red   = tmpColor.redQuantum();
-      image()->matte_color.green = tmpColor.greenQuantum();
-      image()->matte_color.blue  = tmpColor.blueQuantum();
-      image()->matte_color.opacity  = tmpColor.alphaQuantum();
-
+      image()->matte_color = tmpColor;
       options()->matteColor( tmpColor );
     }
 }
@@ -3274,8 +3256,7 @@ Magick::Color Magick::Image::matteColor ( void ) const
 {
   return Color( constImage()->matte_color.red,
 		constImage()->matte_color.green,
-		constImage()->matte_color.blue,
-		constImage()->matte_color.opacity );
+		constImage()->matte_color.blue );
 }
 
 double Magick::Image::meanErrorPerPixel ( void ) const
