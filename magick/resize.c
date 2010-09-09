@@ -229,8 +229,8 @@ static MagickRealType Gaussian(const MagickRealType x,
     Unnormalized Gaussian with variance sqrt(pi)/(4*sqrt(2)):
       exp(-2 x^2/sqrt(pi/2))
   */
-  const MagickRealType alpha = sqrt((double) (8.0/MagickPIL));
-  return(exp((double) (-alpha*x*x)));
+  const MagickRealType alpha = -sqrt((double) (8.0/MagickPIL));
+  return(exp((double) (alpha*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
@@ -351,7 +351,7 @@ static MagickRealType SincPolynomial(const MagickRealType x,
   {
 #if MAGICKCORE_QUANTUM_DEPTH <= 8
     /*
-      Maximum relative error 8.9e-4 < 1/2^10.
+      Maximum absolute relative error 8.9e-4 < 1/2^10.
     */
     const MagickRealType c0 = 0.173456131023616172130931138332417073143e-2L;
     const MagickRealType c1 = -0.380364743836376263041954887553883370815e-3L;
@@ -362,7 +362,7 @@ static MagickRealType SincPolynomial(const MagickRealType x,
     const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*c5))));
 #elif MAGICKCORE_QUANTUM_DEPTH <= 16
     /*
-      Maximum relative error 6.3e-6 < 1/2^17.
+      Max. abs. rel. error 6.3e-6 < 1/2^17.
     */
     const MagickRealType c0 = 0.173610016489197553621906385078711564924e-2L;
     const MagickRealType c1 = -0.384186115075660162081071290162149315834e-3L;
@@ -374,24 +374,47 @@ static MagickRealType SincPolynomial(const MagickRealType x,
     const MagickRealType c7 = -0.586110644039348333520104379959307242711e-12L;
     const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*
       (c6+xx*c7))))));
+#elif MAGICKCORE_QUANTUM_DEPTH <= 32
+    /*
+       Max. abs. rel. error 2.2e-8 < 1/2^25.
+    */
+    const MagickRealType c0 = 0.173611107357320220183368594093166520811e-2L;
+    const MagickRealType c1 = -0.384240921114946632192116762889211361285e-3L;
+    const MagickRealType c2 = 0.3942011823593181282212298917249470487713e-4L;
+    const MagickRealType c3 = -0.2509633016091172176600688891655505348562e-5L;
+    const MagickRealType c4 = 0.1119020328180957844142377820713688051202e-6L;
+    const MagickRealType c5 = -0.3728951014087795493684656143211370488753e-8L;
+    const MagickRealType c6 = 0.9576941966775725703198167801887185183299e-10L;
+    const MagickRealType c7 = -0.187208577776590710853865174371617338991e-11L;
+    const MagickRealType c8 = 0.253524321426864752676094495396308636823e-13L;
+    const MagickRealType c9 = -0.177084805010701112639035485248501049364e-15L;
+    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
+      (c7+xx*(c8+xx*c9))))))));
 #else
     /*
-       Maximum relative error 4.1e-11 < 1/2^34.
+       Max. abs. rel. error 7.8e-17 < 1/2^53 if computed with
+       "standard" long doubles, 8.7e-14 < 1/2^43 if long doubles are
+       actually IEEE doubles.
     */
-    const MagickRealType c0 = 0.173611111104053387736747210985091995555e-2L;
-    const MagickRealType c1 = -0.384241241675270460704990597975054901693e-3L;
-    const MagickRealType c2 = 0.394206107585307194760735392082304221077e-4L;
-    const MagickRealType c3 = -0.250994418576941322440573445154577235099e-5L;
-    const MagickRealType c4 = 0.112006375446163666148081492819921348554e-6L;
-    const MagickRealType c5 = -0.374978898062694028977311290390107785130e-8L;
-    const MagickRealType c6 = 0.983871412287130403267322909960351120031e-10L;
-    const MagickRealType c7 = -0.208263021467529255455129616917897259775e-11L;
-    const MagickRealType c8 = 0.360360141255689825413969279496845105034e-13L;
-    const MagickRealType c9 = -0.500117812133871122182855704211250504815e-15L;
-    const MagickRealType c10 = 0.506270333308352987196209731044295839327e-17L;
-    const MagickRealType c11 = -0.277631746025848834036870351854616274324e-19L;
+    const MagickRealType c0 = 0.173611111111111105469252061071302221602e-2L;
+    const MagickRealType c1 = -0.384241242599157132427086439742003984072e-3L;
+    const MagickRealType c2 = 0.394206128796992679471568863267961806723e-4L;
+    const MagickRealType c3 = -0.250994617676394984418111934858133321048e-5L;
+    const MagickRealType c4 = 0.112007374042376446971339807322892870623e-6L;
+    const MagickRealType c5 = -0.375009284680048744128306355614156758655e-8L;
+    const MagickRealType c6 = 0.984472073682512367869077201164827198558e-10L;
+    const MagickRealType c7 = -0.209062908997015343777869669751033754285e-11L;
+    const MagickRealType c8 = 0.367641628743512654638053448370066260797e-13L;
+    const MagickRealType c9 = -0.545242123349894319701665127995675600908e-15L;
+    const MagickRealType c10 = 0.692018191260376553697599848860742319691e-17L;
+    const MagickRealType c11 = -0.760012485650215194550499686240155234683e-19L;
+    const MagickRealType c12 = 0.725162722620595651887717538635218514803e-21L;
+    const MagickRealType c13 = -0.589967180075110891970034733495852828580e-23L;
+    const MagickRealType c14 = 0.374841980075726557899013574367932640586e-25L;
+    const MagickRealType c15 = -0.138632329047117683500928913798808544919e-27L;
     const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
-      (c7+xx*(c8+xx*(c9+xx*(c10+xx*c11))))))))));
+      (c7+xx*(c8+xx*(c9+xx*(c10+xx*(c11+xx*(c12+xx*(c13+xx*(c14+xx*15
+      ))))))))))))));
 #endif
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
   }
