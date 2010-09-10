@@ -227,11 +227,11 @@ static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Unnormalized Gaussian with variance sqrt(pi)/(4*sqrt(2)):
-      exp(-2 x^2/sqrt(pi/2))
+      exp(-2 x^2)*sqrt(2/pi))
   */
-  const MagickRealType alpha = -sqrt((double) (8.0/MagickPIL));
-  return(exp((double) (alpha*x*x)));
+  //const MagickRealType alpha = sqrt((double) (2.0/MagickPIL));
+  const MagickRealType alpha = 2.0/MagickSQ2PI;
+  return(exp(-(double)(2.0*x*x))*alpha);
 }
 
 static MagickRealType Hanning(const MagickRealType x,
