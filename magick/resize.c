@@ -54,6 +54,7 @@
 #include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/memory_.h"
+#include "magick/magick.h"
 #include "magick/pixel-private.h"
 #include "magick/property.h"
 #include "magick/monitor.h"
@@ -82,7 +83,7 @@ struct _ResizeFilter
     (*window)(const MagickRealType,const ResizeFilter *),
     support,        /* filter region of support - the filter support limit */
     window_support, /* window support, usally equal to support (expert only) */
-    scale,          /* dimension to scale to fit window support (usally 1.0) */
+    scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
     cubic[8];       /* cubic coefficents for smooth Cubic filters */
 
@@ -841,12 +842,17 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->support=fabs(StringToDouble(artifact));
   /*
     Scale windowing function separatally to the support 'clipping' window
-    that calling operator is planning to actually use.
+    that calling operator is planning to actually use. (Expert override)
   */
-  resize_filter->window_support=resize_filter->support;
+  resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
     resize_filter->window_support=fabs(StringToDouble(artifact));
+  /*
+    Adjust window function X scaling to fit 
+    Avoids a division on every filter call.
+  */
+  resize_filter->scale /= resize_filter->window_support;
   /*
     Set Cubic Spline B,C values, calculate Cubic coefficents.
   */
@@ -896,6 +902,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->cubic[6]=(6.0*B+30.0*C)/6.0;
     resize_filter->cubic[7]=(- 1.0*B-6.0*C)/6.0;
   }
+  /*
+    Expert Option Request for verbose details of the resulting filter
+  */
   artifact=GetImageArtifact(image,"filter:verbose");
   if (artifact != (const char *) NULL)
     {
@@ -903,15 +912,41 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         support,
         x;
 
+      /* Lanczos leaves filter_type as Lanczos as it gets a different
+       * support, even though the function points to Sinc.
+       * So set it correct for the actual report.
+       */
+      if ( resize_filter->filter == Sinc ) filter_type=SincFilter;
+
       /*
-        Output filter graph -- for graphing filter result.
+        Report Filter Details
       */
-      support=GetResizeFilterSupport(resize_filter);
-      (void) fprintf(stdout,"# support = %g\n",support);
+      support = GetResizeFilterSupport(resize_filter); /* support range */
+      (void) fprintf(stdout,"#\n# Resize Filter (for graphing)\n#\n");
+      (void) fprintf(stdout,"# function = %s\n",
+           MagickOptionToMnemonic(MagickFilterOptions, filter_type) );
+      (void) fprintf(stdout,"# window = %s\n",
+           MagickOptionToMnemonic(MagickFilterOptions, window_type) );
+      (void) fprintf(stdout,"# support = %.*g\n",
+           GetMagickPrecision(),resize_filter->support );
+      (void) fprintf(stdout,"# win-support = %.*g\n",
+           GetMagickPrecision(),resize_filter->window_support );
+      (void) fprintf(stdout,"# blur = %.*g\n",
+           GetMagickPrecision(),resize_filter->blur );
+      (void) fprintf(stdout,"# blurred_support = %.*g\n",
+           GetMagickPrecision(),support);
+      (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",
+           GetMagickPrecision(),B,   GetMagickPrecision(),C);
+      (void) fprintf(stdout,"#\n");
+      /*
+        Output values of resulting filter graph -- for graphing filter result.
+      */
       for (x=0.0; x <= support; x+=0.01f)
-        (void) fprintf(stdout,"%5.2lf\t%lf\n",x,(double) GetResizeFilterWeight(
-          resize_filter,x));
-      (void) fprintf(stdout,"%5.2lf\t%lf\n",support,0.0);
+        (void) fprintf(stdout,"%5.2lf\t%.*g\n", x,
+          GetMagickPrecision(), GetResizeFilterWeight(resize_filter,x));
+      /* A final value so gnuplot can graph the 'stop' properly */
+      (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,
+           GetMagickPrecision(), 0.0);
     }
   return(resize_filter);
 }
@@ -1340,7 +1375,7 @@ MagickExport MagickRealType GetResizeFilterWeight(
   const ResizeFilter *resize_filter,const MagickRealType x)
 {
   MagickRealType
-    blur,
+    x_blur,
     scale;
 
   /*
@@ -1348,16 +1383,16 @@ MagickExport MagickRealType GetResizeFilterWeight(
   */
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickSignature);
-  blur=fabs((double) x)/resize_filter->blur;  /* X offset with blur scaling */
+  x_blur=fabs((double) x)/resize_filter->blur;  /* X offset with blur scaling */
   if ((resize_filter->window_support < MagickEpsilon) ||
       (resize_filter->window == Box))
-    scale=1.0;  /* Point/Box Filter -- avoid division by zero */
+    scale=1.0;  /* Point or Box Filter -- avoid division by zero */
   else
     {
-      scale=resize_filter->scale/resize_filter->window_support;
-      scale=resize_filter->window(blur*scale,resize_filter);
+      scale=resize_filter->scale;
+      scale=resize_filter->window(x_blur*scale,resize_filter);
     }
-  return(scale*resize_filter->filter(blur,resize_filter));
+  return(scale*resize_filter->filter(x_blur,resize_filter));
 }
 
 /*
