@@ -923,7 +923,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       */
       support = GetResizeFilterSupport(resize_filter); /* support range */
       (void) fprintf(stdout,"#\n# Resize Filter (for graphing)\n#\n");
-      (void) fprintf(stdout,"# function = %s\n",
+      (void) fprintf(stdout,"# filter = %s\n",
            MagickOptionToMnemonic(MagickFilterOptions, filter_type) );
       (void) fprintf(stdout,"# window = %s\n",
            MagickOptionToMnemonic(MagickFilterOptions, window_type) );
