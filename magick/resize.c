@@ -618,7 +618,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicFilter,      BoxFilter },      /* Cubic Gaussian approximation */
     { CatromFilter,     BoxFilter },      /* Cubic Interpolator */
     { MitchellFilter,   BoxFilter },      /* 'ideal' Cubic Filter */
-    { LanczosFilter,    SincFilter },     /* Special, 3 lobed Sinc-Sinc */
+    { LanczosFilter,    SincFilter },     /* SPECIAL, 3 lobed Sinc-Sinc */
     { BesselFilter,     BlackmanFilter }, /* 3 lobed bessel -specific request */
     { SincFilter,       BlackmanFilter }, /* 4 lobed sinc - specific request */
     { SincFilter,       KaiserFilter },   /* Kaiser --  SqRoot-Sinc */
@@ -634,6 +634,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     filter/window function call to use.  The default support size for that
     filter as a weighting function, and the point to scale when that function is
     used as a windowing function (typ 1.0).
+
+    Note that the filter_type -> function is 1 to 1 except for
+    Sinc and CubicBC  filter_types.  See "filter:verbose" handling below.
   */
   static struct
   {
@@ -641,8 +644,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       (*function)(const MagickRealType, const ResizeFilter*),
       support,  /* default support size for function as a filter */
       scale,    /* size windowing function, for scaling windowing function */
-      B,
-      C;        /* Cubic Filter factors for a CubicBC function, else ignored */
+      B,C;      /* Cubic Filter factors for a CubicBC function, else ignored */
   } const filters[SentinelFilter] =
   {
     { Box,       0.0f,  0.5f, 0.0f, 0.0f }, /* Undefined */
