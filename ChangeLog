@@ -5,6 +5,8 @@
   * Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of
     the Sinc Trigonometric resize filter, as a proper filter to allow
     direct comparision and speed testing of the filter.
+  * Expanded the "-set option:filter:verbose 1" output, so as to also include
+    the actual functions and other values that were used to create the filter.
 
 2010-09-02  6.6.4-0 el_supremo  <digipete@shaw...>
   * Repair a few incorrect LocaleNCompare() calls (ttf.c, ps.c).
