@@ -912,11 +912,12 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         support,
         x;
 
-      /* Lanczos leaves filter_type as Lanczos as it gets a different
-       * support, even though the function points to Sinc.
-       * So set it correct for the actual report.
+      /* Reset the filter_type for specific compound filters so
+       * the actual 'function' is returned, not the user selection.
+       * Specifically for Sinc and Cubic compound filters.
        */
       if ( resize_filter->filter == Sinc ) filter_type=SincFilter;
+      if ( resize_filter->filter == CubicBC ) filter_type=CubicFilter;
 
       /*
         Report Filter Details
