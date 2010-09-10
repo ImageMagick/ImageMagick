@@ -227,9 +227,9 @@ static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-      exp(-2 x^2)*sqrt(2/pi))
+     1D Gaussian with sigm=1/2
+      exp(-2 x^2)/sqrt(pi/2))
   */
-  //const MagickRealType alpha = sqrt((double) (2.0/MagickPIL));
   const MagickRealType alpha = 2.0/MagickSQ2PI;
   return(exp(-(double)(2.0*x*x))*alpha);
 }
