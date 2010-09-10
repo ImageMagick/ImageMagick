@@ -1054,10 +1054,12 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_InverseFourierTransform)
 #endif
-  fftw_c2r_plan=fftw_plan_dft_c2r_2d(fourier_info->width,fourier_info->height,
-    fourier,source,FFTW_ESTIMATE);
-  fftw_execute(fftw_c2r_plan);
-  fftw_destroy_plan(fftw_c2r_plan);
+  {
+    fftw_c2r_plan=fftw_plan_dft_c2r_2d(fourier_info->width,fourier_info->height,
+      fourier,source,FFTW_ESTIMATE);
+    fftw_execute(fftw_c2r_plan);
+    fftw_destroy_plan(fftw_c2r_plan);
+  }
   i=0L;
   image_view=AcquireCacheView(image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
