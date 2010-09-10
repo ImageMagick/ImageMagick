@@ -595,6 +595,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     WARNING: The order of this tabel must match the order of the FilterTypes
     enumeration specified in "resample.h", or the filter names will not match
     the filter being setup.
+
+    You can check filter setups with the "filter:verbose" setting.
   */
   static struct
   {
