@@ -470,6 +470,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Blackman     Hanning     Hamming
 %      Kaiser       Lanczos (Sinc)
 %
+%  Polynomial Approximations (high precision fast versions)
+%      SincPolynomial
+%
 %  FIR filters are used as is, and are limited by that filters support window
 %  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
 %  simply clipped by its support size (1.5).
@@ -485,8 +488,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %  recommended as it removes the correct filter selection for different
 %  filtering image operations.  Selecting a window filtering method is better.
 %
-%  Lanczos is purely special case of a Sinc windowed Sinc, but defaulting to
-%  a 3 lobe support, rather that the default 4 lobe support.
+%  Lanczos is a special case of a Sinc windowed Sinc, but defaulting to
+%  a 3 lobe support, rather that the default 4 lobe support of the others.
 %
 %  Special options can be used to override specific, or all the filter
 %  settings.   However doing so is not advisible unless you have expert
@@ -516,25 +519,27 @@ static MagickRealType Welsh(const MagickRealType x,
 %        used for simple filters like FIR filters, and the Gaussian Filter.
 %        This will override any 'filter:lobes' option.
 %
+%    "filter:win-support"  Scale windowing function to this size instead.
+%        This causes the windowing (or self-windowing Lagrange filter) to act
+%        is if the support window it much much larger than what is actually
+%        supplied to the calling operator.  The filter however is still
+%        clipped to the real support size given, by the support range suppiled
+%        to the caller.  If unset this will equal the normal filter support
+%        size.
+%
 %    "filter:blur"     Scale the filter and support window by this amount.
 %        A value >1 will generally result in a more burred image with
 %        more ringing effects, while a value <1 will sharpen the
 %        resulting image with more aliasing and Morie effects.
-%
-%    "filter:win-support"  Scale windowing function to this size instead.
-%        This causes the windowing (or self-windowing Lagrange filter)
-%        to act is if the support winodw it much much larger than what
-%        is actually supplied to the calling operator.  The filter however
-%        is still clipped to the real support size given.  If unset this
-%        will equal the normal filter support size.
 %
 %    "filter:b"
 %    "filter:c"    Override the preset B,C values for a Cubic type of filter
 %         If only one of these are given it is assumes to be a 'Keys'
 %         type of filter such that B+2C=1, where Keys 'alpha' value = C
 %
-%    "filter:verbose"   Output verbose plotting data for graphing the
-%         resulting filter over the whole support range (with blur effect).
+%    "filter:verbose"   Output the exact results of the filter selections
+%         made, as well as plotting data for graphing the resulting filter
+%         over support range (blur adjusted).
 %
 %  Set a true un-windowed Sinc filter with 10 lobes (very slow)
 %     -set option:filter:filter Sinc
@@ -555,9 +560,10 @@ static MagickRealType Welsh(const MagickRealType x,
 %    o image: the image.
 %
 %    o filter: the filter type, defining a preset filter, window and support.
+%      The artifact settings listed above will override those selections.
 %
 %    o blur: blur the filter by this amount, use 1.0 if unknown.  Image
-%      artifact "filter:blur"  will override this old usage
+%      artifact "filter:blur"  will override this internal usage.
 %
 %    o radial: 1D orthogonal filter (Sinc) or 2D radial filter (Bessel)
 %
