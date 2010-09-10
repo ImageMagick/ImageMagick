@@ -591,6 +591,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     filter function (must be windowed) could be upgraded to a 'Bessel' filter
     if a "cylindrical" filter is requested, unless a "Sinc" filter specifically
     request.
+
+    WARNING: The order of this tabel must match the order of the FilterTypes
+    enumeration specified in "resample.h", or the filter names will not match
+    the filter being setup.
   */
   static struct
   {

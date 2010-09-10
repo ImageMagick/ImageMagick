@@ -24,6 +24,12 @@ extern "C" {
 
 #include <magick/cache-view.h>
 
+/*
+  WARNING:  The order of this table must also match the order
+  of a table located in AcquireResizeFilter() or "resize.c"
+  Otherwise the users filter will not match the actual filter
+  that is setup.
+*/
 typedef enum
 {
   UndefinedFilter,
