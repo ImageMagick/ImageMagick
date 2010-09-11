@@ -227,11 +227,18 @@ static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-     1D Gaussian with sigm=1/2
-      exp(-2 x^2)/sqrt(pi/2))
+    Normalized Gaussian with variance 1/2 (by default):
+      1/sqrt(2 pi sigma^2) exp(-x^2/(2 sigma^2))
   */
-  const MagickRealType alpha = 2.0/MagickSQ2PI;
-  return(exp(-(double)(2.0*x*x))*alpha);
+  #define MagickGAUSSIANSIGMAL 0.5L
+  /*
+    Change the value of MagickGAUSSIANSIGMAL if you want to override
+    the default.
+  */
+  const MagickRealType sigma2 = MagickGAUSSIANSIGMAL*MagickGAUSSIANSIGMAL;
+  const MagickRealType alpha = -1.0/(2.0*sigma2);
+  const MagickRealType normalizer = sqrt((double) (1.0/(2.0*MagickPIL*sigma2)));
+  return(normalizer*exp((double) (alpha*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
@@ -414,7 +421,7 @@ static MagickRealType SincPolynomial(const MagickRealType x,
     const MagickRealType c14 = 0.374841980075726557899013574367932640586e-25L;
     const MagickRealType c15 = -0.138632329047117683500928913798808544919e-27L;
     const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
-      (c7+xx*(c8+xx*(c9+xx*(c10+xx*(c11+xx*(c12+xx*(c13+xx*(c14+xx*15
+      (c7+xx*(c8+xx*(c9+xx*(c10+xx*(c11+xx*(c12+xx*(c13+xx*(c14+xx*c15
       ))))))))))))));
 #endif
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
@@ -470,9 +477,6 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Blackman     Hanning     Hamming
 %      Kaiser       Lanczos (Sinc)
 %
-%  Polynomial Approximations (high precision fast versions)
-%      SincPolynomial
-%
 %  FIR filters are used as is, and are limited by that filters support window
 %  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
 %  simply clipped by its support size (1.5).
@@ -488,8 +492,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %  recommended as it removes the correct filter selection for different
 %  filtering image operations.  Selecting a window filtering method is better.
 %
-%  Lanczos is a special case of a Sinc windowed Sinc, but defaulting to
-%  a 3 lobe support, rather that the default 4 lobe support of the others.
+%  Lanczos is purely special case of a Sinc windowed Sinc, but defaulting to
+%  a 3 lobe support, rather that the default 4 lobe support.
 %
 %  Special options can be used to override specific, or all the filter
 %  settings.   However doing so is not advisible unless you have expert
@@ -519,27 +523,25 @@ static MagickRealType Welsh(const MagickRealType x,
 %        used for simple filters like FIR filters, and the Gaussian Filter.
 %        This will override any 'filter:lobes' option.
 %
-%    "filter:win-support"  Scale windowing function to this size instead.
-%        This causes the windowing (or self-windowing Lagrange filter) to act
-%        is if the support window it much much larger than what is actually
-%        supplied to the calling operator.  The filter however is still
-%        clipped to the real support size given, by the support range suppiled
-%        to the caller.  If unset this will equal the normal filter support
-%        size.
-%
 %    "filter:blur"     Scale the filter and support window by this amount.
 %        A value >1 will generally result in a more burred image with
 %        more ringing effects, while a value <1 will sharpen the
 %        resulting image with more aliasing and Morie effects.
+%
+%    "filter:win-support"  Scale windowing function to this size instead.
+%        This causes the windowing (or self-windowing Lagrange filter)
+%        to act is if the support winodw it much much larger than what
+%        is actually supplied to the calling operator.  The filter however
+%        is still clipped to the real support size given.  If unset this
+%        will equal the normal filter support size.
 %
 %    "filter:b"
 %    "filter:c"    Override the preset B,C values for a Cubic type of filter
 %         If only one of these are given it is assumes to be a 'Keys'
 %         type of filter such that B+2C=1, where Keys 'alpha' value = C
 %
-%    "filter:verbose"   Output the exact results of the filter selections
-%         made, as well as plotting data for graphing the resulting filter
-%         over support range (blur adjusted).
+%    "filter:verbose"   Output verbose plotting data for graphing the
+%         resulting filter over the whole support range (with blur effect).
 %
 %  Set a true un-windowed Sinc filter with 10 lobes (very slow)
 %     -set option:filter:filter Sinc
@@ -560,10 +562,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %    o image: the image.
 %
 %    o filter: the filter type, defining a preset filter, window and support.
-%      The artifact settings listed above will override those selections.
 %
 %    o blur: blur the filter by this amount, use 1.0 if unknown.  Image
-%      artifact "filter:blur"  will override this internal usage.
+%      artifact "filter:blur"  will override this old usage
 %
 %    o radial: 1D orthogonal filter (Sinc) or 2D radial filter (Bessel)
 %
@@ -936,22 +937,22 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       /*
         Report Filter Details
       */
-      support = GetResizeFilterSupport(resize_filter); /* support range */
+      support=GetResizeFilterSupport(resize_filter);  /* support range */
       (void) fprintf(stdout,"#\n# Resize Filter (for graphing)\n#\n");
       (void) fprintf(stdout,"# filter = %s\n",
-           MagickOptionToMnemonic(MagickFilterOptions, filter_type) );
+         MagickOptionToMnemonic(MagickFilterOptions,filter_type));
       (void) fprintf(stdout,"# window = %s\n",
-           MagickOptionToMnemonic(MagickFilterOptions, window_type) );
+         MagickOptionToMnemonic(MagickFilterOptions,window_type));
       (void) fprintf(stdout,"# support = %.*g\n",
-           GetMagickPrecision(),resize_filter->support );
+         GetMagickPrecision(),(double) resize_filter->support);
       (void) fprintf(stdout,"# win-support = %.*g\n",
-           GetMagickPrecision(),resize_filter->window_support );
+         GetMagickPrecision(),(double) resize_filter->window_support);
       (void) fprintf(stdout,"# blur = %.*g\n",
-           GetMagickPrecision(),resize_filter->blur );
+         GetMagickPrecision(),(double) resize_filter->blur);
       (void) fprintf(stdout,"# blurred_support = %.*g\n",
-           GetMagickPrecision(),support);
+         GetMagickPrecision(),(double) support);
       (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",
-           GetMagickPrecision(),B,   GetMagickPrecision(),C);
+         GetMagickPrecision(),B,GetMagickPrecision(),(double) C);
       (void) fprintf(stdout,"#\n");
       /*
         Output values of resulting filter graph -- for graphing filter result.
