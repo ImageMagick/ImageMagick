@@ -1828,15 +1828,17 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   EndianType
     endian;
 
+  int
+    offset;
+
   ssize_t
     id,
     level;
 
   size_t
-    length;
-
-  ssize_t
-    offset;
+    entry,
+    length,
+    number_entries;
 
   static int
     format_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
@@ -1847,10 +1849,6 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   unsigned char
     *directory,
     *exif;
-
-  size_t
-    entry,
-    number_entries;
 
   /*
     Set EXIF resolution tag.
@@ -1912,8 +1910,10 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     number_entries=ReadProfileShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
+      int
+        components;
+
       ssize_t
-        components,
         format,
         tag_value;
 
@@ -1935,7 +1935,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         p=q+8;
       else
         {
-          ssize_t
+          int
             offset;
 
           /*

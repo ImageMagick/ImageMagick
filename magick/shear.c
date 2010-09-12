@@ -963,7 +963,8 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   /*
     Auto-crop image.
   */
-  GetImageBackgroundColor(clone_image,StringToLong(artifact),exception);
+  GetImageBackgroundColor(clone_image,(ssize_t) StringToLong(artifact),
+    exception);
   deskew_image=AffineTransformImage(clone_image,&affine_matrix,exception);
   clone_image=DestroyImage(clone_image);
   if (deskew_image == (Image *) NULL)

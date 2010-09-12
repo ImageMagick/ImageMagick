@@ -1556,7 +1556,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         d.y = (coeff[2]-coeff[3])*sa;
         ExpandBounds(d);
         /* Orthogonal points along top of arc */
-        for( a=ceil((coeff[0]-coeff[1]/2.0)/MagickPI2)*MagickPI2;
+        for( a=(double) (ceil((double) ((coeff[0]-coeff[1]/2.0)/MagickPI2))*MagickPI2);
                a<(coeff[0]+coeff[1]/2.0); a+=MagickPI2 ) {
           ca = cos(a); sa = sin(a);
           d.x = coeff[2]*ca;
@@ -1568,7 +1568,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           to appropriate scaling factors, to allow faster processing
           in the mapping function.
         */
-        coeff[1] = Magick2PI*image->columns/coeff[1];
+        coeff[1] = (double) (Magick2PI*image->columns/coeff[1]);
         coeff[3] = (double)image->rows/coeff[3];
         break;
       }
@@ -2159,7 +2159,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           case ArcDistortion:
           {
             /* what is the angle and radius in the destination image */
-            s.x  = (atan2(d.y,d.x) - coeff[0])/Magick2PI;
+            s.x  = (double) ((atan2(d.y,d.x) - coeff[0])/Magick2PI);
             s.x -= MagickRound(s.x);     /* angle */
             s.y  = hypot(d.x,d.y);       /* radius */
 
@@ -2170,7 +2170,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             */
             if ( s.y > MagickEpsilon )
               ScaleFilter( resample_filter[id],
-                  coeff[1]/(Magick2PI*s.y), 0, 0, coeff[3] );
+                  (double) (coeff[1]/(Magick2PI*s.y)), 0, 0, coeff[3] );
             else
               ScaleFilter( resample_filter[id],
                   distort_image->columns*2, 0, 0, coeff[3] );
@@ -2195,7 +2195,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             */
             if ( s.y > MagickEpsilon )
               ScaleFilter( resample_filter[id],
-                  coeff[6]/(Magick2PI*s.y), 0, 0, coeff[7] );
+                (double) (coeff[6]/(Magick2PI*s.y)), 0, 0, coeff[7] );
             else
               ScaleFilter( resample_filter[id],
                   distort_image->columns*2, 0, 0, coeff[7] );
