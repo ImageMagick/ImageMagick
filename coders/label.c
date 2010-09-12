@@ -139,8 +139,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       for ( ; status != MagickFalse; draw_info->pointsize*=2.0)
       {
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(size_t) floor(metrics.height+draw_info->stroke_width+
-          0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
         if (((image->columns != 0) && (width > (image->columns+1))) ||
             ((image->rows != 0) && (height > (image->rows+1))))
           break;
@@ -149,8 +148,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       for ( ; status != MagickFalse; draw_info->pointsize--)
       {
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(size_t) floor(metrics.height+draw_info->stroke_width+
-          0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
         if ((image->columns != 0) && (width <= (image->columns+1)) &&
            ((image->rows == 0) || (height <= (image->rows+1))))
           break;
