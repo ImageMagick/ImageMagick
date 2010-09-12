@@ -96,11 +96,15 @@ static inline size_t GetOpenMPMaximumThreads(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   {
+    ssize_t
+      threads;
+
     static size_t
       maximum_threads = 1UL;
 
-    if (omp_get_max_threads() > (ssize_t) maximum_threads)
-      maximum_threads=omp_get_max_threads();
+    threads=omp_get_max_threads();
+    if (threads > (ssize_t) maximum_threads)
+      maximum_threads=threads;
     return(maximum_threads);
   }
 #else
