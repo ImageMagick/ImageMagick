@@ -127,6 +127,9 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+</div>
+<div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
 </div>
 <div  class="sponsor">
@@ -143,9 +146,6 @@
 </div>
 <div  class="sponsor">
    <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
-</div>
-<div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -167,7 +167,7 @@
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#AdaptiveResizeImage">AdaptiveResizeImage</a> &bull; <a href="#MagnifyImage">MagnifyImage</a> &bull; <a href="#MinifyImage">MinifyImage</a> &bull; <a href="#ResampleImage">ResampleImage</a> &bull; <a href="#LiquidRescaleImage">LiquidRescaleImage</a> &bull; <a href="#ResizeImage">ResizeImage</a> &bull; <a href="#SampleImage">SampleImage</a> &bull; <a href="#ScaleImage">ScaleImage</a> &bull; <a href="#ThumbnailImage">ThumbnailImage</a> &bull; <a href="#ZoomImage">ZoomImage</a>]</p>
+<p class="navigation-index">[<a href="#AdaptiveResizeImage">AdaptiveResizeImage</a> &bull; <a href="#MagnifyImage">MagnifyImage</a> &bull; <a href="#MinifyImage">MinifyImage</a> &bull; <a href="#ResampleImage">ResampleImage</a> &bull; <a href="#LiquidRescaleImage">LiquidRescaleImage</a> &bull; <a href="#ResizeImage">ResizeImage</a> &bull; <a href="#SampleImage">SampleImage</a> &bull; <a href="#ScaleImage">ScaleImage</a> &bull; <a href="#ThumbnailImage">ThumbnailImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/resize
 _8c.html" target="source" name="AdaptiveResizeImage">AdaptiveResizeImage</a></h2>
@@ -310,7 +310,7 @@ _8c.html" target="source" name="LiquidRescaleImage">LiquidRescaleImage</a></h2>
 _8c.html" target="source" name="ResizeImage">ResizeImage</a></h2>
 <div class="doc-section">
 
-<p>ResizeImage() scales an image to the desired dimensions, using the given filter (see AcquireFilterInfo() ).</p></ol>
+<p>ResizeImage() scales an image to the desired dimensions, using the given filter (see AcquireFilterInfo()).</p></ol>
 
 <p>If an undefined filter is given the filter defaults to Mitchell for a colormapped image, a image with a matte channel, or if the image is enlarged.  Otherwise the filter defaults to a Lanczos.</p></ol>
 
@@ -424,36 +424,6 @@ _8c.html" target="source" name="ThumbnailImage">ThumbnailImage</a></h2>
 
 <h5>rows</h5>
 <ol><p>the number of rows in the scaled image.</p></ol>
-
-<h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
-_8c.html" target="source" name="ZoomImage">ZoomImage</a></h2>
-<div class="doc-section">
-
-<p>ZoomImage() creates a new image that is a scaled size of an existing one. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results.  See Graphic Gems III for details on this algorithm.</p></ol>
-
-<p>The filter member of the Image structure specifies which image filter to use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.</p></ol>
-
-<p>The format of the ZoomImage method is:</p>
-
-<pre class="code">
-  Image *ZoomImage(const Image *image,const size_t columns,
-    const size_t rows,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p></ol>
-
-<h5>image</h5>
-<ol><p>the image.</p></ol>
-
-<h5>columns</h5>
-<ol><p>An integer that specifies the number of columns in the zoom image.</p></ol>
-
-<h5>rows</h5>
-<ol><p>An integer that specifies the number of rows in the scaled image.</p></ol>
 
 <h5>exception</h5>
 <ol><p>return any errors or warnings in this structure.</p></ol>
