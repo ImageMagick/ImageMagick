@@ -2044,7 +2044,8 @@ MagickExport Image *MergeImageLayers(Image *image,
       image->page.y -= page.y;
       image->page.width = width;
       image->page.height = height;
-      proceed=SetImageProgress(image,MergeLayersTag,scene,number_images);
+      proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
+        number_images);
       if (proceed == MagickFalse)
         break;
       image=GetNextImageInList(image);

@@ -5360,7 +5360,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   for (i=0; i < (ssize_t) wave_image->columns; i++)
-    sine_map[i]=fabs(amplitude)+amplitude*sin((2*MagickPI*i)/wave_length);
+    sine_map[i]=fabs(amplitude)+amplitude*sin((double) ((2.0*MagickPI*i)/
+      wave_length));
   /*
     Wave image.
   */

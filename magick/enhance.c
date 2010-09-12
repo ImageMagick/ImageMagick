@@ -290,7 +290,7 @@ MagickExport MagickBooleanType BrightnessContrastImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   alpha=contrast;
-  slope=tan(MagickPI*(alpha/100.0+1.0)/4.0);
+  slope=tan((double) (MagickPI*(alpha/100.0+1.0)/4.0));
   if (slope < 0.0)
     slope=0.0;
   intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
@@ -918,7 +918,8 @@ static void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   saturation=0.0;
   brightness=0.0;
   ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=0.5*sign*(0.5*(sin(MagickPI*(brightness-0.5))+1.0)-brightness);
+  brightness+=0.5*sign*(0.5*(sin((double) (MagickPI*(brightness-0.5))+1.0))-
+    brightness);
   if (brightness > 1.0)
     brightness=1.0;
   else
