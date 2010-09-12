@@ -52,12 +52,12 @@ extern MagickExport const double
 
 static inline double DegreesToRadians(const double degrees)
 {
-  return(MagickPI*degrees/180.0);
+  return((double) (MagickPI*degrees/180.0));
 }
 
 static inline MagickRealType RadiansToDegrees(const MagickRealType radians)
 {
-  return(180.0*radians/MagickPI);
+  return((MagickRealType) (180.0*radians/MagickPI));
 }
 
 static inline unsigned char ScaleColor5to8(const unsigned int color)
