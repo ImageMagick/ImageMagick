@@ -4238,8 +4238,9 @@ static MagickBooleanType XCompositeImage(Display *display,
       /*
         Scale composite image.
       */
-      resize_image=ZoomImage(composite_image,composite_info.width,
-        composite_info.height,&image->exception);
+      resize_image=ResizeImage(composite_image,composite_info.width,
+        composite_info.height,composite_image->filter,composite_image->blur,
+        &image->exception);
       composite_image=DestroyImage(composite_image);
       if (resize_image == (Image *) NULL)
         {

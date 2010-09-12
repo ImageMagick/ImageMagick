@@ -1888,8 +1888,8 @@ MagickExport MagickBooleanType TransformImage(Image **image,
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return(MagickTrue);
-  resize_image=ZoomImage(transform_image,geometry.width,geometry.height,
-    &(*image)->exception);
+  resize_image=ResizeImage(transform_image,geometry.width,geometry.height,
+    transform_image->filter,transform_image->blur,&(*image)->exception);
   if (resize_image == (Image *) NULL)
     return(MagickFalse);
   transform_image=DestroyImage(transform_image);

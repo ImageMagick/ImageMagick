@@ -3372,9 +3372,10 @@ MagickExport Image *MorphImages(const Image *image,
 
       beta=(MagickRealType) (i+1.0)/(MagickRealType) (number_frames+1.0);
       alpha=1.0-beta;
-      morph_image=ZoomImage(next,(size_t) (alpha*next->columns+beta*
+      morph_image=ResizeImage(next,(size_t) (alpha*next->columns+beta*
         GetNextImageInList(next)->columns+0.5),(size_t) (alpha*
-        next->rows+beta*GetNextImageInList(next)->rows+0.5),exception);
+        next->rows+beta*GetNextImageInList(next)->rows+0.5),
+        next->filter,next->blur,exception);
       if (morph_image == (Image *) NULL)
         {
           morph_images=DestroyImageList(morph_images);
@@ -3388,8 +3389,9 @@ MagickExport Image *MorphImages(const Image *image,
         }
       AppendImageToList(&morph_images,morph_image);
       morph_images=GetLastImageInList(morph_images);
-      morph_image=ZoomImage(GetNextImageInList(next),morph_images->columns,
-        morph_images->rows,exception);
+      morph_image=ResizeImage(GetNextImageInList(next),morph_images->columns,
+        morph_images->rows,GetNextImageInList(next)->filter,
+        GetNextImageInList(next)->blur,exception);
       if (morph_image == (Image *) NULL)
         {
           morph_images=DestroyImageList(morph_images);
