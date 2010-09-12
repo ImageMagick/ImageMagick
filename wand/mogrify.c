@@ -1849,17 +1849,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             else
               {
                 Image
-                  *zoom_image;
+                  *resize_image;
 
                 /*
                   Resize image.
                 */
-                zoom_image=ZoomImage(*image,geometry.width,geometry.height,
-                  exception);
-                if (zoom_image == (Image *) NULL)
+                resize_image=ResizeImage(*image,geometry.width,geometry.height,
+                  (*image)->filter,(*image)->blur,exception);
+                if (resize_image == (Image *) NULL)
                   break;
                 *image=DestroyImage(*image);
-                *image=zoom_image;
+                *image=resize_image;
               }
             break;
           }
