@@ -144,8 +144,8 @@ static MagickRealType Bessel(const MagickRealType x,
     http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
-    return(0.25*MagickPIL);
-  return(BesselOrderOne(MagickPIL*x)/(x+x));
+    return((MagickRealType) (0.25*MagickPIL));
+  return(BesselOrderOne((MagickRealType) (MagickPIL*x))/(x+x));
 }
 
 static MagickRealType Blackman(const MagickRealType x,
@@ -157,7 +157,7 @@ static MagickRealType Blackman(const MagickRealType x,
     Refactored by Chantal Racette and Nicolas Robidoux to one trig
     call and five flops.
   */
-  const double pix = MagickPIL*x;
+  const double pix = (double) (MagickPIL*x);
   const MagickRealType cospix = cos(pix);
   return(0.34+cospix*(0.5+cospix*0.16));
 }
@@ -169,8 +169,8 @@ static MagickRealType Bohman(const MagickRealType x,
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
   */
-  const double pix = MagickPIL*x;
-  return((1-x)*cos(pix)+(1.0/MagickPIL)*sin(pix));
+  const double pix = (double) (MagickPIL*x);
+  return((MagickRealType) ((1-x)*cos(pix)+(1.0/MagickPIL)*sin(pix)));
 }
 
 static MagickRealType Box(const MagickRealType magick_unused(x),
@@ -247,7 +247,7 @@ static MagickRealType Hanning(const MagickRealType x,
   /*
     Cosine window function: .5 + .5 cos(pi x).
   */
-  const double pix = MagickPIL*x;
+  const double pix = (double) (MagickPIL*x);
   const MagickRealType cospix = cos(pix);
   return(0.5+0.5*cospix);
 }
@@ -258,7 +258,7 @@ static MagickRealType Hamming(const MagickRealType x,
   /*
     Offset cosine window function: .54 + .46 cos(pi x).
   */
-  const double pix = MagickPIL*x;
+  const double pix = (double) (MagickPIL*x);
   const MagickRealType cospix = cos(pix);
   return(0.54+0.46*cospix);
 }
@@ -334,7 +334,7 @@ static MagickRealType Sinc(const MagickRealType x,
   if (x == 0.0)
     return(1.0);
   {
-    const MagickRealType pix = MagickPIL*x;
+    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
     const MagickRealType sinpix = sin((double) pix);
     return(sinpix/pix);
   }
@@ -352,7 +352,7 @@ static MagickRealType SincPolynomial(const MagickRealType x,
   const MagickRealType xx = x*x;
   if (xx > 16.0)
     {
-      const MagickRealType pix = MagickPIL*x;
+      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
       const MagickRealType sinpix = sin((double) pix);
       return(sinpix/pix);
     }
@@ -759,7 +759,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           Paul Heckbert's paper on EWA resampling.
           FUTURE: to be reviewed.
         */
-        resize_filter->blur*=2.0*log(2.0)/sqrt(2.0/MagickPI);
+        resize_filter->blur*=2.0*log(2.0)/sqrt((double) (2.0/MagickPI));
         break;
       }
       case BesselFilter:

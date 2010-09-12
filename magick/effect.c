@@ -237,8 +237,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
-          (2.0*MagickPI*MagickSigma*MagickSigma);
+        kernel[i][k]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+          MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
         normalize+=kernel[i][k];
         k++;
       }
@@ -554,8 +554,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(-exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
-          (2.0*MagickPI*MagickSigma*MagickSigma));
+        kernel[i][k]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+          MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
         normalize+=kernel[i][k];
         k++;
       }
@@ -796,8 +796,8 @@ static double *GetBlurKernel(const size_t width,const double sigma)
   i=0;
   for (k=(-j); k <= j; k++)
   {
-    kernel[i]=exp(-((double) k*k)/(2.0*MagickSigma*MagickSigma))/
-      (MagickSQ2PI*MagickSigma);
+    kernel[i]=(double) (exp(-((double) k*k)/(2.0*MagickSigma*MagickSigma))/
+      (MagickSQ2PI*MagickSigma));
     normalize+=kernel[i];
     i++;
   }
@@ -2111,9 +2111,9 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel[i]=((u < 0) || (v < 0) ? -8.0 : 8.0)*
+      kernel[i]=(double) (((u < 0) || (v < 0) ? -8.0 : 8.0)*
         exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
-        (2.0*MagickPI*MagickSigma*MagickSigma);
+        (2.0*MagickPI*MagickSigma*MagickSigma));
       if (u != k)
         kernel[i]=0.0;
       i++;
@@ -2549,8 +2549,8 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   for (v=(-j); v <= j; v++)
   {
     for (u=(-j); u <= j; u++)
-      kernel[i++]=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
-        (2.0*MagickPI*MagickSigma*MagickSigma);
+      kernel[i++]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
   }
   blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishMagickMemory(kernel);
@@ -3095,8 +3095,8 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
   normalize=0.0;
   for (i=0; i < (ssize_t) width; i++)
   {
-    kernel[i]=exp((-((double) i*i)/(double) (2.0*MagickSigma*MagickSigma)))/
-      (MagickSQ2PI*MagickSigma);
+    kernel[i]=(double) (exp((-((double) i*i)/(double) (2.0*MagickSigma*
+      MagickSigma)))/(MagickSQ2PI*MagickSigma));
     normalize+=kernel[i];
   }
   for (i=0; i < (ssize_t) width; i++)
@@ -4502,8 +4502,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   for (v=(-j); v <= j; v++)
   {
     for (u=(-j); u <= j; u++)
-      kernel[i++]=exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
-        (2.0*MagickPI*MagickSigma*MagickSigma);
+      kernel[i++]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
   }
   if (image->debug != MagickFalse)
     {
@@ -5096,8 +5096,8 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel[i]=(-exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
-        (2.0*MagickPI*MagickSigma*MagickSigma));
+      kernel[i]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
       normalize+=kernel[i];
       i++;
     }
