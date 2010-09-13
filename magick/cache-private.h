@@ -195,7 +195,6 @@ extern MagickExport Cache
   AcquirePixelCache(const size_t),
   ClonePixelCache(const Cache),
   DestroyPixelCache(Cache),
-  GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *),
   ReferencePixelCache(Cache);
 
 extern MagickExport CacheType
