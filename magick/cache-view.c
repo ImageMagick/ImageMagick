@@ -388,9 +388,6 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
   const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
-  Cache
-    cache;
-
   int
     id;
 
@@ -399,9 +396,6 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  cache=GetImagePixelCache(cache_view->image,MagickTrue,exception);
-  if (cache == (Cache) NULL)
-    return((PixelPacket *) NULL);
   id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,columns,rows,
@@ -444,9 +438,6 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   const CacheView *cache_view,const ssize_t x,const ssize_t y,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
-  Cache
-    cache;
-
   int
     id;
 
@@ -455,9 +446,6 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  cache=GetImagePixelCache(cache_view->image,MagickTrue,exception);
-  if (cache == (Cache) NULL)
-    return(MagickFalse);
   *pixel=cache_view->image->background_color;
   id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
@@ -845,9 +833,6 @@ MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
   const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
-  Cache
-    cache;
-
   int
     id;
 
@@ -856,9 +841,6 @@ MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  cache=GetImagePixelCache(cache_view->image,MagickFalse,exception);
-  if (cache == (Cache) NULL)
-    return((PixelPacket *) NULL);
   id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=QueueAuthenticNexus(cache_view->image,x,y,columns,rows,

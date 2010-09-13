@@ -1170,15 +1170,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace)
 {
-  Cache
-    cache;
+  PixelPacket
+    *pixels;
 
   if (image->colorspace == colorspace)
     return(MagickTrue);
   image->colorspace=colorspace;
-  cache=GetImagePixelCache(image,MagickTrue,&image->exception);
+  pixels=QueueAuthenticPixels(image,0,0,1,1,&image->exception);
   image->colorspace=colorspace;  /* GRAY colorspace might get reset to RGB */
-  return(cache == (Cache) NULL ? MagickFalse: MagickTrue);
+  return(pixels == (PixelPacket *) NULL ? MagickFalse : MagickTrue);
 }
 
 /*

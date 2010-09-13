@@ -435,7 +435,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->clip_mask == (Image *) NULL)
     return(MagickFalse);
-  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
+  cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return(MagickFalse);
   image_nexus=AcquirePixelCacheNexus(1);
@@ -2038,7 +2038,7 @@ static PixelPacket *GetAuthenticPixelsCache(Image *image,const ssize_t x,
   PixelPacket
     *pixels;
 
-  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
+  cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return((PixelPacket *) NULL);
   id=GetOpenMPThreadId();
@@ -2143,8 +2143,8 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
   return(MagickTrue);
 }
 
-MagickExport Cache GetImagePixelCache(Image *image,
-  const MagickBooleanType clone,ExceptionInfo *exception)
+static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2829,7 +2829,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
+  cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   *length=0;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
@@ -3910,7 +3910,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->mask == (Image *) NULL)
     return(MagickFalse);
-  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
+  cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return(MagickFalse);
   image_nexus=AcquirePixelCacheNexus(1);
@@ -4425,7 +4425,9 @@ MagickExport PixelPacket *QueueAuthenticNexus(Image *image,const ssize_t x,
   /*
     Validate pixel cache geometry.
   */
-  cache_info=(CacheInfo *) image->cache;
+  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
+  if (cache_info == (Cache) NULL)
+    return((PixelPacket *) NULL);
   if ((cache_info->columns == 0) && (cache_info->rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -4502,7 +4504,7 @@ static PixelPacket *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
   PixelPacket
     *pixels;
 
-  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickFalse,exception);
+  cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return((PixelPacket *) NULL);
   id=GetOpenMPThreadId();
