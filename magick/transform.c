@@ -845,8 +845,8 @@ MagickExport Image *ExtentImage(const Image *image,
   if (extent_image->background_color.opacity != OpaqueOpacity)
     extent_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(extent_image);
-  (void) CompositeImage(extent_image,image->compose,image,geometry->x,
-    geometry->y);
+  (void) CompositeImage(extent_image,image->compose,image,-geometry->x,
+    -geometry->y);
   return(extent_image);
 }
 

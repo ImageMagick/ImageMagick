@@ -1579,8 +1579,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry.width=(*image)->columns;
             if (geometry.height == 0)
               geometry.height=(*image)->rows;
-            geometry.x=(-geometry.x);
-            geometry.y=(-geometry.y);
             extent_image=ExtentImage(*image,&geometry,exception);
             if (extent_image == (Image *) NULL)
               break;
