@@ -9707,8 +9707,6 @@ Mogrify(ref,...)
                 geometry.width=image->columns;
               if (geometry.height == 0)
                 geometry.height=image->rows;
-              geometry.x=(-geometry.x);
-              geometry.y=(-geometry.y);
             }
           if (attribute_flag[1] != 0)
             geometry.width=argument_list[1].integer_reference;
