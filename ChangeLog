@@ -2,6 +2,8 @@
   * The RGBO format is now listed as a supported format.
 
 2010-09-07  6.6.4-1 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added the Nicolas Robidoux and Chantal Racette  Lanczos resize filter
+    function as "LanczosChebyshev" as faster alturnative to Lanczos.
   * Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of
     the Sinc Trigonometric resize filter, as a proper filter to allow
     direct comparision and speed testing of the filter.

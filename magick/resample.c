@@ -1464,6 +1464,12 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
         plot [0:2][-.2:1] "lut.dat" using (sqrt($0/1024)*2):1 with lines
       The filter values is normalized for comparision
     */
+    printf("# Resampling Filter LUT (%d values)\n", WLUT_WIDTH);
+    printf("#\n");
+    printf("# Plot using the gnuplot command\n");
+    printf("#   plot [0:2][-.2:1] \"lut.dat\" using ");
+    printf("sqrt($0/%d)*2):1 with lines\n", WLUT_WIDTH);
+    printf("#\n");
     for(Q=0; Q<WLUT_WIDTH; Q++)
       printf("%lf\n", resample_filter->filter_lut[Q]
                         /resample_filter->filter_lut[0] );
