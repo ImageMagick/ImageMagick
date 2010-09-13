@@ -290,7 +290,7 @@ static MagickBooleanType ConvertUsage(void)
     },
     *sequence_operators[]=
     {
-      "-append              append an image sequence",
+      "-append              append an image sequence top to bottom",
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
