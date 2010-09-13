@@ -96,7 +96,8 @@ struct _ResizeFilter
 */
 static MagickRealType
   I0(MagickRealType x),
-  BesselOrderOne(MagickRealType);
+  BesselOrderOne(MagickRealType),
+  Sinc(const MagickRealType,const ResizeFilter *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,8 +145,8 @@ static MagickRealType Bessel(const MagickRealType x,
     http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
-    return((MagickRealType) (0.25*MagickPIL));
-  return(BesselOrderOne((MagickRealType) (MagickPIL*x))/(x+x));
+    return(0.25*MagickPIL);
+  return(BesselOrderOne(MagickPIL*x)/(x+x));
 }
 
 static MagickRealType Blackman(const MagickRealType x,
@@ -157,7 +158,7 @@ static MagickRealType Blackman(const MagickRealType x,
     Refactored by Chantal Racette and Nicolas Robidoux to one trig
     call and five flops.
   */
-  const double pix = (double) (MagickPIL*x);
+  const double pix = MagickPIL*x;
   const MagickRealType cospix = cos(pix);
   return(0.34+cospix*(0.5+cospix*0.16));
 }
@@ -169,8 +170,8 @@ static MagickRealType Bohman(const MagickRealType x,
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
   */
-  const double pix = (double) (MagickPIL*x);
-  return((MagickRealType) ((1-x)*cos(pix)+(1.0/MagickPIL)*sin(pix)));
+  const double pix = MagickPIL*x;
+  return((1-x)*cos(pix)+(1.0/MagickPIL)*sin(pix));
 }
 
 static MagickRealType Box(const MagickRealType magick_unused(x),
@@ -227,18 +228,11 @@ static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Normalized Gaussian with variance 1/2 (by default):
-      1/sqrt(2 pi sigma^2) exp(-x^2/(2 sigma^2))
+     1D Gaussian with sigm=1/2
+      exp(-2 x^2)/sqrt(pi/2))
   */
-  #define MagickGAUSSIANSIGMAL 0.5L
-  /*
-    Change the value of MagickGAUSSIANSIGMAL if you want to override
-    the default.
-  */
-  const MagickRealType sigma2 = MagickGAUSSIANSIGMAL*MagickGAUSSIANSIGMAL;
-  const MagickRealType alpha = -1.0/(2.0*sigma2);
-  const MagickRealType normalizer = sqrt((double) (1.0/(2.0*MagickPIL*sigma2)));
-  return(normalizer*exp((double) (alpha*x*x)));
+  const MagickRealType alpha = 2.0/MagickSQ2PI;
+  return(exp(-(double)(2.0*x*x))*alpha);
 }
 
 static MagickRealType Hanning(const MagickRealType x,
@@ -247,7 +241,7 @@ static MagickRealType Hanning(const MagickRealType x,
   /*
     Cosine window function: .5 + .5 cos(pi x).
   */
-  const double pix = (double) (MagickPIL*x);
+  const double pix = MagickPIL*x;
   const MagickRealType cospix = cos(pix);
   return(0.5+0.5*cospix);
 }
@@ -258,7 +252,7 @@ static MagickRealType Hamming(const MagickRealType x,
   /*
     Offset cosine window function: .54 + .46 cos(pi x).
   */
-  const double pix = (double) (MagickPIL*x);
+  const double pix = MagickPIL*x;
   const MagickRealType cospix = cos(pix);
   return(0.54+0.46*cospix);
 }
@@ -312,6 +306,93 @@ static MagickRealType Lagrange(const MagickRealType x,
   return(value);
 }
 
+static MagickRealType LanczosChebyshev(const MagickRealType x,
+  const ResizeFilter *resize_filter)
+{
+  /*
+    Lanczos is normally a Sinc() windowed Sinc filter, but that requires
+    2 calls to a trigonometric function, whcih can slow it down.
+
+    This version is computed with only one call to a trigonometric function
+    with a recursive formula, based on the Chebyshev method for the
+    computation of sines and cosines of multiples of an angle, discovered by
+    Nicolas Robidoux (pending the discovery of an earlier discoverer) with the
+    assistance of Chantal Racette.
+
+    Chebyshev method of sines of multiple angles
+      http://en.wikipedia.org/wiki/List_of_trigonometric_identities#Chebyshev_method
+
+    The filter only works with an interger support to a limit of 10.0, at
+    which point it will fallback to a Sinc windowed Sinc (after all the work
+    was done anyway).
+
+    FUTURE: AcquireResizeFilter() should override this function if support
+    greater than 10, or a non-integer support is requested.
+  */
+  const double  support = resize_filter->support;
+  const MagickRealType x2 = x*x;
+  if (x2 == 0)
+    return(1.0);
+
+  {
+    const MagickRealType pi2 = MagickPIL*MagickPIL;
+    const MagickRealType c = cos((double) ((MagickPIL/support)*x));
+    const MagickRealType s2 = 1 - c * c;
+    const MagickRealType s2c = s2 * c;
+    const MagickRealType ss2 = s2c + s2c;
+    /*
+      Really, we want to use Lanczos 2 if the support is <= 2,
+      but doing things as follows allows for inaccuracy in the
+      support computation.
+    */
+    if (support<2.5)
+      return((2/pi2)/x2*ss2);
+    {
+      const MagickRealType ss3 = s2*(3+-4*s2);
+      if (support<3.5)
+        return((3/pi2)/x2*ss3);
+      {
+        const MagickRealType t4 = c*ss3;
+        const MagickRealType ss4 = t4-ss2+t4;
+        if (support<4.5)
+          return((4/pi2)/x2*ss4);
+        {
+          const MagickRealType t5 = c*ss4;
+          const MagickRealType ss5 = t5-ss3+t5;
+          if (support<5.5)
+            return((5/pi2)/x2*ss5);
+          {
+            const MagickRealType t6 = c*ss5;
+            const MagickRealType ss6 = t6-ss4+t6;
+            if (support<6.5)
+              return((6/pi2)/x2*ss6);
+            {
+              const MagickRealType t7 = c*ss6;
+              const MagickRealType ss7 = t7-ss5+t7;
+              if (support<7.5)
+                return((7/pi2)/x2*ss7);
+              {
+                const MagickRealType t8 = c*ss7;
+                const MagickRealType ss8 = t8-ss6+t8;
+                if (support<8.5)
+                  return((8/pi2)/x2*ss8);
+                {
+                  const MagickRealType t9 = c*ss8;
+                  const MagickRealType ss9 = t9-ss7+t9;
+                  if (support<9.5)
+                    return((9/pi2)/x2*ss9);
+                  if (support<10.5)
+                    {
+                      const MagickRealType t10 = c*ss9;
+                      const MagickRealType ss10 = t10-ss8+t10;
+                      return((10/pi2)/x2*ss10);
+                    }
+                  return(
+                    Sinc((double) x,resize_filter) *
+                    Sinc((double) (x/support),resize_filter));
+  } } } } } } } }
+}
+
 static MagickRealType Quadratic(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
@@ -334,7 +415,7 @@ static MagickRealType Sinc(const MagickRealType x,
   if (x == 0.0)
     return(1.0);
   {
-    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
+    const MagickRealType pix = MagickPIL*x;
     const MagickRealType sinpix = sin((double) pix);
     return(sinpix/pix);
   }
@@ -352,7 +433,7 @@ static MagickRealType SincPolynomial(const MagickRealType x,
   const MagickRealType xx = x*x;
   if (xx > 16.0)
     {
-      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
+      const MagickRealType pix = MagickPIL*x;
       const MagickRealType sinpix = sin((double) pix);
       return(sinpix/pix);
     }
@@ -421,7 +502,7 @@ static MagickRealType SincPolynomial(const MagickRealType x,
     const MagickRealType c14 = 0.374841980075726557899013574367932640586e-25L;
     const MagickRealType c15 = -0.138632329047117683500928913798808544919e-27L;
     const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
-      (c7+xx*(c8+xx*(c9+xx*(c10+xx*(c11+xx*(c12+xx*(c13+xx*(c14+xx*c15
+      (c7+xx*(c8+xx*(c9+xx*(c10+xx*(c11+xx*(c12+xx*(c13+xx*(c14+xx*15
       ))))))))))))));
 #endif
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
@@ -477,6 +558,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Blackman     Hanning     Hamming
 %      Kaiser       Lanczos (Sinc)
 %
+%  Polynomial Approximations (high precision fast versions)
+%      SincPolynomial
+%
 %  FIR filters are used as is, and are limited by that filters support window
 %  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
 %  simply clipped by its support size (1.5).
@@ -492,8 +576,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %  recommended as it removes the correct filter selection for different
 %  filtering image operations.  Selecting a window filtering method is better.
 %
-%  Lanczos is purely special case of a Sinc windowed Sinc, but defaulting to
-%  a 3 lobe support, rather that the default 4 lobe support.
+%  Lanczos is a special case of a Sinc windowed Sinc, but defaulting to
+%  a 3 lobe support, rather that the default 4 lobe support of the others.
 %
 %  Special options can be used to override specific, or all the filter
 %  settings.   However doing so is not advisible unless you have expert
@@ -523,25 +607,27 @@ static MagickRealType Welsh(const MagickRealType x,
 %        used for simple filters like FIR filters, and the Gaussian Filter.
 %        This will override any 'filter:lobes' option.
 %
+%    "filter:win-support"  Scale windowing function to this size instead.
+%        This causes the windowing (or self-windowing Lagrange filter) to act
+%        is if the support window it much much larger than what is actually
+%        supplied to the calling operator.  The filter however is still
+%        clipped to the real support size given, by the support range suppiled
+%        to the caller.  If unset this will equal the normal filter support
+%        size.
+%
 %    "filter:blur"     Scale the filter and support window by this amount.
 %        A value >1 will generally result in a more burred image with
 %        more ringing effects, while a value <1 will sharpen the
 %        resulting image with more aliasing and Morie effects.
-%
-%    "filter:win-support"  Scale windowing function to this size instead.
-%        This causes the windowing (or self-windowing Lagrange filter)
-%        to act is if the support winodw it much much larger than what
-%        is actually supplied to the calling operator.  The filter however
-%        is still clipped to the real support size given.  If unset this
-%        will equal the normal filter support size.
 %
 %    "filter:b"
 %    "filter:c"    Override the preset B,C values for a Cubic type of filter
 %         If only one of these are given it is assumes to be a 'Keys'
 %         type of filter such that B+2C=1, where Keys 'alpha' value = C
 %
-%    "filter:verbose"   Output verbose plotting data for graphing the
-%         resulting filter over the whole support range (with blur effect).
+%    "filter:verbose"   Output the exact results of the filter selections
+%         made, as well as plotting data for graphing the resulting filter
+%         over support range (blur adjusted).
 %
 %  Set a true un-windowed Sinc filter with 10 lobes (very slow)
 %     -set option:filter:filter Sinc
@@ -562,9 +648,10 @@ static MagickRealType Welsh(const MagickRealType x,
 %    o image: the image.
 %
 %    o filter: the filter type, defining a preset filter, window and support.
+%      The artifact settings listed above will override those selections.
 %
 %    o blur: blur the filter by this amount, use 1.0 if unknown.  Image
-%      artifact "filter:blur"  will override this old usage
+%      artifact "filter:blur"  will override this internal usage.
 %
 %    o radial: 1D orthogonal filter (Sinc) or 2D radial filter (Bessel)
 %
@@ -634,7 +721,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { LagrangeFilter,   BoxFilter },      /* Lagrange self-windowing filter */
     { SincFilter,       BohmanFilter },   /* Bohman -- 2*Cosine-Sinc */
     { SincFilter,       TriangleFilter }, /* Bartlett -- Triangle-Sinc */
-    { SincPolynomialFilter, BlackmanFilter } /* Polynomial Approximated Sinc */
+    { SincPolynomialFilter, BlackmanFilter },/* Polynomial Approximated Sinc */
+    { LanczosChebyshevFilter, BoxFilter }  /* Lanczos using Chebyshev Opt */
   };
   /*
     Table maping the filter/window function from the above table to the actual
@@ -676,7 +764,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Lagrange,  2.0f,  1.0f, 0.0f, 0.0f }, /* Lagrangian Filter */
     { Bohman,    1.0f,  1.0f, 0.0f, 0.0f }, /* Bohman, 2*Cosine windowing */
     { Triangle,  1.0f,  1.0f, 0.0f, 0.0f }, /* Bartlett, Triangle windowing */
-    { SincPolynomial, 4.0f,  1.0f, 0.0f, 0.0f }  /* Poly Approx Sinc */
+    { SincPolynomial,   4.f, 1.f, 0.f, 0.f }, /* Polynomial Approximate Sinc */
+    { LanczosChebyshev, 3.f, 1.f, 0.f, 0.f }  /* Lanczos using Chevbyshev Opt */
   };
   /*
     The known zero crossings of the Bessel() or the Jinc(x*PI) function found
@@ -732,15 +821,17 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->blur=StringToDouble(artifact);
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
-  if ((cylindrical != MagickFalse) && (filter != SincFilter))
+  if (cylindrical != MagickFalse)
     switch (filter_type)
     {
       case SincFilter:
       {
         /*
           Promote 1D Sinc Filter to a 2D Bessel filter.
+          As long as the user did not directly request a 'Sinc' filter
         */
-        filter_type=BesselFilter;
+        if ( filter != SincFilter )
+          filter_type=BesselFilter;
         break;
       }
       case LanczosFilter:
@@ -759,18 +850,18 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           Paul Heckbert's paper on EWA resampling.
           FUTURE: to be reviewed.
         */
-        resize_filter->blur*=2.0*log(2.0)/sqrt((double) (2.0/MagickPI));
-        break;
-      }
-      case BesselFilter:
-      {
-        /*
-          Filters with a 1.0 zero root crossing by the first bessel zero.
-        */
-        resize_filter->blur*=bessel_zeros[0];
+        /*resize_filter->blur*=2.0*log(2.0)/sqrt(2.0/MagickPI);*/
+        /* It seems the formula above is wrong as both 1D and 2D gaussian
+         * is the same function just with different normalization weights
+         */
         break;
       }
       default:
+        /* What about other filters to make them 'cylindrical frendly?
+         * For example Mitchel is actually quite close to a cyldrical
+         * Lanczos (Bessel-Bessel) support 2, though not quite there.
+         * Are there other well known 'cylindrical' specific filters?
+         */
         break;
     }
   artifact=GetImageArtifact(image,"filter:filter");
@@ -864,7 +955,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   if (artifact != (const char *) NULL)
     resize_filter->window_support=fabs(StringToDouble(artifact));
   /*
-    Adjust window function X scaling to fit 
+    Adjust window function X scaling to fit
     Avoids a division on every filter call.
   */
   resize_filter->scale /= resize_filter->window_support;
@@ -937,22 +1028,22 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       /*
         Report Filter Details
       */
-      support=GetResizeFilterSupport(resize_filter);  /* support range */
+      support = GetResizeFilterSupport(resize_filter); /* support range */
       (void) fprintf(stdout,"#\n# Resize Filter (for graphing)\n#\n");
       (void) fprintf(stdout,"# filter = %s\n",
-         MagickOptionToMnemonic(MagickFilterOptions,filter_type));
+           MagickOptionToMnemonic(MagickFilterOptions, filter_type) );
       (void) fprintf(stdout,"# window = %s\n",
-         MagickOptionToMnemonic(MagickFilterOptions,window_type));
+           MagickOptionToMnemonic(MagickFilterOptions, window_type) );
       (void) fprintf(stdout,"# support = %.*g\n",
-         GetMagickPrecision(),(double) resize_filter->support);
+           GetMagickPrecision(),resize_filter->support );
       (void) fprintf(stdout,"# win-support = %.*g\n",
-         GetMagickPrecision(),(double) resize_filter->window_support);
+           GetMagickPrecision(),resize_filter->window_support );
       (void) fprintf(stdout,"# blur = %.*g\n",
-         GetMagickPrecision(),(double) resize_filter->blur);
+           GetMagickPrecision(),resize_filter->blur );
       (void) fprintf(stdout,"# blurred_support = %.*g\n",
-         GetMagickPrecision(),(double) support);
+           GetMagickPrecision(),support);
       (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",
-         GetMagickPrecision(),B,GetMagickPrecision(),(double) C);
+           GetMagickPrecision(),B,   GetMagickPrecision(),C);
       (void) fprintf(stdout,"#\n");
       /*
         Output values of resulting filter graph -- for graphing filter result.

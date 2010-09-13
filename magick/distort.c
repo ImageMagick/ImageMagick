@@ -1925,8 +1925,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     exception);
   if (distort_image == (Image *) NULL)
     return((Image *) NULL);
+  /* if image is ColorMapped - change it to DirectClass */
   if (SetImageStorageClass(distort_image,DirectClass) == MagickFalse)
-    { /* if image is ColorMapped - change it to DirectClass */
+    {
       InheritException(exception,&distort_image->exception);
       distort_image=DestroyImage(distort_image);
       return((Image *) NULL);
