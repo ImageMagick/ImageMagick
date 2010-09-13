@@ -624,6 +624,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     char
+      *property,
       timestamp[MaxTextExtent];
 
     const char
@@ -686,35 +687,26 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->page.width=next->columns;
     if (next->page.height == 0)
       next->page.height=next->rows;
-    if (*read_info->filename != '\0')
+    option=GetImageOption(read_info,"caption");
+    if (option != (const char *) NULL)
       {
-        char
-          *property;
-
-        const char
-          *option;
-
-        option=GetImageOption(read_info,"caption");
-        if (option != (const char *) NULL)
-          {
-            property=InterpretImageProperties(read_info,next,option);
-            (void) SetImageProperty(next,"caption",property);
-            property=DestroyString(property);
-          }
-        option=GetImageOption(read_info,"comment");
-        if (option != (const char *) NULL)
-          {
-            property=InterpretImageProperties(read_info,next,option);
-            (void) SetImageProperty(next,"comment",property);
-            property=DestroyString(property);
-          }
-        option=GetImageOption(read_info,"label");
-        if (option != (const char *) NULL)
-          {
-            property=InterpretImageProperties(read_info,next,option);
-            (void) SetImageProperty(next,"label",property);
-            property=DestroyString(property);
-          }
+        property=InterpretImageProperties(read_info,next,option);
+        (void) SetImageProperty(next,"caption",property);
+        property=DestroyString(property);
+      }
+    option=GetImageOption(read_info,"comment");
+    if (option != (const char *) NULL)
+      {
+        property=InterpretImageProperties(read_info,next,option);
+        (void) SetImageProperty(next,"comment",property);
+        property=DestroyString(property);
+      }
+    option=GetImageOption(read_info,"label");
+    if (option != (const char *) NULL)
+      {
+        property=InterpretImageProperties(read_info,next,option);
+        (void) SetImageProperty(next,"label",property);
+        property=DestroyString(property);
       }
     if (LocaleCompare(next->magick,"TEXT") == 0)
       (void) ParseAbsoluteGeometry("0x0+0+0",&next->page);
@@ -783,24 +775,23 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         flags=ParseGeometry(option,&geometry_info);
         if ((flags & GreaterValue) != 0)
           {
-            if (image->delay > (size_t) floor(geometry_info.rho+0.5))
-              image->delay=(size_t) floor(geometry_info.rho+0.5);
+            if (next->delay > (size_t) floor(geometry_info.rho+0.5))
+              next->delay=(size_t) floor(geometry_info.rho+0.5);
           }
         else
           if ((flags & LessValue) != 0)
             {
-              if (image->delay < (size_t) floor(geometry_info.rho+0.5))
-                image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+
-                  0.5);
+              if (next->delay < (size_t) floor(geometry_info.rho+0.5))
+                next->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
             }
           else
-            image->delay=(size_t) floor(geometry_info.rho+0.5);
+            next->delay=(size_t) floor(geometry_info.rho+0.5);
         if ((flags & SigmaValue) != 0)
-          image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
+          next->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
       }
     option=GetImageOption(image_info,"dispose");
     if (option != (const char *) NULL)
-      image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
+      next->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
         MagickFalse,option);
     if (read_info->verbose != MagickFalse)
       (void) IdentifyImage(next,stderr,MagickFalse);
