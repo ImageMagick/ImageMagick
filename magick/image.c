@@ -3826,6 +3826,8 @@ MagickExport MagickBooleanType StripImage(Image *image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   DestroyImageProfiles(image);
   (void) DeleteImageProperty(image,"comment");
+  (void) DeleteImageProperty(image,"date:create");
+  (void) DeleteImageProperty(image,"date:modify");
   return(MagickTrue);
 }
 
