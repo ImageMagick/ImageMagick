@@ -174,13 +174,15 @@ static MagickRealType Bohman(const MagickRealType x,
   return((MagickRealType) ((1-x)*cos(pix)+(1.0/MagickPIL)*sin(pix)));
 }
 
-static MagickRealType Box(const MagickRealType magick_unused(x),
+static MagickRealType Box(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
     Just return 1.0; the filter will be clipped by its support window.
   */
-  return(1.0);
+  if ( x < 0.5 )
+    return(1.0);
+  return(0.0);
 }
 
 static MagickRealType CubicBC(const MagickRealType x,
