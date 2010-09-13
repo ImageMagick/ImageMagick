@@ -1,3 +1,6 @@
+2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
+  * Don't negate the geometry offset for the -extent option.
+
 2010-09-09  6.6.4-1 Cristy  <quetzlzacatenango@image...>
   * The RGBO format is now listed as a supported format.
 
