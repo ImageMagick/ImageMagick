@@ -336,7 +336,7 @@ static MagickRealType LanczosChebyshev(const MagickRealType x,
     return(SincPoly(x,resize_filter)*SincPoly(x/support,resize_filter));
   {
     const MagickRealType pi2 = MagickPIL*MagickPIL;
-    const MagickRealType c = cos((MagickPIL/support)*x);
+    const MagickRealType c = cos((double) ((MagickPIL/support)*x));
     const MagickRealType ss1 = 1.0 - c * c;
     if (support<2.0)
       return((1.0/pi2)/xx*ss1);
@@ -461,7 +461,7 @@ static MagickRealType SincPoly(const MagickRealType x,
   */
   if (x > 4.0)
   {
-    const MagickRealType pix = MagickPIL*x;
+    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
     return(sin(pix)/pix);
   }
   {
