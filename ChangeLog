@@ -1,3 +1,29 @@
+2010-09-14  6.6.4-2 Anthony Thyssen <A.Thyssen@griffith...>
+  * Switch default resize filters to using the faster SincPolynomial
+    filter by default internally.  However 'Sinc' will stil use the
+    Trigonometric function, and can be used to assign the trig version
+    of Sinc() to filters using the filter expert options.
+  * Removed the default filter for 'distort' was found to be a very
+    blurry inaccurate filter function.  It was removed and replaced with
+    a correct Gussian filter (as used by resize)
+  * Added a switch so that "-interpolate filter" will force the use of
+    a cylindrical filter for ALL pixels in distorted images.  That is you can
+    use that swicth to use a cylindrical filter even for images that are
+    being enlarged by the distortion. IT is alightly slower though.
+    However EWA is still currently using a fixed 2.0 sampling radius.
+    This switch complements the use of "-filter point" which turns of EWA
+    filters in favor of interpolation for all pixels in a distiorted image.
+    BOTH switched should not be used together.
+  * A bug in the support radius of the EWA resampling function was found,
+    now that correctly defined resize filters are being used. Suddenly Normal
+    Gaussian distortions are not so blurry, and tests with distortions of
+    the 'Rings' image show extremely good and clear results, with only minimal
+    blurring.  The filter 'blur' expert option can be used to adjust this
+    further.
+
+    The above represents a major impovment forward in the quality of the image
+    distortion operator.
+
 2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
   * Don't negate the geometry offset for the -extent option.
 
