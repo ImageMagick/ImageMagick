@@ -1064,8 +1064,10 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   image_view=AcquireCacheView(image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
-    q=GetCacheViewAuthenticPixels(image_view,0L,y,fourier_info->width,1UL,
-      exception);
+    if (y >= (ssize_t) image->rows)
+      break;
+    q=GetCacheViewAuthenticPixels(image_view,0L,y,fourier_info->width >
+      image->columns ? image->columns : fourier_info->width,1UL,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
