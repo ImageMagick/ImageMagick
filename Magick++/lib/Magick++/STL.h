@@ -2153,8 +2153,8 @@ namespace Magick
 
     // Build image list
     linkImages( first_, last_ );
-    MagickCore::Image* images = MagickCore::DeconstructImages( first_->image(),
-                                                             &exceptionInfo);
+    MagickCore::Image* images = DeconstructImages( first_->image(),
+                                                   &exceptionInfo);
     // Unlink image list
     unlinkImages( first_, last_ );
 
@@ -2198,6 +2198,49 @@ namespace Magick
       FlattenLayer,&exceptionInfo );
     unlinkImages( first_, last_ );
     flattendImage_->replaceImage( image );
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
+  // Implements the discrete Fourier transform (DFT) of the image either as a
+  // magnitude / phase or real / imaginary image pair.
+  template <class InputIterator, class Container >
+  void forwardFourierTransformImage( Container *fourierImages_,
+    const Image &image_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+
+    // Build image list
+    MagickCore::Image* images = ForwardFourierTransformImage(
+      image_.constImage(), MagickTrue, &exceptionInfo);
+
+    // Ensure container is empty
+    fourierImages_->clear();
+
+    // Move images to container
+    insertImages( fourierImages_, images );
+
+    // Report any error
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+  template <class InputIterator, class Container >
+  void forwardFourierTransformImage( Container *fourierImages_,
+    const Image &image_, const bool magnitude_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+
+    // Build image list
+    MagickCore::Image* images = ForwardFourierTransformImage(
+      image_.constImage(), MagickTrue, &exceptionInfo);
+
+    // Ensure container is empty
+    fourierImages_->clear();
+
+    // Move images to container
+    insertImages( fourierImages_, images );
+
+    // Report any error
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
