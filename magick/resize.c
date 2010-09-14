@@ -176,12 +176,12 @@ static MagickRealType Bohman(const MagickRealType x,
 }
 
 static MagickRealType Box(const MagickRealType x,
-  const ResizeFilter *magick_unused(resize_filter))
+  const ResizeFilter *resize_filter)
 {
   /*
-    Just return 1.0; the filter will be clipped by its support window.
+    Return a Box fillter up to its support size.
   */
-  if ( x < 0.5 )
+  if ( x < resize_filter->support )
     return(1.0);
   return(0.0);
 }
@@ -770,7 +770,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
     MagickRealType
       (*function)(const MagickRealType, const ResizeFilter*),
-      support,  /* default support size for function as a filter */
+      support,  /* default support size for function as a weighting filter */
       scale,    /* windowing function range, for scaling windowing function */
       B,C;      /* Cubic Filter factors for a CubicBC function, else ignored */
   } const filters[SentinelFilter] =
@@ -966,8 +966,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   if (artifact != (const char *) NULL)
     resize_filter->window_support=fabs(StringToDouble(artifact));
   /*
-    Adjust window function X scaling to fit
-    Avoids a division on every filter call.
+    Adjust window function scaling to the windowing support for
+    weighting function.  This avoids a division on every filter call.
   */
   resize_filter->scale /= resize_filter->window_support;
   /*
