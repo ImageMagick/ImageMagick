@@ -361,11 +361,6 @@ namespace Magick
     // Flop image (reflect each scanline in the horizontal direction)
     void            flop ( void );
     
-    // Implements the discrete Fourier transform (DFT) of the image either as a
-    // magnitude / phase or real / imaginary image pair.
-    void            forwardFourierTransform ( void );
-    void            forwardFourierTransform ( const bool magnitude );
-    
     // Frame image
     void            frame ( const Geometry &geometry_ = frameGeometryDefault );
     void            frame ( const size_t width_,

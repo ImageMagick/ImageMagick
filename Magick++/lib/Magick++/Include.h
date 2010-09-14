@@ -584,6 +584,7 @@ namespace Magick
   using MagickCore::CorruptImageWarning;
   using MagickCore::CropImage;
   using MagickCore::CycleColormapImage;
+  using MagickCore::DeconstructImages;
   using MagickCore::DelegateError;
   using MagickCore::DelegateFatalError;
   using MagickCore::DelegateWarning;
