@@ -1225,20 +1225,23 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 #if 0
   /* Direct conversions of derivatives to elliptical coefficients
      No scaling will result in F == 1.0 and a unit circle.
+     However if the ellipse becomes very small (magnification) or
+     very long and thin, the ellipse may miss all source pixels!
   */
   A = dvx*dvx+dvy*dvy;
   B = (dux*dvx+duy*dvy)*-2.0;
   C = dux*dux+duy*duy;
   F = dux*dvy+duy*dvx;
-  F *= F;
+  F *= F; /* square it */
 #define F_UNITY 1.0
 #else
   /* This Paul Heckbert's recomended "Higher Quality EWA" formula, from page
-     60 in his thesis, which adds a unit circle to the elliptical area so are
+     60 in his thesis, which adds a unit circle to the elliptical area so as
      to do both Reconstruction and Prefiltering of the pixels in the
-     resampling.  It also means it is likely to have at least 4 pixels within
-     the area of the ellipse, for weighted averaging.
-     No scaling will result if F == 4.0 and a circle of radius 2.0
+     resampling.  It also means it is always likely to have at least 4 pixels
+     within the area of the ellipse, for weighted averaging.  No scaling will
+     result if F == 4.0 and a circle of radius 2.0, and F smaller than this
+     means magnification is being used.
   */
   A = dvx*dvx+dvy*dvy+1;
   B = (dux*dvx+duy*dvy)*-2.0;
@@ -1295,18 +1298,20 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   }
 #endif
 
-  /* Is default elliptical area, too small? Image being magnified?
-     Switch to doing pure 'point' interpolation of the pixel.
-     That is turn off  EWA Resampling.
+  /* Is default elliptical area, too small? Then the image is being magnified.
+     Switch to using a orthogonal interpolation method,
+     unless 'filter' interpolation was specifically requested.
   */
-  if ( F <= F_UNITY ) {
+  if ( F <= F_UNITY && resample_filter->interpolate != FilterInterpolatePixel ) {
     resample_filter->do_interpolate = MagickTrue;
     return;
   }
 
 
   /* If F is impossibly large, we may as well not bother doing any
-   * form of resampling, as you risk an infinite resampled area.
+     form of resampling, as you risk an near infinite resampled area.
+     In this case some alturnative means of pixel sampling, such as
+     the average of the whole image is needed to get a reasonable result.
   */
   if ( F > MagickHuge ) {
     resample_filter->limit_reached = MagickTrue;
@@ -1324,7 +1329,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   /* The size of the area of the parallelogram we will be sampling */
   area = 4 * resample_filter->sqrtA * resample_filter->sqrtU;
 
-  /* Absolute limit on the area to be resampled
+  /* Absolute limit on the area to be resampled.
    * This limit needs more work, as it gets too slow for
    * larger images involved with tiled views of the horizon. */
   if ( area > 20.0*resample_filter->image_area ) {
@@ -1332,9 +1337,9 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     return;
   }
 
-  /* Scale ellipse formula to directly fit the Filter Lookup Table */
+  /* Scale ellipse formula to directly index the Filter Lookup Table */
   { register double scale;
-    scale = (double)WLUT_WIDTH/F;
+    scale = (double)WLUT_WIDTH/(F*4);  /* 4 = cache_support^2 */
     resample_filter->A = A*scale;
     resample_filter->B = B*scale;
     resample_filter->C = C*scale;
@@ -1402,35 +1407,41 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
      Future: Direct use of the resize filters in "resize.c" to set the lookup
      table, based on the filters working support window.
   */
-  r_scale = sqrt(1.0/(double)(WLUT_WIDTH*blur));
+  r_scale = sqrt(1.0/(double)WLUT_WIDTH);
   r_scale *= 2; /* for 2 pixel radius of Improved Elliptical Formula */
 
-  switch ( filter ) {
+  switch ( resample_filter->filter ) {
   case PointFilter:
     /* This equivelent to turning off the EWA algroithm.
        Only Interpolated lookup will be used.  */
     break;
+  case UndefinedFilter:
+    resample_filter->filter = GaussianFilter;
+    /* FALL-THRU */
   default:
     /*
       Fill the LUT with a 1D resize filter function
       But make the Sinc/Bessel tapered window 2.0
       I also normalize the result so the filter is 1.0
     */
-    resize_filter = AcquireResizeFilter(resample_filter->image,filter,
-         (MagickRealType)1.0,MagickTrue,resample_filter->exception);
+    resize_filter = AcquireResizeFilter(resample_filter->image,
+         resample_filter->filter,blur,MagickTrue,resample_filter->exception);
     if (resize_filter != (ResizeFilter *) NULL) {
+#if 0
+      /* At this time the filter support is completely ignored! */
       resample_filter->support = GetResizeFilterSupport(resize_filter);
       resample_filter->support /= blur; /* taken into account above */
       resample_filter->support *= resample_filter->support;
       resample_filter->support *= (double)WLUT_WIDTH/4;
       if ( resample_filter->support >= (double)WLUT_WIDTH )
-           resample_filter->support = (double)WLUT_WIDTH;  /* hack */
+        resample_filter->support = (double)WLUT_WIDTH; /* not used yet */
+#endif
       for(Q=0; Q<WLUT_WIDTH; Q++)
-        if ( (double) Q < resample_filter->support )
+        //if ( (double) Q < resample_filter->support )
           resample_filter->filter_lut[Q] = (double)
                GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
-        else
-          resample_filter->filter_lut[Q] = 0.0;
+        //else
+        //  resample_filter->filter_lut[Q] = 0.0;
       resize_filter = DestroyResizeFilter(resize_filter);
       break;
     }
@@ -1439,7 +1450,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
            ModuleError, "UnableToSetFilteringValue",
            "Fall back to default EWA gaussian filter");
     }
-    /* FALLTHRU - on exception */
+#if 0
   /*case GaussianFilter:*/
   case UndefinedFilter:
     /*
@@ -1449,6 +1460,8 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
       and    ALPHA = -4.0*ln(2.0)  ==>  -2.77258872223978123767
       However the table is of length 1024, and equates to a radius of 2px
       thus needs to be scaled by  ALPHA*4/1024 and any blur factor squared
+
+      This is now known to be wrong -- very wrong!
     */
     /*r_scale = -2.77258872223978123767*4/WLUT_WIDTH/blur/blur;*/
     r_scale = -2.77258872223978123767/(WLUT_WIDTH*blur*blur);
@@ -1456,23 +1469,26 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
       resample_filter->filter_lut[Q] = exp((double)Q*r_scale);
     resample_filter->support = WLUT_WIDTH;
     break;
+#endif
   }
   if (GetImageArtifact(resample_filter->image,"resample:verbose")
         != (const char *) NULL)
-    /* Debug output of the filter weighting LUT
-      Gnuplot the LUT with hoizontal adjusted to 'r' using...
-        plot [0:2][-.2:1] "lut.dat" using (sqrt($0/1024)*2):1 with lines
-      The filter values is normalized for comparision
-    */
-    printf("# Resampling Filter LUT (%d values)\n", WLUT_WIDTH);
-    printf("#\n");
-    printf("# Plot using the gnuplot command\n");
-    printf("#   plot [0:2][-.2:1] \"lut.dat\" using ");
-    printf("sqrt($0/%d)*2):1 with lines\n", WLUT_WIDTH);
-    printf("#\n");
-    for(Q=0; Q<WLUT_WIDTH; Q++)
-      printf("%lf\n", resample_filter->filter_lut[Q]
-                        /resample_filter->filter_lut[0] );
+    {
+      /* Debug output of the filter weighting LUT
+        Gnuplot the LUT with hoizontal adjusted to 'r' using...
+          plot [0:2][-.2:1] "lut.dat" using (sqrt($0/1024)*2):1 with lines
+        The filter values is normalized for comparision
+      */
+      printf("# Resampling Filter LUT (%d values)\n", WLUT_WIDTH);
+      printf("#\n");
+      printf("# Plot using the gnuplot command\n");
+      printf("#   plot [0:2][-.2:1] \"lut.dat\" ");
+      printf(           "using (sqrt($0/%d)*2):1 with lines\n", WLUT_WIDTH);
+      printf("#\n");
+      for(Q=0; Q<WLUT_WIDTH; Q++)
+        printf("%lf\n", resample_filter->filter_lut[Q]
+                          /resample_filter->filter_lut[0] );
+    }
   return;
 }
 
