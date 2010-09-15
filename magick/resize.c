@@ -1043,7 +1043,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     Expert Option Request for verbose details of the resulting filter
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  if( GetOpenMPThreadId() == 0 ) {
+  /* if( GetOpenMPThreadId() == 0 ) { */
 #endif
     artifact=GetImageArtifact(image,"filter:verbose");
     if (artifact != (const char *) NULL)
@@ -1094,7 +1094,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
             GetMagickPrecision(), 0.0);
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    }
+    /* } */
 #endif
   return(resize_filter);
 }

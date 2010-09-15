@@ -962,7 +962,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
       case DitherVirtualPixelMethod:
       case HorizontalTileEdgeVirtualPixelMethod:
       case VerticalTileEdgeVirtualPixelMethod:
-        /* We need an average edge pixel, for the right edge!
+        /* We need an average edge pixel, from the correct edge!
            How should I calculate an average edge color?
            Just returning an averaged neighbourhood,
            works well in general, but falls down for TileEdge methods.
@@ -1122,10 +1122,15 @@ MagickExport MagickBooleanType ResamplePixelColor(
   /*
     Result sanity check -- this should NOT happen
   */
-  if ( hit < 4 || divisor_c < 1.0 ) {
+  if ( hit < 4 ) {
     /* not enough pixels in resampling, resort to direct interpolation */
+#if 0
+    pixel->opacity = pixel->red = pixel->green = pixel->blue = 0;
+    pixel->red = QuantumRange; /* show pixels for which EWA fails */
+#else
     status=InterpolateResampleFilter(resample_filter,
       resample_filter->interpolate,u0,v0,pixel);
+#endif
     return status;
   }
 
@@ -1437,11 +1442,8 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
         resample_filter->support = (double)WLUT_WIDTH; /* not used yet */
 #endif
       for(Q=0; Q<WLUT_WIDTH; Q++)
-        //if ( (double) Q < resample_filter->support )
-          resample_filter->filter_lut[Q] = (double)
-               GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
-        //else
-        //  resample_filter->filter_lut[Q] = 0.0;
+        resample_filter->filter_lut[Q] = (double)
+             GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
       resize_filter = DestroyResizeFilter(resize_filter);
       break;
     }
@@ -1472,7 +1474,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 #endif
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  if( GetOpenMPThreadId() == 0 )
+  /* if( GetOpenMPThreadId() == 0 ) */
 #endif
     if (GetImageArtifact(resample_filter->image,"resample:verbose")
           != (const char *) NULL)
