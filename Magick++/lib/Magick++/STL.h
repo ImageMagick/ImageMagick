@@ -2204,7 +2204,7 @@ namespace Magick
 
   // Implements the discrete Fourier transform (DFT) of the image either as a
   // magnitude / phase or real / imaginary image pair.
-  template <class InputIterator, class Container >
+  template <class Container >
   void forwardFourierTransformImage( Container *fourierImages_,
     const Image &image_ ) {
     MagickCore::ExceptionInfo exceptionInfo;
@@ -2224,7 +2224,7 @@ namespace Magick
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
-  template <class InputIterator, class Container >
+  template <class Container >
   void forwardFourierTransformImage( Container *fourierImages_,
     const Image &image_, const bool magnitude_ ) {
     MagickCore::ExceptionInfo exceptionInfo;
