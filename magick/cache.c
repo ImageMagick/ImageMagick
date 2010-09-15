@@ -594,12 +594,12 @@ static MagickBooleanType ClonePixelCacheNexus(CacheInfo *destination,
 
     p=source->nexus_info[i];
     q=destination->nexus_info[i];
-    q->mapped=p->mapped;
     q->region=p->region;
-    q->length=p->length;
-    q->cache=p->cache;
-    q->pixels=p->pixels;
-    q->indexes=p->indexes;
+    q->mapped=MagickFalse;
+    q->cache=(PixelPacket *) NULL;
+    q->pixels=(PixelPacket *) NULL;
+    q->indexes=(IndexPacket *) NULL;
+    q->length=0;
     if (p->cache != (PixelPacket *) NULL)
       {
         status=AcquireCacheNexusPixels(source,q,exception);
@@ -614,6 +614,7 @@ static MagickBooleanType ClonePixelCacheNexus(CacheInfo *destination,
             number_pixels=(MagickSizeType) q->region.width*q->region.height;
             if (p->indexes != (IndexPacket *) NULL)
               q->indexes=(IndexPacket *) (q->pixels+number_pixels);
+            q->length=p->length;
           }
       }
   }
@@ -5072,7 +5073,10 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
       nexus_info->length=length;
       status=AcquireCacheNexusPixels(cache_info,nexus_info,exception);
       if (status == MagickFalse)
-        return((PixelPacket *) NULL);
+        {
+          nexus_info->length=0;
+          return((PixelPacket *) NULL);
+        }
     }
   else
     if (nexus_info->length != length)
@@ -5081,7 +5085,10 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
         nexus_info->length=length;
         status=AcquireCacheNexusPixels(cache_info,nexus_info,exception);
         if (status == MagickFalse)
-          return((PixelPacket *) NULL);
+          {
+            nexus_info->length=0;
+            return((PixelPacket *) NULL);
+          }
       }
   nexus_info->pixels=nexus_info->cache;
   nexus_info->indexes=(IndexPacket *) NULL;
