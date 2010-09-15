@@ -234,8 +234,8 @@ static MagickRealType Gaussian(const MagickRealType x,
      1D Gaussian with sigma=1/2
       exp(-2 x^2)/sqrt(pi/2))
   */
-  const MagickRealType alpha = (MagickRealType) (2.0/MagickSQ2PI);
-  return(exp(-(double)(2.0*x*x))*alpha);
+  /*const MagickRealType alpha = (MagickRealType) (2.0/MagickSQ2PI);*/
+  return(exp(-(double)(2.0*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
