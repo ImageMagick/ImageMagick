@@ -1,3 +1,7 @@
+2010-09-15  6.6.4-2 Anthony Thyssen <A.Thyssen@griffith...>
+  * Rename of SincPolynomial to SincFast  for easier user understanding
+  * Ditto for LanczosChebyshev to LanzcosFast
+
 2010-09-14  6.6.4-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Switch default resize filters to using the faster SincPolynomial
     filter by default internally.  However 'Sinc' will stil use the
