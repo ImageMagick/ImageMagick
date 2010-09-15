@@ -749,6 +749,35 @@ functionality.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Assign a caption to an image.</td><td style='text-align:right;'></td></tr></table>
 
+<p>This option sets the caption meta-data of an image read in after this
+option has been given.  To modify a caption of images already in memory use
+"<kbd><a href="#set">-set</a> caption</kbd>". </p>
+
+<p>The caption can contain special format characters listed in the <a
+href="../www/escape.html">Format and
+Print Image Properties</a>. These attributes will be expanded when the caption
+is finally assigned to the individual images. </p>
+
+<p>If the first character of <em class="arg">string</em> is <em
+class="arg">@</em>, the image caption is read from a file titled by the
+remaining characters in the string.  Comments read in from a file are literal;
+no embedded formatting characters are recognized.</p>
+
+<p>Caption meta-data ais not visible on the image itself. To do that use the
+<a href="#annotate">-annotate</a> or <a href="#draw">-draw</a> options
+instead.</p>
+
+<p>For example,</p>
+
+<p class="crtsnip">
+     -caption "%m:%f %wx%h"  bird.miff
+</p>
+
+<p>produces an image caption of <kbd>MIFF:bird.miff 512x480</kbd> (assuming
+that the image <kbd>bird.miff</kbd> has a width of 512 and a height of
+480.</p>
+
+
 <div style="margin: auto;">
   <h4><a name="cdl" id="cdl"></a>-cdl <em class="arg">filename</em></h4>
 </div>
@@ -1218,25 +1247,33 @@ convert kittens.jpg -color-matrix \
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Embed a comment in an image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option places comments in a non-pixel portion of the image file. For a comment to be visibly written on the image itself, use the <a href="#annotate">-annotate</a> or <a href="#draw">-draw</a> options.</p>
+<p>This option sets the comment meta-data of an image read in afetr this
+option has been given.  To modify a comment of images already in memory use
+"<kbd><a href="#set">-set</a> comment</kbd>". </p>
 
-<p>Use this option to assign a specific comment to the image, when writing to
-an image format that supports comments.  You can include the image filename,
-type, width, height, or other image attribute by embedding special format
-characters listed in the <a href="../www/escape.html">Format and Print Image
-Properties</a>. The comment is not drawn on the image, but is embedded in the
-image datastream via "Comment" tag or similar mechanism. </p>
+<p>The comment can contain special format characters listed in the <a
+href="../www/escape.html">Format and
+Print Image Properties</a>. These attributes will be expanded when the comment
+is finally assigned to the individual images. </p>
+
+<p>If the first character of <em class="arg">string</em> is <em
+class="arg">@</em>, the image comment is read from a file titled by the
+remaining characters in the string.  Comments read in from a file are literal;
+no embedded formatting characters are recognized.</p>
+
+<p>Comment meta-data are not visible on the image itself. To do that use the
+<a href="#annotate">-annotate</a> or <a href="#draw">-draw</a> options
+instead.</p>
 
 <p>For example,</p>
 
 <p class="crtsnip">
-     -comment "%m:%f %wx%h"
+     -comment "%m:%f %wx%h"  bird.miff
 </p>
 
-<p>produces an image comment of <kbd>MIFF:bird.miff 512x480</kbd> for an image
-titled <kbd>bird.miff</kbd> and whose width is 512 and height is 480.</p>
-
-<p>If the first character of <em class="arg">string</em> is <em class="arg">@</em>, the image comment is read from a file titled by the remaining characters in the string.  Comments in a file are literal; no embedded formatting characters are recognized.</p>
+<p>produces an image comment of <kbd>MIFF:bird.miff 512x480</kbd> (assuming
+that the image <kbd>bird.miff</kbd> has a width of 512 and a height of
+480.</p>
 
 <div style="margin: auto;">
   <h4><a name="compose" id="compose"></a>-compose <em class="arg">operator</em></h4>
@@ -3220,9 +3257,14 @@ lookup for positions outside the boundaries of the image. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>assign a label to an image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Use this option to assign a specific label to the image, as it is read in or created.  You can use the <a href="#set" >-set</a> operation to re-assign a the labels of images already read in.  Image formats such as TIFF, PNG, MIFF, supports saving the label information with the image.</p>
+<p>Use this option to assign a specific label to the image, as it is read in
+or created.  You can use the <a href="#set" >-set</a> operation to re-assign
+a the labels of images already read in.  Image formats such as TIFF, PNG,
+MIFF, supports saving the label information with the image.</p>
 
-<p>When saving an image to a <em class="arg">PostScript</em> file, any label assigned to an image is used as a header string to print above the postscript image. </p>
+<p>When saving an image to a <em class="arg">PostScript</em> file, any label
+assigned to an image is used as a header string to print above the postscript
+image. </p>
 
 <p>You can include the image filename, type, width, height, or other image
 attribute by embedding special format character.  See <a href="../www/escape.html">Format and Print Image
@@ -3234,14 +3276,21 @@ Properties</a> for details of the percent escape codes.</p>
   -label "%m:%f %wx%h"  bird.miff
 </p>
 
-<p>assigns an image label of <kbd>MIFF:bird.miff 512x480</kbd> to the "<kbd>bird.miff</kbd>" image and whose width is 512 and height is 480, as it is read in.  If a  <a href="#label">+label</a> option was used instead, any existing label present in the image would be used.  You can remove all labels from an image by assigning the empty string. </p>
+<p>assigns an image label of <kbd>MIFF:bird.miff 512x480</kbd> to the
+"<kbd>bird.miff</kbd>" image and whose width is 512 and height is 480, as it
+is read in.  If a  <a href="#label">+label</a> option was used instead, any
+existing label present in the image would be used.  You can remove all labels
+from an image by assigning the empty string. </p>
 
-<p>A label is not drawn on the image, but is embedded in the image datastream via <em>Label</em> tag or similar mechanism. If you want the label to be visible on the image itself, use the <a href="#draw">-draw</a> option, or during the final processing in the creation of a image montage.</p>
+<p>A label is not drawn on the image, but is embedded in the image datastream
+via <em>Label</em> tag or similar mechanism. If you want the label to be
+visible on the image itself, use the <a href="#draw">-draw</a> option, or
+during the final processing in the creation of a image montage.</p>
 
-<p>The label font can be specified with <a href="#font">-font</a>, and the
-other font attribute settings.</p>
-
-<p>If the first character of <em class="arg">string</em> is <em class="arg">@</em>, the image label is read from a file titled by the remaining characters in the string. Labels in a file are literal, no embedded formatting characters are recognized.</p>
+<p>If the first character of <em class="arg">string</em> is <em
+class="arg">@</em>, the image label is read from a file titled by the
+remaining characters in the string. Labels in a file are literal, no embedded
+formatting characters are recognized.</p>
 
 
 <div style="margin: auto;">
@@ -5055,7 +5104,9 @@ values range from 0 to the maximum value the storage type can support.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Set a font style for text.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This setting suggests a font style that ImageMagick should try to apply to the currently selected font family. Select <em class="arg">fontStyle</em> from the following.</p>
+<p>This setting suggests a font style that ImageMagick should try to apply to
+the currently selected font family. Select <em class="arg">fontStyle</em> from
+the following.</p>
 
 <pre class="text">
         Any
@@ -5072,7 +5123,23 @@ values range from 0 to the maximum value the storage type can support.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>search for subimage.</td><td style='text-align:right;'>[<a href="../www/compare.html">compare</a>]</td></tr></table>
 
-<p>This option is required to have compare search for the best match location of a small image within a larger image. This search will produce two images (or two frames). The first will be the "difference" image and the second will be the "match score" image. The brightest location in the latter is the location in the larger image where the (upper left corner of the) smaller image best matches.</p>
+<p>This option is required to have compare search for the best match location
+of a small image within a larger image. This search will produce two images
+(or two frames). The first will be the "difference" image and the second will
+be the "match score" image.</p>
+
+<p>The "match-score" image will be smaller conaining a pixel for ever posible
+position of the top-left corner of the given sub-image. that is its size will
+be the size of the larger_image - sub_image + 1.  The brightest location in
+this image is the location s the locate on the best match that is also
+reported. Note that this may or may nor be a perfect match, and the actual
+brightness will reflect this. Other bright 'peaks' can be used to locate other
+posible matching loctions. </p>
+
+<p>Note that the search will try to compare teh sub-image at every posible
+location in the larger image, as such it can be very slow.  The smaller the
+sub-image the faster this search will be. </p>
+
 
 <div style="margin: auto;">
   <h4><a name="swap" id="swap"></a>-swap <em class="arg">index,index</em></h4>
@@ -5080,7 +5147,9 @@ values range from 0 to the maximum value the storage type can support.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Swap the positions of two images in the image sequence.</td><td style='text-align:right;'></td></tr></table>
 
-<p>For example, <a href="#swap">-swap 0,2</a> swaps the first and the third images in the current image sequence. Use <a href="#swap">+swap</a> to switch the last two images in the sequence.</p>
+<p>For example, <a href="#swap">-swap 0,2</a> swaps the first and the third
+images in the current image sequence. Use <a href="#swap">+swap</a> to switch
+the last two images in the sequence.</p>
 
 <div style="margin: auto;">
   <h4><a name="swirl" id="swirl"></a>-swirl <em class="arg">degrees</em></h4>
