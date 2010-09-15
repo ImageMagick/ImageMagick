@@ -135,7 +135,7 @@ static MagickBooleanType RollFourier(const size_t width,
     x;
 
   /*
-    Move the zero frequency (DC) from (0,0) to (width/2,height/2).
+    Move zero frequency (DC, average color) from (0,0) to (width/2,height/2).
   */
   roll=(double *) AcquireQuantumMemory((size_t) width,height*sizeof(*roll));
   if (roll == (double *) NULL)
