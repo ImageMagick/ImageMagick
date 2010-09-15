@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -167,9 +167,18 @@
 
 <div class="main">
 
-<ul><dt>2010-09-09  6.6.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-09-14  6.6.4-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Switch default resize filters to using the faster SincPolynomial    filter by default internally.  However 'Sinc' will stil use the    Trigonometric function, and can be used to assign the trig version    of Sinc() to filters using the filter expert options.</li>
+  <li> Removed the default filter for 'distort' was found to be a very    blurry inaccurate filter function.  It was removed and replaced with    a correct Gussian filter (as used by resize)</li>
+  <li> Added a switch so that "-interpolate filter" will force the use of    a cylindrical filter for ALL pixels in distorted images.  That is you can    use that swicth to use a cylindrical filter even for images that are    being enlarged by the distortion. IT is alightly slower though.    However EWA is still currently using a fixed 2.0 sampling radius.    This switch complements the use of "-filter point" which turns of EWA    filters in favor of interpolation for all pixels in a distiorted image.    BOTH switched should not be used together.</li>
+  <li> A bug in the support radius of the EWA resampling function was found,    now that correctly defined resize filters are being used. Suddenly Normal    Gaussian distortions are not so blurry, and tests with distortions of    the 'Rings' image show extremely good and clear results, with only minimal    blurring.  The filter 'blur' expert option can be used to adjust this    further.</li><br />
+    The above represents a major impovment forward in the quality of the image    distortion operator.</li><br />
+<dt>2010-09-13  6.6.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Don't negate the geometry offset for the -extent option.</li><br />
+<dt>2010-09-09  6.6.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The RGBO format is now listed as a supported format.</li><br />
 <dt>2010-09-07  6.6.4-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added the Nicolas Robidoux and Chantal Racette  Lanczos resize filter    function as "LanczosChebyshev" as faster alturnative to Lanczos.</li>
   <li> Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of    the Sinc Trigonometric resize filter, as a proper filter to allow    direct comparision and speed testing of the filter.</li>
   <li> Expanded the "-set option:filter:verbose 1" output, so as to also include    the actual functions and other values that were used to create the filter.</li><br />
 <dt>2010-09-02  6.6.4-0 el_supremo  &lt;digipete@shaw...&gt;</dt>
