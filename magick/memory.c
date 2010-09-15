@@ -141,7 +141,7 @@ static MagickMemoryMethods
   {
     (AcquireMemoryHandler) malloc,
     (ResizeMemoryHandler) realloc,
-    (DestroyMemoryHandler)free
+    (DestroyMemoryHandler) free
   };
 
 #if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
