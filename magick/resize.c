@@ -597,11 +597,14 @@ static MagickRealType Welsh(const MagickRealType x,
 %  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
 %  simply clipped by its support size (1.5).
 %
-%  Requesting a windowed filter will return either a windowed Sinc, for a one
-%  dimentional orthogonal filtering method, such as ResizeImage(), or a
-%  windowed Bessel for image operations requiring a two dimentional
-%  cylindrical filtering method, such a DistortImage().  Which function is
-%  is used set by the "cylindrical" boolean argument.
+%  The users "-filter" selection ise used to lookup the default 'expert'
+%  settings for that filter from a internal table.  However any provided
+%  'expert' settings (see below) may override this selection.
+%
+%  The selection is typically either a windowed Sinc, or interpolated filter,
+%  for use by functions such as ResizeImage().  However if a 'cylindrical'
+%  filter flag is requested, the default Sinc weighting and windowing
+%  functions will be promoted to cylindrical Bessel functions.
 %
 %  Directly requesting 'Sinc' or 'Bessel' will force the use of that filter
 %  function, with a default 'Blackman' windowing method.  This not however
@@ -609,35 +612,36 @@ static MagickRealType Welsh(const MagickRealType x,
 %  filtering image operations.  Selecting a window filtering method is better.
 %
 %  Lanczos is a special case of a Sinc windowed Sinc, but defaulting to
-%  a 3 lobe support, rather that the default 4 lobe support of the others.
+%  a 3 lobe support, rather that the default 4 lobe support of the windowed
+%  sinc filters.
 %
-%  Special options can be used to override specific, or all the filter
-%  settings.   However doing so is not advisible unless you have expert
-%  knowledge of the use of resampling filtered techniques. Extreme caution is
-%  advised.
+%  Special 'expert' options can be used to override specific, or all the
+%  filter settings.   However doing so is not advisible unless you have expert
+%  knowledge of the use of resampling filtered techniques.  Also a check on
+%  the results of your selections using the "filter:verbose" setting is
+%  advisable.
 %
-%    "filter:filter"    Select this function as the filter.
-%        If a "filter:window" operation is not provided, then no windowing
-%        will be performed on the selected filter, (support clipped)
+%    "filter:filter"    Select the function associated with this filter
+%        as the weighting function of the filter.  This can be used to set a
+%        a windowing function as a weighting function.
 %
-%        This can be used to force the use of a windowing method as filter,
-%        request a 'Sinc' filter in a radially filtered operation, or the
-%        'Bessel' filter for a othogonal filtered operation.
+%        If a "filter:window" operation has not been provided, then a 'Box'
+%        windowing function will be set to denote that no windowing function
+%        is being used.
 %
 %    "filter:window"   Select this windowing function for the filter.
-%        While any filter could be used as a windowing function,
-%        using that filters first lobe over the whole support window,
-%        using a non-windowing method is not advisible.
+%        While any filter could be used as a windowing function, using the
+%        'first lobe' of that filter over the whole support window, using a
+%        non-windowing function is not advisible.
 %
 %    "filter:lobes"    Number of lobes to use for the Sinc/Bessel filter.
-%        This a simper method of setting filter support size that will
+%        This a simpler method of setting filter support size that will
 %        correctly handle the Sinc/Bessel switch for an operators filtering
-%        requirements.
+%        requirements.  Only integers should be given.
 %
 %    "filter:support"  Set the support size for filtering to the size given
-%        This not recommended for Sinc/Bessel windowed filters, but is
-%        used for simple filters like FIR filters, and the Gaussian Filter.
-%        This will override any 'filter:lobes' option.
+%        This not recommended for Sinc/Bessel windowed filters (lobes should
+%        be used instead).  This will override any 'filter:lobes' option.
 %
 %    "filter:win-support"  Scale windowing function to this size instead.
 %        This causes the windowing (or self-windowing Lagrange filter) to act
@@ -668,6 +672,10 @@ static MagickRealType Welsh(const MagickRealType x,
 %  For example force an 8 lobe Lanczos (Sinc or Bessel) filter...
 %     -filter Lanczos
 %     -set option:filter:lobes 8
+%
+%  Internally many filters requiring a 'Sinc' function will use the
+%  faster SincPolynomial filter function SincPoly() instead.
+%
 %
 %  The format of the AcquireResizeFilter method is:
 %
@@ -854,6 +862,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->blur=StringToDouble(artifact);
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
+  /*
+    Cylindrical Filters should use Bessel instead of Sinc.
+    Unless a Sinc filter was specifically requested.
+    Result may be overridden by expert settings later.
+  */
   if (cylindrical != MagickFalse)
     switch (filter_type)
     {
@@ -863,6 +876,13 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
            As long as the user did not directly request a 'Sinc' filter
         */
         if ( filter != SincFilter )
+          filter_type=BesselFilter;
+        break;
+      }
+      case SincPolynomialFilter:
+      {
+        /* Ditto for SincPolynomial */
+        if ( filter != SincPolynomialFilter )
           filter_type=BesselFilter;
         break;
       }
