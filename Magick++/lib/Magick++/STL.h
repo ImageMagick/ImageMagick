@@ -2232,7 +2232,8 @@ namespace Magick
 
     // Build image list
     MagickCore::Image* images = ForwardFourierTransformImage(
-      image_.constImage(), MagickTrue, &exceptionInfo);
+      image_.constImage(), magnitude_ == true ? MagickTrue : MagickFalse,
+      &exceptionInfo);
 
     // Ensure container is empty
     fourierImages_->clear();
