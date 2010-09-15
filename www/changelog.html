@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -167,7 +167,10 @@
 
 <div class="main">
 
-<ul><dt>2010-09-14  6.6.4-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<ul><dt>2010-09-15  6.6.4-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Rename of SincPolynomial to SincFast  for easier user understanding</li>
+  <li> Ditto for LanczosChebyshev to LanzcosFast</li><br />
+<dt>2010-09-14  6.6.4-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Switch default resize filters to using the faster SincPolynomial    filter by default internally.  However 'Sinc' will stil use the    Trigonometric function, and can be used to assign the trig version    of Sinc() to filters using the filter expert options.</li>
   <li> Removed the default filter for 'distort' was found to be a very    blurry inaccurate filter function.  It was removed and replaced with    a correct Gussian filter (as used by resize)</li>
   <li> Added a switch so that "-interpolate filter" will force the use of    a cylindrical filter for ALL pixels in distorted images.  That is you can    use that swicth to use a cylindrical filter even for images that are    being enlarged by the distortion. IT is alightly slower though.    However EWA is still currently using a fixed 2.0 sampling radius.    This switch complements the use of "-filter point" which turns of EWA    filters in favor of interpolation for all pixels in a distiorted image.    BOTH switched should not be used together.</li>
