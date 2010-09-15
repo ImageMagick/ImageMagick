@@ -98,7 +98,7 @@ static MagickRealType
   I0(MagickRealType x),
   BesselOrderOne(MagickRealType),
   SincTrig(const MagickRealType, const ResizeFilter *),
-  SincPoly(const MagickRealType, const ResizeFilter *);
+  SincFast(const MagickRealType, const ResizeFilter *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -309,7 +309,7 @@ static MagickRealType Lagrange(const MagickRealType x,
   return(value);
 }
 
-static MagickRealType LanczosChebyshev(const MagickRealType x,
+static MagickRealType LanczosFast(const MagickRealType x,
   const ResizeFilter *resize_filter)
 {
   /*
@@ -333,7 +333,7 @@ static MagickRealType LanczosChebyshev(const MagickRealType x,
   if (xx == 0)
     return(1.0);
   if (support>16.0 || support<1.0 || nearbyint(support)!=support)
-    return(SincPoly(x,resize_filter)*SincPoly(x/support,resize_filter));
+    return(SincFast(x,resize_filter)*SincFast(x/support,resize_filter));
   {
     const MagickRealType pi2 = MagickPIL*MagickPIL;
     const MagickRealType c = cos((double) ((MagickPIL/support)*x));
@@ -450,7 +450,7 @@ static MagickRealType SincTrig(const MagickRealType x,
   return(1.0);
 }
 
-static MagickRealType SincPoly(const MagickRealType x,
+static MagickRealType SincFast(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
@@ -615,6 +615,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %  a 3 lobe support, rather that the default 4 lobe support of the windowed
 %  sinc filters.
 %
+%  Two forms of Sinc Function is available  SincTrig and SincFast. the former
+%  is the tradional form and what will be selected is the user specifically
+%  specifies the use of a Sinc Filter. the later is a faster polynomial form
+%  that will be used by default in most cases.
+%
 %  Special 'expert' options can be used to override specific, or all the
 %  filter settings.   However doing so is not advisible unless you have expert
 %  knowledge of the use of resampling filtered techniques.  Also a check on
@@ -632,7 +637,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %    "filter:window"   Select this windowing function for the filter.
 %        While any filter could be used as a windowing function, using the
 %        'first lobe' of that filter over the whole support window, using a
-%        non-windowing function is not advisible.
+%        non-windowing function is not advisible. If no weighting function
+%        is specifed a 'SincFast' filter will be used.
 %
 %    "filter:lobes"    Number of lobes to use for the Sinc/Bessel filter.
 %        This a simpler method of setting filter support size that will
@@ -672,9 +678,6 @@ static MagickRealType Welsh(const MagickRealType x,
 %  For example force an 8 lobe Lanczos (Sinc or Bessel) filter...
 %     -filter Lanczos
 %     -set option:filter:lobes 8
-%
-%  Internally many filters requiring a 'Sinc' function will use the
-%  faster SincPolynomial filter function SincPoly() instead.
 %
 %
 %  The format of the AcquireResizeFilter method is:
@@ -739,30 +742,30 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter,      BoxFilter },  /* undefined */
-    { PointFilter,          BoxFilter },  /* special, nearest-neighbour filter */
-    { BoxFilter,            BoxFilter },  /* Box averaging Filter */
-    { TriangleFilter,       BoxFilter },  /* Linear Interpolation Filter */
-    { HermiteFilter,        BoxFilter },      /* Hermite interpolation filter */
-    { SincPolynomialFilter, HanningFilter },  /* Hanning -- Cosine-Sinc */
-    { SincPolynomialFilter, HammingFilter },  /* Hamming --  '' variation */
-    { SincPolynomialFilter, BlackmanFilter }, /* Blackman -- 2*Cosine-Sinc */
-    { GaussianFilter,       BoxFilter },      /* Gaussain Blurring filter */
-    { QuadraticFilter,      BoxFilter },      /* Quadratic Gaussian approx */
-    { CubicFilter,          BoxFilter },      /* Cubic Gaussian approx */
-    { CatromFilter,         BoxFilter },      /* Cubic Interpolator */
-    { MitchellFilter,       BoxFilter },      /* 'ideal' Cubic Filter */
-    { LanczosFilter,        SincPolynomialFilter }, /* SPECIAL, 3 lobed Sinc-Sinc */
-    { BesselFilter,         BlackmanFilter }, /* 3 lobed bessel -specific request */
-    { SincFilter,           BlackmanFilter }, /* 4 lobed sinc - specific request */
-    { SincPolynomialFilter, KaiserFilter },   /* Kaiser --  SqRoot-Sinc */
-    { SincPolynomialFilter, WelshFilter },    /* Welsh -- Parabolic-Sinc */
-    { SincPolynomialFilter, CubicFilter },    /* Parzen -- Cubic-Sinc */
-    { LagrangeFilter,       BoxFilter },      /* Lagrange self-windowing filter */
-    { SincPolynomialFilter, BohmanFilter },   /* Bohman -- 2*Cosine-Sinc */
-    { SincPolynomialFilter, TriangleFilter }, /* Bartlett -- Triangle-Sinc */
-    { SincPolynomialFilter, BlackmanFilter }, /* Sinc Polynomial - specific request */
-    { LanczosChebyshevFilter, BoxFilter }     /* Lanczos using Chebyshev Opt */
+    { UndefinedFilter,   BoxFilter },      /* undefined */
+    { PointFilter,       BoxFilter },      /* special, nearest-neighbour filter */
+    { BoxFilter,         BoxFilter },      /* Box averaging Filter */
+    { TriangleFilter,    BoxFilter },      /* Linear Interpolation Filter */
+    { HermiteFilter,     BoxFilter },      /* Hermite interpolation filter */
+    { SincFastFilter,    HanningFilter },  /* Hanning -- Cosine-Sinc */
+    { SincFastFilter,    HammingFilter },  /* Hamming --  '' variation */
+    { SincFastFilter,    BlackmanFilter }, /* Blackman -- 2*Cosine-Sinc */
+    { GaussianFilter,    BoxFilter },      /* Gaussain Blurring filter */
+    { QuadraticFilter,   BoxFilter },      /* Quadratic Gaussian approx */
+    { CubicFilter,       BoxFilter },      /* Cubic B-Spline */
+    { CatromFilter,      BoxFilter },      /* Cubic Interpolator */
+    { MitchellFilter,    BoxFilter },      /* 'ideal' Cubic Filter */
+    { LanczosFilter,     SincFastFilter }, /* SPECIAL, 3 lobed Sinc-Sinc */
+    { BesselFilter,      BoxFilter },      /* Raw 3 lobed Bessel */
+    { SincFilter,        BoxFilter },      /* Raw 4 lobed Sinc */
+    { SincFastFilter,    KaiserFilter },   /* Kaiser --  SqRoot-Sinc */
+    { SincFastFilter,    WelshFilter },    /* Welsh -- Parabolic-Sinc */
+    { SincFastFilter,    CubicFilter },    /* Parzen -- Cubic-Sinc */
+    { LagrangeFilter,    BoxFilter },      /* Lagrange self-windowing filter */
+    { SincFastFilter,    BohmanFilter },   /* Bohman -- 2*Cosine-Sinc */
+    { SincFastFilter,    TriangleFilter }, /* Bartlett -- Triangle-Sinc */
+    { SincFastFilter,    BoxFilter },      /* Raw Fast Sinc (Polynomial) */
+    { LanczosFastFilter, BoxFilter }       /* Speed Optimized Lanczos (exper) */
   };
   /*
     Table maping the filter/window from the above table to an actual function.
@@ -770,8 +773,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     the range to scale with to use that function as a sinc windowing function,
     (typ 1.0).
 
-    Note that the filter_type -> function is 1 to 1 except for
-    SincPoly(), SincTrig(), and CubicBC()  functions.
+    Note that the filter_type -> function is 1 to 1 except for SincTrig(),
+    SincFast(), and CubicBC()  functions, which may have multiple filter to
+    function associations.
     See "filter:verbose" handling below for the function -> filter mapping.
   */
   static struct
@@ -793,20 +797,20 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Blackman,  1.0f,  1.0f, 0.0f, 0.0f }, /* Blackman, 2*cos window */
     { Gaussian,  1.5f,  1.5f, 0.0f, 0.0f }, /* Gaussian */
     { Quadratic, 1.5f,  1.5f, 0.0f, 0.0f }, /* Quadratic Gaussian */
-    { CubicBC,   2.0f,  2.0f, 1.0f, 0.0f }, /* B-Spline of Gaussian B=1 C=0 */
-    { CubicBC,   2.0f,  1.0f, 0.0f, 0.5f }, /* Catmull-Rom  B=0 C=1/2 */
-    { CubicBC,   2.0f,  1.0f, 1.f/3.f, 1.f/3.f }, /* Mitchel B=C=1/3 */
-    { SincPoly,  3.0f,  1.0f, 0.0f, 0.0f }, /* Lanczos, 3 lobed Sinc-Sinc */
-    { Bessel,    3.2383f,1.2197f,.0f,.0f }, /* 3 lobed Blackman-Bessel */
-    { SincTrig,  4.0f,  1.0f, 0.0f, 0.0f }, /* 4 lobed Blackman-Sinc   */
+    { CubicBC,   2.0f,  2.0f, 1.0f, 0.0f }, /* Cubic B-Spline  B=1 C=0 */
+    { CubicBC,   2.0f,  1.0f, 0.0f, 0.5f }, /* Catmull-Rom     B=0 C=1/2 */
+    { CubicBC,   2.0f,  1.0f, 1.f/3.f, 1.f/3.f }, /* Mitchell  B=C=1/3 */
+    { SincFast,  3.0f,  1.0f, 0.0f, 0.0f }, /* Lanczos, 3 lobed Sinc-Sinc */
+    { Bessel,    3.2383f,1.2197f,.0f,.0f }, /* Raw 3 lobed Bessel */
+    { SincTrig,  4.0f,  1.0f, 0.0f, 0.0f }, /* Raw 4 lobed Sinc   */
     { Kaiser,    1.0f,  1.0f, 0.0f, 0.0f }, /* Kaiser, sq-root windowing */
     { Welsh,     1.0f,  1.0f, 0.0f, 0.0f }, /* Welsh, Parabolic windowing */
     { CubicBC,   2.0f,  2.0f, 1.0f, 0.0f }, /* Parzen, B-Spline windowing */
     { Lagrange,  2.0f,  1.0f, 0.0f, 0.0f }, /* Lagrangian Filter */
     { Bohman,    1.0f,  1.0f, 0.0f, 0.0f }, /* Bohman, 2*Cosine windowing */
     { Triangle,  1.0f,  1.0f, 0.0f, 0.0f }, /* Bartlett, Triangle windowing */
-    { SincPoly,  4.0f,  1.0f, 0.0f, 0.0f }, /* Polynomial Approximate Sinc */
-    { LanczosChebyshev, 3.f, 1.f, 0.f, 0.f }  /* Lanczos using Chevbyshev Opt */
+    { SincFast,  4.0f,  1.0f, 0.0f, 0.0f }, /* Raw Fast Sinc (Polynomial) */
+    { LanczosFast, 3.f, 1.f, 0.f, 0.f }   /* Speed Optimized Lanczos (exper) */
   };
   /*
     The known zero crossings of the Bessel() or the Jinc(x*PI) function found
@@ -879,10 +883,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           filter_type=BesselFilter;
         break;
       }
-      case SincPolynomialFilter:
+      case SincFastFilter:
       {
-        /* Ditto for SincPolynomial */
-        if ( filter != SincPolynomialFilter )
+        /* Ditto for SincFast varient */
+        if ( filter != SincFastFilter )
           filter_type=BesselFilter;
         break;
       }
@@ -917,7 +921,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           filter_type=cylindrical != MagickFalse ?
                            BesselFilter : LanczosFilter;
           window_type=cylindrical != MagickFalse ?
-                           BesselFilter : SincPolynomialFilter;
+                           BesselFilter : SincFastFilter;
         }
       /* Filter overwide with a specific window function.  */
       artifact=GetImageArtifact(image,"filter:window");
@@ -930,7 +934,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
                 window_type=(FilterTypes) option;
               else
                 window_type=cylindrical != MagickFalse ?
-                               BesselFilter : SincPolynomialFilter;
+                               BesselFilter : SincFastFilter;
             }
         }
     }
@@ -945,7 +949,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
               filter_type=cylindrical != MagickFalse ?
-                           BesselFilter : SincPolynomialFilter;
+                           BesselFilter : SincFastFilter;
               window_type=(FilterTypes) option;
             }
         }
@@ -1045,14 +1049,14 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         support,
         x;
 
-      /* Reset the filter_type for specific compound filters so
-       * the actual 'function' is returned, not the user selection.
-       * Specifically for Sinc and Cubic compound filters.
+      /* Reset the filter_type for specific compound filters so the actual
+       * 'function' is returned, not the user selection.  Specifically this
+       * is needed for the Sinc and Cubic compound filters.
        */
       if ( resize_filter->filter == SincTrig )
         filter_type=SincFilter;
-      if ( resize_filter->filter == SincPoly )
-        filter_type=SincPolynomialFilter;
+      if ( resize_filter->filter == SincFast )
+        filter_type=SincFastFilter;
       if ( resize_filter->filter == CubicBC )
         filter_type=CubicFilter;
 
