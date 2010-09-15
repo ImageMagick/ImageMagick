@@ -223,7 +223,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     image->columns=tga_info.width;
     image->rows=tga_info.height;
-    image->matte=tga_info.bits_per_pixel == 32 ? MagickTrue : MagickFalse;
+    image->matte=(tga_info.attributes & 0x0FU) != 0 ? MagickTrue : MagickFalse;
     if ((tga_info.image_type != TGAColormap) &&
         (tga_info.image_type != TGARLEColormap))
       image->depth=(size_t) ((tga_info.bits_per_pixel <= 8) ? 8 :
@@ -425,7 +425,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (1UL*(j & 0xe0) >> 5),range);
               pixel.blue=ScaleAnyToQuantum(1UL*(j & 0x1f),range);
               if (image->matte != MagickFalse)
-                pixel.opacity=(k & 0x80) != 0 ? (Quantum) OpaqueOpacity :
+                pixel.opacity=(k & 0x80) == 0 ? (Quantum) OpaqueOpacity :
                   (Quantum) TransparentOpacity; 
               if (image->storage_class == PseudoClass)
                 index=ConstrainColormapIndex(image,((size_t) k << 8)+j);
