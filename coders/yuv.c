@@ -122,9 +122,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register ssize_t
-    i;
-
   register unsigned char
     *p;
 
