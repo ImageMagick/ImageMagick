@@ -115,14 +115,11 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
-    i;
+  size_t
+    length;
 
   ssize_t
     count;
-
-  size_t
-    length;
 
   unsigned char
     *pixels;

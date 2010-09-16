@@ -117,9 +117,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
-    i;
-
   ssize_t
     count;
 
