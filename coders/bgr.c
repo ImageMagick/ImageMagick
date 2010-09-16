@@ -149,13 +149,9 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      for (i=0; i < image->offset; i++)
-        if (ReadBlobByte(image) == EOF)
-          {
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
-            break;
-          }
+      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
     }
   /*
     Create virtual canvas to support cropping (i.e. image.rgb[100x100+10+20]).
@@ -629,13 +625,9 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
-        for (i=0; i < image->offset; i++)
-          if (ReadBlobByte(image) == EOF)
-            {
-              ThrowFileException(exception,CorruptImageError,
-                "UnexpectedEndOfFile",image->filename);
-              break;
-            }
+        if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
         length=GetQuantumExtent(canvas_image,quantum_info,BlueQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
