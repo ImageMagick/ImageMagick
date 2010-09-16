@@ -12,11 +12,11 @@
     a correct Gussian filter (as used by resize)
   * Added a switch so that "-interpolate filter" will force the use of
     a cylindrical filter for ALL pixels in distorted images.  That is you can
-    use that swicth to use a cylindrical filter even for images that are
-    being enlarged by the distortion. IT is alightly slower though.
+    use that switch to use a cylindrical filter even for images that are
+    being enlarged by the distortion. It is slightly slower though.
     However EWA is still currently using a fixed 2.0 sampling radius.
-    This switch complements the use of "-filter point" which turns of EWA
-    filters in favor of interpolation for all pixels in a distiorted image.
+    This switch complements the use of "-filter point" which turns off EWA
+    filters in favor of interpolation for all pixels in a distorted image.
     BOTH switched should not be used together.
   * A bug in the support radius of the EWA resampling function was found,
     now that correctly defined resize filters are being used. Suddenly Normal
@@ -25,8 +25,8 @@
     blurring.  The filter 'blur' expert option can be used to adjust this
     further.
 
-    The above represents a major impovment forward in the quality of the image
-    distortion operator.
+    The above represents a major improvement forward in the quality of the
+    image distortion operator.
 
 2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
   * Don't negate the geometry offset for the -extent option.
