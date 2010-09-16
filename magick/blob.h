@@ -50,7 +50,8 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   IsBlobExempt(const Image *),
   IsBlobSeekable(const Image *),
-  IsBlobTemporary(const Image *);
+  IsBlobTemporary(const Image *),
+  SkipBlobBytes(Image *,const size_t);
 
 extern MagickExport MagickSizeType
   GetBlobSize(const Image *);

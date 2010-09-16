@@ -3676,6 +3676,61 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  S k i p B l o b B y t e s                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SkipBlobBytes() skips over bytes in a blob.
+%
+%  The format of the SkipBlobBytes method is:
+%
+%      MagickBooleanType SkipBlobBytes(Image *image,const size_t length)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o length:  the number of bytes to skip.
+%
+*/
+MagickExport MagickBooleanType SkipBlobBytes(Image *image,const size_t length)
+{
+  register ssize_t
+    i;
+
+  size_t
+    quantum;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[8192];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  count=0;
+  for (i=0; i < (ssize_t) length; i+=count)
+  {
+    quantum=MagickMin(length-i,sizeof(buffer));
+    (void) ReadBlobStream(image,quantum,buffer,&count);
+    if (count <= 0)
+      {
+        count=0;
+        if (errno != EINTR)
+          break;
+      }
+  }
+  return(i < (ssize_t) length ? MagickFalse : MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  S y n c B l o b                                                            %
 %                                                                             %
 %                                                                             %
