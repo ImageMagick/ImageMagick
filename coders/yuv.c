@@ -186,13 +186,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      for (i=0; i < image->offset; i++)
-        if (ReadBlobByte(image) == EOF)
-          {
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
-            break;
-          }
+      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
     }
   /*
     Allocate memory for a scanline.

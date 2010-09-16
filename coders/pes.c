@@ -493,9 +493,9 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,4,version);
   offset=(int) ReadBlobLSBLong(image);
-  for (i=0; i < (offset+36); i++)
-    if (ReadBlobByte(image) == EOF)
-      break;
+  if (DiscardBlobBytes(image,offset+36) == MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (EOFBlob(image) != MagickFalse)
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   /*
@@ -510,9 +510,9 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   for ( ; i < 256L; i++)
     blocks[i].offset=0;
-  for (i=0; i < (ssize_t) (532L-number_colors-21); i++)
-    if (ReadBlobByte(image) == EOF)
-      break;
+  if (DiscardBlobBytes(image,532L-number_colors-21) == MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (EOFBlob(image) != MagickFalse)
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   /*

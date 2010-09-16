@@ -175,13 +175,9 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"CorruptWBMPimage");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  for (i=0; i < image->offset; i++)
-    if (ReadBlobByte(image) == EOF)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
-      }
+  if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (AcquireImageColormap(image,2) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
