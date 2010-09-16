@@ -1123,7 +1123,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   /*
     Result sanity check -- this should NOT happen
   */
-  if ( hit < 4 ) {
+  if ( hit == 0 ) {  /* should be 4 */
     /* not enough pixels in resampling, resort to direct interpolation */
 #if 0
     pixel->opacity = pixel->red = pixel->green = pixel->blue = 0;
