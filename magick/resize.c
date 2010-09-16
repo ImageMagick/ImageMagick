@@ -97,7 +97,7 @@ struct _ResizeFilter
 static MagickRealType
   I0(MagickRealType x),
   BesselOrderOne(MagickRealType),
-  SincTrig(const MagickRealType, const ResizeFilter *),
+  Sinc(const MagickRealType, const ResizeFilter *),
   SincFast(const MagickRealType, const ResizeFilter *);
 
 /*
@@ -436,7 +436,7 @@ static MagickRealType Quadratic(const MagickRealType x,
   return(0.0);
 }
 
-static MagickRealType SincTrig(const MagickRealType x,
+static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
@@ -616,7 +616,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  a 3 lobe support, rather that the default 4 lobe support of the windowed
 %  sinc filters.
 %
-%  Two forms of Sinc Function is available  SincTrig and SincFast. the former
+%  Two forms of Sinc Function is available  Sinc and SincFast. the former
 %  is the tradional form and what will be selected is the user specifically
 %  specifies the use of a Sinc Filter. the later is a faster polynomial form
 %  that will be used by default in most cases.
@@ -774,7 +774,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     the range to scale with to use that function as a sinc windowing function,
     (typ 1.0).
 
-    Note that the filter_type -> function is 1 to 1 except for SincTrig(),
+    Note that the filter_type -> function is 1 to 1 except for Sinc(),
     SincFast(), and CubicBC()  functions, which may have multiple filter to
     function associations.
     See "filter:verbose" handling below for the function -> filter mapping.
@@ -803,7 +803,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicBC,   2.0,  1.0, 1./3., 1./3. }, /* Mitchell  B=C=1/3 */
     { SincFast,  3.0,  1.0, 0.0, 0.0 },  /* Lanczos, 3 lobed Sinc-Sinc */
     { Bessel,    3.2383,1.2197,.0,.0 },  /* Raw 3 lobed Bessel */
-    { SincTrig,  4.0,  1.0, 0.0, 0.0 },  /* Raw 4 lobed Sinc   */
+    { Sinc,  4.0,  1.0, 0.0, 0.0 },  /* Raw 4 lobed Sinc   */
     { Kaiser,    1.0,  1.0, 0.0, 0.0 },  /* Kaiser, sq-root windowing */
     { Welsh,     1.0,  1.0, 0.0, 0.0 },  /* Welsh, Parabolic windowing */
     { CubicBC,   2.0,  2.0, 1.0, 0.0 },  /* Parzen, B-Spline windowing */
@@ -1057,7 +1057,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         * 'function' is returned, not the user selection.  Specifically this
         * is needed for the Sinc and Cubic compound filters.
         */
-        if ( resize_filter->filter == SincTrig )
+        if ( resize_filter->filter == Sinc )
           filter_type=SincFilter;
         if ( resize_filter->filter == SincFast )
           filter_type=SincFastFilter;
