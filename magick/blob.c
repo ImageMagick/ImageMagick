@@ -665,6 +665,88 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  D i s c a r d B l o b B y t e s                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DiscardBlobBytes() discards bytes in a blob.
+%
+%  The format of the DiscardBlobBytes method is:
+%
+%      MagickBooleanType DiscardBlobBytes(Image *image,const size_t length)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o length:  the number of bytes to skip.
+%
+*/
+
+static inline const unsigned char *ReadBlobStream(Image *image,
+  const size_t length,unsigned char *data,ssize_t *count)
+{
+  assert(count != (ssize_t *) NULL);
+  assert(image->blob != (BlobInfo *) NULL);
+  if (image->blob->type != BlobStream)
+    {
+      *count=ReadBlob(image,length,data);
+      return(data);
+    }
+  if (image->blob->offset >= (MagickOffsetType) image->blob->length)
+    {
+      *count=0;
+      image->blob->eof=MagickTrue;
+      return(data);
+    }
+  data=image->blob->data+image->blob->offset;
+  *count=(ssize_t) MagickMin(length,(size_t) (image->blob->length-
+    image->blob->offset));
+  image->blob->offset+=(*count);
+  if (*count != (ssize_t) length)
+    image->blob->eof=MagickTrue;
+  return(data);
+}
+
+MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
+  const size_t length)
+{
+  register ssize_t
+    i;
+
+  size_t
+    quantum;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[8192];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  count=0;
+  for (i=0; i < (ssize_t) length; i+=count)
+  {
+    quantum=MagickMin(length-i,sizeof(buffer));
+    (void) ReadBlobStream(image,quantum,buffer,&count);
+    if (count <= 0)
+      {
+        count=0;
+        if (errno != EINTR)
+          break;
+      }
+  }
+  return(i < (ssize_t) length ? MagickFalse : MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D u p l i c a t e s B l o b                                               %
 %                                                                             %
 %                                                                             %
@@ -1485,32 +1567,6 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline const unsigned char *ReadBlobStream(Image *image,
-  const size_t length,unsigned char *data,ssize_t *count)
-{
-  assert(count != (ssize_t *) NULL);
-  assert(image->blob != (BlobInfo *) NULL);
-  if (image->blob->type != BlobStream)
-    {
-      *count=ReadBlob(image,length,data);
-      return(data);
-    }
-  if (image->blob->offset >= (MagickOffsetType) image->blob->length)
-    {
-      *count=0;
-      image->blob->eof=MagickTrue;
-      return(data);
-    }
-  data=image->blob->data+image->blob->offset;
-  *count=(ssize_t) MagickMin(length,(size_t) (image->blob->length-
-    image->blob->offset));
-  image->blob->offset+=(*count);
-  if (*count != (ssize_t) length)
-    image->blob->eof=MagickTrue;
-  return(data);
-}
-
 MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
   ExceptionInfo *exception)
 {
@@ -3669,61 +3725,6 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
     }
   }
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  S k i p B l o b B y t e s                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SkipBlobBytes() skips over bytes in a blob.
-%
-%  The format of the SkipBlobBytes method is:
-%
-%      MagickBooleanType SkipBlobBytes(Image *image,const size_t length)
-%
-%  A description of each parameter follows.
-%
-%    o image: the image.
-%
-%    o length:  the number of bytes to skip.
-%
-*/
-MagickExport MagickBooleanType SkipBlobBytes(Image *image,const size_t length)
-{
-  register ssize_t
-    i;
-
-  size_t
-    quantum;
-
-  ssize_t
-    count;
-
-  unsigned char
-    buffer[8192];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  count=0;
-  for (i=0; i < (ssize_t) length; i+=count)
-  {
-    quantum=MagickMin(length-i,sizeof(buffer));
-    (void) ReadBlobStream(image,quantum,buffer,&count);
-    if (count <= 0)
-      {
-        count=0;
-        if (errno != EINTR)
-          break;
-      }
-  }
-  return(i < (ssize_t) length ? MagickFalse : MagickTrue);
 }
 
 /*
