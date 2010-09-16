@@ -114,9 +114,6 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register ssize_t
-    i;
-
   size_t
     bit,
     byte;
