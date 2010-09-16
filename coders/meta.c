@@ -1307,8 +1307,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         }
       AttachBlob(buff->blob,blob,length);
       /* write out the header - length field patched below */
-      (void) WriteBlob(buff,11,(unsigned char *) "8BIM\04\04\0\0\0\0\01");
-      (void) WriteBlobByte(buff,0xe0);
+      (void) WriteBlob(buff,11,(unsigned char *) "8BIM\04\04\0\0\0\0\0");
+      (void) WriteBlobByte(buff,0xc6);
       if (LocaleCompare(image_info->magick,"IPTCTEXT") == 0)
         {
           length=(size_t) parse8BIM(image,buff);

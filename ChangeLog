@@ -1,3 +1,6 @@
+2010-09-16  6.6.4-2 Cristy  <quetzlzacatenango@image...>
+  * IPTC profile not always wrapped properly inside an 8BIM profile.
+
 2010-09-15  6.6.4-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Rename of SincPolynomial to SincFast  for easier user understanding
   * Ditto for LanczosChebyshev to LanzcosFast

@@ -510,7 +510,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   p=GetStringInfoDatum(profile);
-  for (i=(ssize_t) GetStringInfoLength(profile)-1; i >= 0; i--)
+  for (i=0;  i < (ssize_t) GetStringInfoLength(profile); i++)
     *p++=(unsigned char) GetCharacter(jpeg_info);
   iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
@@ -1507,7 +1507,11 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
   ResetImageProfileIterator(image);
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
+    register unsigned char
+      *p;
+
     profile=GetImageProfile(image,name);
+    p=GetStringInfoDatum(custom_profile);
     if (LocaleCompare(name,"EXIF") == 0)
       for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
@@ -1521,7 +1525,6 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
           *p;
 
         tag_length=14;
-        p=GetStringInfoDatum(custom_profile);
         (void) CopyMagickMemory(p,ICC_PROFILE,tag_length);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
         {
@@ -1538,33 +1541,28 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
     if (((LocaleCompare(name,"IPTC") == 0) ||
         (LocaleCompare(name,"8BIM") == 0)) && (iptc == MagickFalse))
       {
-        register unsigned char
-          *p;
-
         size_t
           roundup;
 
         iptc=MagickTrue;
-        p=GetStringInfoDatum(custom_profile);
-        if (LocaleNCompare((char *) GetStringInfoDatum(profile),"8BIM",4) == 0)
-          {
-            (void) CopyMagickMemory(p,"Photoshop 3.0\0",14);
-            tag_length=14;
-          }
-        else
-          {
-            (void) CopyMagickMemory(p,"Photoshop 3.0\08BIM\04\04\0\0\0\0",24);
-            p[13]=0x00;
-            p[24]=(unsigned char) (GetStringInfoLength(profile) >> 8);
-            p[25]=(unsigned char) (GetStringInfoLength(profile) & 0xff);
-            tag_length=26;
-          }
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65500L)
         {
           length=MagickMin(GetStringInfoLength(profile)-i,65500L);
           roundup=(size_t) (length & 0x01);
-          (void) CopyMagickMemory(p+tag_length,GetStringInfoDatum(profile)+i,
-            length);
+          if (LocaleNCompare((char *) GetStringInfoDatum(profile),"8BIM",4) == 0)
+            {
+              (void) memcpy(p,"Photoshop 3.0 ",14);
+              tag_length=14;
+            }
+          else
+            {
+              (void) CopyMagickMemory(p,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+              tag_length=26;
+              p[24]=(unsigned char) (length >> 8);
+              p[25]=(unsigned char) (length & 0xff);
+            }
+          p[13]=0x00;
+          (void) memcpy(p+tag_length,GetStringInfoDatum(profile)+i,length);
           if (roundup != 0)
             p[length+tag_length]='\0';
           jpeg_write_marker(jpeg_info,IPTC_MARKER,GetStringInfoDatum(
