@@ -3508,7 +3508,7 @@ MagickExport Image *MorphImages(const Image *image,
 %
 %    o segment:   Define the region to apply plasma fractals values.
 %
-%    o attenuate: Define the plasmattenuation factor.
+%    o attenuate: Define the plasma attenuation factor.
 %
 %    o depth: Limit the plasma recursion depth.
 %
