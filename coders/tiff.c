@@ -904,6 +904,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) SetImageProperty(image,"tiff:photometric","separated");
         break;
       }
+      case PHOTOMETRIC_YCBCR:
+      {
+        (void) SetImageProperty(image,"tiff:photometric","YCBCR");
+        break;
+      }
       default:
       {
         (void) SetImageProperty(image,"tiff:photometric","unknown");
@@ -2109,6 +2114,10 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
   MagickStatusType
     flags;
 
+  uint32
+    tile_columns,
+    tile_rows;
+
   assert(tiff_info != (TIFFInfo *) NULL);
   (void) ResetMagickMemory(tiff_info,0,sizeof(*tiff_info));
   option=GetImageOption(image_info,"tiff:tile-geometry");
@@ -2117,15 +2126,17 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
   flags=ParseAbsoluteGeometry(option,&tiff_info->tile_geometry);
   if ((flags & HeightValue) == 0)
     tiff_info->tile_geometry.height=tiff_info->tile_geometry.width;
-  (void) TIFFSetField(tiff,TIFFTAG_TILEWIDTH,(uint32)
-    tiff_info->tile_geometry.width);
-  (void) TIFFSetField(tiff,TIFFTAG_TILELENGTH,(uint32)
-    tiff_info->tile_geometry.height);
+  tile_columns=tiff_info->tile_geometry.width;
+  tile_rows=tiff_info->tile_geometry.height;
+  TIFFDefaultTileSize(tiff,&tile_columns,&tile_rows);
+  (void) TIFFSetField(tiff,TIFFTAG_TILEWIDTH,tile_columns);
+  (void) TIFFSetField(tiff,TIFFTAG_TILELENGTH,tile_rows);
+  tiff_info->tile_geometry.width=tile_columns;
+  tiff_info->tile_geometry.height=tile_rows;
   tiff_info->scanlines=(unsigned char *) AcquireQuantumMemory((size_t)
-    tiff_info->tile_geometry.height*TIFFScanlineSize(tiff),
-    sizeof(*tiff_info->scanlines));
+    tile_rows*TIFFScanlineSize(tiff),sizeof(*tiff_info->scanlines));
   tiff_info->pixels=(unsigned char *) AcquireQuantumMemory((size_t)
-    TIFFTileSize(tiff),sizeof(*tiff_info->scanlines));
+    tile_rows*TIFFTileSize(tiff),sizeof(*tiff_info->scanlines));
   if ((tiff_info->scanlines == (unsigned char *) NULL) ||
       (tiff_info->pixels == (unsigned char *) NULL))
     {
@@ -2634,6 +2645,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             {
               photometric=PHOTOMETRIC_YCBCR;
               (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,1,1);
+              (void) SetImageStorageClass(image,DirectClass);
               (void) SetImageDepth(image,8);
             }
           else
@@ -2832,8 +2844,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 flags=ParseGeometry(sampling_factor,&geometry_info);
                 if ((flags & SigmaValue) == 0)
                   geometry_info.sigma=geometry_info.rho;
-                (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
-                  geometry_info.rho,(uint16) geometry_info.sigma);
+                if (image->colorspace == YCbCrColorspace)
+                  (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
+                    geometry_info.rho,(uint16) geometry_info.sigma);
               }
           }
         if (bits_per_sample == 12)
@@ -2882,7 +2895,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
+    option=GetImageOption(image_info,"tiff:tile-geometry");
+    if (option == (const char *) NULL)
+      (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
       {
         unsigned short
