@@ -75,6 +75,7 @@ extern MagickExport int
 
 extern MagickExport  MagickBooleanType
   CloseBlob(Image *),
+  DiscardBlobBytes(Image *,const size_t),
   OpenBlob(const ImageInfo *,Image *,const BlobMode,ExceptionInfo *),
   SetBlobExtent(Image *,const MagickSizeType),
   UnmapBlob(void *,const size_t);

@@ -932,13 +932,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length=ReadBlobMSBLong(image);
     }
   if ((image_info->number_scenes == 1) && (image_info->scene == 0))
-    for ( ; length != 0; length--)
-      if (ReadBlobByte(image) == EOF)
-        {
-          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-            image->filename);
-          break;
-        }
+    if (DiscardBlobBytes(image,length) == MagickFalse)
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
   if (length == 0)
     {
       if (image->debug != MagickFalse)
@@ -958,8 +954,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Skip layers & masks.
           */
           quantum=psd_info.version == 1 ? 4UL : 8UL;
-          for (j=0; j < (ssize_t) (length-quantum); j++)
-            (void) ReadBlobByte(image);
+          if (DiscardBlobBytes(image,length-quantum) == MagickFalse)
+            ThrowFileException(exception,CorruptImageError,
+              "UnexpectedEndOfFile",image->filename);
         }
       else
         {
@@ -1068,14 +1065,19 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->debug != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "      layer mask: offset(%.20g,%.20g), size(%.20g,%.20g), length=%.20g",
-                        (double) layer_info[i].mask.x,(double) layer_info[i].mask.y,
+                        (double) layer_info[i].mask.x,
+                        (double) layer_info[i].mask.y,
                         (double) layer_info[i].mask.width,(double)
                         layer_info[i].mask.height,(double) length-16);
                     /*
                       Skip over the rest of the layer mask information.
                     */
-                    for (j=0; j < (ssize_t) (length-16); j++)
-                      (void) ReadBlobByte(image);
+                    if (DiscardBlobBytes(image,length-16) == MagickFalse)
+                      {
+                        ThrowFileException(exception,CorruptImageError,
+                          "UnexpectedEndOfFile",image->filename);
+                        break;
+                      }
                   }
                 combinedlength+=length+4;  /* +4 for length */
                 length=ReadBlobMSBLong(image);
@@ -1157,8 +1159,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      unsupported data: length=%.20g",(double)
                     (size-combinedlength));
-                for (j=0; j < (ssize_t) (size-combinedlength); j++)
-                  (void) ReadBlobByte(image);
+                if (DiscardBlobBytes(image,size-combinedlength) == MagickFalse)
+                  {
+                    ThrowFileException(exception,CorruptImageError,
+                      "UnexpectedEndOfFile",image->filename);
+                    break;
+                  }
               }
             /*
               Allocate layered image.
