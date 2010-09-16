@@ -1525,11 +1525,11 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
           *p;
 
         tag_length=14;
+        p=GetStringInfoDatum(custom_profile);
         (void) CopyMagickMemory(p,ICC_PROFILE,tag_length);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
         {
           length=MagickMin(GetStringInfoLength(profile)-i,65519L);
-          p=GetStringInfoDatum(custom_profile);
           p[12]=(unsigned char) ((i/65519L)+1);
           p[13]=(unsigned char) (GetStringInfoLength(profile)/65519L+1);
           (void) CopyMagickMemory(p+tag_length,GetStringInfoDatum(profile)+i,

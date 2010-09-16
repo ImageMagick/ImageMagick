@@ -111,9 +111,6 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register ssize_t
-    i;
-
   unsigned char
     u,
     v,

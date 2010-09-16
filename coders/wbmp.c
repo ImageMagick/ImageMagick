@@ -136,9 +136,6 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register ssize_t
-    i;
-
   unsigned char
     bit;
 

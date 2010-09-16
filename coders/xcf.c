@@ -766,9 +766,6 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
 static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
   XCFLayerInfo *outLayer )
 {
-  ssize_t
-    i;
-
   MagickOffsetType
     offset;
 
