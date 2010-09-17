@@ -2883,7 +2883,6 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
