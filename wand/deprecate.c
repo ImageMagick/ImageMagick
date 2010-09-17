@@ -365,6 +365,9 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     MagickBooleanType
       sync;
 
@@ -380,7 +383,6 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
       *restrict destination_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -388,7 +390,6 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->region.x,y,
       source->region.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -627,6 +628,9 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     register const IndexPacket
       *indexes;
 
@@ -634,12 +638,10 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
       *pixels;
 
     register ssize_t
-      id,
       x;
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->region.x,y,
       source->region.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -699,12 +701,11 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
 */
 WandExport PixelWand **GetPixelViewPixels(const PixelView *pixel_view)
 {
-  ssize_t
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   assert(pixel_view != (PixelView *) NULL);
   assert(pixel_view->signature == WandSignature);
-  id=GetOpenMPThreadId();
   return(pixel_view->pixel_wands[id]);
 }
 
@@ -2577,6 +2578,9 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
 #endif
   for (y=destination->region.y; y < (ssize_t) destination->region.height; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     MagickBooleanType
       sync;
 
@@ -2584,7 +2588,6 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
       *restrict indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -2592,7 +2595,6 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewAuthenticPixels(destination->view,destination->region.x,
       y,destination->region.width,1,exception);
     if (pixels == (PixelPacket *) NULL)
@@ -2713,6 +2715,9 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     MagickBooleanType
       sync;
 
@@ -2726,7 +2731,6 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
       *restrict destination_indexes;
 
     register ssize_t
-      id,
       x;
 
     register PixelPacket
@@ -2734,7 +2738,6 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->region.x,y,
       source->region.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -2873,6 +2876,9 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     register IndexPacket
       *restrict indexes;
 
@@ -2885,7 +2891,6 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewAuthenticPixels(source->view,source->region.x,y,
       source->region.width,1,exception);
     if (pixels == (PixelPacket *) NULL)
