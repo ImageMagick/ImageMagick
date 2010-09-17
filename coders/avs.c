@@ -309,9 +309,6 @@ ModuleExport void UnregisterAVSImage(void)
 */
 static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -328,7 +325,8 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     *restrict q;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
