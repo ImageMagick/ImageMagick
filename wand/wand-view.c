@@ -291,8 +291,8 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -316,7 +316,6 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -558,8 +557,8 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register const IndexPacket
       *indexes;
@@ -572,7 +571,6 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -632,12 +630,11 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
 */
 WandExport PixelWand **GetWandViewPixels(const WandView *wand_view)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   assert(wand_view != (WandView *) NULL);
   assert(wand_view->signature == WandSignature);
-  id=GetOpenMPThreadId();
   return(wand_view->pixel_wands[id]);
 }
 
@@ -958,8 +955,8 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -975,7 +972,6 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewAuthenticPixels(destination->view,destination->extent.x,
       y,destination->extent.width,1,exception);
     if (pixels == (PixelPacket *) NULL)
@@ -1100,8 +1096,8 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -1123,7 +1119,6 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -1265,8 +1260,8 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register IndexPacket
       *restrict indexes;
@@ -1279,7 +1274,6 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
       source->extent.width,1,exception);
     if (pixels == (PixelPacket *) NULL)
