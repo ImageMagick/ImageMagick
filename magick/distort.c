@@ -1969,11 +1969,11 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 #endif
     for (j=0; j < (ssize_t) distort_image->rows; j++)
     {
+      const int
+        id = GetOpenMPThreadId();
+
       double
         validity;  /* how mathematically valid is this the mapping */
-
-      int
-        id;
 
       MagickBooleanType
         sync;
@@ -2008,7 +2008,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       /* Define constant scaling vectors for Affine Distortions
         Other methods are either variable, or use interpolated lookup
       */
-      id=GetOpenMPThreadId();
       switch (method)
       {
         case AffineDistortion:

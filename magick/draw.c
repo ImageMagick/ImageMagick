@@ -1177,8 +1177,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 #endif
   for (y=(ssize_t) ceil(edge.y1-0.5); y <= (ssize_t) floor(edge.y2+0.5); y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       composite,
@@ -1210,7 +1210,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       inverse_edge.x1+0.5)+1),1,exception);
     if (q == (PixelPacket *) NULL)
       continue;
-    id=GetOpenMPThreadId();
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     pixel=zero;
     composite=zero;
@@ -3939,8 +3938,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 #endif
   for (y=(ssize_t) ceil(bounds.y1-0.5); y <= (ssize_t) floor(bounds.y2+0.5); y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickRealType
       fill_opacity,
@@ -3965,7 +3964,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         status=MagickFalse;
         continue;
       }
-    id=GetOpenMPThreadId();
     for (x=start; x <= stop; x++)
     {
       /*

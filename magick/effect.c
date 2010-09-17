@@ -1865,8 +1865,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 #endif
   for (channel=0; channel <= 3; channel++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register ssize_t
       i,
@@ -1882,7 +1882,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixel=pixels[id];
     (void) ResetMagickMemory(pixel,0,length*sizeof(*pixel));
     buffer=buffers[id];
@@ -2947,8 +2946,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) median_image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register const IndexPacket
       *restrict indexes;
@@ -2978,7 +2977,6 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     median_indexes=GetCacheViewAuthenticIndexQueue(median_view);
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) median_image->columns; x++)
     {
       MagickPixelPacket
@@ -4303,8 +4301,8 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) noise_image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register const IndexPacket
       *restrict indexes;
@@ -4334,7 +4332,6 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     noise_indexes=GetCacheViewAuthenticIndexQueue(noise_view);
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) noise_image->columns; x++)
     {
       MagickPixelPacket
@@ -5203,8 +5200,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -5229,7 +5226,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     pixel=bias;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) spread_image->columns; x++)
     {
       (void) ResamplePixelColor(resample_filter[id],(double) x+width*

@@ -1612,14 +1612,13 @@ static IndexPacket *GetAuthenticIndexesFromCache(const Image *image)
   CacheInfo
     *cache_info;
 
+  const int
+    id = GetOpenMPThreadId();
+
   IndexPacket
     *indexes;
 
-  int
-    id;
-
   cache_info=(CacheInfo *) image->cache;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   indexes=GetPixelCacheNexusIndexes(image->cache,cache_info->nexus_info[id]);
   return(indexes);
@@ -1774,14 +1773,13 @@ static PixelPacket *GetAuthenticPixelsFromCache(const Image *image)
   CacheInfo
     *cache_info;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
 
   cache_info=(CacheInfo *) image->cache;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   pixels=GetPixelCacheNexusPixels(image->cache,cache_info->nexus_info[id]);
   return(pixels);
@@ -1933,8 +1931,8 @@ static PixelPacket *GetAuthenticPixelsCache(Image *image,const ssize_t x,
   CacheInfo
     *cache_info;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
@@ -1942,7 +1940,6 @@ static PixelPacket *GetAuthenticPixelsCache(Image *image,const ssize_t x,
   cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return((PixelPacket *) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   pixels=GetAuthenticPixelCacheNexus(image,x,y,columns,rows,
     cache_info->nexus_info[id],exception);
@@ -1977,8 +1974,8 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
   CacheInfo
     *cache_info;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   MagickSizeType
     extent;
@@ -1990,7 +1987,6 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   extent=GetPixelCacheNexusExtent(image->cache,cache_info->nexus_info[id]);
   return(extent);
@@ -2921,11 +2917,10 @@ static const IndexPacket *GetVirtualIndexesFromCache(const Image *image)
   const IndexPacket
     *indexes;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   cache_info=(CacheInfo *) image->cache;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   indexes=GetVirtualIndexesFromNexus(image->cache,cache_info->nexus_info[id]);
   return(indexes);
@@ -3511,14 +3506,13 @@ static const PixelPacket *GetVirtualPixelCache(const Image *image,
   CacheInfo
    *cache_info;
 
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
 
-  int
-    id;
-
   cache_info=(CacheInfo *) image->cache;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   pixels=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,columns,rows,
     cache_info->nexus_info[id],exception);
@@ -3663,14 +3657,13 @@ static const PixelPacket *GetVirtualPixelsCache(const Image *image)
   CacheInfo
     *cache_info;
 
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
 
-  int
-    id;
-
   cache_info=(CacheInfo *) image->cache;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   pixels=GetVirtualPixelsNexus(image->cache,cache_info->nexus_info[id]);
   return(pixels);
@@ -4390,8 +4383,8 @@ static PixelPacket *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
   CacheInfo
     *cache_info;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
@@ -4399,7 +4392,6 @@ static PixelPacket *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
   cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return((PixelPacket *) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   pixels=QueueAuthenticNexus(image,x,y,columns,rows,cache_info->nexus_info[id],
     exception);
@@ -5157,14 +5149,13 @@ static MagickBooleanType SyncAuthenticPixelsCache(Image *image,
   CacheInfo
     *cache_info;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   MagickBooleanType
     status;
 
   cache_info=(CacheInfo *) image->cache;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_info->number_threads);
   status=SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
     exception);
