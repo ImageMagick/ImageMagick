@@ -723,7 +723,7 @@ MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
     count;
 
   unsigned char
-    buffer[8192];
+    buffer[16384];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2457,8 +2457,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
             image->blob->type=FileStream;
 #if defined(MAGICKCORE_HAVE_SETVBUF)
-            (void) setvbuf(image->blob->file,(char *) NULL,(int) _IOFBF,
-              16384);
+            (void) setvbuf(image->blob->file,(char *) NULL,(int) _IOFBF,16384);
 #endif
             (void) ResetMagickMemory(magick,0,sizeof(magick));
             count=fread(magick,1,sizeof(magick),image->blob->file);
