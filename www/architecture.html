@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -221,7 +221,7 @@
 <h2><a name="cache"></a>The Pixel Cache</h2>
 <div class="doc-section">
 
-<p>The ImageMagick pixel cache is a repository for image pixels with up to 5 channels.  The first 4 channels are stored contiguously and an optional second area follows with 1 channel.  The channels are at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are unsigned quantities, however, if you use the <a href="../www/high-dynamic-range.html">high dynamic-range</a> version of ImageMagick, the components are 32-bit floating point. The primary 4 channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, and alpha intensities.  The optional fifth channel contains the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, anonymous memory mapped memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied when you signal your intention to update any of the pixels.</p>
+<p>The ImageMagick pixel cache is a repository for image pixels with up to 5 channels.  The first 4 channels are stored contiguously and an optional second area follows with 1 channel.  The channels are at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are unsigned quantities, however, if you use the <a href="../www/high-dynamic-range.html">high dynamic-range</a> version of ImageMagick, the components are 32-bit floating point. The primary 4 channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, and alpha intensities.  The optional fifth channel contains the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, anonymous memory mapped memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied only when you signal your intention to update any of the pixels.</p>
 
 <h3>Create the Pixel Cache</h3>
 <div class="doc-section">
@@ -254,7 +254,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.4-2 2010-09-24 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.4-3 2010-09-34 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -263,7 +263,7 @@
 
 <p>Once the pixel cache is associated with an image, you typically want to get, update, or put pixels into it.  We refer to pixels inside the image region as <em>authentic pixels</em> and outside the region as <em>virtual pixels</em>.  Use these methods to access the pixels in the cache:</p>
 <ul>
-  <li><a href="../www/api/cache.html#GetVirtualPixels">GetVirtualPixels()</a> gets pixels that you do not intend to modify</li>
+  <li><a href="../www/api/cache.html#GetVirtualPixels">GetVirtualPixels()</a> gets pixels that you do not intend to modify or pixels that lie outside the image region (e.g. pixel @ -1,-3)</li>
   <li><a href="../www/api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a> gets pixels that you intend to modify</li>
   <li><a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a> queue pixels that you intend to modify</li>
   <li><a href="../www/api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> update the pixel cache with any modified pixels</li>
@@ -309,7 +309,7 @@
 </pre>
 </div>
 
-<p>When we first create the destination image by cloning the source image, the pixel cache pixels are not copied.  They are only copied when you signal your intentions to modify the pixel cache by calling <a href="../www/api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a> or <a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a>. Use <a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a> if you want to set new pixel values rather than update existing ones.  Finally, use <a href="../www/api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> to ensure any updated pixels are pushed to the pixel cache.</p>
+<p>When we first create the destination image by cloning the source image, the pixel cache pixels are not copied.  They are only copied when you signal your intentions to modify the pixel cache by calling <a href="../www/api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a> or <a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a>. Use <a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a> if you want to set new pixel values rather than update existing ones.  You could use GetAuthenticPixels() to set pixel values but it is slightly more efficient to use QueueAuthenticPixels() instead. Finally, use <a href="../www/api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> to ensure any updated pixels are pushed to the pixel cache.</p>
 
 <p>Recall how we mentioned that the indexes of a colormapped image or the black channel of a CMYK image are stored separately.  Use  <a href="../www/api/cache.html#GetVirtualIndexes">GetVirtualIndexes()</a> (to read the indexes) or <a href="../www/api/cache.html#GetAuthenticIndexes">GetAuthenticIndexes()</a> (to update the indexes) to gain access to this channel.  For example, to print the colormap indexes, use:</p>
 
@@ -333,7 +333,7 @@
 <p>The pixel cache manager decides whether to give you direct or indirect access to the image pixels.  In some cases the pixels are staged to an intermediate buffer-- and that is why you must call SyncAuthenticPixels() to ensure this buffer is <em>pushed</em> out to the pixel cache to guarantee the corresponding pixels in the cache are updated.  For this reason we recommend that you only read or update a scanline or a few scanlines of pixels at a time.  However, you can get any rectangular region of pixels you want.  GetAuthenticPixels() requires that the region you request is within the bounds of the image area.  For a 640 by 480 image, you can get a scanline of 640 pixels at row 479 but if you ask for a scanline at row 480, an exception is returned (rows are numbered starting at 0).  GetVirtualPixels() does not have this constraint.  For example,</p>
 
 <pre class="code">
-  p=GetVirtualPixels(source,-3,3,source-&gt;columns+7,7,exception);
+  p=GetVirtualPixels(source,-3,-3,source-&gt;columns+3,6,exception);
 </pre>
 
 <p>gives you the pixels you asked for without complaint, even though some are not within the confines of the image region.</p>
@@ -350,13 +350,13 @@
   black:                the area surrounding the image is black
   checker-tile:         alternate squares with image and background color
   dither:               non-random 32x32 dithered pattern
-  edge:                 extend the edge pixel toward infinity
+  edge:                 extend the edge pixel toward infinity (default)
   gray:                 the area surrounding the image is gray
   horizontal-tile:      horizontally tile the image, background color above/below
   horizontal-tile-edge: horizontally tile the image and replicate the side edge pixels
   mirror:               mirror tile the image
   random:               choose a random pixel from the image
-  tile:                 tile the image (default)
+  tile:                 tile the image
   transparent:          the area surrounding the image is transparent blackness
   vertical-tile:        vertically tile the image, sides are background color
   vertical-tile-edge:   vertically tile the image and replicate the side edge pixels
@@ -505,7 +505,7 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
     (void) printf("Image comment: %s\n",comment);
 </pre>
 
-<p>ImageMagick supports artifacts with the GetImageArtifact() and SetImageArtifact() methods.  Artifacts are stealth properties that are not exported to image formats (e.g. PNG) and they do not display when identifying an image.</p>
+<p>ImageMagick supports artifacts with the GetImageArtifact() and SetImageArtifact() methods.  Artifacts are stealth properties that are not exported to image formats (e.g. PNG).</p>
 
 <p>Image profiles are handled with <a href="../www/api/profile.html#GetImageProfile">GetImageProfile()</a>, <a href="../www/api/profile.html#SetImageProfile">SetImageProfile()</a>, and <a href="../www/api/profile.html#ProfileImage">ProfileImage()</a> methods.  Here we set a profile and fetch it right back:</p>
 
@@ -607,9 +607,9 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 
 <p>If you call the ImageMagick API from your OpenMP-enabled application and you intend to dynamically increase the number of threads available in subsequent parallel regions, be sure to perform the increase <em>before</em> you call the API otherwise ImageMagick may fault.</p>
 
-<p><a href="../www/api/wand-view.html">MagickWand</a> support wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="../www/api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="../www/magick-wand.html#wand-view">MagickWand</a> and <a href="../www/magick-core.html#image-view">MagickCore</a>.</p>
+<p><a href="../www/api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="../www/api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="../www/magick-wand.html#wand-view">MagickWand</a> and <a href="../www/magick-core.html#image-view">MagickCore</a>.</p>
 
-<p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix threads from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <kbd>--disable-openmp</kbd> option to the configure script command line and rebuild and reinstall ImageMagick.</p>
+<p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix thread from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <kbd>--disable-openmp</kbd> option to the configure script command line and rebuild and reinstall ImageMagick.</p>
 </div>
 
 <h2><a name="distributed"></a>Heterogeneous Distributed Processing</h2>
