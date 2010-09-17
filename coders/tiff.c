@@ -2280,6 +2280,7 @@ static void TIFFSetProperties(TIFF *tiff,Image *image)
   const char
     *value;
 
+  (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
   value=GetImageProperty(image,"tiff:hostcomputer");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_HOSTCOMPUTER,value);
@@ -2295,9 +2296,9 @@ static void TIFFSetProperties(TIFF *tiff,Image *image)
   value=GetImageProperty(image,"tiff:model");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_MODEL,value);
-  (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
-    GetMagickVersion((size_t *) NULL));
-  (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+  value=GetImageProperty(image,"tiff:software");
+  if (value != (const char *) NULL)
+    (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,value);
   value=GetImageProperty(image,"tiff:copyright");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,33432,value);
