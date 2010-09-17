@@ -303,8 +303,8 @@ MagickExport ExceptionInfo *GetCacheViewException(const CacheView *cache_view)
 */
 MagickExport MagickSizeType GetCacheViewExtent(const CacheView *cache_view)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   MagickSizeType
     extent;
@@ -315,7 +315,6 @@ MagickExport MagickSizeType GetCacheViewExtent(const CacheView *cache_view)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
   assert(cache_view->image->cache != (Cache) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   extent=GetPixelCacheNexusExtent(cache_view->image->cache,
     cache_view->nexus_info[id]);
@@ -388,15 +387,14 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
   const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,columns,rows,
     cache_view->nexus_info[id],exception);
@@ -438,8 +436,8 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   const CacheView *cache_view,const ssize_t x,const ssize_t y,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
@@ -447,7 +445,6 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   *pixel=cache_view->image->background_color;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,1,1,
     cache_view->nexus_info[id],exception);
@@ -483,16 +480,15 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
 */
 MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
 {
+  const int
+    id = GetOpenMPThreadId();
+
   IndexPacket
     *indexes;
-
-  int
-    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   indexes=GetPixelCacheNexusIndexes(cache_view->image->cache,
     cache_view->nexus_info[id]);
@@ -526,8 +522,8 @@ MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
 */
 MagickExport PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
@@ -535,7 +531,6 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetPixelCacheNexusPixels(cache_view->image->cache,
     cache_view->nexus_info[id]);
@@ -573,13 +568,12 @@ MagickExport const IndexPacket *GetCacheViewVirtualIndexQueue(
   const IndexPacket
     *indexes;
 
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   assert(cache_view != (const CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   indexes=GetVirtualIndexesFromNexus(cache_view->image->cache,
     cache_view->nexus_info[id]);
@@ -614,16 +608,15 @@ MagickExport const IndexPacket *GetCacheViewVirtualIndexQueue(
 MagickExport const PixelPacket *GetCacheViewVirtualPixelQueue(
   const CacheView *cache_view)
 {
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
-
-  int
-    id;
 
   assert(cache_view != (const CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetVirtualPixelsNexus(cache_view->image->cache,
     cache_view->nexus_info[id]);
@@ -666,15 +659,14 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixels(
   const CacheView *cache_view,const ssize_t x,const ssize_t y,
   const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
 
-  int
-    id;
-
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,columns,rows,
@@ -718,16 +710,15 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
   const CacheView *cache_view,const ssize_t x,const ssize_t y,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
-
-  int
-    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   *pixel=cache_view->image->background_color;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
@@ -778,16 +769,15 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
   const CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method,
   const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
-
-  int
-    id;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   *pixel=cache_view->image->background_color;
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=GetVirtualPixelsFromNexus(cache_view->image,virtual_pixel_method,x,y,1,
     1,cache_view->nexus_info[id],exception);
@@ -833,15 +823,14 @@ MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
   const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   PixelPacket
     *pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   pixels=QueueAuthenticNexus(cache_view->image,x,y,columns,rows,
     cache_view->nexus_info[id],exception);
@@ -953,15 +942,14 @@ MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
 MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
   CacheView *cache_view,ExceptionInfo *exception)
 {
-  int
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   MagickBooleanType
     status;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  id=GetOpenMPThreadId();
   assert(id < (int) cache_view->number_threads);
   status=SyncAuthenticPixelCacheNexus(cache_view->image,
     cache_view->nexus_info[id],exception);

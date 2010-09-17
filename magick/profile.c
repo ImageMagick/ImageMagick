@@ -1222,8 +1222,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #endif
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              int
-                id;
+              const int
+                id = GetOpenMPThreadId();
 
               MagickBooleanType
                 sync;
@@ -1250,7 +1250,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   continue;
                 }
               indexes=GetCacheViewAuthenticIndexQueue(image_view);
-              id=GetOpenMPThreadId();
               p=source_pixels[id];
               for (x=0; x < (ssize_t) image->columns; x++)
               {

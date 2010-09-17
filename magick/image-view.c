@@ -249,8 +249,8 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -271,7 +271,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -566,8 +565,8 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register const IndexPacket
       *indexes;
@@ -577,7 +576,6 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -909,8 +907,8 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -923,7 +921,6 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewAuthenticPixels(destination->view,destination->extent.x,
       y,destination->extent.width,1,exception);
     if (pixels == (PixelPacket *) NULL)
@@ -1043,8 +1040,8 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -1063,7 +1060,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
     if (pixels == (const PixelPacket *) NULL)
@@ -1182,8 +1178,8 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register IndexPacket
       *restrict indexes;
@@ -1193,7 +1189,6 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     pixels=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
       source->extent.width,1,exception);
     if (pixels == (PixelPacket *) NULL)

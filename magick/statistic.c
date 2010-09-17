@@ -468,8 +468,8 @@ MagickExport Image *EvaluateImages(const Image *images,
     const Image
       *next;
 
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -498,7 +498,6 @@ MagickExport Image *EvaluateImages(const Image *images,
       }
     evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
     pixel=zero;
-    id=GetOpenMPThreadId();
     evaluate_pixel=evaluate_pixels[id];
     for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       evaluate_pixel[x]=zero;
@@ -624,17 +623,17 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -645,7 +644,6 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)

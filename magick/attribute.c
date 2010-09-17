@@ -328,9 +328,11 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
+        const int
+          id = GetOpenMPThreadId();
+
         if (status == MagickFalse)
           continue;
-        id=GetOpenMPThreadId();
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
           MagickStatusType
@@ -369,8 +371,8 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register const IndexPacket
       *restrict indexes;
@@ -383,7 +385,6 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    id=GetOpenMPThreadId();
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       continue;

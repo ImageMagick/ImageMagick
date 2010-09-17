@@ -346,8 +346,8 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickBooleanType
       sync;
@@ -379,7 +379,6 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     noise_indexes=GetCacheViewAuthenticIndexQueue(noise_view);
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
@@ -2968,8 +2967,8 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
 #endif
   for (y=0; y < (ssize_t) fx_image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickRealType
       alpha;
@@ -2992,7 +2991,6 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
         continue;
       }
     fx_indexes=GetCacheViewAuthenticIndexQueue(fx_view);
-    id=GetOpenMPThreadId();
     alpha=0.0;
     for (x=0; x < (ssize_t) fx_image->columns; x++)
     {
@@ -3176,8 +3174,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -3209,7 +3207,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     implode_indexes=GetCacheViewAuthenticIndexQueue(implode_view);
     delta.y=scale.y*(double) (y-center.y);
     pixel=zero;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
@@ -4294,8 +4291,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) random_image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -4320,7 +4317,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       }
     indexes=GetCacheViewAuthenticIndexQueue(random_view);
     pixel=zero;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) random_image->columns; x++)
     {
       pixel.red=(MagickRealType) (QuantumRange*
@@ -4905,8 +4901,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -4938,7 +4934,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     swirl_indexes=GetCacheViewAuthenticIndexQueue(swirl_view);
     delta.y=scale.y*(double) (y-center.y);
     pixel=zero;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
@@ -5376,8 +5371,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 #endif
   for (y=0; y < (ssize_t) wave_image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -5402,7 +5397,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       }
     indexes=GetCacheViewAuthenticIndexQueue(wave_view);
     pixel=zero;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
       (void) ResamplePixelColor(resample_filter[id],(double) x,(double) (y-

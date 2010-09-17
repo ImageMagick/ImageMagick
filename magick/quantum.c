@@ -416,12 +416,11 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
 */
 MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
 {
-  ssize_t
-    id;
+  const int
+    id = GetOpenMPThreadId();
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickSignature);
-  id=GetOpenMPThreadId();
   return(quantum_info->pixels[id]);
 }
 

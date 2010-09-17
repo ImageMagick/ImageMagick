@@ -1709,12 +1709,12 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       random_info=AcquireRandomInfoThreadSet();
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+      #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        int
-          id;
+        const int
+          id = GetOpenMPThreadId();
 
         MagickBooleanType
           sync;
@@ -1738,7 +1738,6 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
             continue;
           }
         indexes=GetCacheViewAuthenticIndexQueue(image_view);
-        id=GetOpenMPThreadId();
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           IndexPacket
@@ -1792,17 +1791,17 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -1813,7 +1812,6 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)

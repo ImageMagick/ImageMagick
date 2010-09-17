@@ -742,8 +742,8 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      id;
+    const int
+      id = GetOpenMPThreadId();
 
     MagickPixelPacket
       pixel;
@@ -767,7 +767,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     pixel=zero;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
@@ -2324,14 +2323,14 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     double
       offset;
 
     HaldInfo
       point;
-
-    int
-      id;
 
     MagickPixelPacket
       pixel,
@@ -2363,7 +2362,6 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
     pixel2=zero;
     pixel3=zero;
     pixel4=zero;
-    id=GetOpenMPThreadId();
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       point.x=QuantumScale*(level-1.0)*q->red;
