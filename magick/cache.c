@@ -200,7 +200,6 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  GetPixelCacheMethods(&cache_info->methods);
   cache_info->semaphore=AllocateSemaphoreInfo();
   cache_info->reference_count=1;
   cache_info->disk_semaphore=AllocateSemaphoreInfo();
@@ -1409,9 +1408,12 @@ MagickExport void DestroyImagePixels(Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.destroy_pixel_handler == (DestroyPixelHandler) NULL)
-    return;
-  cache_info->methods.destroy_pixel_handler(image);
+  if (cache_info->methods.destroy_pixel_handler != (DestroyPixelHandler) NULL)
+    {
+      cache_info->methods.destroy_pixel_handler(image);
+      return;
+    }
+  DestroyImagePixelCache(image);
 }
 
 /*
@@ -1655,10 +1657,10 @@ MagickExport IndexPacket *GetAuthenticIndexQueue(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_authentic_indexes_from_handler ==
+  if (cache_info->methods.get_authentic_indexes_from_handler !=
        (GetAuthenticIndexesFromHandler) NULL)
-    return((IndexPacket *) NULL);
-  return(cache_info->methods.get_authentic_indexes_from_handler(image));
+    return(cache_info->methods.get_authentic_indexes_from_handler(image));
+  return(GetAuthenticIndexesFromCache(image));
 }
 
 /*
@@ -1810,10 +1812,10 @@ MagickExport PixelPacket *GetAuthenticPixelQueue(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_authentic_pixels_from_handler ==
-      (GetAuthenticPixelsFromHandler) NULL)
-    return((PixelPacket *) NULL);
-  return(cache_info->methods.get_authentic_pixels_from_handler(image));
+  if (cache_info->methods.get_authentic_pixels_from_handler !=
+       (GetAuthenticPixelsFromHandler) NULL)
+    return(cache_info->methods.get_authentic_pixels_from_handler(image));
+  return(GetAuthenticPixelsFromCache(image));
 }
 
 /*
@@ -1869,20 +1871,16 @@ MagickExport PixelPacket *GetAuthenticPixels(Image *image,const ssize_t x,
   CacheInfo
     *cache_info;
 
-  PixelPacket
-    *pixels;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_authentic_pixels_handler ==
-      (GetAuthenticPixelsHandler) NULL)
-    return((PixelPacket *) NULL);
-  pixels=cache_info->methods.get_authentic_pixels_handler(image,x,y,columns,
-    rows,exception);
-  return(pixels);
+  if (cache_info->methods.get_authentic_pixels_handler !=
+       (GetAuthenticPixelsHandler) NULL)
+    return(cache_info->methods.get_authentic_pixels_handler(image,x,y,columns,
+      rows,exception));
+  return(GetAuthenticPixelsCache(image,x,y,columns,rows,exception));
 }
 
 /*
@@ -2168,26 +2166,17 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   CacheInfo
     *cache_info;
 
-  GetOneAuthenticPixelFromHandler
-    get_one_authentic_pixel_from_handler;
-
-  MagickBooleanType
-    status;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   *pixel=image->background_color;
-  get_one_authentic_pixel_from_handler=
-    cache_info->methods.get_one_authentic_pixel_from_handler;
-  if (get_one_authentic_pixel_from_handler ==
-      (GetOneAuthenticPixelFromHandler) NULL)
-    return(MagickFalse);
-  status=cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,
-    pixel,exception);
-  return(status);
+  if (cache_info->methods.get_one_authentic_pixel_from_handler !=
+       (GetOneAuthenticPixelFromHandler) NULL)
+    return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,
+      pixel,exception));
+  return(GetOneAuthenticPixelFromCache(image,x,y,pixel,exception));
 }
 
 /*
@@ -2334,14 +2323,8 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
-  GetOneVirtualPixelFromHandler
-    get_one_virtual_pixel_from_handler;
-
   CacheInfo
     *cache_info;
-
-  MagickBooleanType
-    status;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2349,14 +2332,12 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   *pixel=image->background_color;
-  get_one_virtual_pixel_from_handler=
-    cache_info->methods.get_one_virtual_pixel_from_handler;
-  if (get_one_virtual_pixel_from_handler ==
-      (GetOneVirtualPixelFromHandler) NULL)
-    return(MagickFalse);
-  status=get_one_virtual_pixel_from_handler(image,virtual_pixel_method,x,y,
-    pixel,exception);
-  return(status);
+  if (cache_info->methods.get_one_virtual_pixel_from_handler !=
+       (GetOneVirtualPixelFromHandler) NULL)
+    return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
+      virtual_pixel_method,x,y,pixel,exception));
+  return(GetOneVirtualPixelFromCache(image,virtual_pixel_method,x,y,pixel,
+    exception));
 }
 
 /*
@@ -2393,14 +2374,8 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
 MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
-  GetOneVirtualPixelFromHandler
-    get_one_virtual_pixel_from_handler;
-
   CacheInfo
     *cache_info;
-
-  MagickBooleanType
-    status;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2408,14 +2383,12 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   *pixel=image->background_color;
-  get_one_virtual_pixel_from_handler=
-    cache_info->methods.get_one_virtual_pixel_from_handler;
-  if (get_one_virtual_pixel_from_handler ==
-      (GetOneVirtualPixelFromHandler) NULL)
-    return(MagickFalse);
-  status=get_one_virtual_pixel_from_handler(image,GetPixelCacheVirtualMethod(
-    image),x,y,pixel,exception);
-  return(status);
+  if (cache_info->methods.get_one_virtual_pixel_from_handler !=
+       (GetOneVirtualPixelFromHandler) NULL)
+    return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
+      GetPixelCacheVirtualMethod(image),x,y,pixel,exception));
+  return(GetOneVirtualPixelFromCache(image,GetPixelCacheVirtualMethod(image),
+    x,y,pixel,exception));
 }
 
 /*
@@ -2982,10 +2955,10 @@ MagickExport const IndexPacket *GetVirtualIndexQueue(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_virtual_indexes_from_handler ==
-      (GetVirtualIndexesFromHandler) NULL)
-    return((IndexPacket *) NULL);
-  return(cache_info->methods.get_virtual_indexes_from_handler(image));
+  if (cache_info->methods.get_virtual_indexes_from_handler !=
+       (GetVirtualIndexesFromHandler) NULL)
+    return(cache_info->methods.get_virtual_indexes_from_handler(image));
+  return(GetVirtualIndexesFromCache(image));
 }
 
 /*
@@ -3484,7 +3457,7 @@ static const PixelPacket *GetVirtualPixelCache(const Image *image,
   const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
   CacheInfo
-   *cache_info;
+    *cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -3528,10 +3501,10 @@ MagickExport const PixelPacket *GetVirtualPixelQueue(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_virtual_pixels_handler ==
-      (GetVirtualPixelsHandler) NULL)
-    return((PixelPacket *) NULL);
-  return(cache_info->methods.get_virtual_pixels_handler(image));
+  if (cache_info->methods.get_virtual_pixels_handler !=
+       (GetVirtualPixelsHandler) NULL)
+    return(cache_info->methods.get_virtual_pixels_handler(image));
+  return(GetVirtualPixelsCache(image));
 }
 
 /*
@@ -3589,20 +3562,17 @@ MagickExport const PixelPacket *GetVirtualPixels(const Image *image,
   CacheInfo
     *cache_info;
 
-  const PixelPacket
-    *pixels;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_virtual_pixel_handler ==
-      (GetVirtualPixelHandler) NULL)
-    return((const PixelPacket *) NULL);
-  pixels=cache_info->methods.get_virtual_pixel_handler(image,
-    GetPixelCacheVirtualMethod(image),x,y,columns,rows,exception);
-  return(pixels);
+  if (cache_info->methods.get_virtual_pixel_handler !=
+       (GetVirtualPixelHandler) NULL)
+    return(cache_info->methods.get_virtual_pixel_handler(image,
+      GetPixelCacheVirtualMethod(image),x,y,columns,rows,exception));
+  return(GetVirtualPixelCache(image,GetPixelCacheVirtualMethod(image),x,y,
+    columns,rows,exception));
 }
 
 /*
@@ -4429,20 +4399,16 @@ MagickExport PixelPacket *QueueAuthenticPixels(Image *image,const ssize_t x,
   CacheInfo
     *cache_info;
 
-  PixelPacket
-    *pixels;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.queue_authentic_pixels_handler ==
-      (QueueAuthenticPixelsHandler) NULL)
-    return((PixelPacket *) NULL);
-  pixels=cache_info->methods.queue_authentic_pixels_handler(image,x,y,columns,
-    rows,exception);
-  return(pixels);
+  if (cache_info->methods.queue_authentic_pixels_handler !=
+       (QueueAuthenticPixelsHandler) NULL)
+    return(cache_info->methods.queue_authentic_pixels_handler(image,x,y,columns,
+      rows,exception));
+  return(QueueAuthenticPixelsCache(image,x,y,columns,rows,exception));
 }
 
 /*
@@ -5164,10 +5130,10 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.sync_authentic_pixels_handler ==
-      (SyncAuthenticPixelsHandler) NULL)
-    return(MagickFalse);
-  return(cache_info->methods.sync_authentic_pixels_handler(image,exception));
+  if (cache_info->methods.sync_authentic_pixels_handler !=
+       (SyncAuthenticPixelsHandler) NULL)
+    return(cache_info->methods.sync_authentic_pixels_handler(image,exception));
+  return(SyncAuthenticPixelsCache(image,exception));
 }
 
 /*
