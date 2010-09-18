@@ -79,10 +79,12 @@ typedef struct _ColorMapInfo
   const char
     *name;
 
-  const float
+  const unsigned char
     red,
     green,
-    blue,
+    blue;
+
+  const float
     alpha;
 
   const ssize_t
@@ -308,7 +310,7 @@ static const ColorMapInfo
     { "gray48", 122, 122, 122, 1, X11Compliance | XPMCompliance },
     { "gray49", 125, 125, 125, 1, X11Compliance | XPMCompliance },
     { "gray5", 13, 13, 13, 1, X11Compliance | XPMCompliance },
-    { "gray50", 127.5, 127.5, 127.5, 1, X11Compliance | XPMCompliance },
+    { "gray50", 127, 127, 127, 1, X11Compliance | XPMCompliance },
     { "gray51", 130, 130, 130, 1, X11Compliance | XPMCompliance },
     { "gray52", 133, 133, 133, 1, X11Compliance | XPMCompliance },
     { "gray53", 135, 135, 135, 1, X11Compliance | XPMCompliance },
@@ -2187,9 +2189,6 @@ static MagickBooleanType LoadColorLists(const char *filename,
   LinkedListInfo
     *options;
 
-  MagickRealType
-    scale;
-
   MagickStatusType
     status;
 
@@ -2210,7 +2209,6 @@ static MagickBooleanType LoadColorLists(const char *filename,
           return(MagickFalse);
         }
     }
-  scale=(MagickRealType) ScaleCharToQuantum(1);
   for (i=0; i < (ssize_t) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
   {
     ColorInfo
@@ -2231,9 +2229,12 @@ static MagickBooleanType LoadColorLists(const char *filename,
     color_info->path=(char *) "[built-in]";
     color_info->name=(char *) p->name;
     GetMagickPixelPacket((Image *) NULL,&color_info->color);
-    color_info->color.red=scale*GetRedPixelComponent(p);
-    color_info->color.green=scale*GetGreenPixelComponent(p);
-    color_info->color.blue=scale*GetBluePixelComponent(p);
+    color_info->color.red=(MagickRealType) ScaleCharToQuantum(
+      GetRedPixelComponent(p));
+    color_info->color.green=(MagickRealType) ScaleCharToQuantum(
+      GetGreenPixelComponent(p));
+    color_info->color.blue=(MagickRealType) ScaleCharToQuantum(
+      GetBluePixelComponent(p));
     color_info->color.opacity=(MagickRealType) (QuantumRange-QuantumRange*
       p->alpha);
     color_info->compliance=(ComplianceType) p->compliance;
