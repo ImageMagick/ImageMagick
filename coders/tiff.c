@@ -2126,8 +2126,8 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
   flags=ParseAbsoluteGeometry(option,&tiff_info->tile_geometry);
   if ((flags & HeightValue) == 0)
     tiff_info->tile_geometry.height=tiff_info->tile_geometry.width;
-  tile_columns=tiff_info->tile_geometry.width;
-  tile_rows=tiff_info->tile_geometry.height;
+  tile_columns=(uint32) tiff_info->tile_geometry.width;
+  tile_rows=(uint32) tiff_info->tile_geometry.height;
   TIFFDefaultTileSize(tiff,&tile_columns,&tile_rows);
   (void) TIFFSetField(tiff,TIFFTAG_TILEWIDTH,tile_columns);
   (void) TIFFSetField(tiff,TIFFTAG_TILELENGTH,tile_rows);
