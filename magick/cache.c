@@ -995,7 +995,7 @@ static MagickBooleanType CloneDiskToMemoryPixelCache(CacheInfo *clone_info,
         if ((MagickSizeType) count != length)
           break;
         q-=clone_info->columns;
-        (void) CopyMagickMemory(q,indexes,(size_t) length);
+        (void) memcpy(q,indexes,(size_t) length);
         if ((MagickSizeType) count != length)
           break;
       }
@@ -1031,7 +1031,7 @@ static MagickBooleanType CloneDiskToMemoryPixelCache(CacheInfo *clone_info,
     if ((MagickSizeType) count != length)
       break;
     q-=clone_info->columns;
-    (void) CopyMagickMemory(q,pixels,(size_t) length);
+    (void) memcpy(q,pixels,(size_t) length);
   }
   if (y < (ssize_t) rows)
     {
@@ -1102,7 +1102,7 @@ static MagickBooleanType CloneMemoryToDiskPixelCache(CacheInfo *clone_info,
       for (y=0; y < (ssize_t) rows; y++)
       {
         p-=cache_info->columns;
-        (void) CopyMagickMemory(indexes,p,(size_t) length);
+        (void) memcpy(indexes,p,(size_t) length);
         offset-=clone_info->columns*sizeof(*indexes);
         count=WritePixelCacheRegion(clone_info,clone_info->offset+offset,length,
           (unsigned char *) indexes);
@@ -1158,7 +1158,7 @@ static MagickBooleanType CloneMemoryToDiskPixelCache(CacheInfo *clone_info,
   for (y=0; y < (ssize_t) rows; y++)
   {
     p-=cache_info->columns;
-    (void) CopyMagickMemory(pixels,p,(size_t) length);
+    (void) memcpy(pixels,p,(size_t) length);
     offset-=clone_info->columns*sizeof(*pixels);
     count=WritePixelCacheRegion(clone_info,clone_info->offset+offset,length,
       (unsigned char *) pixels);
@@ -1229,8 +1229,7 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
       */
       length=columns*sizeof(*indexes);
       if (clone_info->columns == cache_info->columns)
-        (void) CopyMagickMemory(clone_info->indexes,cache_info->indexes,
-          length*rows);
+        (void) memcpy(clone_info->indexes,cache_info->indexes,length*rows);
       else
         {
           source_indexes=cache_info->indexes+cache_info->columns*rows;
@@ -1239,7 +1238,7 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
           {
             source_indexes-=cache_info->columns;
             indexes-=clone_info->columns;
-            (void) CopyMagickMemory(indexes,source_indexes,length);
+            (void) memcpy(indexes,source_indexes,length);
           }
           if (clone_info->columns > cache_info->columns)
             {
@@ -1260,7 +1259,7 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
   */
   length=columns*sizeof(*pixels);
   if (clone_info->columns == cache_info->columns)
-    (void) CopyMagickMemory(clone_info->pixels,cache_info->pixels,length*rows);
+    (void) memcpy(clone_info->pixels,cache_info->pixels,length*rows);
   else
     {
       source_pixels=cache_info->pixels+cache_info->columns*rows;
@@ -1269,7 +1268,7 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
       {
         source_pixels-=cache_info->columns;
         pixels-=clone_info->columns;
-        (void) CopyMagickMemory(pixels,source_pixels,length);
+        (void) memcpy(pixels,source_pixels,length);
       }
       if (clone_info->columns > cache_info->columns)
         {
@@ -3403,12 +3402,12 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
       if (p == (const PixelPacket *) NULL)
         break;
       virtual_indexes=GetVirtualIndexesFromNexus(cache_info,virtual_nexus[0]);
-      (void) CopyMagickMemory(q,p,(size_t) length*sizeof(*p));
+      (void) memcpy(q,p,(size_t) length*sizeof(*p));
       q+=length;
       if ((indexes != (IndexPacket *) NULL) &&
           (virtual_indexes != (const IndexPacket *) NULL))
         {
-          (void) CopyMagickMemory(indexes,virtual_indexes,(size_t) length*
+          (void) memcpy(indexes,virtual_indexes,(size_t) length*
             sizeof(*virtual_indexes));
           indexes+=length;
         }
@@ -4489,7 +4488,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
       p=cache_info->indexes+offset;
       for (y=0; y < (ssize_t) rows; y++)
       {
-        (void) CopyMagickMemory(q,p,(size_t) length);
+        (void) memcpy(q,p,(size_t) length);
         p+=cache_info->columns;
         q+=nexus_info->region.width;
       }
@@ -4618,7 +4617,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       p=cache_info->pixels+offset;
       for (y=0; y < (ssize_t) rows; y++)
       {
-        (void) CopyMagickMemory(q,p,(size_t) length);
+        (void) memcpy(q,p,(size_t) length);
         p+=cache_info->columns;
         q+=nexus_info->region.width;
       }
@@ -5214,7 +5213,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
       q=cache_info->indexes+offset;
       for (y=0; y < (ssize_t) rows; y++)
       {
-        (void) CopyMagickMemory(q,p,(size_t) length);
+        (void) memcpy(q,p,(size_t) length);
         p+=nexus_info->region.width;
         q+=cache_info->columns;
       }
@@ -5344,7 +5343,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       q=cache_info->pixels+offset;
       for (y=0; y < (ssize_t) rows; y++)
       {
-        (void) CopyMagickMemory(q,p,(size_t) length);
+        (void) memcpy(q,p,(size_t) length);
         p+=nexus_info->region.width;
         q+=cache_info->columns;
       }
