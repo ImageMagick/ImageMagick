@@ -2226,6 +2226,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             ScaleShortToQuantum(ping_background->green);
           image->background_color.blue=
             ScaleShortToQuantum(ping_background->blue);
+          image->background_color.opacity=OpaqueOpacity;
 
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
