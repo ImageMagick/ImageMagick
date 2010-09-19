@@ -4528,8 +4528,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
 MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
-#define GetBit(alpha,i) ((((size_t) (alpha) >> (size_t) \
-  (i)) & 0x01) != 0)
+#define GetBit(alpha,i) ((((size_t) (alpha) >> (size_t) (i)) & 0x01) != 0)
 #define SetBit(alpha,i,set) (alpha)=(Quantum) ((set) != 0 ? (size_t) (alpha) \
   | (one << (size_t) (i)) : (size_t) (alpha) & ~(one << (size_t) (i)))
 #define SteganoImageTag  "Stegano/Image"
@@ -4540,27 +4539,27 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   int
     c;
 
-  ssize_t
-    i,
-    j,
-    k,
-    y;
-
   MagickBooleanType
     status;
 
   PixelPacket
     pixel;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
+
+  register ssize_t
+    x;
 
   size_t
     depth,
     one;
+
+  ssize_t
+    i,
+    j,
+    k,
+    y;
 
   /*
     Initialize steganographic image attributes.
