@@ -10,7 +10,7 @@
   <configure name="LIB_VERSION" value="0x664"/>
   <configure name="LIB_VERSION_NUMBER" value="6,6,4,5"/>
   <configure name="RELEASE_DATE" value="2010-09-19"/>
-  <configure name="CONFIGURE" value="./configure "/>
+  <configure name="CONFIGURE" value="./configure  '--with-quantum-depth=64'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="VERSION" value="6.6.4"/>
@@ -23,11 +23,11 @@
   <configure name="LIBS" value="-lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -ldjvulibre -lwmf -lwmflite -lXext -lXt -lSM -lICE -lX11 -lbz2 -pthread -lIlmImf -lz -lImath -lHalf -lIex -lIlmThread -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
-  <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
+  <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=64 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
   <configure name="FEATURES" value="OpenMP "/>
   <configure name="DELEGATES" value="bzlib djvu freetype gvc jpeg jng jp2 lcms openexr png tiff x11 xml wmf zlib"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2010 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
-  <configure name="QuantumDepth" value="16"/>
+  <configure name="QuantumDepth" value="64"/>
 </configuremap>

@@ -383,7 +383,7 @@ static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Scaled sinc(x) function using a trig call (to the sine function)
+    Scaled sinc(x) function using a trig call
       sinc(x) == sin(pi x)/(pi x).
   */
   if (x != 0.0)
@@ -418,9 +418,13 @@ static MagickRealType SincFast(const MagickRealType x,
     interval.
 
     The Remez algorithm, as implemented in the boost library's minimax
-    package, is the key to the construction. See
+    package, is the key to the construction:
     http://www.boost.org/doc/libs/1_36_0/libs/math/doc/...
     ...sf_and_dist/html/math_toolkit/backgrounders/remez.html
+  */
+  /*
+    If outside of the interval of approximation, use the standard trig
+    formula.
   */
   if (x > 4.0)
   {
@@ -445,8 +449,8 @@ static MagickRealType SincFast(const MagickRealType x,
     const MagickRealType c5 = -0.324874073895735800961260474028013982211e-8L;
     const MagickRealType c6 = 0.628155216606695311524920882748052490116e-10L;
     const MagickRealType c7 = -0.586110644039348333520104379959307242711e-12L;
-    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*
-      (c6+xx*c7))))));
+    const MagickRealType p =
+      c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*c7))))));
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
 #elif MAGICKCORE_QUANTUM_DEPTH <= 16
     /*
@@ -454,41 +458,63 @@ static MagickRealType SincFast(const MagickRealType x,
     */
     const MagickRealType c0 = 0.173611107357320220183368594093166520811e-2L;
     const MagickRealType c1 = -0.384240921114946632192116762889211361285e-3L;
-    const MagickRealType c2 = 0.3942011823593181282212298917249470487713e-4L;
-    const MagickRealType c3 = -0.2509633016091172176600688891655505348562e-5L;
-    const MagickRealType c4 = 0.1119020328180957844142377820713688051202e-6L;
-    const MagickRealType c5 = -0.3728951014087795493684656143211370488753e-8L;
-    const MagickRealType c6 = 0.9576941966775725703198167801887185183299e-10L;
+    const MagickRealType c2 = 0.394201182359318128221229891724947048771e-4L;
+    const MagickRealType c3 = -0.250963301609117217660068889165550534856e-5L;
+    const MagickRealType c4 = 0.111902032818095784414237782071368805120e-6L;
+    const MagickRealType c5 = -0.372895101408779549368465614321137048875e-8L;
+    const MagickRealType c6 = 0.957694196677572570319816780188718518330e-10L;
     const MagickRealType c7 = -0.187208577776590710853865174371617338991e-11L;
     const MagickRealType c8 = 0.253524321426864752676094495396308636823e-13L;
     const MagickRealType c9 = -0.177084805010701112639035485248501049364e-15L;
-    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
-      (c7+xx*(c8+xx*c9))))))));
+    const MagickRealType p = 
+      c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*c9))))))));
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
+#elif MAGICKCORE_QUANTUM_DEPTH <= 32
+    /*
+      Max. abs. rel. error 1.2e-12 < 1/2^39.
+    */
+    const MagickRealType c0 = 0.173611111110910715186413700076827593074e-2L;
+    const MagickRealType c1 = -0.289105544717893415815859968653611245425e-3L;
+    const MagickRealType c2 = 0.206952161241815727624413291940849294025e-4L;
+    const MagickRealType c3 = -0.834446180169727178193268528095341741698e-6L;
+    const MagickRealType c4 = 0.207010104171026718629622453275917944941e-7L;
+    const MagickRealType c5 = -0.319724784938507108101517564300855542655e-9L;
+    const MagickRealType c6 = 0.288101675249103266147006509214934493930e-11L;
+    const MagickRealType c7 = -0.118218971804934245819960233886876537953e-13L;
+    const MagickRealType p =
+      c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*c7))))));
+    const MagickRealType d0 = 1.0L;
+    const MagickRealType d1 = 0.547981619622284827495856984100563583948e-1L;
+    const MagickRealType d2 = 0.134226268835357312626304688047086921806e-2L;
+    const MagickRealType d3 = 0.178994697503371051002463656833597608689e-4L;
+    const MagickRealType d4 = 0.114633394140438168641246022557689759090e-6L;
+    const MagickRealType q = d0+xx*(d1+xx*(d2+xx*(d3+xx*d4)));
+    return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)/q*p);
 #else
     /*
-      Max. abs. rel. error 2.8e-14 < 1/2^45 if computed with "true"
-      long doubles, 4.3e-14 < 1/2^44 if long doubles are actually
-      IEEE doubles.
+      Max. abs. rel. error 2.5e-17 < 1/2^55 if computed with "true"
+      long doubles, 2.6e-14 < 1/2^45 if long doubles are IEEE doubles.
     */
+    const MagickRealType c0 = 0.173611111111111113332932116053816904714e-2L;
+    const MagickRealType c1 = -0.303723497515718809687399886229022703169e-3L;
+    const MagickRealType c2 = 0.233100817439489606061795544561807507471e-4L;
+    const MagickRealType c3 = -0.103906554814465396861269897523992002705e-5L;
+    const MagickRealType c4 = 0.299175768961095380104447394070231517712e-7L;
+    const MagickRealType c5 = -0.582555275175235235925786868156315453570e-9L;
+    const MagickRealType c6 = 0.774885118857072154223233850399192557934e-11L;
+    const MagickRealType c7 = -0.686148809066333092764596425714057372964e-13L;
+    const MagickRealType c8 = 0.371085247462909594457662716426170281684e-15L;
+    const MagickRealType c9 = -0.944551950759515118228796037513456335763e-18L;
+    const MagickRealType p =
+      c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*c9))))))));
     const MagickRealType d0 = 1.0L;
-    const MagickRealType d1 = 0.472092849026063055335985385237754734674e-1L;
-    const MagickRealType d2 = 0.980827934715957880722726308652148654422e-3L;
-    const MagickRealType d3 = 0.108578238237913347720703630897684619857e-4L;
-    const MagickRealType d4 = 0.557879419987251079197210245241936245949e-7L;
-    const MagickRealType q = d0+xx*(d1+xx*(d2+xx*(d3+xx*d4)));
-    const MagickRealType c0 = 0.173611111111106247746825939303766583803e-2L;
-    const MagickRealType c1 = -0.302280678531277982259682703263172983639e-3L;
-    const MagickRealType c2 = 0.229836848594725622956831582214430021316e-4L;
-    const MagickRealType c3 = -0.100695138496374329999375193650269551747e-5L;
-    const MagickRealType c4 = 0.281042764976558835062414967336291807862e-7L;
-    const MagickRealType c5 = -0.517543276733917186144818086999073738663e-9L;
-    const MagickRealType c6 = 0.621439288501187158171383347783850097842e-11L;
-    const MagickRealType c7 = -0.450319346388691701911265202136937840546e-13L;
-    const MagickRealType c8 = 0.152608559789404502241147185831249792831e-15L;
-    const MagickRealType p = c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*
-      (c7+xx*c8)))))));
-    return((xx-1.0)/q*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
+    const MagickRealType d1 = 0.463782211680615975951490586564903936283e-1L;
+    const MagickRealType d2 = 0.984899056548092584226994406603163505777e-3L;
+    const MagickRealType d3 = 0.121314604267142674069019025409802158375e-4L;
+    const MagickRealType d4 = 0.881998514405598677970025517260813044225e-7L;
+    const MagickRealType d5 = 0.310377434094436341006055666680844291856e-9L;
+    const MagickRealType q = d0+xx*(d1+xx*(d2+xx*(d3+xx*(d4+xx*d5))));
+    return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)/q*p);
 #endif
   }
 }
@@ -1032,27 +1058,31 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         support = GetResizeFilterSupport(resize_filter); /* support range */
         (void) fprintf(stdout,"#\n# Resize Filter (for graphing)\n#\n");
         (void) fprintf(stdout,"# filter = %s\n",
-            MagickOptionToMnemonic(MagickFilterOptions, filter_type) );
+		       MagickOptionToMnemonic(MagickFilterOptions, filter_type)
+		       );
         (void) fprintf(stdout,"# window = %s\n",
-            MagickOptionToMnemonic(MagickFilterOptions, window_type) );
+		       MagickOptionToMnemonic(MagickFilterOptions, window_type)
+		       );
         (void) fprintf(stdout,"# support = %.*g\n",
-            GetMagickPrecision(),resize_filter->support );
+		       GetMagickPrecision(),(double) resize_filter->support);
         (void) fprintf(stdout,"# win-support = %.*g\n",
-            GetMagickPrecision(),resize_filter->window_support );
+		       GetMagickPrecision(),
+		       (double) resize_filter->window_support);
         (void) fprintf(stdout,"# blur = %.*g\n",
-            GetMagickPrecision(),resize_filter->blur );
+		       GetMagickPrecision(),(double) resize_filter->blur);
         (void) fprintf(stdout,"# blurred_support = %.*g\n",
-            GetMagickPrecision(),support);
+		       GetMagickPrecision(),(double) support);
         (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",
-            GetMagickPrecision(),B,   GetMagickPrecision(),C);
+		       GetMagickPrecision(),(double) B,
+		       GetMagickPrecision(),(double) C);
         (void) fprintf(stdout,"#\n");
         /*
           Output values of resulting filter graph -- for graphing
           filter result.
         */
         for (x=0.0; x <= support; x+=0.01f)
-          (void) fprintf(stdout,"%5.2lf\t%.*g\n", x,
-            GetMagickPrecision(), GetResizeFilterWeight(resize_filter,x));
+          (void) fprintf(stdout,"%5.2lf\t%.*g\n", x, GetMagickPrecision(),
+			 (double) GetResizeFilterWeight(resize_filter,x));
         /* A final value so gnuplot can graph the 'stop' properly. */
         (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,
             GetMagickPrecision(), 0.0);
