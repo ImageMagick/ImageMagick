@@ -32,12 +32,12 @@
 
 /* Location of coder modules */
 #ifndef MAGICKCORE_CODER_PATH
-#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q16/coders/"
+#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q64/coders/"
 #endif
 
 /* Subdirectory of lib where coder modules are installed */
 #ifndef MAGICKCORE_CODER_RELATIVE_PATH
-#define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q16/coders"
+#define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q64/coders"
 #endif
 
 /* Directory where architecture-dependent configuration files live. */
@@ -80,12 +80,12 @@
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
-#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q16/filters/"
+#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q64/filters/"
 #endif
 
 /* Subdirectory of lib where filter modules are installed */
 #ifndef MAGICKCORE_FILTER_RELATIVE_PATH
-#define MAGICKCORE_FILTER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q16/filters"
+#define MAGICKCORE_FILTER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q64/filters"
 #endif
 
 /* Define if you have FONTCONFIG library */
@@ -1188,7 +1188,7 @@
 
 /* Number of bits in a pixel Quantum (8/16/32/64) */
 #ifndef MAGICKCORE_QUANTUM_DEPTH
-#define MAGICKCORE_QUANTUM_DEPTH 16
+#define MAGICKCORE_QUANTUM_DEPTH 64
 #endif
 
 /* Define as the return type of signal handlers (`int' or `void'). */
