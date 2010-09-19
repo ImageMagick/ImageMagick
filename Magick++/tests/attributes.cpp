@@ -1290,6 +1290,7 @@ int main( int /*argc*/, char ** argv)
 	 image.signature() != "7e5977b8bce5c40b858c84344803dae61feae0ef7a21739b2d068c9cdb72f95b" &&
 	 image.signature() != "c8aed4b60d666e449f5c29d0fb32f089e3257422a1f11a4712451c5340362df0" &&
 	 image.signature() != "bc272b75794971f4a3ade1bf524c0aee375765e9fb15d65278a8b9452b551ea6" &&
+	 image.signature() != "8610fd1c5ef905c05bf75438aaab8729d3e1277b8ec1e86927777bd3382702e5" &&
    image.signature() != "b891ddb1d32cd45c6329180e5bd733eebb8dd06c401a9c721841ec43e4a662f8")
       {
 	++failures;
