@@ -111,12 +111,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
-  ssize_t
-    c,
-    i,
-    j,
-    k,
-    y;
+  int
+    c;
 
   MagickBooleanType
     status;
@@ -127,15 +123,21 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
+
+  register ssize_t
+    x;
 
   size_t
     depth,
     one;
+
+  ssize_t
+    i,
+    j,
+    k,
+    y;
 
   /*
     Initialize Image structure.
@@ -172,14 +174,14 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   c=0;
   i=0;
   j=0;
-  i=MAGICKCORE_QUANTUM_DEPTH-1;
-  depth=MAGICKCORE_QUANTUM_DEPTH;
+  i=watermark->depth-1;
+  depth=watermark->depth;
   for (k=image->offset; (i >= 0) && (j < (ssize_t) depth); i--)
   {
     for (y=0; (y < (ssize_t) image->rows) && (j < (ssize_t) depth); y++)
     {
       x=0;
-      for (; (x < (ssize_t) image->columns) && (j < (ssize_t) depth); x++)
+      for ( ; (x < (ssize_t) image->columns) && (j < (ssize_t) depth); x++)
       {
         if ((k/(ssize_t) watermark->columns) >= (ssize_t) watermark->rows)
           break;
