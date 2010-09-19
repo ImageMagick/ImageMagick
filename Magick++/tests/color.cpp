@@ -111,13 +111,10 @@ int main( int /*argc*/, char **argv)
 
     // Test ColorGray
     {
-#undef MagickEpsilon
-#define MagickEpsilon  1.0e-12
       double resolution = 1.0/QuantumRange;
+      if ( resolution < 0.0000001 )
+        resolution = 0.0000001;
       double max_error = resolution + MagickEpsilon;
-
-      if ( resolution < 0.0001 )
-        resolution = 0.0001;
 
       for( double value = 0; value < 1.0 + MagickEpsilon; value += resolution )
         {
@@ -128,7 +125,7 @@ int main( int /*argc*/, char **argv)
               cout << "Line: " << __LINE__
                    << " shade is "
                    << gray.shade()
-                   << " rather than nominal"
+                   << " rather than nominal "
                    << value
                    << endl;
             }
