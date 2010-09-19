@@ -174,7 +174,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   c=0;
   i=0;
   j=0;
-  i=watermark->depth-1;
+  i=(ssize_t) (watermark->depth-1);
   depth=watermark->depth;
   for (k=image->offset; (i >= 0) && (j < (ssize_t) depth); i--)
   {
@@ -221,7 +221,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
           j++;
       }
     }
-    status=SetImageProgress(image,LoadImagesTag,i,depth);
+    status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,depth);
     if (status == MagickFalse)
       break;
   }
