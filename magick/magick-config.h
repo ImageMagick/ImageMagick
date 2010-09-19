@@ -20,7 +20,9 @@
 #endif
 
 /* Define if you have CAIRO library */
-/* #undef CAIRO_DELEGATE */
+#ifndef MAGICKCORE_CAIRO_DELEGATE
+#define MAGICKCORE_CAIRO_DELEGATE 1
+#endif
 
 /* permit enciphering and deciphering image pixels */
 #ifndef MAGICKCORE_CIPHER_SUPPORT
@@ -32,12 +34,12 @@
 
 /* Location of coder modules */
 #ifndef MAGICKCORE_CODER_PATH
-#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q64/coders/"
+#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q16/coders/"
 #endif
 
 /* Subdirectory of lib where coder modules are installed */
 #ifndef MAGICKCORE_CODER_RELATIVE_PATH
-#define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q64/coders"
+#define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q16/coders"
 #endif
 
 /* Directory where architecture-dependent configuration files live. */
@@ -52,9 +54,7 @@
 #endif
 
 /* Define if you have DJVU library */
-#ifndef MAGICKCORE_DJVU_DELEGATE
-#define MAGICKCORE_DJVU_DELEGATE 1
-#endif
+/* #undef DJVU_DELEGATE */
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
@@ -80,16 +80,18 @@
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
-#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q64/filters/"
+#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.6.4/modules-Q16/filters/"
 #endif
 
 /* Subdirectory of lib where filter modules are installed */
 #ifndef MAGICKCORE_FILTER_RELATIVE_PATH
-#define MAGICKCORE_FILTER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q64/filters"
+#define MAGICKCORE_FILTER_RELATIVE_PATH "ImageMagick-6.6.4/modules-Q16/filters"
 #endif
 
 /* Define if you have FONTCONFIG library */
-/* #undef FONTCONFIG_DELEGATE */
+#ifndef MAGICKCORE_FONTCONFIG_DELEGATE
+#define MAGICKCORE_FONTCONFIG_DELEGATE 1
+#endif
 
 /* Define if you have FlashPIX library */
 /* #undef FPX_DELEGATE */
@@ -103,9 +105,7 @@
 /* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-#ifndef MAGICKCORE_GVC_DELEGATE
-#define MAGICKCORE_GVC_DELEGATE 1
-#endif
+/* #undef GVC_DELEGATE */
 
 /* Define to 1 if you have the `argz_add' function. */
 #ifndef MAGICKCORE_HAVE_ARGZ_ADD
@@ -394,9 +394,7 @@
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS_H
-#define MAGICKCORE_HAVE_LCMS_H 1
-#endif
+/* #undef HAVE_LCMS_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -1071,9 +1069,7 @@
 #endif
 
 /* Define if you have LCMS (v1.11 or later) library */
-#ifndef MAGICKCORE_LCMS_DELEGATE
-#define MAGICKCORE_LCMS_DELEGATE 1
-#endif
+/* #undef LCMS_DELEGATE */
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
@@ -1099,7 +1095,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib/mesa:/usr/lib32/mesa:/usr/lib/alsa-lib:/usr/local/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
 #endif
 
 /* The archive extension */
@@ -1140,9 +1136,7 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-#ifndef MAGICKCORE_OPENEXR_DELEGATE
-#define MAGICKCORE_OPENEXR_DELEGATE 1
-#endif
+/* #undef OPENEXR_DELEGATE */
 
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef MAGICKCORE_PACKAGE_BUGREPORT
@@ -1188,7 +1182,7 @@
 
 /* Number of bits in a pixel Quantum (8/16/32/64) */
 #ifndef MAGICKCORE_QUANTUM_DEPTH
-#define MAGICKCORE_QUANTUM_DEPTH 64
+#define MAGICKCORE_QUANTUM_DEPTH 16
 #endif
 
 /* Define as the return type of signal handlers (`int' or `void'). */
@@ -1340,9 +1334,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-#ifndef MAGICKCORE_WMF_DELEGATE
-#define MAGICKCORE_WMF_DELEGATE 1
-#endif
+/* #undef WMF_DELEGATE */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

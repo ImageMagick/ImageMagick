@@ -343,7 +343,7 @@ static MagickRealType LanczosFast(const MagickRealType x,
   if (supportn!=support || x>support)
     return(SincFast(x,resize_filter)*SincFast(x/support,resize_filter));
   {
-    const MagickRealType pi2xx = (MagickPIL*MagickPIL)*x*x;
+    const MagickRealType pi2xx = (MagickRealType) ((MagickPIL*MagickPIL)*x*x);
     if (pi2xx == (MagickRealType) 0.0)
       return(1.0);
     {
