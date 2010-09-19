@@ -221,7 +221,7 @@ static MagickRealType CubicBC(const MagickRealType x,
       (resize_filter->cubic[2]+x*resize_filter->cubic[3])));
   if (x < 2.0)
     return(resize_filter->cubic[4]+x*(resize_filter->cubic[5]+x*
-      (resize_filter->cubic[6] +x*resize_filter->cubic[7])));
+      (resize_filter->cubic[6]+x*resize_filter->cubic[7])));
   return(0.0);
 }
 
@@ -233,7 +233,7 @@ static MagickRealType Gaussian(const MagickRealType x,
       exp(-2 x^2)/sqrt(pi/2))
   */
   /*const MagickRealType alpha = (MagickRealType) (2.0/MagickSQ2PI);*/
-  return(exp((double)(-2.0*x*x)));
+  return(exp((double) (-2.0*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
@@ -340,7 +340,7 @@ static MagickRealType LanczosFast(const MagickRealType x,
   /*
     We assume that support > 0.
   */
-  if (supportn!=support || x>support)
+  if ((supportn != support) || (x > support))
     return(SincFast(x,resize_filter)*SincFast(x/support,resize_filter));
   {
     const MagickRealType pi2xx = (MagickRealType) ((MagickPIL*MagickPIL)*x*x);
@@ -349,21 +349,23 @@ static MagickRealType LanczosFast(const MagickRealType x,
     {
       const MagickRealType c = cos((double) ((MagickPIL/support)*x));
       MagickRealType ss1 = 1.0-c*c;
-      if (support<2.0)
-	return(1.0/pi2xx*ss1);
+      if (support < 2.0)
+        return(1.0/pi2xx*ss1);
       {
-	int n = (int) support - 2;
-	const MagickRealType cpc = c+c;
-	MagickRealType ss = ss1*cpc;
-	MagickRealType temp;
-	while (n--)
-	  {
-	    temp = ss;
-	    ss = ss*cpc-ss1;
-	    ss1 = temp;
-	  }
-	return(support/pi2xx*ss);
-  } } }
+        int n = (int) support - 2;
+        const MagickRealType cpc = c+c;
+        MagickRealType ss = ss1*cpc;
+        MagickRealType temp;
+        while (n--)
+        {
+          temp=ss;
+          ss=ss*cpc-ss1;
+          ss1=temp;
+        }
+        return(support/pi2xx*ss);
+       }
+     }
+  }
 }
 
 static MagickRealType Quadratic(const MagickRealType x,
@@ -427,10 +429,10 @@ static MagickRealType SincFast(const MagickRealType x,
     formula.
   */
   if (x > 4.0)
-  {
-    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
-    return(sin((double) pix)/pix);
-  }
+    {
+      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
+      return(sin((double) pix)/pix);
+    }
   {
     /*
       The approximations only depend on x^2 (sinc is an even
@@ -861,7 +863,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case SincFilter:
       {
         /*
-	  Promote 1D Sinc Filter to a 2D Bessel filter, as long as the
+          Promote 1D Sinc Filter to a 2D Bessel filter, as long as the
           user did not directly request a 'Sinc' filter.
         */
         if ( filter != SincFilter )
@@ -884,7 +886,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       }
       default:
         /*
-	  What about other filters to make them 'cylindrical
+          What about other filters to make them 'cylindrical
           friendly'?  For example Mitchell is actually quite close to
           a cylindrical Lanczos (Bessel-Bessel) with support 2.  Are
           there other well known 'cylindrical' specific filters?
@@ -904,10 +906,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       if (option == LanczosFilter)
         {
           /* Lanczos is not a real filter but a self windowing Sinc/Bessel. */
-          filter_type=cylindrical != MagickFalse ?
-                           BesselFilter : LanczosFilter;
-          window_type=cylindrical != MagickFalse ?
-                           BesselFilter : SincFastFilter;
+          filter_type=cylindrical != MagickFalse ? BesselFilter : LanczosFilter;
+          window_type=cylindrical != MagickFalse ? BesselFilter :
+            SincFastFilter;
         }
       /* Filter override with a specific window function. */
       artifact=GetImageArtifact(image,"filter:window");
@@ -919,8 +920,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
               if (option != LanczosFilter)
                 window_type=(FilterTypes) option;
               else
-                window_type=cylindrical != MagickFalse ?
-                               BesselFilter : SincFastFilter;
+                window_type=cylindrical != MagickFalse ? BesselFilter :
+                  SincFastFilter;
             }
         }
     }
@@ -934,8 +935,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
             artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
-              filter_type=cylindrical != MagickFalse ?
-                           BesselFilter : SincFastFilter;
+              filter_type=cylindrical != MagickFalse ? BesselFilter :
+                SincFastFilter;
               window_type=(FilterTypes) option;
             }
         }
@@ -1040,52 +1041,47 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           x;
 
         /*
-	  Reset the filter_type for specific compound filters so the
+          Reset the filter_type for specific compound filters so the
           actual 'function' is returned, not the user selection.
           Specifically this is needed for the Sinc and Cubic compound
           filters.
         */
-        if ( resize_filter->filter == Sinc )
+        if (resize_filter->filter == Sinc)
           filter_type=SincFilter;
-        if ( resize_filter->filter == SincFast )
+        if (resize_filter->filter == SincFast)
           filter_type=SincFastFilter;
-        if ( resize_filter->filter == CubicBC )
+        if (resize_filter->filter == CubicBC)
           filter_type=CubicFilter;
-
         /*
           Report Filter Details.
         */
-        support = GetResizeFilterSupport(resize_filter); /* support range */
+        support=GetResizeFilterSupport(resize_filter); /* support range */
         (void) fprintf(stdout,"#\n# Resize Filter (for graphing)\n#\n");
-        (void) fprintf(stdout,"# filter = %s\n",
-		       MagickOptionToMnemonic(MagickFilterOptions, filter_type)
-		       );
-        (void) fprintf(stdout,"# window = %s\n",
-		       MagickOptionToMnemonic(MagickFilterOptions, window_type)
-		       );
-        (void) fprintf(stdout,"# support = %.*g\n",
-		       GetMagickPrecision(),(double) resize_filter->support);
-        (void) fprintf(stdout,"# win-support = %.*g\n",
-		       GetMagickPrecision(),
+        (void) fprintf(stdout,"# filter = %s\n",MagickOptionToMnemonic(
+           MagickFilterOptions,filter_type));
+        (void) fprintf(stdout,"# window = %s\n",MagickOptionToMnemonic(
+          MagickFilterOptions, window_type));
+        (void) fprintf(stdout,"# support = %.*g\n",GetMagickPrecision(),
+          (double) resize_filter->support);
+        (void) fprintf(stdout,"# win-support = %.*g\n",GetMagickPrecision(),
 		       (double) resize_filter->window_support);
-        (void) fprintf(stdout,"# blur = %.*g\n",
-		       GetMagickPrecision(),(double) resize_filter->blur);
-        (void) fprintf(stdout,"# blurred_support = %.*g\n",
-		       GetMagickPrecision(),(double) support);
-        (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",
-		       GetMagickPrecision(),(double) B,
-		       GetMagickPrecision(),(double) C);
+        (void) fprintf(stdout,"# blur = %.*g\n",GetMagickPrecision(),
+           (double) resize_filter->blur);
+        (void) fprintf(stdout,"# blurred_support = %.*g\n",GetMagickPrecision(),
+           (double) support);
+        (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
+           (double) B,GetMagickPrecision(),(double) C);
         (void) fprintf(stdout,"#\n");
         /*
           Output values of resulting filter graph -- for graphing
           filter result.
         */
         for (x=0.0; x <= support; x+=0.01f)
-          (void) fprintf(stdout,"%5.2lf\t%.*g\n", x, GetMagickPrecision(),
-			 (double) GetResizeFilterWeight(resize_filter,x));
+          (void) fprintf(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
+            (double) GetResizeFilterWeight(resize_filter,x));
         /* A final value so gnuplot can graph the 'stop' properly. */
-        (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,
-            GetMagickPrecision(), 0.0);
+        (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
+          0.0);
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     /* } */
@@ -2070,23 +2066,23 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       center,
       density;
 
-    register ContributionInfo
-      *restrict contribution;
-
     register const IndexPacket
       *restrict indexes;
 
     register const PixelPacket
       *restrict p;
 
+    register ContributionInfo
+      *restrict contribution;
+
     register IndexPacket
       *restrict resize_indexes;
 
-    register ssize_t
-      y;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      y;
 
     ssize_t
       n,
@@ -2312,14 +2308,14 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       center,
       density;
 
-    register ContributionInfo
-      *restrict contribution;
-
     register const IndexPacket
       *restrict indexes;
 
     register const PixelPacket
       *restrict p;
+
+    register ContributionInfo
+      *restrict contribution;
 
     register IndexPacket
       *restrict resize_indexes;
@@ -2693,11 +2689,11 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     register IndexPacket
       *restrict sample_indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     ssize_t
       y_offset;
