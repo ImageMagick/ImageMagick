@@ -4217,10 +4217,10 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
         MaxTextExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      if (OpenPixelCache(image,IOMode,exception) == MagickFalse)
+      if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-      return(MagickTrue);
+      return(SetImageExtent(image,0,0));
     }
   if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
       (cache_info->reference_count == 1))
