@@ -75,6 +75,7 @@
 #include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 #include "magick/xml-tree.h"
 
 /*
@@ -2193,6 +2194,11 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             colorspace));
           break;
         }
+      if (LocaleNCompare("copyright",property,9) == 0)
+        {
+          (void) CopyMagickString(value,GetMagickCopyright(),MaxTextExtent);
+          break;
+        }
       break;
     }
     case 'd':
@@ -2407,6 +2413,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         {
           (void) CopyMagickString(filename,image_info->unique,MaxTextExtent);
           (void) CopyMagickString(value,filename,MaxTextExtent);
+          break;
+        }
+      break;
+    }
+    case 'v':
+    {
+      if (LocaleNCompare("version",property,7) == 0)
+        {
+          (void) CopyMagickString(value,GetMagickVersion((size_t *) NULL),
+            MaxTextExtent);
           break;
         }
       break;
