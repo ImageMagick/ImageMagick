@@ -4220,7 +4220,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-      return(MagickTrue);
+      cache_info=GetImagePixelCache(image,MagickTrue,exception);
+      return(cache_info != (CacheInfo *) NULL ? MagickTrue : MagickFalse);
     }
   if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
       (cache_info->reference_count == 1))
@@ -4266,7 +4267,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   cache_info=(CacheInfo *) image->cache;
   status=OpenPixelCache(image,IOMode,exception);
   if (status != MagickFalse)
-   status=ClonePixelCachePixels(cache_info,clone_info,&image->exception);
+    status=ClonePixelCachePixels(cache_info,clone_info,&image->exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
   return(status);
