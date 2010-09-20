@@ -1,3 +1,6 @@
+2010-09-20  6.6.4-2 Anthony Thyssen <A.Thyssen@griffith...>
+  * modified "magick/resample.c" to allow use of either EWA or HQEWA (default)
+
 2010-09-19  6.6.4-5 Cristy  <quetzlzacatenango@image...>
   * If IPTC profile is not embedded in an 8bim resource, declare it IPTC
     rather than 8BIM.
