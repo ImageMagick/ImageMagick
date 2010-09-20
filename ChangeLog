@@ -1,3 +1,10 @@
+2010-09-20  6.6.4-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Modified "magick/resize.c" so that PIL is a MagickRealType number. Earlier,
+    some computations were needlessly done in long double precision because PIL
+    forced an automatic upcast wherever it appeared.
+  * Modified "magick/resize.c" so that Bohman uses one trig call + one sqrt call
+    instead of two trig calls.
+
 2010-09-20  6.6.4-5 Anthony Thyssen <A.Thyssen@griffith...>
   * modified "magick/resample.c" to allow use of either EWA or HQEWA (default)
   * Removed LanczosFast from supported filters (SincFast*SincFast is faster)

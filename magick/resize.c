@@ -133,7 +133,7 @@ static MagickRealType
 %
 */
 
-#define MagickPIL 3.14159265358979323846264338327950288420L
+#define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
 
 static MagickRealType Bessel(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
@@ -168,9 +168,13 @@ static MagickRealType Bohman(const MagickRealType x,
   /*
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
+    Refactored by Nicolas Robidoux to one trig call, one sqrt call,
+    and 7 flops, taking advantage of the fact that the support of
+    Bohman is 1 (so that we know that sin(pi x) >= 0).
   */
-  const double pix = (double) (MagickPIL*x);
-  return((MagickRealType) ((1.0-x)*cos(pix)+(1.0/MagickPIL)*sin(pix)));
+  const double cospix = cos((double) (MagickPIL*x));
+  const double sinpix = sqrt(1.0-cospix*cospix);
+  return((MagickRealType) ((1.0-x)*cospix+(1.0/MagickPIL)*sinpix));
 }
 
 static MagickRealType Box(const MagickRealType x,
