@@ -307,152 +307,6 @@ static MagickRealType Lagrange(const MagickRealType x,
   return(value);
 }
 
-static MagickRealType LanczosFast(const MagickRealType x,
-  const ResizeFilter *resize_filter)
-{
-  /*
-    WARNING:
-    LanczosFast only outputs correct values if support is a
-    POSITIVE INTEGER.
-  */
-  /*
-    Computing the Lanczos kernel directly from its definition
-
-      sinc(x)*sinc(x/n) = sin(pi*x)*sin(pi*x/n)/((pi*x)*(pi*x/n))
-
-    requires two calls to a trigonometric function (slow).
-
-    LanczosFast uses a recursive formula for sin(x)*sin(x/n) (n a
-    positive integer) based on the Chebyshev method for the
-    computation of sines and cosines of multiples of an angle:
-    http://en.wikipedia.org/wiki/List_of_trigonometric_identities...
-    ...#Chebyshev_method
-
-    The two-term recursion allows computing the needed product of
-    sines with only one trig call (cos(pi*x/n)). It is, however, only
-    applicable when n=support is a positive integer (the only truly
-    useful case).  If not, the code reverts to the usual
-    product-of-(fast)sincs formula. It also reverts to the usual if
-    x>support (an expert-only possibility).
-
-    In order to eliminate the remaining trig call, high precision
-    "minimax" polynomial approximants are used. See the SincFast
-    comments for details.
-
-    Recursive formula for the product of the sine of an angle and the
-    sine of a multiple of the angle discovered by Nicolas Robidoux
-    (pending the discovery of an earlier discoverer) with the
-    assistance of Chantal Racette.  Approximations of cos(pi x) over
-    the interval [-1,1] constructed by Nicolas Robidoux and Chantal
-    Racette with funding from the Natural Sciences and Engineering
-    Research Council of Canada.
-  */
-  /*
-    We assume that support > 0 and x >= 0.
-  */
-  const MagickRealType support = resize_filter->support;
-  const MagickRealType xos = x/support;
-  const MagickRealType xx = xos*xos;
-  const MagickRealType pi2xx = (MagickPIL*MagickPIL)*x*x;
-  if (pi2xx == (MagickRealType) 0.0)
-    return(1.0);
-  {
-    MagickRealType c;
-    if (xos>1.0)
-      {
-	c = (MagickRealType) cos((double) (MagickPIL*xos));
-      }
-    else
-      {
-#if MAGICKCORE_QUANTUM_DEPTH <= 8
-	/*
-	  Maximum absolute relative error 1.8e-8 < 1/2^25.
-	*/
-	const MagickRealType c0 =
-	  3.99999992643142920211338040253631444680L;
-	const MagickRealType c1 =
-	  -3.73920425616710679261196824501740620846L;
-	const MagickRealType c2 =
-	  1.27796557877584024350399820493902002676L;
-	const MagickRealType c3 =
-	  -0.228809086406287387417934333009611810036L;
-	const MagickRealType c4 =
-	  0.249852427433082398345689482146854999198e-1L;
-	const MagickRealType c5 =
-	  -0.160409656670710471758484348423047271587e-2L;
-	const MagickRealType p =
-	  c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*c5))));
-#elif MAGICKCORE_QUANTUM_DEPTH <= 16
-	/*
-	  Max. abs. rel. error 1.6e-12 < 1/2^39.
-	*/
-	const MagickRealType c0 =
-	  3.99999999999369507875837503656312381210L;
-	const MagickRealType c1 =
-	  -3.73920880146193419336832119898956139180L;
-	const MagickRealType c2 =
-	  1.27801328321259865639714208686127144980L;
-	const MagickRealType c3 =
-	  -0.228997785334013943051673846919195886430L;
-	const MagickRealType c4 =
-	  0.253305916511203326575532808976653777888e-1L;
-	const MagickRealType c5 =
-	  -0.190290817480650124504465021065476218977e-2L;
-	const MagickRealType c6 =
-	  0.102686888764524439708563743432769693793e-3L;
-	const MagickRealType c7 =
-	  -0.373344419226166828092642504009826630593e-5L;
-	const MagickRealType p =
-	  c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*c7))))));
-#else
-	/*
-	  Max. abs. rel. error 6.1e-16 < 1/2^50 if computed with
-	  "true" long doubles, 5.6e-17 < 1/2^53 if long doubles are
-	  IEEE doubles.
-	*/
-	const MagickRealType c0 =
-	  3.99999999999999977653487536495855668234L;
-	const MagickRealType c1 =
-	  -3.73920880217867665744995903521564136498L;
-	const MagickRealType c2 =
-	  1.27801329695096620491074078493372289128L;
-	const MagickRealType c3 =
-	  -0.228997887594702717198738793082652705850L;
-	const MagickRealType c4 =
-	  0.253309709061066296103141786511835130143e-1L;
-	const MagickRealType c5 =
-	  -0.190368124507833605338686581554879104404e-2L;
-	const MagickRealType c6 =
-	  0.103570244775199129899717783834074546882e-3L;
-	const MagickRealType c7 =
-	  -0.426762781982225449936672742185198500277e-5L;
-	const MagickRealType c8 =
-	  0.137089756109639545966503908032203389025e-6L;
-	const MagickRealType c9 =
-	  -0.321199312802383349700375491874286104564e-8L;
-	const MagickRealType p =
-	  c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*c9
-	  ))))))));
-#endif    
-	c = (0.25-xx)*p;
-      }
-    {
-      const MagickRealType cpc = c+c;
-      MagickRealType ss = 1.0-c*c;
-      MagickRealType n = support-1.0;
-      MagickRealType ss1 = 0.0;
-      MagickRealType temp;
-      while (n>0.0)
-	{
-	  temp = ss;
-	  ss = cpc*temp-ss1;
-	  ss1 = temp;
-	  n = n-1.0;
-	}
-      return(support/pi2xx*ss);
-  } }
-}
-
 static MagickRealType Quadratic(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
@@ -834,7 +688,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,    BohmanFilter },   /* Bohman -- 2*cosine-sinc         */
     { SincFastFilter,    TriangleFilter }, /* Bartlett -- triangle-sinc       */
     { SincFastFilter,    BoxFilter },      /* Raw fast sinc ("Pade"-type)     */
-    { LanczosFastFilter, BoxFilter }       /* Raw fast Lanczos (expert)       */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -881,7 +734,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Bohman,      1.0,    1.0,    0.0, 0.0 }, /* Bohman, 2*Cosine window     */
     { Triangle,    1.0,    1.0,    0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,    4.0,    1.0,    0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { LanczosFast, 3.0,    1.0,    0.0, 0.0 }  /* Raw fast Lanczos (expert)   */
   };
   /*
     The known zero crossings of the Bessel() or the Jinc(x*PI)
