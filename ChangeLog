@@ -10,7 +10,7 @@
 
 2010-09-16  6.6.4-2 Cristy  <quetzlzacatenango@image...>
   * IPTC profile not always wrapped properly inside an 8BIM profile.
-  * TIFF tile geometry must be divisible by 16. 
+  * TIFF tile geometry must be divisible by 16.
 
 2010-09-15  6.6.4-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Rename of SincPolynomial to SincFast for easier user understanding
@@ -21,17 +21,16 @@
     filter by default internally.  However 'Sinc' will still use the
     Trigonometric function, and can be used to assign the trig version
     of Sinc() to filters using the filter expert options.
-  * Removed the default filter for 'distort' was found to be a very
-    blurry inaccurate filter function.  It was removed and replaced with
-    a correct Gaussian filter (as used by resize)
+  * The default filter for 'distort' was found to be a very blurry inaccurate
+    filter function.  It was removed and replaced with a correct Gaussian
+    filter (as used by resize)
   * Added a switch so that "-interpolate filter" will force the use of
     a cylindrical filter for ALL pixels in distorted images.  That is you can
     use that switch to use a cylindrical filter even for images that are
-    being enlarged by the distortion. It is slightly slower though.
-    However EWA is still currently using a fixed 2.0 sampling radius.
-    This switch complements the use of "-filter point" which turns off EWA
-    filters in favor of interpolation for all pixels in a distorted image.
-    BOTH switches should not be used together.
+    being enlarged by the distortion.  However EWA is still currently using
+    a fixed 2.0 sampling radius.  This switch complements the use of "-filter
+    point" which turns off EWA filters in favor of interpolation for all
+    pixels in a distorted image.  BOTH switches should not be used together.
   * A bug in the support radius of the EWA resampling function was found,
     now that correctly defined resize filters are being used. Suddenly Normal
     Gaussian distortions are not so blurry, and tests with distortions of
@@ -40,7 +39,8 @@
     further.
 
     The above represents a major improvement forward in the quality of the
-    image distortion operator.
+    image distortion operator. But near-unity distortions (no scaling) are
+    still overly blurry.
 
 2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
   * Don't negate the geometry offset for the -extent option.
