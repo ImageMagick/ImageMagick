@@ -1890,7 +1890,6 @@ MagickExport PixelPacket *GetAuthenticPixels(Image *image,const ssize_t x,
        (GetAuthenticPixelsHandler) NULL)
     return(cache_info->methods.get_authentic_pixels_handler(image,x,y,columns,
       rows,exception));
-  return(GetAuthenticPixelsCache(image,x,y,columns,rows,exception));
   assert(id < (int) cache_info->number_threads);
   return(GetAuthenticPixelCacheNexus(image,x,y,columns,rows,
     cache_info->nexus_info[id],exception));
