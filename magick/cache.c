@@ -4220,7 +4220,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-      return(SetImageExtent(image,0,0));
+      return(MagickTrue);
     }
   if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
       (cache_info->reference_count == 1))
