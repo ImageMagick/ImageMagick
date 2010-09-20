@@ -5,6 +5,7 @@
 2010-09-19  6.6.4-5 Cristy  <quetzlzacatenango@image...>
   * If IPTC profile is not embedded in an 8bim resource, declare it IPTC
     rather than 8BIM.
+  * Support %[version] and %[copyright].
 
 2010-09-18  6.6.4-4 Cristy  <quetzlzacatenango@image...>
   * Automatically set the quantum depth to 16 for HDRI.
