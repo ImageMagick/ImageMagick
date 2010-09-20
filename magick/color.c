@@ -1365,7 +1365,8 @@ static void ConcatentateHexColorComponent(const MagickPixelPacket *pixel,
   }
   if (pixel->depth > 32)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%08lX",
+      (void) FormatMagickString(component,MaxTextExtent,"%08lX%08X",
+        (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)),
         (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
