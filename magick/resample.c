@@ -1408,8 +1408,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   /* Check the absolute area of the Parallogram involved...
    * This limit needs more work, as it gets too slow for
    * larger images involved with tiled views of the horizon. */
-  if ( resample_filter->Uwidth * resample_filter->Vlimit
-         > 4*resample_filter->image_area ) {
+  if ( (resample_filter->Uwidth * resample_filter->Vlimit)
+         > (4.0*resample_filter->image_area)) {
     resample_filter->limit_reached = MagickTrue;
     return;
   }
