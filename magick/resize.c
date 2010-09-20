@@ -962,7 +962,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->cubic[4]=(8.0*B+24.0*C)/6.0;
     resize_filter->cubic[5]=(-12.0*B-48.0*C)/6.0;
     resize_filter->cubic[6]=(6.0*B+30.0*C)/6.0;
-    resize_filter->cubic[7]=(- 1.0*B-6.0*C)/6.0;
+    resize_filter->cubic[7]=(-B-6.0*C)/6.0;
   }
   /*
     Expert Option Request for verbose details of the resulting filter.
