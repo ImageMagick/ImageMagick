@@ -177,7 +177,7 @@ static MagickRealType Box(const MagickRealType x,
   const ResizeFilter *resize_filter)
 {
   /*
-    Return a Box fillter up to its support size.
+    Return a Box filter up to its support size.
   */
   if ( x < resize_filter->support )
     return(1.0);
