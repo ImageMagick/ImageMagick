@@ -947,7 +947,6 @@ static const OptionInfo
     { "Kaiser", (ssize_t) KaiserFilter, MagickFalse },
     { "Lagrange", (ssize_t) LagrangeFilter, MagickFalse },
     { "Lanczos", (ssize_t) LanczosFilter, MagickFalse },
-    { "LanczosFast", (ssize_t) LanczosFastFilter, MagickFalse },
     { "Mitchell", (ssize_t) MitchellFilter, MagickFalse },
     { "Parzen", (ssize_t) ParzenFilter, MagickFalse },
     { "Point", (ssize_t) PointFilter, MagickFalse },
