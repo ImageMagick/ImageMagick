@@ -52,6 +52,7 @@ extern "C" {
 #define LiberateMagickResource(resource)  RelinquishMagickResource(resource)
 #define LiberateSemaphore(semaphore)  RelinquishSemaphore(semaphore)
 #define QuantumDepth  MAGICKCORE_QUANTUM_DEPTH
+#define MaxRGB  QuantumRange  /* deprecated */
 #define RunlengthEncodedCompression  RLECompression
 #define Upscale(value)  ScaleCharToQuantum(value)
 #define XDownscale(value)  ScaleShortToQuantum(value)
