@@ -61,9 +61,21 @@
 #include "magick/transform.h"
 #include "magick/signature-private.h"
 /*
+  EWA Resampling Options
+*/
+#define WLUT_WIDTH 1024       /* size of the filter cache */
+#define HQ_EWA 1              /* High Quality EWA? */
+#define DEBUG_NO_HIT_PIXELS 0 /* Make pixels that fail to 'hit' anything red */
+#define DEBUG_ELLIPSE 0       /* output ellipse info for debug */
+#define DEBUG_HIT_MISS 0      /* output hit/miss pixels with above switch */
+
+
+#if ! DEBUG_ELLIPSE
+#define DEBUG_HIT_MISS 0
+#endif
+/*
   Typedef declarations.
 */
-#define WLUT_WIDTH 1024
 struct _ResampleFilter
 {
   CacheView
@@ -854,7 +866,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   MagickBooleanType
     status;
 
-  ssize_t u,v, uw,v1,v2, hit;
+  ssize_t u,v, v1, v2, uw, hit;
   double u1;
   double U,V,Q,DQ,DDQ;
   double divisor_c,divisor_m;
@@ -863,6 +875,10 @@ MagickExport MagickBooleanType ResamplePixelColor(
   register const IndexPacket *indexes;
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickSignature);
+
+#if DEBUG_ELLIPSE
+  fprintf(stderr, "u0=%lf; v0=%lf;\n", u0, v0);
+#endif
 
   status=MagickTrue;
   GetMagickPixelPacket(resample_filter->image,pixel);
@@ -1017,31 +1033,37 @@ MagickExport MagickBooleanType ResamplePixelColor(
             &(resample_filter->average_pixel));
           average_view=DestroyCacheView(average_view);
           average_image=DestroyImage(average_image);
-#if 0
-          /* CheckerTile should average the image with background color */
-          //if ( resample_filter->virtual_pixel == CheckerTileVirtualPixelMethod ) {
-#if 0
-            resample_filter->average_pixel.red =
-                      ( resample_filter->average_pixel.red +
-                          resample_filter->image->background_color.red ) /2;
-            resample_filter->average_pixel.green =
-                      ( resample_filter->average_pixel.green +
-                          resample_filter->image->background_color.green ) /2;
-            resample_filter->average_pixel.blue =
-                      ( resample_filter->average_pixel.blue +
-                          resample_filter->image->background_color.blue ) /2;
-            resample_filter->average_pixel.matte =
-                      ( resample_filter->average_pixel.matte +
-                          resample_filter->image->background_color.matte ) /2;
-            resample_filter->average_pixel.black =
-                      ( resample_filter->average_pixel.black +
-                          resample_filter->image->background_color.black ) /2;
-#else
-            resample_filter->average_pixel =
-                          resample_filter->image->background_color;
-#endif
-          }
-#endif
+
+          if ( resample_filter->virtual_pixel == CheckerTileVirtualPixelMethod )
+            {
+              /* CheckerTile is avergae of image average half background */
+              /* FUTURE: replace with a 50% blend of both pixels */
+
+              weight = QuantumScale*((MagickRealType)(QuantumRange-
+                          resample_filter->average_pixel.opacity));
+              resample_filter->average_pixel.red *= weight;
+              resample_filter->average_pixel.green *= weight;
+              resample_filter->average_pixel.blue *= weight;
+              divisor_c = weight;
+
+              weight = QuantumScale*((MagickRealType)(QuantumRange-
+                          resample_filter->image->background_color.opacity));
+              resample_filter->average_pixel.red +=
+                      weight*resample_filter->image->background_color.red;
+              resample_filter->average_pixel.green +=
+                      weight*resample_filter->image->background_color.green;
+              resample_filter->average_pixel.blue +=
+                      weight*resample_filter->image->background_color.blue;
+              resample_filter->average_pixel.matte +=
+                      resample_filter->image->background_color.opacity;
+              divisor_c += weight;
+
+              resample_filter->average_pixel.red /= divisor_c;
+              resample_filter->average_pixel.green /= divisor_c;
+              resample_filter->average_pixel.blue /= divisor_c;
+              resample_filter->average_pixel.matte /= 2;
+
+            }
         }
         *pixel=resample_filter->average_pixel;
         break;
@@ -1062,28 +1084,41 @@ MagickExport MagickBooleanType ResamplePixelColor(
   /*
     Determine the parellelogram bounding box fitted to the ellipse
     centered at u0,v0.  This area is bounding by the lines...
-        v = +/- sqrt(A)
-        u = -By/2A  +/- sqrt(F/A)
-    Which has been pre-calculated above.
   */
-  v1 = (ssize_t)(v0 - resample_filter->Vlimit);               /* range of scan lines */
-  v2 = (ssize_t)(v0 + resample_filter->Vlimit + 1);
+  v1 = (ssize_t)ceil(v0 - resample_filter->Vlimit);  /* range of scan lines */
+  v2 = (ssize_t)floor(v0 + resample_filter->Vlimit);
 
-  u1 = u0 + (v1-v0)*resample_filter->slope - resample_filter->Uwidth; /* start of scanline for v=v1 */
-  uw = (ssize_t)(2*resample_filter->Uwidth)+1;       /* width of parallelogram */
+  /* scan line start and width accross the parallelogram */
+  u1 = u0 + (v1-v0)*resample_filter->slope - resample_filter->Uwidth;
+  uw = (ssize_t)(2.0*resample_filter->Uwidth)+1;
+
+#if DEBUG_ELLIPSE
+  fprintf(stderr, "v1=%ld; v2=%ld\n", (long)v1, (long)v2);
+  fprintf(stderr, "u1=%ld; uw=%ld\n", (long)u1, (long)uw);
+#else
+# define DEBUG_HIT_MISS 0 /* only valid if DEBUG_ELLIPSE is enabled */
+#endif
 
   /*
     Do weighted resampling of all pixels,  within the scaled ellipse,
     bound by a Parellelogram fitted to the ellipse.
   */
   DDQ = 2*resample_filter->A;
-  for( v=v1; v<=v2;  v++, u1+=resample_filter->slope ) {
-    u = (ssize_t)u1;       /* first pixel in scanline  ( floor(u1) ) */
-    U = (double)u-u0;   /* location of that pixel, relative to u0,v0 */
+  for( v=v1; v<=v2;  v++ ) {
+#if DEBUG_HIT_MISS
+    long uu = ceil(u1);   /* actual pixel location (for debug only) */
+    fprintf(stderr, "# scan line from pixel %ld, %ld\n", (long)uu, (long)v);
+#endif
+    u = (ssize_t)ceil(u1);        /* first pixel in scanline */
+    u1 += resample_filter->slope; /* start of next scan line */
+
+
+    /* location of this first pixel, relative to u0,v0 */
+    U = (double)u-u0;
     V = (double)v-v0;
 
     /* Q = ellipse quotent ( if Q<F then pixel is inside ellipse) */
-    Q = U*(resample_filter->A*U + resample_filter->B*V) + resample_filter->C*V*V;
+    Q = (resample_filter->A*U + resample_filter->B*V)*U + resample_filter->C*V*V;
     DQ = resample_filter->A*(2.0*U+1) + resample_filter->B*V;
 
     /* get the scanline of pixels for this v */
@@ -1112,20 +1147,38 @@ MagickExport MagickBooleanType ResamplePixelColor(
         divisor_c += weight;
 
         hit++;
+#if DEBUG_HIT_MISS
+        /* mark the pixel according to hit/miss of the ellipse */
+        fprintf(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 3\n",
+                     (long)uu-.1,(double)v-.1,(long)uu+.1,(long)v+.1);
+        fprintf(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 3\n",
+                     (long)uu+.1,(double)v-.1,(long)uu-.1,(long)v+.1);
+      } else {
+        fprintf(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 1\n",
+                     (long)uu-.1,(double)v-.1,(long)uu+.1,(long)v+.1);
+        fprintf(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 1\n",
+                     (long)uu+.1,(double)v-.1,(long)uu-.1,(long)v+.1);
       }
+      uu++;
+#else
+      }
+#endif
       pixels++;
       indexes++;
       Q += DQ;
       DQ += DDQ;
     }
   }
+#if DEBUG_ELLIPSE
+  fprintf(stderr, "Hit=%ld;  Total=%ld;\n", (long)hit, (long)uw*(v2-v1) );
+#endif
 
   /*
     Result sanity check -- this should NOT happen
   */
-  if ( hit == 4 ) {
+  if ( hit == 0 ) {
     /* not enough pixels in resampling, resort to direct interpolation */
-#if 0
+#if DEBUG_NO_PIXEL_HIT
     pixel->opacity = pixel->red = pixel->green = pixel->blue = 0;
     pixel->red = QuantumRange; /* show pixels for which EWA fails */
 #else
@@ -1187,6 +1240,9 @@ MagickExport MagickBooleanType ResamplePixelColor(
 %  equations, EG: U(x,y), V(x,y).  Caution is advised if you are trying to
 %  define the ellipse directly from scaling vectors.
 %
+%  It is assumed that the SetResampleFilter method has already been called,
+%  before this ScaleResampleFilter method.
+%
 %  The format of the ScaleResampleFilter method is:
 %
 %     void ScaleResampleFilter(const ResampleFilter *resample_filter,
@@ -1228,7 +1284,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
      And the given scaling dx,dy vectors in u,v space
          du/dx,dv/dx   and  du/dy,dv/dy
   */
-#if 0
+#if ! HQ_EWA
   /* Direct conversion of derivatives into elliptical coefficients
     No scaling will result in F == 1.0 and a unit circle.
     However if the ellipse becomes very small (magnification) or
@@ -1241,7 +1297,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   F *= F; /* square it */
 #define F_UNITY 1.0
 
-#else
+#else /* HQ_EWA */
   /*
     This Paul Heckbert's recomended "Higher Quality EWA" formula, from page
     60 in his thesis, which adds a unit circle to the elliptical area so as
@@ -1250,22 +1306,26 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     within the area of the ellipse, for weighted averaging.  No scaling will
     result with F == 4.0 and a circle of radius 2.0, and F smaller than this
     means magnification is being used.
+
+    NOTE: This method prodces a very blury result at near unity scale while
+    producing perfect results for string minitification and magnifications.
+
+    However filter support is fixed to 2.0 (no good for Windowed Sinc filters
   */
   A = dvx*dvx+dvy*dvy+1;
   B = -2.0*(dux*dvx+duy*dvy);
   C = dux*dux+duy*duy+1;
   F = A*C - B*B/4;
 #define F_UNITY 4.0
+
 #endif
 
-/* DEBUGGING OUTPUT */
-#if 0
-  fprintf(stderr, "dux=%lf; dvx=%lf;   duy=%lf; dvy%lf;\n",
+#if DEBUG_ELLIPSE
+  fprintf(stderr, "# -----\n" );
+  fprintf(stderr, "dux=%lf; dvx=%lf;   duy=%lf; dvy=%lf;\n",
        dux, dvx, duy, dvy);
   fprintf(stderr, "A=%lf; B=%lf; C=%lf; F=%lf\n", A,B,C,F);
-#endif
 
-#if 0
   /* Figure out the Ellipses Major and Minor Axis, and other info.
      This information currently not needed at this time, but may be
      needed later for better limit determination.
@@ -1273,9 +1333,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
      It is also good to have as a record for future debugging
   */
   { double alpha, beta, gamma, Major, Minor;
-    double Eccentricity, Ellipse_Area, Ellipse_angle;
-    double max_horizontal_cross_section, max_vertical_cross_section;
-    double parellelogram_slope;
+    double Eccentricity, Ellipse_Area, Ellipse_Angle;
 
     alpha = A+C;
     beta  = A-C;
@@ -1287,30 +1345,15 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
       Major = sqrt(2*F/(alpha - gamma));
     Minor = sqrt(2*F/(alpha + gamma));
 
-    fprintf(stderr, "\tMajor=%lf; Minor=%lf\n",
-         Major, Minor );
+    fprintf(stderr, "# Major=%lf; Minor=%lf\n", Major, Minor );
 
     /* other information about ellipse include... */
     Eccentricity = Major/Minor;
     Ellipse_Area = MagickPI*Major*Minor;
-    Ellipse_angle =  atan2(B, A-C);
+    Ellipse_Angle =  atan2(B, A-C);
 
-    fprintf(stderr, "\tAngle=%lf Area=%lf\n",
-         RadiansToDegrees(Ellipse_angle), Ellipse_Area );
-
-    /* Ellipse Orthogonal Bounds */
-    /* max_horizontal_orthogonal = sqrt(4*A*F/(4*A*C-B*B)) */
-    /* max_vertical_orthogonal   = sqrt(4*C*F/(4*A*C-B*B)) */
-
-    /* After optimization using the improved ellipse */
-    /* Note how F cancels out divisor and the 4, leaving only A and C */
-    max_horizontal_orthogonal = sqrt(A);
-    max_vertical_orthogonal   = sqrt(C);
-
-    /* Parallelogram Bounds (axis intercepts) */
-    max_horizontal_cross_section = sqrt(F/A);
-    max_vertical_cross_section   = sqrt(F/C);
-    parellelogram_slope = -B/(2*A);
+    fprintf(stderr, "# Angle=%lf Area=%lf\n",
+         RadiansToDegrees(Ellipse_Angle), Ellipse_Area );
   }
 #endif
 
@@ -1323,37 +1366,57 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     return;
   }
 
-  /* If F is impossibly large, we may as well not bother doing any
-     form of resampling, as you risk an near infinite resampled area.
-     In this case some alturnative means of pixel sampling, such as
-     the average of the whole image is needed to get a reasonable result.
+  /* The scaling vectors is impossibly large (producing a very large raw F
+     value), we may as well not bother doing any form of resampling, as you
+     risk an near infinite resampled area.  In this case some alturnative
+     means of pixel sampling, such as the average of the whole image is needed
+     to get a reasonable result.
   */
-  if ( F > MagickHuge ) {
+  if ( (4*A*C - B*B) > MagickHuge ) {
     resample_filter->limit_reached = MagickTrue;
     return;
   }
 
-  /* Othogonal bounds of the Improved Ellipse */
-  resample_filter->Ulimit = sqrt(C)+1.0;   /* Horizontal Orthogonal Limit */
-  resample_filter->Vlimit = sqrt(A)+1.0;   /* Vertical Orthogonal Limit */
+#if ! HQ_EWA
+  /* Clamp the ellipse size, stop it getting too small! */
+  A = A/F; B = B/F; C = C/F; F = 1.0;
+  if ( A > 1.0 ) B/=A/4, A=1.0;
+  if ( C > 1.0 ) B/=C/4, C=1.0;
+#endif
 
-  /* Horizontally aligned Parallelogram fitted to ellipse */
-  resample_filter->Uwidth = sqrt(F/A)+1.0;   /* Parallelogram Width */
-  resample_filter->slope = -B/(2*A);        /* Slope of the parallelogram */
+  /* Scale ellipse by the appropriate size */
+  F *= resample_filter->support;
+  F *= resample_filter->support;
 
+  /* Othogonal bounds of the Ellipse */
+  resample_filter->Ulimit = sqrt(4*C*F/(4*A*C-B*B));
+  resample_filter->Vlimit = sqrt(4*A*F/(4*A*C-B*B));
+
+  /* Horizontally aligned Parallelogram fitted to Ellipse */
+  resample_filter->Uwidth = sqrt(F/A);   /* Parallelogram Width / 2 */
+  resample_filter->slope = -B/(2*A);     /* Slope of the parallelogram */
+
+#if DEBUG_ELLIPSE
+  fprintf(stderr, "A=%lf; B=%lf; C=%lf; F=%lf\n", A,B,C,F);
+  fprintf(stderr, "# divisor=%lf, sqrt(divisor)=%lf  area=%ld\n",
+        divisor, sqrt(divisor), (long)4*resample_filter->image_area);
+  fprintf(stderr, "Ulimit=%lf; Vlimit=%lf; UWidth=%lf; Slope=%lf;\n",
+           resample_filter->Ulimit, resample_filter->Vlimit,
+           resample_filter->Uwidth, resample_filter->slope );
+#endif
 
   /* Check the absolute area of the Parallogram involved...
    * This limit needs more work, as it gets too slow for
    * larger images involved with tiled views of the horizon. */
   if ( resample_filter->Uwidth * resample_filter->Vlimit
-         > 5.0*resample_filter->image_area ) {
+         > 4*resample_filter->image_area ) {
     resample_filter->limit_reached = MagickTrue;
     return;
   }
 
   /* Scale ellipse formula to directly index the Filter Lookup Table */
   { register double scale;
-    scale = (double)WLUT_WIDTH/(F*4);  /* 4 = cache_support^2 */
+    scale = (double)WLUT_WIDTH/F;
     resample_filter->A = A*scale;
     resample_filter->B = B*scale;
     resample_filter->C = C*scale;
@@ -1411,58 +1474,44 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
   resample_filter->filter = filter;
 
-  /* Scale radius so it equals 1.0, at edge of ellipse when a
-     default blurring factor of 1.0 is used.
+  if ( filter == PointFilter )
+    return;  /* EWA turned off - nothing more to do */
 
-     Note that these filters are being used as a radial filter, not as
-     an othoginally alligned filter. How this effects results is still
-     being worked out.
-
-     Future: Direct use of the resize filters in "resize.c" to set the lookup
-     table, based on the filters working support window.
-  */
-  r_scale = sqrt(1.0/(double)WLUT_WIDTH);
-  r_scale *= 2; /* for 2 pixel radius of Improved Elliptical Formula */
-
-  switch ( resample_filter->filter ) {
-  case PointFilter:
-    /* This equivelent to turning off the EWA algroithm.
-       Only Interpolated lookup will be used.  */
-    break;
-  case UndefinedFilter:
+  if ( filter == UndefinedFilter )
     resample_filter->filter = GaussianFilter;
-    /* FALL-THRU */
-  default:
-    /*
-      Fill the LUT with a 1D resize filter function
-      But make the Sinc/Bessel tapered window 2.0
-      I also normalize the result so the filter is 1.0
-    */
-    resize_filter = AcquireResizeFilter(resample_filter->image,
-         resample_filter->filter,blur,MagickTrue,resample_filter->exception);
-    if (resize_filter != (ResizeFilter *) NULL) {
-#if 0
-      /* At this time the filter support is completely ignored! */
-      resample_filter->support = GetResizeFilterSupport(resize_filter);
-      resample_filter->support /= blur; /* taken into account above */
-      resample_filter->support *= resample_filter->support;
-      resample_filter->support *= (double)WLUT_WIDTH/4;
-      if ( resample_filter->support >= (double)WLUT_WIDTH )
-        resample_filter->support = (double)WLUT_WIDTH; /* not used yet */
-#endif
-      for(Q=0; Q<WLUT_WIDTH; Q++)
-        resample_filter->filter_lut[Q] = (double)
-             GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
-      resize_filter = DestroyResizeFilter(resize_filter);
-      break;
-    }
-    else {
+
+  resize_filter = AcquireResizeFilter(resample_filter->image,
+       resample_filter->filter,blur,MagickTrue,resample_filter->exception);
+  if (resize_filter == (ResizeFilter *) NULL) 
+    {
       (void) ThrowMagickException(resample_filter->exception,GetMagickModule(),
            ModuleError, "UnableToSetFilteringValue",
            "Fall back to default EWA gaussian filter");
+      resample_filter->filter = PointFilter;
     }
+
+  /* special handling for Gaussian filter */
+  resample_filter->support = GetResizeFilterSupport(resize_filter);
+#if HQ_EWA
+  resample_filter->support = 2.0;  /* fixed support */
+#else
+  if ( resample_filter->filter == GaussianFilter )
+    resample_filter->support = 2.0;
+#endif
+
+  /* Scale radius so the filter LUT covers the full support range */
+  r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
+
+  /* Fill the LUT with a 1D resize filter function */
+  for(Q=0; Q<WLUT_WIDTH; Q++)
+    resample_filter->filter_lut[Q] = (double)
+         GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
+
+  /* finished with the resize filter */
+  resize_filter = DestroyResizeFilter(resize_filter);
+
 #if 0
-  This is old code that is only 
+  This is old code kept for reference only.  It is very wrong.
   /*
     Create Normal Gaussian 2D Filter Weighted Lookup Table.
     A normal EWA guassual lookup would use   exp(Q*ALPHA)
@@ -1473,14 +1522,13 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
     This is now known to be wrong -- very wrong!
   */
-  /*r_scale = -2.77258872223978123767*4/WLUT_WIDTH/blur/blur;*/
   r_scale = -2.77258872223978123767/(WLUT_WIDTH*blur*blur);
   for(Q=0; Q<WLUT_WIDTH; Q++)
     resample_filter->filter_lut[Q] = exp((double)Q*r_scale);
   resample_filter->support = WLUT_WIDTH;
   break;
 #endif
-  }
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   /* if( GetOpenMPThreadId() == 0 ) */
 #endif
