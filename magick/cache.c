@@ -4212,16 +4212,15 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       */
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-          "attach persistent cache");
+          "attach persistent pixel cache");
       (void) CopyMagickString(cache_info->cache_filename,filename,
         MaxTextExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
+      if (OpenPixelCache(image,IOMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-      cache_info=GetImagePixelCache(image,MagickTrue,exception);
-      return(cache_info != (CacheInfo *) NULL ? MagickTrue : MagickFalse);
+      return(MagickTrue);
     }
   if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
       (cache_info->reference_count == 1))
@@ -4237,6 +4236,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
           /*
             Usurp existing persistent pixel cache.
           */
+          if (image->debug != MagickFalse)
+            (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+              "usurp resident persistent pixel cache");
           status=rename(cache_info->cache_filename,filename);
           if (status == 0)
             {
@@ -4246,9 +4248,6 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
                 page_size);
               UnlockSemaphoreInfo(cache_info->semaphore);
               cache_info=(CacheInfo *) ReferencePixelCache(cache_info);
-              if (image->debug != MagickFalse)
-                (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-                  "Usurp resident persistent cache");
               return(MagickTrue);
             }
         }
@@ -4257,6 +4256,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   /*
     Clone persistent pixel cache.
   */
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+      "clone persistent pixel cache");
   clone_image=(*image);
   clone_info=(CacheInfo *) clone_image.cache;
   image->cache=ClonePixelCache(cache_info);
