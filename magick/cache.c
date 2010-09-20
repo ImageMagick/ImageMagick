@@ -119,7 +119,7 @@ static const IndexPacket
 
 static const PixelPacket
   *GetVirtualPixelCache(const Image *,const VirtualPixelMethod,const ssize_t,
-    const ssize_t,const size_t,const size_t,ExceptionInfo *),
+     const ssize_t,const size_t,const size_t,ExceptionInfo *),
   *GetVirtualPixelsCache(const Image *);
 
 static MagickBooleanType
@@ -2233,11 +2233,24 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
 static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
+  CacheInfo
+    *cache_info;
+
+  const int
+    id = GetOpenMPThreadId();
+
   PixelPacket
     *pixels;
 
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
   *pixel=image->background_color;
-  pixels=GetAuthenticPixelsCache(image,x,y,1UL,1UL,exception);
+  assert(id < (int) cache_info->number_threads);
+  pixels=GetAuthenticPixelCacheNexus(image,x,y,1UL,1UL,
+    cache_info->nexus_info[id],exception);
   if (pixels == (PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
@@ -2283,11 +2296,14 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
   CacheInfo
     *cache_info;
 
+  const int
+    id = GetOpenMPThreadId();
+
   register const IndexPacket
     *indexes;
 
   register const PixelPacket
-    *p;
+    *pixels;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2295,12 +2311,13 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   GetMagickPixelPacket(image,pixel);
-  p=GetVirtualPixelCache(image,GetPixelCacheVirtualMethod(image),x,y,1,1,
-    exception);
-  if (p == (const PixelPacket *) NULL)
+  assert(id < (int) cache_info->number_threads);
+  pixels=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
+    1UL,1UL,cache_info->nexus_info[id],exception);
+  if (pixels == (const PixelPacket *) NULL)
     return(MagickFalse);
-  indexes=GetVirtualIndexQueue(image);
-  SetMagickPixelPacket(image,p,indexes,pixel);
+  indexes=GetVirtualIndexesFromNexus(cache_info,cache_info->nexus_info[id]);
+  SetMagickPixelPacket(image,pixels,indexes,pixel);
   return(MagickTrue);
 }
 
@@ -2346,6 +2363,9 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
   CacheInfo
     *cache_info;
 
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
 
@@ -2360,7 +2380,9 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
     return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
       virtual_pixel_method,x,y,pixel,exception));
   *pixel=image->background_color;
-  pixels=GetVirtualPixelCache(image,virtual_pixel_method,x,y,1UL,1UL,exception);
+  assert(id < (int) cache_info->number_threads);
+  pixels=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
+    cache_info->nexus_info[id],exception);
   if (pixels == (const PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
@@ -2404,6 +2426,9 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   CacheInfo
     *cache_info;
 
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
 
@@ -2417,11 +2442,9 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
        (GetOneVirtualPixelFromHandler) NULL)
     return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
       GetPixelCacheVirtualMethod(image),x,y,pixel,exception));
-  return(GetOneVirtualPixelFromCache(image,GetPixelCacheVirtualMethod(image),
-    x,y,pixel,exception));
-  *pixel=image->background_color;
-  pixels=GetVirtualPixelCache(image,GetPixelCacheVirtualMethod(image),x,y,
-    1UL,1UL,exception);
+  assert(id < (int) cache_info->number_threads);
+  pixels=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
+    1UL,1UL,cache_info->nexus_info[id],exception);
   if (pixels == (const PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
@@ -2466,11 +2489,20 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
+  CacheInfo
+    *cache_info;
+
+  const int
+    id = GetOpenMPThreadId();
+
   const PixelPacket
     *pixels;
 
   *pixel=image->background_color;
-  pixels=GetVirtualPixelCache(image,virtual_pixel_method,x,y,1UL,1UL,exception);
+  cache_info=(CacheInfo *) image->cache;
+  assert(id < (int) cache_info->number_threads);
+  pixels=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
+    cache_info->nexus_info[id],exception);
   if (pixels == (const PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
@@ -2587,8 +2619,7 @@ MagickExport MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
   MagickSizeType
     extent;
 
-  if (cache == (Cache) NULL)
-    return(0);
+  assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   extent=(MagickSizeType) nexus_info->region.width*nexus_info->region.height;
