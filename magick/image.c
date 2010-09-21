@@ -2939,14 +2939,8 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 MagickExport MagickBooleanType SetImageStorageClass(Image *image,
   const ClassType storage_class)
 {
-  PixelPacket
-    *pixels;
-
-  if (image->storage_class == storage_class)
-    return(MagickTrue);
   image->storage_class=storage_class;
-  pixels=QueueAuthenticPixels(image,0,0,1,1,&image->exception);
-  return(pixels == (PixelPacket *) NULL ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 /*
@@ -3030,16 +3024,11 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 MagickExport MagickBooleanType SetImageExtent(Image *image,
   const size_t columns,const size_t rows)
 {
-  PixelPacket
-    *pixels;
-
-  if ((columns != 0) && (rows != 0))
-    {
-      image->columns=columns;
-      image->rows=rows;
-    }
-  pixels=QueueAuthenticPixels(image,0,0,1,1,&image->exception);
-  return(pixels == (PixelPacket *) NULL ? MagickFalse : MagickTrue);
+  if ((columns == 0) || (rows == 0))
+    return(MagickFalse);
+  image->columns=columns;
+  image->rows=rows;
+  return(MagickTrue);
 }
 
 /*
