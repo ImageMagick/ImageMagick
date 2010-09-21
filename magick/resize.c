@@ -133,7 +133,7 @@ static MagickRealType
 %
 */
 
-#define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
+#define MagickREALTYPEPI ((MagickRealType) 3.14159265358979323846264338327950288420L)
 
 static MagickRealType Bessel(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
@@ -145,8 +145,8 @@ static MagickRealType Bessel(const MagickRealType x,
     http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
-    return((MagickRealType) (0.25*MagickPIL));
-  return(BesselOrderOne((MagickRealType) (MagickPIL*x))/(x+x));
+    return((MagickRealType) (0.25*MagickREALTYPEPI));
+  return(BesselOrderOne((MagickRealType) (MagickREALTYPEPI*x))/(x+x));
 }
 
 static MagickRealType Blackman(const MagickRealType x,
@@ -158,7 +158,7 @@ static MagickRealType Blackman(const MagickRealType x,
     Refactored by Chantal Racette and Nicolas Robidoux to one trig
     call and five flops.
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
+  const MagickRealType cospix = cos((double) (MagickREALTYPEPI*x));
   return(0.34+cospix*(0.5+cospix*0.16));
 }
 
@@ -172,9 +172,9 @@ static MagickRealType Bohman(const MagickRealType x,
     and 7 flops, taking advantage of the fact that the support of
     Bohman is 1 (so that we know that sin(pi x) >= 0).
   */
-  const double cospix = cos((double) (MagickPIL*x));
+  const double cospix = cos((double) (MagickREALTYPEPI*x));
   const double sinpix = sqrt(1.0-cospix*cospix);
-  return((MagickRealType) ((1.0-x)*cospix+(1.0/MagickPIL)*sinpix));
+  return((MagickRealType) ((1.0-x)*cospix+(1.0/MagickREALTYPEPI)*sinpix));
 }
 
 static MagickRealType Box(const MagickRealType x,
@@ -246,7 +246,7 @@ static MagickRealType Hanning(const MagickRealType x,
   /*
     Cosine window function: .5 + .5 cos(pi x).
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
+  const MagickRealType cospix = cos((double) (MagickREALTYPEPI*x));
   return(0.5+0.5*cospix);
 }
 
@@ -256,7 +256,7 @@ static MagickRealType Hamming(const MagickRealType x,
   /*
     Offset cosine window function: .54 + .46 cos(pi x).
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
+  const MagickRealType cospix = cos((double) (MagickREALTYPEPI*x));
   return(0.54+0.46*cospix);
 }
 
@@ -333,7 +333,7 @@ static MagickRealType Sinc(const MagickRealType x,
   */
   if (x != 0.0)
   {
-    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
+    const MagickRealType pix = (MagickRealType) (MagickREALTYPEPI*x);
     return(sin((double) pix)/pix);
   }
   return(1.0);
@@ -373,7 +373,7 @@ static MagickRealType SincFast(const MagickRealType x,
   */
   if (x > 4.0)
     {
-      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
+      const MagickRealType pix = (MagickRealType) (MagickREALTYPEPI*x);
       return(sin((double) pix)/pix);
     }
   {
