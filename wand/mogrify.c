@@ -2910,6 +2910,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             else
               if (LocaleNCompare(argv[i+1],"option:",7) == 0)
                 {
+                  (void) SetImageOption(image_info,argv[i+1]+7,value);
                   (void) SetImageOption(mogrify_info,argv[i+1]+7,value);
                   (void) SetImageArtifact(*image,argv[i+1]+7,value);
                 }
