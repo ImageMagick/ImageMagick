@@ -128,7 +128,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -201,17 +201,40 @@
 <h2><a name="caveats"></a>Encipher and Decipher Caveats</h2>
 <div class="doc-section">
 
-<p>Some formats do not support enciphered pixels-- the JPEG or GIF format, for example.  To ensure your image format is supported, encipher a test image and verify you can restore its original content <em>before</em> you encipher any additional images in that format.</p>
+<p>Some formats do not support enciphered pixels-- the JPEG or GIF format, for
+example.  To ensure your image format is supported, encipher a test image and
+verify you can restore its original content <em>before</em> you encipher any
+additional images in that format.</p>
 
-<p>The passphrase can be any combinations of letters and symbols.  It should be a minimum of 12 character combinations to help ensure your image remains private.  Also make sure your passphrase file permissions prevent others from reading it otherwise unintended users may be able to view the original image content.</p>
+<p>The image format also should be 8-bit and RGB (TrueColor). As such you may
+like to include the options "-depth 8 -type TrueColor" before the output
+filename. </p>
 
-<p>You can only restore the original image content if you know your passphrase.  If you lose or forget it, your original image content is lost forever.</p>
+<p>The passphrase can be any combinations of letters and symbols.  It should
+be a minimum of 12 character combinations to help ensure your image remains
+private.  Also make sure your passphrase file permissions prevent others from
+reading it otherwise unintended users may be able to view the original image
+content.</p>
 
-<p>ImageMagick only scrambles the image pixels.  The image metadata remains untouched and readable by anyone with access to the image file.</p>
+<p>You can only restore the original image content if you know your
+passphrase.  If you lose or forget it, your original image content is lost
+forever.</p>
 
-<p>ImageMagick uses the <a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a> cipher in cipher feedback mode.  We use the passphrase to derive the cipher key and the required nonce.</p>
+<p>ImageMagick only scrambles the image pixels.  The image metadata remains
+untouched and readable by anyone with access to the image file.</p>
 
-<p>Currently only ImageMagick can restore your enciphered image content.  We use a standard cipher and mode so other vendors are encouraged to support enciphered image content.</p>
+<p>ImageMagick uses the <a
+href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a>
+cipher in cipher feedback mode.  We use the passphrase to derive the cipher
+key and the required nonce.</p>
+
+<p>Currently only ImageMagick can restore your enciphered image content.  We
+use a standard cipher and mode so other vendors are encouraged to support
+enciphered image content.</p>
+
+<p>Some small practical examples of image enciphering can be found in IM
+Examples <A HREF="http://www.imagemagick.org/Usage/transform/#encipher"
+>Encrypting Image Data</A>. </p>
 
 </div>
 

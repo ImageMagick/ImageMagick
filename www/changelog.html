@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -167,24 +167,36 @@
 
 <div class="main">
 
-<ul><dt>2010-09-16  6.6.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-09-20  6.6.4-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.    Some computations were needlessly done in long double precision because    PIL forced an automatic upcast wherever it appeared. Changed its name to    MagickREALTYPEPI.</li>
+  <li> Modified "magick/resize.c" so that Bohman uses one trig call + one sqrt    call instead of two trig calls.</li><br />
+<dt>2010-09-20  6.6.4-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> modified "magick/resample.c" to allow use of either EWA or HQEWA (default)</li>
+  <li> Removed LanczosFast from supported filters (SincFast*SincFast is faster)</li><br />
+<dt>2010-09-19  6.6.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> If IPTC profile is not embedded in an 8bim resource, declare it IPTC    rather than 8BIM.</li>
+  <li> Support %[version] and %[copyright].</li>
+  <li> Improve performance of the pixel cache.</li><br />
+<dt>2010-09-18  6.6.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Automatically set the quantum depth to 16 for HDRI.</li><br />
+<dt>2010-09-16  6.6.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> IPTC profile not always wrapped properly inside an 8BIM profile.</li>
-  <li> TIFF tile geometry must be divisible by 16. </li><br />
+  <li> TIFF tile geometry must be divisible by 16.</li><br />
 <dt>2010-09-15  6.6.4-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Rename of SincPolynomial to SincFast  for easier user understanding</li>
+  <li> Rename of SincPolynomial to SincFast for easier user understanding</li>
   <li> Ditto for LanczosChebyshev to LanzcosFast</li><br />
 <dt>2010-09-14  6.6.4-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Switch default resize filters to using the faster SincPolynomial    filter by default internally.  However 'Sinc' will stil use the    Trigonometric function, and can be used to assign the trig version    of Sinc() to filters using the filter expert options.</li>
-  <li> Removed the default filter for 'distort' was found to be a very    blurry inaccurate filter function.  It was removed and replaced with    a correct Gussian filter (as used by resize)</li>
-  <li> Added a switch so that "-interpolate filter" will force the use of    a cylindrical filter for ALL pixels in distorted images.  That is you can    use that switch to use a cylindrical filter even for images that are    being enlarged by the distortion. It is slightly slower though.    However EWA is still currently using a fixed 2.0 sampling radius.    This switch complements the use of "-filter point" which turns off EWA    filters in favor of interpolation for all pixels in a distorted image.    BOTH switched should not be used together.</li>
+  <li> Switch default resize filters to using the faster SincPolynomial    filter by default internally.  However 'Sinc' will still use the    Trigonometric function, and can be used to assign the trig version    of Sinc() to filters using the filter expert options.</li>
+  <li> The default filter for 'distort' was found to be a very blurry inaccurate    filter function.  It was removed and replaced with a correct Gaussian    filter (as used by resize)</li>
+  <li> Added a switch so that "-interpolate filter" will force the use of    a cylindrical filter for ALL pixels in distorted images.  That is you can    use that switch to use a cylindrical filter even for images that are    being enlarged by the distortion.  However EWA is still currently using    a fixed 2.0 sampling radius.  This switch complements the use of "-filter    point" which turns off EWA filters in favor of interpolation for all    pixels in a distorted image.  BOTH switches should not be used together.</li>
   <li> A bug in the support radius of the EWA resampling function was found,    now that correctly defined resize filters are being used. Suddenly Normal    Gaussian distortions are not so blurry, and tests with distortions of    the 'Rings' image show extremely good and clear results, with only minimal    blurring.  The filter 'blur' expert option can be used to adjust this    further.</li><br />
-    The above represents a major improvement forward in the quality of the    image distortion operator.</li><br />
+    The above represents a major improvement forward in the quality of the    image distortion operator. But near-unity distortions (no scaling) are    still overly blurry.</li><br />
 <dt>2010-09-13  6.6.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't negate the geometry offset for the -extent option.</li><br />
 <dt>2010-09-09  6.6.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The RGBO format is now listed as a supported format.</li><br />
 <dt>2010-09-07  6.6.4-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Added the Nicolas Robidoux and Chantal Racette  Lanczos resize filter    function as "LanczosChebyshev" as faster alturnative to Lanczos.</li>
+  <li> Added the Nicolas Robidoux and Chantal Racette  Lanczos resize filter    function as "LanczosChebyshev" as faster alternative to Lanczos.</li>
   <li> Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of    the Sinc Trigonometric resize filter, as a proper filter to allow    direct comparision and speed testing of the filter.</li>
   <li> Expanded the "-set option:filter:verbose 1" output, so as to also include    the actual functions and other values that were used to create the filter.</li><br />
 <dt>2010-09-02  6.6.4-0 el_supremo  &lt;digipete@shaw...&gt;</dt>

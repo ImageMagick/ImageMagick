@@ -131,7 +131,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -423,7 +423,7 @@ stack images left-to-right. </p>
 
 <p>If they are not of the same width, narrower images are padded with the
 current <a href="#background">-background</a> color setting, and their
-position relative to each other can be controled by the current <a
+position relative to each other can be controlled by the current <a
 href="#gravity">-gravity</a> setting. </p>
 
 
@@ -460,7 +460,7 @@ image it will get a have a value of 50%. </p>
 
 <p>This works well for real-life images with little or no extreme dark and
 light areas, but tend to fail for images with large amounts of bright sky or
-dark shadows. It also does not work well for diagrmas or cartoon like images.
+dark shadows. It also does not work well for diagrams or cartoon like images.
 </p>
 
 <p>It uses the <a href="#channel" >-channel</a> setting, (including the
@@ -478,7 +478,7 @@ together by the same gamma value, preserving colors. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Automagically adjust color levels of image.</td><td style='text-align:right;'></td></tr></table>
 
 <p>This is a 'perfect' image normalization operator.  It finds the exact
-mimimum and maximum color values in the image and then applies a <a
+minimum and maximum color values in the image and then applies a <a
 href="#level" >-level</a> operator to stretch the values to the full range of
 values. </p>
 
@@ -637,7 +637,7 @@ determines the actual amount of bluring that will take place. </p>
 
 <p>The <em class="arg" >Radius</em> is only used to determine the size of the
 array which will hold the calculated gaussian distribution. It should be an
-integer.  If not given, or set to zero, IM will calculate the largest posible
+integer.  If not given, or set to zero, IM will calculate the largest possible
 radius that will provide meaningful results for the Gaussian distribution.
 </p>
 
@@ -697,7 +697,7 @@ href="#compose">-compose</a> setting and assumes that this is using the default
 size colors by the current <a href="#bordercolor">-bordercolor</a> before
 overlaying the original image in the center of this net image.  This means that
 with the default compose method of '<kbd>Over</kbd>' any transparent parts may
-be replaced by the current <a href="#bordercolor">-bordercolor</a> setting.</p>  
+be replaced by the current <a href="#bordercolor">-bordercolor</a> setting.</p>
 <p>See also the <a href="#frame">-frame</a> option, which has more
 functionality.</p>
 
@@ -838,13 +838,13 @@ operators that understand this flag should perform: cross-channel
 syncronization of the channels. If not specified, then most grey-scale
 operators will apply their image processing operations to each individual
 channel (as specified by the rest of the <a href="#channel">-channel</a>
-setting) completely independantally from each other. </p>
+setting) completely independently from each other. </p>
 
 <p>For example for operators such as <a href="#auto-level">-auto-level</a> and
 <a href="#auto-gamma">-auto-gamma</a> the color channels will be modified
 together in exactly the same way so that colors will remain in-sync. Without
-it being set, then each channel will be modified separatally and
-independantally, which may produce color distortion. </p>
+it being set, then each channel will be modified separately and
+independently, which may produce color distortion. </p>
 
 <p>The <a href="#morphology">-morphology</a> '<kdb>Convolve</kdb>' method
 and the <a href="#compose">-compose</a> mathematical methods, also understands
@@ -902,9 +902,9 @@ include the following.
 <a href="#white-threshold">-white-threshold</a>.
 </p>
 
-<p>Warning, some operators behave differentally when the <a href="#channel"
+<p>Warning, some operators behave differently when the <a href="#channel"
 >+channel</a> default setting is in effect, verses ANY user defined <a
-href="#channel" >-channel</a> setting (including the equivelent of the
+href="#channel" >-channel</a> setting (including the equivalent of the
 default). These operators have yet to be made to understand the newer 'Sync'
 flag. </p>
 
@@ -919,7 +919,7 @@ href="#channel" >-channel</a>.  Generally this done to ensure that
 fully-transparent colors are treated as being fully-transparent, and thus any
 underlying 'hidden' color has no effect on the final results.  Typically
 resulting in 'halo' effects. The newer <a href="#morphology">-morphology</a>
-convolution equivelents however does have a understanding of the 'Sync' flag
+convolution equivalents however does have a understanding of the 'Sync' flag
 and will thus handle transparency correctly by default. </p>
 
 <p>As a alpha channel is optional within images, some operators will read the
@@ -1025,10 +1025,10 @@ set, it is treated by the <a href="#clut" >-clut</a> operator in the same way
 as the other channels, implying that alpha/matte values are replaced using the
 alpha/matte values of the original image. </p>
 
-<p>If either the image being modified, or the lookup image, conatins no
+<p>If either the image being modified, or the lookup image, contains no
 transparency (i.e. <a href="#alpha" >-alpha</a> is turned 'off') but the <a
 href="#channel">-channel</a> setting includes alpha replacement, then it is
-assumed that image represents a gray-scale graident which will be used for the
+assumed that image represents a gray-scale gradient which will be used for the
 replacement alpha values.  That is you can use a gray-scale CLUT image to
 adjust a existing images alpha channel, or you can color a gray-scale image
 using colors form CLUT containing the desired colors, including transparency.
@@ -1045,7 +1045,7 @@ cube. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Fully define the look of each frame of an GIF animation sequence, to form a 'film strip' animation.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Overlay each image in an image sequence according to its <a href="#dispose">-dispose</a> meta-data, to reproduce the look of an animation at each point in the animation sequence. All images should be the same size, and are assigned appropriate GIF disposal settings for the animation to continue working as expected as a GIF animation.  Such frames are more easilly viewed and processed than the highly optimized GIF overlay images.  </p>
+<p>Overlay each image in an image sequence according to its <a href="#dispose">-dispose</a> meta-data, to reproduce the look of an animation at each point in the animation sequence. All images should be the same size, and are assigned appropriate GIF disposal settings for the animation to continue working as expected as a GIF animation.  Such frames are more easily viewed and processed than the highly optimized GIF overlay images.  </p>
 
 <p>The animation can be re-optimized after processing using the <a href="#layers">-layers</a> method '<kbd>optimize</kbd>', though there is no guarantee that the restored GIF animation optimization is better than the original. </p>
 
@@ -1247,7 +1247,7 @@ convert kittens.jpg -color-matrix \
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Embed a comment in an image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option sets the comment meta-data of an image read in afetr this
+<p>This option sets the comment meta-data of an image read in after this
 option has been given.  To modify a comment of images already in memory use
 "<kbd><a href="#set">-set</a> comment</kbd>". </p>
 
@@ -1320,7 +1320,7 @@ Y-displacement image instead. </p>
 <p>If a <a href="#compose">-compose</a> method requires extra numerical
 arguments or flags these can be provided by setting the  <a
 href="#set">-set</a> '<kbd class="arg">option:compose:args</kbd>'
-appropriatally for the compose method. </p>
+appropriately for the compose method. </p>
 
 <p>Some <a href="#compose">-compose</a> methods can modify the 'destination'
 image outside the overlay area. You can disable this by setting the special <a
@@ -1389,7 +1389,7 @@ originally fell into the same 'bin'. </p>
 
 <p>All the channels are normalized in concert by the came amount so as to
 preserve color integrity, when the default <a href="#channel" >+channel</a>
-setting is in use.  Specifing any other <a href="#channel" >-channel</a>
+setting is in use.  Specifying any other <a href="#channel" >-channel</a>
 setting will normalize the RGB channels independently.</p>
 
 <p>See also  <a href="#auto-level" >-auto-level</a> for a 'perfect'
@@ -1516,42 +1516,106 @@ colormap entry is shifted.</p>
   <h4><a name="define" id="define"></a>-define <em class="arg">key</em>{<em class="arg">=value</em>}<em class="arg">...</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>add coder/decoder specific options.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>add specific global settings generally used to control 
+coders and image processing operations.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option creates one or more definitions for coders and decoders to use while reading and writing image data.  Definitions may be passed to coders and decoders to control options that are specific to certain image formats. If <em class="arg">value</em> is missing for a definition, an empty-valued definition of a flag is created with that name. This used to control on/off options.  Use <a href="#define">+define key</a> to remove definitions previously created. Use <a href="#define">+define "*"</a> to remove all existing definitions.</p>
+<p>This option creates one or more definitions for coders and decoders to use
+while reading and writing image data.  Definitions are generally used to
+control image file format coder modules, and image processing operations,
+beyond what is provided by normal means.  Defined settings are listed in <a
+href="#verbose" >-verbose</a> information ("<kbd>info:</kbd>" output format)
+as "Artifacts". </p>
 
-<p>The following definitions may be created:</p>
+<p>If <em class="arg">value</em> is missing for a definition, an empty-valued
+definition of a flag is created with that name. This used to control on/off
+options.  Use <a href="#define">+define key</a> to remove definitions
+previously created.  Use <a href="#define">+define "*"</a> to remove all
+existing definitions.</p>
+
+<p>The same "Artifact" settings can also be defined using the <a
+href="#set" >-set "option:<em class="arg">key</em>" "<em class="arg"
+>value</em></a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
+Properties</a> in the defined value. </p>
+
+<p>Such settings are global in scope, and effect all images and operations. </p>
+
+<p>The following definitions are just some of the artifacts that are
+available:</p>
 
 <ul>
+
 <dt>dcm:display-range=reset</dt>
-  <dd>Set the display range to the minimum and maximum pixel values for the DCM image format.</dd><br />
+<dd>Set the display range to the minimum and maximum pixel values for the
+    DCM image format.</dd><br />
+
 <dt>dot:layout-engine=<em class="arg">value</em></dt>
-  <dd>Set the specify the layout engine for the DOT image format (e.g. <kbd>neato</kbd>).</dd><br />
+<dd>Set the specify the layout engine for the DOT image format (e.g.
+    <kbd>neato</kbd>).</dd><br />
+
 <dt>jpeg:extent=<em class="arg">value</em></dt>
-  <dd>Restrict the maximum JPEG file size, for example <kbd>-define jpeg:extent=400kb</kbd>.</dd><br />
+<dd>Restrict the maximum JPEG file size, for example <kbd>-define
+    jpeg:extent=400kb</kbd>.</dd><br />
+
 <dt>jpeg:size=<em class="arg">geometry</em></dt>
-  <dd>Set the size hint of a JPEG image, for example, -define jpeg:size=128x128.  It is most useful for increasing performance and reducing the memory requirements when reducing the size of a large JPEG image.</dd><br />
+<dd>Set the size hint of a JPEG image, for example, -define jpeg:size=128x128.
+    It is most useful for increasing performance and reducing the memory
+    requirements when reducing the size of a large JPEG image.</dd><br />
+
 <dt>jp2:rate=<em class="arg">value</em></dt>
-  <dd>Specify the compression factor to use while writing JPEG-2000 files. The compression factor is the reciprocal of the compression ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless compression. If defined, this value overrides the -quality setting.  A quality setting of 75 results in a rate value of 0.06641.</dd><br />
+<dd>Specify the compression factor to use while writing JPEG-2000 files. The
+    compression factor is the reciprocal of the compression ratio. The valid
+    range is 0.0 to 1.0, with 1.0 indicating lossless compression. If defined,
+    this value overrides the -quality setting.  A quality setting of 75
+    results in a rate value of 0.06641.</dd><br />
+
 <dt>mng:need-cacheoff</dt>
   <dd>turn playback caching off for streaming MNG.</dd><br />
+
 <dt>png:bit-depth=<em class="arg">value</em></dt>
 <dt>png:color-type=<em class="arg">value</em></dt>
-  <dd>desired bit-depth and color-type for PNG output.  You can force the PNG encoder to use a different bit-depth and color-type than it would have normally selected, but only if this does not cause any loss of image quality. Any attempt to reduce image quality is treated as an error and no PNG file is written.  E.g., if you have a 1-bit black-and-white image, you can use these "defines" to cause it to be written as an 8-bit grayscale, indexed, or even a 64-bit RGBA.  But if you have a 16-million color image, you cannot force it to be written as a grayscale or indexed PNG.  If you wish to do this, you must use the appropriate <a href="#depth">-depth</a>, <a href="#colors">-colors</a>, or <a href="#type">-type</a> directives to reduce the image quality prior to using the PNG encoder. Note that in indexed PNG files, "bit-depth" refers to the number of bits per index, which can range from 1 to 8.  In such files, the color samples always have 8-bit depth.</dd><br />
+<dd>desired bit-depth and color-type for PNG output.  You can force the PNG
+    encoder to use a different bit-depth and color-type than it would have
+    normally selected, but only if this does not cause any loss of image
+    quality. Any attempt to reduce image quality is treated as an error and no
+    PNG file is written.  E.g., if you have a 1-bit black-and-white image, you
+    can use these "defines" to cause it to be written as an 8-bit grayscale,
+    indexed, or even a 64-bit RGBA.  But if you have a 16-million color image,
+    you cannot force it to be written as a grayscale or indexed PNG.  If you
+    wish to do this, you must use the appropriate <a href="#depth">-depth</a>,
+    <a href="#colors">-colors</a>, or <a href="#type">-type</a> directives to
+    reduce the image quality prior to using the PNG encoder. Note that in
+    indexed PNG files, "bit-depth" refers to the number of bits per index,
+    which can range from 1 to 8.  In such files, the color samples always have
+    8-bit depth.</dd><br />
+
 <dt>ps:imagemask</dt>
-  <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create Postscript files that render bilevel images with the Postscript imagemask operator instead of the image operator.</dd><br />
+<dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create
+    Postscript files that render bilevel images with the Postscript imagemask
+    operator instead of the image operator.</dd><br />
+
 <dt>quantum:format=<em class="arg">type</em></dt>
-  <dd>Set the type to <kbd>floating-point</kbd> to specify a floating-point format for raw files (e.g. GRAY:) or for MIFF and TIFF images in HDRI mode to preserve negative values. If <a href="#depth">-depth</a> 16 is included, then the result will be single precision floating point format. If <a href="#depth">-depth</a> 32 is included, then the result will be double precision floating point format.</dd>
+<dd>Set the type to <kbd>floating-point</kbd> to specify a floating-point
+    format for raw files (e.g. GRAY:) or for MIFF and TIFF images in HDRI mode
+    to preserve negative values. If <a href="#depth">-depth</a> 16 is
+    included, then the result will be single precision floating point format.
+    If <a href="#depth">-depth</a> 32 is included, then the result will be
+    double precision floating point format.</dd>
+
 </ul>
 
-<p>For example, to create a postscript file that will render only the black pixels of a bilevel image, use:</p>
+<p>For example, to create a postscript file that will render only the black
+pixels of a bilevel image, use:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert bilevel.tif -define ps:imagemask eps3:stencil.ps</span></p>
-<p>Set attributes of the image registry by prefixing the value with <kbd>registry:</kbd>.  For example, to set a temporary path to put work files, use:</p>
+<p>Set attributes of the image registry by prefixing the value with
+<kbd>registry:</kbd>.  For example, to set a temporary path to put work files,
+use:</p>
 
 <p class="crtsnip">
 -define registry:temporary-path=/data/tmp
 </p>
+
+
 
 <div style="margin: auto;">
   <h4><a name="delay" id="delay"></a>-delay <em class="arg">ticks</em> <br />-delay <em class="arg">ticks</em>x<em class="arg">ticks-per-second</em> {<em class="arg">&lt;</em>} {<em class="arg">&gt;</em>}</h4>
@@ -1649,9 +1713,9 @@ important in understanding how displacement maps work.  </p>
 
 <p>The given arguments define the maximum amount of displacement in pixels
 that a particular map can produce. If the displacement scale is large enough
-it is also posible to lookup parts of the 'background' image that lie well
+it is also possible to lookup parts of the 'background' image that lie well
 outside the bounds of the displacement map itself.  That is you could very
-easilly copy a section of the original image from outside the overlay area
+easily copy a section of the original image from outside the overlay area
 into the overlay area. </p>
 
 <p>The '%' flag makes the displacement scale relative to the size of the
@@ -1661,17 +1725,17 @@ these flags were added as of IM v6.5.3-5.</p>
 
 <p>Normally a single grayscale displacement map is provided, which with the
 given scaling values will determine a single direction (vector) in which
-displacements can occur (positivally or negativally).  However, if you also
+displacements can occur (positively or negatively).  However, if you also
 specify a third image which is normally used as a <em class="arg">mask</em>,
 then the <em class="arg">composite image</em> will be used for horizontal X
 displacement, while the <em class="arg">mask image</em> is used for vertical Y
 displacement.  This allows you to define completely different displacement
 values for the X and Y directions, and allowing you to lookup any point within
 the  <em class="arg">scale</em> bounds.  In other words each pixel can lookup
-any other nearby pixel, producing complex 2 dimentional displacements, rather
-than a simple 1 dimentional vector displacements. </p>
+any other nearby pixel, producing complex 2 dimensional displacements, rather
+than a simple 1 dimensional vector displacements. </p>
 
-<p>Alternativally rather than suppling two separate images, as of IM v6.4.4-0,
+<p>Alteratively rather than suppling two separate images, as of IM v6.4.4-0,
 you can use the 'red' channel of the overlay image to specify the horizontal
 or X displacement, and the 'green' channel for the vertical or Y displacement.
 </p>
@@ -1712,7 +1776,7 @@ Previous    3  Clear to the image prior to this frames overlay.
 <p>You can also use the numbers given above, which is what the GIF format
 uses internally to represent the above settings. </p>
 
-<p>To print a complete list of dispose methods, use <a href="#list">-list dipose</a>.</p>
+<p>To print a complete list of dispose methods, use <a href="#list">-list dispose</a>.</p>
 
 <p>Use <a href="#dispose" >+dispose</a>, turn off the setting and prevent
 resetting the layer disposal methods of images being read in. </p>
@@ -1791,14 +1855,14 @@ class="arg">method</em> being used. </p>
                    &nbsp; NewX,NewY</em></td></tr>
        </table>
 
-       This is actually an alternative way of specifing a 2 dimensional linear
+       This is actually an alternative way of specifying a 2 dimensional linear
        '<kbd>Affine</kbd>' or '<kbd>AffineProjection</kbd>' distortion.  </td> </tr>
 
   <tr valign="top">
     <td valign="top"><kbd>Affine</kbd></td>
     <td valign="top">
        Distort the image linearly by moving a list of at least 3 or more sets
-       of control points (as defined below).  Idealy 3 sets or 12 floating
+       of control points (as defined below).  Ideally 3 sets or 12 floating
        point values are given allowing the image to be linearly scaled,
        rotated, sheared, and translated, according to those three points. See
        also the related '<kbd>AffineProjection</kbd>' and '<kbd>SRT</kbd>'
@@ -1807,7 +1871,7 @@ class="arg">method</em> being used. </p>
        More than 3 sets given control point pairs (12 numbers) is least
        squares fitted to best match a lineary affine distortion. If only 2
        control point pairs (8 numbers) are given a two point image translation
-       rotation and scaling is performed, without any posible  shearing,
+       rotation and scaling is performed, without any possible  shearing,
        flipping or changes in aspect ratio to the resulting image. If only one
        control point pair is provides the image is only translated, (which may
        be a floating point non-integer translation). <br/>
@@ -1848,7 +1912,7 @@ class="arg">method</em> being used. </p>
        Bilinear (reversed) Distortion, given a minimum of 4 sets of
        coordinate pairs, or 16 values (see below). Not that lines may not
        appear straight after distortion, though the distance between
-       coordinates will remain consistant. </td>
+       coordinates will remain consistent. </td>
   </tr>
 -->
 
@@ -1871,7 +1935,7 @@ class="arg">method</em> being used. </p>
   <tr valign="top">
     <td valign="top"><kbd>PerspectiveProjection</kbd>&nbsp;&nbsp;</td>
     <td valign="top">
-       Do a '<kbd>Perspective</kbd>' distortion basied on a set of 8
+       Do a '<kbd>Perspective</kbd>' distortion biased on a set of 8
        pre-calculated coefficients. You can get these coefficients by looking
        at the <a href="#verbose" >-verbose</a> output of a
        '<kbd>Prespective</kbd>' distortion, or by calculating them yourself.
@@ -1952,7 +2016,7 @@ class="arg">method</em> being used. </p>
 
        Note that as this distortion requires the area resampling of a circular
        arc, which can not be handled by the builtin EWA resampling function.
-       As such the normal EWA filters are turned off. It is recomended some
+       As such the normal EWA filters are turned off. It is recommended some
        form of 'super-sampling' image processing technique be used to produce
        a high quality result. </td>
 
@@ -1963,7 +2027,7 @@ class="arg">method</em> being used. </p>
     <td valign="top">
        Given the four coefficients (A,B,C,D) as defined by <a
        href="http://www.all-in-one.ee/~dersch/barrel/barrel.html" >Helmut
-       Dersch</a>, perform a barrell or pincussion distortion appropriate to
+       Dersch</a>, perform a barrell or pin-cushion distortion appropriate to
        correct radial lens distortions.  That is in photographs, make straight
        lines straight again. <br/>
 
@@ -2052,8 +2116,8 @@ ideal number of points are given, the distort will generally fall back to a
 simpler form of distortion that can handles the smaller number of coordinates
 (usally a linear '<kbd>Affine</kbd>' distortion). </p>
 
-<p>By using more coodinates you can make use of image registration tool to
-find matching coordinate pairs in overlaping images, so as to improve the 'fit'
+<p>By using more coordinates you can make use of image registration tool to
+find matching coordinate pairs in overlapping images, so as to improve the 'fit'
 of the distortion. Of course a bad coordinate pair can also make the 'fit'
 worse. Caution is always advised. </p>
 
@@ -2084,7 +2148,7 @@ the rest of the ground. </p>
 means that if the part of the distorted image falls outside the viewed area of
 the 'distorted space', those parts is clipped and lost.  However if you
 use the plus form of the operator (<a href="#distort" >+distort</a>) the
-operator will attempt (if posible) to show the whole of the distorted image,
+operator will attempt (if possible) to show the whole of the distorted image,
 while retaining a correct 'virtual canvas' offset, for image layering. This
 offset may need to be removed using <a href="#repage" >+repage</a>, to remove
 if it is unwanted. </p>
@@ -2119,7 +2183,7 @@ above settings. It is algorithmically slower, though in ImageMagick it may be fa
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Apply a Riemersma or Floyd-Steinberg error diffusion dither to images when general color reduction is applied via an option, or automagically when saving to specific formats. This enabled by default. </td><td style='text-align:right;'></td></tr></table>
 
-<p>Dithering places two or more colors in neighbouring pixels so that to the eye a closer approximation of the images original color is reproduced. This reduces the number of colors needed to reproduce the image but at the cost of a lower level pattern of colors. Error diffusion dithers can use any set of colors (generated or user defined) to an image.  </p>
+<p>Dithering places two or more colors in neighboring pixels so that to the eye a closer approximation of the images original color is reproduced. This reduces the number of colors needed to reproduce the image but at the cost of a lower level pattern of colors. Error diffusion dithers can use any set of colors (generated or user defined) to an image.  </p>
 
 <p>Dithering is turned on by default, to turn it off use the plus form of the
 setting, <a href="#dither">+dither</a>. This will also also render PostScript
@@ -2304,6 +2368,8 @@ matrix.</p>
 <p>Get the passphrase from the file specified by <em class="arg">filename</em>.</p>
 
 <p>For more information, see the webpage, <a href="http://www.imagemagick.org/www/cipher.html">ImageMagick: Encipher or Decipher an Image</a>.</p>
+
+
 
 <div style="margin: auto;">
   <h4><a name="encoding" id="encoding"></a>-encoding <em class="arg">type</em></h4>
@@ -2575,11 +2641,12 @@ equivalent to:</p>
   <h4><a name="filter" id="filter"></a>-filter <em class="arg">type</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Use this <em class="arg">type</em> of filter when resizing an image.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Use this <em class="arg">type</em> of filter when resizing or
+distorting an image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Use this option to affect the resizing operation of an image (see <a
-href="#resize">-resize</a>). For example you can use a simple resize filter
-such as:</p>
+<p>Use this option to affect the resizing operation of an image during
+operations such as <a href="#resize">-resize</a> and <a href="#distort"
+>-distort</a>. For example you can use a simple resize filter such as:</p>
 
 <pre class="text">
    Point       Hermite       Cubic
@@ -2587,11 +2654,16 @@ such as:</p>
    Triangle    Quadratic     Mitchell
 </pre>
 
-<p>The <kbd>Bessel</kbd> and <kbd>Sinc</kbd> filter is also provided, but are
-by default <kbd>blackman</kbd>-windowed.  However these filters define a
-windowing filter for the Sinc or Bessel filter function, as appropriate for
-the scaling operator used (usally Sinc for orthogonal <a href="#resize"
->-resize</a>).   Windowed filters include: </p>
+<p>The <kbd>Bessel</kbd> and <kbd>Sinc</kbd> filter is also provided (as well
+as a faster <kbd>SincFast</kbd> equivalent ploynomil form).
+However these filters are generally useless on their own as they are infinite
+filters that have been clipped to the filters support size. Their direct use
+is not recommended except via expert settings (see below). </p>
+
+Instead these special filter functions are typically windowed by a windowing
+function that the <a href="#filter" >-filter</a> setting defines.   That is
+using these functions will define a 'Windowed' filter, appropriate to the
+operator involved.  Windowed filters include: </p>
 
 <pre class="text">
    Lanczos       Hamming       Parzen
@@ -2603,50 +2675,80 @@ the scaling operator used (usally Sinc for orthogonal <a href="#resize"
 <kbd>Lagrange</kbd>, which will automagically re-adjust its function depending
 on the current 'support' or 'lobes' expert settings (see below).</p>
 
-<p>If you do not select a filter with this option, the filter defaults to <kbd>Mitchell</kbd> for a colormapped image, a image with a matte channel, or if the image is enlarged.  Otherwise the filter default to <kbd>Lanczos</kbd>.</p>
+<p>If you do not select a filter with this option, the filter defaults to
+<kbd>Mitchell</kbd> for a colormapped image, a image with a matte channel, or
+if the image is enlarged.  Otherwise the filter default to
+<kbd>Lanczos</kbd>.</p>
 
-<p>To print a complete list of resize filters, use the <a href="#list">-list filter</a> option.</p>
+<p>To print a complete list of resize filters, use the <a href="#list">-list
+filter</a> option.</p>
 
 <p>You can modify how the filter behaves as it scales your image through the
-use of these expert settings:</p>
+use of these expert settings (see also <a href="#define" >-define</a> and <a
+href="#set" >-set</a>):-</p>
 
 <dl class="doc">
-<dt>-set filter:blur <em>factor</em></dt>
+<dt>-define filter:blur=<em>factor</em></dt>
 <dd>Scale the X axis of the filter (and its window). Use &gt; 1.0 for
-    blurry or &lt; 1.0 for sharp.</dd>
+    blurry or &lt; 1.0 for sharp. This should only be used with Gaussian and
+    Gaussian-like filters simple filters, or you may not get the expected
+    results. </dd>
 
-<dt>-set filter:support <em>radius</em></dt>
-<dd>Set the filter support radius.</dd>
+<dt>-define filter:support=<em>radius</em></dt>
+<dd>Set the filter support radius. Defines how large the filter should be and
+    thus directly defines how slow the filtered resampling process is. All
+    filters have a default 'prefered' support size. Some filters like
+    <kbd>Lagrange</kbd> and windowed filters adjust themselves depending on
+    this value.  With simple filters this value either does nothing (but slow
+    the resampling), or will clip the filter function in a detrimental way.
+    </dd>
 
-<dt>-set filter:lobes <em>count</em></dt>
+<dt>-define filter:lobes=<em>count</em></dt>
 <dd>Set the number of lobes to use for the Sinc/Bessel filter. This an
-    alternative way of specifying the 'support' range of the filter.</dd>
+    alternative way of specifying the 'support' range of the filter, that is
+    designed to be more suited to windowed filters, especially when used for
+    image distorts.</dd>
 
-<dt>-set filter:b <em>b-spline_factor</em></dt>
-<dt>-set filter:c <em>keys_alpha_factor</em></dt>
+<dt>-define filter:b=<em>b-spline_factor</em></dt>
+<dt>-define filter:c=<em>keys_alpha_factor</em></dt>
 <dd>Redefine the values used for cubic filters such as <kbd>Cubic</kbd>,
     <kbd>Catrom</kbd>, <kbd>Mitchel</kbd>, and <kbd>Hermite</kbd>, as well as
     the <kbd>Parzen</kbd> Sinc windowing function. If only one of the values
     are defined, the other is set so as to generate a 'Keys' type cubic
-    filter.
+    filter.  Values meaning was defined by a research paper by
+    Mitchell-Netravali.
 
-<dt>-set filter:filter <em>filter</em></dt>
+<dt>-define filter:filter=<em>filter_function</em></dt>
 <dd>Use this function directly as the scaling filter.  This will allow
-    you to directly use a 'windowing filter' such as <kbd>blackman</kbd>,
+    you to directly use a windowing filter such as <kbd>Blackman</kbd>,
     rather than as its normal usage as a windowing function for 'Sinc' or
-    'Bessel'. If defined, no windowing function is used, unless the following
-    expert setting is also defined.</dd>
+    'Bessel' functions. If defined, no windowing function is used, unless the
+    following expert setting is also defined.</dd>
 
-<dt>-set filter:window <em>filter</em></dt>
-<dd>The IIR (infinite impulse response) filters <kbd>bessel</kbd> and
-    <kbd>sinc</kbd>  are windowed (brought down to zero over the defined
-    support range) with the given filter. This allows you to use a filter that
-    is not normally used as a windowing function, such as <kbd>box</kbd>,
-    (which effectivally turns off the windowing function).  </dd>
+<dt>-define filter:window=<em>filter_function</em></dt>
+<dd>The IIR (infinite impulse response) filters <kbd>Bessel</kbd> and
+    <kbd>Sinc</kbd>  are windowed (brought down to zero over the defined
+    support range) with the given filter. This allows you to specify a filter
+    function that is not normally used as a windowing function, such as
+    <kbd>Box</kbd>, (which effectively turns off the windowing function),
+    to window a <kbd>Sinc</kbd>, or the function the previous setting defined.
+    </dd>
+
+<dt>-define filter:verbose=<em>1</em></dt>
+<dd>This causes IM to print information on the final internal filter
+    selection to standard output.  This includes a commented header on the
+    filter settings being used, and data allowing the filter weights to be
+    easily graphed. </dd>
+
+<dd>Note however that some filters are internally defined in terms of other
+    filters.  The <kbd>Lanczos</kbd> filter for example is defined in terms of
+    a <kbd>SincFast</kbd> windowed <kbd>SincFast</kbd> filter, while
+    <kbd>Mitchell</kbd> is defined as a <kbd>Cubic</kbd> filter with specific
+    'B' and 'C' settings. </dd>
 
 </dl>
 
-<p>For example, to get a 8 lobe Lanczos-Bessel filter:</p>
+<p>For example, to get a 8 lobe Bessel windowed Bessel filter:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -filter bessel \ <br/>
           -set filter:window=bessel -set filter:lobes=8 \ <br/>
@@ -2656,10 +2758,11 @@ use of these expert settings:</p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -set filter:filter=sinc -set filter:lobes=4 \ <br/>
           -resize 150%   image.jpg</span></p>
 <p>Note that the use of expert options (except for 'blur' with simple resize
-filters), are provided for image processing experts who have studied and
-understood how resize filters work. Without this knowledge, and an
-understanding of the defination of the actual filters involved, using expert
-settings are more likely to be detremental to your image resizing.</p>
+filters, and 'verbose' for viewing the internal filter selection), are
+provided for image processing experts who have studied and understood how
+resize filters work. Without this knowledge, and an understanding of the
+definition of the actual filters involved, using expert settings are more
+likely to be detrimental to your image resizing.</p>
 
 
 <div style="margin: auto;">
@@ -2757,7 +2860,7 @@ thickness <em>x</em>&nbsp;pixels and an inner bevel of thickness
 
 <p>The <a href="#frame">-frame</a> option is affected by the current <a
 href="#compose">-compose</a> setting and assumes that this is using the default
-'<kbd>Over</kbd>' composition method.  It generates a image of the appripriate
+'<kbd>Over</kbd>' composition method.  It generates a image of the appropriate
 size with the current <a href="#bordercolor">-bordercolor</a> setting, and then
 draws the frame of four distinct colors close to the current <a
 href="#mattecolor">-mattecolor</a>.  The original image is then overlaid onto
@@ -2983,7 +3086,7 @@ determines the actual amount of bluring that will take place. </p>
 
 <p>The <em class="arg" >Radius</em> is only used to determine the size of the
 array which will hold the calculated gaussian distribution. It should be an
-integer.  If not given, or set to zero, IM will calculate the largest posible
+integer.  If not given, or set to zero, IM will calculate the largest possible
 radius that will provide meaningful results for the Gaussian distribution.
 </p>
 
@@ -2994,8 +3097,8 @@ should be at least twice the <em class="arg" >Sigma</em> value, though three
 times will produce a more accurite result. </p>
 
 <p>This differs from the faster <a href="#blur">-blur</a> operator in that a
-full 2-dimentional convolution is used to generate the weighted average of the
-neighbouring pixels. </p>
+full 2-dimensional convolution is used to generate the weighted average of the
+neighboring pixels. </p>
 
 <p>The <a href="#virtual-pixel">-virtual-pixel</a> setting will determine how
 pixels which are outside the image proper are blurred into the final result.
@@ -3107,7 +3210,7 @@ mapping. </p>
 
 <p>If <a href="#colors">-colors</a> is also specified, the total unique colors in the image and color reduction error values are printed. Refer to <a href="/www/quantize.html">color reduction algorithm</a> for a description of these values.</p>
 
-<p>If <a href="#verbose">-verbose</a> preceds this option, copious
+<p>If <a href="#verbose">-verbose</a> precedes this option, copious
 amounts of image properties are displayed including image statistics, profiles,
 image histogram, and others.</p>
 
@@ -3206,7 +3309,7 @@ image.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Set the pixel color interpolation method to use when looking up a color based on a floating point or real value.</td><td style='text-align:right;'></td></tr></table>
 
-<p>When looking up the color of a pixel using a non-interger floating point
+<p>When looking up the color of a pixel using a non-integer floating point
 value, you typically fall in between the pixel colors defined by the source
 image. This setting determines how the color is determined from the colors of
 the pixels surrounding that point.  That is how to determine the color of a
@@ -3444,13 +3547,13 @@ animation, or a fully-'coalesced' animation sequence. </p>
     <td valign="top">mosaic</td>
     <td valign="top">As 'flatten' method but expanding the initial canvas size
         of the first image so as to hold all the image layers.  However as a
-        virtual canvas is 'locked' to the origin, by defination, image layers
+        virtual canvas is 'locked' to the origin, by definition, image layers
         with a negative offsets will still be clipped by the top and left
         edges.</td>
   </tr>
 
   <tr><td></td><td>This method is commonly used to layout individual image using various
-        offset but without knowning the final canvas size. The resulting image
+        offset but without knowing the final canvas size. The resulting image
         will, like 'flatten' not have any virtual offset, so can be saved to
         any image file format. </td>
   </tr>
@@ -3495,7 +3598,7 @@ animation, or a fully-'coalesced' animation sequence. </p>
         result in a worsening in the optimization of later frames, though this
         is unlikely. In other words there no guarantee that it is better than
         the normal '<kbd>optimize-frame</kbd>' technique. For some animations
-        however you can get a vast improvment in the final animation size. </td>
+        however you can get a vast improvement in the final animation size. </td>
   </tr>
 
   <tr valign="top">
@@ -3606,27 +3709,27 @@ values (0 is opaque) and not as 'alpha' values (0 is transparent).</p>
   class="arg">black_color</em>}{,}{<em class="arg">white_color</em>}</h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>adjust the level of an image using the provided dash seperated colors.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>adjust the level of an image using the provided dash separated colors.</td><td style='text-align:right;'></td></tr></table>
 
 <p>This function is exactly like <a href="#level">-level</a>, except that the
 value value for each color channel is determined by the
 '<kbd>black_color</kbd>' and '<kbd>white_color</kbd>' colors given (as
 described under the <a href="#fill">-fill</a> option). </p>
 
-<p>This effectivally means the colors provided to <kbd>-level-colors</kbd>
-is mapped to become 'black' and 'white' respectivally, with all the other
+<p>This effectually means the colors provided to <kbd>-level-colors</kbd>
+is mapped to become 'black' and 'white' respectively, with all the other
 colors linearly adjusted (or clipped) to match that change. Each channel is
-adjusted separatally using the channel values of the colors specified. </p>
+adjusted separately using the channel values of the colors specified. </p>
 
 <p>On the other hand the plus form of the operator (<kbd>+level-colors</kbd>)
 will map the image color 'black' and 'white' to the given colors
-respectivally, resulting in a gradient (de-contrasting) tint of the image to
+respectively, resulting in a gradient (de-contrasting) tint of the image to
 those colors. This can also be used to convert a plain gray-scale image into a
 one using the gradient of colors specified. </p>
 
 <p>By supplying a single color with a comma separator either before or after
 that color, will just replace the respective 'black' or 'white' point
-respectivally.  But if no comma separator is provided, the given color is
+respectively.  But if no comma separator is provided, the given color is
 used for both the black and white color points, making the operator either
 threshold the images around that color (- form) or set all colors to that
 color (+ form). </p>
@@ -3662,7 +3765,7 @@ color (+ form). </p>
 -limit area 10mb
 </p>
 
-<p>Now whenever a large image is processed, the pixels are automagically cached to disk instead of memory.  This of course implies that large images typically process very slowly, simply because pixel processing in memory can be an order of magnitude faster than on disk.  Because your web site users might inadvertedly upload a huge image to process, you should set a disk limit as well:</p>
+<p>Now whenever a large image is processed, the pixels are automagically cached to disk instead of memory.  This of course implies that large images typically process very slowly, simply because pixel processing in memory can be an order of magnitude faster than on disk.  Because your web site users might inadvertently upload a huge image to process, you should set a disk limit as well:</p>
 
 <p class="crtsnip">
 -limit area 10mb -limit disk 500mb
@@ -3953,7 +4056,7 @@ style="background-color: #bdbdbd;">this shade of gray</span>.</p>
 </pre>
 
 <p>The '<kbd>AE</kbd>' or absolute count of pixels that are different, can be
-controled using a <a href="#fuzz" >-fuzz</a> factor to ignore pixels which
+controlled using a <a href="#fuzz" >-fuzz</a> factor to ignore pixels which
 only changed by a small amount.  The '<kbd>PAE</kbd>' can be used to find the
 size of the <a href="#fuzz" >-fuzz</a> factor needed to make all pixels
 'similar', while '<kbd>MAE</kbd>' can be used to find out the factor needed
@@ -3961,7 +4064,7 @@ for about half the pixels to be similar. </p>
 
 <p>The '<kbd>MEPP</kbd>' metric returns three different metrics
 ('<kbd>MAE</kbd>', '<kbd>MAE</kbd>' normalized, and '<kbd>PAE</kbd>'
-normalized) from a single comparision run. </p>
+normalized) from a single comparison run. </p>
 
 <p>To print a complete list of metrics, use the <a href="#list">-list
 metrics</a> option.</p>
@@ -4082,7 +4185,7 @@ angle given is the angle toward which the image is blurred.  That is the
 direction people would consider the object is coming from. </p>
 
 <p>Note that the blur is not uniform distribution, giving the motion a
-definate sense of direction of movement. </p>
+definite sense of direction of movement. </p>
 
 <p>The <a href="#virtual-pixel">-virtual-pixel</a> setting will determine how
 pixels which are outside the image proper are blurred into the final result.
@@ -4148,7 +4251,7 @@ is equivalent to <a href="#contrast-stretch" >-contrast-stretch 2%x1%</a>.
 
 <p>All the channels are normalized in concert by the came amount so as to
 preserve color integrity, when the default <a href="#channel" >+channel</a>
-setting is in use.  Specifing any other <a href="#channel" >-channel</a>
+setting is in use.  Specifying any other <a href="#channel" >-channel</a>
 setting will normalize the RGB channels independently.</p>
 
 <p>See  <a href="#contrast-stretch" >-contrast-stretch</A> for more details.
@@ -4799,25 +4902,58 @@ of the color clusters is returned.</p>
 
 <p>This option applies a special effect to the image, similar to the effect achieved in a photo darkroom by sepia toning.  Threshold ranges from 0 to <em class="QR">QuantumRange</em> and is a measure of the extent of the sepia toning.  A threshold of 80% is a good starting point for a reasonable tone.</p>
 
+
+
 <div style="margin: auto;">
   <h4><a name="set" id="set"></a>-set <em class="arg">attribute value</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>set an image attribute for all images in the current image sequence, after they have been created or read in. </td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>set an image attributes and properties to images the current
+image sequence.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Attributes of interest include <a href="#comment">-comment</a>, <a href="#delay">-delay</a>, <a href="#dispose">-dispose</a>, and <a href="#page">-page</a>.  For example:</p>
+This will assign specific option and settings to all the images in the current
+image sequence.  That is it will let you modify settings that have already bee
+read in.  In particular those attributes that are assigned to images as they
+are read in.  Specifically setting such as: <a href="#comment">-comment</a>,
+<a href="#delay">-delay</a>, <a href="#dispose">-dispose</a>, and <a
+href="#page">-page</a>.  For example:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' \ <br/> rose.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format %c rose.png</span><span class='crtout'>Rose is a rose is a rose is a rose</span></p>
 <p>The <a href="#repage">-repage</a> operator will also set the
 '<kbd>page</kbd>' attribute of images already in memory, but allows you to
-separately set the virtual canvas's size and offset components, and also allows
-relative offset changes, and automatic canvas size re-calculating.  The above
-<a href="#set">-set</a> option is purely a direct, unmodified assignment of the
-virtual canvas (page) meta-data. </p>
+separately set the virtual canvas's size and offset components, and also
+allows relative offset changes, and automatic canvas size re-calculating.  The
+<a href="#set">-set</a> option however can only provide a direct, unmodified
+assignment of  '<kbd>page</kbd>' attribute. </p>
 
-<p>Use this option to associate a colorspace or profile with your image.  For example,</p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
-<p>Set image options by prefixing the value with <kbd>option:</kbd>.  Set attributes of the image registry by prefixing the value with <kbd>registry:</kbd>.</p>
+<p>Use this option to associate a colorspace or profile with your image.  For
+example,</p> <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc
+image-icc.psd</span></p>
+<p>If the given setting being set is not a known 'attribute' such as shown
+above, the setting will be stored with the individual images as a free form
+'properity' string.  Such settings are listed in <a href="#verbose"
+>-verbose</a> information ("<kbd>info:</kbd>" output format) as "Properties".
+</p>
+
+<p>The set value can also make use of of <a href="../www/escape.html" >Format and Print Image
+Properties</a> in the defined value.  Which can itself also include
+'properties' previously set by this option.  For example</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \<br/>
+       -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class='crtout'>Old size = 70x46  New size = 35x23</span></p>
+<p>Some 'properties' must be defined in a specific way to be used. For
+example only 'properties' prefixed with "<kbd>filename:</kbd>" can be used to
+modify the output filename of an image. For example</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
+<p>If the setting value is prefixed with "<kbd>option:</kbd>" the setting will
+be saved as a global "Artifact" exactly as if it was set using the <a
+href="#define" >-define</a> option.</p>
+
+<p>You can set the attributes of the image registry by prefixing the value
+with <kbd>registry:</kbd>.</p>
+
+
 
 <div style="margin: auto;">
   <h4><a name="shade" id="shade"></a>-shade <em class="arg">azimuth</em>x<em class="arg">elevation</em></h4>
@@ -4959,7 +5095,7 @@ id="shared-memory"></a>-shared-memory</h4>
 
   <tr valign="top">
     <td valign="top">shepards</td>
-    <td valign="top">Colors points basied on the ratio of inverse distance
+    <td valign="top">Colors points biased on the ratio of inverse distance
         squared. Generating spots of color in a sea of the average of
         colors. </td>
     </tr>
@@ -5128,15 +5264,15 @@ of a small image within a larger image. This search will produce two images
 (or two frames). The first will be the "difference" image and the second will
 be the "match score" image.</p>
 
-<p>The "match-score" image will be smaller conaining a pixel for ever posible
+<p>The "match-score" image will be smaller containing a pixel for ever possible
 position of the top-left corner of the given sub-image. that is its size will
 be the size of the larger_image - sub_image + 1.  The brightest location in
 this image is the location s the locate on the best match that is also
 reported. Note that this may or may nor be a perfect match, and the actual
 brightness will reflect this. Other bright 'peaks' can be used to locate other
-posible matching loctions. </p>
+possible matching loctions. </p>
 
-<p>Note that the search will try to compare teh sub-image at every posible
+<p>Note that the search will try to compare teh sub-image at every possible
 location in the larger image, as such it can be very slow.  The smaller the
 sub-image the faster this search will be. </p>
 
@@ -5460,7 +5596,7 @@ single pixel transparent 'missed' image is returned, in the same way as when a
   <h4><a name="verbose" id="verbose"></a>-verbose</h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>print detailed information about the image when this option preceds the <a href="#identify">-identify</a> option or <kbd>info:</kbd>.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>print detailed information about the image when this option precedes the <a href="#identify">-identify</a> option or <kbd>info:</kbd>.</td><td style='text-align:right;'></td></tr></table>
 
 
 <div style="margin: auto;">
