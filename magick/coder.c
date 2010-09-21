@@ -99,6 +99,7 @@ static const CoderMapInfo
     { "CMYKA", "CMYK" },
     { "C", "RAW" },
     { "CAL", "CALS" },
+    { "CANVAS", "XC" },
     { "CR2", "DNG" },
     { "CRW", "DNG" },
     { "CUR", "ICON" },
