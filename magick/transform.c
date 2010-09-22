@@ -295,6 +295,10 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 MagickExport Image *ConsolidateCMYKImages(const Image *images,
   ExceptionInfo *exception)
 {
+  CacheView
+    *cmyk_view,
+    *image_view;
+    
   Image
     *cmyk_image,
     *cmyk_images;
@@ -324,6 +328,8 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     if (SetImageStorageClass(cmyk_image,DirectClass) == MagickFalse)
       break;
     (void) SetImageColorspace(cmyk_image,CMYKColorspace);
+    image_view=AcquireCacheView(images);
+    cmyk_view=AcquireCacheView(cmyk_image);
     for (y=0; y < (ssize_t) images->rows; y++)
     {
       register const PixelPacket
@@ -335,8 +341,9 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       register PixelPacket
         *restrict q;
 
-      p=GetVirtualPixels(images,0,y,images->columns,1,exception);
-      q=QueueAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,images->columns,1,exception);
+      q=QueueCacheViewAuthenticPixels(cmyk_view,0,y,cmyk_image->columns,1,
+        exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
@@ -345,12 +352,16 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         p++;
         q++;
       }
-      if (SyncAuthenticPixels(cmyk_image,exception) == MagickFalse)
+      if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
         break;
     }
+    cmyk_view=DestroyCacheView(cmyk_view);
+    image_view=DestroyCacheView(image_view);
     images=GetNextImageInList(images);
     if (images == (Image *) NULL)
       break;
+    image_view=AcquireCacheView(images);
+    cmyk_view=AcquireCacheView(cmyk_image);
     for (y=0; y < (ssize_t) images->rows; y++)
     {
       register const PixelPacket
@@ -362,8 +373,9 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       register PixelPacket
         *restrict q;
 
-      p=GetVirtualPixels(images,0,y,images->columns,1,exception);
-      q=GetAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,images->columns,1,exception);
+      q=GetCacheViewAuthenticPixels(cmyk_view,0,y,cmyk_image->columns,1,
+        exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
@@ -372,12 +384,16 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         p++;
         q++;
       }
-      if (SyncAuthenticPixels(cmyk_image,exception) == MagickFalse)
+      if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
         break;
     }
+    cmyk_view=DestroyCacheView(cmyk_view);
+    image_view=DestroyCacheView(image_view);
     images=GetNextImageInList(images);
     if (images == (Image *) NULL)
       break;
+    image_view=AcquireCacheView(images);
+    cmyk_view=AcquireCacheView(cmyk_image);
     for (y=0; y < (ssize_t) images->rows; y++)
     {
       register const PixelPacket
@@ -389,8 +405,9 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       register PixelPacket
         *restrict q;
 
-      p=GetVirtualPixels(images,0,y,images->columns,1,exception);
-      q=GetAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,images->columns,1,exception);
+      q=GetCacheViewAuthenticPixels(cmyk_view,0,y,cmyk_image->columns,1,
+        exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
@@ -399,12 +416,16 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         p++;
         q++;
       }
-      if (SyncAuthenticPixels(cmyk_image,exception) == MagickFalse)
+      if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
         break;
     }
+    cmyk_view=DestroyCacheView(cmyk_view);
+    image_view=DestroyCacheView(image_view);
     images=GetNextImageInList(images);
     if (images == (Image *) NULL)
       break;
+    image_view=AcquireCacheView(images);
+    cmyk_view=AcquireCacheView(cmyk_image);
     for (y=0; y < (ssize_t) images->rows; y++)
     {
       register const PixelPacket
@@ -419,19 +440,22 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       register PixelPacket
         *restrict q;
 
-      p=GetVirtualPixels(images,0,y,images->columns,1,exception);
-      q=GetAuthenticPixels(cmyk_image,0,y,cmyk_image->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,images->columns,1,exception);
+      q=GetCacheViewAuthenticPixels(cmyk_view,0,y,cmyk_image->columns,1,
+        exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      indexes=GetAuthenticIndexQueue(cmyk_image);
+      indexes=GetCacheViewAuthenticIndexQueue(cmyk_view);
       for (x=0; x < (ssize_t) images->columns; x++)
       {
         indexes[x]=(IndexPacket) (QuantumRange-PixelIntensityToQuantum(p));
         p++;
       }
-      if (SyncAuthenticPixels(cmyk_image,exception) == MagickFalse)
+      if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
         break;
     }
+    cmyk_view=DestroyCacheView(cmyk_view);
+    image_view=DestroyCacheView(image_view);
     AppendImageToList(&cmyk_images,cmyk_image);
     images=GetNextImageInList(images);
     if (images == (Image *) NULL)

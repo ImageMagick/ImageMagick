@@ -133,7 +133,7 @@ static MagickRealType
 %
 */
 
-#define MagickREALTYPEPI ((MagickRealType) 3.14159265358979323846264338327950288420L)
+#define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
 
 static MagickRealType Bessel(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
@@ -145,8 +145,8 @@ static MagickRealType Bessel(const MagickRealType x,
     http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
-    return((MagickRealType) (0.25*MagickREALTYPEPI));
-  return(BesselOrderOne((MagickRealType) (MagickREALTYPEPI*x))/(x+x));
+    return((MagickRealType) (0.25*MagickPIL));
+  return(BesselOrderOne((MagickRealType) (MagickPIL*x))/(x+x));
 }
 
 static MagickRealType Blackman(const MagickRealType x,
@@ -158,7 +158,7 @@ static MagickRealType Blackman(const MagickRealType x,
     Refactored by Chantal Racette and Nicolas Robidoux to one trig
     call and five flops.
   */
-  const MagickRealType cospix = cos((double) (MagickREALTYPEPI*x));
+  const MagickRealType cospix = cos((double) (MagickPIL*x));
   return(0.34+cospix*(0.5+cospix*0.16));
 }
 
@@ -172,9 +172,9 @@ static MagickRealType Bohman(const MagickRealType x,
     and 7 flops, taking advantage of the fact that the support of
     Bohman is 1 (so that we know that sin(pi x) >= 0).
   */
-  const double cospix = cos((double) (MagickREALTYPEPI*x));
+  const double cospix = cos((double) (MagickPIL*x));
   const double sinpix = sqrt(1.0-cospix*cospix);
-  return((MagickRealType) ((1.0-x)*cospix+(1.0/MagickREALTYPEPI)*sinpix));
+  return((MagickRealType) ((1.0-x)*cospix+(1.0/MagickPIL)*sinpix));
 }
 
 static MagickRealType Box(const MagickRealType x,
@@ -246,7 +246,7 @@ static MagickRealType Hanning(const MagickRealType x,
   /*
     Cosine window function: .5 + .5 cos(pi x).
   */
-  const MagickRealType cospix = cos((double) (MagickREALTYPEPI*x));
+  const MagickRealType cospix = cos((double) (MagickPIL*x));
   return(0.5+0.5*cospix);
 }
 
@@ -256,7 +256,7 @@ static MagickRealType Hamming(const MagickRealType x,
   /*
     Offset cosine window function: .54 + .46 cos(pi x).
   */
-  const MagickRealType cospix = cos((double) (MagickREALTYPEPI*x));
+  const MagickRealType cospix = cos((double) (MagickPIL*x));
   return(0.54+0.46*cospix);
 }
 
@@ -333,7 +333,7 @@ static MagickRealType Sinc(const MagickRealType x,
   */
   if (x != 0.0)
   {
-    const MagickRealType pix = (MagickRealType) (MagickREALTYPEPI*x);
+    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
     return(sin((double) pix)/pix);
   }
   return(1.0);
@@ -373,7 +373,7 @@ static MagickRealType SincFast(const MagickRealType x,
   */
   if (x > 4.0)
     {
-      const MagickRealType pix = (MagickRealType) (MagickREALTYPEPI*x);
+      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
       return(sin((double) pix)/pix);
     }
   {
@@ -1666,6 +1666,9 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
 {
 #define LiquidRescaleImageTag  "Rescale/Image"
 
+  CacheView
+    *rescale_view;
+
   const char
     *map;
 
@@ -1775,6 +1778,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     }
   GetMagickPixelPacket(rescale_image,&pixel);
   (void) lqr_carver_scan_reset(carver);
+  rescale_view=AcquireCacheView(rescale_image);
   while (lqr_carver_scan(carver,&x,&y,&packet) != 0)
   {
     register IndexPacket
@@ -1783,10 +1787,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     register PixelPacket
       *restrict q;
 
-    q=QueueAuthenticPixels(rescale_image,x,y,1,1,exception);
+    q=QueueCacheviewAuthenticPixels(rescale_view,x,y,1,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    rescale_indexes=GetAuthenticIndexQueue(rescale_image);
+    rescale_indexes=GetCacheViewAuthenticIndexQueue(rescale_view);
     pixel.red=QuantumRange*(packet[0]/255.0);
     pixel.green=QuantumRange*(packet[1]/255.0);
     pixel.blue=QuantumRange*(packet[2]/255.0);
@@ -1802,9 +1806,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
           pixel.opacity=QuantumRange*(packet[4]/255.0);
       }
     SetPixelPacket(rescale_image,&pixel,q,rescale_indexes);
-    if (SyncAuthenticPixels(rescale_image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
       break;
   }
+  rescale_view=DestroyCacheView(rescale_view);
   /*
     Relinquish resources.
   */
