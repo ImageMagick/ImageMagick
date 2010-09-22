@@ -1715,9 +1715,8 @@ static inline MagickBooleanType IsNexusInCore(const CacheInfo *cache_info,
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
-  if (nexus_info->pixels != (cache_info->pixels+offset))
-    return(MagickFalse);
-  return(MagickTrue);
+  return(nexus_info->pixels == (cache_info->pixels+offset) ? MagickTrue :
+    MagickFalse);
 }
 
 MagickExport PixelPacket *GetAuthenticPixelCacheNexus(Image *image,
