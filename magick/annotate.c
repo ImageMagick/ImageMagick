@@ -461,21 +461,23 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %  The format of the FormatMagickCaption method is:
 %
 %      ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-%        TypeMetric *metrics,char **caption)
+%        const MagickBooleanType split,TypeMetric *metrics,char **caption)
 %
 %  A description of each parameter follows.
 %
 %    o image:  The image.
 %
-%    o caption: the caption.
-%
 %    o draw_info: the draw info.
+%
+%    o split: when no convenient line breaks-- insert newline.
 %
 %    o metrics: Return the font metrics in this structure.
 %
+%    o caption: the caption.
+%
 */
 MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-  TypeMetric *metrics,char **caption)
+  const MagickBooleanType split,TypeMetric *metrics,char **caption)
 {
   MagickBooleanType
     status;
@@ -520,25 +522,26 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         p=s;
       }
     else
-      {
-        char
-          *target;
+      if (split != MagickFalse)
+        {
+          char
+            *target;
 
-        ssize_t
-          n;
+          ssize_t
+            n;
 
-        /*
-          No convenient line breaks-- insert newline.
-        */
-        target=AcquireString(*caption);
-        n=p-(*caption);
-        CopyMagickString(target,*caption,n+1);
-        ConcatenateMagickString(target,"\n",strlen(*caption)+1);
-        ConcatenateMagickString(target,p,strlen(*caption)+2);
-        (void) DestroyString(*caption);
-        *caption=target;
-        p=(*caption)+n;
-      }
+          /*
+            No convenient line breaks-- insert newline.
+          */
+          target=AcquireString(*caption);
+          n=p-(*caption);
+          CopyMagickString(target,*caption,n+1);
+          ConcatenateMagickString(target,"\n",strlen(*caption)+1);
+          ConcatenateMagickString(target,p,strlen(*caption)+2);
+          (void) DestroyString(*caption);
+          *caption=target;
+          p=(*caption)+n;
+        }
     s=(char *) NULL;
     q=draw_info->text;
   }

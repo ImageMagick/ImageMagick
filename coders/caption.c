@@ -154,7 +154,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
@@ -173,7 +173,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
@@ -190,7 +190,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       }
       draw_info->pointsize--;
     }
-  i=FormatMagickCaption(image,draw_info,&metrics,&caption);
+  i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption);
   if (image->rows == 0)
     image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
       draw_info->stroke_width)+0.5);

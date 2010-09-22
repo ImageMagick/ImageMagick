@@ -3833,7 +3833,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       caption=InterpretImageProperties((ImageInfo *) NULL,(Image *) image,
         value);
       (void) CloneString(&annotate_info->text,caption);
-      count=FormatMagickCaption(caption_image,annotate_info,&metrics,&caption);
+      count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,&metrics,
+        &caption);
       status=SetImageExtent(caption_image,image->columns,(size_t)
         ((count+1)*(metrics.ascent-metrics.descent)+0.5));
       if (status == MagickFalse)
