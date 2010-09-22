@@ -416,6 +416,9 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     runlength=0;  \
 }
 
+  CacheView
+    *image_view;
+
   const HuffmanTable
     *entry;
 
@@ -432,9 +435,6 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
   int
     byte;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -448,7 +448,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     *p;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *scanline;
@@ -509,13 +510,14 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
   image->y_resolution=196.0;
   image->units=PixelsPerInchResolution;
   exception=(&image->exception);
+  image_view=AcquireCacheView(image);
   for (y=0; ((y < (ssize_t) image->rows) && (null_lines < 3)); )
   {
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     /*
       Initialize scanline to white.
@@ -628,23 +630,24 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
       Transfer scanline to image pixels.
     */
     p=scanline;
-    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetAuthenticIndexQueue(image);
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(IndexPacket) (*p++);
       indexes[x]=index;
       *q++=image->colormap[(ssize_t) index];
     }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
     proceed=SetImageProgress(image,LoadImageTag,y,image->rows);
     if (proceed == MagickFalse)
       break;
     y++;
   }
+  image_view=DestroyCacheView(image_view);
   image->rows=(size_t) MagickMax((size_t) y-3,1);
   image->compression=FaxCompression;
   /*

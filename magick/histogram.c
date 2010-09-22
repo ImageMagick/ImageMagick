@@ -1227,8 +1227,8 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
 %
 */
 
-static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info,ExceptionInfo *exception)
+static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
+  CubeInfo *cube_info,const NodeInfo *node_info,ExceptionInfo *exception)
 {
 #define UniqueColorsImageTag  "UniqueColors/Image"
 
@@ -1244,10 +1244,11 @@ static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
   /*
     Traverse any children.
   */
-  number_children=image->matte == MagickFalse ? 8UL : 16UL;
+  number_children=unique_image->matte == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      UniqueColorsToImage(image,cube_info,node_info->child[i],exception);
+      UniqueColorsToImage(unique_image,unique_view,cube_info,
+        node_info->child[i],exception);
   if (node_info->level == (MaxTreeDepth-1))
     {
       register ColorPacket
@@ -1262,24 +1263,25 @@ static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
       p=node_info->list;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
-        q=QueueAuthenticPixels(image,cube_info->x,0,1,1,exception);
+        q=QueueCacheViewAuthenticPixels(unique_view,cube_info->x,0,1,1,
+          exception);
         if (q == (PixelPacket *) NULL)
           continue;
-        indexes=GetAuthenticIndexQueue(image);
+        indexes=GetCacheViewAuthenticIndexQueue(unique_view);
         *q=p->pixel;
-        if (image->colorspace == CMYKColorspace)
+        if (unique_image->colorspace == CMYKColorspace)
           *indexes=p->index;
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        if (SyncCacheViewAuthenticPixels(unique_view,exception) == MagickFalse)
           break;
         cube_info->x++;
         p++;
       }
-      if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      if (unique_image->progress_monitor != (MagickProgressMonitor) NULL)
         {
           MagickBooleanType
             proceed;
 
-          proceed=SetImageProgress(image,UniqueColorsImageTag,
+          proceed=SetImageProgress(unique_image,UniqueColorsImageTag,
             cube_info->progress,cube_info->colors);
           if (proceed == MagickFalse)
             status=MagickFalse;
@@ -1291,6 +1293,9 @@ static void UniqueColorsToImage(Image *image,CubeInfo *cube_info,
 MagickExport Image *UniqueImageColors(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *unique_view;
+
   CubeInfo
     *cube_info;
 
@@ -1309,7 +1314,10 @@ MagickExport Image *UniqueImageColors(const Image *image,
       unique_image=DestroyImage(unique_image);
       return((Image *) NULL);
     }
-  UniqueColorsToImage(unique_image,cube_info,cube_info->root,exception);
+  unique_view=AcquireCacheView(unique_image);
+  UniqueColorsToImage(unique_image,unique_view,cube_info,cube_info->root,
+    exception);
+  unique_view=DestroyCacheView(unique_view);
   if (cube_info->colors < MaxColormapSize)
     {
       QuantizeInfo
