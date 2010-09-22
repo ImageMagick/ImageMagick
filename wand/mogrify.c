@@ -1060,8 +1060,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("clip-mask",option+1) == 0)
           {
+            CacheView
+              *mask_view;
+              
             Image
-              *mask;
+              *mask_image;
 
             ssize_t
               y;
@@ -1085,31 +1088,34 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             /*
               Set the image mask.
             */
-            mask=GetImageCache(mogrify_info,argv[i+1],exception);
-            if (mask == (Image *) NULL)
+            mask_image=GetImageCache(mogrify_info,argv[i+1],exception);
+            if (mask_image == (Image *) NULL)
               break;
-            for (y=0; y < (ssize_t) mask->rows; y++)
+            if (SetImageStorageClass(mask_image,DirectClass) == MagickFalse)
+              return(MagickFalse);
+            mask_view=AcquireCacheView(mask_image);
+            for (y=0; y < (ssize_t) mask_image->rows; y++)
             {
-              q=GetAuthenticPixels(mask,0,y,mask->columns,1,exception);
+              q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,
+                exception);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (ssize_t) mask->columns; x++)
+              for (x=0; x < (ssize_t) mask_image->columns; x++)
               {
-                if (mask->matte == MagickFalse)
+                if (mask_image->matte == MagickFalse)
                   q->opacity=PixelIntensityToQuantum(q);
                 q->red=q->opacity;
                 q->green=q->opacity;
                 q->blue=q->opacity;
                 q++;
               }
-              if (SyncAuthenticPixels(mask,exception) == MagickFalse)
+              if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
                 break;
             }
-            if (SetImageStorageClass(mask,DirectClass) == MagickFalse)
-              return(MagickFalse);
-            mask->matte=MagickTrue;
-            (void) SetImageClipMask(*image,mask);
-            mask=DestroyImage(mask);
+            mask_view=DestroyCacheView(mask_view);
+            mask_image->matte=MagickTrue;
+            (void) SetImageClipMask(*image,mask_image);
+            mask_image=DestroyImage(mask_image);
             InheritException(exception,&(*image)->exception);
             break;
           }

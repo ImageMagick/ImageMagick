@@ -4542,6 +4542,10 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   | (one << (size_t) (i)) : (size_t) (alpha) & ~(one << (size_t) (i)))
 #define SteganoImageTag  "Stegano/Image"
 
+  CacheView
+    *stegano_view,
+    *watermark_view;
+
   Image
     *stegano_image;
 
@@ -4600,17 +4604,20 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   j=0;
   depth=stegano_image->depth;
   k=image->offset;
+  watermark_view=AcquireCacheView(watermark);
+  stegano_view=AcquireCacheView(stegano_image);
   for (i=(ssize_t) depth-1; (i >= 0) && (j < (ssize_t) depth); i--)
   {
     for (y=0; (y < (ssize_t) watermark->rows) && (j < (ssize_t) depth); y++)
     {
       for (x=0; (x < (ssize_t) watermark->columns) && (j < (ssize_t) depth); x++)
       {
-        (void) GetOneVirtualPixel(watermark,x,y,&pixel,exception);
+        (void) GetOneCacheViewVirtualPixel(watermark_view,x,y,&pixel,exception);
         if ((k/(ssize_t) stegano_image->columns) >= (ssize_t) stegano_image->rows)
           break;
-        q=GetAuthenticPixels(stegano_image,k % (ssize_t) stegano_image->columns,
-          k/(ssize_t) stegano_image->columns,1,1,exception);
+        q=GetCacheViewAuthenticPixels(stegano_view,k % (ssize_t)
+          stegano_image->columns,k/(ssize_t) stegano_image->columns,1,1,
+          exception);
         if (q == (PixelPacket *) NULL)
           break;
         switch (c)
@@ -4631,7 +4638,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
             break;
           }
         }
-        if (SyncAuthenticPixels(stegano_image,exception) == MagickFalse)
+        if (SyncCacheViewAuthenticPixels(stegano_view,exception) == MagickFalse)
           break;
         c++;
         if (c == 3)
@@ -4654,6 +4661,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
           status=MagickFalse;
       }
   }
+  stegano_view=DestroyCacheView(stegano_view);
+  watermark_view=DestroyCacheView(watermark_view);
   if (stegano_image->storage_class == PseudoClass)
     (void) SyncImage(stegano_image);
   return(stegano_image);
