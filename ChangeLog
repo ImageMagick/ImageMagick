@@ -1,6 +1,7 @@
 2010-09-12  6.6.4-6 Cristy  <quetzlzacatenango@image...>
   * Do not break words if caption size is absolute (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17123).
+  * Don't define HAVE_THREADS for --without-threads configure script option.
 
 2010-09-20  6.6.4-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.
