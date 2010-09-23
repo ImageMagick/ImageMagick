@@ -376,8 +376,8 @@ AC_ARG_WITH([threads],
 
 have_threads=no
 if test "$with_threads" != 'no'; then
-    ACX_PTHREAD()
-    if test "$acx_pthread_ok" = yes; then
+    AX_PTHREAD()
+    if test "$ax_pthread_ok" = yes; then
         have_threads=yes
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
