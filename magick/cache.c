@@ -2244,14 +2244,24 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
 static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 {
+  CacheInfo
+    *cache_info;
+
+  const int
+    id = GetOpenMPThreadId();
+
   PixelPacket
     *pixels;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
   *pixel=image->background_color;
-  pixels=GetAuthenticPixelsCache(image,x,y,1UL,1UL,exception);
+  assert(id < (int) cache_info->number_threads);
+  pixels=GetAuthenticPixelCacheNexus(image,x,y,1UL,1UL,
+    cache_info->nexus_info[id],exception);
   if (pixels == (PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
@@ -2317,7 +2327,7 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
   GetMagickPixelPacket(image,pixel);
   if (pixels == (const PixelPacket *) NULL)
     return(MagickFalse);
-  indexes=GetVirtualIndexQueue(image);
+  indexes=GetVirtualIndexesFromNexus(cache_info,cache_info->nexus_info[id]);
   SetMagickPixelPacket(image,pixels,indexes,pixel);
   return(MagickTrue);
 }
