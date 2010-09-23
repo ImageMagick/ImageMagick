@@ -260,7 +260,7 @@ MagickExport NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    nexus_info[i]=(NexusInfo *) AcquireAlignedMemory(1,sizeof(**nexus_info));
+    nexus_info[i]=(NexusInfo *) AcquireQuantumMemory(1,sizeof(**nexus_info));
     if (nexus_info[i] == (NexusInfo *) NULL)
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     (void) ResetMagickMemory(nexus_info[i],0,sizeof(*nexus_info[i]));
