@@ -1787,7 +1787,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     register PixelPacket
       *restrict q;
 
-    q=QueueCacheviewAuthenticPixels(rescale_view,x,y,1,1,exception);
+    q=QueueCacheViewAuthenticPixels(rescale_view,x,y,1,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     rescale_indexes=GetCacheViewAuthenticIndexQueue(rescale_view);
