@@ -376,8 +376,8 @@ AC_ARG_WITH([threads],
 
 have_threads=no
 if test "$with_threads" != 'no'; then
-    AX_PTHREAD()
-    if test "$ax_pthread_ok" = yes; then
+    ACX_PTHREAD()
+    if test "$acx_pthread_ok" = yes; then
         have_threads=yes
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
@@ -385,6 +385,10 @@ if test "$with_threads" != 'no'; then
         if test "$CC" != "$PTHREAD_CC"; then
             AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
             CC="$PTHREAD_CC"
+        fi
+        if test "$CXX" != "$PTHREAD_CXX"; then
+          AC_MSG_WARN([Replacing compiler $CXX with compiler $PTHREAD_CXX to support pthreads.])
+          CXX="$PTHREAD_CXX"
         fi
     fi
 fi
