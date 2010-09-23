@@ -144,7 +144,7 @@ lock_old_archive_extraction=no
 LTCC="gcc -std=gnu99 -std=gnu99"
 
 # LTCC compiler flags.
-LTCFLAGS="-fopenmp -g -O2 -Wall -pthread"
+LTCFLAGS="-g -O2 -Wall"
 
 # Take the output of nm and produce a listing of raw symbols and C names.
 global_symbol_pipe="sed -n -e 's/^.*[	 ]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[	 ][	 ]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p'"
@@ -9403,7 +9403,7 @@ compiler_lib_search_dirs="/usr/lib/gcc/x86_64-redhat-linux/4.5.1 /usr/lib/gcc/x8
 predep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.5.1/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.5.1/crtbeginS.o"
 postdep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.5.1/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.5.1/../../../../lib64/crtn.o"
 predeps=""
-postdeps="-lstdc++ -lm -lgomp -lgcc_s -lpthread -lc -lgcc_s"
+postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
