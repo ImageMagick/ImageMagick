@@ -10,7 +10,7 @@
   <configure name="LIB_VERSION" value="0x664"/>
   <configure name="LIB_VERSION_NUMBER" value="6,6,4,6"/>
   <configure name="RELEASE_DATE" value="2010-09-23"/>
-  <configure name="CONFIGURE" value="./configure "/>
+  <configure name="CONFIGURE" value="./configure  '--without-threads'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="VERSION" value="6.6.4"/>
