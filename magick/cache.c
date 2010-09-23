@@ -4553,8 +4553,8 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
     offset;
 
   MagickSizeType
-    length,
-    number_pixels;
+    extent,
+    length;
 
   register IndexPacket
     *restrict q;
@@ -4573,7 +4573,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*sizeof(IndexPacket);
   rows=nexus_info->region.height;
-  number_pixels=length*rows;
+  extent=length*rows;
   q=nexus_info->indexes;
   switch (cache_info->type)
   {
@@ -4587,9 +4587,9 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
         Read indexes from memory.
       */
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+          (extent == (MagickSizeType) ((size_t) extent)))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
       p=cache_info->indexes+offset;
@@ -4613,15 +4613,15 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels < MagickMaxBufferExtent))
+          (extent <= MagickMaxBufferExtent))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
-      number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
+      extent=(MagickSizeType) cache_info->columns*cache_info->rows;
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=ReadPixelCacheRegion(cache_info,cache_info->offset+number_pixels*
+        count=ReadPixelCacheRegion(cache_info,cache_info->offset+extent*
           sizeof(PixelPacket)+offset*sizeof(*q),length,(unsigned char *) q);
         if ((MagickSizeType) count < length)
           break;
@@ -4684,8 +4684,8 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     offset;
 
   MagickSizeType
-    length,
-    number_pixels;
+    extent,
+    length;
 
   register PixelPacket
     *restrict q;
@@ -4702,7 +4702,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*sizeof(PixelPacket);
   rows=nexus_info->region.height;
-  number_pixels=length*rows;
+  extent=length*rows;
   q=nexus_info->pixels;
   switch (cache_info->type)
   {
@@ -4716,9 +4716,9 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
         Read pixels from memory.
       */
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+          (extent == (MagickSizeType) ((size_t) extent)))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
       p=cache_info->pixels+offset;
@@ -4742,9 +4742,9 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels < MagickMaxBufferExtent))
+          (extent <= MagickMaxBufferExtent))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
       for (y=0; y < (ssize_t) rows; y++)
@@ -5288,8 +5288,8 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
     offset;
 
   MagickSizeType
-    length,
-    number_pixels;
+    extent,
+    length;
 
   register const IndexPacket
     *restrict p;
@@ -5308,7 +5308,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*sizeof(IndexPacket);
   rows=nexus_info->region.height;
-  number_pixels=(MagickSizeType) length*rows;
+  extent=(MagickSizeType) length*rows;
   p=nexus_info->indexes;
   switch (cache_info->type)
   {
@@ -5322,9 +5322,9 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
         Write indexes to memory.
       */
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+          (extent == (MagickSizeType) ((size_t) extent)))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
       q=cache_info->indexes+offset;
@@ -5348,17 +5348,17 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels < MagickMaxBufferExtent))
+          (extent <= MagickMaxBufferExtent))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
-      number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
+      extent=(MagickSizeType) cache_info->columns*cache_info->rows;
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=WritePixelCacheRegion(cache_info,cache_info->offset+number_pixels*
-          sizeof(PixelPacket)+offset*sizeof(*p),length,
-          (const unsigned char *) p);
+        count=WritePixelCacheRegion(cache_info,cache_info->offset+extent*
+          sizeof(PixelPacket)+offset*sizeof(*p),length,(const unsigned char *)
+          p);
         if ((MagickSizeType) count < length)
           break;
         p+=nexus_info->region.width;
@@ -5420,8 +5420,8 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     offset;
 
   MagickSizeType
-    length,
-    number_pixels;
+    extent,
+    length;
 
   register const PixelPacket
     *restrict p;
@@ -5438,7 +5438,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*sizeof(PixelPacket);
   rows=nexus_info->region.height;
-  number_pixels=length*rows;
+  extent=length*rows;
   p=nexus_info->pixels;
   switch (cache_info->type)
   {
@@ -5452,9 +5452,9 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
         Write pixels to memory.
       */
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels == (MagickSizeType) ((size_t) number_pixels)))
+          (extent == (MagickSizeType) ((size_t) extent)))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
       q=cache_info->pixels+offset;
@@ -5478,9 +5478,9 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
-          (number_pixels < MagickMaxBufferExtent))
+          (extent <= MagickMaxBufferExtent))
         {
-          length=number_pixels;
+          length=extent;
           rows=1UL;
         }
       for (y=0; y < (ssize_t) rows; y++)
