@@ -30,7 +30,8 @@ extern MagickExport MagickBooleanType
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *);
 
 extern MagickExport ssize_t
-  FormatMagickCaption(Image *,DrawInfo *,TypeMetric *,char **);
+  FormatMagickCaption(Image *,DrawInfo *,const MagickBooleanType,TypeMetric *,
+    char **);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
