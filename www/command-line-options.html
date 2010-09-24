@@ -131,7 +131,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -409,7 +409,7 @@ drawing fonts and lines.</td><td style='text-align:right;'></td></tr></table>
 drawn.  Use <a href="#antialias">+antialias</a> to disable the addition of
 antialiasing edge pixels.  This will then reduce the number of colors added to
 an image to just the colors being directly drawn.  That is, no mixed colors
-will be added when drawing such objects. </p>
+are added when drawing such objects. </p>
 
 <div style="margin: auto;">
   <h4><a name="append" id="append"></a>-append</h4>
@@ -456,7 +456,7 @@ href="#gravity">-gravity</a> setting. </p>
 href="#gamma" >-gamma</a> adjustment so that is the mean color exists in the
 image it will get a have a value of 50%. </p>
 
-<p>This means that any solid 'gray' image will become 50% gray. </p>
+<p>This means that any solid 'gray' image becomes 50% gray. </p>
 
 <p>This works well for real-life images with little or no extreme dark and
 light areas, but tend to fail for images with large amounts of bright sky or
@@ -465,8 +465,8 @@ dark shadows. It also does not work well for diagrams or cartoon like images.
 
 <p>It uses the <a href="#channel" >-channel</a> setting, (including the
 '<CODE>sync</CODE>' flag for channel syncronization), to determine which color
-values will be used and modified. As the default <a href="#channel"
->-channel</a> setting is '<CODE>RGB,sync</CODE>', channels will be modified
+values is used and modified. As the default <a href="#channel"
+>-channel</a> setting is '<CODE>RGB,sync</CODE>', channels are modified
 together by the same gamma value, preserving colors. </p>
 
 
@@ -497,9 +497,9 @@ problems that these operators may have. That is <a href="#auto-level"
 
 <p>It uses the <a href="#channel" >-channel</a> setting, (including the
 special '<CODE>sync</CODE>' flag for channel syncronization), to determine
-which color values will be used and modified. As the default <a
+which color values are used and modified. As the default <a
 href="#channel" >+channel</a> setting is '<CODE>RGB,sync</CODE>', the
-'<CODE>sync</CODE>' will ensure that the color channels will be modified
+'<CODE>sync</CODE>' ensures that the color channels will are modified
 together by the same gamma value, preserving colors, and ignoring
 transparency. </p>
 
@@ -729,13 +729,13 @@ functionality.</p>
 
 <p>Brightness and Contrast arguments are converted to offset and slope of a linear transform and applied using <a href="#fill">-function polynomial "slope,offset"</a>.</p>
 
-<p>The slope varies from 0 at contrast=-100 to almost vertical at contrast=+100. For brightness=0 and contrast=-100, the result will be totally midgray. For brightness=0 and contrast=+100, the result will approach but not quite reach a threshold at midgray; that is the linear transformation will be a a very steep vertical line at mid gray.</p>
+<p>The slope varies from 0 at contrast=-100 to almost vertical at contrast=+100. For brightness=0 and contrast=-100, the result are totally midgray. For brightness=0 and contrast=+100, the result will approach but not quite reach a threshold at midgray; that is the linear transformation is a very steep vertical line at mid gray.</p>
 
-<p>Negative slopes, i.e. negating the image, are not possible with this function. All achievable slopes will be zero or positive.</p>
+<p>Negative slopes, i.e. negating the image, are not possible with this function. All achievable slopes are zero or positive.</p>
 
-<p>The offset varies from -0.5 at brightness=-100 to 0 at brightness=0 to +0.5 at brightness=+100. Thus, when contrast=0 and brightness=100, the result will be totally white. Similarly, when contrast=0 and brightness=-100, the result will be totally black.</p>
+<p>The offset varies from -0.5 at brightness=-100 to 0 at brightness=0 to +0.5 at brightness=+100. Thus, when contrast=0 and brightness=100, the result is totally white. Similarly, when contrast=0 and brightness=-100, the result is totally black.</p>
 
-<p>As the range of values for the arguments are -100 to +100, adding the '%' symbol will be no different than leaving it off.</p>
+<p>As the range of values for the arguments are -100 to +100, adding the '%' symbol is no different than leaving it off.</p>
 
 <div style="margin: auto;">
   <h4><a name="cache" id="cache"></a>-cache <em class="arg">threshold</em></h4>
@@ -755,7 +755,7 @@ option has been given.  To modify a caption of images already in memory use
 
 <p>The caption can contain special format characters listed in the <a
 href="../www/escape.html">Format and
-Print Image Properties</a>. These attributes will be expanded when the caption
+Print Image Properties</a>. These attributes are expanded when the caption
 is finally assigned to the individual images. </p>
 
 <p>If the first character of <em class="arg">string</em> is <em
@@ -841,9 +841,9 @@ channel (as specified by the rest of the <a href="#channel">-channel</a>
 setting) completely independently from each other. </p>
 
 <p>For example for operators such as <a href="#auto-level">-auto-level</a> and
-<a href="#auto-gamma">-auto-gamma</a> the color channels will be modified
+<a href="#auto-gamma">-auto-gamma</a> the color channels are modified
 together in exactly the same way so that colors will remain in-sync. Without
-it being set, then each channel will be modified separately and
+it being set, then each channel is modified separately and
 independently, which may produce color distortion. </p>
 
 <p>The <a href="#morphology">-morphology</a> '<kdb>Convolve</kdb>' method
@@ -1028,7 +1028,7 @@ alpha/matte values of the original image. </p>
 <p>If either the image being modified, or the lookup image, contains no
 transparency (i.e. <a href="#alpha" >-alpha</a> is turned 'off') but the <a
 href="#channel">-channel</a> setting includes alpha replacement, then it is
-assumed that image represents a gray-scale gradient which will be used for the
+assumed that image represents a gray-scale gradient which is used for the
 replacement alpha values.  That is you can use a gray-scale CLUT image to
 adjust a existing images alpha channel, or you can color a gray-scale image
 using colors form CLUT containing the desired colors, including transparency.
@@ -1253,7 +1253,7 @@ option has been given.  To modify a comment of images already in memory use
 
 <p>The comment can contain special format characters listed in the <a
 href="../www/escape.html">Format and
-Print Image Properties</a>. These attributes will be expanded when the comment
+Print Image Properties</a>. These attributes are expanded when the comment
 is finally assigned to the individual images. </p>
 
 <p>If the first character of <em class="arg">string</em> is <em
@@ -1516,7 +1516,7 @@ colormap entry is shifted.</p>
   <h4><a name="define" id="define"></a>-define <em class="arg">key</em>{<em class="arg">=value</em>}<em class="arg">...</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>add specific global settings generally used to control 
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>add specific global settings generally used to control
 coders and image processing operations.</td><td style='text-align:right;'></td></tr></table>
 
 <p>This option creates one or more definitions for coders and decoders to use
@@ -1532,9 +1532,9 @@ options.  Use <a href="#define">+define key</a> to remove definitions
 previously created.  Use <a href="#define">+define "*"</a> to remove all
 existing definitions.</p>
 
-<p>The same "Artifact" settings can also be defined using the <a
+<p>The same 'artifact' settings can also be defined using the <a
 href="#set" >-set "option:<em class="arg">key</em>" "<em class="arg"
->value</em></a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
+>value</em>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value. </p>
 
 <p>Such settings are global in scope, and effect all images and operations. </p>
@@ -1597,8 +1597,8 @@ available:</p>
 <dd>Set the type to <kbd>floating-point</kbd> to specify a floating-point
     format for raw files (e.g. GRAY:) or for MIFF and TIFF images in HDRI mode
     to preserve negative values. If <a href="#depth">-depth</a> 16 is
-    included, then the result will be single precision floating point format.
-    If <a href="#depth">-depth</a> 32 is included, then the result will be
+    included, the result is a single precision floating point format.
+    If <a href="#depth">-depth</a> 32 is included, the result is
     double precision floating point format.</dd>
 
 </ul>
@@ -1692,7 +1692,7 @@ use:</p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>shift image pixels as defined by a displacement map.</td><td style='text-align:right;'>[<a href="../www/composite.html">composite</a>]</td></tr></table>
 
 <p>With this option, the 'overlay' image, and optionally the 'mask' image,
-will be used as a displacement map, which is used to displace the lookup of
+is used as a displacement map, which is used to displace the lookup of
 what part of the 'background' image is seen at each point of the overlaid
 area.  Much like the displacement map is a 'lens' that redirects light shining
 through it so as to present a distorted view the original 'background' image
@@ -1727,7 +1727,7 @@ these flags were added as of IM v6.5.3-5.</p>
 given scaling values will determine a single direction (vector) in which
 displacements can occur (positively or negatively).  However, if you also
 specify a third image which is normally used as a <em class="arg">mask</em>,
-then the <em class="arg">composite image</em> will be used for horizontal X
+the <em class="arg">composite image</em> is used for horizontal X
 displacement, while the <em class="arg">mask image</em> is used for vertical Y
 displacement.  This allows you to define completely different displacement
 values for the X and Y directions, and allowing you to lookup any point within
@@ -1740,7 +1740,7 @@ you can use the 'red' channel of the overlay image to specify the horizontal
 or X displacement, and the 'green' channel for the vertical or Y displacement.
 </p>
 
-<p>As of IM v6.5.3-5 any alpha channel in the overlay image will be used as a
+<p>As of IM v6.5.3-5 any alpha channel in the overlay image is used as a
 mask the transparency of the destination image. However areas outside the
 overlaid areas will not be effected. </p>
 
@@ -1799,7 +1799,7 @@ disposal method for images already in memory.</p>
 
 <p>The opacity of the composite image is multiplied by the given percent, then
 it is composited 'over' the main image.  If <em class="arg">src_percent</em>
-is greater than 100, start dissolving the main image so it will become
+is greater than 100, start dissolving the main image so it becomes
 transparent at a value of '<kbd class="arg">200</kbd>'.  If both percentages
 are given, each image are dissolved to the percentages given. </p>
 
@@ -1898,23 +1898,38 @@ class="arg">method</em> being used. </p>
        meanings of these coefficients. <br/>
 
        The distortions '<kbd>Affine</kbd>' and '<kbd>SRT</kbd>' provide
-       alternative methods of defining this distortion, with ImageMagick doing the
-       calculations needed to generate the required coefficients. You can see
-       the internally generated coefficients, by using a <a href="#verbose"
-       >-verbose</a> setting.  </td>
+       alternative methods of defining this distortion, with ImageMagick doing
+       the calculations needed to generate the required coefficients. You can
+       see the internally generated coefficients, by using a <a
+       href="#verbose" >-verbose</a> setting with those other varients.  </td>
 
   </tr>
 
-<!--  still under development, do not display - Anthony
   <tr valign="top">
-    <td valign="top"><kbd>Bilinear</kbd></td>
+    <td valign="top"><kbd>BilinearForward</kbd><br/>
+    <kbd>BilinearReverse</kbd></td>
     <td valign="top">
-       Bilinear (reversed) Distortion, given a minimum of 4 sets of
-       coordinate pairs, or 16 values (see below). Not that lines may not
-       appear straight after distortion, though the distance between
-       coordinates will remain consistent. </td>
+       Bilinear Distortion, given a minimum of 4 sets of coordinate pairs, or
+       16 values (see below). Not that lines may not appear straight after
+       distortion, though the distance between coordinates will remain
+       consistent. <br/>
+
+       The '<kbd>BilinearForward</kbd>' is used to map rectangles to any
+       quadrilateral, while the '<kbd>BilinearReverse</kbd>' form maps any
+       quadrilateral to a rectangle, while preserving the straigth line edges
+       in each case.  <br/>
+
+       Note that '<kbd>BilinearForward</kbd>' can generate invalid pixels
+       which will be colored using the <a href="#mattecolor" >-mattecolor</a>
+       color setting.  Also if the quadraterial becomes 'flipped' the image
+       may dissappear. <br/>
+
+       There are future plans to produce a true Bilinear distortion that will
+       attempt to map any quadrilateral to any other quadrilateral, while
+       preserving edges (and edge distance ratios).
+
+       </td>
   </tr>
--->
 
   <tr valign="top">
     <td valign="top"><kbd>Perspective</kbd></td>
@@ -2056,7 +2071,10 @@ class="arg">method</em> being used. </p>
        of the radial polynomial,
        so that it forms the function <br/>
           Rsrc = r / ( <em>A</em>*r<sup>3</sup> + <em>B</em>*r<sup>2</sup> +
-                               <em>C</em>*r + <em>D</em> )
+                               <em>C</em>*r + <em>D</em> )<br/>
+       Note that this is not the reverse of the '<kbd>Barrel</kbd>'
+       distortion, just a different barrel-like radial distortion method.
+
        </td>
   </tr>
 
@@ -2065,23 +2083,29 @@ class="arg">method</em> being used. </p>
     <td valign="top">
        Distort the given list control points (any number) using an Inverse
        Squared Distance Interpolation Method (<a
-       href="http://www.ems-i.com/smshelp/Data_Module/Interpolation/Inverse_Distance_Weighted.htm"
-       >Shepards Method</a>). The control points in effect do 'localized'
-       distortions of the image around the given control point.  For best
-       results extra control points should be added to 'lock' the positions of
-       the corners and other unchanging parts of the image. <br/>
+       href="http://en.wikipedia.org/wiki/Shepard%27s_method" >Shepards
+       Method</a>). The control points in effect do 'localized' displacement
+       of the image around the given control point (preserving the look and
+       the rotation of the area near the control points.  For best results
+       extra control points should be added to 'lock' the positions of the
+       corners, edges and other unchanging parts of the image, to prevent
+       their movement. <br/>
 
-       The distortion has been likened to 'taffy pulling' using nails, pins or
-       sticks. It basically uses the <a href="#sparse-color"
-       >-sparse-color</a> method of the same name to generate separate X and Y
-       displacement maps (see <a href="#displace" >-displace</a>) for source
-       image color look-up. </td>
+       The distortion has been likened to 'taffy pulling' using nails, or
+       pins' stuck in a block of 'jelly' which is then moved to the new
+       position, distorting te surface of the jelly. <br/>
 
+       Internally it is equivelent to generating a displacement map (see <a
+       href="#displace" >-displace</a>) for source image color look-up using
+       the <a href="#sparse-color" >-sparse-color</a> method of the same name.
+
+       </td>
   </tr>
 
 </table>
 
-<p>To print a complete list of distortion methods, use <a href="#list">-list distort</a>.</p>
+<p>To print a complete list of distortion methods, use <a href="#list">-list
+distort</a>.</p>
 
 <p>Many of the above distortion methods such as '<kbd>Affine</kbd>',
 '<kbd>Perspective</kbd>', and '<kbd>Shepards</kbd>' use a list control points
@@ -2106,32 +2130,33 @@ used to group the 4 sets of coordinate pairs, to make it easier to read and
 understand.</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>
-  convert rose:  -virtual-pixel black \ <br/>
-       -distort Perspective '0,0,0,0  0,45,0,45   69,0,60,10  69,45,60,35' \ <br/>
-       rose_3d_rotated.gif</span></p>
-<p>If more that the required number of coordinate pairs are given for a
-distortion, the distortion method is 'least squares' fitted to
-produce the best result for all the coordinate pairs given. If less than the
-ideal number of points are given, the distort will generally fall back to a
-simpler form of distortion that can handles the smaller number of coordinates
-(usally a linear '<kbd>Affine</kbd>' distortion). </p>
+convert rose:  -virtual-pixel black \<br/>
+     -distort Perspective '0,0,0,0  0,45,0,45  69,0,60,10  69,45,60,35' \<br/>
+     rose_3d_rotated.gif</span></p>
+<p>If more that the required number of coordinate pairs are given for
+a distortion, the distortion method is 'least squares' fitted to produce the
+best result for all the coordinate pairs given. If less than the ideal number
+of points are given, the distort will generally fall back to a simpler form of
+distortion that can handles the smaller number of coordinates (usally a linear
+'<kbd>Affine</kbd>' distortion). </p>
 
 <p>By using more coordinates you can make use of image registration tool to
-find matching coordinate pairs in overlapping images, so as to improve the 'fit'
-of the distortion. Of course a bad coordinate pair can also make the 'fit'
-worse. Caution is always advised. </p>
+find matching coordinate pairs in overlapping images, so as to improve the
+'fit' of the distortion. Of course a bad coordinate pair can also make the
+'fit' worse. Caution is always advised. </p>
 
 <p>Colors are acquired from the source image according to the <a
 href="#interpolate" >-interpolate</a> color lookup setting, when the image is
-magnified.  However if the viewed image is minified (image becomes smaller), a
-special area resampling function (added ImageMagick v6.3.5-9), is used to
-produce a higher quality image.  For example you can use a
-'<kbd>perspective</kbd>' distortion to view a infinitely tiled 'plane' all the
-way to the horizon. </p>
+magnified.  However if the viewed image is minified (image becomes smaller),
+a special area resampling function (added ImageMagick v6.3.5-9), is used to
+produce a higher quality image.  For example you can use
+a '<kbd>perspective</kbd>' distortion to view a infinitely tiled 'plane' all
+the way to the horizon. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \ <br/>
-      -distort perspective  '0,0,5,45  89,0,45,46  0,89,0,89  89,89,89,89' \ <br/>
-      checks_tiled.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>
+convert -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \<br/>
+     -distort perspective  '0,0,5,45  89,0,45,46  0,89,0,89  89,89,89,89' \<br/>
+     checks_tiled.jpg</span></p>
 <p>Note that a infinitely tiled perspective images involving the horizon can
 be very slow to generate due to the use of the high quality 'area resampling'
 function (added ImageMagick v6.3.5-9).  You can turn off 'area resampling'
@@ -2146,12 +2171,12 @@ the rest of the ground. </p>
 
 <p>The output image size will by default be the same as the input image.  This
 means that if the part of the distorted image falls outside the viewed area of
-the 'distorted space', those parts is clipped and lost.  However if you
-use the plus form of the operator (<a href="#distort" >+distort</a>) the
-operator will attempt (if possible) to show the whole of the distorted image,
-while retaining a correct 'virtual canvas' offset, for image layering. This
-offset may need to be removed using <a href="#repage" >+repage</a>, to remove
-if it is unwanted. </p>
+the 'distorted space', those parts is clipped and lost.  However if you use
+the plus form of the operator (<a href="#distort" >+distort</a>) the operator
+will attempt (if possible) to show the whole of the distorted image, while
+retaining a correct 'virtual canvas' offset, for image layering. This offset
+may need to be removed using <a href="#repage" >+repage</a>, to remove if it
+is unwanted. </p>
 
 <p>You can alternatively specify a special "<kbd><a href="#set" >-set</a>
 option:distort:viewport {geometry_string}</kbd>" setting which will specify
@@ -2173,8 +2198,8 @@ and debugging purposes. This many not be available for all distorts. </p>
 <p>Affine rotations and shears (such as '<kbd>SRT</kbd>' distortion), tend to
 produce a cleaner result that the equivalent <a href="#rotate" >-rotate</a>
 and/or <a href="#shear" >-shear</a> operation, with more control of due to the
-above settings. It is algorithmically slower, though in ImageMagick it may be faster.
-</p>
+above settings. It is algorithmically slower however, though that may not be
+the case in ImageMagick's implementation.  </p>
 
 
 <div style="margin: auto;">
@@ -2548,7 +2573,7 @@ multi-value version of evaluate. </P>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ <br/> image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \ <br/> image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 \ <br/> image.rgb image.png</span></p>
-<p>then the image will be <em>resized</em> to the specified dimensions instead,
+<p>the image is <em>resized</em> to the specified dimensions instead,
 equivalent to:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png</span></p>
@@ -2580,7 +2605,7 @@ equivalent to:</p>
 
 <p>This option is new as of ImageMagick 6.5.4-3 (and now working for Windows users in ImageMagick 6.6.0-9). It transforms an image from the normal (spatial) domain to the frequency domain. In the frequency domain, an image is represented as a superposition of complex sinusoidal waves of varying amplitudes. The image x and y coordinates are the possible frequencies along the x and y directions, respectively, and the pixel intensity values are complex numbers that correspond to the sinusoidal wave amplitudes. See for example, <a href="http://en.wikipedia.org/wiki/Fourier_transform" target="_blank">Fourier Transform</a>, <a href="http://en.wikipedia.org/wiki/DFT" target="_blank">Discrete Fourier Transform</a> and <a href="http://en.wikipedia.org/wiki/FFT" target="_blank">Fast Fourier Transform</a>.</p>
 
-<p>A single image name is provided as output for this option. However, the output result will have two components. It will be either a two-frame image or two separate images, depending upon whether the image format specified supports multi-frame images. The reason that we get a dual output result is because the frequency domain represents an image using complex numbers, which cannot be visualized directly. Therefore, the complex values are automagically separated into a two-component image representation. The first component is the magnitude of the complex number and the second is the phase of the complex number. See for example, <a href="http://en.wikipedia.org/wiki/Complex_numbers" target="_blank">Complex Numbers</a>.<p>
+<p>A single image name is provided as output for this option. However, the output result will have two components. It is either a two-frame image or two separate images, depending upon whether the image format specified supports multi-frame images. The reason that we get a dual output result is because the frequency domain represents an image using complex numbers, which cannot be visualized directly. Therefore, the complex values are automagically separated into a two-component image representation. The first component is the magnitude of the complex number and the second is the phase of the complex number. See for example, <a href="http://en.wikipedia.org/wiki/Complex_numbers" target="_blank">Complex Numbers</a>.<p>
 
 <p>The magnitude and phase component images must be specified using image formats that do not limit the color or compress the image. Thus, MIFF, TIF, PFM, EXR and PNG are the recommended image formats to use. All of these formats, except PNG support multi-frame images. So for example,</p>
 
@@ -2590,7 +2615,7 @@ equivalent to:</p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -fft fft_image.png</span></p>
 <p>generates a magnitude image as <kbd>fft_image-0.png</kbd> and a phase image as <kbd>fft_image-1.png</kbd>. If you prefer this representation, then you can force any of the other formats to produce two output images by including <a href="#adjoin">+adjoin</a> following -fft in the command line.</p>
 
-<p>The input image can be any size, but if not square and even-dimensioned, it will be padded automagically to the larger of the width or height of the input image and to an even number of pixels. The padding will occur at the bottom and/or right sides of the input image. The resulting output magnitude and phase images will be square at this size. The kind of padding relies on the <a href="#virtual-pixel">-virtual-pixel</a> setting.</p>
+<p>The input image can be any size, but if not square and even-dimensioned, it is padded automagically to the larger of the width or height of the input image and to an even number of pixels. The padding will occur at the bottom and/or right sides of the input image. The resulting output magnitude and phase images is square at this size. The kind of padding relies on the <a href="#virtual-pixel">-virtual-pixel</a> setting.</p>
 
 <p>Both output components will have dynamic ranges that fit within [0,&nbsp;<em class="QR">QuantumRange</em>], so that HDRI need not be enabled. Phase values nominally range from 0 to 2*&pi;, but for non-HDRI compilations of ImageMagick, the phase image is scaled to span the full dynamic range. The magnitude image is not scaled and thus generally will contain very small values. As such, the image normally will appear totally black. In order to view any detail, the magnitude image typically is enhanced with a log function into what is usually called the spectrum. A log function is used to enhance the darker values more in comparison to the lighter values. This can be done, for example, as follows:</p>
 
@@ -2604,7 +2629,7 @@ equivalent to:</p>
 
 <p>However, as the real and imaginary components can contain negative values, this requires that IM be configured with HDRI enabled. In this case, you must use either MIFF, TIF or PFM formats for the real and imaginary component results, since they are formats that preserve both negative and fractional values without clipping them or truncating the fractional part.</p>
 
-<p>The real and imaginary component images resulting from <a href="#fft">+fft</a> also will be square, even dimensioned images due to the same padding that was discussed above for the magnitude and phase component images.</a>
+<p>The real and imaginary component images resulting from <a href="#fft">+fft</a> is also square, even dimensioned images due to the same padding that was discussed above for the magnitude and phase component images.</a>
 
 <p>See the discussion on HDRI implementations of ImageMagick on the page
 <a href="/www/high-dynamic-range.html">High Dynamic-Range Images</a>. For more about HDRI go the ImageMagick <a href="http://www.imagemagick.org/Usage/basics/#hdri">Usage</a> pages or this <a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a> entry.
@@ -2655,10 +2680,10 @@ operations such as <a href="#resize">-resize</a> and <a href="#distort"
 </pre>
 
 <p>The <kbd>Bessel</kbd> and <kbd>Sinc</kbd> filter is also provided (as well
-as a faster <kbd>SincFast</kbd> equivalent ploynomil form).
-However these filters are generally useless on their own as they are infinite
-filters that have been clipped to the filters support size. Their direct use
-is not recommended except via expert settings (see below). </p>
+as a faster <kbd>SincFast</kbd> equivalent form).  However these filters are
+generally useless on their own as they are infinite filters that are being
+clipped to the filters support size. Their direct use is not recommended
+except via expert settings (see below). </p>
 
 Instead these special filter functions are typically windowed by a windowing
 function that the <a href="#filter" >-filter</a> setting defines.   That is
@@ -3229,7 +3254,7 @@ image histogram, and others.</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image-0.png fft_image-1.png -ift fft_image_ift.png</span></p>
 
-<p>The resulting image may need to be cropped due to padding introduced when the original image, prior to the <a href="#fft">-fft</a> or <a href="#fft">+fft</a>, was not square or even dimensioned. Any padding will be at the right and/or bottom sides of the image.
+<p>The resulting image may need to be cropped due to padding introduced when the original image, prior to the <a href="#fft">-fft</a> or <a href="#fft">+fft</a>, was not square or even dimensioned. Any padding is at the right and/or bottom sides of the image.
 
 <p>The <a href="http://www.fftw.org/" target="_blank">FFTW</a> delegate library is required to use <a href="#ift">-ift</a>.
 
@@ -4821,11 +4846,23 @@ filled with the <kbd>background</kbd> color. </p>
   <h4><a name="sample" id="sample"></a>-sample <em class="arg">geometry</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>scale image using pixel sampling.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>minify/magnify the image using pixel subsampling and pixel replication, respectively.</td><td style='text-align:right;'></td></tr></table>
 
-<p><a href="#sample">-sample</a> ignores the current <a href="#resize">-resize</a> <a href="#filter">-filter</a> setting. The results are equivalent to using <a href="#resize">-resize</a> with a <a href="#filter">-filter</a> setting of <kbd>point</kbd>,  though <a href="#sample">-sample</a> is a lot faster. </p>
+<p>Change the image size simply by directly sampling the pixels original
+image.  When magnifying, pixels are replicated in blocks.  When minifying,
+pixels are sub-sampled (i.e., some rows and columns are skipped over). </p>
 
-<p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Offsets, if present in the geometry string, are ignored, and the <a href="#gravity">-gravity</a> option has no effect.</p>
+<p>The results are thus equivalent to using <a href="#resize">-resize</a> with
+a <a href="#filter">-filter</a> setting of <kbd>point</kbd> (nearest
+neighbour), though <a href="#sample">-sample</a> is a lot faster, as it
+avoids all the filter processing of the image. As such it completely ignores
+the current <a href="#filter">-filter</a> setting. </p>
+
+<p>The key feature of the <a href="#sample">-sample</a> is that no new colors
+will be added to the resulting image, though some colors may disappear. </p>
+
+<p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Offsets, if present in the geometry string, are
+ignored, unlike <a href="#resize">-resize</a>. </p>
 
 
 <div style="margin: auto;">
@@ -4840,9 +4877,23 @@ filled with the <kbd>background</kbd> color. </p>
   <h4><a name="scale" id="scale"></a>-scale <em class="arg">geometry</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>scale the image.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>minify/magnify the image using pixel block averaging and pixel replication, respectively.</td><td style='text-align:right;'></td></tr></table>
 
-<p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. The <a href="#scale">-scale</a> option uses a simpler, faster algorithm than <a href="#resize">-resize</a>, and it ignores the <a href="#filter">-filter</a> setting if one is present. Offsets, if present in the <em class="arg">geometry</em> string, are ignored, and the <a href="#gravity">-gravity</a> option has no effect.</p>
+<p>Change the image size simply by replacing pixels by averaging pixels
+together when minifying, or replacing pixels when magnifing.  </p>
+
+<p>The results are thus equivalent to using <a href="#resize">-resize</a> with
+a <a href="#filter">-filter</a> setting of <kbd>box</kbd>.  Though it is a lot
+faster, as it avoids all the filter processing of the image. As such it
+completely ignores the current <a href="#filter">-filter</a> setting. </p>
+
+<p>If when shrinking (minifying) images the original image is some integer
+multiple of the new image size, the number of pixels avergaed together to
+produce the new pixel color is the same across the whole image. This is
+a special case known as 'binning' and is often used as a method of reducing
+noise in image such as those generated by digital cameras, especially in low
+light conditions. </p>
+
 
 <div style="margin: auto;">
   <h4><a name="scene" id="scene"></a>-scene <em class="arg">value</em></h4>
@@ -4905,42 +4956,57 @@ of the color clusters is returned.</p>
 
 
 <div style="margin: auto;">
-  <h4><a name="set" id="set"></a>-set <em class="arg">attribute value</em></h4>
+  <h4><a name="set" id="set"></a>-set <em class="arg">key value</em></h4>
+  <h4><a name="set" id="set"></a>+set <em class="arg">key</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>set an image attributes and properties to images the current
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>sets image attributes and properties for images in the current
 image sequence.</td><td style='text-align:right;'></td></tr></table>
 
-This will assign specific option and settings to all the images in the current
-image sequence.  That is it will let you modify settings that have already bee
-read in.  In particular those attributes that are assigned to images as they
-are read in.  Specifically setting such as: <a href="#comment">-comment</a>,
-<a href="#delay">-delay</a>, <a href="#dispose">-dispose</a>, and <a
-href="#page">-page</a>.  For example:</p>
+<p>This will assign (or modify) specific settings attached to all the images
+in the current image sequence.  Using the <a href="#set">+set</a> form of the
+option will either remove, or reset that setting to a default state, as
+appropriate.  </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' \ <br/> rose.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format %c rose.png</span><span class='crtout'>Rose is a rose is a rose is a rose</span></p>
-<p>The <a href="#repage">-repage</a> operator will also set the
-'<kbd>page</kbd>' attribute of images already in memory, but allows you to
-separately set the virtual canvas's size and offset components, and also
-allows relative offset changes, and automatic canvas size re-calculating.  The
-<a href="#set">-set</a> option however can only provide a direct, unmodified
-assignment of  '<kbd>page</kbd>' attribute. </p>
+<p>For example, it will modify specific well known image meta-data
+'attributes' such as those normally overridden by: the options <a
+href="#delay" >-delay</a>, <a href="#dispose" >-dispose</a>, and <a
+href="#page" >-page</a>, <a href="#colorspace" >-colorspace</a>; generally
+assigned before the image is read in, by using a <em class="arg">key</em> of
+the same name. </p>
 
-<p>Use this option to associate a colorspace or profile with your image.  For
-example,</p> <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc
-image-icc.psd</span></p>
-<p>If the given setting being set is not a known 'attribute' such as shown
-above, the setting will be stored with the individual images as a free form
+<p>If the given <em class="arg">key</em> does not match a specific known
+'attribute ', such as shown above, the setting is stored as a a free form
 'properity' string.  Such settings are listed in <a href="#verbose"
 >-verbose</a> information ("<kbd>info:</kbd>" output format) as "Properties".
 </p>
 
-<p>The set value can also make use of of <a href="../www/escape.html" >Format and Print Image
-Properties</a> in the defined value.  Which can itself also include
-'properties' previously set by this option.  For example</p>
+<p>This includes string 'properities' that are set by and assigned to images
+using the options <a href="#comment" >-comment</a>, <a href="#label"
+>-label</a>, <a href="#caption" >-caption</a>. These options actually assign
+a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
+Escapes</a> expanded) to images as they are read in.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \<br/>
-       -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class='crtout'>Old size = 70x46  New size = 35x23</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png</span><span class='crtout'>identify -format %c rose.png</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Rose is a rose is a rose is a rose</span></p>
+<p>The set value can also make use of <a href="../www/escape.html" >Format and Print Image
+Properties</a> in the defined value.  For example:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \</span><span class='crtout'>        -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Old size = 70x46  New size = 35x23</span></p>
+<p>Other well known 'properities' that can be  include:
+'<kbd>date:create</kbd>' and '<kbd>date:modify</kbd>' and
+'<kbd>signature</kbd>'. </p>
+
+<p>The <a href="#repage">-repage</a> operator will also allow you to modify
+the '<kbd>page</kbd>' attribute of an image for images already in memory (also
+see <a href="#repage">-page</a>).  However it is designed to provide a finer
+control of the sub-parts of this 'attribute'. The <a href="#set">-set page</a>
+option will only provide a direct, unmodified assignment of  '<kbd>page</kbd>'
+attribute. </p>
+
+<p>This option can also associate a colorspace or profile with your image.
+For example,</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
 <p>Some 'properties' must be defined in a specific way to be used. For
 example only 'properties' prefixed with "<kbd>filename:</kbd>" can be used to
 modify the output filename of an image. For example</p>
@@ -4948,7 +5014,15 @@ modify the output filename of an image. For example</p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
 <p>If the setting value is prefixed with "<kbd>option:</kbd>" the setting will
 be saved as a global "Artifact" exactly as if it was set using the <a
-href="#define" >-define</a> option.</p>
+href="#define" >-define</a> option. As such settings are globel in scope, they
+can be used to pass 'attributes' and 'properities' of one specific image,
+in a way that allows you to use them in a completely different image, even if
+the original image has long since been modified or destroyed. For example: </p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose:  -set option:rosesize '%wx%h' -delete 0 \</span><span class='crtout'>        label:'%[rosesize]'   label_size_of_rose.gif</span></p>
+<p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
+a 'artifact' if the given <em class="arg">key</em> does not match an existing
+'attribute' or 'properity'.  </p>
 
 <p>You can set the attributes of the image registry by prefixing the value
 with <kbd>registry:</kbd>.</p>
@@ -5261,10 +5335,10 @@ the following.</p>
 
 <p>This option is required to have compare search for the best match location
 of a small image within a larger image. This search will produce two images
-(or two frames). The first will be the "difference" image and the second will
+(or two frames). The first is the "difference" image and the second will
 be the "match score" image.</p>
 
-<p>The "match-score" image will be smaller containing a pixel for ever possible
+<p>The "match-score" image is smaller containing a pixel for ever possible
 position of the top-left corner of the given sub-image. that is its size will
 be the size of the larger_image - sub_image + 1.  The brightest location in
 this image is the location s the locate on the best match that is also
@@ -5274,7 +5348,7 @@ possible matching loctions. </p>
 
 <p>Note that the search will try to compare teh sub-image at every possible
 location in the larger image, as such it can be very slow.  The smaller the
-sub-image the faster this search will be. </p>
+sub-image the faster this search is. </p>
 
 
 <div style="margin: auto;">
