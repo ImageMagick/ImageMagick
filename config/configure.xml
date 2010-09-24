@@ -22,7 +22,7 @@
   <configure name="LDFLAGS" value="-L/usr/local/lib "/>
   <configure name="LIBS" value="-lMagickCore -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
-  <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
+  <configure name="CXXFLAGS" value="-pthread"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
   <configure name="FEATURES" value="OpenMP "/>
