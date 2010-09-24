@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -35,7 +35,7 @@ static ssize_t
 
 static inline void LockMagickMutex(void)
 {
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -55,7 +55,7 @@ static inline void LockMagickMutex(void)
 
 static inline void UnlockMagickMutex(void)
 {
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;

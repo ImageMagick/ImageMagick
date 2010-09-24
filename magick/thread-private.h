@@ -31,7 +31,7 @@ extern "C" {
 #define MagickCachePrefetch(address,mode,locality)
 #endif
 
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   typedef pthread_mutex_t MagickMutexType;
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   typedef CRITICAL_SECTION MagickMutexType;
@@ -41,7 +41,7 @@ extern "C" {
 
 static inline MagickThreadType GetMagickThreadId(void)
 {
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_self());
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(GetCurrentThreadId());
@@ -52,7 +52,7 @@ static inline MagickThreadType GetMagickThreadId(void)
 
 static inline size_t GetMagickThreadSignature(void)
 {
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     union
     {
@@ -76,7 +76,7 @@ static inline size_t GetMagickThreadSignature(void)
 
 static inline MagickBooleanType IsMagickThreadEqual(const MagickThreadType id)
 {
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   if (pthread_equal(id,pthread_self()) != 0)
     return(MagickTrue);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)

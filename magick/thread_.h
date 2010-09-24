@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
 typedef pthread_t MagickThreadType;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
 typedef DWORD MagickThreadType;
@@ -30,7 +30,7 @@ typedef DWORD MagickThreadType;
 typedef pid_t MagickThreadType;
 #endif
 
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
 typedef pthread_key_t MagickThreadKey;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
 typedef DWORD MagickThreadKey;

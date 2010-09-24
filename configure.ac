@@ -369,14 +369,13 @@ esac
 
 # Enable support for threads
 AC_ARG_WITH([threads],
-    [AC_HELP_STRING([--without-threads],
-                    [disable threads support])],
+    [AC_HELP_STRING([--without-threads], [disable threads support])],
     [with_threads=$withval],
     [with_threads='yes'])
 
 have_threads=no
 if test "$with_threads" != 'no'; then
-    AX_PTHREAD()
+    AX_PTHREAD([])
     if test "$ax_pthread_ok" = yes; then
         have_threads=yes
         DEF_THREAD="$PTHREAD_CFLAGS"
@@ -390,6 +389,7 @@ if test "$with_threads" != 'no'; then
           AC_MSG_WARN([Replacing compiler $CXX with compiler $PTHREAD_CXX to support pthreads.])
           CXX="$PTHREAD_CXX"
         fi
+        AC_DEFINE(THREAD_SUPPORT,1,[Define if you have POSIX threads libraries and header files.])
     fi
 fi
 

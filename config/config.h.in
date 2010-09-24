@@ -861,6 +861,9 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define if you have POSIX threads libraries and header files. */
+#undef THREAD_SUPPORT
+
 /* Define if you have TIFF library */
 #undef TIFF_DELEGATE
 

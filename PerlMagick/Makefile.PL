@@ -140,7 +140,7 @@ foreach $delegate (qw/bzlib fontconfig freetype jpeg jng jp2 png tiff x11 xml zl
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
 my $INC_magick = '-I../ -I.. -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../magick/.libs -lMagickCore -lperl -lm';
-my $CCFLAGS_magick = "$Config{'ccflags'} -g -O2 -Wall";
+my $CCFLAGS_magick = "$Config{'ccflags'} -fopenmp -g -O2 -Wall -pthread";
 my $LDFLAGS_magick   = "-L../magick/.libs -lMagickCore $Config{'ldflags'} ";
 my $LDDLFLAGS_magick = "-L../magick/.libs -lMagickCore $Config{'lddlflags'} ";
 
@@ -210,7 +210,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as ImageMagick
-   'PERLMAINCC'	=> ' ',
+   'PERLMAINCC'	=> ' -fopenmp',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '/usr/local',
