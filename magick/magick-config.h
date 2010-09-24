@@ -20,9 +20,7 @@
 #endif
 
 /* Define if you have CAIRO library */
-#ifndef MAGICKCORE_CAIRO_DELEGATE
-#define MAGICKCORE_CAIRO_DELEGATE 1
-#endif
+/* #undef CAIRO_DELEGATE */
 
 /* permit enciphering and deciphering image pixels */
 #ifndef MAGICKCORE_CIPHER_SUPPORT
@@ -54,7 +52,9 @@
 #endif
 
 /* Define if you have DJVU library */
-/* #undef DJVU_DELEGATE */
+#ifndef MAGICKCORE_DJVU_DELEGATE
+#define MAGICKCORE_DJVU_DELEGATE 1
+#endif
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
@@ -89,9 +89,7 @@
 #endif
 
 /* Define if you have FONTCONFIG library */
-#ifndef MAGICKCORE_FONTCONFIG_DELEGATE
-#define MAGICKCORE_FONTCONFIG_DELEGATE 1
-#endif
+/* #undef FONTCONFIG_DELEGATE */
 
 /* Define if you have FlashPIX library */
 /* #undef FPX_DELEGATE */
@@ -105,7 +103,9 @@
 /* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-/* #undef GVC_DELEGATE */
+#ifndef MAGICKCORE_GVC_DELEGATE
+#define MAGICKCORE_GVC_DELEGATE 1
+#endif
 
 /* Define to 1 if you have the `argz_add' function. */
 #ifndef MAGICKCORE_HAVE_ARGZ_ADD
@@ -161,7 +161,9 @@
 #endif
 
 /* define if bool is a built-in type */
-/* #undef HAVE_BOOL */
+#ifndef MAGICKCORE_HAVE_BOOL
+#define MAGICKCORE_HAVE_BOOL /**/
+#endif
 
 /* Define to 1 if you have the `cimag' function. */
 #ifndef MAGICKCORE_HAVE_CIMAG
@@ -392,7 +394,9 @@
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-/* #undef HAVE_LCMS_H */
+#ifndef MAGICKCORE_HAVE_LCMS_H
+#define MAGICKCORE_HAVE_LCMS_H 1
+#endif
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -445,7 +449,9 @@
 #endif
 
 /* define if the compiler implements L"widestring" */
-/* #undef HAVE_LSTRING */
+#ifndef MAGICKCORE_HAVE_LSTRING
+#define MAGICKCORE_HAVE_LSTRING /**/
+#endif
 
 /* Define this if a modern libltdl is already installed */
 #ifndef MAGICKCORE_HAVE_LTDL
@@ -494,10 +500,14 @@
 #endif
 
 /* define if the compiler implements namespaces */
-/* #undef HAVE_NAMESPACES */
+#ifndef MAGICKCORE_HAVE_NAMESPACES
+#define MAGICKCORE_HAVE_NAMESPACES /**/
+#endif
 
 /* Define if g++ supports namespace std. */
-/* #undef HAVE_NAMESPACE_STD */
+#ifndef MAGICKCORE_HAVE_NAMESPACE_STD
+#define MAGICKCORE_HAVE_NAMESPACE_STD /**/
+#endif
 
 /* Define to 1 if you have the `nanosleep' function. */
 #ifndef MAGICKCORE_HAVE_NANOSLEEP
@@ -698,7 +708,9 @@
 #endif
 
 /* define if the compiler supports ISO C++ standard library */
-/* #undef HAVE_STD_LIBS */
+#ifndef MAGICKCORE_HAVE_STD_LIBS
+#define MAGICKCORE_HAVE_STD_LIBS /**/
+#endif
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #ifndef MAGICKCORE_HAVE_STRCASECMP
@@ -1059,7 +1071,9 @@
 #endif
 
 /* Define if you have LCMS (v1.11 or later) library */
-/* #undef LCMS_DELEGATE */
+#ifndef MAGICKCORE_LCMS_DELEGATE
+#define MAGICKCORE_LCMS_DELEGATE 1
+#endif
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
@@ -1085,7 +1099,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib/mesa:/usr/lib32/mesa:/usr/lib/alsa-lib:/usr/local/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu"
 #endif
 
 /* The archive extension */
@@ -1126,7 +1140,9 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-/* #undef OPENEXR_DELEGATE */
+#ifndef MAGICKCORE_OPENEXR_DELEGATE
+#define MAGICKCORE_OPENEXR_DELEGATE 1
+#endif
 
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef MAGICKCORE_PACKAGE_BUGREPORT
@@ -1329,7 +1345,9 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-/* #undef WMF_DELEGATE */
+#ifndef MAGICKCORE_WMF_DELEGATE
+#define MAGICKCORE_WMF_DELEGATE 1
+#endif
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
