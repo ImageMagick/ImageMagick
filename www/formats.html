@@ -1133,6 +1133,22 @@ convert \( -size 15x15 xc:black xc:white -append \) \
   </tr>
 
   <tr>
+    <td valign="top">CANVAS</td>
+    <td valign="top">R</td>
+    <td valign="top">Canvas image of specified color</td>
+    <td valign="top">Useful to create solid color <em>canvas</em> images. Use
+       <a href="../www/command-line-options.html#size" >-size</a> and <a
+       href="../www/command-line-options.html#depth" >-depth</a> to specify the
+       image width, height, and depth.  Example canvas color specifications
+       include <kbd>canvas:red</kbd> and <kbd>canvas:#FF0000</kbd>.<br/>
+
+       If no color is specified a '<kbd>white</kbd>' canvas image is
+       generated.  If no <a href="../www/command-line-options.html#size" >-size</a> is specified
+       a single pixel image of the specified color is generated.</td>
+
+  </tr>
+
+  <tr>
     <td valign="top">CAPTION</td>
     <td valign="top">R</td>
     <td valign="top">Image caption</td>
@@ -1157,13 +1173,18 @@ convert \( -size 15x15 xc:black xc:white -append \) \
     <td valign="top">GRADIENT</td>
     <td valign="top">R</td>
     <td valign="top">Gradual passing from one shade to another</td>
-    <td valign="top">Returns a rendered linear top-to-bottom gradient image using the specified image size. Specify the desired shading as part of the filename (e.g.  <kbd>gradient:red-blue</kbd> or <kbd>gradient:#F00-#00F</kbd>).  If the shading colors are omitted, the default gradient is white-black.</td>
+    <td valign="top">Returns a rendered linear top-to-bottom gradient image
+       using the specified image size. Specify the desired shading as part of
+       the filename (e.g.  <kbd>gradient:red-blue</kbd> or
+       <kbd>gradient:#F00-#00F</kbd>).  If the shading colors are omitted, the
+       default gradient is white-black.</td>
+
   </tr>
 
   <tr>
     <td valign="top">HALD</td>
     <td valign="top">R</td>
-    <td valign="top">Identity Hald CLUT Image</td 
+    <td valign="top">Identity Hald CLUT Image</td>
     <td valign="top">Select order with filename, e.g. hald:5 for order 5.</td>
   </tr>
 
@@ -1293,7 +1314,9 @@ convert \( -size 15x15 xc:black xc:white -append \) \
     <td valign="top">XC</td>
     <td valign="top">R</td>
     <td valign="top">Canvas image of specified color</td>
-    <td valign="top">Useful to create solid color <em>canvas</em> images. Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  Example XC color specifications include <kbd>XC:red</kbd> and <kbd>XC:#FF0000M</kbd>.</td>
+    <td valign="top">An backward compatible alias for the '<kbd>canvas:</kbd>'
+    psuedo-file format, used to create a solid color <em>canvas</em> image.
+    </td>
   </tr>
 </table>
 
@@ -1316,14 +1339,14 @@ convert \( -size 15x15 xc:black xc:white -append \) \
     <td valign="top">GRANITE</td>
     <td valign="top">R</td>
     <td valign="top">128x128 granite texture pattern</td>
-    <td valign="top"><img src="../images/granite.png" width="100" height="26" alt="GRANITE"/></td>
+    <td valign="top"><img src="../images/granite.png" width="64" height="64" alt="GRANITE"/></td>
   </tr>
 
   <tr>
     <td valign="top"><a href="../images/logo.eps">LOGO</a></td>
     <td valign="top">R</td>
     <td valign="top">ImageMagick Logo, 640x480</td>
-    <td valign="top">The ImageMagick <a href="../images/logo.jpg">logo</a>.</td>
+    <td valign="top"><img src="../images/logo.png" width="114" height="118" alt="Logo"/></td>
   </tr>
 
   <tr>

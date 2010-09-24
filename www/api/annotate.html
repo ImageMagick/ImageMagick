@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -224,7 +224,7 @@ _8c.html" target="source" name="FormatMagickCaption">FormatMagickCaption</a></h2
 
 <pre class="code">
   ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-    TypeMetric *metrics,char **caption)
+    const MagickBooleanType split,TypeMetric *metrics,char **caption)
 </pre>
 
 <p>A description of each parameter follows.</p></ol>
@@ -232,14 +232,17 @@ _8c.html" target="source" name="FormatMagickCaption">FormatMagickCaption</a></h2
 <h5>image</h5>
 <ol><p>The image.</p></ol>
 
-<h5>caption</h5>
-<ol><p>the caption.</p></ol>
-
 <h5>draw_info</h5>
 <ol><p>the draw info.</p></ol>
 
+<h5>split</h5>
+<ol><p>when no convenient line breaks-- insert newline.</p></ol>
+
 <h5>metrics</h5>
 <ol><p>Return the font metrics in this structure.</p></ol>
+
+<h5>caption</h5>
+<ol><p>the caption.</p></ol>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/annotate
