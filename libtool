@@ -6573,10 +6573,6 @@ func_mode_link ()
 	    *) lib_linked=no ;;
 	    esac
 
-	    if test "$lib_linked" != yes; then
-	      func_fatal_configuration "unsupported hardcode properties"
-	    fi
-
 	    if test -n "$add_shlibpath"; then
 	      case :$compile_shlibpath: in
 	      *":$add_shlibpath:"*) ;;
