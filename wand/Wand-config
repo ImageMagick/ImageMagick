@@ -40,10 +40,10 @@ while test $# -gt 0; do
       echo '6.6.4 Q16 '
       ;;
     --cflags)
-      echo "-I${includedir} "
+      echo "-I${includedir} -fopenmp"
       ;;
     --cxxflags)
-      echo '-g -O2'
+      echo '-g -O2 -pthread'
       ;;
     --cppflags)
       echo '-I/usr/local/include/ImageMagick'
@@ -52,7 +52,7 @@ while test $# -gt 0; do
       echo '-L/usr/local/lib '
       ;;
     --libs)
-      echo "-L${libdir} -lMagickWand -lMagickCore -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lltdl"
+      echo "-L${libdir} -lMagickWand -lMagickCore -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lpthread -lltdl"
       ;;
     *)
       echo "${usage}" 1>&2

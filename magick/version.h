@@ -36,7 +36,7 @@ extern "C" {
 #define MagickReleaseDate  "2010-09-23"
 #define MagickChangeDate   "20100912"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
-#define MagickFeatures  ""
+#define MagickFeatures  "OpenMP "
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.6.4/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"

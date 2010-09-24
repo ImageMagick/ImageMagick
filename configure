@@ -8435,6 +8435,9 @@ $as_echo "$as_me: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to s
 $as_echo "$as_me: WARNING: Replacing compiler $CXX with compiler $PTHREAD_CXX to support pthreads." >&2;}
           CXX="$PTHREAD_CXX"
         fi
+
+$as_echo "#define THREAD_SUPPORT 1" >>confdefs.h
+
     fi
 fi
 

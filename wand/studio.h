@@ -190,7 +190,7 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  define MAGICKCORE_HAVE_WINTHREADS  1

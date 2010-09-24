@@ -1292,6 +1292,11 @@
 #define MAGICKCORE_STDC_HEADERS 1
 #endif
 
+/* Define if you have POSIX threads libraries and header files. */
+#ifndef MAGICKCORE_THREAD_SUPPORT
+#define MAGICKCORE_THREAD_SUPPORT 1
+#endif
+
 /* Define if you have TIFF library */
 #ifndef MAGICKCORE_TIFF_DELEGATE
 #define MAGICKCORE_TIFF_DELEGATE 1
