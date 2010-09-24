@@ -145,8 +145,8 @@ static MagickRealType Bessel(const MagickRealType x,
     http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
   */
   if (x == 0.0)
-    return((MagickRealType) (0.25*MagickPIL));
-  return(BesselOrderOne((MagickRealType) (MagickPIL*x))/(x+x));
+    return(0.25*MagickPIL);
+  return(BesselOrderOne(MagickPIL*x)/(x+x));
 }
 
 static MagickRealType Blackman(const MagickRealType x,
@@ -174,7 +174,7 @@ static MagickRealType Bohman(const MagickRealType x,
   */
   const double cospix = cos((double) (MagickPIL*x));
   const double sinpix = sqrt(1.0-cospix*cospix);
-  return((MagickRealType) ((1.0-x)*cospix+(1.0/MagickPIL)*sinpix));
+  return((1.0-x)*cospix+(1.0/MagickPIL)*sinpix);
 }
 
 static MagickRealType Box(const MagickRealType x,
@@ -336,7 +336,7 @@ static MagickRealType Sinc(const MagickRealType x,
     const MagickRealType pix = (MagickRealType) (MagickPIL*x);
     return(sin((double) pix)/pix);
   }
-  return(1.0);
+  return((MagickRealType) 1.0);
 }
 
 static MagickRealType SincFast(const MagickRealType x,
