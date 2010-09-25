@@ -1640,9 +1640,6 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *next_image,
   unsigned char *compact_pixels,const QuantumType quantum_type)
 {
-  int
-    y;
-
   QuantumInfo
     *quantum_info;
 
@@ -1652,6 +1649,9 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
   size_t
     length,
     packet_size;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
