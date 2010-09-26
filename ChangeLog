@@ -1,3 +1,7 @@
+2010-09-26  6.6.4-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fix Point filter for ResizeImage() caused by support limiting the
+    Box weighting function.
+
 2010-09-24  6.6.4-6 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Now that MagickPIL is a MagickRealType, some casts are unneeded.
 
