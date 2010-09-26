@@ -1452,8 +1452,8 @@ MagickExport MagickRealType GetResizeFilterWeight(
   const ResizeFilter *resize_filter,const MagickRealType x)
 {
   MagickRealType
-    x_blur,
-    scale;
+    scale,
+    x_blur;
 
   /*
     Windowing function - scale the weighting filter by this amount.
