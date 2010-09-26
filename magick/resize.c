@@ -177,15 +177,14 @@ static MagickRealType Bohman(const MagickRealType x,
   return((1.0-x)*cospix+(1.0/MagickPIL)*sinpix);
 }
 
-static MagickRealType Box(const MagickRealType x,
-  const ResizeFilter *resize_filter)
+static MagickRealType Box(const MagickRealType magick_unused(x),
+  const ResizeFilter *magick_unused(resize_filter))
 {
   /*
     Return a Box filter up to its support size.
+    DO NOT LIMIT results by support or resize point sampling will fil
   */
-  if ( x < resize_filter->support )
-    return(1.0);
-  return(0.0);
+  return(1.0);
 }
 
 static MagickRealType CubicBC(const MagickRealType x,
@@ -982,17 +981,16 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           x;
 
         /*
-          Reset the filter_type for specific compound filters so the
-          actual 'function' is returned, not the user selection.
-          Specifically this is needed for the Sinc and Cubic compound
-          filters.
+          Set the weighting function properly when the weighting
+          function may not exactly match the filter of the same name.
+          EG: a Point filter really uses a Box weighting function
+          with a different support than is typically used.
+
         */
-        if (resize_filter->filter == Sinc)
-          filter_type=SincFilter;
-        if (resize_filter->filter == SincFast)
-          filter_type=SincFastFilter;
-        if (resize_filter->filter == CubicBC)
-          filter_type=CubicFilter;
+        if (resize_filter->filter == Box)       filter_type=BoxFilter;
+        if (resize_filter->filter == Sinc)      filter_type=SincFilter;
+        if (resize_filter->filter == SincFast)  filter_type=SincFastFilter;
+        if (resize_filter->filter == CubicBC)   filter_type=CubicFilter;
         /*
           Report Filter Details.
         */
@@ -1001,14 +999,14 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         (void) fprintf(stdout,"# filter = %s\n",MagickOptionToMnemonic(
            MagickFilterOptions,filter_type));
         (void) fprintf(stdout,"# window = %s\n",MagickOptionToMnemonic(
-          MagickFilterOptions, window_type));
+           MagickFilterOptions, window_type));
         (void) fprintf(stdout,"# support = %.*g\n",GetMagickPrecision(),
-          (double) resize_filter->support);
+           (double) resize_filter->support);
         (void) fprintf(stdout,"# win-support = %.*g\n",GetMagickPrecision(),
-		       (double) resize_filter->window_support);
+           (double) resize_filter->window_support);
         (void) fprintf(stdout,"# blur = %.*g\n",GetMagickPrecision(),
            (double) resize_filter->blur);
-        (void) fprintf(stdout,"# blurred_support = %.*g\n",GetMagickPrecision(),
+       (void) fprintf(stdout,"# blurred_support = %.*g\n",GetMagickPrecision(),
            (double) support);
         (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
            (double) B,GetMagickPrecision(),(double) C);
