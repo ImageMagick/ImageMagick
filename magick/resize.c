@@ -181,8 +181,9 @@ static MagickRealType Box(const MagickRealType magick_unused(x),
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Return a Box filter up to its support size.
-    DO NOT LIMIT results by support or resize point sampling will fil
+    A Box filter is a equal weighting function (all weights tha same).
+    DO NOT LIMIT results by support or resize point sampling will work
+    as it requests points beyond its normal 0.0 support size.
   */
   return(1.0);
 }
@@ -514,7 +515,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  FIR filters are used as is, and are limited by that filters support
 %  window (unless over-ridden).  'Gaussian' while classed as an IIR
-%  filter, is also simply clipped by its support size (1.5).
+%  filter, is also simply clipped by its support size (currently 1.5
+%  but probably should be 2.0 for better use from EWA resampling)
 %
 %  The users "-filter" selection ise used to lookup the default
 %  'expert' settings for that filter from a internal table.  However
@@ -668,8 +670,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter,   BoxFilter },      /* Undefined                       */
-    { PointFilter,       BoxFilter },    /* SPECIAL: nearest neighbour filter */
+    { UndefinedFilter,   BoxFilter },      /* Undefined (default to Box)      */
+    { PointFilter,       BoxFilter },      /* SPECIAL: Nearest neighbour      */
     { BoxFilter,         BoxFilter },      /* Box averaging filter            */
     { TriangleFilter,    BoxFilter },      /* Linear interpolation filter     */
     { HermiteFilter,     BoxFilter },      /* Hermite interpolation filter    */
@@ -714,8 +716,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       B,C;      /* Cubic Filter factors for a CubicBC function, else ignored */
   } const filters[SentinelFilter] =
   {
-    { Box,         0.0,    0.5,    0.0, 0.0 }, /* Undefined                   */
-    { Box,         0.0,    0.5,    0.0, 0.0 }, /* Point                       */
+    { Box,         0.5,    0.5,    0.0, 0.0 }, /* Undefined (default to Box)  */
+    { Box,         0.0,    0.5,    0.0, 0.0 }, /* Point (special handling)    */
     { Box,         0.5,    0.5,    0.0, 0.0 }, /* Box                         */
     { Triangle,    1.0,    1.0,    0.0, 0.0 }, /* Triangle                    */
     { CubicBC,     1.0,    1.0,    0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
