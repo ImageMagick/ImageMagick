@@ -1214,22 +1214,22 @@ MagickExport MagickBooleanType ResamplePixelColor(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% ClampUpAxes() function converts the input vectors into a major and minor
-% axis unit vectors, and their magnatude.  This form allows us to ensure that
-% the ellipse generated is never smaller than the unit circle and thus never
-% too small for use in EWA resampling.
+% ClampUpAxes() function converts the input vectors into a major and
+% minor axis unit vectors, and their magnatude.  This form allows us
+% to ensure that the ellipse generated is never smaller than the unit
+% circle and thus never too small for use in EWA resampling.
 %
-% This is purely mathematical 'magic' that was provided by Professor
-% Nicolas Robidoux, in conjunction with his Phd student Chantal Racette.
+% This purely mathematical 'magic' was provided by Professor Nicolas
+% Robidoux and his Masters student Chantal Racette.
 %
 % See Reference: "We Recommend Singular Value Decomposition", David Austin
 %   http://www.ams.org/samplings/feature-column/fcarc-svd
 %
-% By generating Major and Minor Axis vectors, we can actually use the ellipse
-% in its "canonical form", by remapping the dx,dy of the sampled point into
-% distances along the major and minor axis unit vectors.
+% By generating Major and Minor Axis vectors, we can actually use the
+% ellipse in its "canonical form", by remapping the dx,dy of the
+% sampled point into distances along the major and minor axis unit
+% vectors.
 %    http://en.wikipedia.org/wiki/Ellipse#Canonical_form
-%
 */
 static void ClampUpAxes(const double dux,
                         const double dvx,
@@ -1282,6 +1282,21 @@ static void ClampUpAxes(const double dux,
    * to compute the distance between a point in output space and the
    * center (of a disk) from the position of the corresponding point
    * in input space.
+   *
+   * Now, if you want to modify the input pair of tangent vectors so
+   * that it defines the modified ellipse, all you have to do is set
+   *
+   * newdux = sigmamajor *  unitmajor1
+   * newdvx = sigmamajor *  unitmajor2
+   * newduy = sigmaminor * -unitmajor2
+   * newdvy = sigmaminor *  unitmajor1
+   *
+   * and use these new tangent vectors "as if" they were the original
+   * ones.  Most of the time this is a rather drastic change in the
+   * tangent vectors (even if the singular values are large enough not
+   * to be clampled). A technical explanation of why things still work
+   * is found at the end of the discussion below.
+   *
    */
   /*
    * Discussion:
@@ -1305,8 +1320,8 @@ static void ClampUpAxes(const double dux,
    *
    * The Jacobian matrix J is equal to
    *
-   * [ A, B ] = [ dX/dx, dX/dy ]
-   * [ C, D ] = [ dY/dx, dY/dy ]
+   *   [ A, B ] = [ dX/dx, dX/dy ]
+   *   [ C, D ] = [ dY/dx, dY/dy ]
    *
    * Consequently, the vector [A,C] is the tangent vector
    * corresponding to input changes in the horizontal direction, and
@@ -1316,22 +1331,55 @@ static void ClampUpAxes(const double dux,
    * In the context of resampling, it is more natural to use the
    * inverse Jacobian matrix Jinv. Jinv is
    *
-   * [ a, b ] = [ dx/dX, dx/dY ]
-   * [ c, d ] = [ dy/dX, dy/dY ]
+   *   [ a, b ] = [ dx/dX, dx/dY ]
+   *   [ c, d ] = [ dy/dX, dy/dY ]
    *
    * Note: Jinv can be computed from J with the following matrix
    * formula:
    *
-   * Jinv = 1/(A*D-B*C) [  D, -B ]
-   *                    [ -C,  A ]
+   *   Jinv = 1/(A*D-B*C) [  D, -B ]
+   *                      [ -C,  A ]
+   *
+   * Now: What we implicitly want to do is replace Jinv by a new Jinv
+   * which generates an ellipse which is as close as possible to the
+   * original but which contains the unit disk. Formally, this can be
+   * done like this:
+   *
+   * Let
+   *
+   *   Jinv = U Sigma V^T
+   *
+   * be an SVD decomposition of Jinv. (The SVD is not unique.) In
+   * principle, what we want is to clamp up the entries of the
+   * diagonal matrix Sigma so that they are at least 1, and then set
+   *
+   *   Jinv = U newSigma V^T.
+   *
+   * However, we do not need to compute V^T for the following reason:
+   * V is an orthogonal matrix (that is, it represents a combination
+   * of a rotation and a reflexion). Consequently, V maps the unit
+   * circle to itself. For this reason, the exact value of V does not
+   * affect the final ellipse.
+   *
+   * For this reason, we simply set
+   *
+   *   Jinv = U newSigma,
+   *
+   * omitting the V^T factor altogether. More precisely, we return the
+   * two diagonal entries of newSigma together with the two columns of
+   * U, for a total of six returned quantities.
    */
   /*
    * ClampUpAxes was written by Nicolas Robidoux and Chantal Racette
-   * of Laurentian University. The only (possibly) new math in it is
-   * the selection of the largest row of the eigen matrix system in
-   * order to stabilize the computation in near rank-deficient cases,
-   * and the corresponding efficient repair of degenerate cases using
-   * the norm of this largest row.
+   * of Laurentian University with funding from the National Science
+   * and Engineering Research Council of Canada.
+   * 
+   * The only (possibly) new math in it is the selection of the
+   * largest row of the eigen matrix system in order to stabilize the
+   * computation in near rank-deficient cases, and the corresponding
+   * efficient repair of degenerate cases using the norm of this
+   * largest row. Omitting the "V^T" factor of the SVD may also be a
+   * new "trick."
    */
   const double a = dux;
   const double b = duy;
@@ -1364,7 +1412,8 @@ static void ClampUpAxes(const double dux,
    * value of the Jacobian matrix itself.
    * If s1 = 0, both singular values are 0, and any orthogonal pair of
    * left and right factors produces a singular decomposition of Jinv.
-   *
+   */
+  /*
    * At first, we only compute the squares of the singular values.
    */
   const double s1s1 = 0.5*(frobenius_squared+sqrt_discriminant);
@@ -1379,8 +1428,9 @@ static void ClampUpAxes(const double dux,
   /*
    * u1, the first column of the U factor of a singular decomposition
    * of Jinv, is a (non-normalized) left singular vector corresponding
-   * to s1. It has entries u11 and u21. u1 is an eigenvector of n
-   * corresponding to the eigenvalue s1^2.
+   * to s1. It has entries u11 and u21. We compute u1 from the fact
+   * that it is an eigenvector of n corresponding to the eigenvalue
+   * s1^2.
    */
   const double s1s1minusn11_squared = s1s1minusn11*s1s1minusn11;
   const double s1s1minusn22_squared = s1s1minusn22*s1s1minusn22;
@@ -1409,10 +1459,13 @@ static void ClampUpAxes(const double dux,
    */
   *major_mag = ( (s1s1<1.0) ? 1.0 : sqrt(s1s1) );
   *minor_mag = ( (s2s2<1.0) ? 1.0 : sqrt(s2s2) );
+  /*
+   * Return the unit major and minor axis direction vectors.
+   */
   *major_unit_x = u11;
   *major_unit_y = u21;
-  *minor_unit_x = u21;
-  *minor_unit_y = -u11;
+  *minor_unit_x = -u21;
+  *minor_unit_y = u11;
 }
 
 #endif
