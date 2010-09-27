@@ -1,6 +1,15 @@
-2010-09-25  6.6.4-7 Anthony Thyssen <A.Thyssen@griffith...>
+2010-09-27  6.6.4-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'
+    for Distort Resampling.  This make -distort a whole lot nicer
+    and allows for the use of better cylindrical filters.
+
+2010-09-26  6.6.4-6 Cristy  <quetzlzacatenango@image...>
   * Don't allow resize filter weights to go to zero (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17132).
+
+2010-09-26  6.6.4-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fix Point filter for ResizeImage() caused by support limiting the
+    Box weighting function.
 
 2010-09-24  6.6.4-6 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Now that MagickPIL is a MagickRealType, some casts are unneeded.
