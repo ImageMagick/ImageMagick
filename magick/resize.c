@@ -670,29 +670,29 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter,   BoxFilter },      /* Undefined (default to Box)      */
-    { PointFilter,       BoxFilter },      /* SPECIAL: Nearest neighbour      */
-    { BoxFilter,         BoxFilter },      /* Box averaging filter            */
-    { TriangleFilter,    BoxFilter },      /* Linear interpolation filter     */
-    { HermiteFilter,     BoxFilter },      /* Hermite interpolation filter    */
-    { SincFastFilter,    HanningFilter },  /* Hanning -- cosine-sinc          */
-    { SincFastFilter,    HammingFilter },  /* Hamming --      ''    variation */
-    { SincFastFilter,    BlackmanFilter }, /* Blackman -- 2*cosine-sinc       */
-    { GaussianFilter,    BoxFilter },      /* Gaussian blur filter            */
-    { QuadraticFilter,   BoxFilter },     /* Quadratic Gaussian approximation */
-    { CubicFilter,       BoxFilter },      /* Cubic B-Spline                  */
-    { CatromFilter,      BoxFilter },      /* Cubic interpolator              */
-    { MitchellFilter,    BoxFilter },      /* 'Ideal' cubic filter            */
-    { LanczosFilter,     SincFastFilter }, /* SPECIAL: 3-lobed sinc-sinc      */
-    { BesselFilter,      BoxFilter },      /* Raw 3-lobed Bessel              */
-    { SincFilter,        BoxFilter },      /* Raw 4-lobed sinc                */
-    { SincFastFilter,    KaiserFilter },   /* Kaiser -- square root-sinc      */
-    { SincFastFilter,    WelshFilter },    /* Welsh -- parabolic-sinc         */
-    { SincFastFilter,    CubicFilter },    /* Parzen -- cubic-sinc            */
-    { LagrangeFilter,    BoxFilter },      /* Lagrange self-windowing filter  */
-    { SincFastFilter,    BohmanFilter },   /* Bohman -- 2*cosine-sinc         */
-    { SincFastFilter,    TriangleFilter }, /* Bartlett -- triangle-sinc       */
-    { SincFastFilter,    BoxFilter },      /* Raw fast sinc ("Pade"-type)     */
+    { UndefinedFilter, BoxFilter },      /* Undefined (default to Box)       */
+    { PointFilter,     BoxFilter },      /* SPECIAL: Nearest neighbour       */
+    { BoxFilter,       BoxFilter },      /* Box averaging filter             */
+    { TriangleFilter,  BoxFilter },      /* Linear interpolation filter      */
+    { HermiteFilter,   BoxFilter },      /* Hermite interpolation filter     */
+    { SincFastFilter,  HanningFilter },  /* Hanning -- cosine-sinc           */
+    { SincFastFilter,  HammingFilter },  /* Hamming --      ''    variation  */
+    { SincFastFilter,  BlackmanFilter }, /* Blackman -- 2*cosine-sinc        */
+    { GaussianFilter,  BoxFilter },      /* Gaussian blur filter             */
+    { QuadraticFilter, BoxFilter },      /* Quadratic Gaussian approximation */
+    { CubicFilter,     BoxFilter },      /* Cubic B-Spline                   */
+    { CatromFilter,    BoxFilter },      /* Cubic interpolator               */
+    { MitchellFilter,  BoxFilter },      /* 'Ideal' cubic filter             */
+    { LanczosFilter,   SincFastFilter }, /* SPECIAL: 3-lobed sinc-sinc       */
+    { BesselFilter,    BoxFilter },      /* Raw 3-lobed Bessel               */
+    { SincFilter,      BoxFilter },      /* Raw 4-lobed sinc                 */
+    { SincFastFilter,  KaiserFilter },   /* Kaiser -- square root-sinc       */
+    { SincFastFilter,  WelshFilter },    /* Welsh -- parabolic-sinc          */
+    { SincFastFilter,  CubicFilter },    /* Parzen -- cubic-sinc             */
+    { LagrangeFilter,  BoxFilter },      /* Lagrange self-windowing filter   */
+    { SincFastFilter,  BohmanFilter },   /* Bohman -- 2*cosine-sinc          */
+    { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
+    { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
   };
   /*
     Table mapping the filter/window from the above table to an actual
