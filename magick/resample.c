@@ -1492,16 +1492,15 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   resample_filter->limit_reached = MagickFalse;
   resample_filter->do_interpolate = MagickFalse;
 
+  /* A 'point' filter forces use of interpolation instead of area sampling */
+  if ( resample_filter->filter == PointFilter )
+    return; /* EWA turned off - nothing to do */
+
 #if DEBUG_ELLIPSE
   fprintf(stderr, "# -----\n" );
   fprintf(stderr, "dux=%lf; dvx=%lf;   duy=%lf; dvy=%lf;\n",
        dux, dvx, duy, dvy);
 #endif
-  /* A 'point' filter forces use of interpolation instead of area sampling */
-  if ( resample_filter->filter == PointFilter ) {
-    resample_filter->do_interpolate = MagickTrue;
-    return;
-  }
 
   /* Find Ellipse Coefficents such that
         A*u^2 + B*u*v + C*v^2 = F
@@ -1511,9 +1510,10 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   */
 #if EWA
   /* Direct conversion of derivatives into elliptical coefficients
-    No scaling will result in F == 1.0 and a unit circle.
-    However if the ellipse becomes very small (magnification) or
-    very long and thin, the ellipse may miss all source pixels!
+     However when magnifying images, the scaling vectors will be small
+     resulting in a ellipse that is too small to sample properly.
+     As such we need to clamp the major/minor axis to a minumum of 1.0
+     to prevent it getting too small.
   */
 #if EWA_CLAMP
   { double major_mag,
@@ -1699,10 +1699,13 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   resample_filter->filter = filter;
 
   if ( filter == PointFilter )
-    return;  /* EWA turned off - nothing more to do */
+    {
+      resample_filter->do_interpolate = MagickTrue;
+      return;  /* EWA turned off - nothing more to do */
+    }
 
   if ( filter == UndefinedFilter )
-    resample_filter->filter = GaussianFilter;
+    resample_filter->filter = LanczosFilter;
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
        resample_filter->filter,blur,MagickTrue,resample_filter->exception);
