@@ -414,7 +414,7 @@ static MagickRealType SincFast(const MagickRealType x,
     const MagickRealType p = 
       c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*c9))))))));
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
-#elif MAGICKCORE_QUANTUM_DEPTH <= 32
+#else
     /*
       Max. abs. rel. error 1.2e-12 < 1/2^39.
     */
@@ -434,31 +434,6 @@ static MagickRealType SincFast(const MagickRealType x,
     const MagickRealType d3 = 0.178994697503371051002463656833597608689e-4L;
     const MagickRealType d4 = 0.114633394140438168641246022557689759090e-6L;
     const MagickRealType q = d0+xx*(d1+xx*(d2+xx*(d3+xx*d4)));
-    return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)/q*p);
-#else
-    /*
-      Max. abs. rel. error 2.5e-17 < 1/2^55 if computed with "true"
-      long doubles, 2.6e-14 < 1/2^45 if long doubles are IEEE doubles.
-    */
-    const MagickRealType c0 = 0.173611111111111113332932116053816904714e-2L;
-    const MagickRealType c1 = -0.303723497515718809687399886229022703169e-3L;
-    const MagickRealType c2 = 0.233100817439489606061795544561807507471e-4L;
-    const MagickRealType c3 = -0.103906554814465396861269897523992002705e-5L;
-    const MagickRealType c4 = 0.299175768961095380104447394070231517712e-7L;
-    const MagickRealType c5 = -0.582555275175235235925786868156315453570e-9L;
-    const MagickRealType c6 = 0.774885118857072154223233850399192557934e-11L;
-    const MagickRealType c7 = -0.686148809066333092764596425714057372964e-13L;
-    const MagickRealType c8 = 0.371085247462909594457662716426170281684e-15L;
-    const MagickRealType c9 = -0.944551950759515118228796037513456335763e-18L;
-    const MagickRealType p =
-      c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*c9))))))));
-    const MagickRealType d0 = 1.0L;
-    const MagickRealType d1 = 0.463782211680615975951490586564903936283e-1L;
-    const MagickRealType d2 = 0.984899056548092584226994406603163505777e-3L;
-    const MagickRealType d3 = 0.121314604267142674069019025409802158375e-4L;
-    const MagickRealType d4 = 0.881998514405598677970025517260813044225e-7L;
-    const MagickRealType d5 = 0.310377434094436341006055666680844291856e-9L;
-    const MagickRealType q = d0+xx*(d1+xx*(d2+xx*(d3+xx*(d4+xx*d5))));
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)/q*p);
 #endif
   }
