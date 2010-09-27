@@ -1457,8 +1457,8 @@ static void ClampUpAxes(const double dux,
   /*
    * Clamp the singular values up to 1.
    */
-  *major_mag = ( (s1s1<1.0) ? 1.0 : sqrt(s1s1) );
-  *minor_mag = ( (s2s2<1.0) ? 1.0 : sqrt(s2s2) );
+  *major_mag = ( (s1s1<=1.0) ? 1.0 : sqrt(s1s1) );
+  *minor_mag = ( (s2s2<=1.0) ? 1.0 : sqrt(s2s2) );
   /*
    * Return the unit major and minor axis direction vectors.
    */
