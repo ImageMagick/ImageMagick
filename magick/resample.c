@@ -1378,7 +1378,7 @@ static void ClampUpAxes(const double dux,
    * linear part of the affine approximation of the pullback
    * transformation comes from the astrophysicist Craig DeForest, who
    * implemented it for use with (approximate) Gaussian filtering in
-   * his PDL::Transform code.
+   * his PDL::Transform (PDL = Perl Data Language) code.
    *
    * The only (possibly) new math in the following is the selection of
    * the largest row of the eigen matrix system in order to stabilize
