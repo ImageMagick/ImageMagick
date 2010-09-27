@@ -1,3 +1,8 @@
+2010-09-27  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Simplified the ClampUpAxes code, the use of its outputs, its
+    comments, and credited Craig DeForest for the "clamp singular values"
+    idea.
+
 2010-09-27  6.6.4-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'
     for Distort Resampling.  This makes -distort a whole lot nicer
