@@ -181,7 +181,7 @@ static MagickRealType Box(const MagickRealType magick_unused(x),
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    A Box filter is a equal weighting function (all weights tha same).
+    A Box filter is a equal weighting function (all weights equal).
     DO NOT LIMIT results by support or resize point sampling will work
     as it requests points beyond its normal 0.0 support size.
   */
@@ -233,7 +233,7 @@ static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-     1D Gaussian with sigma=1/2
+    1D Gaussian with sigma=1/2:
       exp(-2 x^2)/sqrt(pi/2))
   */
   /*const MagickRealType alpha = (MagickRealType) (2.0/MagickSQ2PI);*/
@@ -244,7 +244,8 @@ static MagickRealType Hanning(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Cosine window function: .5 + .5 cos(pi x).
+    Cosine window function:
+      .5+.5cos(pi x).
   */
   const MagickRealType cospix = cos((double) (MagickPIL*x));
   return(0.5+0.5*cospix);
@@ -254,7 +255,8 @@ static MagickRealType Hamming(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Offset cosine window function: .54 + .46 cos(pi x).
+    Offset cosine window function:
+     .54 + .46 cos(pi x).
   */
   const MagickRealType cospix = cos((double) (MagickPIL*x));
   return(0.54+0.46*cospix);
@@ -328,7 +330,7 @@ static MagickRealType Sinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Scaled sinc(x) function using a trig call
+    Scaled sinc(x) function using a trig call:
       sinc(x) == sin(pi x)/(pi x).
   */
   if (x != 0.0)
