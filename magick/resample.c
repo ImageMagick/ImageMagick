@@ -1585,7 +1585,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   A = major_y*major_y+minor_y*minor_y;
   B = -2.0*(major_x*major_y+minor_x*minor_y);
   C = major_x*major_x+minor_x*minor_x;
-  F = major_x*minor_y-minor_x*major_y;
+  F = major_mag*minor_mag;
   F *= F; /* square it */
   }
 #else /* raw EWA */
