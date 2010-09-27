@@ -1340,16 +1340,17 @@ static void ClampUpAxes(const double dux,
    *   Jinv = 1/(A*D-B*C) [  D, -B ]
    *                      [ -C,  A ]
    *
-   * Now: What we implicitly want to do is replace Jinv by a new Jinv
+   * What we (implicitly) want to do is replace Jinv by a new Jinv
    * which generates an ellipse which is as close as possible to the
-   * original but which contains the unit disk. Formally, this can be
-   * done like this:
+   * original but which contains the unit disk. This is accomplished
+   * as follows:
    *
    * Let
    *
    *   Jinv = U Sigma V^T
    *
-   * be an SVD decomposition of Jinv. (The SVD is not unique.) In
+   * be an SVD decomposition of Jinv. (The SVD is not unique. The
+   * final ellipse does not depend on the particular SVD.) In
    * principle, what we want is to clamp up the entries of the
    * diagonal matrix Sigma so that they are at least 1, and then set
    *
@@ -1359,27 +1360,31 @@ static void ClampUpAxes(const double dux,
    * V is an orthogonal matrix (that is, it represents a combination
    * of a rotation and a reflexion). Consequently, V maps the unit
    * circle to itself. For this reason, the exact value of V does not
-   * affect the final ellipse.
-   *
-   * For this reason, we simply set
+   * affect the final ellipse, and we choose the identity matrix.
+   * That is, we simply set
    *
    *   Jinv = U newSigma,
    *
-   * omitting the V^T factor altogether. More precisely, we return the
-   * two diagonal entries of newSigma together with the two columns of
-   * U, for a total of six returned quantities.
+   * omitting the V^T factor altogether. In the end, we return the two
+   * diagonal entries of newSigma together with the two columns of U,
+   * for a total of six returned quantities.
    */
   /*
    * ClampUpAxes was written by Nicolas Robidoux and Chantal Racette
    * of Laurentian University with funding from the National Science
    * and Engineering Research Council of Canada.
-   * 
-   * The only (possibly) new math in it is the selection of the
-   * largest row of the eigen matrix system in order to stabilize the
-   * computation in near rank-deficient cases, and the corresponding
-   * efficient repair of degenerate cases using the norm of this
-   * largest row. Omitting the "V^T" factor of the SVD may also be a
-   * new "trick."
+   *
+   * The idea of using the SVD to coerce the affine approximation of
+   * the pullback transformation comes from the astrophysicist Craig
+   * DeForest, who implemented it for use with (approximate) Gaussian
+   * filtering in his PDL::Transform code.
+   *
+   * The only (possibly) new math in the following is the selection of
+   * the largest row of the eigen matrix system in order to stabilize
+   * the computation in near rank-deficient cases, and the
+   * corresponding efficient repair of degenerate cases using the norm
+   * of this largest row. Omitting the "V^T" factor of the SVD may
+   * also be a new "trick."
    */
   const double a = dux;
   const double b = duy;
