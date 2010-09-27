@@ -217,9 +217,6 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->interpolate = resample_filter->image->interpolate;
   resample_filter->virtual_pixel=GetImageVirtualPixelMethod(image);
 
-  /* init scale to a default of a unit circle */
-  ScaleResampleFilter(resample_filter, 1.0, 0.0, 0.0, 1.0);
-
   return(resample_filter);
 }
 
@@ -1458,9 +1455,10 @@ static void ClampUpAxes(const double dux,
 %  equations, and not the scaling vectors. As such the middle two vaules
 %  may be swapped from what you expect.  Caution is advised.
 %
-%  It is assumed that the SetResampleFilter method has already been called,
-%  before this ScaleResampleFilter method, so that the size of the ellipse
-%  will match the support for the resampling filter being used.
+%  WARNING: It is assumed that any SetResampleFilter() method call will
+%  always be performed before the ScaleResampleFilter() method, so that the
+%  size of the ellipse will match the support for the resampling filter being
+%  used.
 %
 %  The format of the ScaleResampleFilter method is:
 %
@@ -1735,6 +1733,14 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
   /* finished with the resize filter */
   resize_filter = DestroyResizeFilter(resize_filter);
+
+  /*
+    Adjust the scaling of the default unit circle
+    This assumes that any real scaling changes will always
+    take place AFTER the filter method has been initialized.
+  */
+
+  ScaleResampleFilter(resample_filter, 1.0, 0.0, 0.0, 1.0);
 
 #if 0
   This is old code kept for reference only.  It is very wrong.
