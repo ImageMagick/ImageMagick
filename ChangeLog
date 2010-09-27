@@ -2,6 +2,8 @@
   * Simplified the ClampUpAxes code, the use of its outputs, its
     comments, and credited Craig DeForest for the "clamp singular values"
     idea.
+  * No reason to have "insane" precision Sinc in resize.c: Use
+    the 1.2e-12 max. abs. relative error version for Q64 as well as Q32.
 
 2010-09-27  6.6.4-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'
