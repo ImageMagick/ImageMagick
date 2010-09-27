@@ -1,20 +1,20 @@
 2010-09-27  6.6.4-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'
-    for Distort Resampling.  This make -distort a whole lot nicer
+    for Distort Resampling.  This makes -distort a whole lot nicer
     and allows for the use of better cylindrical filters.
-
-2010-09-26  6.6.4-6 Cristy  <quetzlzacatenango@image...>
-  * Don't allow resize filter weights to go to zero (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17132).
 
 2010-09-26  6.6.4-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix Point filter for ResizeImage() caused by support limiting the
     Box weighting function.
 
+2010-09-26  6.6.4-6 Cristy  <quetzlzacatenango@image...>
+  * Don't allow resize filter weights to go to zero (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17132).
+
 2010-09-24  6.6.4-6 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Now that MagickPIL is a MagickRealType, some casts are unneeded.
 
-2010-09-12  6.6.4-6 Cristy  <quetzlzacatenango@image...>
+2010-09-21  6.6.4-6 Cristy  <quetzlzacatenango@image...>
   * Do not break words if caption size is absolute (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17123).
   * Don't define HAVE_THREADS for --without-threads configure script option.
@@ -23,7 +23,7 @@
   * Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.
     Some computations were needlessly done in long double precision because
     PIL forced an automatic upcast wherever it appeared. Changed its name to
-    MagickREALTYPEPI.
+    MagickREALTYPEPI. <- This was later reverted back to MagickPIL.
   * Modified "magick/resize.c" so that Bohman uses one trig call + one sqrt
     call instead of two trig calls.
 
