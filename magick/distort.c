@@ -1651,7 +1651,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     /* Set destination image size and virtual offset */
     if ( bestfit || viewport_given ) {
       (void) FormatMagickString(image_gen, MaxTextExtent,"  -size %.20gx%.20g "
-        "-page %+.20gx%+.20g xc: +insert \\\n",(double) geometry.width,
+        "-page %+.20g%+.20g xc: +insert \\\n",(double) geometry.width,
         (double) geometry.height,(double) geometry.x,(double) geometry.y);
       lookup="v.p{ xx-v.page.x-.5, yy-v.page.x-.5 }";
     }
@@ -2128,7 +2128,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             break;
           }
 #if 0
-          case QuadrilateralDistortion:
+          case BilinearDistortion:
             /* Bilinear mapping of any Quadrilateral to any Quadrilateral */
             /* UNDER DEVELOPMENT */
             break;
