@@ -1,3 +1,7 @@
+2010-09-28  6.6.4-8 Cristy  <quetzlzacatenango@image...>
+  * Temporary files not always deleted (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=15960).
+
 2010-09-27  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Simplified the ClampUpAxes code, the use of its outputs, its
     comments, and credited Craig DeForest for the "clamp singular values"
