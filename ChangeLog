@@ -9,6 +9,7 @@
   * Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'
     for Distort Resampling.  This makes -distort a whole lot nicer
     and allows for the use of better cylindrical filters.
+  * Bug fix for -filter point distorts (occasional generating black pixels)
 
 2010-09-26  6.6.4-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix Point filter for ResizeImage() caused by support limiting the

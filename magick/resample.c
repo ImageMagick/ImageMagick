@@ -71,9 +71,9 @@
 #define EWA_CLAMP 1           /* EWA Clamping from Nicolas Robidoux */
 
 /* output debugging information */
-#define DEBUG_NO_HIT_PIXELS 1 /* Make pixels that fail to 'hit' anything red */
 #define DEBUG_ELLIPSE 0       /* output ellipse info for debug */
-#define DEBUG_HIT_MISS 0      /* output hit/miss pixels with above switch */
+#define DEBUG_HIT_MISS 0      /* output hit/miss pixels (as gnuplot commands) */
+#define DEBUG_NO_PIXEL_HIT 0  /* Make pixels that fail to hit anything - RED */
 
 /*
   Typedef declarations.
@@ -391,6 +391,7 @@ static MagickBooleanType InterpolateResampleFilter(
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickSignature);
   status=MagickTrue;
+
   switch (method)
   {
     case AverageInterpolatePixel:
@@ -876,10 +877,6 @@ MagickExport MagickBooleanType ResamplePixelColor(
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickSignature);
 
-#if DEBUG_ELLIPSE
-  fprintf(stderr, "u0=%lf; v0=%lf;\n", u0, v0);
-#endif
-
   status=MagickTrue;
   GetMagickPixelPacket(resample_filter->image,pixel);
   if ( resample_filter->do_interpolate ) {
@@ -887,6 +884,10 @@ MagickExport MagickBooleanType ResamplePixelColor(
       resample_filter->interpolate,u0,v0,pixel);
     return(status);
   }
+
+#if DEBUG_ELLIPSE
+  fprintf(stderr, "u0=%lf; v0=%lf;\n", u0, v0);
+#endif
 
   /*
     Does resample area Miss the image?
@@ -1547,7 +1548,6 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   assert(resample_filter->signature == MagickSignature);
 
   resample_filter->limit_reached = MagickFalse;
-  resample_filter->do_interpolate = MagickFalse;
 
   /* A 'point' filter forces use of interpolation instead of area sampling */
   if ( resample_filter->filter == PointFilter )
@@ -1753,6 +1753,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickSignature);
 
+  resample_filter->do_interpolate = MagickFalse;
   resample_filter->filter = filter;
 
   if ( filter == PointFilter )
@@ -1762,7 +1763,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
     }
 
   if ( filter == UndefinedFilter )
-    resample_filter->filter = LanczosFilter;
+    resample_filter->filter = MitchellFilter;  /* a far less blurry filter */
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
        resample_filter->filter,blur,MagickTrue,resample_filter->exception);
