@@ -475,10 +475,10 @@ MagickExport int AcquireUniqueFileResource(char *path)
   LockSemaphoreInfo(resource_semaphore);
   if (temporary_resources == (SplayTreeInfo *) NULL)
     temporary_resources=NewSplayTree(CompareSplayTreeString,
-      RelinquishMagickMemory,DestroyTemporaryResources);
+      DestroyTemporaryResources,(void *(*)(void *)) NULL);
   UnlockSemaphoreInfo(resource_semaphore);
   (void) AddValueToSplayTree(temporary_resources,ConstantString(path),
-    ConstantString(path));
+    (const void *) NULL);
   return(file);
 }
 
