@@ -1,3 +1,7 @@
+2010-09-28  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Chantal Racette double checked the bounding parallelogram computation
+    in resample.c (and I tightened the comments).
+
 2010-09-28  6.6.4-8 Cristy  <quetzlzacatenango@image...>
   * Temporary files not always deleted (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=15960).
