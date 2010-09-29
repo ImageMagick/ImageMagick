@@ -1650,10 +1650,10 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     /* other information about ellipse include... */
     Eccentricity = Major/Minor;
     Ellipse_Area = MagickPI*Major*Minor;
-    Ellipse_Angle =  atan2(B, A-C);
+    Ellipse_Angle = atan2(B, A-C);
 
     fprintf(stderr, "# Angle=%lf   Area=%lf\n",
-         RadiansToDegrees(Ellipse_Angle), Ellipse_Area );
+         RadiansToDegrees(Ellipse_Angle), Ellipse_Area);
   }
 #endif
 
@@ -1669,17 +1669,19 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     return;
   }
 
-  /* Scale ellipse by the support */
+  /* Scale ellipse by the support (that is, multiply F by the square
+     of the support).
+  */
   F *= resample_filter->support;
   F *= resample_filter->support;
 
-  /* Othogonal bounds of the Ellipse */
+  /* Orthogonal bounds of the ellipse */
   resample_filter->Ulimit = sqrt(4*C*F/(4*A*C-B*B));
   resample_filter->Vlimit = sqrt(4*A*F/(4*A*C-B*B));
 
-  /* Horizontally aligned Parallelogram fitted to Ellipse */
-  resample_filter->Uwidth = sqrt(F/A);   /* Parallelogram Width / 2 */
-  resample_filter->slope = -B/(2*A);     /* Slope of the parallelogram */
+  /* Horizontally aligned parallelogram fitted to Ellipse */
+  resample_filter->Uwidth = sqrt(F/A); /* Half of the parallelogram width */
+  resample_filter->slope = -B/(2*A); /* Reciprocal slope of the parallelogram */
 
 #if DEBUG_ELLIPSE
   fprintf(stderr, "Ulimit=%lf; Vlimit=%lf; UWidth=%lf; Slope=%lf;\n",
@@ -1687,9 +1689,10 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
            resample_filter->Uwidth, resample_filter->slope );
 #endif
 
-  /* Check the absolute area of the Parallogram involved...
-   * This limit needs more work, as it gets too slow for
-   * larger images involved with tiled views of the horizon. */
+  /* Check the absolute area of the parallelogram involved.
+   * This limit needs more work, as it is too slow for larger images
+   * with tiled views of the horizon.
+  */
   if ( (resample_filter->Uwidth * resample_filter->Vlimit)
          > (4.0*resample_filter->image_area)) {
     resample_filter->limit_reached = MagickTrue;
@@ -1702,7 +1705,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     resample_filter->A = A*scale;
     resample_filter->B = B*scale;
     resample_filter->C = C*scale;
-    /* ..ple_filter->F = WLUT_WIDTH; -- hardcoded */
+    /* resample_filter->F = WLUT_WIDTH; -- hardcoded */
   }
 }
 
