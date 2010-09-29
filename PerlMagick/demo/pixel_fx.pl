@@ -2,9 +2,10 @@
 #
 # Example of modifying all the pixels in an image (like -fx).
 #
-# Currently this is slow as each pixel is being one one by one. The better
-# technique of extracting and modifing a whole row of pixels at a time has not
-# been figured out, though functions are provided for this.
+# Currently this is slow as each pixel is being lokedup one pixel at a time.
+# The better technique of extracting and modifing a whole row of pixels at
+# a time has not been figured out, though perl functions have been provided
+# for this.
 #
 # Also access and controls for Area Re-sampling (EWA), beyond single pixel
 # lookup (interpolated unscaled lookup), is also not available at this time.
