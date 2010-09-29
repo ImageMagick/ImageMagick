@@ -1287,10 +1287,10 @@ static void ClampUpAxes(const double dux,
    * Now, if you want to modify the input pair of tangent vectors so
    * that it defines the modified ellipse, all you have to do is set
    *
-   * newdux = sigmamajor *  unitmajor1
-   * newdvx = sigmamajor *  unitmajor2
-   * newduy = sigmaminor * -unitmajor2
-   * newdvy = sigmaminor *  unitmajor1
+   * newdux = major_mag * major_unit_x
+   * newdvx = major_mag * major_unit_y
+   * newduy = minor_mag * minor_unit_x = minor_mag * -major_unit_y
+   * newdvy = minor_mag * minor_unit_y = minor_mag *  major_unit_x
    *
    * and use these new tangent vectors "as if" they were the original
    * ones.  Most of the time this is a rather drastic change in the
@@ -1317,7 +1317,8 @@ static void ClampUpAxes(const double dux,
    * under consideration is defined as follows:
    *
    * Consider the transformation (x,y) -> (X,Y) from input locations
-   * to output locations.
+   * to output locations. (Anthony Thyssen, elsewhere in resample.c,
+   * uses the notation (u,v) -> (x,y) instead of (x,y) -> (X,Y).)
    *
    * The Jacobian matrix J is equal to
    *
@@ -1379,7 +1380,7 @@ static void ClampUpAxes(const double dux,
    * linear part of the affine approximation of the pullback
    * transformation comes from the astrophysicist Craig DeForest, who
    * implemented it for use with (approximate) Gaussian filtering in
-   * his PDL::Transform (PDL = Perl Data Language) code.
+   * his PDL::Transform code (PDL = Perl Data Language).
    *
    * The only (possibly) new math in the following is the selection of
    * the largest row of the eigen matrix system in order to stabilize
@@ -1421,7 +1422,7 @@ static void ClampUpAxes(const double dux,
    * left and right factors produces a singular decomposition of Jinv.
    */
   /*
-   * At first, we only compute the squares of the singular values.
+   * Initially, we only compute the squares of the singular values.
    */
   const double s1s1 = 0.5*(frobenius_squared+sqrt_discriminant);
   /*
