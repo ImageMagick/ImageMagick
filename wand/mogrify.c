@@ -4155,18 +4155,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("affine",option+1) == 0)
           {
-            KernelInfo
-              *kernel_info;
-
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
-            if (kernel_info == (KernelInfo *) NULL)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
-            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("alpha",option+1) == 0)

@@ -622,18 +622,11 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("affine",option+1) == 0)
           {
-            KernelInfo
-              *kernel_info;
-
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
-            if (kernel_info == (KernelInfo *) NULL)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
-            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("alpha",option+1) == 0)
