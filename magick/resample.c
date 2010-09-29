@@ -1232,16 +1232,16 @@ MagickExport MagickBooleanType ResamplePixelColor(
 % vectors.
 %    http://en.wikipedia.org/wiki/Ellipse#Canonical_form
 */
-static void ClampUpAxes(const double dux,
-                        const double dvx,
-                        const double duy,
-                        const double dvy,
-                        double *major_mag,
-                        double *minor_mag,
-                        double *major_unit_x,
-                        double *major_unit_y,
-                        double *minor_unit_x,
-                        double *minor_unit_y)
+static inline void ClampUpAxes(const double dux,
+			       const double dvx,
+			       const double duy,
+			       const double dvy,
+			       double *major_mag,
+			       double *minor_mag,
+			       double *major_unit_x,
+			       double *major_unit_y,
+			       double *minor_unit_x,
+			       double *minor_unit_y)
 {
   /*
    * ClampUpAxes takes an input 2x2 matrix
@@ -1544,7 +1544,6 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 {
   double A,B,C,F;
 
-
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickSignature);
 
@@ -1658,18 +1657,19 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   }
 #endif
 
-  /* The scaling vectors is impossibly large (producing a very large raw F
-     value), we may as well not bother doing any form of resampling, as you
-     risk an near infinite resampled area.  In this case some alturnative
-     means of pixel sampling, such as the average of the whole image is needed
-     to get a reasonable result. Calculate only as needed.
+  /* If one or both of the scaling vectors is impossibly large
+     (producing a very large raw F value), we may as well not bother
+     doing any form of resampling since resampled area is very large.
+     In this case some alternative means of pixel sampling, such as
+     the average of the whole image is needed to get a reasonable
+     result. Calculate only as needed.
   */
   if ( (4*A*C - B*B) > MagickHuge ) {
     resample_filter->limit_reached = MagickTrue;
     return;
   }
 
-  /* Scale ellipse by the appropriate size */
+  /* Scale ellipse by the support */
   F *= resample_filter->support;
   F *= resample_filter->support;
 
