@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -167,15 +167,27 @@
 
 <div class="main">
 
-<ul><dt>2010-09-25  6.6.4-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<ul><dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> Chantal Racette double checked the bounding parallelogram computation    in resample.c (and I tightened the comments).</li><br />
+<dt>2010-09-28  6.6.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Temporary files not always deleted (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=15960).</li><br />
+<dt>2010-09-27  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> Simplified the ClampUpAxes code, the use of its outputs, its    comments, and credited Craig DeForest for the "clamp singular values"    idea.</li>
+  <li> No reason to have "insane" precision Sinc in resize.c: Use    the 1.2e-12 max. abs. relative error version for Q64 as well as Q32.</li><br />
+<dt>2010-09-27  6.6.4-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'    for Distort Resampling.  This makes -distort a whole lot nicer    and allows for the use of better cylindrical filters.</li>
+  <li> Bug fix for -filter point distorts (occasional generating black pixels)</li><br />
+<dt>2010-09-26  6.6.4-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Fix Point filter for ResizeImage() caused by support limiting the    Box weighting function.</li><br />
+<dt>2010-09-26  6.6.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't allow resize filter weights to go to zero (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17132).</li><br />
 <dt>2010-09-24  6.6.4-6 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
   <li> Now that MagickPIL is a MagickRealType, some casts are unneeded.</li><br />
-<dt>2010-09-12  6.6.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2010-09-21  6.6.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Do not break words if caption size is absolute (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17123).</li>
   <li> Don't define HAVE_THREADS for --without-threads configure script option.</li><br />
 <dt>2010-09-20  6.6.4-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
-  <li> Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.    Some computations were needlessly done in long double precision because    PIL forced an automatic upcast wherever it appeared. Changed its name to    MagickREALTYPEPI.</li>
+  <li> Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.    Some computations were needlessly done in long double precision because    PIL forced an automatic upcast wherever it appeared. Changed its name to    MagickREALTYPEPI. &lt;- This was later reverted back to MagickPIL.</li>
   <li> Modified "magick/resize.c" so that Bohman uses one trig call + one sqrt    call instead of two trig calls.</li><br />
 <dt>2010-09-20  6.6.4-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> modified "magick/resample.c" to allow use of either EWA or HQEWA (default)</li>
