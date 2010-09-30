@@ -1086,9 +1086,9 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     }
   GetMagickPixelPacket(image,&pixel);
   resample_filter=AcquireResampleFilter(image,exception);
-  (void) SetResampleFilter(resample_filter, PointFilter, 1.0);
+  (void) SetResampleFilter(resample_filter,PointFilter,1.0);
   (void) SetResampleFilterInterpolateMethod(resample_filter,
-           MeshInterpolatePixel);
+    MeshInterpolatePixel);
   resize_view=AcquireCacheView(resize_image);
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
