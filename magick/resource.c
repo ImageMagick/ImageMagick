@@ -270,7 +270,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-temporary_resource=DestroyString((char *) temporary_resource);
++   A s y n c h r o n o u s R e s o u r c e C o m p o n e n t T e r m i n u s %
 %                                                                             %
 %                                                                             %
 %                                                                             %
