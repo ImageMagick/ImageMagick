@@ -11352,9 +11352,10 @@ WandExport MagickBooleanType MagickShearImage(MagickWand *wand,
 %
 %    o sharpen: Increase or decrease image contrast.
 %
-%    o alpha: control the "shoulder" of the contast curve.
+%    o alpha: strength of the contrast, the larger the number the more
+%      'threshold-like' it becomes.
 %
-%    o beta: control the "toe" of the contast curve.
+%    o beta: midpoint of the function as a color value 0 to QuantumRange.
 %
 */
 
