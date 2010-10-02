@@ -868,6 +868,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->blur *= MagickSQ2;
         resize_filter->support = MagickSQ2; /* which times blur => 2.0 */
         break;
+      default:
+        break;
     }
   /* Filter support overrides. */
   artifact=GetImageArtifact(image,"filter:lobes");
