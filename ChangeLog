@@ -1,3 +1,11 @@
+2010-10-02  6.6.4-9 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added sqrt(2) bluring default for Gaussian Filter if used as a
+    Cylindrical EWA filter.  This resulted in the last aliasing issue
+    that was present in tests for Gaussian EWA resampling.
+    However it is still a very blury filter for default use in EWA.
+  * Adjusted Variable Mapping Blur Composition so user arguments actual
+    relate properly to the sigma of the blur for a maximum mapping value.
+
 2010-09-28  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Chantal Racette double checked the bounding parallelogram computation
     in resample.c (and I tightened the comments).

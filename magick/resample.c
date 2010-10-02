@@ -1779,10 +1779,11 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
       resample_filter->filter = PointFilter;
     }
 
+  /* Get the practical working support for the filter,
+   * after any API call blur factors have been accoded for.
+   */
 #if EWA
   resample_filter->support = GetResizeFilterSupport(resize_filter);
-  if ( resample_filter->filter == GaussianFilter )
-    resample_filter->support = 2.0;  /* larger gaussian support */
 #else
   resample_filter->support = 2.0;  /* fixed support size for HQ-EWA */
 #endif
