@@ -762,47 +762,25 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
-  /*
-    Filter blur -- scaling both filter and support window.
-  */
-  resize_filter->blur=blur;
-  artifact=GetImageArtifact(image,"filter:blur");
-  if (artifact != (const char *) NULL)
-    resize_filter->blur=StringToDouble(artifact);
-  if (resize_filter->blur < MagickEpsilon)
-    resize_filter->blur=(MagickRealType) MagickEpsilon;
-  /*
-    Cylindrical Filters should use Bessel instead of Sinc, unless a
-    Sinc filter was specifically requested.
-    Result may be overridden by expert settings later.
-  */
+  /* Cylindrical Filters should use Bessel instead of Sinc */
   if (cylindrical != MagickFalse)
     switch (filter_type)
     {
       case SincFilter:
-      {
-        /*
-          Promote 1D Sinc Filter to a 2D Bessel filter, as long as the
-          user did not directly request a 'Sinc' filter.
-        */
+        /* Promote 1D Sinc Filter to a 2D Bessel filter. */
         if ( filter != SincFilter )
           filter_type=BesselFilter;
         break;
-      }
       case SincFastFilter:
-      {
         /* Ditto for SincFast variant */
         if ( filter != SincFastFilter )
           filter_type=BesselFilter;
         break;
-      }
       case LanczosFilter:
-      {
-        /* Promote Lanczos (Sinc-Sinc) to Lanczos (Bessel-Bessel). */
+        /* Promote Lanczos from a Sinc-Sinc to a Bessel-Bessel */
         filter_type=BesselFilter;
         window_type=BesselFilter;
         break;
-      }
       default:
         /*
           What about other filters to make them 'cylindrical
@@ -866,6 +844,31 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->window=filters[window_type].function;
   resize_filter->scale=filters[window_type].scale;
   resize_filter->signature=MagickSignature;
+  /* Filter blur -- scaling both filter and support window.  */
+  resize_filter->blur=blur;
+  artifact=GetImageArtifact(image,"filter:blur");
+  if (artifact != (const char *) NULL)
+    resize_filter->blur=StringToDouble(artifact);
+  if (resize_filter->blur < MagickEpsilon)
+    resize_filter->blur=(MagickRealType) MagickEpsilon;
+
+  if (cylindrical != MagickFalse)
+    switch (filter_type)
+    {
+      case PointFilter:
+      case BoxFilter:
+        /* Support for Cylindrical Box should be sqrt(2)/2 */
+        resize_filter->support=MagickSQ1_2;
+        break;
+      case GaussianFilter:
+        /* Cylindrical Gaussian should have a sigma of sqrt(2)/2
+         * and not the default sigma of 1/2 - so use blur to enlarge
+         * and adjust support so actual practical support = 2.0 by default
+         */
+        resize_filter->blur *= MagickSQ2;
+        resize_filter->support = MagickSQ2; /* which times blur => 2.0 */
+        break;
+    }
   /* Filter support overrides. */
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
