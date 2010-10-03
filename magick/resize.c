@@ -862,7 +862,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case PointFilter:
       case BoxFilter:
         /* Support for Cylindrical Box should be sqrt(2)/2 */
-        resize_filter->support=MagickSQ1_2;
+        resize_filter->support=(MagickRealType) MagickSQ1_2;
         break;
       case GaussianFilter:
         /* Cylindrical Gaussian should have a sigma of sqrt(2)/2
@@ -870,7 +870,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
          * and adjust support so actual practical support = 2.0 by default
          */
         resize_filter->blur *= MagickSQ2;
-        resize_filter->support = MagickSQ2; /* which times blur => 2.0 */
+        resize_filter->support = (MagickRealType) MagickSQ2; /* which times blur => 2.0 */
         break;
       default:
         break;
