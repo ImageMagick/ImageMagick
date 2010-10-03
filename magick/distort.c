@@ -2062,11 +2062,11 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             abs_c6 = fabs(coeff[6]);
             abs_c7 = fabs(coeff[7]);
             if ( abs_c6 > abs_c7 ) {
-              if ( abs_r < abs_c6 )
-                validity = 0.5 - coeff[8]*r/coeff[6];
+              if ( abs_r < abs_c6*output_scaling )
+                validity = 0.5 - coeff[8]*r/(coeff[6]*output_scaling);
             }
-            else if ( abs_r < abs_c7 )
-              validity = 0.5 - coeff[8]*r/coeff[7];
+            else if ( abs_r < abs_c7*output_scaling )
+              validity = 0.5 - coeff[8]*r/(coeff[7]*output_scaling);
             /* Perspective Sampling Point (if valid) */
             if ( validity > 0.0 ) {
               /* divide by r affine, for perspective scaling */
@@ -2614,7 +2614,7 @@ MagickExport Image *SparseColorImage(const Image *image,
             break;
           }
           case ShepardsColorInterpolate:
-          { /* Shepards Method,uses its own input arguments as coefficients.
+          { /* Shepards Method, uses its own input arguments as coefficients.
             */
             size_t
               k;
