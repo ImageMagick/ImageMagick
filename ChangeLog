@@ -5,6 +5,7 @@
     However it is still a very blury filter for default use in EWA.
   * Adjusted Variable Mapping Blur Composition so user arguments actual
     relate properly to the sigma of the blur for a maximum mapping value.
+  * Fix horizon anti-alising for output scaled perspective distortions.
 
 2010-09-28  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Chantal Racette double checked the bounding parallelogram computation
