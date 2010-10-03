@@ -46,7 +46,7 @@ typedef enum
   CatromFilter,
   MitchellFilter,
   LanczosFilter,
-  BesselFilter,
+  JincFilter,
   SincFilter,
   KaiserFilter,
   WelshFilter,
@@ -57,6 +57,13 @@ typedef enum
   SincFastFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterTypes;
+
+/* Backward compatibility for the more correctly named Jinc Filter
+  Original sorce of this filter is from "zoom" but it refers to
+  a reference by Pratt, who does not actualy name the filter.
+*/
+#define BesselFilter JincFilter
+
 
 typedef enum
 {

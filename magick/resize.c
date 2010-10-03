@@ -135,14 +135,16 @@ static MagickRealType
 
 #define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
 
-static MagickRealType Bessel(const MagickRealType x,
+static MagickRealType Jinc(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    See Pratt "Digital Image Processing" p.97 for Bessel functions.
-    This function is actually a X-scaled Jinc(x) function. See
+    See Pratt "Digital Image Processing" p.97 for Jinc/Bessel functions.
     http://mathworld.wolfram.com/JincFunction.html and page 11 of
-    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf.
+    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf
+
+    The original "zoom" program by Paul Heckbert called this "Bessel"
+    But really its is more accuritally named "Jinc".
   */
   if (x == 0.0)
     return(0.25*MagickPIL);
@@ -484,44 +486,42 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Mitchell
 %
 %  IIR (Infinite impulse Response) Filters
-%      Gaussian     Sinc        Bessel
+%      Gaussian     Sinc        Jinc (Bessel)
 %
-%  Windowed Sinc/Bessel Method
+%  Windowed Sinc/Jinc Filters
 %      Blackman     Hanning     Hamming
-%      Kaiser       Lanczos (Sinc)
+%      Kaiser       Lanczos
 %
-%  FIR filters are used as is, and are limited by that filters support
+%  The users "-filter" selection is used to lookup the default 'expert'
+%  settings for that filter from a internal table.  However any provided
+%  'expert' settings (see below) may override this selection.
+%
+%  FIR filters are used as is, and are limited to that filters support
 %  window (unless over-ridden).  'Gaussian' while classed as an IIR
 %  filter, is also simply clipped by its support size (currently 1.5
-%  but probably should be 2.0 for better use from EWA resampling)
+%  ro approximatally 3*sigma as recommended by many references)
 %
-%  The users "-filter" selection ise used to lookup the default
-%  'expert' settings for that filter from a internal table.  However
-%  any provided 'expert' settings (see below) may override this
-%  selection.
-%
-%  The selection is typically either a windowed sinc, or interpolated
+%  The selection is typically either a windowed Sinc, or interpolated
 %  filter, for use by functions such as ResizeImage().  However if a
-%  'cylindrical' filter flag is requested, the default sinc weighting
-%  and windowing functions will be promoted to cylindrical Bessel
-%  functions.
+%  'cylindrical' filter flag is requested, any default Sinc weighting
+%  and windowing functions will be promoted to cylindrical Jinc form of
+%  function.
 %
-%  Directly requesting 'Sinc' or 'Bessel' will force the use of that
-%  filter function, with a default 'Blackman' windowing method.  This
-%  not however recommended as it removes the correct filter selection
-%  for different filtering image operations.  Selecting a window
-%  filtering method is better.
+%  Directly requesting 'Sinc' or 'Jinc' will force the use of that
+%  filter function without any windowing. This is not recommended,
+%  except by image processing experts or in expert options.  Selecting a
+%  window filtering version of these functions is better.
 %
-%  Lanczos is a special case of a sinc-windowed sinc, but defaulting
-%  to 3-lobe support, rather that the default 4 lobe support of the
-%  windowed sinc filters.
+%  Lanczos is a special case of a Sinc-windowed Sinc, (or Jinc-Jinc for
+%  the cylindrical case) but defaulting to 3-lobe support, rather that
+%  the default 4 lobe support of the other windowed sinc/jinc filters.
 %
-%  Two forms of the sinc function are available: Sinc and SincFast.
+%  Two forms of the 'Sinc' function are available: Sinc and SincFast.
 %  Sinc is computed using the traditional sin(pi*x)/(pi*x); it is
 %  selected if the user specifically specifies the use of a Sinc
 %  filter. SincFast uses highly accurate (and fast) polynomial (low Q)
-%  and rational (high Q) approximations and is used by default in most
-%  cases.
+%  and rational (high Q) approximations, and will be used by default in
+%  most cases.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -529,9 +529,10 @@ static MagickRealType Welsh(const MagickRealType x,
 %  your selections using the "filter:verbose" setting to make sure you
 %  got what you requested.
 %
-%    "filter:filter"    Select the function associated with this filter
-%        as the weighting function of the filter.  This can be used to set a
-%        a windowing function as a weighting function.
+%    "filter:filter"    Select the main function associated with
+%        this filter name, as the weighting function of the filter.
+%        This can be used to set a windowing function as a weighting
+%        function, for special purposes, such as graphing.
 %
 %        If a "filter:window" operation has not been provided, then a 'Box'
 %        windowing function will be set to denote that no windowing function
@@ -540,16 +541,16 @@ static MagickRealType Welsh(const MagickRealType x,
 %    "filter:window"   Select this windowing function for the filter.
 %        While any filter could be used as a windowing function, using the
 %        'first lobe' of that filter over the whole support window, using a
-%        non-windowing function is not advisible. If no weighting function
-%        is specifed a 'SincFast' filter will be used.
+%        non-windowing function is not advisible. If no weighting filter
+%        function is specifed a 'SincFast' filter will be used.
 %
-%    "filter:lobes"    Number of lobes to use for the Sinc/Bessel filter.
+%    "filter:lobes"    Number of lobes to use for the Sinc/Jinc filter.
 %        This a simpler method of setting filter support size that will
-%        correctly handle the Sinc/Bessel switch for an operators filtering
+%        correctly handle the Sinc/Jinc switch for an operators filtering
 %        requirements.  Only integers should be given.
 %
 %    "filter:support"  Set the support size for filtering to the size given
-%        This not recommended for Sinc/Bessel windowed filters (lobes should
+%        This not recommended for Sinc/Jinc windowed filters (lobes should
 %        be used instead).  This will override any 'filter:lobes' option.
 %
 %    "filter:win-support"  Scale windowing function to this size instead.
@@ -575,13 +576,12 @@ static MagickRealType Welsh(const MagickRealType x,
 %         over support range (blur adjusted).
 %
 %  Set a true un-windowed Sinc filter with 10 lobes (very slow)
-%     -set option:filter:filter Sinc
-%     -set option:filter:lobes 8
+%     -define filter:filter=Sinc
+%     -define filter:lobes=8
 %
-%  For example force an 8 lobe Lanczos (Sinc or Bessel) filter...
+%  For example force an 8 lobe Lanczos (Sinc or Jinc) filter...
 %     -filter Lanczos
-%     -set option:filter:lobes 8
-%
+%     -define filter:lobes=8
 %
 %  The format of the AcquireResizeFilter method is:
 %
@@ -597,10 +597,12 @@ static MagickRealType Welsh(const MagickRealType x,
 %      support.  The artifact settings listed above will override
 %      those selections.
 %
-%    o blur: blur the filter by this amount, use 1.0 if unknown.
-%      Image artifact "filter:blur" will override this internal usage.
+%    o blur: blur the filter by this amount, use 1.0 if unknown.  Image
+%      artifact "filter:blur" will override this API call usage, including
+%      any internal change (such as for cylindrical usage).
 %
-%    o radial: 1D orthogonal filter (Sinc) or 2D radial filter (Bessel)
+%    o radial: use a 1D orthogonal filter (Sinc) or 2D cylindrical
+%      (radial) filter (Jinc)
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -627,12 +629,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     option;
 
   /*
-    Table Mapping given Filter, into Weighting and Windowing
-    functions.
+    Table Mapping given Filter, into Weighting and Windowing functions.
     A 'Box' windowing function means its a simble non-windowed filter.
-    A 'Sinc' filter function (must be windowed) could be upgraded to a
-    'Bessel' filter if a "cylindrical" filter is requested, unless a
-    "Sinc" filter specifically request.
+    An 'SincFast' filter function could be upgraded to a 'Jinc' filter
+    if a "cylindrical", unless a 'Sinc' or 'SincFast' filter was
+    specifically requested.
 
     WARNING: The order of this tabel must match the order of the
     FilterTypes enumeration specified in "resample.h", or the filter
@@ -661,8 +662,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { CatromFilter,    BoxFilter },      /* Cubic interpolator               */
     { MitchellFilter,  BoxFilter },      /* 'Ideal' cubic filter             */
     { LanczosFilter,   SincFastFilter }, /* SPECIAL: 3-lobed sinc-sinc       */
-    { BesselFilter,    BoxFilter },      /* Raw 3-lobed Bessel               */
-    { SincFilter,      BoxFilter },      /* Raw 4-lobed sinc                 */
+    { JincFilter,      BoxFilter },      /* Raw 3-lobed Jinc function        */
+    { SincFilter,      BoxFilter },      /* Raw 4-lobed Sinc function        */
     { SincFastFilter,  KaiserFilter },   /* Kaiser -- square root-sinc       */
     { SincFastFilter,  WelshFilter },    /* Welsh -- parabolic-sinc          */
     { SincFastFilter,  CubicFilter },    /* Parzen -- cubic-sinc             */
@@ -693,38 +694,42 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       B,C;      /* Cubic Filter factors for a CubicBC function, else ignored */
   } const filters[SentinelFilter] =
   {
-    { Box,         0.5,    0.5,    0.0, 0.0 }, /* Undefined (default to Box)  */
-    { Box,         0.0,    0.5,    0.0, 0.0 }, /* Point (special handling)    */
-    { Box,         0.5,    0.5,    0.0, 0.0 }, /* Box                         */
-    { Triangle,    1.0,    1.0,    0.0, 0.0 }, /* Triangle                    */
-    { CubicBC,     1.0,    1.0,    0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
-    { Hanning,     1.0,    1.0,    0.0, 0.0 }, /* Hanning, cosine window      */
-    { Hamming,     1.0,    1.0,    0.0, 0.0 }, /* Hamming, '' variation       */
-    { Blackman,    1.0,    1.0,    0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,    1.5,    1.5,    0.0, 0.0 }, /* Gaussian                    */
-    { Quadratic,   1.5,    1.5,    0.0, 0.0 }, /* Quadratic gaussian          */
-    { CubicBC,     2.0,    2.0,    1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
-    { CubicBC,     2.0,    1.0,    0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
-    { CubicBC,     2.0,    1.0, 1./3., 1./3. }, /* Mitchell      (B=C=1/3)    */
-    { SincFast,    3.0,    1.0,    0.0, 0.0 }, /* Lanczos, 3-lobed sinc-sinc  */
-    { Bessel,      3.2383, 1.2197, 0.0, 0.0 }, /* Raw 3-lobed Bessel          */
-    { Sinc,        4.0,    1.0,    0.0, 0.0 }, /* Raw 4-lobed sinc            */
-    { Kaiser,      1.0,    1.0,    0.0, 0.0 }, /* Kaiser (square root window) */
-    { Welsh,       1.0,    1.0,    0.0, 0.0 }, /* Welsh (parabolic window)    */
-    { CubicBC,     2.0,    2.0,    1.0, 0.0 }, /* Parzen (B-Spline window)    */
-    { Lagrange,    2.0,    1.0,    0.0, 0.0 }, /* Lagrange sinc approximation */
-    { Bohman,      1.0,    1.0,    0.0, 0.0 }, /* Bohman, 2*Cosine window     */
-    { Triangle,    1.0,    1.0,    0.0, 0.0 }, /* Bartlett (triangle window)  */
-    { SincFast,    4.0,    1.0,    0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
+    { Box,       0.5,    0.5,    0.0, 0.0 }, /* Undefined (default to Box)  */
+    { Box,       0.0,    0.5,    0.0, 0.0 }, /* Point (special handling)    */
+    { Box,       0.5,    0.5,    0.0, 0.0 }, /* Box                         */
+    { Triangle,  1.0,    1.0,    0.0, 0.0 }, /* Triangle                    */
+    { CubicBC,   1.0,    1.0,    0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
+    { Hanning,   1.0,    1.0,    0.0, 0.0 }, /* Hanning, cosine window      */
+    { Hamming,   1.0,    1.0,    0.0, 0.0 }, /* Hamming, '' variation       */
+    { Blackman,  1.0,    1.0,    0.0, 0.0 }, /* Blackman, 2*cosine window   */
+    { Gaussian,  1.5,    1.5,    0.0, 0.0 }, /* Gaussian                    */
+    { Quadratic, 1.5,    1.5,    0.0, 0.0 }, /* Quadratic gaussian          */
+    { CubicBC,   2.0,    2.0,    1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { CubicBC,   2.0,    1.0,    0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
+    { CubicBC,   2.0,    1.0, 1./3., 1./3. }, /* Mitchell      (B=C=1/3)    */
+    { SincFast,  3.0,    1.0,    0.0, 0.0 }, /* Lanczos, 3-lobed sinc-sinc  */
+    { Jinc,      3.2383, 1.2197, 0.0, 0.0 }, /* Raw 3-lobed Jinc          */
+    { Sinc,      4.0,    1.0,    0.0, 0.0 }, /* Raw 4-lobed Sinc            */
+    { Kaiser,    1.0,    1.0,    0.0, 0.0 }, /* Kaiser (square root window) */
+    { Welsh,     1.0,    1.0,    0.0, 0.0 }, /* Welsh (parabolic window)    */
+    { CubicBC,   2.0,    2.0,    1.0, 0.0 }, /* Parzen (B-Spline window)    */
+    { Lagrange,  2.0,    1.0,    0.0, 0.0 }, /* Lagrange sinc approximation */
+    { Bohman,    1.0,    1.0,    0.0, 0.0 }, /* Bohman, 2*Cosine window     */
+    { Triangle,  1.0,    1.0,    0.0, 0.0 }, /* Bartlett (triangle window)  */
+    { SincFast,  4.0,    1.0,    0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
   };
   /*
-    The known zero crossings of the Bessel() or the Jinc(x*PI)
-    function found by using
-    http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp.
-    For Jv-function with v=1, divide X-roots by PI (tabled below).
+    The known zero crossings of the Jinc() or more accuritally the Jinc(x*PI)
+    function being used as a filter. It is used by the "filter:lobes" for of
+    support selection, so users do not have to deal with the highly irrational
+    sizes of the 'lobes' of the Jinc filter.
+
+    Values were sourced from
+      http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp
+    Using Jv-function with v=1, then divided by PI.
   */
   static MagickRealType
-    bessel_zeros[16] =
+    jinc_zeros[16] =
     {
       1.21966989126651,
       2.23313059438153,
@@ -762,31 +767,31 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
-  /* Cylindrical Filters should use Bessel instead of Sinc */
+  /* Cylindrical Filters should use Jinc instead of Sinc */
   if (cylindrical != MagickFalse)
     switch (filter_type)
     {
       case SincFilter:
-        /* Promote 1D Sinc Filter to a 2D Bessel filter. */
+        /* Promote 1D Sinc Filter to a 2D Jinc filter. */
         if ( filter != SincFilter )
-          filter_type=BesselFilter;
+          filter_type=JincFilter;
         break;
       case SincFastFilter:
         /* Ditto for SincFast variant */
         if ( filter != SincFastFilter )
-          filter_type=BesselFilter;
+          filter_type=JincFilter;
         break;
       case LanczosFilter:
-        /* Promote Lanczos from a Sinc-Sinc to a Bessel-Bessel */
-        filter_type=BesselFilter;
-        window_type=BesselFilter;
+        /* Promote Lanczos from a Sinc-Sinc to a Jinc-Jinc */
+        filter_type=JincFilter;
+        window_type=JincFilter;
         break;
       default:
         /*
-          What about other filters to make them 'cylindrical
-          friendly'?  For example Mitchell is actually quite close to
-          a cylindrical Lanczos (Bessel-Bessel) with support 2.  Are
-          there other well known 'cylindrical' specific filters?
+          What about other filters to make them 'cylindrical friendly'?
+          For example Mitchell is already actually quite close to a
+          cylindrical Lanczos (Jinc-Jinc) with support 2.  Are there
+          other well known 'cylindrical' specific filters?
         */
         break;
     }
@@ -802,10 +807,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         }
       if (option == LanczosFilter)
         {
-          /* Lanczos is not a real filter but a self windowing Sinc/Bessel. */
-          filter_type=cylindrical != MagickFalse ? BesselFilter : LanczosFilter;
-          window_type=cylindrical != MagickFalse ? BesselFilter :
-            SincFastFilter;
+          /* Lanczos is not a real filter but a self windowing Sinc/Jinc. */
+          filter_type=cylindrical != MagickFalse ? JincFilter : LanczosFilter;
+          window_type=cylindrical != MagickFalse ? JincFilter : SincFastFilter;
         }
       /* Filter override with a specific window function. */
       artifact=GetImageArtifact(image,"filter:window");
@@ -817,14 +821,14 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
               if (option != LanczosFilter)
                 window_type=(FilterTypes) option;
               else
-                window_type=cylindrical != MagickFalse ? BesselFilter :
+                window_type=cylindrical != MagickFalse ? JincFilter :
                   SincFastFilter;
             }
         }
     }
   else
     {
-      /* Window specified, but no filter function?  Assume Sinc/Bessel. */
+      /* Window specified, but no filter function?  Assume Sinc/Jinc. */
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
@@ -832,7 +836,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
             artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
-              filter_type=cylindrical != MagickFalse ? BesselFilter :
+              filter_type=cylindrical != MagickFalse ? JincFilter :
                 SincFastFilter;
               window_type=(FilterTypes) option;
             }
@@ -882,11 +886,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       if (lobes < 1)
         lobes=1;
       resize_filter->support=(MagickRealType) lobes;
-      if (filter_type == BesselFilter)
+      if (filter_type == JincFilter)
         {
           if (lobes > 16)
             lobes=16;
-          resize_filter->support=bessel_zeros[lobes-1];
+          resize_filter->support = jinc_zeros[lobes-1];
         }
     }
   artifact=GetImageArtifact(image,"filter:support");
@@ -1144,7 +1148,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  BesselOrderOne() computes the Bessel function of x of the first kind of
-%  order 0:
+%  order 0.  This is used to create the Jinc() filter function below.
 %
 %    Reduce x to |x| since j1(x)= -j1(-x), and for x in (0,8]
 %
