@@ -833,7 +833,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     case sRGBColorspace:
     {
       /*
-        Linear RGB to nonlinear sRGB (http://www.w3.org/Graphics/Color/sRGB):
+        Linear sRGB to nonlinear RGB (http://www.w3.org/Graphics/Color/sRGB):
 
           R = 1.0*R+0.0*G+0.0*B
           G = 0.0*R+0.1*G+0.0*B
@@ -848,19 +848,19 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           v;
 
         v=(MagickRealType) i/(MagickRealType) MaxMap;
-        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.03928f)
+        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.04045f)
           v/=12.92f;
         else
-          v=(MagickRealType) MaxMap*pow((((double) i/MaxMap)+0.055)/1.055,2.4);
-        x_map[i].x=1.0f*v;
-        y_map[i].x=0.0f*v;
-        z_map[i].x=0.0f*v;
-        x_map[i].y=0.0f*v;
-        y_map[i].y=1.0f*v;
-        z_map[i].y=0.0f*v;
-        x_map[i].z=0.0f*v;
-        y_map[i].z=0.0f*v;
-        z_map[i].z=1.0f*v;
+          v=(MagickRealType) pow((((double) i/MaxMap)+0.055)/1.055,2.4);
+        x_map[i].x=1.0f*MaxMap*v;
+        y_map[i].x=0.0f*MaxMap*v;
+        z_map[i].x=0.0f*MaxMap*v;
+        x_map[i].y=0.0f*MaxMap*v;
+        y_map[i].y=1.0f*MaxMap*v;
+        z_map[i].y=0.0f*MaxMap*v;
+        x_map[i].z=0.0f*MaxMap*v;
+        y_map[i].z=0.0f*MaxMap*v;
+        z_map[i].z=1.0f*MaxMap*v;
       }
       break;
     }
