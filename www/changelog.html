@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -170,7 +170,15 @@
 
 <div class="main">
 
-<ul><dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<ul><dt>2010-10-03  6.6.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix memory assertion with --enable-embeddable (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17201).</li>
+  <li> Don't permit access to pixels when pinging an image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17194).</li><br />
+<dt>2010-10-02  6.6.4-9 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added sqrt(2) bluring default for Gaussian Filter if used as a    Cylindrical EWA filter.  This resulted in the last aliasing issue    that was present in tests for Gaussian EWA resampling.    However it is still a very blury filter for default use in EWA.</li>
+  <li> Adjusted Variable Mapping Blur Composition so user arguments actual    relate properly to the sigma of the blur for a maximum mapping value.</li>
+  <li> Fix horizon anti-alising for output scaled perspective distortions.</li>
+  <li> 'Bessel' filter is nor offically and more accuritally named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</li><br />
+<dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
   <li> Chantal Racette double checked the bounding parallelogram computation    in resample.c (and I tightened the comments).</li><br />
 <dt>2010-09-28  6.6.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Temporary files not always deleted (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=15960).</li><br />
