@@ -526,7 +526,7 @@ static size_t **DestroyHistogramThreadSet(size_t **histogram)
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (histogram[i] != (size_t *) NULL)
       histogram[i]=(size_t *) RelinquishMagickMemory(histogram[i]);
-  histogram=(size_t **) RelinquishAlignedMemory(histogram);
+  histogram=(size_t **) RelinquishMagickMemory(histogram);
   return(histogram);
 }
 
@@ -540,7 +540,7 @@ static size_t **AcquireHistogramThreadSet(const size_t count)
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  histogram=(size_t **) AcquireAlignedMemory(number_threads,
+  histogram=(size_t **) AcquireQuantumMemory(number_threads,
     sizeof(*histogram));
   if (histogram == (size_t **) NULL)
     return((size_t **) NULL);

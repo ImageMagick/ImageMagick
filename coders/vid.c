@@ -139,7 +139,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AcquireImage(image_info);
-  filelist=(char **) AcquireAlignedMemory(1,sizeof(*filelist));
+  filelist=(char **) AcquireQuantumMemory(1,sizeof(*filelist));
   if (filelist == (char **) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   filelist[0]=ConstantString(image_info->filename);

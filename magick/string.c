@@ -158,7 +158,7 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   StringInfo
     *string_info;
 
-  string_info=(StringInfo *) AcquireAlignedMemory(1,sizeof(*string_info));
+  string_info=(StringInfo *) AcquireQuantumMemory(1,sizeof(*string_info));
   if (string_info == (StringInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(string_info,0,sizeof(*string_info));

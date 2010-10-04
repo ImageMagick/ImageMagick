@@ -141,7 +141,7 @@ static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (pixels[i] != (MagickPixelPacket *) NULL)
       pixels[i]=(MagickPixelPacket *) RelinquishMagickMemory(pixels[i]);
-  pixels=(MagickPixelPacket **) RelinquishAlignedMemory(pixels);
+  pixels=(MagickPixelPacket **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
@@ -158,7 +158,7 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixels=(MagickPixelPacket **) AcquireAlignedMemory(number_threads,
+  pixels=(MagickPixelPacket **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (MagickPixelPacket **) NULL)
     return((MagickPixelPacket **) NULL);

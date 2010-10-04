@@ -172,12 +172,12 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireAlignedMemory() returns a pointer to a block of memory at least size
+%  AcquireQuantumMemory() returns a pointer to a block of memory at least size
 %  bytes whose address is a multiple of 16*sizeof(void *).
 %
-%  The format of the AcquireAlignedMemory method is:
+%  The format of the AcquireQuantumMemory method is:
 %
-%      void *AcquireAlignedMemory(const size_t count,const size_t quantum)
+%      void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
@@ -194,7 +194,7 @@ static inline size_t MagickMax(const size_t x,const size_t y)
   return(y);
 }
 
-MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
+MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 {
   size_t
     size;
@@ -205,7 +205,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
       errno=ENOMEM;
       return((void *) NULL);
     }
-#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN) && !defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
   {
     void
       *memory;
@@ -214,7 +214,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
       return(memory);
   }
 #endif
-  return(malloc(size));
+  return(malloc(MagickMax(size,AlignedSize)));
 }
 
 #if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
@@ -703,19 +703,19 @@ MagickExport void GetMagickMemoryMethods(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RelinquishAlignedMemory() frees memory acquired with AcquireAlignedMemory()
+%  RelinquishMagickMemory() frees memory acquired with AcquireQuantumMemory()
 %  or reuse.
 %
-%  The format of the RelinquishAlignedMemory method is:
+%  The format of the RelinquishMagickMemory method is:
 %
-%      void *RelinquishAlignedMemory(void *memory)
+%      void *RelinquishMagickMemory(void *memory)
 %
 %  A description of each parameter follows:
 %
 %    o memory: A pointer to a block of memory to free for reuse.
 %
 */
-MagickExport void *RelinquishAlignedMemory(void *memory)
+MagickExport void *RelinquishMagickMemory(void *memory)
 {
   if (memory == (void *) NULL)
     return((void *) NULL);

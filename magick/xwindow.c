@@ -4265,7 +4265,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 /*
                   Append colormap to colormap list.
                 */
-                p=(ColormapInfo *) AcquireAlignedMemory(1,sizeof(*p));
+                p=(ColormapInfo *) AcquireQuantumMemory(1,sizeof(*p));
                 if (p == (ColormapInfo *) NULL)
                   return((Image *) NULL);
                 p->colormap=window_info[id].colormap;
@@ -5078,7 +5078,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   /*
     Allocate windows structure.
   */
-  windows=(XWindows *) AcquireAlignedMemory(1,sizeof(*windows));
+  windows=(XWindows *) AcquireQuantumMemory(1,sizeof(*windows));
   if (windows == (XWindows *) NULL)
     {
       ThrowXWindowFatalException(XServerFatalError,"MemoryAllocationFailed",

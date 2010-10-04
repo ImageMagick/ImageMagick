@@ -578,7 +578,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info,
   struct PackageInfo
     *clone_info;
 
-  clone_info=(struct PackageInfo *) AcquireAlignedMemory(1,sizeof(*clone_info));
+  clone_info=(struct PackageInfo *) AcquireQuantumMemory(1,sizeof(*clone_info));
   if (clone_info == (struct PackageInfo *) NULL)
     {
       ThrowPerlException(exception,ResourceLimitError,

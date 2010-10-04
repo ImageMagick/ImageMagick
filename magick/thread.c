@@ -69,7 +69,7 @@ MagickExport MagickBooleanType MagickCreateThreadKey(MagickThreadKey *key)
   *key=TlsAlloc();
   return(*key != TLS_OUT_OF_INDEXES ? MagickTrue : MagickFalse);
 #else
-  *key=AcquireAlignedMemory(1,sizeof(key));
+  *key=AcquireQuantumMemory(1,sizeof(key));
   return(*key != (void *) NULL ? MagickTrue : MagickFalse);
 #endif
 }

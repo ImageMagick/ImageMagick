@@ -1027,7 +1027,7 @@ MagickExport DIR *opendir(const char *path)
       errno=error;
       return((DIR *) NULL);
     }
-  entry=(DIR *) AcquireAlignedMemory(1,sizeof(DIR));
+  entry=(DIR *) AcquireQuantumMemory(1,sizeof(DIR));
   if (entry == (DIR *) NULL)
     return((DIR *) NULL);
   entry->d_VRefNum=search_info.hFileInfo.ioVRefNum;

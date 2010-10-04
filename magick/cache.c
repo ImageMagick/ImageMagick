@@ -185,7 +185,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   CacheInfo
     *cache_info;
 
-  cache_info=(CacheInfo *) AcquireAlignedMemory(1,sizeof(*cache_info));
+  cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
@@ -254,7 +254,7 @@ MagickExport NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   register ssize_t
     i;
 
-  nexus_info=(NexusInfo **) AcquireAlignedMemory(number_threads,
+  nexus_info=(NexusInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*nexus_info));
   if (nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -1523,7 +1523,7 @@ MagickExport Cache DestroyPixelCache(Cache cache)
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
   cache_info->signature=(~MagickSignature);
-  cache_info=(CacheInfo *) RelinquishAlignedMemory(cache_info);
+  cache_info=(CacheInfo *) RelinquishMagickMemory(cache_info);
   cache=(Cache) NULL;
   return(cache);
 }
@@ -1581,7 +1581,7 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
     nexus_info[i]->signature=(~MagickSignature);
     nexus_info[i]=(NexusInfo *) RelinquishAlignedMemory(nexus_info[i]);
   }
-  nexus_info=(NexusInfo **) RelinquishAlignedMemory(nexus_info);
+  nexus_info=(NexusInfo **) RelinquishMagickMemory(nexus_info);
   return(nexus_info);
 }
 
