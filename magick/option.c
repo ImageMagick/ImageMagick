@@ -67,6 +67,7 @@
 #include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/quantum.h"
+#include "magick/resample.h"
 #include "magick/resource_.h"
 #include "magick/splay-tree.h"
 #include "magick/statistic.h"
