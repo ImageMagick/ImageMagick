@@ -703,17 +703,21 @@ static const PixelPacket *GetVirtualPixelStream(const Image *image,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
+  cache_info->active_index_channel=((image->storage_class == PseudoClass) ||
+    (image->colorspace == CMYKColorspace)) ? MagickTrue : MagickFalse;
   number_pixels=(MagickSizeType) columns*rows;
   length=(size_t) number_pixels*sizeof(PixelPacket);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
+  if (cache_info->active_index_channel != MagickFalse)
     length+=number_pixels*sizeof(IndexPacket);
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
       cache_info->length=length;
       status=AcquireStreamPixels(cache_info,exception);
       if (status == MagickFalse)
-        return((PixelPacket *) NULL);
+        {
+          cache_info->length=0;
+          return((PixelPacket *) NULL);
+        }
     }
   else
     if (cache_info->length != length)
@@ -722,11 +726,13 @@ static const PixelPacket *GetVirtualPixelStream(const Image *image,
         cache_info->length=length;
         status=AcquireStreamPixels(cache_info,exception);
         if (status == MagickFalse)
-          return((PixelPacket *) NULL);
+          {
+            cache_info->length=0;
+            return((PixelPacket *) NULL);
+          }
       }
   cache_info->indexes=(IndexPacket *) NULL;
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
+  if (cache_info->active_index_channel != MagickFalse)
     cache_info->indexes=(IndexPacket *) (cache_info->pixels+number_pixels);
   return(cache_info->pixels);
 }
@@ -855,12 +861,13 @@ static PixelPacket *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
+  cache_info->active_index_channel=((image->storage_class == PseudoClass) ||
+    (image->colorspace == CMYKColorspace)) ? MagickTrue : MagickFalse;
   cache_info->columns=columns;
   cache_info->rows=rows;
   number_pixels=(MagickSizeType) columns*rows;
   length=(size_t) number_pixels*sizeof(PixelPacket);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
+  if (cache_info->active_index_channel != MagickFalse)
     length+=number_pixels*sizeof(IndexPacket);
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
@@ -877,8 +884,7 @@ static PixelPacket *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   if (cache_info->pixels == (void *) NULL)
     return((PixelPacket *) NULL);
   cache_info->indexes=(IndexPacket *) NULL;
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
+  if (cache_info->active_index_channel != MagickFalse)
     cache_info->indexes=(IndexPacket *) (cache_info->pixels+number_pixels);
   return(cache_info->pixels);
 }

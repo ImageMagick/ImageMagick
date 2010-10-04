@@ -1,6 +1,8 @@
 2010-10-03  6.6.4-9 Cristy  <quetzlzacatenango@image...>
   * Fix memory assertion with --enable-embeddable (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17201).
+  * Don't permit access to pixels when pinging an image (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17194).
 
 2010-10-02  6.6.4-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Added sqrt(2) bluring default for Gaussian Filter if used as a
