@@ -419,7 +419,8 @@ static PixelPacket *GetAuthenticPixelsFromStream(const Image *image)
 %  The format of the GetOneAuthenticPixelFromStream() method is:
 %
 %      MagickBooleanType GetOneAuthenticPixelFromStream(const Image image,
-%        const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,PixelPacket *pixel,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -821,8 +822,10 @@ static PixelPacket *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
-  if ((x < 0) || (y < 0) || ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
-      ((y+(ssize_t) rows) > (ssize_t) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) ||
+      ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
+      ((y+(ssize_t) rows) > (ssize_t) image->rows) ||
+      (columns == 0) || (rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
