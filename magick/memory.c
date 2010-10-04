@@ -172,12 +172,12 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireQuantumMemory() returns a pointer to a block of memory at least size
+%  AcquireAlignedMemory() returns a pointer to a block of memory at least size
 %  bytes whose address is a multiple of 16*sizeof(void *).
 %
-%  The format of the AcquireQuantumMemory method is:
+%  The format of the AcquireAlignedMemory method is:
 %
-%      void *AcquireQuantumMemory(const size_t count,const size_t quantum)
+%      void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
@@ -194,7 +194,7 @@ static inline size_t MagickMax(const size_t x,const size_t y)
   return(y);
 }
 
-MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
+MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
   size_t
     size;
@@ -205,7 +205,7 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
       errno=ENOMEM;
       return((void *) NULL);
     }
-#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN) && !defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
+#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   {
     void
       *memory;
@@ -703,19 +703,19 @@ MagickExport void GetMagickMemoryMethods(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RelinquishMagickMemory() frees memory acquired with AcquireQuantumMemory()
+%  RelinquishAlignedMemory() frees memory acquired with AcquireAlignedMemory()
 %  or reuse.
 %
-%  The format of the RelinquishMagickMemory method is:
+%  The format of the RelinquishAlignedMemory method is:
 %
-%      void *RelinquishMagickMemory(void *memory)
+%      void *RelinquishAlignedMemory(void *memory)
 %
 %  A description of each parameter follows:
 %
 %    o memory: A pointer to a block of memory to free for reuse.
 %
 */
-MagickExport void *RelinquishMagickMemory(void *memory)
+MagickExport void *RelinquishAlignedMemory(void *memory)
 {
   if (memory == (void *) NULL)
     return((void *) NULL);
