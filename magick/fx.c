@@ -162,7 +162,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   register ssize_t
     i;
 
-  fx_info=(FxInfo *) AcquireAlignedMemory(1,sizeof(*fx_info));
+  fx_info=(FxInfo *) AcquireQuantumMemory(1,sizeof(*fx_info));
   if (fx_info == (FxInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));
@@ -2852,7 +2852,7 @@ static FxInfo **DestroyFxThreadSet(FxInfo **fx_info)
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (fx_info[i] != (FxInfo *) NULL)
       fx_info[i]=DestroyFxInfo(fx_info[i]);
-  fx_info=(FxInfo **) RelinquishAlignedMemory(fx_info);
+  fx_info=(FxInfo **) RelinquishMagickMemory(fx_info);
   return(fx_info);
 }
 
@@ -2875,7 +2875,7 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  fx_info=(FxInfo **) AcquireAlignedMemory(number_threads,sizeof(*fx_info));
+  fx_info=(FxInfo **) AcquireQuantumMemory(number_threads,sizeof(*fx_info));
   if (fx_info == (FxInfo **) NULL)
     return((FxInfo **) NULL);
   (void) ResetMagickMemory(fx_info,0,number_threads*sizeof(*fx_info));

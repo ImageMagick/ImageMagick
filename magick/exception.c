@@ -103,7 +103,7 @@ MagickExport ExceptionInfo *AcquireExceptionInfo(void)
   ExceptionInfo
     *exception;
 
-  exception=(ExceptionInfo *) AcquireAlignedMemory(1,sizeof(*exception));
+  exception=(ExceptionInfo *) AcquireQuantumMemory(1,sizeof(*exception));
   if (exception == (ExceptionInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   GetExceptionInfo(exception);
@@ -881,7 +881,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
       (LocaleCompare(exception->reason,reason) == 0) &&
       (LocaleCompare(exception->description,description) == 0))
     return(MagickTrue);
-  p=(ExceptionInfo *) AcquireAlignedMemory(1,sizeof(*p));
+  p=(ExceptionInfo *) AcquireQuantumMemory(1,sizeof(*p));
   if (p == (ExceptionInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(p,0,sizeof(*p));

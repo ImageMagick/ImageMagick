@@ -489,7 +489,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     }
   }
   image_view=DestroyCacheView(image_view);
-  fourier=(fftw_complex *) AcquireAlignedMemory((size_t) fourier_info->height,
+  fourier=(fftw_complex *) AcquireQuantumMemory((size_t) fourier_info->height,
     fourier_info->center*sizeof(*fourier));
   if (fourier == (fftw_complex *) NULL)
     {
@@ -542,7 +542,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         phase[i]=cimag(fourier[i]);
         i++;
       }
-  fourier=(fftw_complex *) RelinquishAlignedMemory(fourier);
+  fourier=(fftw_complex *) RelinquishMagickMemory(fourier);
   return(MagickTrue);
 }
 
@@ -594,7 +594,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
       magnitude=(double *) RelinquishMagickMemory(magnitude);
       return(MagickFalse);
     }
-  fourier=(fftw_complex *) AcquireAlignedMemory((size_t) fourier_info.height,
+  fourier=(fftw_complex *) AcquireQuantumMemory((size_t) fourier_info.height,
     fourier_info.center*sizeof(*fourier));
   if (fourier == (fftw_complex *) NULL)
     {
@@ -608,7 +608,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   if (status != MagickFalse)
     status=ForwardFourier(&fourier_info,fourier_image,magnitude,phase,
       exception);
-  fourier=(fftw_complex *) RelinquishAlignedMemory(fourier);
+  fourier=(fftw_complex *) RelinquishMagickMemory(fourier);
   phase=(double *) RelinquishMagickMemory(phase);
   magnitude=(double *) RelinquishMagickMemory(magnitude);
   return(status);
@@ -1173,7 +1173,7 @@ static MagickBooleanType InverseFourierTransformChannel(
       magnitude=(double *) RelinquishMagickMemory(magnitude);
       return(MagickFalse);
     }
-  fourier=(fftw_complex *) AcquireAlignedMemory((size_t) fourier_info.height,
+  fourier=(fftw_complex *) AcquireQuantumMemory((size_t) fourier_info.height,
     fourier_info.center*sizeof(*fourier));
   if (fourier == (fftw_complex *) NULL)
     {
@@ -1189,7 +1189,7 @@ static MagickBooleanType InverseFourierTransformChannel(
   if (status != MagickFalse)
     status=InverseFourierTransform(&fourier_info,fourier,fourier_image,
       exception);
-  fourier=(fftw_complex *) RelinquishAlignedMemory(fourier);
+  fourier=(fftw_complex *) RelinquishMagickMemory(fourier);
   phase=(double *) RelinquishMagickMemory(phase);
   magnitude=(double *) RelinquishMagickMemory(magnitude);
   return(status);

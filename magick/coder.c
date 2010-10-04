@@ -779,7 +779,7 @@ static MagickBooleanType LoadCoderList(const char *xml,const char *filename,
         /*
           Coder element.
         */
-        coder_info=(CoderInfo *) AcquireAlignedMemory(1,sizeof(*coder_info));
+        coder_info=(CoderInfo *) AcquireQuantumMemory(1,sizeof(*coder_info));
         if (coder_info == (CoderInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(coder_info,0,sizeof(*coder_info));
@@ -910,7 +910,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
       *p;
 
     p=CoderMap+i;
-    coder_info=(CoderInfo *) AcquireAlignedMemory(1,sizeof(*coder_info));
+    coder_info=(CoderInfo *) AcquireQuantumMemory(1,sizeof(*coder_info));
     if (coder_info == (CoderInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),

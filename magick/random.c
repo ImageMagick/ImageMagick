@@ -172,7 +172,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     *key,
     *nonce;
 
-  random_info=(RandomInfo *) AcquireAlignedMemory(1,sizeof(*random_info));
+  random_info=(RandomInfo *) AcquireQuantumMemory(1,sizeof(*random_info));
   if (random_info == (RandomInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(random_info,0,sizeof(*random_info));
@@ -287,7 +287,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
   random_info->signature=(~MagickSignature);
   UnlockSemaphoreInfo(random_info->semaphore);
   DestroySemaphoreInfo(&random_info->semaphore);
-  random_info=(RandomInfo *) RelinquishAlignedMemory(random_info);
+  random_info=(RandomInfo *) RelinquishMagickMemory(random_info);
   return(random_info);
 }
 

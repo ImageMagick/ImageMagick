@@ -349,7 +349,7 @@ static unsigned short **DestroyPixelThreadSet(unsigned short **pixels)
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (pixels[i] != (unsigned short *) NULL)
       pixels[i]=(unsigned short *) RelinquishMagickMemory(pixels[i]);
-  pixels=(unsigned short **) RelinquishAlignedMemory(pixels);
+  pixels=(unsigned short **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
@@ -366,7 +366,7 @@ static unsigned short **AcquirePixelThreadSet(const size_t columns,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixels=(unsigned short **) AcquireAlignedMemory(number_threads,
+  pixels=(unsigned short **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (unsigned short **) NULL)
     return((unsigned short **) NULL);
@@ -390,7 +390,7 @@ static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (transform[i] != (cmsHTRANSFORM) NULL)
       cmsDeleteTransform(transform[i]);
-  transform=(cmsHTRANSFORM *) RelinquishAlignedMemory(transform);
+  transform=(cmsHTRANSFORM *) RelinquishMagickMemory(transform);
   return(transform);
 }
 
@@ -409,7 +409,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  transform=(cmsHTRANSFORM *) AcquireAlignedMemory(number_threads,
+  transform=(cmsHTRANSFORM *) AcquireQuantumMemory(number_threads,
     sizeof(*transform));
   if (transform == (cmsHTRANSFORM *) NULL)
     return((cmsHTRANSFORM *) NULL);

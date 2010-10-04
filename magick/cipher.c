@@ -190,7 +190,7 @@ static AESInfo *AcquireAESInfo(void)
   AESInfo
     *aes_info;
 
-  aes_info=(AESInfo *) AcquireAlignedMemory(1,sizeof(*aes_info));
+  aes_info=(AESInfo *) AcquireQuantumMemory(1,sizeof(*aes_info));
   if (aes_info == (AESInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(aes_info,0,sizeof(*aes_info));

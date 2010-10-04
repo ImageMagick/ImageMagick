@@ -382,7 +382,7 @@ MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
 
-        type_info=(TypeInfo *) AcquireAlignedMemory(1,sizeof(*type_info));
+        type_info=(TypeInfo *) AcquireQuantumMemory(1,sizeof(*type_info));
         if (type_info == (TypeInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(type_info,0,sizeof(TypeInfo));

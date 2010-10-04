@@ -759,7 +759,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   assert(UndefinedFilter < filter && filter < SentinelFilter);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  resize_filter=(ResizeFilter *) AcquireAlignedMemory(1,sizeof(*resize_filter));
+  resize_filter=(ResizeFilter *) AcquireQuantumMemory(1,sizeof(*resize_filter));
   if (resize_filter == (ResizeFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   /*
@@ -1883,7 +1883,7 @@ static ContributionInfo **DestroyContributionThreadSet(
     if (contribution[i] != (ContributionInfo *) NULL)
       contribution[i]=(ContributionInfo *) RelinquishMagickMemory(
         contribution[i]);
-  contribution=(ContributionInfo **) RelinquishAlignedMemory(contribution);
+  contribution=(ContributionInfo **) RelinquishMagickMemory(contribution);
   return(contribution);
 }
 
@@ -1899,7 +1899,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  contribution=(ContributionInfo **) AcquireAlignedMemory(number_threads,
+  contribution=(ContributionInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*contribution));
   if (contribution == (ContributionInfo **) NULL)
     return((ContributionInfo **) NULL);

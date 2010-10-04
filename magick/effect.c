@@ -1663,7 +1663,7 @@ static Quantum **DestroyPixelThreadSet(Quantum **pixels)
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (pixels[i] != (Quantum *) NULL)
       pixels[i]=(Quantum *) RelinquishMagickMemory(pixels[i]);
-  pixels=(Quantum **) RelinquishAlignedMemory(pixels);
+  pixels=(Quantum **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
@@ -1679,7 +1679,7 @@ static Quantum **AcquirePixelThreadSet(const size_t count)
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixels=(Quantum **) AcquireAlignedMemory(number_threads,sizeof(*pixels));
+  pixels=(Quantum **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
   if (pixels == (Quantum **) NULL)
     return((Quantum **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
@@ -2632,7 +2632,7 @@ static MedianPixelList *DestroyMedianPixelList(MedianPixelList *pixel_list)
     if (pixel_list->lists[i].nodes != (MedianListNode *) NULL)
       pixel_list->lists[i].nodes=(MedianListNode *) RelinquishMagickMemory(
         pixel_list->lists[i].nodes);
-  pixel_list=(MedianPixelList *) RelinquishAlignedMemory(pixel_list);
+  pixel_list=(MedianPixelList *) RelinquishMagickMemory(pixel_list);
   return(pixel_list);
 }
 
@@ -2646,7 +2646,7 @@ static MedianPixelList **DestroyMedianPixelListThreadSet(
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (pixel_list[i] != (MedianPixelList *) NULL)
       pixel_list[i]=DestroyMedianPixelList(pixel_list[i]);
-  pixel_list=(MedianPixelList **) RelinquishAlignedMemory(pixel_list);
+  pixel_list=(MedianPixelList **) RelinquishMagickMemory(pixel_list);
   return(pixel_list);
 }
 
@@ -2658,7 +2658,7 @@ static MedianPixelList *AcquireMedianPixelList(const size_t width)
   register ssize_t
     i;
 
-  pixel_list=(MedianPixelList *) AcquireAlignedMemory(1,sizeof(*pixel_list));
+  pixel_list=(MedianPixelList *) AcquireQuantumMemory(1,sizeof(*pixel_list));
   if (pixel_list == (MedianPixelList *) NULL)
     return(pixel_list);
   (void) ResetMagickMemory((void *) pixel_list,0,sizeof(*pixel_list));
@@ -2688,7 +2688,7 @@ static MedianPixelList **AcquireMedianPixelListThreadSet(const size_t width)
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixel_list=(MedianPixelList **) AcquireAlignedMemory(number_threads,
+  pixel_list=(MedianPixelList **) AcquireQuantumMemory(number_threads,
     sizeof(*pixel_list));
   if (pixel_list == (MedianPixelList **) NULL)
     return((MedianPixelList **) NULL);

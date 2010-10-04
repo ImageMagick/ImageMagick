@@ -110,7 +110,7 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
 
   assert(image_view != (ImageView *) NULL);
   assert(image_view->signature == MagickSignature);
-  clone_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*clone_view));
+  clone_view=(ImageView *) AcquireQuantumMemory(1,sizeof(*clone_view));
   if (clone_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
@@ -726,7 +726,7 @@ MagickExport ImageView *NewImageView(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*image_view));
+  image_view=(ImageView *) AcquireQuantumMemory(1,sizeof(*image_view));
   if (image_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
@@ -779,7 +779,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image_view=(ImageView *) AcquireAlignedMemory(1,sizeof(*image_view));
+  image_view=(ImageView *) AcquireQuantumMemory(1,sizeof(*image_view));
   if (image_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
