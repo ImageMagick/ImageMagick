@@ -120,7 +120,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
-  quantum_info=(QuantumInfo *) AcquireQuantumMemory(1,sizeof(*quantum_info));
+  quantum_info=(QuantumInfo *) AcquireMagickMemory(sizeof(*quantum_info));
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   quantum_info->signature=MagickSignature;

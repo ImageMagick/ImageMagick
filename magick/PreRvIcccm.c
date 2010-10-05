@@ -127,17 +127,17 @@ Bool XSupportsLocale()
 */
 XClassHint *XAllocClassHint)
 {
-  return((XClassHint *) AcquireQuantumMemory(1,sizeof(XClassHint)));
+  return((XClassHint *) AcquireMagickMemory(sizeof(XClassHint)));
 }
 
 XIconSize *XAllocIconSize)
 {
-  return((XIconSize *) AcquireQuantumMemory(1,sizeof(XIconSize)));
+  return((XIconSize *) AcquireMagickMemory(sizeof(XIconSize)));
 }
 
 XSizeHints *XAllocSizeHints)
 {
-  return((XSizeHints *) AcquireQuantumMemory(1,sizeof(XSizeHints)));
+  return((XSizeHints *) AcquireMagickMemory(sizeof(XSizeHints)));
 }
 
 Status XReconfigureWMWindow(Display *display,Window window,int screen_number,
@@ -148,12 +148,12 @@ Status XReconfigureWMWindow(Display *display,Window window,int screen_number,
 
 XStandardColormap *XAllocStandardColormap)
 {
-  return((XStandardColormap *) AcquireQuantumMemory(1,sizeof(XStandardColormap)));
+  return((XStandardColormap *) AcquireMagickMemory(sizeof(XStandardColormap)));
 }
 
 XWMHints *XAllocWMHints)
 {
-  return((XWMHints *) AcquireQuantumMemory(1,sizeof(XWMHints)));
+  return((XWMHints *) AcquireMagickMemory(sizeof(XWMHints)));
 }
 
 Status XGetGCValues(Display *display,GC gc,size_t mask,

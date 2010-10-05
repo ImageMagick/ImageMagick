@@ -2512,7 +2512,7 @@ MagickExport const ImageAttribute *GetImageAttribute(const Image *image,
       if (attribute != (const ImageAttribute *) NULL)
         return(attribute);
     }
-  attribute=(ImageAttribute *) AcquireQuantumMemory(1,sizeof(*attribute));
+  attribute=(ImageAttribute *) AcquireMagickMemory(sizeof(*attribute));
   if (attribute == (ImageAttribute *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(attribute,0,sizeof(*attribute));

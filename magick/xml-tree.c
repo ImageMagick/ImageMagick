@@ -167,7 +167,7 @@ MagickExport XMLTreeInfo *AddChildToXMLTree(XMLTreeInfo *xml_info,
 
   if (xml_info == (XMLTreeInfo *) NULL)
     return((XMLTreeInfo *) NULL);
-  child=(XMLTreeInfo *) AcquireQuantumMemory(1,sizeof(*child));
+  child=(XMLTreeInfo *) AcquireMagickMemory(sizeof(*child));
   if (child == (XMLTreeInfo *) NULL)
     return((XMLTreeInfo *) NULL);
   (void) ResetMagickMemory(child,0,sizeof(*child));
@@ -1420,7 +1420,7 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
     }
   if (root->processing_instructions[0] == (char **) NULL)
     {
-      root->processing_instructions=(char ***) AcquireQuantumMemory(1,sizeof(
+      root->processing_instructions=(char ***) AcquireMagickMemory(sizeof(
         *root->processing_instructions));
       if (root->processing_instructions ==(char ***) NULL)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -1486,7 +1486,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
     i;
 
   n=(char *) NULL;
-  predefined_entitites=(char **) AcquireQuantumMemory(1,sizeof(sentinel));
+  predefined_entitites=(char **) AcquireMagickMemory(sizeof(sentinel));
   if (predefined_entitites == (char **) NULL)
     ThrowFatalException(ResourceLimitError,"MemoryAllocationFailed");
   (void) CopyMagickMemory(predefined_entitites,sentinel,sizeof(sentinel));
@@ -2086,7 +2086,7 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
   XMLTreeRoot
     *root;
 
-  root=(XMLTreeRoot *) AcquireQuantumMemory(1,sizeof(*root));
+  root=(XMLTreeRoot *) AcquireMagickMemory(sizeof(*root));
   if (root == (XMLTreeRoot *) NULL)
     return((XMLTreeInfo *) NULL);
   (void) ResetMagickMemory(root,0,sizeof(*root));
@@ -2095,7 +2095,7 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
     root->root.tag=ConstantString(tag);
   root->node=(&root->root);
   root->root.content=ConstantString("");
-  root->entities=(char **) AcquireQuantumMemory(1,sizeof(predefined_entities));
+  root->entities=(char **) AcquireMagickMemory(sizeof(predefined_entities));
   if (root->entities == (char **) NULL)
     return((XMLTreeInfo *) NULL);
   (void) CopyMagickMemory(root->entities,predefined_entities,

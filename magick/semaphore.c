@@ -129,8 +129,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Allocate semaphore.
   */
-  semaphore_info=(SemaphoreInfo *) AcquireAlignedMemory(1,
-    sizeof(SemaphoreInfo));
+  semaphore_info=(SemaphoreInfo *) malloc(sizeof(SemaphoreInfo));
   if (semaphore_info == (SemaphoreInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(semaphore_info,0,sizeof(SemaphoreInfo));
@@ -231,7 +230,8 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   (*semaphore_info)->signature=(~MagickSignature);
-  *semaphore_info=(SemaphoreInfo *) RelinquishAlignedMemory(*semaphore_info);
+  free(*semaphore_info);
+  *semaphore_info=(SemaphoreInfo *) NULL;
   UnlockMagickMutex();
 }
 

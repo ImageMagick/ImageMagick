@@ -2075,7 +2075,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
         /*
           Color element.
         */
-        color_info=(ColorInfo *) AcquireQuantumMemory(1,sizeof(*color_info));
+        color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
         if (color_info == (ColorInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
@@ -2219,7 +2219,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
       *p;
 
     p=ColorMap+i;
-    color_info=(ColorInfo *) AcquireQuantumMemory(1,sizeof(*color_info));
+    color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
     if (color_info == (ColorInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
