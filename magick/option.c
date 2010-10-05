@@ -935,7 +935,6 @@ static const OptionInfo
   {
     { "Undefined", (ssize_t) UndefinedFilter, MagickTrue },
     { "Bartlett", (ssize_t) BartlettFilter, MagickFalse },
-    { "Bessel", (ssize_t) JincFilter, MagickTrue }, /* backward compat name */
     { "Blackman", (ssize_t) BlackmanFilter, MagickFalse },
     { "Bohman", (ssize_t) BohmanFilter, MagickFalse },
     { "Box", (ssize_t) BoxFilter, MagickFalse },
@@ -946,9 +945,11 @@ static const OptionInfo
     { "Hanning", (ssize_t) HanningFilter, MagickFalse },
     { "Hermite", (ssize_t) HermiteFilter, MagickFalse },
     { "Jinc", (ssize_t) JincFilter, MagickFalse },
+    { "Bessel", (ssize_t) JincFilter, MagickTrue }, /* Set it after "Jinc" */
     { "Kaiser", (ssize_t) KaiserFilter, MagickFalse },
     { "Lagrange", (ssize_t) LagrangeFilter, MagickFalse },
     { "Lanczos", (ssize_t) LanczosFilter, MagickFalse },
+    { "Lanczos2D", (ssize_t) Lanczos2DFilter, MagickTrue },
     { "Mitchell", (ssize_t) MitchellFilter, MagickFalse },
     { "Parzen", (ssize_t) ParzenFilter, MagickFalse },
     { "Point", (ssize_t) PointFilter, MagickFalse },

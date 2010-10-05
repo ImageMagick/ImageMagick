@@ -55,6 +55,7 @@ typedef enum
   BohmanFilter,
   BartlettFilter,
   SincFastFilter,
+  Lanczos2DFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterTypes;
 
