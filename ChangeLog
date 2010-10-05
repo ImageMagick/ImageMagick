@@ -3,6 +3,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17201).
   * Don't permit access to pixels when pinging an image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17194).
+  * Add support for pattern:vertical2 and pattern:horizontal2.
 
 2010-10-02  6.6.4-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Added sqrt(2) bluring default for Gaussian Filter if used as a
