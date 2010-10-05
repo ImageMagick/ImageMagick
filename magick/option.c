@@ -2089,17 +2089,16 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
       }
       case ',':
       {
-        /*
-          More channel flags follow shorthand.  For example "RGB,sync"
-          Gather the additional channel flags and merge with shorthand
-        */
         ssize_t
-          more_channel;
-        more_channel=ParseMagickOption(MagickChannelOptions,MagickTrue,
-                             channels+i+1);
-        if (more_channel < 0)
-          return(more_channel);
-        channel |= more_channel;
+          type;
+
+        /*
+          Gather the additional channel flags and merge with shorthand.
+        */
+        type=ParseMagickOption(MagickChannelOptions,MagickTrue,channels+i+1);
+        if (type < 0)
+          return(type);
+        channel|=type;
         return(channel);
       }
       default:
