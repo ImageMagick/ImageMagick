@@ -1582,8 +1582,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 
   ClampUpAxes(dux,dvx,duy,dvy, &major_mag, &minor_mag,
                 &major_x, &major_y, &minor_x, &minor_y);
-  major_x *= major_mag;  major_y *= major_mag; 
-  minor_x *= minor_mag;  minor_y *= minor_mag; 
+  major_x *= major_mag;  major_y *= major_mag;
+  minor_x *= minor_mag;  minor_y *= minor_mag;
 #if DEBUG_ELLIPSE
   fprintf(stderr, "major_x=%lf; major_y=%lf;  minor_x=%lf; minor_y=%lf;\n",
         major_x, major_y, minor_x, minor_y);
@@ -1613,7 +1613,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     being used.
 
     NOTE: This method produces a very blury result at near unity scale while
-    producing perfect results for string minitification and magnifications.
+    producing perfect results for strong minitification and magnifications.
 
     However filter support is fixed to 2.0 (no good for Windowed Sinc filters)
   */
@@ -1771,7 +1771,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
        resample_filter->filter,blur,MagickTrue,resample_filter->exception);
-  if (resize_filter == (ResizeFilter *) NULL) 
+  if (resize_filter == (ResizeFilter *) NULL)
     {
       (void) ThrowMagickException(resample_filter->exception,GetMagickModule(),
            ModuleError, "UnableToSetFilteringValue",
