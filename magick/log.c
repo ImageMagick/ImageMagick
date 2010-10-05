@@ -1380,7 +1380,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
         /*
           Allocate memory for the log list.
         */
-        log_info=(LogInfo *) AcquireQuantumMemory(1,sizeof(*log_info));
+        log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
         if (log_info == (LogInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
@@ -1554,7 +1554,7 @@ static MagickBooleanType LoadLogLists(const char *filename,
       *p;
 
     p=LogMap+i;
-    log_info=(LogInfo *) AcquireQuantumMemory(1,sizeof(*log_info));
+    log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
     if (log_info == (LogInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),

@@ -172,7 +172,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     *key,
     *nonce;
 
-  random_info=(RandomInfo *) AcquireQuantumMemory(1,sizeof(*random_info));
+  random_info=(RandomInfo *) AcquireMagickMemory(sizeof(*random_info));
   if (random_info == (RandomInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(random_info,0,sizeof(*random_info));

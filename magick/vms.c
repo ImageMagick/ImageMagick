@@ -111,7 +111,7 @@ DIR *opendir(char *name)
   /*
     Allocate memory for handle and the pattern.
   */
-  directory=(DIR *) AcquireQuantumMemory(1,sizeof(DIR));
+  directory=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (directory == (DIR *) NULL)
     {
       errno=ENOMEM;

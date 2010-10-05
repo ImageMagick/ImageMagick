@@ -1722,7 +1722,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   /*
     Save the current and change to the new directory.
   */
-  buffer=(struct dirent *) AcquireQuantumMemory(1,sizeof(*buffer)+
+  buffer=(struct dirent *) AcquireMagickMemory(sizeof(*buffer)+
     FILENAME_MAX+1);
   if (buffer == (struct dirent *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");

@@ -514,7 +514,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
   }
   if (clone_value == (void *) NULL)
     return(MagickFalse);
-  registry_info=(RegistryInfo *) AcquireQuantumMemory(1,sizeof(*registry_info));
+  registry_info=(RegistryInfo *) AcquireMagickMemory(sizeof(*registry_info));
   if (registry_info == (RegistryInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(registry_info,0,sizeof(*registry_info));

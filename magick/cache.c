@@ -185,7 +185,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   CacheInfo
     *cache_info;
 
-  cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
+  cache_info=(CacheInfo *) AcquireMagickMemory(sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));

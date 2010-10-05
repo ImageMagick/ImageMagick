@@ -933,7 +933,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
   }
 
   /* The map has been found -- Allocate a Threshold Map to return */
-  map = (ThresholdMap *)AcquireQuantumMemory(1,sizeof(ThresholdMap));
+  map = (ThresholdMap *)AcquireMagickMemory(sizeof(ThresholdMap));
   if ( map == (ThresholdMap *)NULL )
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
   map->map_id = (char *)NULL;

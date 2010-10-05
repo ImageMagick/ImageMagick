@@ -477,7 +477,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   /*
     Create OpenCL info.
   */
-  convolve_info=(ConvolveInfo *) AcquireQuantumMemory(1,sizeof(*convolve_info));
+  convolve_info=(ConvolveInfo *) AcquireMagickMemory(sizeof(*convolve_info));
   if (convolve_info == (ConvolveInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),

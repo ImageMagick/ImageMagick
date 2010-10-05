@@ -801,7 +801,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   /*
    * Allocate a LoadContext structure.
    */
-  lc = (LoadContext *) AcquireQuantumMemory(1,sizeof(*lc));
+  lc = (LoadContext *) AcquireMagickMemory(sizeof(*lc));
   if (lc == NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 

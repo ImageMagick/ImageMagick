@@ -695,7 +695,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
     GetPathComponent((const char *) file,ExtensionPath,extension);
     if ((*extension != '\0') && (LocaleCompare(extension,"gz") == 0))
       continue;
-    type_info=(TypeInfo *) AcquireQuantumMemory(1,sizeof(*type_info));
+    type_info=(TypeInfo *) AcquireMagickMemory(sizeof(*type_info));
     if (type_info == (TypeInfo *) NULL)
       continue;
     (void) ResetMagickMemory(type_info,0,sizeof(*type_info));
@@ -1064,7 +1064,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
         /*
           Type element.
         */
-        type_info=(TypeInfo *) AcquireQuantumMemory(1,sizeof(*type_info));
+        type_info=(TypeInfo *) AcquireMagickMemory(sizeof(*type_info));
         if (type_info == (TypeInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(type_info,0,sizeof(*type_info));

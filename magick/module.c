@@ -138,7 +138,7 @@ MagickExport ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
   ModuleInfo
     *module_info;
 
-  module_info=(ModuleInfo *) AcquireQuantumMemory(1,sizeof(*module_info));
+  module_info=(ModuleInfo *) AcquireMagickMemory(sizeof(*module_info));
   if (module_info == (ModuleInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(module_info,0,sizeof(*module_info));
@@ -465,7 +465,7 @@ MagickExport char **GetModuleList(const char *pattern,
       modules=(char **) RelinquishMagickMemory(modules);
       return((char **) NULL);
     }
-  buffer=(struct dirent *) AcquireQuantumMemory(1,sizeof(*buffer)+
+  buffer=(struct dirent *) AcquireMagickMemory(sizeof(*buffer)+
     FILENAME_MAX+1);
   if (buffer == (struct dirent *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
