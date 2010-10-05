@@ -1766,8 +1766,9 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
       return;  /* EWA turned off - nothing more to do */
     }
 
+  /* Set a default cylindrical filter of a 'low blur' Jinc windowed Jinc */
   if ( filter == UndefinedFilter )
-    resample_filter->filter = MitchellFilter;  /* a far less blurry filter */
+    resample_filter->filter = Lanczos2DFilter;
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
        resample_filter->filter,blur,MagickTrue,resample_filter->exception);
@@ -1844,7 +1845,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
         printf("#\n");
         printf("# Note: values in table are using a squared radius lookup.\n");
         printf("# And the whole table represents the filters support.\n");
-        printf("#\n");
+        printf("\n"); /* generates a 'break' in gnuplot if multiple outputs */
         for(Q=0; Q<WLUT_WIDTH; Q++)
           printf("%8.*g %.*g\n",
                GetMagickPrecision(),sqrt((double)Q)*r_scale,
