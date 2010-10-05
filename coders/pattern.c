@@ -578,6 +578,16 @@ static const unsigned char
   };
 
 /*
+  Horizontal-2 pattern.
+*/
+static const unsigned char
+  Horizontal2Image[] =
+  {
+    0x50, 0x34, 0x0A, 0x38, 0x20, 0x38, 0x0A, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 
+    0x00, 0xFF, 0x00
+  };
+
+/*
   HorizontalSaw pattern.
 */
 static const unsigned char
@@ -748,6 +758,16 @@ static const unsigned char
   };
 
 /*
+  Vertical-2 pattern.
+*/
+static const unsigned char
+  Vertical2Image[] =
+  {
+    0x50, 0x34, 0x0A, 0x38, 0x20, 0x38, 0x0A, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 
+    0xAA, 0xAA, 0xAA
+  };
+
+/*
   VerticalBricks pattern.
 */
 static const unsigned char
@@ -845,6 +865,7 @@ static const PatternInfo
     { "GRAY100", "PBM", Gray100Image, sizeof(Gray100Image) },
     { "HEXAGONS", "PBM", HexagonsImage, sizeof(HexagonsImage) },
     { "HORIZONTAL", "PBM", HorizontalImage, sizeof(HorizontalImage) },
+    { "HORIZONTAL2", "PBM", Horizontal2Image, sizeof(Horizontal2Image) },
     { "HORIZONTALSAW", "PBM", HorizontalSawImage, sizeof(HorizontalSawImage) },
     { "HS_BDIAGONAL", "PBM", HS_BDIAGONALImage, sizeof(HS_BDIAGONALImage) },
     { "HS_CROSS", "PBM", HS_CROSSImage, sizeof(HS_CROSSImage) },
@@ -862,6 +883,7 @@ static const PatternInfo
     { "SMALLFISHSCALES", "PBM", SmallFishScalesImage,
       sizeof(SmallFishScalesImage) },
     { "VERTICAL", "PBM", VerticalImage, sizeof(VerticalImage) },
+    { "VERTICAL2", "PBM", Vertical2Image, sizeof(Vertical2Image) },
     { "VERTICALBRICKS", "PBM", VerticalBricksImage,
       sizeof(VerticalBricksImage) },
     { "VERTICALLEFTSHINGLE", "PBM", VerticalLeftShingleImage,
