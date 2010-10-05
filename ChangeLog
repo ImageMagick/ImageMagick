@@ -5,6 +5,7 @@
 2010-10-05  6.6.4-10 Cristy  <quetzlzacatenango@image...>
   * Add support for "pattern:vertical2" and "pattern:horizontal2".
   * Add support for "pattern:vertical3" and "pattern:horizontal3".
+  * Properly handle PSD layers with negative heights.
 
 2010-10-03  6.6.4-9 Cristy  <quetzlzacatenango@image...>
   * Fix memory assertion with --enable-embeddable (reference

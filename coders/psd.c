@@ -1000,9 +1000,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "  reading layer #%.20g",(double) i+1);
             layer_info[i].page.y=(int) ReadBlobMSBLong(image);
             layer_info[i].page.x=(int) ReadBlobMSBLong(image);
-            layer_info[i].page.height=(size_t)
+            layer_info[i].page.height=(ssize_t)
               (ReadBlobMSBLong(image)-layer_info[i].page.y);
-            layer_info[i].page.width=(size_t)
+            layer_info[i].page.width=(ssize_t)
               (ReadBlobMSBLong(image)-layer_info[i].page.x);
             layer_info[i].channels=ReadBlobMSBShort(image);
             if (layer_info[i].channels > MaxPSDChannels)
@@ -1166,7 +1166,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Allocate layered image.
             */
             layer_info[i].image=CloneImage(image,layer_info[i].page.width,
-              layer_info[i].page.height,MagickFalse,&image->exception);
+              layer_info[i].page.height == ~0U ? 1 : layer_info[i].page.height,
+              MagickFalse,&image->exception);
             if (layer_info[i].image == (Image *) NULL)
               {
                 for (j=0; j < i; j++)
