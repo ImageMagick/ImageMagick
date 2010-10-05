@@ -889,9 +889,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         break;
       case Lanczos2DFilter:
         /* Special 2 lobed cylindrical Jinc-Jinc filter,
-         * with a special blur adjustment to remove the blurring effect
-         * of the windowing of the Jinc function (in the 2 lobed case only).
-         * To be used as the default filter for EWA Resampling and Distorts.
+         * with a special blur adjustment to remove the blurring
+         * effect of the windowing of the Jinc function (in the 2
+         * lobed case only).  To be used as the default filter for EWA
+         * Resampling and Distorts.
 	 *
 	 * Derivation: Set the scaling s=1/blur of the Lanczos2D
 	 * filter function so that
@@ -906,7 +907,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 	 * horizontal, stripe modes (and slightly dampens the
 	 * checkerboard mode) satisfies
 	 *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))
-	 * which gives 0.9549921738 (instead of 0.958033808).
+	 * which gives 0.9549921738 instead of 0.958033808.)
 	 *
 	 * Note from Nicolas: It is still not totally clear what
 	 * scaling of the Lanczos2D kernel is optimal for Clamped-EWA
