@@ -2013,11 +2013,11 @@ MagickExport MagickBooleanType ListMagickOptions(FILE *file,
 */
 MagickExport ssize_t ParseChannelOption(const char *channels)
 {
-  ssize_t
-    channel;
-
   register ssize_t
     i;
+
+  ssize_t
+    channel;
 
   channel=ParseMagickOption(MagickChannelOptions,MagickTrue,channels);
   if (channel >= 0)
@@ -2148,9 +2148,6 @@ MagickExport ssize_t ParseMagickOption(const MagickOption option,
   int
     sentinel;
 
-  ssize_t
-    option_types;
-
   MagickBooleanType
     negate;
 
@@ -2162,6 +2159,9 @@ MagickExport ssize_t ParseMagickOption(const MagickOption option,
 
   register ssize_t
     i;
+
+  ssize_t
+    option_types;
 
   option_info=GetOptionInfo(option);
   if (option_info == (const OptionInfo *) NULL)
