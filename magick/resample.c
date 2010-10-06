@@ -1768,7 +1768,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
   /* Set a default cylindrical filter of a 'low blur' Jinc windowed Jinc */
   if ( filter == UndefinedFilter )
-    resample_filter->filter = Lanczos2DFilter;
+    resample_filter->filter = MitchellFilter;
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
        resample_filter->filter,blur,MagickTrue,resample_filter->exception);

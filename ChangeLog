@@ -1,6 +1,6 @@
 2010-10-05  6.6.4-10 Anthony Thyssen <A.Thyssen@griffith...>
   * Added new filter 'Lanczos2D' a 2-lobe Lanczos with a optimization
-    specifically for cylindrical Jinc-Jinc usage (now EWA resampling default)
+    specifically for cylindrical Jinc-Jinc usage.
 
 2010-10-05  6.6.4-10 Cristy  <quetzlzacatenango@image...>
   * Add support for "pattern:vertical2" and "pattern:horizontal2".
