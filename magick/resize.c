@@ -888,30 +888,29 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->support = (MagickRealType) MagickSQ2; /* which times blur => 2.0 */
         break;
       case Lanczos2DFilter:
-        /* Special 2 lobed cylindrical Jinc-Jinc filter,
-         * with a special blur adjustment to remove the blurring
-         * effect of the windowing of the Jinc function (in the 2
-         * lobed case only).  To be used as the default filter for EWA
+        /* Special 2-lobed cylindrical Jinc-Jinc filter with a special
+         * "blur" adjustment (actually, a shortening of the
+         * support). To be used as the default filter for EWA
          * Resampling and Distorts.
 	 *
 	 * Derivation: Set the scaling s=1/blur of the Lanczos2D
 	 * filter function so that
-	 *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))-Lanczos2D(s*2)
-	 * which implies that with a no-op a single vertical line is
-	 * not amplified (although it has negative ripples), and also
-	 * so that the high frequency checkerboard mode, as well as
-	 * the high frequency vertical, and horizontal, stripe modes
-	 * are slightly damped.
+	 *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))-Lanczos2D(s*2).
 	 *
-	 * (The value which preserves the high frequency vertical, and
-	 * horizontal, stripe modes (and slightly dampens the
-	 * checkerboard mode) satisfies
-	 *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))
-	 * which gives 0.9549921738 instead of 0.958033808.)
+	 * This choice ensures that the height of single vertical line
+	 * is exactly preserved when "no-op" (the "identity
+	 * geometrical transformation) is applied to the image.  It
+	 * also ensures that, with no-op, the nearest two columns (one
+	 * on the left and one on the right) are not changed (they are
+	 * kept to zero). The only side-effect of no-op on a single
+	 * vertical line is a "ripple" in the two columns located two
+	 * pixel away. The size of this ripple, for a unit column
+	 * (constant 1), is -5.86142e-4 (essentially non-existant).
+	 * In addition, with this choice of "r-scaling," the high
+	 * frequency checkerboard mode, as well as the high frequency
+	 * vertical and horizontal stripe modes are slightly damped.
 	 *
-	 * Note from Nicolas: It is still not totally clear what
-	 * scaling of the Lanczos2D kernel is optimal for Clamped-EWA
-	 * upsampling.
+	 * Derived by Nicolas Robidoux of Laurentian University.
          */
         resize_filter->blur *= (MagickRealType) 0.958033808;
       default:
