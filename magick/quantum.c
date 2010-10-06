@@ -173,7 +173,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
     return(MagickFalse);
   quantum_info->extent=extent;
   (void) ResetMagickMemory(quantum_info->pixels,0,
-    sizeof(*quantum_info->pixels));
+    quantum_info->number_threads*sizeof(*quantum_info->pixels));
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
   {
     quantum_info->pixels[i]=(unsigned char *) AcquireQuantumMemory(extent+1,
@@ -254,14 +254,16 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
   assert(quantum_info->signature == MagickSignature);
   assert(quantum_info->pixels != (unsigned char **) NULL);
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
-  {
-    /*
-      Did we overrun our quantum buffer?
-    */
-    assert(quantum_info->pixels[i][quantum_info->extent] == QuantumSignature);
-    quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
-      quantum_info->pixels[i]);
-  }
+    if (quantum_info->pixels[i] != (unsigned char *) NULL)
+      {
+        /*
+          Did we overrun our quantum buffer?
+        */
+        assert(quantum_info->pixels[i][quantum_info->extent] ==
+          QuantumSignature);
+        quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
+          quantum_info->pixels[i]);
+      }
   quantum_info->pixels=(unsigned char **) RelinquishMagickMemory(
     quantum_info->pixels);
 }
