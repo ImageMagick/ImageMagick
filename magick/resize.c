@@ -794,7 +794,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         break;
 
       case LanczosFilter:
-        /* Promote Lanczos from a Sinc-Sinc to a Jinc-Jinc */
+        /* Promote Lanczos from a Sinc-Sinc to a Jinc-Jinc. */
         filter_type=JincFilter;
         window_type=JincFilter;
         break;
@@ -805,7 +805,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
-        /* depromote to a 2-lobe Sinc-Sinc for orthoginal use */
+        /* Demote to a 2-lobe Sinc-Sinc for orthogonal use. */
         window_type=SincFastFilter;
         break;
       default:
