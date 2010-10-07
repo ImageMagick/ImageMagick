@@ -520,7 +520,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      if (strcmp(GetStringInfoDatum(profile),"8BIM") != 0)
+      if (strcmp((char *) GetStringInfoDatum(profile),"8BIM") != 0)
         status=SetImageProfile(image,"iptc",profile);
       else
         status=SetImageProfile(image,"8BIM",profile);
