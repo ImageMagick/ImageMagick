@@ -147,8 +147,8 @@ static MagickRealType Jinc(const MagickRealType x,
     But really it is more accurately named "Jinc".
   */
   if (x == 0.0)
-    return(0.25*MagickPIL);
-  return(BesselOrderOne(MagickPIL*x)/(x+x));
+    return(0.5*MagickPIL);
+  return(BesselOrderOne(MagickPIL*x)/x);
 }
 
 static MagickRealType Blackman(const MagickRealType x,
