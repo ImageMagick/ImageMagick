@@ -660,9 +660,6 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
               is_gray,
               status;
 
-            register ssize_t
-              i;
-
             phase_image->storage_class=DirectClass;
             phase_image->depth=32UL;
             AppendImageToList(&fourier_image,magnitude_image);
@@ -670,59 +667,81 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
             status=MagickTrue;
             is_gray=IsGrayImage(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel sections
 #endif
-            for (i=0L; i < 5L; i++)
             {
-              MagickBooleanType
-                thread_status;
-
-              thread_status=MagickTrue;
-              switch (i)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+              #pragma omp section
+#endif
               {
-                case 0:
-                {
-                  if (is_gray != MagickFalse)
-                    {
-                      thread_status=ForwardFourierTransformChannel(image,
-                        GrayChannels,modulus,fourier_image,exception);
-                      break;
-                    }
-                  thread_status=ForwardFourierTransformChannel(image,RedChannel,
-                    modulus,fourier_image,exception);
-                  break;
-                }
-                case 1:
-                {
-                  if (is_gray == MagickFalse)
-                    thread_status=ForwardFourierTransformChannel(image,
-                      GreenChannel,modulus,fourier_image,exception);
-                  break;
-                }
-                case 2:
-                {
-                  if (is_gray == MagickFalse)
-                    thread_status=ForwardFourierTransformChannel(image,
-                      BlueChannel,modulus,fourier_image,exception);
-                  break;
-                }
-                case 4:
-                {
-                  if (image->matte != MagickFalse)
-                    thread_status=ForwardFourierTransformChannel(image,
-                      OpacityChannel,modulus,fourier_image,exception);
-                  break;
-                }
-                case 5:
-                {
-                  if (image->colorspace == CMYKColorspace)
-                    thread_status=ForwardFourierTransformChannel(image,
-                      IndexChannel,modulus,fourier_image,exception);
-                  break;
-                }
+                MagickBooleanType
+                  thread_status;
+
+                if (is_gray != MagickFalse)
+                  thread_status=ForwardFourierTransformChannel(image,
+                    GrayChannels,modulus,fourier_image,exception);
+                else
+                  thread_status=ForwardFourierTransformChannel(image,
+                    RedChannel,modulus,fourier_image,exception);
+                if (thread_status == MagickFalse)
+                  status=thread_status;
               }
-              if (thread_status == MagickFalse)
-                status=thread_status;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+              #pragma omp section
+#endif
+              {
+                MagickBooleanType
+                  thread_status;
+
+                thread_status=MagickTrue;
+                if (is_gray == MagickFalse)
+                  thread_status=ForwardFourierTransformChannel(image,
+                    GreenChannel,modulus,fourier_image,exception);
+                if (thread_status == MagickFalse)
+                  status=thread_status;
+              }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+              #pragma omp section
+#endif
+              {
+                MagickBooleanType
+                  thread_status;
+
+                thread_status=MagickTrue;
+                if (is_gray == MagickFalse)
+                  thread_status=ForwardFourierTransformChannel(image,
+                    BlueChannel,modulus,fourier_image,exception);
+                if (thread_status == MagickFalse)
+                  status=thread_status;
+              }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+              #pragma omp section
+#endif
+              {
+                MagickBooleanType
+                  thread_status;
+
+                thread_status=MagickTrue;
+                if (image->matte != MagickFalse)
+                  thread_status=ForwardFourierTransformChannel(image,
+                    OpacityChannel,modulus,fourier_image,exception);
+                if (thread_status == MagickFalse)
+                  status=thread_status;
+              }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+              #pragma omp section
+#endif
+              {
+                MagickBooleanType
+                  thread_status;
+
+                thread_status=MagickTrue;
+                if (image->colorspace == CMYKColorspace)
+                  thread_status=ForwardFourierTransformChannel(image,
+                    IndexChannel,modulus,fourier_image,exception);
+                if (thread_status == MagickFalse)
+                  status=thread_status;
+              }
             }
             if (status == MagickFalse)
               fourier_image=DestroyImageList(fourier_image);
@@ -1230,72 +1249,91 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
           is_gray,
           status;
 
-        register ssize_t
-          i;
-
         status=MagickTrue;
         is_gray=IsGrayImage(magnitude_image,exception);
         if (is_gray != MagickFalse)
           is_gray=IsGrayImage(phase_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp parallel for schedule(dynamic,4) shared(status)
+        #pragma omp parallel sections
 #endif
-        for (i=0L; i < 5L; i++)
         {
-          MagickBooleanType
-            thread_status;
-
-          thread_status=MagickTrue;
-          switch (i)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp section
+#endif
           {
-            case 0:
-            {
-              if (is_gray != MagickFalse)
-                {
-                  thread_status=InverseFourierTransformChannel(magnitude_image,
-                    phase_image,GrayChannels,modulus,fourier_image,exception);
-                  break;
-                }
+            MagickBooleanType
+              thread_status;
+
+            if (is_gray != MagickFalse)
+              thread_status=InverseFourierTransformChannel(magnitude_image,
+                phase_image,GrayChannels,modulus,fourier_image,exception);
+            else
               thread_status=InverseFourierTransformChannel(magnitude_image,
                 phase_image,RedChannel,modulus,fourier_image,exception);
-              break;
-            }
-            case 1:
-            {
-              if (is_gray == MagickFalse)
-                thread_status=InverseFourierTransformChannel(magnitude_image,
-                  phase_image,GreenChannel,modulus,fourier_image,exception);
-              break;
-            }
-            case 2:
-            {
-              if (is_gray == MagickFalse)
-                thread_status=InverseFourierTransformChannel(magnitude_image,
-                  phase_image,BlueChannel,modulus,fourier_image,exception);
-              break;
-            }
-            case 3:
-            {
-              if (magnitude_image->matte != MagickFalse)
-                thread_status=InverseFourierTransformChannel(magnitude_image,
-                  phase_image,OpacityChannel,modulus,fourier_image,exception);
-              break;
-            }
-            case 4:
-            {
-              if (magnitude_image->colorspace == CMYKColorspace)
-                thread_status=InverseFourierTransformChannel(magnitude_image,
-                  phase_image,IndexChannel,modulus,fourier_image,exception);
-              break;
-            }
+            if (thread_status == MagickFalse)
+              status=thread_status;
           }
-          if (thread_status == MagickFalse)
-            status=thread_status;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp section
+#endif
+          {
+            MagickBooleanType
+              thread_status;
+
+            thread_status=MagickTrue;
+            if (is_gray == MagickFalse)
+              thread_status=InverseFourierTransformChannel(magnitude_image,
+                phase_image,GreenChannel,modulus,fourier_image,exception);
+            if (thread_status == MagickFalse)
+              status=thread_status;
+          }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp section
+#endif
+          {
+            MagickBooleanType
+              thread_status;
+
+            thread_status=MagickTrue;
+            if (is_gray == MagickFalse)
+              thread_status=InverseFourierTransformChannel(magnitude_image,
+                phase_image,BlueChannel,modulus,fourier_image,exception);
+            if (thread_status == MagickFalse)
+              status=thread_status;
+          }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp section
+#endif
+          {
+            MagickBooleanType
+              thread_status;
+
+            thread_status=MagickTrue;
+            if (magnitude_image->matte != MagickFalse)
+              thread_status=InverseFourierTransformChannel(magnitude_image,
+                phase_image,OpacityChannel,modulus,fourier_image,exception);
+            if (thread_status == MagickFalse)
+              status=thread_status;
+          }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp section
+#endif
+          {
+            MagickBooleanType
+              thread_status;
+
+            thread_status=MagickTrue;
+            if (magnitude_image->colorspace == CMYKColorspace)
+              thread_status=InverseFourierTransformChannel(magnitude_image,
+                phase_image,IndexChannel,modulus,fourier_image,exception);
+            if (thread_status == MagickFalse)
+              status=thread_status;
+          }
         }
         if (status == MagickFalse)
           fourier_image=DestroyImage(fourier_image);
       }
-      fftw_cleanup();
+    fftw_cleanup();
   }
 #endif
   return(fourier_image);
