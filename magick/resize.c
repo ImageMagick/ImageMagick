@@ -927,20 +927,21 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 	 * line (equal to 1, say, on a black=0 background) is exactly
 	 * preserved when no-op is applied to the image.  It also
 	 * ensures that---with no-op---the nearest two columns on
-	 * either side are minimally changed. Specifically, nearest
-	 * columns on the left and the right are raised to c from
-	 * zero, and the second closest columns on the left and right
-	 * are lower by c from 0. (Hence, the closest columns are made
-	 * slightly positive, and the second closest are made slightly
-	 * negative, equally.) All the other columns are
-	 * unchanged. The size c of this blur/ripple is .002042317
+	 * either side are minimally changed (the farther columns are
+	 * unchanged). Specifically, nearest columns on the left and
+	 * the right are raised to c from zero, and the second closest
+	 * columns on the left and right are lower by c from
+	 * 0. (Hence, the closest columns are made slightly positive,
+	 * and the second closest are made slightly negative, in equal
+	 * amounts.) The size c of this blur/ripple is .002042317
 	 * (about one fifth of one percent). Consequently, this choice
 	 * of scaling of the support of the standard Lanczos2D
 	 * preserves "contant on columns" images with values between
-	 * -1 and 1 to within .00817 (within one percent).
+	 * -1 and 1, to within .00817 (within one percent).
 	 *
-	 * This special scaling was discovered by Nicolas Robidoux of
-	 * Laurentian University.
+	 * This special scaling of the standard Lanczos2D kernel in
+	 * the context of Elliptical Weighted Average resampling was
+	 * discovered by Nicolas Robidoux of Laurentian University.
 	 *
 	 * resize_filter->blur, below, is 1/s.
          */
