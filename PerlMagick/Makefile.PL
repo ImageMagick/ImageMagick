@@ -125,7 +125,7 @@ EOF
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/bzlib djvu fftw fontconfig freetype gvc jpeg jng jp2 lcms openexr png rsvg tiff x11 xml wmf zlib/) {
+foreach $delegate (qw/bzlib fontconfig freetype jpeg jng jp2 png tiff x11 xml zlib/) {
   if ( -d "t/$delegate" ) {
     if ( defined($ENV{'DISPLAY'}) && ($^O ne 'MSWin32') ) {
       if ( defined $ENV{'DISPLAY'} ) {
@@ -138,9 +138,9 @@ foreach $delegate (qw/bzlib djvu fftw fontconfig freetype gvc jpeg jng jp2 lcms 
 }
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
-my $INC_magick = '-I../ -I.. -D_REENTRANT -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -pthread -D_REENTRANT -I/usr/include/librsvg-2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -I/usr/include/graphviz -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
+my $INC_magick = '-I../ -I.. -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../magick/.libs -lMagickCore -lperl -lm';
-my $CCFLAGS_magick = "$Config{'ccflags'} -pthread -I/usr/include/OpenEXR -fopenmp -g -O2 -Wall -pthread";
+my $CCFLAGS_magick = "$Config{'ccflags'} -fopenmp -g -O2 -Wall -pthread";
 my $LDFLAGS_magick   = "-L../magick/.libs -lMagickCore $Config{'ldflags'} ";
 my $LDDLFLAGS_magick = "-L../magick/.libs -lMagickCore $Config{'lddlflags'} ";
 
@@ -183,7 +183,7 @@ WriteMakefile
    #'CC' => 'gcc -std=gnu99 -std=gnu99',
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS' => "$Config{'cppflags'} -D_REENTRANT -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -pthread -D_REENTRANT -I/usr/include/librsvg-2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -I/usr/include/graphviz -I/usr/include/freetype2 -I/usr/include/libxml2",
+   # 'CPPFLAGS' => "$Config{'cppflags'} -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/freetype2 -I/usr/include/libxml2",
 
    # C compiler flags (e.g. -O -g)
    'CCFLAGS' => $CCFLAGS_magick,
