@@ -1,3 +1,6 @@
+2010-10-08  6.6.4-10 Jerry Gay  <jerry.gay@gmail..>
+  * Autodetect file type support in Makefile.PL to prevent test failures
+
 2010-10-05  6.6.4-10 Anthony Thyssen <A.Thyssen@griffith...>
   * Added new filter 'Lanczos2D' a 2-lobe Lanczos as defined by
     Andreas Gustafsson in his thesis  "Interactive Image Warping" (page 24)
