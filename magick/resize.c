@@ -1051,7 +1051,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     Expert Option Request for verbose details of the resulting filter.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  if( GetOpenMPThreadId() == 0 ) {
+  #pragma omp single
+  {
 #endif
     artifact=GetImageArtifact(image,"filter:verbose");
     if (artifact != (const char *) NULL)
@@ -1103,6 +1104,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
           0.0);
       }
+      /* output the above once only for each image, and each setting */
+      (void) DeleteImageArtifact(image,"filter:verbose");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     }
 #endif

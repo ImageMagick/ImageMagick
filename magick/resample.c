@@ -214,8 +214,10 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   /* initialise the resampling filter settings */
   SetResampleFilter(resample_filter, resample_filter->image->filter,
     resample_filter->image->blur);
-  resample_filter->interpolate = resample_filter->image->interpolate;
-  resample_filter->virtual_pixel=GetImageVirtualPixelMethod(image);
+  SetResampleFilterInterpolateMethod(resample_filter,
+    resample_filter->image->interpolate);
+  SetResampleFilterVirtualPixelMethod(resample_filter,
+    GetImageVirtualPixelMethod(image));
 
   return(resample_filter);
 }
@@ -1830,7 +1832,8 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 #endif
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  /* if( GetOpenMPThreadId() == 0 ) */
+  #pragma omp single
+  {
 #endif
     if (GetImageArtifact(resample_filter->image,"resample:verbose")
           != (const char *) NULL)
@@ -1851,6 +1854,11 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
                GetMagickPrecision(),sqrt((double)Q)*r_scale,
                GetMagickPrecision(),resample_filter->filter_lut[Q] );
       }
+    /* output the above once only for each image, and each setting */
+    (void) DeleteImageArtifact(resample_filter->image,"resample:verbose");
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  }
+#endif
   return;
 }
 
