@@ -945,7 +945,6 @@ static const OptionInfo
     { "Hanning", (ssize_t) HanningFilter, MagickFalse },
     { "Hermite", (ssize_t) HermiteFilter, MagickFalse },
     { "Jinc", (ssize_t) JincFilter, MagickFalse },
-    { "Bessel", (ssize_t) JincFilter, MagickTrue }, /* Set it after "Jinc" */
     { "Kaiser", (ssize_t) KaiserFilter, MagickFalse },
     { "Lagrange", (ssize_t) LagrangeFilter, MagickFalse },
     { "Lanczos", (ssize_t) LanczosFilter, MagickFalse },
@@ -954,10 +953,14 @@ static const OptionInfo
     { "Parzen", (ssize_t) ParzenFilter, MagickFalse },
     { "Point", (ssize_t) PointFilter, MagickFalse },
     { "Quadratic", (ssize_t) QuadraticFilter, MagickFalse },
+    { "Robidoux", (ssize_t) RobidouxFilter, MagickTrue },
     { "Sinc", (ssize_t) SincFilter, MagickFalse },
     { "SincFast", (ssize_t) SincFastFilter, MagickFalse },
     { "Triangle", (ssize_t) TriangleFilter, MagickFalse },
+    { "Tent", (ssize_t) TriangleFilter, MagickFalse },
     { "Welsh", (ssize_t) WelshFilter, MagickFalse },
+    /* For backward compatibility - set after "Jinc" */
+    { "Bessel", (ssize_t) JincFilter, MagickTrue },
     { (char *) NULL, (ssize_t) UndefinedFilter, MagickFalse }
   },
   FunctionOptions[] =

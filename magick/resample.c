@@ -1770,7 +1770,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
   /* Set a default cylindrical filter of a 'low blur' Jinc windowed Jinc */
   if ( filter == UndefinedFilter )
-    resample_filter->filter = MitchellFilter;
+    resample_filter->filter = RobidouxFilter;
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
        resample_filter->filter,blur,MagickTrue,resample_filter->exception);

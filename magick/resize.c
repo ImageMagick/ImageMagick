@@ -415,7 +415,7 @@ static MagickRealType SincFast(const MagickRealType x,
     const MagickRealType c7 = -0.187208577776590710853865174371617338991e-11L;
     const MagickRealType c8 = 0.253524321426864752676094495396308636823e-13L;
     const MagickRealType c9 = -0.177084805010701112639035485248501049364e-15L;
-    const MagickRealType p = 
+    const MagickRealType p =
       c0+xx*(c1+xx*(c2+xx*(c3+xx*(c4+xx*(c5+xx*(c6+xx*(c7+xx*(c8+xx*c9))))))));
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)*p);
 #else
@@ -493,7 +493,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Kaiser       Lanczos
 %
 %  Special purpose Filters
-%      SincFast  Lanczos2D
+%      SincFast  Lanczos2D  Robidoux
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
 %  settings for that filter from a internal table.  However any provided
@@ -526,10 +526,10 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  The Lanczos2D filter is often just a normal 2-lobed Lanczos
-%  filter. If selected as a cylindrical (radial) filter, the support
-%  of the 2-lobed Jinc windowed Jinc is modified (through the blur
-%  property) in order to make the results sharper.
+%  The Lanczos2D filter is just 2-lobed Lanczos using Sinc/Jinc as
+%  appropriate.  The  Robidoux  is the same thing but is  modified (through
+%  the blur setting) in order to make the results sharper in the 'no-op' case.
+%  (see notes below)
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -680,6 +680,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
     { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
+    { RobidouxFilter,  JincFilter },     /* SPECIAL: Lanzcos2D blurred       */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -715,9 +716,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Quadratic, 1.5, 1.5,     0.0, 0.0 }, /* Quadratic gaussian          */
     { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
     { CubicBC,   2.0, 1.0,     0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
-    { CubicBC,   2.0, 1.0, 1./3., 1./3. }, /* Mitchell      (B=C=1/3)    */
-    { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* Lanczos, 3-lobed sinc-sinc  */
-    { Jinc,      3.0, 1.21967, 0.0, 0.0 }, /* Raw 3-lobed Jinc          */
+    { CubicBC,   2.0, 1.0, 1./3., 1./3. }, /* Mitchell       (B=C=1/3)    */
+    { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
+    { Jinc,      3.0, 1.21967, 0.0, 0.0 }, /* Raw 3-lobed Jinc            */
     { Sinc,      4.0, 1.0,     0.0, 0.0 }, /* Raw 4-lobed Sinc            */
     { Kaiser,    1.0, 1.0,     0.0, 0.0 }, /* Kaiser (square root window) */
     { Welsh,     1.0, 1.0,     0.0, 0.0 }, /* Welsh (parabolic window)    */
@@ -726,7 +727,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Bohman,    1.0, 1.0,     0.0, 0.0 }, /* Bohman, 2*Cosine window     */
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D, adjusted below   */
+    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D, Jinc-Jinc        */
+    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Robidoux, blured Jinc-Jinc  */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the
@@ -823,7 +825,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         }
       if (option == LanczosFilter)
         { /* Lanczos is not a real filter but a self windowing Sinc/Jinc. */
-          filter_type=cylindrical != MagickFalse ? JincFilter : Lanczos2DFilter;
+          filter_type=cylindrical != MagickFalse ? JincFilter : LanczosFilter;
           window_type=cylindrical != MagickFalse ? JincFilter : SincFastFilter;
         }
       /* Filter override with a specific window function. */
@@ -888,66 +890,60 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->blur *= MagickSQ2;
         resize_filter->support = (MagickRealType) MagickSQ2; /* which times blur => 2.0 */
         break;
-      case Lanczos2DFilter:
-        /* Special 2-lobed cylindrical Jinc-Jinc filter with a special
-         * "blur" adjustment (actually, a "negative blur," since the
-         * support is scaled to make it slightly smaller, with the
-         * consequence that the results are slightly sharper).
-	 *
-         * Used as default filter for EWA Resampling and Distorts.
-	 *
-	 * Executive summary:
-	 *
-	 * This is the closest a two-lobe Jinc-Jinc used radially
-	 * (with Clamped EWA) comes to preserving straight
-	 * vertical---and straight horizontal---features.
-	 *
-	 * Details:
+      case RobidouxFilter:
+        /* Special 2-lobed cylindrical Jinc-Jinc filter created by Nicolas
+         * Robidoux, Professor of Mathematics, Laurentian University.
          *
-	 * Basically, this is the standard
-	 *
-	 *   Lanczos2D(x) = Jinc(x)*Jinc(x*r1/r2) with support r2
-	 *
-	 * (where r1 is the first root of the Jinc function, and r2 is
-	 * the second) rescaled so that images which are constant in
-	 * the vertical direction, and images which are constant in
-	 * the horizontal direction, are almost unchanged (the change
-	 * being generically as small as possible) when the
-	 * geometrical transformation applied to the image is is the
-	 * identity (a.k.a. "no-op").
-	 * 
-	 * Specifically, it is Lanczos2D(s*x) with support r2/s, where
-	 * s is chosen so that
+         * It is a "blur" (negative blur actually) adjusted 2-lobed
+         * Jinc-windowed-Jinc Cylindrical (radial) filter, designed to
+         * preserve straight vertical and horizontal features.
          *
-	 *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))-Lanczos2D(s*2).
-	 *
-	 * This value of s ensures that the value of a one-pixel-wide
-	 * vertical line (equal to 1, say, on a black=0 background) is
-	 * exactly preserved when no-op is applied to the image.  It
-	 * also ensures that---with no-op---the nearest two columns on
-	 * either side are minimally changed (the farther columns are
-	 * unchanged no matter what). Specifically, the nearest
-	 * columns on the left and the right have values raised from
-	 * zero to c, and the second closest columns on the left and
-	 * right are lowered from 0 to minus c. (That is, the very
-	 * closest columns are made slightly positive, and the second
-	 * closest are made slightly negative, in equal amounts.) The
-	 * size c of this blur/halo is .002042317. Consequently, image
-	 * values between 0 and M which are constant on columns (or
-	 * rows) are preserved by no-op to within 2Mc (less than one
-	 * half of one percent of the dynamic range).
-	 *
-	 * Note that "high frequency modes" which are not aligned with
-	 * image rows or columns are damped considerably. For example,
-	 * the amplitude of the very highest energy mode, the
-	 * so-called "checkerboard" mode, is reduced by almost 62%
-	 * (still less than with "standard" Lanczos2D or with a
-	 * comparable Gaussian kernel).
-	 *
-	 * This "optimal" scaling was discovered by Nicolas Robidoux
-	 * of Laurentian University.
-	 *
-	 * Below, resize_filter->blur is 1/s.
+         * Given the "Lanczos2D" filter defined by Andreas Gustafsson in his
+         * "Interactive Image Warping" (page 24)
+         *        http://www.gson.org/thesis/warping-thesis.pdf
+         *
+         *   Lanczos2D(x) = Jinc(x)*Jinc(x*r1/r2) with support r2
+         *
+         * (where r1 is the first root of the Jinc function, and r2 is the
+         * second), rescale the filter by a value 's'.
+         *
+         *    Robidoux(x) = Lanczos2D(s*x) with support r2/s
+         *
+         * the value 's' is chossen so that images which are constant in the
+         * vertical direction, and images which are constant in the horizontal
+         * direction, are almost unchanged (the change being generically as
+         * small as possible) when the geometrical transformation applied to
+         * the image is the identity (a.k.a. "no-op" or no scaling ).
+         *
+         * As such this formula needs to hold true
+         *
+         *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))-Lanczos2D(s*2).
+         *
+         * This value of s ensures that the value of a one-pixel-wide vertical
+         * line (equal to 1, say, on a black=0 background) is exactly
+         * preserved when no-op is applied to the image.  It also ensures
+         * that, in the no-op case, the nearest two columns on either side are
+         * minimally changed (the farther columns are unchanged no matter
+         * what).  Specifically, the nearest columns on the left and the right
+         * have values raised from zero to c, and the second closest columns
+         * on the left and right are lowered from 0 to minus c.  That is, the
+         * very closest columns are made slightly positive, and the second
+         * closest are made slightly negative, in equal amounts.  The size c
+         * of this blur/halo is .002042317.  Consequently, image values
+         * between 0 and M which are constant on columns (or rows) are
+         * preserved by no-op to within 2Mc (less than one half of one percent
+         * of the dynamic range).
+         *
+         * Note that "high frequency modes" which are not aligned with image
+         * rows or columns are damped considerably. For example, the amplitude
+         * of the very highest energy mode, the so-called "checkerboard" mode,
+         * is reduced by almost 62% (still less than with "standard" Lanczos2D
+         * or with a comparable Gaussian kernel).
+         *
+         * This "optimal" scaling was discovered by Nicolas Robidoux of
+         * Laurentian University.
+         *
+         * Below, resize_filter->blur is 1/s.
          */
         resize_filter->blur *= (MagickRealType) 0.958033808;
       default:
@@ -957,7 +953,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
-        /* Demote to a 2-lobe Sinc-Sinc for orthogonal use. */
+      case RobidouxFilter:
+        /* Demote to a 2-lobe Lanczos (Sinc-Sinc) for orthogonal use. */
         resize_filter->filter=SincFast;
         break;
       default:
