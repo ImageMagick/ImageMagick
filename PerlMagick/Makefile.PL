@@ -123,6 +123,7 @@ EOF
 
 sub AutodetectDelegates {
   #try to get configuration info via identify or convert utilities
+  my $devnull = devnull();
   my $conf = `identify -list format 2>$devnull` || `convert -list format 2>$devnull`;
   foreach my $line (split '\n', $conf) {
     next unless $line =~ /^DELEGATES\s+/;
