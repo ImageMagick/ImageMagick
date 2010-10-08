@@ -938,9 +938,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 	 * half of one percent of the dynamic range).
 	 *
 	 * Note that "high frequency modes" which are not aligned with
-	 * pixel directions are still considerably damped. The
-	 * amplitude of the checkerboard mode, for example, is reduced
-	 * by 62%.
+	 * image rows or columns are damped considerably. For example,
+	 * the amplitude of the very highest energy mode, the
+	 * so-called "checkerboard" mode, is reduced by almost 62%
+	 * (still less than with "standard" Lanczos2D a comparable
+	 * Gaussian kernel).
 	 *
 	 * This "optimal" scaling was discovered by Nicolas Robidoux
 	 * of Laurentian University.
