@@ -807,6 +807,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
+      case RobidouxFilter:
         /* Demote to a 2-lobe Sinc-Sinc for orthogonal use. */
         window_type=SincFastFilter;
         break;
