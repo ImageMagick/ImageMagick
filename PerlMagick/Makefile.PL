@@ -13,7 +13,7 @@
 #  limitations under the License.
 #
 #  Exercise all regression tests:
-#  
+#
 #    make test
 #
 #  Exersise one regression test:
@@ -29,11 +29,11 @@ use Cwd;
 sub AutodetectWin32gcc {
   my $wrkdir = getcwd();
   my $devnull = devnull();
- 
+
   my @incdir = ();
   my @libdir = ($wrkdir);
   my @bindir = ();
- 
+
   #try to get configuration info via identify or convert utilities
   my $conf = `identify -list Configure 2>$devnull` || `convert -list Configure 2>$devnull`;
   foreach my $line (split '\n', $conf) {
@@ -68,7 +68,7 @@ sub AutodetectWin32gcc {
       foreach (@i) { push @incdir, $_ if (-e "$_/magick/MagickCore.h") };
     }
   };
- 
+
   foreach my $bin (@bindir) {
     opendir(my $bindir, $bin) or die qq{Cannot opendir $bin: $!};
     my @dlls = map {catfile($bin, $_)} grep /^\S*magick[^\+]\S*?\.dll$/i, readdir $bindir;
@@ -85,7 +85,7 @@ sub AutodetectWin32gcc {
     }
     last if -s "$wrkdir/libMagickCore.a";
   }
- 
+
   unless(@incdir && @libdir && @bindir && (-s "$wrkdir/libMagickCore.a")) {
     print STDERR <<EOF
 ################################### WARNING! ###################################
@@ -114,26 +114,42 @@ sub AutodetectWin32gcc {
 ################################################################################
 EOF
   }
-   
+
   my $inc = join ' ', map "-I\"$_\"", @incdir;
   my $lib = join ' ', map "-L\"$_\"", @libdir;
 
   return ($inc, $lib);
 }
 
+sub AutodetectDelegates {
+  #try to get configuration info via identify or convert utilities
+  my $conf = `identify -list format 2>$devnull` || `convert -list format 2>$devnull`;
+  foreach my $line (split '\n', $conf) {
+    next unless $line =~ /^DELEGATES\s+/;
+    my (undef, @delegates) = split /\s+/, $line;
+    last;
+  };
+  return @delegates;
+}
 
 # Compute test specification
 my $delegate_tests='t/*.t';
-my $delegate;
-foreach $delegate (qw/bzlib fontconfig freetype jpeg jng jp2 png tiff x11 xml zlib/) {
-  if ( -d "t/$delegate" ) {
-    if ( defined($ENV{'DISPLAY'}) && ($^O ne 'MSWin32') ) {
-      if ( defined $ENV{'DISPLAY'} ) {
-        $delegate_tests .= " t/$delegate/*.t";
+my @tested_delegates = qw/bzlib djvu fftw fontconfig freetype jpeg jng jp2 lcms mpeg png rsvg tiff x11 xml wmf zlib/;
+my @supported_delegates = AutodetectDelegates();
+# find the intersection of tested and supported delegates
+my %seen_delegates = ();
+$seen_delegates{$_}++ for @supported_delegates;
+foreach my $delegate (@tested_delegates) {
+  if ( $seen_delegates{$_} ) {
+    if ( -d "t/$delegate" ) {
+      if ( defined($ENV{'DISPLAY'}) && ($^O ne 'MSWin32') ) {
+        if ( defined $ENV{'DISPLAY'} ) {
+          $delegate_tests .= " t/$delegate/*.t";
+        }
+        next;
       }
-      next;
+      $delegate_tests .= " t/$delegate/*.t";
     }
-    $delegate_tests .= " t/$delegate/*.t";
   }
 }
 
@@ -174,7 +190,7 @@ WriteMakefile
    'VERSION' => '6.6.4',
 
    # Preprocessor defines
-   'DEFINE'	=> ' -D_LARGE_FILES=1 -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
+   'DEFINE'	=> ' -D_LARGE_FILES=1 -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING'
 
    # Header search specfication and preprocessor flags
    'INC'	=> $INC_magick,
