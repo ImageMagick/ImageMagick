@@ -995,15 +995,19 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sizeof(*layer_info));
           for (i=0; i < number_layers; i++)
           {
+            int
+              x,
+              y;
+
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  reading layer #%.20g",(double) i+1);
             layer_info[i].page.y=(int) ReadBlobMSBLong(image);
             layer_info[i].page.x=(int) ReadBlobMSBLong(image);
-            layer_info[i].page.height=(ssize_t)
-              (ReadBlobMSBLong(image)-layer_info[i].page.y);
-            layer_info[i].page.width=(ssize_t)
-              (ReadBlobMSBLong(image)-layer_info[i].page.x);
+            y=(int) ReadBlobMSBLong(image);
+            x=(int) ReadBlobMSBLong(image);
+            layer_info[i].page.width=(ssize_t) (x-layer_info[i].page.x);
+            layer_info[i].page.height=(ssize_t) (y-layer_info[i].page.y);
             layer_info[i].channels=ReadBlobMSBShort(image);
             if (layer_info[i].channels > MaxPSDChannels)
               ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
