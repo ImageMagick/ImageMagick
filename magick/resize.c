@@ -526,10 +526,10 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  The Lanczos2D filter is just a normal 2-lobed Lanczos filter. But if
-%  selected as a cylindrical (radial) filter, the 2-lobed Jinc windowed
-%  Jinc will be modified by a blur factor to negate the effect of windowing
-%  the Jinc function, and greatly reduce resulting blur.
+%  The Lanczos2D filter is often just a normal 2-lobed Lanczos
+%  filter. If selected as a cylindrical (radial) filter, the support
+%  of the 2-lobed Jinc windowed Jinc is modified (through the blur
+%  property) in order to make the results sharper.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -891,59 +891,61 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case Lanczos2DFilter:
         /* Special 2-lobed cylindrical Jinc-Jinc filter with a special
          * "blur" adjustment (actually, a "negative blur," since the
-         * support is made slightly smaller, with the consequence that
-         * the corresponding convolution is slightly sharper).
+         * support is scaled to make it slightly smaller, with the
+         * consequence that the results are slightly sharper).
 	 *
-         * To be used as default filter for EWA Resampling and
-         * Distorts.
+         * Used as default filter for EWA Resampling and Distorts.
 	 *
 	 * Executive summary:
 	 *
 	 * This is the closest a two-lobe Jinc-Jinc used radially
-	 * (with Clamped EWA) comes preserving straight vertical---and
-	 * straight horizontal---features when the geometrical
-	 * transformation does not lead to downsampling (that is, when
-	 * enlarging, or rotating, or reflecting, or translating, or
-	 * performing very mild shearing or warping).
+	 * (with Clamped EWA) comes to preserving straight
+	 * vertical---and straight horizontal---features.
 	 *
 	 * Details:
          *
-	 * Basically, this is the usual
-	 *  Lanczos2D(x) = Jinc(x)*Jinc(x*r1/r2) with support r2
+	 * Basically, this is the standard
+	 *
+	 *   Lanczos2D(x) = Jinc(x)*Jinc(x*r1/r2) with support r2
+	 *
 	 * (where r1 is the first root of the Jinc function, and r2 is
-	 * the second), rescaled in the x-direction so that images
-	 * which are constant in the vertical direction, and images
-	 * which are constant in the horizontal direction, are almost
-	 * unchanged (the "almost" being generically as small as
-	 * possible) when the geometrical transformation applied to is
-	 * is the identity (a.k.a. "no-op").
+	 * the second) rescaled so that images which are constant in
+	 * the vertical direction, and images which are constant in
+	 * the horizontal direction, are almost unchanged (the change
+	 * being generically as small as possible) when the
+	 * geometrical transformation applied to the image is is the
+	 * identity (a.k.a. "no-op").
 	 * 
-	 * Specifically, we use Lanczos2D(s*x) with support r2/s,
-	 * where the scaling s of the Lanczos2D filter function is
-	 * chosen so that
+	 * Specifically, it is Lanczos2D(s*x) with support r2/s, where
+	 * s is chosen so that
+         *
 	 *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))-Lanczos2D(s*2).
 	 *
-	 * This choice ensures that the height of a single vertical
-	 * line (equal to 1, say, on a black=0 background) is exactly
-	 * preserved when no-op is applied to the image.  It also
-	 * ensures that---with no-op---the nearest two columns on
+	 * This value of s ensures that the value of a one-pixel-wide
+	 * vertical line (equal to 1, say, on a black=0 background) is
+	 * exactly preserved when no-op is applied to the image.  It
+	 * also ensures that---with no-op---the nearest two columns on
 	 * either side are minimally changed (the farther columns are
-	 * unchanged). Specifically, nearest columns on the left and
-	 * the right are raised to c from zero, and the second closest
-	 * columns on the left and right are lower by c from
-	 * 0. (Hence, the closest columns are made slightly positive,
-	 * and the second closest are made slightly negative, in equal
-	 * amounts.) The size c of this blur/ripple is .002042317
-	 * (about one fifth of one percent). Consequently, this choice
-	 * of scaling of the support of the standard Lanczos2D
-	 * preserves "contant on columns" images with values between
-	 * -1 and 1, to within .00817 (within one percent).
+	 * unchanged no matter what). Specifically, the nearest
+	 * columns on the left and the right have values raised from
+	 * zero to c, and the second closest columns on the left and
+	 * right are lowered from 0 to minus c. (That is, the very
+	 * closest columns are made slightly positive, and the second
+	 * closest are made slightly negative, in equal amounts.) The
+	 * size c of this blur/halo is .002042317. Consequently, image
+	 * values between 0 and M which are constant on columns (or
+	 * rows) are preserved by no-op to within 2Mc (less than one
+	 * half of one percent of the dynamic range).
 	 *
-	 * This special scaling of the standard Lanczos2D kernel in
-	 * the context of Elliptical Weighted Average resampling was
-	 * discovered by Nicolas Robidoux of Laurentian University.
+	 * Note that "high frequency modes" which are not aligned with
+	 * pixel directions are still considerably damped. The
+	 * amplitude of the checkerboard mode, for example, is reduced
+	 * by 62%.
 	 *
-	 * resize_filter->blur, below, is 1/s.
+	 * This "optimal" scaling was discovered by Nicolas Robidoux
+	 * of Laurentian University.
+	 *
+	 * Below, resize_filter->blur is 1/s.
          */
         resize_filter->blur *= (MagickRealType) 0.958033808;
       default:
