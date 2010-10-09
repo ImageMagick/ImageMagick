@@ -4938,7 +4938,13 @@ of the color clusters is returned.</p>
   <h4><a name="selective-blur" id="selective-blur"></a>-selective-blur <em class="arg">geometry</em></h4>
 </div>
 
+<div style="margin: auto;">
+  <h4><a name="selective-blur" id="selective-blur"></a>-selective-blur <em class="arg">radius</em><br />-unsharp <em class="arg">radius</em>x<em class="arg">sigma</em>{<em class="arg">+threshold</em>}</h4>
+</div>
+
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Selectively blur pixels within a contrast threshold.</td><td style='text-align:right;'></td></tr></table>
+
+<p>Blurs those pixels that are less than or equal to the threshold in contrast. The threshold may be expressed as a fraction of <em class="QR">QuantumRange</em> or as a percentage.</p>
 
 <div style="margin: auto;">
   <h4><a name="separate" id="separate"></a>-separate</h4>
