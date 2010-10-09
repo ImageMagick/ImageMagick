@@ -1057,14 +1057,14 @@ MagickExport MagickBooleanType ResamplePixelColor(
                       weight*resample_filter->image->background_color.green;
               resample_filter->average_pixel.blue +=
                       weight*resample_filter->image->background_color.blue;
-              resample_filter->average_pixel.matte +=
+              resample_filter->average_pixel.opacity +=
                       resample_filter->image->background_color.opacity;
               divisor_c += weight;
 
               resample_filter->average_pixel.red /= divisor_c;
               resample_filter->average_pixel.green /= divisor_c;
               resample_filter->average_pixel.blue /= divisor_c;
-              resample_filter->average_pixel.matte /= 2;
+              resample_filter->average_pixel.opacity /= 2;
 
             }
         }
