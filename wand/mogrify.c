@@ -2631,7 +2631,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               {
                 if (region_image != (Image *) NULL)
-                  region_image=DestroyImage(region_image);
+                  region_image=(Image *) NULL;
                 break;
               }
             /*
