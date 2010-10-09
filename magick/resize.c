@@ -1103,7 +1103,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           0.0);
       }
       /* output the above once only for each image, and each setting */
-      (void) DeleteImageArtifact(image,"filter:verbose");
+      (void) DeleteImageArtifact((Image *) image,"filter:verbose");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     }
 #endif
