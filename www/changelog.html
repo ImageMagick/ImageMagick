@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -170,24 +170,34 @@
 
 <div class="main">
 
-<ul><dt>2010-10-03  6.6.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-10-08  6.6.4-10 Jerry Gay  &lt;jerry.gay@gmail..&gt;</dt>
+  <li> Autodetect file type support in Makefile.PL to prevent test failures</li><br />
+<dt>2010-10-05  6.6.4-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added new filter 'Lanczos2D' a 2-lobe Lanczos as defined by    Andreas Gustafsson in his thesis  "Interactive Image Warping" (page 24)         http://www.gson.org/thesis/warping-thesis.pdf</li>
+  <li> Added filter "Robidoux" whcih is a 'negativally' blurred version    of the "Lanczos2D" filter specifically designed to be less 'blurry'    for horizontal and vertical lines in no-op distortions.    It is now the default filter (if none specified) for EWA resampling.</li><br />
+<dt>2010-10-05  6.6.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Add support for "pattern:vertical2" and "pattern:horizontal2".</li>
+  <li> Add support for "pattern:vertical3" and "pattern:horizontal3".</li>
+  <li> Properly handle PSD layers with negative offsets.</li><br />
+<dt>2010-10-03  6.6.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fix memory assertion with --enable-embeddable (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17201).</li>
   <li> Don't permit access to pixels when pinging an image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17194).</li><br />
 <dt>2010-10-02  6.6.4-9 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Added sqrt(2) bluring default for Gaussian Filter if used as a    Cylindrical EWA filter.  This resulted in the last aliasing issue    that was present in tests for Gaussian EWA resampling.    However it is still a very blury filter for default use in EWA.</li>
+  <li> Added sqrt(2) bluring default for Gaussian Filter if used as    a Cylindrical EWA filter.  This resulted removing the last aliasing    issue that was present in tests for Gaussian EWA resampling. Of course    it is still a very blury filter for default use in EWA.</li>
   <li> Adjusted Variable Mapping Blur Composition so user arguments actual    relate properly to the sigma of the blur for a maximum mapping value.</li>
-  <li> Fix horizon anti-alising for output scaled perspective distortions.</li>
-  <li> 'Bessel' filter is nor offically and more accuritally named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</li><br />
+  <li> Fix horizon anti-alising for output-scaled perspective distortions.</li>
+  <li> 'Bessel' filter is now offically and more accuritally named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</li><br />
 <dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
   <li> Chantal Racette double checked the bounding parallelogram computation    in resample.c (and I tightened the comments).</li><br />
 <dt>2010-09-28  6.6.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Temporary files not always deleted (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=15960).</li><br />
+<dt>2010-09-28  6.6.4-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Bug fix for -filter point distorts (occasional generating black pixels)</li><br />
 <dt>2010-09-27  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
-  <li> Simplified the ClampUpAxes code, the use of its outputs, its    comments, and credited Craig DeForest for the "clamp singular values"    idea.</li>
+  <li> Simplified the ClampUpAxes code, the use of its outputs, its comments,    and credited Craig DeForest for the "clamp singular values" idea.</li>
   <li> No reason to have "insane" precision Sinc in resize.c: Use    the 1.2e-12 max. abs. relative error version for Q64 as well as Q32.</li><br />
 <dt>2010-09-27  6.6.4-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'    for Distort Resampling.  This makes -distort a whole lot nicer    and allows for the use of better cylindrical filters.</li>
-  <li> Bug fix for -filter point distorts (occasional generating black pixels)</li><br />
+  <li> Replace the blurry "High Quality EWA" technique with a 'Clamped EWA'    for Distort Resampling.  This makes -distort a whole lot nicer    and allows for the use of better cylindrical filters.</li><br />
 <dt>2010-09-26  6.6.4-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Fix Point filter for ResizeImage() caused by support limiting the    Box weighting function.</li><br />
 <dt>2010-09-26  6.6.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
