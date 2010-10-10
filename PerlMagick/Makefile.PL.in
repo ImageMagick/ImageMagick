@@ -124,10 +124,11 @@ EOF
 sub AutodetectDelegates {
   #try to get configuration info via identify or convert utilities
   my $devnull = devnull();
-  my $conf = `identify -list format 2>$devnull` || `convert -list format 2>$devnull`;
+  my $conf = `identify -list Configure 2>$devnull` || `convert -list Configure 2>$devnull`;
+  my @delegates = ();
   foreach my $line (split '\n', $conf) {
     next unless $line =~ /^DELEGATES\s+/;
-    my (undef, @delegates) = split /\s+/, $line;
+    (undef, @delegates) = split /\s+/, $line;
     last;
   };
   return @delegates;
@@ -141,7 +142,7 @@ my @supported_delegates = AutodetectDelegates();
 my %seen_delegates = ();
 $seen_delegates{$_}++ for @supported_delegates;
 foreach my $delegate (@tested_delegates) {
-  if ( $seen_delegates{$_} ) {
+  if ( $seen_delegates{$delegate} ) {
     if ( -d "t/$delegate" ) {
       if ( defined($ENV{'DISPLAY'}) && ($^O ne 'MSWin32') ) {
         if ( defined $ENV{'DISPLAY'} ) {
