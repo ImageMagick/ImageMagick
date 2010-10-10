@@ -526,12 +526,14 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  The Lanczos2D filter is just 2-lobed Lanczos using Sinc/Jinc as
-%  appropriate.  The  Robidoux  used to be a slightly sharpened version
-%  of this, but is now the equivelent Cubic 'Keys' filter very similar to
-%  "Mitchell".  Remember these are designed specifically for use as
-%  cylindrical (radial) EWA Distortion filters, to be less blurry in the
-%  'no-op' situation.
+%  The Lanczos2D and Robidoux filters are designed for cylindrical
+%  (radial) EWA distortion. The Lanczos2D filter is a 2-lobed Lanczos
+%  using Sinc/Jinc as appropriate.  The Robidoux filter used to be a
+%  slightly sharpened version of Lanczos2D (with blur=0.958033808);
+%  Now, it is a Cubic 'Keys' filter tuned so that images with only
+%  vertical (or horizontal) features are exactly preserved when
+%  performing 'no-op" with EWA distortion (it turns out to be close to
+%  both plain Mitchell and sharpened Lanczos2D).
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -682,7 +684,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
     { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
-    { RobidouxFilter,  BoxFilter },      /* SPECIAL: cubic jinc-jinc equiv.  */
+    { RobidouxFilter,  BoxFilter },      /* SPECIAL: tuned cubic jinc-jinc   */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -730,7 +732,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
     { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D, Jinc-Jinc        */
-    /* Robidoux, A Cubic 'Keys' equiv of a Lanczos2D with a blur=0.958033808 */
+    /* Robidoux: tuned Keys spline close to Lanczos2D with blur=0.958033808 */
     { CubicBC,   2.0, 1.0, 0.37821575509399862, 0.31089212245300069 }
   };
   /*
