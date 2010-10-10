@@ -124,7 +124,7 @@ struct _ResampleFilter
     A, B, C,
     Vlimit, Ulimit, Uwidth, slope;
 
-#if FILTER_DIRECT
+#if FILTER_LUT
   /* LUT of weights for filtered average in elliptical area */
   double
     filter_lut[WLUT_WIDTH];
