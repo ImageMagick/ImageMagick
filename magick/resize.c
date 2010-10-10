@@ -684,7 +684,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
     { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
-    { RobidouxFilter,  BoxFilter },      /* SPECIAL: tuned Lanczos2D-like Keys */
+    { RobidouxFilter,  BoxFilter },      /* SPECIAL: Keys cubic tuned for EWA */
   };
   /*
     Table mapping the filter/window from the above table to an actual
