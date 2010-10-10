@@ -1391,14 +1391,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   default:
                     break;
                 }
-                transform.sx=current.sx*affine.sx+current.ry*affine.rx;
-                transform.rx=current.rx*affine.sx+current.sy*affine.rx;
-                transform.ry=current.sx*affine.ry+current.ry*affine.sy;
-                transform.sy=current.rx*affine.ry+current.sy*affine.sy;
-                transform.tx=current.sx*affine.tx+current.ry*affine.ty+
-                  current.tx;
-                transform.ty=current.rx*affine.tx+current.sy*affine.ty+
-                  current.ty;
+                transform.sx=affine.sx*current.sx+affine.ry*current.rx;
+                transform.rx=affine.rx*current.sx+affine.sy*current.rx;
+                transform.ry=affine.sx*current.ry+affine.ry*current.sy;
+                transform.sy=affine.rx*current.ry+affine.sy*current.sy;
+                transform.tx=affine.sx*current.tx+affine.ry*current.ty+
+                  affine.tx;
+                transform.ty=affine.rx*current.tx+affine.sy*current.ty+
+                  affine.ty;
               }
               MVGPrintf(svg_info->file,
                 "affine %g %g %g %g %g %g\n",transform.sx,
@@ -1983,14 +1983,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   default:
                     break;
                 }
-                transform.sx=current.sx*affine.sx+current.ry*affine.rx;
-                transform.rx=current.rx*affine.sx+current.sy*affine.rx;
-                transform.ry=current.sx*affine.ry+current.ry*affine.sy;
-                transform.sy=current.rx*affine.ry+current.sy*affine.sy;
-                transform.tx=current.sx*affine.tx+current.ry*affine.ty+
-                  current.tx;
-                transform.ty=current.rx*affine.tx+current.sy*affine.ty+
-                  current.ty;
+                transform.sx=affine.sx*current.sx+affine.ry*current.rx;
+                transform.rx=affine.rx*current.sx+affine.sy*current.rx;
+                transform.ry=affine.sx*current.ry+affine.ry*current.sy;
+                transform.sy=affine.rx*current.ry+affine.sy*current.sy;
+                transform.tx=affine.sx*current.tx+affine.ry*current.ty+
+                  affine.tx;
+                transform.ty=affine.rx*current.tx+affine.sy*current.ty+
+                  affine.ty;
               }
               MVGPrintf(svg_info->file,
                 "affine %g %g %g %g %g %g\n",transform.sx,
