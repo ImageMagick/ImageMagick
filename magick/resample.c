@@ -132,6 +132,9 @@ struct _ResampleFilter
   /* Use a Direct call to the filter functions */
   ResizeFilter
     *filter_def;
+
+  double
+    F;
 #endif
 
   /* the practical working support of the filter */
@@ -1153,9 +1156,9 @@ MagickExport MagickBooleanType ResamplePixelColor(
         weight = resample_filter->filter_lut[(int)Q];
 #else
       /* Note that the ellipse has been pre-scaled so F = support^2 */
-      weight = sqrt(Q);  /* a SquareRoot!  Arrggghhhhh... */
-      if ( weight < (double)resample_filter->support ) {
-        weight = GetResizeFilterWeight(resample_filter->filter_def, weight);
+      if ( Q < (double)resample_filter->F ) {
+        weight = GetResizeFilterWeight(resample_filter->filter_def,
+             sqrt(Q));    /* a SquareRoot!  Arrggghhhhh... */
 #endif
 
         pixel->opacity  += weight*pixels->opacity;
@@ -1692,8 +1695,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     return;
   }
 
-  /* Scale ellipse by the support (that is, multiply F by the square
-     of the support).
+  /* Scale ellipse to match the filters support
+     (that is, multiply F by the square of the support).
   */
   F *= resample_filter->support;
   F *= resample_filter->support;
@@ -1725,10 +1728,11 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   /* Scale ellipse formula to directly index the Filter Lookup Table */
   { register double scale;
 #if FILTER_LUT
-    /* resample_filter->F = WLUT_WIDTH; -- hardcoded */
+    /* scale so that F = WLUT_WIDTH; -- hardcoded */
     scale = (double)WLUT_WIDTH/F;
 #else
-    scale = resample_filter->support*resample_filter->support/F;
+    /* scale so that F = resample_filter->F (support^2) */
+    scale = resample_filter->F/F;
 #endif
     resample_filter->A = A*scale;
     resample_filter->B = B*scale;
@@ -1826,7 +1830,9 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
     resize_filter = DestroyResizeFilter(resize_filter);
   }
 #else
+  /* save the filter and the scaled ellipse bounds needed for filter */
   resample_filter->filter_def = resize_filter;
+  resample_filter->F = resample_filter->support*resample_filter->support;
 #endif
 
   /*
@@ -1862,8 +1868,13 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 #if FILTER_LUT
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp single
-  {
 #endif
+  { register int
+       Q;
+    double
+       r_scale;
+    /* Scale radius so the filter LUT covers the full support range */
+    r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
     if (GetImageArtifact(resample_filter->image,"resample:verbose")
           != (const char *) NULL)
       {
@@ -1885,9 +1896,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
       }
     /* output the above once only for each image, and each setting */
     (void) DeleteImageArtifact(resample_filter->image,"resample:verbose");
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   }
-#endif
 #endif /* FILTER_LUT */
   return;
 }
