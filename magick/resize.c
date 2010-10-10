@@ -528,12 +528,13 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  The Lanczos2D and Robidoux filters are tuned for cylindrical
 %  (radial) EWA (Elliptical Weighted Average) distortion.  Lanczos2D
-%  is a 2-lobed Lanczos filter using Sinc or Jinc (as appropriate).
-%  Robidoux used to be a slightly sharpened version of Lanczos2D (with
-%  blur=0.958033808); Now, it is a Cubic 'Keys' filter tuned so that
-%  images with only vertical (or horizontal) features are exactly
-%  preserved when performing 'no-op" with EWA distortion, which turns
-%  out to be close to both plain Mitchell and "sharpened" Lanczos2D.
+%  is a 2-lobed Lanczos-like filter using Jinc (for EWA) or Sinc.
+%  Robidoux used to be a sharpened version of Lanczos2D (with
+%  blur=0.958033808). Now, it is a Cubic 'Keys' filter tuned so that
+%  images with only vertical or horizontal features are exactly
+%  preserved when performing 'no-op" with EWA distortion. Robidoux
+%  turns out to be close to both plain Mitchell and "sharpened"
+%  Lanczos2D.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
