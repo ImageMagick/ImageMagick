@@ -441,14 +441,14 @@ static void AdjustAffine(DrawingWand *wand,const AffineMatrix *affine)
         current;
 
       current=CurrentContext->affine;
-      CurrentContext->affine.sx=current.sx*affine->sx+current.ry*affine->rx;
-      CurrentContext->affine.rx=current.rx*affine->sx+current.sy*affine->rx;
-      CurrentContext->affine.ry=current.sx*affine->ry+current.ry*affine->sy;
-      CurrentContext->affine.sy=current.rx*affine->ry+current.sy*affine->sy;
-      CurrentContext->affine.tx=current.sx*affine->tx+current.ry*affine->ty+
-        current.tx;
-      CurrentContext->affine.ty=current.rx*affine->tx+current.sy*affine->ty+
-        current.ty;
+      CurrentContext->affine.sx=affine->sx*current.sx+affine->ry*current.rx;
+      CurrentContext->affine.rx=affine->rx*current.sx+affine->sy*current.rx;
+      CurrentContext->affine.ry=affine->sx*current.ry+affine->ry*current.sy;
+      CurrentContext->affine.sy=affine->rx*current.ry+affine->sy*current.sy;
+      CurrentContext->affine.tx=affine->sx*current.tx+affine->ry*current.ty+
+        affine->tx;
+      CurrentContext->affine.ty=affine->rx*current.tx+affine->sy*current.ty+
+        affine->ty;
     }
 }
 
@@ -4326,19 +4326,10 @@ WandExport void DrawResetVectorGraphics(DrawingWand *wand)
 */
 WandExport void DrawRotate(DrawingWand *wand,const double degrees)
 {
-  AffineMatrix
-    affine;
-
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  GetAffineMatrix(&affine);
-  affine.sx=cos(DegreesToRadians(fmod(degrees,360.0)));
-  affine.rx=sin(DegreesToRadians(fmod(degrees,360.0)));
-  affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
-  affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
-  AdjustAffine(wand,&affine);
   (void) MvgPrintf(wand,"rotate %g\n",degrees);
 }
 
@@ -4419,17 +4410,10 @@ WandExport void DrawRoundRectangle(DrawingWand *wand,double x1,double y1,
 */
 WandExport void DrawScale(DrawingWand *wand,const double x,const double y)
 {
-  AffineMatrix
-    affine;
-
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  GetAffineMatrix(&affine);
-  affine.sx=x;
-  affine.sy=y;
-  AdjustAffine(wand,&affine);
   (void) MvgPrintf(wand,"scale %g,%g\n",x,y);
 }
 
@@ -6368,16 +6352,10 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
 */
 WandExport void DrawSkewX(DrawingWand *wand,const double degrees)
 {
-  AffineMatrix
-    affine;
-
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  GetAffineMatrix(&affine);
-  affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
-  AdjustAffine(wand,&affine);
   (void) MvgPrintf(wand,"skewX %g\n",degrees);
 }
 
@@ -6408,16 +6386,10 @@ WandExport void DrawSkewX(DrawingWand *wand,const double degrees)
 */
 WandExport void DrawSkewY(DrawingWand *wand,const double degrees)
 {
-  AffineMatrix
-    affine;
-
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  GetAffineMatrix(&affine);
-  affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
-  DrawAffine(wand,&affine);
   (void) MvgPrintf(wand,"skewY %g\n",degrees);
 }
 
@@ -6452,17 +6424,10 @@ WandExport void DrawSkewY(DrawingWand *wand,const double degrees)
 */
 WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
 {
-  AffineMatrix
-    affine;
-
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  GetAffineMatrix(&affine);
-  affine.tx=x;
-  affine.ty=y;
-  AdjustAffine(wand,&affine);
   (void) MvgPrintf(wand,"translate %g,%g\n",x,y);
 }
 

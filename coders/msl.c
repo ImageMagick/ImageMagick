@@ -1065,14 +1065,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
-          draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-          draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-          draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-          draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-          draw_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
-            current.tx;
-          draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
-            current.ty;
+          draw_info->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
+          draw_info->affine.rx=affine.rx*current.sx+affine.sy*current.rx;
+          draw_info->affine.ry=affine.sx*current.ry+affine.ry*current.sy;
+          draw_info->affine.sy=affine.rx*current.ry+affine.sy*current.sy;
+          draw_info->affine.tx=affine.sx*current.tx+affine.ry*current.ty+
+            affine.tx;
+          draw_info->affine.ty=affine.rx*current.tx+affine.sy*current.ty+
+            affine.ty;
           (void) AnnotateImage(msl_info->image[n],draw_info);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -2655,14 +2655,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
-          draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-          draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-          draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-          draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-          draw_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
-            current.tx;
-          draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
-            current.ty;
+          draw_info->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
+          draw_info->affine.rx=affine.rx*current.sx+affine.sy*current.rx;
+          draw_info->affine.ry=affine.sx*current.ry+affine.ry*current.sy;
+          draw_info->affine.sy=affine.rx*current.ry+affine.sy*current.sy;
+          draw_info->affine.tx=affine.sx*current.tx+affine.ry*current.ty+
+            affine.tx;
+          draw_info->affine.ty=affine.rx*current.tx+affine.sy*current.ty+
+            affine.ty;
           (void) DrawImage(msl_info->image[n],draw_info);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -4798,14 +4798,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
-          draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-          draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-          draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-          draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-          draw_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
-            current.tx;
-          draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
-            current.ty;
+          draw_info->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
+          draw_info->affine.rx=affine.rx*current.sx+affine.sy*current.rx;
+          draw_info->affine.ry=affine.sx*current.ry+affine.ry*current.sy;
+          draw_info->affine.sy=affine.rx*current.ry+affine.sy*current.sy;
+          draw_info->affine.tx=affine.sx*current.tx+affine.ry*current.ty+
+            affine.tx;
+          draw_info->affine.ty=affine.rx*current.tx+affine.sy*current.ty+
+            affine.ty;
           status=GetTypeMetrics(msl_info->attributes[n],draw_info,&metrics);
           if (status != MagickFalse)
             {
