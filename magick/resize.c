@@ -526,14 +526,14 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  The Lanczos2D and Robidoux filters are designed for cylindrical
-%  (radial) EWA distortion. The Lanczos2D filter is a 2-lobed Lanczos
-%  using Sinc/Jinc as appropriate.  The Robidoux filter used to be a
-%  slightly sharpened version of Lanczos2D (with blur=0.958033808);
-%  Now, it is a Cubic 'Keys' filter tuned so that images with only
-%  vertical (or horizontal) features are exactly preserved when
-%  performing 'no-op" with EWA distortion (it turns out to be close to
-%  both plain Mitchell and "sharpened" Lanczos2D).
+%  The Lanczos2D and Robidoux filters are tuned for cylindrical
+%  (radial) EWA (Elliptical Weighted Average) distortion.  Lanczos2D
+%  is a 2-lobed Lanczos filter using Sinc or Jinc (as appropriate).
+%  Robidoux used to be a slightly sharpened version of Lanczos2D (with
+%  blur=0.958033808); Now, it is a Cubic 'Keys' filter tuned so that
+%  images with only vertical (or horizontal) features are exactly
+%  preserved when performing 'no-op" with EWA distortion, which turns
+%  out to be close to both plain Mitchell and "sharpened" Lanczos2D.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -684,7 +684,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
     { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
-    { RobidouxFilter,  BoxFilter },      /* SPECIAL: Keys cubic tuned for EWA */
+    { RobidouxFilter,  BoxFilter },     /* SPECIAL: Keys cubic tuned for EWA */
   };
   /*
     Table mapping the filter/window from the above table to an actual
