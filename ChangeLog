@@ -5,10 +5,10 @@
   * Added new filter 'Lanczos2D' a 2-lobe Lanczos as defined by
     Andreas Gustafsson in his thesis  "Interactive Image Warping" (page 24)
          http://www.gson.org/thesis/warping-thesis.pdf
-  * Added filter "Robidoux" whcih is a 'negativally' blurred version
-    of the "Lanczos2D" filter specifically designed to be less 'blurry'
-    for horizontal and vertical lines in no-op distortions.
-    It is now the default filter (if none specified) for EWA resampling.
+  * Added filter "Robidoux" which is a slightly sharpened version of the
+    "Lanczos2D" filter specifically designed to be less 'blurry' for
+    horizontal and vertical lines in no-op distortions.  It is now the default
+    filter (if none specified) for EWA resampling.
 
 2010-10-05  6.6.4-10 Cristy  <quetzlzacatenango@image...>
   * Add support for "pattern:vertical2" and "pattern:horizontal2".
