@@ -533,8 +533,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  blur=0.958033808). Now, it is the unique Cubic 'Keys' filter that
 %  exactly preserves images with only vertical or horizontal features
 %  when performing 'no-op" with EWA distortion. It turns out to be
-%  close to both plain Mitchell (slightly more blurry) and "sharpened"
-%  Lanczos2D.
+%  close to both plain Mitchell and "sharpened" Lanczos2D.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
