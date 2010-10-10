@@ -63,17 +63,22 @@
 /*
   EWA Resampling Options
 */
-#define WLUT_WIDTH 1024       /* size of the filter cache */
 
 /* select ONE resampling method */
 #define EWA 1                 /* Normal EWA handling - raw or clamped */
                               /* if 0 then use "High Quality EWA" */
 #define EWA_CLAMP 1           /* EWA Clamping from Nicolas Robidoux */
 
+#define FILTER_LUT 1          /* Use a LUT rather then direct filter calls */
+
 /* output debugging information */
 #define DEBUG_ELLIPSE 0       /* output ellipse info for debug */
 #define DEBUG_HIT_MISS 0      /* output hit/miss pixels (as gnuplot commands) */
 #define DEBUG_NO_PIXEL_HIT 0  /* Make pixels that fail to hit anything - RED */
+
+#if ! FILTER_DIRECT
+#define WLUT_WIDTH 1024       /* size of the filter cache */
+#endif
 
 /*
   Typedef declarations.
@@ -119,9 +124,18 @@ struct _ResampleFilter
     A, B, C,
     Vlimit, Ulimit, Uwidth, slope;
 
+#if FILTER_DIRECT
   /* LUT of weights for filtered average in elliptical area */
   double
-    filter_lut[WLUT_WIDTH],
+    filter_lut[WLUT_WIDTH];
+#else
+  /* Use a Direct call to the filter functions */
+  ResizeFilter
+    *filter_def;
+#endif
+
+  /* the practical working support of the filter */
+  double
     support;
 
   size_t
@@ -207,15 +221,12 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->debug=IsEventLogging();
   resample_filter->signature=MagickSignature;
 
-  resample_filter->image_area=(ssize_t) (resample_filter->image->columns*
-    resample_filter->image->rows);
+  resample_filter->image_area=(ssize_t) (image->columns*image->rows);
   resample_filter->average_defined = MagickFalse;
 
   /* initialise the resampling filter settings */
-  SetResampleFilter(resample_filter, resample_filter->image->filter,
-    resample_filter->image->blur);
-  SetResampleFilterInterpolateMethod(resample_filter,
-    resample_filter->image->interpolate);
+  SetResampleFilter(resample_filter, image->filter, image->blur);
+  SetResampleFilterInterpolateMethod(resample_filter, image->interpolate);
   SetResampleFilterVirtualPixelMethod(resample_filter,
     GetImageVirtualPixelMethod(image));
 
@@ -257,6 +268,9 @@ MagickExport ResampleFilter *DestroyResampleFilter(
       resample_filter->image->filename);
   resample_filter->view=DestroyCacheView(resample_filter->view);
   resample_filter->image=DestroyImage(resample_filter->image);
+#if ! FILTER_LUT
+  resample_filter->filter_def=DestroyResizeFilter(resample_filter->filter_def);
+#endif
   resample_filter->signature=(~MagickSignature);
   resample_filter=(ResampleFilter *) RelinquishMagickMemory(resample_filter);
   return(resample_filter);
@@ -1133,9 +1147,16 @@ MagickExport MagickBooleanType ResamplePixelColor(
 
     /* count up the weighted pixel colors */
     for( u=0; u<uw; u++ ) {
+#if FILTER_LUT
       /* Note that the ellipse has been pre-scaled so F = WLUT_WIDTH */
       if ( Q < (double)WLUT_WIDTH ) {
         weight = resample_filter->filter_lut[(int)Q];
+#else
+      /* Note that the ellipse has been pre-scaled so F = support^2 */
+      weight = sqrt(Q);  /* a SquareRoot!  Arrggghhhhh... */
+      if ( weight < (double)resample_filter->support ) {
+        weight = GetResizeFilterWeight(resample_filter->filter_def, weight);
+#endif
 
         pixel->opacity  += weight*pixels->opacity;
         divisor_m += weight;
@@ -1596,13 +1617,13 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   F = major_mag*minor_mag;
   F *= F; /* square it */
   }
-#else /* raw EWA */
+#else /* raw unclamped EWA */
   A = dvx*dvx+dvy*dvy;
   B = -2.0*(dux*dvx+duy*dvy);
   C = dux*dux+duy*duy;
   F = dux*dvy-duy*dvx;
   F *= F; /* square it */
-#endif
+#endif /* EWA_CLAMP */
 
 #else /* HQ_EWA */
   /*
@@ -1703,11 +1724,15 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 
   /* Scale ellipse formula to directly index the Filter Lookup Table */
   { register double scale;
+#if FILTER_LUT
+    /* resample_filter->F = WLUT_WIDTH; -- hardcoded */
     scale = (double)WLUT_WIDTH/F;
+#else
+    scale = resample_filter->support*resample_filter->support/F;
+#endif
     resample_filter->A = A*scale;
     resample_filter->B = B*scale;
     resample_filter->C = C*scale;
-    /* resample_filter->F = WLUT_WIDTH; -- hardcoded */
   }
 }
 
@@ -1747,12 +1772,6 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   const FilterTypes filter,const double blur)
 {
-  register int
-     Q;
-
-  double
-     r_scale;
-
   ResizeFilter
      *resize_filter;
 
@@ -1791,33 +1810,42 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   resample_filter->support = 2.0;  /* fixed support size for HQ-EWA */
 #endif
 
-  /* Scale radius so the filter LUT covers the full support range */
-  r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
+#if FILTER_LUT
+  /* Fill the LUT with the weights from the selected filter function */
+  { register int
+       Q;
+    double
+       r_scale;
+    /* Scale radius so the filter LUT covers the full support range */
+    r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
+    for(Q=0; Q<WLUT_WIDTH; Q++)
+      resample_filter->filter_lut[Q] = (double)
+           GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
 
-  /* Fill the LUT with a 1D resize filter function */
-  for(Q=0; Q<WLUT_WIDTH; Q++)
-    resample_filter->filter_lut[Q] = (double)
-         GetResizeFilterWeight(resize_filter,sqrt((double)Q)*r_scale);
-
-  /* finished with the resize filter */
-  resize_filter = DestroyResizeFilter(resize_filter);
+    /* finished with the resize filter */
+    resize_filter = DestroyResizeFilter(resize_filter);
+  }
+#else
+  resample_filter->filter_def = resize_filter;
+#endif
 
   /*
     Adjust the scaling of the default unit circle
     This assumes that any real scaling changes will always
     take place AFTER the filter method has been initialized.
   */
-
   ScaleResampleFilter(resample_filter, 1.0, 0.0, 0.0, 1.0);
 
 #if 0
-  This is old code kept for reference only.  It is very wrong.
+  /* This is old code kept as a reference only.  It is very wrong,
+     and I don't understand exactly what it was attempting to do.
+  */
   /*
     Create Normal Gaussian 2D Filter Weighted Lookup Table.
     A normal EWA guassual lookup would use   exp(Q*ALPHA)
     where  Q = distance squared from 0.0 (center) to 1.0 (edge)
     and    ALPHA = -4.0*ln(2.0)  ==>  -2.77258872223978123767
-    However the table is of length 1024, and equates to a radius of 2px
+    The table is of length 1024, and equates to support radius of 2.0
     thus needs to be scaled by  ALPHA*4/1024 and any blur factor squared
 
     The above came from some reference code provided by Fred Weinhaus
@@ -1831,6 +1859,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   break;
 #endif
 
+#if FILTER_LUT
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp single
   {
@@ -1859,6 +1888,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   }
 #endif
+#endif /* FILTER_LUT */
   return;
 }
 
