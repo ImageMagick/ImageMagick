@@ -683,8 +683,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  BohmanFilter },   /* Bohman -- 2*cosine-sinc          */
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
-    { Lanczos2DFilter, JincFilter },     /* EWA SPECIAL: 2-lobed jinc-jinc   */
-    { RobidouxFilter,  BoxFilter },      /* EWA SPECIAL: cubic "jinc-jinc"   */
+    { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
+    { RobidouxFilter,  BoxFilter },      /* SPECIAL: tuned Lanczos2D-like Keys */
   };
   /*
     Table mapping the filter/window from the above table to an actual
