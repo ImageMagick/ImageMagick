@@ -533,7 +533,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  Now, it is a Cubic 'Keys' filter tuned so that images with only
 %  vertical (or horizontal) features are exactly preserved when
 %  performing 'no-op" with EWA distortion (it turns out to be close to
-%  both plain Mitchell and sharpened Lanczos2D).
+%  both plain Mitchell and "sharpened" Lanczos2D).
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -683,8 +683,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  BohmanFilter },   /* Bohman -- 2*cosine-sinc          */
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
-    { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
-    { RobidouxFilter,  BoxFilter },      /* SPECIAL: tuned cubic jinc-jinc   */
+    { Lanczos2DFilter, JincFilter },     /* EWA SPECIAL: 2-lobed jinc-jinc   */
+    { RobidouxFilter,  BoxFilter },      /* EWA SPECIAL: cubic "jinc-jinc"   */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -731,9 +731,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Bohman,    1.0, 1.0,     0.0, 0.0 }, /* Bohman, 2*Cosine window     */
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D, Jinc-Jinc        */
-    /* Robidoux: tuned Keys spline close to Lanczos2D with blur=0.958033808 */
+    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D (Jinc-Jinc)       */
     { CubicBC,   2.0, 1.0, 0.37821575509399862, 0.31089212245300069 }
+         /* Robidoux: Keys cubic close to Lanczos2D with blur=0.958033808 */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the
