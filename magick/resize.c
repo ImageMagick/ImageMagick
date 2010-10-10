@@ -527,9 +527,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %  most cases.
 %
 %  The Lanczos2D filter is just 2-lobed Lanczos using Sinc/Jinc as
-%  appropriate.  The  Robidoux  is the same thing but is  modified (through
-%  the blur setting) in order to make the results sharper in the 'no-op' case.
-%  (see notes below)
+%  appropriate.  The  Robidoux  used to be a slightly sharpened version
+%  of this, but is now the equivelent Cubic 'Keys' filter very similar to
+%  "Mitchell".  Remember these are designed specifically for use as
+%  cylindrical (radial) EWA Distortion filters, to be less blurry in the
+%  'no-op' situation.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -680,7 +682,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
     { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
-    { RobidouxFilter,  JincFilter },     /* SPECIAL: Lanzcos2D blurred       */
+    { RobidouxFilter,  BoxFilter },      /* SPECIAL: cubic jinc-jinc equiv.  */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -728,7 +730,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
     { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D, Jinc-Jinc        */
-    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Robidoux, blured Jinc-Jinc  */
+    /* Robidoux, A Cubic 'Keys' equiv of a Lanczos2D with a blur=0.958033808 */
+    { CubicBC,   2.0, 1.0, 0.37821575509399862, 0.31089212245300069 }
   };
   /*
     The known zero crossings of the Jinc() or more accurately the
@@ -807,7 +810,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
-      case RobidouxFilter:
         /* Demote to a 2-lobe Sinc-Sinc for orthogonal use. */
         window_type=SincFastFilter;
         break;
@@ -891,62 +893,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->blur *= MagickSQ2;
         resize_filter->support = (MagickRealType) MagickSQ2; /* which times blur => 2.0 */
         break;
-      case RobidouxFilter:
-        /* Special 2-lobed cylindrical Jinc-Jinc filter created by Nicolas
-         * Robidoux, Professor of Mathematics, Laurentian University.
-         *
-         * It is a "blur" (negative blur actually) adjusted 2-lobed
-         * Jinc-windowed-Jinc Cylindrical (radial) filter, designed to
-         * preserve straight vertical and horizontal features.
-         *
-         * Given the "Lanczos2D" filter defined by Andreas Gustafsson in his
-         * "Interactive Image Warping" (page 24)
-         *        http://www.gson.org/thesis/warping-thesis.pdf
-         *
-         *   Lanczos2D(x) = Jinc(x)*Jinc(x*r1/r2) with support r2
-         *
-         * (where r1 is the first root of the Jinc function, and r2 is the
-         * second), rescale the filter by a value 's'.
-         *
-         *    Robidoux(x) = Lanczos2D(s*x) with support r2/s
-         *
-         * the value 's' is chossen so that images which are constant in the
-         * vertical direction, and images which are constant in the horizontal
-         * direction, are almost unchanged (the change being generically as
-         * small as possible) when the geometrical transformation applied to
-         * the image is the identity (a.k.a. "no-op" or no scaling ).
-         *
-         * As such this formula needs to hold true
-         *
-         *   Lanczos2D(s)=-2*Lanczos2D(s*sqrt(2))-Lanczos2D(s*2).
-         *
-         * This value of s ensures that the value of a one-pixel-wide vertical
-         * line (equal to 1, say, on a black=0 background) is exactly
-         * preserved when no-op is applied to the image.  It also ensures
-         * that, in the no-op case, the nearest two columns on either side are
-         * minimally changed (the farther columns are unchanged no matter
-         * what).  Specifically, the nearest columns on the left and the right
-         * have values raised from zero to c, and the second closest columns
-         * on the left and right are lowered from 0 to minus c.  That is, the
-         * very closest columns are made slightly positive, and the second
-         * closest are made slightly negative, in equal amounts.  The size c
-         * of this blur/halo is .002042317.  Consequently, image values
-         * between 0 and M which are constant on columns (or rows) are
-         * preserved by no-op to within 2Mc (less than one half of one percent
-         * of the dynamic range).
-         *
-         * Note that "high frequency modes" which are not aligned with image
-         * rows or columns are damped considerably. For example, the amplitude
-         * of the very highest energy mode, the so-called "checkerboard" mode,
-         * is reduced by almost 62% (still less than with "standard" Lanczos2D
-         * or with a comparable Gaussian kernel).
-         *
-         * This "optimal" scaling was discovered by Nicolas Robidoux of
-         * Laurentian University.
-         *
-         * Below, resize_filter->blur is 1/s.
-         */
-        resize_filter->blur *= (MagickRealType) 0.958033808;
       default:
         break;
     }
@@ -954,7 +900,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
-      case RobidouxFilter:
         /* Demote to a 2-lobe Lanczos (Sinc-Sinc) for orthogonal use. */
         resize_filter->filter=SincFast;
         break;
@@ -3175,6 +3120,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   return(scale_image);
 }
 
+#if 0
+      THIS IS NOT USED  --  to be removed
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3207,6 +3154,7 @@ MagickExport void SetResizeFilterSupport(ResizeFilter *resize_filter,
   assert(resize_filter->signature == MagickSignature);
   resize_filter->support=support;
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
