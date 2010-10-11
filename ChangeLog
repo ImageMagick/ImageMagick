@@ -1,8 +1,7 @@
 2010-10-10  6.6.5-0 Cristy  <quetzlzacatenango@image...>
   * Patch for  DrawableRotation() and DrawableTranslation() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17246).
-  * The webp format requires the webpconv delegate program and an explicit
-    format (e.g. convert webp:image.webp image.png).
+  * The webp format requires the webpconv delegate program (experimental).
 
 2010-10-05  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced "Robidoux" with Cubic 'Keys' filter that is near equivelent to
