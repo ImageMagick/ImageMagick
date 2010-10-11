@@ -957,7 +957,7 @@ static const OptionInfo
     { "Sinc", (ssize_t) SincFilter, MagickFalse },
     { "SincFast", (ssize_t) SincFastFilter, MagickFalse },
     { "Triangle", (ssize_t) TriangleFilter, MagickFalse },
-    { "Tent", (ssize_t) TriangleFilter, MagickFalse },
+    { "Tent", (ssize_t) TriangleFilter, MagickFalse }, /* alias for Triangle*/
     { "Welsh", (ssize_t) WelshFilter, MagickFalse },
     /* For backward compatibility - set after "Jinc" */
     { "Bessel", (ssize_t) JincFilter, MagickTrue },
