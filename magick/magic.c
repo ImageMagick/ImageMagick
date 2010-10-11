@@ -185,6 +185,7 @@ static const MagicMapInfo
     { "VICAR", 0, MagickString("LBLSIZE") },
     { "VICAR", 0, MagickString("NJPL1I") },
     { "VIFF", 0, MagickString("\253\001") },
+    { "WEBP", 8, MagickString("WEBP") },
     { "WMF", 0, MagickString("\327\315\306\232") },
     { "WMF", 0, MagickString("\001\000\011\000") },
     { "WPG", 0, MagickString("\377WPC") },
