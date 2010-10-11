@@ -2828,7 +2828,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image depth.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double) image->depth);
+        q+=FormatMagickString(q,extent,"%.20g",(double)
+          MAGICKCORE_QUANTUM_DEPTH);
         break;
       }
       case 'r':

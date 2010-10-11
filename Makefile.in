@@ -2477,6 +2477,7 @@ UINTPTR_T = @UINTPTR_T@
 UMEM_LIBS = @UMEM_LIBS@
 UniconvertorDelegate = @UniconvertorDelegate@
 VERSION = @VERSION@
+WEBPDelegate = @WEBPDelegate@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WMF_LIBS = @WMF_LIBS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
