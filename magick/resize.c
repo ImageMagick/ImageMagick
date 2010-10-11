@@ -736,11 +736,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
          /* Robidoux: Keys cubic close to Lanczos2D with blur=0.958033808 */
   };
   /*
-    The known zero crossings of the Jinc() or more accurately the
-    Jinc(x*PI) function being used as a filter. It is used by the
-    "filter:lobes" for support selection, so users do not have to deal
-    with the highly irrational sizes of the 'lobes' of the Jinc
-    filter.
+    The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
+    function being used as a filter. It is used by the "filter:lobes" and for
+    the 'lobes' number in the above, the for support selection, so users do
+    not have to deal with the highly irrational sizes of the 'lobes' of the
+    Jinc filter.
 
     Values taken from
       http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp
