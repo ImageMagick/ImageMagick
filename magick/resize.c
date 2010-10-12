@@ -697,7 +697,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,  TriangleFilter }, /* Bartlett -- triangle-sinc        */
     { SincFastFilter,  BoxFilter },      /* Raw fast sinc ("Pade"-type)      */
     { Lanczos2DFilter, JincFilter },     /* SPECIAL: 2-lobed jinc-jinc       */
-    { RobidouxFilter,  BoxFilter },     /* SPECIAL: Keys cubic tuned for EWA */
+    { Lanczos2DSharpFilter, JincFilter },/* SPECIAL: ditto sharpened         */
+    { RobidouxFilter,  BoxFilter },      /* SPECIAL: Keys cubic tuned for EWA */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -745,6 +746,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
     { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D (Jinc-Jinc)       */
+    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D Sharpened         */
     { CubicBC,   2.0, 1.0, 0.37821575509399862, 0.31089212245300069 }
          /* Robidoux: Keys cubic close to Lanczos2D with blur=0.958033808 */
   };
@@ -830,6 +832,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
+      case Lanczos2DSharpFilter:
         /* Demote to a 2-lobe Sinc-Sinc for orthogonal use. */
         window_type=SincFastFilter;
         break;
@@ -898,6 +901,12 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         /* Support for Cylindrical Box should be sqrt(2)/2 */
         resize_filter->support=(MagickRealType) MagickSQ1_2;
         break;
+      case Lanczos2DSharpFilter:
+        /* Sharpened by Nicholas Robidoux so as to optimize for
+         * minimal blurring of orthogonal lines
+         */
+        resize_filter->blur *= 0.958033808;
+        break;
       default:
         break;
     }
@@ -905,6 +914,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case Lanczos2DFilter:
+      case Lanczos2DSharpFilter:
         /* Demote to a 2-lobe Lanczos (Sinc-Sinc) for orthogonal use. */
         resize_filter->filter=SincFast;
         break;
