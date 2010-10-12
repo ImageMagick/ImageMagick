@@ -85,7 +85,7 @@ struct _ResizeFilter
     window_support, /* window support, usally equal to support (expert only) */
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
-    cubic[8];       /* cubic coefficents for smooth Cubic filters */
+    coeff[8];       /* cubic coefficents for smooth Cubic filters */
 
   size_t
     signature;
@@ -223,24 +223,31 @@ static MagickRealType CubicBC(const MagickRealType x,
     which ensures function is continuous in value and derivative (slope).
   */
   if (x < 1.0)
-    return(resize_filter->cubic[0]+x*(resize_filter->cubic[1]+x*
-      (resize_filter->cubic[2]+x*resize_filter->cubic[3])));
+    return(resize_filter->coeff[0]+x*(resize_filter->coeff[1]+x*
+      (resize_filter->coeff[2]+x*resize_filter->coeff[3])));
   if (x < 2.0)
-    return(resize_filter->cubic[4]+x*(resize_filter->cubic[5]+x*
-      (resize_filter->cubic[6]+x*resize_filter->cubic[7])));
+    return(resize_filter->coeff[4]+x*(resize_filter->coeff[5]+x*
+      (resize_filter->coeff[6]+x*resize_filter->coeff[7])));
   return(0.0);
 }
 
 static MagickRealType Gaussian(const MagickRealType x,
-  const ResizeFilter *magick_unused(resize_filter))
+  const ResizeFilter *resize_filter)
 {
   /*
-    1D Gaussian with sigma=1/2:
-      exp(-2 x^2)/sqrt(pi/2))
+    Gaussian with a fixed sigma = 1/2
+
+    Gaussian Formula...
+        exp( -(x^2)/((2.0*sigma^2) ) / sqrt(2*PI*sigma^2)))
+    The constants are pre-calculated...
+        exp( -coeff[0]*(x^2)) ) * coeff[1]
+    However the multiplier coefficent is not needed and not used.
+
+    This separates the gaussian 'sigma' value from the 'blur/support' settings
+    allows for its use in special 'small sigma' gaussians, without the filter
+    'missing' pixels when blur and thus support becomes too small.
   */
-  /*const MagickRealType alpha = (MagickRealType) (2.0/MagickSQ2PI);*/
-  return(exp((double) (-2.0*x*x)));
-}
+  return(exp((double)(-resize_filter->coeff[0]*x*x))); }
 
 static MagickRealType Hanning(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
@@ -502,7 +509,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  FIR filters are used as is, and are limited to that filters support
 %  window (unless over-ridden).  'Gaussian' while classed as an IIR
 %  filter, is also simply clipped by its support size (currently 1.5
-%  ro approximatally 3*sigma as recommended by many references)
+%  or approximatally 3*sigma as recommended by many references)
 %
 %  The selection is typically either a windowed Sinc, or interpolated
 %  filter, for use by functions such as ResizeImage().  However if a
@@ -578,6 +585,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %        more ringing effects, while a value <1 will sharpen the
 %        resulting image with more aliasing and Morie effects.
 %
+%    "filter:sigma"    The sigma value to use for the Gaussian filter only.
+%        Defaults to '1/2' for orthogonal and 'sqrt(2)/2' for cylindrical
+%        usage. It effectially provides a alturnative to 'blur' for Gaussians
+%        without it also effecting the final 'practical support' size.
+%
 %    "filter:b"
 %    "filter:c"    Override the preset B,C values for a Cubic type of filter
 %         If only one of these are given it is assumes to be a 'Keys'
@@ -632,7 +644,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 
   MagickRealType
     B,
-    C;
+    C,
+    sigma;
 
   register ResizeFilter
     *resize_filter;
@@ -716,7 +729,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Hanning,   1.0, 1.0,     0.0, 0.0 }, /* Hanning, cosine window      */
     { Hamming,   1.0, 1.0,     0.0, 0.0 }, /* Hamming, '' variation       */
     { Blackman,  1.0, 1.0,     0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  1.5, 1.5,     0.0, 0.0 }, /* Gaussian                    */
+    { Gaussian,  2.0, 1.5,     0.0, 0.0 }, /* Gaussian                    */
     { Quadratic, 1.5, 1.5,     0.0, 0.0 }, /* Quadratic gaussian          */
     { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
     { CubicBC,   2.0, 1.0,     0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
@@ -785,6 +798,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
+  resize_filter->blur = blur;
+  sigma = 0.5;
   /* Cylindrical Filters should use Jinc instead of Sinc */
   if (cylindrical != MagickFalse)
     switch (filter_type)
@@ -804,6 +819,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         /* Promote Lanczos from a Sinc-Sinc to a Jinc-Jinc. */
         filter_type=JincFilter;
         window_type=JincFilter;
+        break;
+      case GaussianFilter:
+        sigma = MagickSQ2/2;  /* Cylindrical Gaussian sigma is sqrt(2)/2 */
         break;
       default:
         break;
@@ -871,14 +889,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->scale=filters[window_type].scale;
   resize_filter->signature=MagickSignature;
 
-  /* Filter blur -- scaling both filter and support window.  */
-  resize_filter->blur=blur;
-  artifact=GetImageArtifact(image,"filter:blur");
-  if (artifact != (const char *) NULL)
-    resize_filter->blur=StringToDouble(artifact);
-  if (resize_filter->blur < MagickEpsilon)
-    resize_filter->blur=(MagickRealType) MagickEpsilon;
-
+  /* Filter Modifications for orthogonal/cylindrical usage */
   if (cylindrical != MagickFalse)
     switch (filter_type)
     {
@@ -886,14 +897,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case BoxFilter:
         /* Support for Cylindrical Box should be sqrt(2)/2 */
         resize_filter->support=(MagickRealType) MagickSQ1_2;
-        break;
-      case GaussianFilter:
-        /* Cylindrical Gaussian should have a sigma of sqrt(2)/2
-         * and not the default sigma of 1/2 - so use blur to enlarge
-         * and adjust support so actual practical support = 2.0 by default
-         */
-        resize_filter->blur *= MagickSQ2;
-        resize_filter->support = (MagickRealType) MagickSQ2; /* which times blur => 2.0 */
         break;
       default:
         break;
@@ -909,7 +912,28 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         break;
     }
 
-  /* Filter support overrides. */
+  /*
+  ** More Expert Option Modifications
+  */
+
+  /* User Sigma Override - no support change */
+  artifact=GetImageArtifact(image,"filter:sigma");
+  if (artifact != (const char *) NULL)
+    sigma=StringToDouble(artifact);
+  /* Define coefficents for Gaussian (assumes no cubic window) */
+  if ( GaussianFilter ) {
+    resize_filter->coeff[0] = 1.0/(2.0*sigma*sigma);
+    resize_filter->coeff[1] = 1.0/(Magick2PI*sigma*sigma); /* unused */
+  }
+
+  /* Blur Override */
+  artifact=GetImageArtifact(image,"filter:blur");
+  if (artifact != (const char *) NULL)
+    resize_filter->blur=StringToDouble(artifact);
+  if (resize_filter->blur < MagickEpsilon)
+    resize_filter->blur=(MagickRealType) MagickEpsilon;
+
+  /* Support Overrides */
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
     {
@@ -947,8 +971,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     weighting function.  This avoids a division on every filter call.
   */
   resize_filter->scale /= resize_filter->window_support;
+
   /*
-    Set Cubic Spline B,C values, calculate Cubic coefficients.
+   * Set Cubic Spline B,C values, calculate Cubic coefficients.
   */
   B=0.0;
   C=0.0;
@@ -967,7 +992,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         {
           B=StringToDouble(artifact);
           C=(1.0-B)/2.0; /* Calculate C as if it is a Keys cubic filter. */
-          artifact=GetImageArtifact(image,"filter:c");
+          artifact=GetImageArtifact(image,"filter:c"); /* user C override */
           if (artifact != (const char *) NULL)
             C=StringToDouble(artifact);
         }
@@ -980,18 +1005,17 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
               B=1.0-2.0*C;  /* Calculate B as if it is a Keys cubic filter. */
             }
         }
-    /*
-      Convert B,C values into Cubic Coefficents.  See CubicBC().
-    */
-    resize_filter->cubic[0]=(6.0-2.0*B)/6.0;
-    resize_filter->cubic[1]=0.0;
-    resize_filter->cubic[2]=(-18.0+12.0*B+6.0*C)/6.0;
-    resize_filter->cubic[3]=(12.0-9.0*B-6.0*C)/6.0;
-    resize_filter->cubic[4]=(8.0*B+24.0*C)/6.0;
-    resize_filter->cubic[5]=(-12.0*B-48.0*C)/6.0;
-    resize_filter->cubic[6]=(6.0*B+30.0*C)/6.0;
-    resize_filter->cubic[7]=(-B-6.0*C)/6.0;
+    /* Convert B,C values into Cubic Coefficents.  See CubicBC().  */
+    resize_filter->coeff[0]=(6.0-2.0*B)/6.0;
+    resize_filter->coeff[1]=0.0;
+    resize_filter->coeff[2]=(-18.0+12.0*B+6.0*C)/6.0;
+    resize_filter->coeff[3]=(12.0-9.0*B-6.0*C)/6.0;
+    resize_filter->coeff[4]=(8.0*B+24.0*C)/6.0;
+    resize_filter->coeff[5]=(-12.0*B-48.0*C)/6.0;
+    resize_filter->coeff[6]=(6.0*B+30.0*C)/6.0;
+    resize_filter->coeff[7]=(-B-6.0*C)/6.0;
   }
+
   /*
     Expert Option Request for verbose details of the resulting filter.
   */
@@ -1021,7 +1045,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         /*
           Report Filter Details.
         */
-        support=GetResizeFilterSupport(resize_filter); /* support range */
+        support=GetResizeFilterSupport(resize_filter); /* practical_support */
         (void) fprintf(stdout,"# Resize Filter (for graphing)\n#\n");
         (void) fprintf(stdout,"# filter = %s\n",MagickOptionToMnemonic(
            MagickFilterOptions,filter_type));
@@ -1031,9 +1055,12 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
            (double) resize_filter->support);
         (void) fprintf(stdout,"# win-support = %.*g\n",GetMagickPrecision(),
            (double) resize_filter->window_support);
-        (void) fprintf(stdout,"# blur = %.*g\n",GetMagickPrecision(),
+        (void) fprintf(stdout,"# scale_blur = %.*g\n",GetMagickPrecision(),
            (double) resize_filter->blur);
-       (void) fprintf(stdout,"# blurred_support = %.*g\n",GetMagickPrecision(),
+        if ( filter_type == GaussianFilter )
+          (void) fprintf(stdout,"# gaussian_sigma = %.*g\n",GetMagickPrecision(),
+             (double) sigma);
+        (void) fprintf(stdout,"# practical_support = %.*g\n",GetMagickPrecision(),
            (double) support);
         (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
            (double) B,GetMagickPrecision(),(double) C);
@@ -1049,11 +1076,12 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
           0.0);
       }
-      /* output the above once only for each image, and each setting */
+      /* Output the above once only for each image - remove setting */
       (void) DeleteImageArtifact((Image *) image,"filter:verbose");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     }
 #endif
+
   return(resize_filter);
 }
 

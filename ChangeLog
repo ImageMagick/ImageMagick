@@ -1,3 +1,10 @@
+2010-10-12  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added "filter:sigma" expert setting defining the 'sigma' for the Gaussian
+    filter only.  This is similar in action to 'blur' but only for Gaussians,
+    and does not modify the filters support, allowing you to set a very small
+    sigma, without the function 'missing' all pixels.
+    (This will allow future adjustment of Gaussians for variable blur mapping)
+
 2010-10-10  6.6.5-0 Cristy  <quetzlzacatenango@image...>
   * Patch for  DrawableRotation() and DrawableTranslation() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17246).
@@ -6,8 +13,8 @@
 2010-10-05  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced "Robidoux" with Cubic 'Keys' filter that is near equivelent to
     the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)
-    This is very similer to a Mitchell filter but specifically designed for
-    EWA use and is the new default filter for Distorting Images.
+    This also is very similer to a Mitchell filter but specifically designed
+    for EWA use and is the new default filter for Distorting Images.
 
 2010-10-08  6.6.4-10 Jerry Gay  <jerry.gay@gmail..>
   * Autodetect file type support in Makefile.PL to prevent test failures
