@@ -3013,6 +3013,9 @@ MagickExport unsigned int ReadBlobLong(Image *image)
 */
 MagickExport MagickSizeType ReadBlobLongLong(Image *image)
 {
+  MagickSizeType
+    value;
+
   register const unsigned char
     *p;
 
@@ -3021,9 +3024,6 @@ MagickExport MagickSizeType ReadBlobLongLong(Image *image)
 
   unsigned char
     buffer[8];
-
-  MagickSizeType
-    value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3291,7 +3291,7 @@ MagickExport MagickSizeType ReadBlobMSBLongLong(Image *image)
     count;
 
   unsigned char
-    buffer[4];
+    buffer[8];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
