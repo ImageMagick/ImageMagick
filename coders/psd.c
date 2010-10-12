@@ -913,14 +913,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
-    If we are only "pinging" the image, then we're done - so return.
-  */
-  if (image_info->ping != MagickFalse)
-    {
-      (void) CloseBlob(image);
-      return(GetFirstImageInList(image));
-    }
-  /*
     Layer and mask block.
   */
   layer_info=(LayerInfo *) NULL;
@@ -1185,7 +1177,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    setting up new layer image");
-            (void) SetImageBackgroundColor(layer_info[i].image);
+            if (image_info->ping != MagickFalse)
+              (void) SetImageBackgroundColor(layer_info[i].image);
             layer_info[i].image->compose=
               PSDBlendModeToCompositeOperator(layer_info[i].blendkey);
             if (layer_info[i].visible == MagickFalse)
