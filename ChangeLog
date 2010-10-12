@@ -15,6 +15,7 @@
     the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)
     This also is very similer to a Mitchell filter but specifically designed
     for EWA use and is the new default filter for Distorting Images.
+  * Original sharpened Lanczos2D filter now called "Lanczos2Dsharp"
 
 2010-10-08  6.6.4-10 Jerry Gay  <jerry.gay@gmail..>
   * Autodetect file type support in Makefile.PL to prevent test failures
