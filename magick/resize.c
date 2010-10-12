@@ -745,9 +745,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Bohman,    1.0, 1.0,     0.0, 0.0 }, /* Bohman, 2*Cosine window     */
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D (Jinc-Jinc)       */
-    { Jinc,      2.0, 1.0,     0.0, 0.0 }, /* Lanczos2D Sharpened         */
-    { CubicBC,   2.0, 1.0, 0.37821575509399862, 0.31089212245300069 }
+    { Jinc,      2.0, 1.21966989, 0.0, 0.0 }, /* Lanczos2D (Jinc-Jinc)    */
+    { Jinc,      2.0, 1.16848499, 0.0, 0.0 }, /* Lanczos2D Sharpened      */
+    { CubicBC,   2.0, 1.16848499, 0.37821575509399862, 0.31089212245300069 }
          /* Robidoux: Keys cubic close to Lanczos2D with blur=0.958033808 */
   };
   /*
@@ -816,11 +816,16 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         if ( filter != SincFastFilter )
           filter_type=JincFilter;
         break;
-
       case LanczosFilter:
         /* Promote Lanczos from a Sinc-Sinc to a Jinc-Jinc. */
         filter_type=JincFilter;
         window_type=JincFilter;
+        break;
+      case Lanczos2DSharpFilter:
+        /* Sharpened by Nicholas Robidoux so as to optimize for
+         * minimal blurring of orthogonal lines
+         */
+        resize_filter->blur *= 0.958033808;
         break;
       case GaussianFilter:
         sigma = MagickSQ2/2;  /* Cylindrical Gaussian sigma is sqrt(2)/2 */
@@ -900,12 +905,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case BoxFilter:
         /* Support for Cylindrical Box should be sqrt(2)/2 */
         resize_filter->support=(MagickRealType) MagickSQ1_2;
-        break;
-      case Lanczos2DSharpFilter:
-        /* Sharpened by Nicholas Robidoux so as to optimize for
-         * minimal blurring of orthogonal lines
-         */
-        resize_filter->blur *= 0.958033808;
         break;
       default:
         break;
