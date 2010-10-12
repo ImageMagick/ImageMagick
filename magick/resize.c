@@ -1062,8 +1062,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
              (double) sigma);
         (void) fprintf(stdout,"# practical_support = %.*g\n",GetMagickPrecision(),
            (double) support);
-        (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
-           (double) B,GetMagickPrecision(),(double) C);
+        if ( filter_type == CubicFilter || window_type == CubicFilter )
+          (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
+             (double) B,GetMagickPrecision(),(double) C);
         (void) fprintf(stdout,"\n");
         /*
           Output values of resulting filter graph -- for graphing
