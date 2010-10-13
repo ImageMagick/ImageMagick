@@ -170,11 +170,19 @@
 
 <div class="main">
 
-<ul><dt>2010-10-08  6.6.4-10 Jerry Gay  &lt;jerry.gay@gmail..&gt;</dt>
+<ul><dt>2010-10-12  6.6.5-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added "filter:sigma" expert setting defining the 'sigma' for the Gaussian    filter only.  This is similar in action to 'blur' but only for Gaussians,    and does not modify the filters support, allowing you to set a very small    sigma, without the function 'missing' all pixels.    (This will allow future adjustment of Gaussians for variable blur mapping)</li><br />
+<dt>2010-10-10  6.6.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Patch for  DrawableRotation() and DrawableTranslation() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17246).</li>
+  <li> The webp format requires the webpconv delegate program (experimental).</li><br />
+<dt>2010-10-05  6.6.5-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Replaced "Robidoux" with Cubic 'Keys' filter that is near equivelent to    the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)    This also is very similer to a Mitchell filter but specifically designed    for EWA use and is the new default filter for Distorting Images.</li>
+  <li> Original sharpened Lanczos2D filter now called "Lanczos2Dsharp"</li><br />
+<dt>2010-10-08  6.6.4-10 Jerry Gay  &lt;jerry.gay@gmail..&gt;</dt>
   <li> Autodetect file type support in Makefile.PL to prevent test failures</li><br />
 <dt>2010-10-05  6.6.4-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Added new filter 'Lanczos2D' a 2-lobe Lanczos as defined by    Andreas Gustafsson in his thesis  "Interactive Image Warping" (page 24)         http://www.gson.org/thesis/warping-thesis.pdf</li>
-  <li> Added filter "Robidoux" whcih is a 'negativally' blurred version    of the "Lanczos2D" filter specifically designed to be less 'blurry'    for horizontal and vertical lines in no-op distortions.    It is now the default filter (if none specified) for EWA resampling.</li><br />
+  <li> Added filter "Robidoux" which is a slightly sharpened version of the    "Lanczos2D" filter (blur=0.958033808) specifically designed to be less    'blurry' for horizontal and vertical lines in no-op distortions.</li><br />
 <dt>2010-10-05  6.6.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Add support for "pattern:vertical2" and "pattern:horizontal2".</li>
   <li> Add support for "pattern:vertical3" and "pattern:horizontal3".</li>
