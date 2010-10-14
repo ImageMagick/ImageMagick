@@ -1,3 +1,6 @@
+2010-10-14  6.6.5-1 Cristy  <quetzlzacatenango@image...>
+  * Ignore PS bounding box offsets if -page is set.
+
 2010-10-12  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Added "filter:sigma" expert setting defining the 'sigma' for the Gaussian
     filter only.  This is similar in action to 'blur' but only for Gaussians,
