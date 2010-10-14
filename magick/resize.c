@@ -828,7 +828,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->blur *= 0.958033808;
         break;
       case GaussianFilter:
-        sigma = MagickSQ2/2;  /* Cylindrical Gaussian sigma is sqrt(2)/2 */
+        sigma = (MagickRealType) (MagickSQ2/2.0);  /* Cylindrical Gaussian sigma is sqrt(2)/2 */
         break;
       default:
         break;
@@ -932,7 +932,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Define coefficents for Gaussian (assumes no cubic window) */
   if ( GaussianFilter ) {
     resize_filter->coeff[0] = 1.0/(2.0*sigma*sigma);
-    resize_filter->coeff[1] = 1.0/(Magick2PI*sigma*sigma); /* unused */
+    resize_filter->coeff[1] = (MagickRealType) (1.0/(Magick2PI*sigma*sigma)); /* unused */
   }
 
   /* Blur Override */
