@@ -341,8 +341,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     geometry[MaxTextExtent],
     input_filename[MaxTextExtent],
     options[MaxTextExtent],
-    postscript_filename[MaxTextExtent],
-    translate_geometry[MaxTextExtent];
+    postscript_filename[MaxTextExtent];
 
   const char
     *option;
@@ -689,10 +688,16 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     "dup wcheck {3 1 roll put} {pop def} ifelse} {def} ifelse\n"
     "<</UseCIEColor true>>setpagedevice\n",MaxTextExtent);
   count=write(file,command,(unsigned int) strlen(command));
-  (void) FormatMagickString(translate_geometry,MaxTextExtent,
-    "%g %g translate\n",-bounds.x1,-bounds.y1);
-  count=write(file,translate_geometry,(unsigned int)
-    strlen(translate_geometry));
+  if (image_info->page == (char *) NULL)
+    {
+      char
+        translate_geometry[MaxTextExtent];
+
+      (void) FormatMagickString(translate_geometry,MaxTextExtent,
+        "%g %g translate\n",-bounds.x1,-bounds.y1);
+      count=write(file,translate_geometry,(unsigned int)
+        strlen(translate_geometry));
+    }
   file=close(file)-1;
   /*
     Render Postscript with the Ghostscript delegate.
