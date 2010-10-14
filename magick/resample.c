@@ -229,8 +229,9 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
 
   /* initialise the resampling filter settings */
   SetResampleFilter(resample_filter, image->filter, image->blur);
-  SetResampleFilterInterpolateMethod(resample_filter, image->interpolate);
-  SetResampleFilterVirtualPixelMethod(resample_filter,
+  (void) SetResampleFilterInterpolateMethod(resample_filter,
+    image->interpolate);
+  (void) SetResampleFilterVirtualPixelMethod(resample_filter,
     GetImageVirtualPixelMethod(image));
 
   return(resample_filter);
