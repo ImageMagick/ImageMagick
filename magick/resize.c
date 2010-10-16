@@ -720,7 +720,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       lobes,    /* Default lobes/support size of the weighting filter */
       scale,    /* Support when used as a windowing function, equal to
 		   the scaling needed to match the support of the
-		   windowed function */
+		   windowed function. Typically equal to the location
+		   of the first crossing. */
       B,C;      /* Cubic spline coefficients, ignored if not a CubicBC
 		   filter*/
   } const filters[SentinelFilter] =
