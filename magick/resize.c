@@ -717,9 +717,12 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
     MagickRealType
       (*function)(const MagickRealType, const ResizeFilter*),
-      lobes,    /* default lobes/support size of the weighting filter */
-      scale,    /* windowing function range, for scaling windowing function */
-      B,C;      /* Cubic Filter factors for a CubicBC function, else ignored */
+      lobes,    /* Default lobes/support size of the weighting filter */
+      scale,    /* Support when used as a windowing function, equal to
+		   the scaling needed to match the support of the
+		   windowed function */
+      B,C;      /* Cubic spline coefficients, ignored if not a CubicBC
+		   filter*/
   } const filters[SentinelFilter] =
   {
     { Box,       0.5, 0.5,     0.0, 0.0 }, /* Undefined (default to Box)  */
