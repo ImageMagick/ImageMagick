@@ -750,7 +750,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
     { Jinc,      2.0, 1.21966989, 0.0, 0.0 }, /* Lanczos2D (Jinc-Jinc)    */
     { Jinc,      2.0, 1.16848499, 0.0, 0.0 }, /* Lanczos2D Sharpened      */
-    { CubicBC,   2.0, 1.16848499, 0.37821575509399862, 0.31089212245300069 }
+    { CubicBC,   2.0, 1.1685777620836932, 0.37821575509399867,
+                                                       0.31089212245300067 } 
          /* Robidoux: Keys cubic close to Lanczos2D with blur=0.958033808 */
   };
   /*
