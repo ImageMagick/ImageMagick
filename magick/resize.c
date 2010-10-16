@@ -1028,62 +1028,69 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /*
     Expert Option Request for verbose details of the resulting filter.
   */
-  artifact=GetImageArtifact(image,"filter:verbose");
-  if ((artifact != (const char *) NULL) && (GetOpenMPThreadId() == 0))
-    {
-      double
-        support,
-        x;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp master
+  {
+#endif
+    artifact=GetImageArtifact(image,"filter:verbose");
+    if (artifact != (const char *) NULL)
+      {
+        double
+          support,
+          x;
 
-      /*
-        Set the weighting function properly when the weighting
-        function may not exactly match the filter of the same name.
-        EG: a Point filter really uses a Box weighting function
-        with a different support than is typically used.
+        /*
+          Set the weighting function properly when the weighting
+          function may not exactly match the filter of the same name.
+          EG: a Point filter really uses a Box weighting function
+          with a different support than is typically used.
 
-      */
-      if (resize_filter->filter == Box)       filter_type=BoxFilter;
-      if (resize_filter->filter == Sinc)      filter_type=SincFilter;
-      if (resize_filter->filter == SincFast)  filter_type=SincFastFilter;
-      if (resize_filter->filter == Jinc)      filter_type=JincFilter;
-      if (resize_filter->filter == CubicBC)   filter_type=CubicFilter;
-      /*
-        Report Filter Details.
-      */
-      support=GetResizeFilterSupport(resize_filter); /* practical_support */
-      (void) fprintf(stdout,"# Resize Filter (for graphing)\n#\n");
-      (void) fprintf(stdout,"# filter = %s\n",MagickOptionToMnemonic(
-         MagickFilterOptions,filter_type));
-      (void) fprintf(stdout,"# window = %s\n",MagickOptionToMnemonic(
-         MagickFilterOptions, window_type));
-      (void) fprintf(stdout,"# support = %.*g\n",GetMagickPrecision(),
-         (double) resize_filter->support);
-      (void) fprintf(stdout,"# win-support = %.*g\n",GetMagickPrecision(),
-         (double) resize_filter->window_support);
-      (void) fprintf(stdout,"# scale_blur = %.*g\n",GetMagickPrecision(),
-         (double) resize_filter->blur);
-      if ( filter_type == GaussianFilter )
-        (void) fprintf(stdout,"# gaussian_sigma = %.*g\n",GetMagickPrecision(),
-           (double) sigma);
-      (void) fprintf(stdout,"# practical_support = %.*g\n",GetMagickPrecision(),
-         (double) support);
-      if ( filter_type == CubicFilter || window_type == CubicFilter )
-        (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
-           (double) B,GetMagickPrecision(),(double) C);
-      (void) fprintf(stdout,"\n");
-      /*
-        Output values of resulting filter graph -- for graphing
-        filter result.
-      */
-      for (x=0.0; x <= support; x+=0.01f)
-        (void) fprintf(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
-          (double) GetResizeFilterWeight(resize_filter,x));
-      /* A final value so gnuplot can graph the 'stop' properly. */
-      (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
-        0.0);
-    }
-  /* Output the above once only for each image - remove setting */
-  (void) DeleteImageArtifact((Image *) image,"filter:verbose");
+        */
+        if (resize_filter->filter == Box)       filter_type=BoxFilter;
+        if (resize_filter->filter == Sinc)      filter_type=SincFilter;
+        if (resize_filter->filter == SincFast)  filter_type=SincFastFilter;
+        if (resize_filter->filter == Jinc)      filter_type=JincFilter;
+        if (resize_filter->filter == CubicBC)   filter_type=CubicFilter;
+        /*
+          Report Filter Details.
+        */
+        support=GetResizeFilterSupport(resize_filter); /* practical_support */
+        (void) fprintf(stdout,"# Resize Filter (for graphing)\n#\n");
+        (void) fprintf(stdout,"# filter = %s\n",MagickOptionToMnemonic(
+           MagickFilterOptions,filter_type));
+        (void) fprintf(stdout,"# window = %s\n",MagickOptionToMnemonic(
+           MagickFilterOptions, window_type));
+        (void) fprintf(stdout,"# support = %.*g\n",GetMagickPrecision(),
+           (double) resize_filter->support);
+        (void) fprintf(stdout,"# win-support = %.*g\n",GetMagickPrecision(),
+           (double) resize_filter->window_support);
+        (void) fprintf(stdout,"# scale_blur = %.*g\n",GetMagickPrecision(),
+           (double) resize_filter->blur);
+        if ( filter_type == GaussianFilter )
+          (void) fprintf(stdout,"# gaussian_sigma = %.*g\n",GetMagickPrecision(),
+             (double) sigma);
+        (void) fprintf(stdout,"# practical_support = %.*g\n",GetMagickPrecision(),
+           (double) support);
+        if ( filter_type == CubicFilter || window_type == CubicFilter )
+          (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",GetMagickPrecision(),
+             (double) B,GetMagickPrecision(),(double) C);
+        (void) fprintf(stdout,"\n");
+        /*
+          Output values of resulting filter graph -- for graphing
+          filter result.
+        */
+        for (x=0.0; x <= support; x+=0.01f)
+          (void) fprintf(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
+            (double) GetResizeFilterWeight(resize_filter,x));
+        /* A final value so gnuplot can graph the 'stop' properly. */
+        (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
+          0.0);
+      }
+      /* Output the above once only for each image - remove setting */
+    (void) DeleteImageArtifact((Image *) image,"filter:verbose");
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  }
+#endif
   return(resize_filter);
 }
 
