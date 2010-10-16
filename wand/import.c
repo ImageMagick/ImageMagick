@@ -172,6 +172,8 @@ static MagickBooleanType ImportUsage(void)
       "-set property value  set an image property",
       "-silent              operate silently, i.e. don't ring any bells ",
       "-snaps value         number of screen snapshots",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-transparent-color color",
       "                     transparent color",
       "-treedepth value     color tree depth",
@@ -1185,10 +1187,14 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             i++;  /* deprecated */
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowImportException(OptionError,"UnrecognizedOption",option);
       }
       case 't':
       {
+        if (LocaleCompare("taint",option+1) == 0)
+          break;
         if (LocaleCompare("thumnail",option+1) == 0)
           {
             if (*option == '+')

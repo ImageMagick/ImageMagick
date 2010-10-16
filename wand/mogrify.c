@@ -3867,7 +3867,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-stroke color        graphic primitive stroke color",
       "-strokewidth value   graphic primitive stroke width",
       "-style type          render text with this font style",
-      "-taint               image as ineligible for bi-modal delegate",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-texture filename    name of texture to tile onto the image background",
       "-tile-offset geometry",
       "                     tile offset",
@@ -6063,6 +6064,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
@@ -7338,6 +7341,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 break;
               }
             (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                image_info->synchronize=MagickFalse;
+                break;
+              }
+            image_info->synchronize=MagickTrue;
             break;
           }
         break;

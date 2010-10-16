@@ -849,10 +849,14 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             subimage_search=MagickTrue;
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowCompareException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
       {
+        if (LocaleCompare("taint",option+1) == 0)
+          break;
         if (LocaleCompare("transparent-color",option+1) == 0)
           {
             if (*option == '+')

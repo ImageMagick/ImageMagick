@@ -387,7 +387,8 @@ static MagickBooleanType ConvertUsage(void)
       "-stroke color        graphic primitive stroke color",
       "-strokewidth value   graphic primitive stroke width",
       "-style type          render text with this font style",
-      "-taint               image as ineligible for bi-modal delegate",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-texture filename    name of texture to tile onto the image background",
       "-tile-offset geometry",
       "                     tile offset",
@@ -2661,6 +2662,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
