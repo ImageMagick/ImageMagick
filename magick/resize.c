@@ -717,13 +717,13 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
     MagickRealType
       (*function)(const MagickRealType, const ResizeFilter*),
-      lobes,    /* Default lobes/support size of the weighting filter */
-      scale,    /* Support when used as a windowing function, equal to
-		   the scaling needed to match the support of the
-		   windowed function. Typically equal to the location
-		   of the first crossing. */
-      B,C;      /* Cubic spline coefficients, ignored if not a CubicBC
-		   filter*/
+      lobes, /* Default lobes/support size of the weighting filter. */
+      scale, /* Support when used as a windowing function, equal to
+		the scaling needed to match the support of the
+		windowed function. Typically equal to the location of
+		the first crossing. */
+      B,C;   /* BC-spline coefficients, ignored if not a CubicBC
+		filter. */
   } const filters[SentinelFilter] =
   {
     { Box,       0.5, 0.5,     0.0, 0.0 }, /* Undefined (default to Box)  */
@@ -749,11 +749,13 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Bohman,    1.0, 1.0,     0.0, 0.0 }, /* Bohman, 2*Cosine window     */
     { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Jinc,      2.0, 1.21966989, 0.0, 0.0 }, /* Lanczos2D (Jinc-Jinc)    */
-    { Jinc,      2.0, 1.16848499, 0.0, 0.0 }, /* Lanczos2D Sharpened      */
+    { Jinc,      2.0, 1.2196698912665045, 0.0, 0.0 },
+                                                 /* Lanczos2D (Jinc-Jinc) */
+    { Jinc,      2.0, 1.1684849904329952, 0.0, 0.0 },
+                             /* Lanczos2D sharpened with blur=0.958033808 */
     { CubicBC,   2.0, 1.1685777620836932, 0.37821575509399867,
-                                                       0.31089212245300067 } 
-         /* Robidoux: Keys cubic close to Lanczos2D with blur=0.958033808 */
+                                                       0.31089212245300067 }
+                     /* Robidoux: Keys cubic close to Lanczos2D sharpened */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -769,22 +771,22 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   static MagickRealType
     jinc_zeros[16] =
     {
-      1.21966989126651,
-      2.23313059438153,
-      3.23831548416624,
-      4.24106286379607,
-      5.24276437687019,
-      6.24392168986449,
-      7.24475986871996,
-      8.24539491395205,
-      9.24589268494948,
-      10.2462933487549,
-      11.2466227948779,
-      12.2468984611381,
-      13.2471325221811,
-      14.2473337358069,
+      1.2196698912665045,
+      2.2331305943815286,
+      3.2383154841662362,
+      4.2410628637960699,
+      5.2427643768701817,
+      6.2439216898644877,
+      7.244759868719957,
+      8.2453949139520427,
+      9.2458926849494673,
+      10.246293348754916,
+      11.246622794877883,
+      12.246898461138105,
+      13.247132522181061,
+      14.247333735806849,
       15.2475085630373,
-      16.247661874701
+      16.247661874700962
    };
 
   /*
