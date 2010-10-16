@@ -2572,6 +2572,9 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       span=(MagickSizeType) (filter_image->columns+rows);
       status=HorizontalFilter(resize_filter,image,filter_image,x_factor,span,
         &offset,exception);
+      resize_filter=DestroyResizeFilter(resize_filter);
+      resize_filter=AcquireResizeFilter(filter_image,filter_type,blur,
+        MagickFalse,exception);
       status&=VerticalFilter(resize_filter,filter_image,resize_image,y_factor,
         span,&offset,exception);
     }
@@ -2580,6 +2583,9 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       span=(MagickSizeType) (filter_image->rows+columns);
       status=VerticalFilter(resize_filter,image,filter_image,y_factor,span,
         &offset,exception);
+      resize_filter=DestroyResizeFilter(resize_filter);
+      resize_filter=AcquireResizeFilter(filter_image,filter_type,blur,
+        MagickFalse,exception);
       status&=HorizontalFilter(resize_filter,filter_image,resize_image,x_factor,
         span,&offset,exception);
     }
