@@ -127,6 +127,8 @@ static MagickBooleanType StreamUsage(void)
       "-set attribute value set an image attribute",
       "-size geometry       width and height of image",
       "-storage-type type   pixel storage type",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-transparent-color color",
       "                     transparent color",
       "-verbose             print detailed information about the image",
@@ -688,10 +690,14 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             SetStreamInfoStorageType(stream_info,(StorageType) type);
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowStreamException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
       {
+        if (LocaleCompare("taint",option+1) == 0)
+          break;
         if (LocaleCompare("transparent-color",option+1) == 0)
           {
             if (*option == '+')

@@ -187,6 +187,8 @@ static MagickBooleanType MontageUsage(void)
       "-shadow              add a shadow beneath a tile to simulate depth",
       "-size geometry       width and height of image",
       "-stroke color        color to use when stroking a graphic primitive",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-texture filename    name of texture to tile onto the image background",
       "-thumbnail geometry  create a thumbnail of the image",
       "-tile geometry       number of tiles per row and column",
@@ -1492,10 +1494,14 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;  /* deprecated */
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowMontageException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
       {
+        if (LocaleCompare("taint",option+1) == 0)
+          break;
         if (LocaleCompare("texture",option+1) == 0)
           {
             (void) CloneString(&montage_info->texture,(char *) NULL);

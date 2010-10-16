@@ -315,6 +315,8 @@ static MagickBooleanType CompositeUsage(void)
       "-scene value         image scene number",
       "-seed value          seed a new sequence of pseudo-random numbers",
       "-size geometry       width and height of image",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-transparent-color color",
       "                     transparent color",
       "-treedepth value     color tree depth",
@@ -1425,10 +1427,14 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
               ThrowCompositeInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("synchronize",option+1) == 0)
+          break;
         ThrowCompositeException(OptionError,"UnrecognizedOption",option)
       }
       case 't':
       {
+        if (LocaleCompare("taint",option+1) == 0)
+          break;
         if (LocaleCompare("thumbnail",option+1) == 0)
           {
             if (*option == '+')

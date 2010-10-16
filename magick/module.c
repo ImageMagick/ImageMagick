@@ -1639,7 +1639,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
 #else
   {
     extern size_t
-      analyzeImage(Image **,const int,char **,ExceptionInfo *);
+      analyzeImage(Image **,const int,const char **,ExceptionInfo *);
 
     ImageFilterHandler
       *image_filter;
