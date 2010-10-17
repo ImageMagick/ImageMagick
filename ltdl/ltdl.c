@@ -1511,7 +1511,7 @@ has_library_ext (const char *filename)
 
   assert (filename);
 
-  ext = (char *) strrchr (filename, '.');
+  ext = strrchr (filename, '.');
 
   if (ext && ((streq (ext, archive_ext))
 #if defined(LT_MODULE_EXT)
