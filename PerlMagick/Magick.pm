@@ -88,7 +88,7 @@ __END__
 
 =head1 NAME
 
-Image::Magick - Perl extension for calling ImageMagick's libMagick methods
+Image::Magick - objected-oriented Perl interface to ImageMagick. Use it to read, manipulate, or write an image or image sequence from within a Perl script.
 
 =head1 SYNOPSIS
 
