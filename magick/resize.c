@@ -740,7 +740,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicBC,   2.0, 1.0,     0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
     { CubicBC,   2.0, 1.0, 1./3., 1./3. }, /* Mitchell       (B=C=1/3)    */
     { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
-    { Jinc,      3.0, 1.21967, 0.0, 0.0 }, /* Raw 3-lobed Jinc            */
+    { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
     { Sinc,      4.0, 1.0,     0.0, 0.0 }, /* Raw 4-lobed Sinc            */
     { Kaiser,    1.0, 1.0,     0.0, 0.0 }, /* Kaiser (square root window) */
     { Welsh,     1.0, 1.0,     0.0, 0.0 }, /* Welsh (parabolic window)    */
