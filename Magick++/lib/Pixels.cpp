@@ -60,7 +60,7 @@ Magick::PixelPacket* Magick::Pixels::get ( const ssize_t x_,
   PixelPacket* pixels = GetCacheViewAuthenticPixels( _view, x_, y_, columns_, rows_,  &_exception);
 
   if ( !pixels )
-    throwException( *GetCacheViewException(_view) );
+    throwException( _exception );
   
   return pixels;
 }
