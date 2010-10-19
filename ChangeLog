@@ -2,6 +2,7 @@
   * Ignore PS bounding box offsets if -page is set.
   * Use #pragma omp master for dumping single threaded debugging information
     (single caused a fault).
+  * Add support for -evaluate exp.
 
 2010-10-12  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Added "filter:sigma" expert setting defining the 'sigma' for the Gaussian

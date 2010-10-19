@@ -903,6 +903,8 @@ static const OptionInfo
     { "Cos", (ssize_t) CosineEvaluateOperator, MagickFalse },
     { "Cosine", (ssize_t) CosineEvaluateOperator, MagickFalse },
     { "Divide", (ssize_t) DivideEvaluateOperator, MagickFalse },
+    { "Exp", (ssize_t) ExponentialEvaluateOperator, MagickFalse },
+    { "Exponential", (ssize_t) ExponentialEvaluateOperator, MagickFalse },
     { "GaussianNoise", (ssize_t) GaussianNoiseEvaluateOperator, MagickFalse },
     { "ImpulseNoise", (ssize_t) ImpulseNoiseEvaluateOperator, MagickFalse },
     { "LaplacianNoise", (ssize_t) LaplacianNoiseEvaluateOperator, MagickFalse },

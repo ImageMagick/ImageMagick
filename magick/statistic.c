@@ -224,8 +224,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case AndEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel & (size_t)
-        (value+0.5));
+      result=(MagickRealType) ((size_t) pixel & (size_t) (value+0.5));
       break;
     }
     case CosineEvaluateOperator:
@@ -237,6 +236,12 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     case DivideEvaluateOperator:
     {
       result=pixel/(value == 0.0 ? 1.0 : value);
+      break;
+    }
+    case ExponentialEvaluateOperator:
+    {
+      result=(MagickRealType) (QuantumRange*exp((double) (value*QuantumScale*
+        pixel)));
       break;
     }
     case GaussianNoiseEvaluateOperator:
@@ -259,8 +264,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case LeftShiftEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel << (size_t)
-        (value+0.5));
+      result=(MagickRealType) ((size_t) pixel << (size_t) (value+0.5));
       break;
     }
     case LogEvaluateOperator:
@@ -297,8 +301,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case OrEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel | (size_t)
-        (value+0.5));
+      result=(MagickRealType) ((size_t) pixel | (size_t) (value+0.5));
       break;
     }
     case PoissonNoiseEvaluateOperator:
@@ -315,8 +318,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case RightShiftEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel >> (size_t)
-        (value+0.5));
+      result=(MagickRealType) ((size_t) pixel >> (size_t) (value+0.5));
       break;
     }
     case SetEvaluateOperator:
@@ -360,8 +362,7 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case XorEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel ^ (size_t)
-        (value+0.5));
+      result=(MagickRealType) ((size_t) pixel ^ (size_t) (value+0.5));
       break;
     }
   }
