@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -430,6 +430,7 @@
 <div class="doc-section">
 
 <p>Recall that each image format is decoded by ImageMagick and the pixels are deposited in the pixel cache.  If you write an image, the pixels are read from the pixel cache and encoded as required by the format you are writing (e.g. GIF, PNG, etc.).  The Magick Persistent Cache (MPC) format is designed to eliminate the overhead of decoding and encoding pixels to and from an image format.  MPC writes two files.  One, with the extension <kbd>.mpc</kbd>, retains all the properties associated with the image or image sequence (e.g. width, height, colorspace, etc.) and the second, with the extension <kbd>.cache</kbd>, is the pixel cache in the native raw format.  When reading an MPC image file, ImageMagick reads the image properties and memory maps the pixel cache on disk eliminating the need for decoding the image pixels.  The tradeoff is in disk space.  MPC is generally larger in file size than most other image formats.</p>
+<p>The most efficient use of MPC image files is a write-once, read-many-times pattern.  For example, your workflow requires extracting random blocks of pixels from the source image.  Rather than re-reading and possibly decompressing the source image each time, we use MPC and map the image directly to memory.</p>
 </div>
 
 <h3>Best Practices</h3>
