@@ -69,7 +69,7 @@ static const char
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     M a g i c k C o m m a n d G e n e s i s                                 %
+%     M a g i c k C o m m a n d G e n e s i s                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -81,13 +81,17 @@ static const char
 %  The format of the MagickCommandGenesis method is:
 %
 %      MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
-%        MagickCommand command,const int argc,const char **argv,Image **image)
+%        MagickCommand command,int argc,char **argv,char **metadata,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
-%    o command: the magick command.
+%    o command: Choose from ConvertImageCommand, IdentifyImageCommand,
+%      MogrifyImageCommand, CompositeImageCommand, CompareImageCommand,
+%      ConjureImageCommand, StreamImageCommand, ImportImageCommand,
+%      DisplayImageCommand, or AnimateImageCommand.
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -95,7 +99,7 @@ static const char
 %    o argv: Specifies a pointer to a text array containing the command line
 %      arguments.
 %
-%    o image: the image.
+%    o metadata: any metadata is returned here.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -3578,7 +3582,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%    M o g r i f y I m a g e C o m m a n d                                    %
++    M o g r i f y I m a g e C o m m a n d                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
