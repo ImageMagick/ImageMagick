@@ -33,7 +33,6 @@ Magick::Pixels::Pixels( Magick::Image &image_ )
 
   if (!_view)
     _image.throwImageException();
-  (void) DestroyExceptionInfo( &_exception );
 }
 
 // Destroy pixel view
@@ -42,6 +41,7 @@ Magick::Pixels::~Pixels( void )
   if ( _view )
     _view = DestroyCacheView( _view );
   
+  (void) DestroyExceptionInfo( &_exception );
 }
 
 // Transfer pixels from the image to the pixel view as defined by
