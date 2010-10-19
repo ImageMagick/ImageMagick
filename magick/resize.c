@@ -718,12 +718,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     MagickRealType
       (*function)(const MagickRealType, const ResizeFilter*),
       lobes, /* Default lobes/support size of the weighting filter. */
-      scale, /* Support when used as a windowing function, equal to
-		the scaling needed to match the support of the
-		windowed function. Typically equal to the location of
-		the first crossing. */
-      B,C;   /* BC-spline coefficients, ignored if not a CubicBC
-		filter. */
+      scale, /* Support when function used as a windowing function
+                Typically equal to the location of the first zero crossing. */
+      B,C;   /* BC-spline coefficients, ignored if not a CubicBC filter. */
   } const filters[SentinelFilter] =
   {
     { Box,       0.5, 0.5,     0.0, 0.0 }, /* Undefined (default to Box)  */
@@ -753,15 +750,15 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
                                                  /* Lanczos2D (Jinc-Jinc) */
     { Jinc,      2.0, 1.1684849904329952, 0.0, 0.0 },
                              /* Lanczos2D sharpened with blur=0.958033808 */
-    { CubicBC,   2.0, 1.1685777620836932, 0.37821575509399867,
-                                                       0.31089212245300067 }
+    { CubicBC,   2.0, 1.1685777620836932,
+                          0.37821575509399867, 0.31089212245300067 }
                      /* Robidoux: Keys cubic close to Lanczos2D sharpened */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
-    function being used as a filter. It is used by the "filter:lobes" and for
-    the 'lobes' number in the above, the for support selection, so users do
-    not have to deal with the highly irrational sizes of the 'lobes' of the
+    function being used as a filter. It is used by the "filter:lobes" expert
+    setting and for 'lobes' for Jinc functions in the previous table. This
+    way users do not have to deal with the highly irrational lobe sizes of the
     Jinc filter.
 
     Values taken from
@@ -1043,7 +1040,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     if (artifact != (const char *) NULL)
       {
         double
-          support,
+      support,
           x;
 
         /*
