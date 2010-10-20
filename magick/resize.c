@@ -537,9 +537,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %  (radial) EWA (Elliptical Weighted Average) distortion.  Lanczos2D
 %  is a 2 lobe Lanczos-like filter using Jinc (for EWA) or Sinc.
 %  Robidoux used to be a sharpened version of Lanczos2D (with
-%  blur=0.958033808). Now, it is the unique Cubic 'Keys' filter that
-%  exactly preserves images with only vertical or horizontal features
-%  when performing 'no-op" with EWA distortion. It turns out to be
+%  blur=0.958033808). Now, it is the unique cubic BC-spline filter
+%  that exactly preserves images with only vertical or horizontal
+%  features when performing 'no-op" with EWA distortion, and that
+%  exactly preserves linear gradient data when the density of the
+%  output image is doubled by "vertex splitting." It turns out to be
 %  close to both plain Mitchell and "sharpened" Lanczos2D.
 %
 %  Special 'expert' options can be used to override any and all filter
@@ -751,8 +753,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Jinc,      2.0, 1.1684849904329952, 0.0, 0.0 },
                              /* Lanczos2D sharpened with blur=0.958033808 */
     { CubicBC,   2.0, 1.1685777620836932,
-                          0.37821575509399867, 0.31089212245300067 }
-                     /* Robidoux: Keys cubic close to Lanczos2D sharpened */
+                          0.36553056988673434, 0.30046494140705066 }
+                     /* Robidoux: BC-spline cubic close to Lanczos2D sharpened */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -826,8 +828,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         window_type=JincFilter;
         break;
       case Lanczos2DSharpFilter:
-        /* Sharpened by Nicholas Robidoux so as to optimize for
-         * minimal blurring of orthogonal lines
+        /* Sharpened by Nicolas Robidoux so as to optimize for minimal
+         * blurring of orthogonal lines
          */
         resize_filter->blur *= 0.958033808;
         break;
