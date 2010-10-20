@@ -537,12 +537,24 @@ static MagickRealType Welsh(const MagickRealType x,
 %  (radial) EWA (Elliptical Weighted Average) distortion.  Lanczos2D
 %  is a 2 lobe Lanczos-like filter using Jinc (for EWA) or Sinc.
 %  Robidoux used to be a sharpened version of Lanczos2D (with
-%  blur=0.958033808). Now, it is the unique cubic BC-spline filter
-%  that exactly preserves images with only vertical or horizontal
-%  features when performing 'no-op" with EWA distortion, and that
-%  exactly preserves linear gradient data when the density of the
-%  output image is doubled by "vertex splitting." It turns out to be
-%  close to both plain Mitchell and "sharpened" Lanczos2D.
+%  blur=0.958033808). Now, Robidoux is the unique cubic BC-spline
+%  filter satisfying the following two conditions:
+%    1) Robidoux exactly preserves images with only vertical or
+%       horizontal features when performing 'no-op" with EWA
+%       distortion;
+%    2) Robidoux exactly preserves linear gradient data when the
+%       density of the image is doubled by "vertex splitting" (this is
+%       done in natural implementations of Box Filtering).
+%  Because any cylindrical filter exactly preserves linear gradiant
+%  data when the density of the image is doubled with the usual "reuse
+%  the input locations and insert new pixels half-way" (this is done
+%  in natural implementations of bilinear), this means that Robidoux
+%  preserves linear gradient data when doubling the density in the two
+%  most common conventions). The preservation of linear gradients is
+%  what distinguishes Keys BC-splines from the others when used in a
+%  tensor scheme; Robidoux approximately carries this property over to
+%  the EWA context. It turns out that Robidoux is close to both plain
+%  Mitchell and "sharpened" Lanczos2D.
 %
 %  Special 'expert' options can be used to override any and all filter
 %  settings. This is not advised unless you have expert knowledge of
@@ -753,8 +765,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Jinc,      2.0, 1.1684849904329952, 0.0, 0.0 },
                              /* Lanczos2D sharpened with blur=0.958033808 */
     { CubicBC,   2.0, 1.1685777620836932,
-                          0.36553056988673434, 0.30046494140705066 }
-                     /* Robidoux: BC-spline cubic close to Lanczos2D sharpened */
+                              0.36553056988673434, 0.30046494140705066 }
+                /* Robidoux: BC-spline cubic close to Lanczos2D sharpened */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
