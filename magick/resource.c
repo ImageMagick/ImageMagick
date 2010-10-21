@@ -1099,7 +1099,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case ThreadResource:
     {
       SetOpenMPMaximumThreads((int) limit);
-      resource_info.thread_limit=GetOpenMPMaximumThreads();
+      resource_info.thread_limit=limit;
       break;
     }
     case TimeResource:
