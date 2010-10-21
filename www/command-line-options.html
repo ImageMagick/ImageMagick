@@ -131,7 +131,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -2518,6 +2518,15 @@ Please note, however, that <a href="#level" >-level</a> treats transparency as
 'alpha' values.</p>
 
 <p><kbd>AddModulus</kbd> has been added as of ImageMagick 6.4.8-4 and provides addition modulo the <em class="QR">QuantumRange</em>. It is therefore equivalent to <kbd>Add</kbd> unless the resulting pixel value is outside the interval [0,&nbsp;<em class="QR">QuantumRange</em>]. </p>
+
+<p><kbd>Exp or Exponential</kbd> has been added as of ImageMagick 6.6.5-1 and works on normalized pixel values. The <em class="arg">value</em> used with <kbd>Exp</kbd> should be negative so as to produce a decaying exponential function. Non-negative values will always produce results larger unity and thus outside the interval [0,&nbsp;<em class="QR">QuantumRange</em>]. The formula is expressed below. </p>
+
+        <div style="text-align:center;">
+        exp(<em class="arg">value</em> &times; <b><em>u</em></b>)
+        </div>
+
+<p> If the input image is squared, for example, using <a
+href="#-function" >-function polynomial "2 0 0"</a>, then a decaying Gaussian function will be the result.</p>
 
 <p><kbd>Log</kbd> has been added as of ImageMagick 6.4.2-1 and works on normalized pixel values. This a <em>scaled</em> log function. The <em class="arg">value</em> used with <kbd>Log</kbd> provides a <em>scaling factor</em> that adjusts the curvature in the graph of the log function. The formula applied to a normalized value <b><em>u</em></b> is below. </p>
 
