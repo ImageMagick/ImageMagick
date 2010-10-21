@@ -24,6 +24,8 @@ extern "C" {
 
 #include <magick/thread_.h>
 
+#define omp_throttle(factor)  num_threads(omp_get_max_threads() >> (factor))
+
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)

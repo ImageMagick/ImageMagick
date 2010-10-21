@@ -56,7 +56,8 @@ extern WandExport RectangleInfo
   GetWandViewExtent(const WandView *);
 
 extern WandExport void
-  SetWandViewDescription(WandView *,const char *);
+  SetWandViewDescription(WandView *,const char *),
+  SetWandViewThreads(WandView *,const size_t);
 
 extern WandExport WandView
   *CloneWandView(const WandView *),

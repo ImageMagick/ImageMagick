@@ -73,7 +73,8 @@ extern MagickExport RectangleInfo
   GetImageViewExtent(const ImageView *);
 
 extern MagickExport void
-  SetImageViewDescription(ImageView *,const char *);
+  SetImageViewDescription(ImageView *,const char *),
+  SetImageViewThreads(ImageView *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
