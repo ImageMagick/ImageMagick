@@ -69,6 +69,7 @@
 #include "magick/resample.h"
 #include "magick/resource_.h"
 #include "magick/string_.h"
+#include "magick/thread-private.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
@@ -2753,7 +2754,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
         Tile texture onto the image background.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+      #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture->rows)
       {
@@ -2801,7 +2802,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   image_view=AcquireCacheView(image);
   texture_view=AcquireCacheView(texture);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

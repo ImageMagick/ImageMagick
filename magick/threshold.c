@@ -79,8 +79,9 @@
 #include "magick/signature-private.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
-#include "magick/transform.h"
+#include "magick/thread-private.h"
 #include "magick/threshold.h"
+#include "magick/transform.h"
 #include "magick/xml-tree.h"
 
 /*

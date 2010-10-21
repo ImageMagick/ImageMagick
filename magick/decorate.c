@@ -54,6 +54,7 @@
 #include "magick/monitor-private.h"
 #include "magick/pixel-private.h"
 #include "magick/quantum.h"
+#include "magick/thread-private.h"
 #include "magick/transform.h"
 
 /*
@@ -402,7 +403,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw sides of ornamental border.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -726,7 +727,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
@@ -793,7 +794,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -849,7 +850,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
