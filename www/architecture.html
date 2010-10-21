@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -257,7 +257,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.5-1 2010-19-21 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.5-2 2010-20-20 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -613,7 +613,20 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
 
 <p><a href="../www/api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="../www/api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="../www/magick-wand.html#wand-view">MagickWand</a> and <a href="../www/magick-core.html#image-view">MagickCore</a>.</p>
 
-<p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix thread from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <kbd>--disable-openmp</kbd> option to the configure script command line and rebuild and reinstall ImageMagick.</p>
+<p>In most circumstances, the default number of threads is set to the number of processor cores on your system for optimal performance.  However, if your system is hyperthreaded or if you are running on a virtual host and only a subset of the processors are available to your server instance, you might get an increase in performance by setting the thread <a href="../www/resources.html#configure">policy</a> or the <a href="../www/resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable.  For example, your virtual host has 8 processors but only 2 are assigned to your server instance.  The default of 8 threads can cause severe performance problems.  One solution is to limit the number of threads to the available processors in your <kbd>policy.xml</kbd> configuration file:</p>
+
+<pre class="text">
+  &lt;policy domain="resource" name="thread" value="2"/>
+</pre>
+
+<p>Or suppose your 12 core hyperthreaded computer defaults to 24 threads.  Set the MAGICK_THREAD_LIMIT environment variable and you will likely get improved performance:</p>
+
+<pre class="text">
+  export MAGICK_THREAD_LIMIT=12
+</pre>
+
+<p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix threads from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <kbd>--disable-openmp</kbd> option to the configure script command line and rebuild and reinstall ImageMagick.</p>
+
 </div>
 
 <h2><a name="distributed"></a>Heterogeneous Distributed Processing</h2>
