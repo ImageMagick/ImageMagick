@@ -543,11 +543,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %    Robidoux exactly preserves images with only vertical or
 %    horizontal features when performing 'no-op" with EWA distortion.
 %
-%  That is, Robidoux is the BC-Spline with B=(-108 sqrt 2 + 228)/199
-%  and C=(108 sqrt 2-29)/398.  Robidoux turns out to be close to both
-%  plain Mitchell and "sharpened" Lanczos2D. For example, it's first
-%  crossing is (36 sqrt 2 + 123)/(72 sqrt 2 + 47) which is almost
-%  identical to the first crossing of the other two.
+%  That is, Robidoux is the BC-Spline with B=(228 - 108 sqrt(2))/199
+%  and C=(108 sqrt(2) - 29)/398.  Robidoux turns out to be close to
+%  both plain Mitchell and "sharpened" Lanczos2D. For example, it's
+%  first crossing is (36 sqrt(2) + 123)/(72 sqrt(2) + 47) which is
+%  almost identical to the first crossing of the other two.
 %
 %  'EXPERT' OPTIONS:
 %
