@@ -551,11 +551,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  'EXPERT' OPTIONS
 %
-%  Special 'expert' options can be used to override any and all filter
-%  settings. This is not advised unless you have expert knowledge of
-%  the use of resampling filtered techniques.  Check on the results of
-%  your selections using the "filter:verbose" setting to make sure you
-%  get the exact filter you want.
+%  You can override any and all filter settings. This is not advised
+%  unless you have expert knowledge of the use of resampling filtered
+%  techniques.  Check on the results of your selections using the
+%  "filter:verbose" setting to make sure you get the exact filter you
+%  want.
 %
 %    "filter:filter"    Select the main function associated with
 %        this filter name, as the weighting function of the filter.
