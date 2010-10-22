@@ -385,10 +385,6 @@ if test "$with_threads" != 'no'; then
             AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
             CC="$PTHREAD_CC"
         fi
-        if test "$CXX" != "$PTHREAD_CXX"; then
-          AC_MSG_WARN([Replacing compiler $CXX with compiler $PTHREAD_CXX to support pthreads.])
-          CXX="$PTHREAD_CXX"
-        fi
         AC_DEFINE(THREAD_SUPPORT,1,[Define if you have POSIX threads libraries and header files.])
     fi
 fi
