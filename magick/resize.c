@@ -616,11 +616,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  Examples: 
 %
-%  Set a true un-windowed Sinc filter with 10 lobes (very slow)
+%  Set a true un-windowed Sinc filter with 10 lobes (very slow):
 %     -define filter:filter=Sinc
 %     -define filter:lobes=8
 %
-%  For example force an 8 lobe Lanczos (Sinc or Jinc) filter...
+%  Set an 8 lobe Lanczos (Sinc or Jinc) filter:
 %     -filter Lanczos
 %     -define filter:lobes=8
 %
