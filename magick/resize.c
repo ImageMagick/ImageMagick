@@ -549,64 +549,72 @@ static MagickRealType Welsh(const MagickRealType x,
 %  crossing is (36 sqrt 2 + 123)/(72 sqrt 2 + 47) which is almost
 %  identical to the first crossing of the other two.
 %
-%  'EXPERT' OPTIONS
+%  'EXPERT' OPTIONS:
 %
-%  You can override any and all filter settings. This is not advised
-%  unless you have expert knowledge of the use of resampling filtered
-%  techniques.  Check on the results of your selections using the
-%  "filter:verbose" setting to make sure you get the exact filter you
-%  want.
+%  (Not recommended without expert knowledge of resampling and
+%  filtering.)
+%
+%  You can override any and all filter settings.  Use "filter:verbose"
+%  to make sure that the overall effect of your selections is as
+%  expected.
+%
+%    "filter:verbose" Output the exact results of the filter
+%         selections made, as well as plotting data for graphing the
+%         resulting filter over support range (blur adjusted).
 %
 %    "filter:filter"    Select the main function associated with
 %        this filter name, as the weighting function of the filter.
 %        This can be used to set a windowing function as a weighting
 %        function, for special purposes, such as graphing.
 %
-%        If a "filter:window" operation has not been provided, then a 'Box'
-%        windowing function will be set to denote that no windowing function
-%        is being used.
+%        If a "filter:window" operation has not been provided, then a
+%        'Box' windowing function will be set to denote that no
+%        windowing function is being used.
 %
-%    "filter:window"   Select this windowing function for the filter.
-%        While any filter could be used as a windowing function, using the
-%        'first lobe' of that filter over the whole support window, using a
-%        non-windowing function is not advisible. If no weighting filter
-%        function is specifed a 'SincFast' filter will be used.
+%    "filter:window" Select this windowing function for the filter.
+%        While any filter could be used as a windowing function, using
+%        the 'first lobe' of that filter over the whole support
+%        window, using a non-windowing function is not advisible. If
+%        no weighting filter function is specifed a 'SincFast' filter
+%        will be used.
 %
-%    "filter:lobes"    Number of lobes to use for the Sinc/Jinc filter.
-%        This a simpler method of setting filter support size that will
-%        correctly handle the Sinc/Jinc switch for an operators filtering
-%        requirements.  Only integers should be given.
+%    "filter:lobes" Number of lobes to use for the Sinc/Jinc filter.
+%        This a simpler method of setting filter support size that
+%        will correctly handle the Sinc/Jinc switch for an operators
+%        filtering requirements.  Only integers should be given.
 %
-%    "filter:support"  Set the support size for filtering to the size given
-%        This not recommended for Sinc/Jinc windowed filters (lobes should
-%        be used instead).  This will override any 'filter:lobes' option.
+%    "filter:support" Set the support size for filtering to the size
+%        given This not recommended for Sinc/Jinc windowed filters
+%        (lobes should be used instead).  This will override any
+%        'filter:lobes' option.
 %
-%    "filter:win-support"  Scale windowing function to this size instead.
-%        This causes the windowing (or self-windowing Lagrange filter) to act
-%        is if the support window it much much larger than what is actually
-%        supplied to the calling operator.  The filter however is still
-%        clipped to the real support size given, by the support range suppiled
-%        to the caller.  If unset this will equal the normal filter support
+%    "filter:win-support" Scale windowing function to this size
+%        instead.  This causes the windowing (or self-windowing
+%        Lagrange filter) to act is if the support window it much much
+%        larger than what is actually supplied to the calling
+%        operator.  The filter however is still clipped to the real
+%        support size given, by the support range suppiled to the
+%        caller.  If unset this will equal the normal filter support
 %        size.
 %
-%    "filter:blur"     Scale the filter and support window by this amount.
+%    "filter:blur" Scale the filter and support window by this amount.
 %        A value >1 will generally result in a more burred image with
 %        more ringing effects, while a value <1 will sharpen the
 %        resulting image with more aliasing and Morie effects.
 %
-%    "filter:sigma"    The sigma value to use for the Gaussian filter only.
-%        Defaults to '1/2' for orthogonal and 'sqrt(2)/2' for cylindrical
-%        usage. It effectially provides a alturnative to 'blur' for Gaussians
-%        without it also effecting the final 'practical support' size.
+%    "filter:sigma" The sigma value to use for the Gaussian filter
+%        only.  Defaults to '1/2' for orthogonal and 'sqrt(2)/2' for
+%        cylindrical usage. It effectially provides a alturnative to
+%        'blur' for Gaussians without it also effecting the final
+%        'practical support' size.
 %
 %    "filter:b"
-%    "filter:c"    Override the preset B,C values for a Cubic type of filter
-%         If only one of these are given it is assumes to be a 'Keys'
-%         type of filter such that B+2C=1, where Keys 'alpha' value = C
+%    "filter:c" Override the preset B,C values for a Cubic type of
+%         filter If only one of these are given it is assumes to be a
+%         'Keys' type of filter such that B+2C=1, where Keys 'alpha'
+%         value = C
 %
-%    "filter:verbose"   Output the exact results of the filter selections
-%         made, as well as plotting data for graphing the resulting filter
-%         over support range (blur adjusted).
+%  Examples: 
 %
 %  Set a true un-windowed Sinc filter with 10 lobes (very slow)
 %     -define filter:filter=Sinc
