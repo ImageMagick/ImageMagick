@@ -75,7 +75,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 9
+#serial 11
 
 AU_ALIAS([ACX_PTHREAD], [AX_PTHREAD])
 AC_DEFUN([AX_PTHREAD], [
@@ -199,8 +199,8 @@ for flag in $ax_pthread_flags; do
         # functions on Solaris that doesn't have a non-functional libc stub.
         # We try pthread_create on general principles.
         AC_TRY_LINK([#include <pthread.h>
-	             static void routine(void* a) {a=0;}
-	             static void* start_routine(void* a) {return a;}],
+		     static void routine(void* a) {a=0;}
+		     static void* start_routine(void* a) {return a;}],
                     [pthread_t th; pthread_attr_t attr;
                      pthread_create(&th,0,start_routine,0);
                      pthread_join(th, 0);

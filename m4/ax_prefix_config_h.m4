@@ -119,9 +119,10 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 9
+#serial 10
 
 AC_DEFUN([AX_PREFIX_CONFIG_H],[dnl
+AC_PREREQ([2.62])
 AC_BEFORE([AC_CONFIG_HEADERS],[$0])dnl
 AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
 AS_VAR_PUSHDEF([_OUT],[ac_prefix_conf_OUT])dnl
@@ -165,14 +166,14 @@ else
   fi fi
   AC_MSG_NOTICE(creating $_OUT - prefix $_UPP for $_INP defines)
   if test -f $_INP ; then
-    echo "s/^@%:@undef  *\\(@<:@m4_cr_LETTERS[]_@:>@\\)/@%:@undef $_UPP""_\\1/" > _script
-    echo "s/^@%:@undef  *\\(@<:@m4_cr_letters@:>@\\)/@%:@undef $_LOW""_\\1/" >> _script
-    echo "s/^@%:@def[]ine  *\\(@<:@m4_cr_LETTERS[]_@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1\\" >> _script
-    echo "@%:@def[]ine $_UPP""_\\1\\2\\" >> _script
-    echo "@%:@endif/" >>_script
-    echo "s/^@%:@def[]ine  *\\(@<:@m4_cr_letters@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1\\" >> _script
-    echo "@%:@define $_LOW""_\\1\\2\\" >> _script
-    echo "@%:@endif/" >> _script
+    AS_ECHO(["s/^@%:@undef  *\\(@<:@m4_cr_LETTERS[]_@:>@\\)/@%:@undef $_UPP""_\\1/"]) > _script
+    AS_ECHO(["s/^@%:@undef  *\\(@<:@m4_cr_letters@:>@\\)/@%:@undef $_LOW""_\\1/"]) >> _script
+    AS_ECHO(["s/^@%:@def[]ine  *\\(@<:@m4_cr_LETTERS[]_@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1\\"]) >> _script
+    AS_ECHO(["@%:@def[]ine $_UPP""_\\1\\2\\"]) >> _script
+    AS_ECHO(["@%:@endif/"]) >> _script
+    AS_ECHO(["s/^@%:@def[]ine  *\\(@<:@m4_cr_letters@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1\\"]) >> _script
+    AS_ECHO(["@%:@define $_LOW""_\\1\\2\\"]) >> _script
+    AS_ECHO(["@%:@endif/"]) >> _script
     # now executing _script on _DEF input to create _OUT output file
     echo "@%:@ifndef $_DEF"      >$tmp/pconfig.h
     echo "@%:@def[]ine $_DEF 1" >>$tmp/pconfig.h
@@ -206,12 +207,3 @@ AS_VAR_POPDEF([_PKG])dnl
 AS_VAR_POPDEF([_DEF])dnl
 AS_VAR_POPDEF([_OUT])dnl
 ],[PACKAGE="$PACKAGE"])])
-
-dnl implementation note: a bug report (31.5.2005) from Marten Svantesson points
-dnl out a problem where `echo "\1"` results in a Control-A. The unix standard
-dnl    http://www.opengroup.org/onlinepubs/000095399/utilities/echo.html
-dnl defines all backslash-sequences to be inherently non-portable asking
-dnl for replacement mit printf. Some old systems had problems with that
-dnl one either. However, the latest libtool (!) release does export an $ECHO
-dnl (and $echo) that does the right thing - just one question is left: what
-dnl was the first version to have it? Is it greater 2.58 ?
