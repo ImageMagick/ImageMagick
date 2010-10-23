@@ -1049,7 +1049,7 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
     length/=bytes;
   for (j=2; j < 12; j++)
   {
-    count=FormatMagickString(format,MaxTextExtent,"%.*g%s",(int) (i+j),length,
+    count=FormatMagickString(format,MaxTextExtent,"%.*g%sB",(int) (i+j),length,
       units[i]);
     if (strchr(format,'+') == (char *) NULL)
       break;
