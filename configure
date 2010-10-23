@@ -3402,6 +3402,7 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 ac_config_headers="$ac_config_headers config/config.h"
 
+
 ac_config_commands="$ac_config_commands magick/magick-config.h"
 
 ac_config_files="$ac_config_files config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
@@ -7670,7 +7671,6 @@ if test "${ac_cv_cflags_warn_all+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_cv_cflags_warn_all="no, unknown"
-
  ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -7686,7 +7686,7 @@ do CFLAGS="$ac_save_CFLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
 int
 main ()
 {
-return 0;
+
   ;
   return 0;
 }
@@ -8338,8 +8338,8 @@ $as_echo_n "checking for the pthreads library -l$flag... " >&6; }
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <pthread.h>
-	             static void routine(void* a) {a=0;}
-	             static void* start_routine(void* a) {return a;}
+		     static void routine(void* a) {a=0;}
+		     static void* start_routine(void* a) {return a;}
 int
 main ()
 {
@@ -8788,8 +8788,8 @@ $as_echo_n "checking for the pthreads library -l$flag... " >&6; }
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <pthread.h>
-	             static void routine(void* a) {a=0;}
-	             static void* start_routine(void* a) {return a;}
+		     static void routine(void* a) {a=0;}
+		     static void* start_routine(void* a) {return a;}
 int
 main ()
 {
@@ -34786,14 +34786,14 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: creating $ac_prefix_conf_OUT - prefix $ac_prefix_conf_UPP for $ac_prefix_conf_INP defines" >&5
 $as_echo "$as_me: creating $ac_prefix_conf_OUT - prefix $ac_prefix_conf_UPP for $ac_prefix_conf_INP defines" >&6;}
   if test -f $ac_prefix_conf_INP ; then
-    echo "s/^#undef  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_]\\)/#undef $ac_prefix_conf_UPP""_\\1/" > conftest.prefix
-    echo "s/^#undef  *\\([abcdefghijklmnopqrstuvwxyz]\\)/#undef $ac_prefix_conf_LOW""_\\1/" >> conftest.prefix
-    echo "s/^#define  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_UPP""_\\1\\" >> conftest.prefix
-    echo "#define $ac_prefix_conf_UPP""_\\1\\2\\" >> conftest.prefix
-    echo "#endif/" >>conftest.prefix
-    echo "s/^#define  *\\([abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_LOW""_\\1\\" >> conftest.prefix
-    echo "#define $ac_prefix_conf_LOW""_\\1\\2\\" >> conftest.prefix
-    echo "#endif/" >> conftest.prefix
+    $as_echo "s/^#undef  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_]\\)/#undef $ac_prefix_conf_UPP""_\\1/" > conftest.prefix
+    $as_echo "s/^#undef  *\\([abcdefghijklmnopqrstuvwxyz]\\)/#undef $ac_prefix_conf_LOW""_\\1/" >> conftest.prefix
+    $as_echo "s/^#define  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_UPP""_\\1\\" >> conftest.prefix
+    $as_echo "#define $ac_prefix_conf_UPP""_\\1\\2\\" >> conftest.prefix
+    $as_echo "#endif/" >> conftest.prefix
+    $as_echo "s/^#define  *\\([abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_LOW""_\\1\\" >> conftest.prefix
+    $as_echo "#define $ac_prefix_conf_LOW""_\\1\\2\\" >> conftest.prefix
+    $as_echo "#endif/" >> conftest.prefix
     # now executing _script on _DEF input to create _OUT output file
     echo "#ifndef $ac_prefix_conf_DEF"      >$tmp/pconfig.h
     echo "#define $ac_prefix_conf_DEF 1" >>$tmp/pconfig.h
