@@ -144,6 +144,7 @@ struct _FxInfo
 %  The format of the AcquireFxInfo method is:
 %
 %      FxInfo *AcquireFxInfo(Image *image,const char *expression)
+%
 %  A description of each parameter follows:
 %
 %    o image: the image.
@@ -2301,7 +2302,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         exception);
       return(gamma);
     }
-  switch (*expression)
+  switch ((unsigned char) *expression)
   {
     case '+':
     {
