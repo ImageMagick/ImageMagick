@@ -102,7 +102,7 @@ static ResourceInfo
     MagickULLConstant(0),
     MagickULLConstant(0),
     MagickULLConstant(0),
-    MagickULLConstant(2048)*1024*1024,
+    MagickULLConstant(1536)*1024*1024/sizeof(PixelPacket),
     MagickULLConstant(1536)*1024*1024,
     MagickULLConstant(3072)*1024*1024,
     MagickResourceInfinity,
@@ -921,9 +921,9 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
 #if defined(PixelCacheThreshold)
   memory=PixelCacheThreshold;
 #endif
-  (void) SetMagickResourceLimit(AreaResource,6UL*memory/4UL);
-  (void) SetMagickResourceLimit(MemoryResource,1UL*memory);
-  (void) SetMagickResourceLimit(MapResource,2UL*memory);
+  (void) SetMagickResourceLimit(AreaResource,memory/sizeof(PixelPacket));
+  (void) SetMagickResourceLimit(MemoryResource,memory);
+  (void) SetMagickResourceLimit(MapResource,2*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
   if (limit == (char *) NULL)
     limit=GetPolicyValue("area");
