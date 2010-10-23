@@ -216,6 +216,10 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
       (void) SubstituteString(&fx_info->expression,"9e-","9**10^-");
     }
   /*
+    Force right-to-left associativity for unary negation.
+  */
+  (void) SubstituteString(&fx_info->expression,"-","-1.0*");
+  /*
     Convert complex to simple operators.
   */
   fx_op[1]='\0';
@@ -2302,7 +2306,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         exception);
       return(gamma);
     }
-  switch ((unsigned char) *expression)
+  switch (*expression)
   {
     case '+':
     {
