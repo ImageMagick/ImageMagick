@@ -1024,7 +1024,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       if (artifact != (const char *) NULL)
         {
           B=StringToDouble(artifact);
-          C=(1.0-B)/2.0; /* Calculate C as if it is a Keys cubic filter. */
+          C=(1.0-B)/2.0; /* Calculate C to get a Keys cubic filter. */
           artifact=GetImageArtifact(image,"filter:c"); /* user C override */
           if (artifact != (const char *) NULL)
             C=StringToDouble(artifact);
@@ -1035,18 +1035,21 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           if (artifact != (const char *) NULL)
             {
               C=StringToDouble(artifact);
-              B=1.0-2.0*C;  /* Calculate B as if it is a Keys cubic filter. */
+              B=1.0-2.0*C;  /* Calculate B to get a Keys cubic filter. */
             }
         }
       /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
-      resize_filter->coeff[0]=1.0-(1.0/3.0)*B;
-      resize_filter->coeff[1]=0.0;
-      resize_filter->coeff[2]=-3.0+2.0*B+C;
-      resize_filter->coeff[3]=2.0-1.5*B-C;
-      resize_filter->coeff[4]=(4.0/3.0)*B+4.0*C;
-      resize_filter->coeff[5]=-2.0*B-8.0*C;
-      resize_filter->coeff[6]=B+5.0*C;
-      resize_filter->coeff[7]=(-1.0/6.0)*B-C;
+      {
+	const double twoB = B+B;
+	resize_filter->coeff[0]=1.0-(1.0/3.0)*B;
+	resize_filter->coeff[1]=0.0;
+	resize_filter->coeff[2]=-3.0+twoB+C;
+	resize_filter->coeff[3]=2.0-1.5*B-C;
+	resize_filter->coeff[4]=(4.0/3.0)*B+4.0*C;
+	resize_filter->coeff[5]=-8.0*C-twoB;
+	resize_filter->coeff[6]=B+5.0*C;
+	resize_filter->coeff[7]=(-1.0/6.0)*B-C;
+      }
     }
 
   /*
