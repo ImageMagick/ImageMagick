@@ -85,6 +85,11 @@ Paul Raveling, USC Information Sciences Institute
      The spatial subdivision color reduction algorithm is based on his Img
      software.
 
+Nicolas Robidoux and Chantal Racette, Laurentian University
+     Novel ellipse clamping method and filters for Elliptical Weighted
+     Averaging (EWA) resampling. Efficient filter kernels (sped-up
+     Sinc, Blackman and Bohman).
+
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
      Provided MacOS support. Authored the CLIPBOARD, XCF, and PSD coders.
