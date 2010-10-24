@@ -221,9 +221,12 @@ static MagickRealType CubicBC(const MagickRealType x,
        Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x <= 2
 
     which ensures function is continuous in value and derivative (slope).
+    
+    (This implies that coeff[1] is always zero. It is omitted in the
+    computation below.)
   */
   if (x < 1.0)
-    return(resize_filter->coeff[0]+x*(resize_filter->coeff[1]+x*
+    return(resize_filter->coeff[0]+x*(x*
       (resize_filter->coeff[2]+x*resize_filter->coeff[3])));
   if (x < 2.0)
     return(resize_filter->coeff[4]+x*(resize_filter->coeff[5]+x*
@@ -1035,16 +1038,16 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
               B=1.0-2.0*C;  /* Calculate B as if it is a Keys cubic filter. */
             }
         }
-    /* Convert B,C values into Cubic Coefficents.  See CubicBC().  */
-    resize_filter->coeff[0]=(6.0-2.0*B)/6.0;
-    resize_filter->coeff[1]=0.0;
-    resize_filter->coeff[2]=(-18.0+12.0*B+6.0*C)/6.0;
-    resize_filter->coeff[3]=(12.0-9.0*B-6.0*C)/6.0;
-    resize_filter->coeff[4]=(8.0*B+24.0*C)/6.0;
-    resize_filter->coeff[5]=(-12.0*B-48.0*C)/6.0;
-    resize_filter->coeff[6]=(6.0*B+30.0*C)/6.0;
-    resize_filter->coeff[7]=(-B-6.0*C)/6.0;
-  }
+      /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
+      resize_filter->coeff[0]=1.0-(1.0/3.0)*B;
+      resize_filter->coeff[1]=0.0;
+      resize_filter->coeff[2]=-3.0+2.0*B+C;
+      resize_filter->coeff[3]=2.0-1.5*B-C;
+      resize_filter->coeff[4]=(4.0/3.0)*B+4.0*C;
+      resize_filter->coeff[5]=-2.0*B-8.0*C;
+      resize_filter->coeff[6]=B+5.0*C;
+      resize_filter->coeff[7]=(-1.0/6.0)*B-C;
+    }
 
   /*
     Expert Option Request for verbose details of the resulting filter.
