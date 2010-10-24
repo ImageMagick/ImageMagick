@@ -1,5 +1,5 @@
 2010-10-24  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * CubicBC filter formulas simplified by (constant folding). In
+  * CubicBC filter formulas simplified by constant folding. In
     particular, P1 coefficient (always zero) removed from coeff.
 
 2010-10-22  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
