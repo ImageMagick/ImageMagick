@@ -221,8 +221,10 @@ static MagickRealType CubicBC(const MagickRealType x,
        Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x < 2
 
     which ensures function is continuous in value and derivative
-    (slope).  This implies that P1 is always zero; for this reason, it
-    is skipped.
+    (slope).
+
+    P1 is always zero; for this reason, it is skipped:
+    coeff[0]=P0, coeff[1]=P2.
   */
   if (x < 1.0)
     return(resize_filter->coeff[0]+x*(x*
