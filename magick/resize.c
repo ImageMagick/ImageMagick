@@ -85,7 +85,7 @@ struct _ResizeFilter
     window_support, /* window support, usally equal to support (expert only) */
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
-    coeff[8];       /* cubic coefficents for smooth Cubic filters */
+    coeff[7];       /* cubic coefficents for BC-cubic spline filters */
 
   size_t
     signature;
@@ -195,10 +195,10 @@ static MagickRealType CubicBC(const MagickRealType x,
 {
   /*
     Cubic Filters using B,C determined values:
-       Mitchell-Netravali  B=1/3 C=1/3   Qualitively ideal Cubic Filter
-       Catmull-Rom         B= 0  C=1/2   Cublic Interpolation Function
-       Cubic B-Spline      B= 1  C= 0    Spline Approximation of Gaussian
-       Hermite             B= 0  C= 0    Quadratic Spline (support = 1)
+       Mitchell-Netravali  B= 1/3 C= 1/3  "Balanced" cubic spline filter
+       Catmull-Rom         B= 0   C= 1/2  Interpolatory and exact on linears
+       Cubic B-Spline      B= 1   C= 0    Spline approximation of Gaussian
+       Hermite             B= 0   C= 0    Spline with small support (= 1)
 
     See paper by Mitchell and Netravali, Reconstruction Filters in Computer
     Graphics Computer Graphics, Volume 22, Number 4, August 1988
@@ -218,19 +218,18 @@ static MagickRealType CubicBC(const MagickRealType x,
     which are used to define the filter:
 
        P0 + P1*x + P2*x^2 + P3*x^3      0 <= x < 1
-       Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x <= 2
+       Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x < 2
 
-    which ensures function is continuous in value and derivative (slope).
-    
-    (This implies that coeff[1] is always zero. It is omitted in the
-    computation below.)
+    which ensures function is continuous in value and derivative
+    (slope).  This implies that P1 is always zero; for this reason, it
+    is skipped.
   */
   if (x < 1.0)
     return(resize_filter->coeff[0]+x*(x*
-      (resize_filter->coeff[2]+x*resize_filter->coeff[3])));
+      (resize_filter->coeff[1]+x*resize_filter->coeff[2])));
   if (x < 2.0)
-    return(resize_filter->coeff[4]+x*(resize_filter->coeff[5]+x*
-      (resize_filter->coeff[6]+x*resize_filter->coeff[7])));
+    return(resize_filter->coeff[3]+x*(resize_filter->coeff[4]+x*
+      (resize_filter->coeff[5]+x*resize_filter->coeff[6])));
   return(0.0);
 }
 
@@ -1042,13 +1041,12 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       {
 	const double twoB = B+B;
 	resize_filter->coeff[0]=1.0-(1.0/3.0)*B;
-	resize_filter->coeff[1]=0.0;
-	resize_filter->coeff[2]=-3.0+twoB+C;
-	resize_filter->coeff[3]=2.0-1.5*B-C;
-	resize_filter->coeff[4]=(4.0/3.0)*B+4.0*C;
-	resize_filter->coeff[5]=-8.0*C-twoB;
-	resize_filter->coeff[6]=B+5.0*C;
-	resize_filter->coeff[7]=(-1.0/6.0)*B-C;
+	resize_filter->coeff[1]=-3.0+twoB+C;
+	resize_filter->coeff[2]=2.0-1.5*B-C;
+	resize_filter->coeff[3]=(4.0/3.0)*B+4.0*C;
+	resize_filter->coeff[4]=-8.0*C-twoB;
+	resize_filter->coeff[5]=B+5.0*C;
+	resize_filter->coeff[6]=(-1.0/6.0)*B-C;
       }
     }
 
