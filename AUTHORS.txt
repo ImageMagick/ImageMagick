@@ -67,11 +67,9 @@ David Pensak, E. I. du Pont de Nemours and Company
      For providing the computing environment that made developing ImageMagick
      possible.
 
-Chantal Racette and Nicolas Robidoux, Laurentian University
-     New ellipse clamping method and vertical/horizontal line
-     preserving filters (Robidoux, LanczosSharp and Lanczos2DSharp)
-     for Elliptical Weighted Average resampling. Efficient filter
-     kernel computation (sped up Sinc, Blackman and Bohman).
+Chantal Racette, Laurentian University
+     Sped up Sinc and Blackman filter kernels. Code verification for the new 
+     EWA ellipse clamping method. 
 
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
@@ -90,6 +88,12 @@ Glenn Randers-Pehrson
 Paul Raveling, USC Information Sciences Institute
      The spatial subdivision color reduction algorithm is based on his Img
      software.
+
+Nicolas Robidoux, Laurentian University
+     Inventor of a new ellipse clamping method, and vertical/horizontal line
+     preserving filters (Robidoux, LanczosSharp and Lanczos2DSharp), for
+     Elliptical Weighted Average resampling. Contributed faster filter kernels
+     (minimax Sinc approximation, and simplified Blackman and Bohman).
 
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
