@@ -1,3 +1,6 @@
+2010-10-25  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Clearer EWA filters (LanczosSharp etc) comments.
+
 2010-10-25  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Added LanczosSharp  (3-lobe Lanczos with sharpening)
   * Lanczos2D and Lanczos2DSharp are now always a 2-lobe Jinc-Jinc filter
