@@ -1063,11 +1063,11 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,
     quantum_type;
 
   ssize_t
-    count;
+    count,
+    y;
 
   size_t
-    length,
-    y;
+    length;
 
   unsigned char
     *pixels;

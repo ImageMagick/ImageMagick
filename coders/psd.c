@@ -651,7 +651,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                   ssize_t
                     bit;
 
-                  for (bit=0; bit < (image->columns % 8); bit++)
+                  for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
                   {
                     indexes[x]=((((unsigned char) pixel) & (0x01 << (7-bit)))
                       != 0 ? 0 : 255);
