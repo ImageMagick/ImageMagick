@@ -67,6 +67,12 @@ David Pensak, E. I. du Pont de Nemours and Company
      For providing the computing environment that made developing ImageMagick
      possible.
 
+Chantal Racette and Nicolas Robidoux, Laurentian University
+     Novel ellipse clamping method and filters (Robidoux,
+     LanczosSharp, Lanczos2Dsharp) for Elliptical Weighted Averaging
+     (EWA) resampling. Efficient filter kernel computation (sped-up
+     Sinc, Blackman and Bohman).
+
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
      Author of FlashPix module. Author of the EMF, XTRN, and META coders.
@@ -84,11 +90,6 @@ Glenn Randers-Pehrson
 Paul Raveling, USC Information Sciences Institute
      The spatial subdivision color reduction algorithm is based on his Img
      software.
-
-Nicolas Robidoux and Chantal Racette, Laurentian University
-     Novel ellipse clamping method and filters for Elliptical Weighted
-     Averaging (EWA) resampling. Efficient filter kernel computation
-     (sped-up Sinc, Blackman and Bohman).
 
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
