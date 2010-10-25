@@ -107,18 +107,16 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     *chop_image;
 
   ssize_t
-    j,
     y;
 
   MagickBooleanType
-    proceed,
     status;
+
+  MagickOffsetType
+    progress;
 
   RectangleInfo
     extent;
-
-  register ssize_t
-    i;
 
   /*
     Check chop geometry.
@@ -158,12 +156,11 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     Extract chop image.
   */
   status=MagickTrue;
-  i=0;
-  j=0;
+  progress=0;
   image_view=AcquireCacheView(image);
   chop_view=AcquireCacheView(chop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) extent.y; y++)
   {
@@ -182,8 +179,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(chop_view,0,j++,chop_image->columns,1,
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(chop_view,0,y,chop_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
@@ -208,17 +205,24 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     }
     if (SyncCacheViewAuthenticPixels(chop_view,exception) == MagickFalse)
       status=MagickFalse;
-    proceed=SetImageProgress(image,ChopImageTag,(MagickOffsetType) y,
-      chop_image->rows);
-    if (proceed == MagickFalse)
-      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+  #pragma omp critical (MagickCore_ChopImage)
+#endif
+        proceed=SetImageProgress(image,ChopImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   /*
     Extract chop image.
   */
-  i+=(ssize_t) extent.height;
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) (image->rows-(extent.y+extent.height)); y++)
   {
@@ -237,9 +241,10 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(chop_view,0,j++,chop_image->columns,1,
-      exception);
+    p=GetCacheViewVirtualPixels(image_view,0,extent.y+extent.height+y,
+      image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(chop_view,0,extent.y+y,chop_image->columns,
+      1,exception);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
@@ -263,10 +268,18 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     }
     if (SyncCacheViewAuthenticPixels(chop_view,exception) == MagickFalse)
       status=MagickFalse;
-    proceed=SetImageProgress(image,ChopImageTag,(MagickOffsetType) y,
-      chop_image->rows);
-    if (proceed == MagickFalse)
-      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+  #pragma omp critical (MagickCore_ChopImage)
+#endif
+        proceed=SetImageProgress(image,ChopImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   chop_view=DestroyCacheView(chop_view);
   image_view=DestroyCacheView(image_view);
@@ -1844,6 +1857,9 @@ MagickExport MagickBooleanType TransformImage(Image **image,
              MagickSizeType
                number_images;
 
+             RectangleInfo
+               page;
+
              /*
                Crop into tiles of fixed size WxH.
              */
@@ -1861,12 +1877,13 @@ MagickExport MagickBooleanType TransformImage(Image **image,
              proceed=MagickTrue;
              i=0;
              number_images=0;
-             for (y=0; y < (ssize_t) transform_image->page.height; y+=(ssize_t) height)
-               for (x=0; x < (ssize_t) transform_image->page.width; x+=(ssize_t) width)
+             page=transform_image->page;
+             for (y=0; y < (ssize_t) page.height; y+=(ssize_t) height)
+               for (x=0; x < (ssize_t) page.width; x+=(ssize_t) width)
                  number_images++;
-             for (y=0; y < (ssize_t) transform_image->page.height; y+=(ssize_t) height)
+             for (y=0; y < (ssize_t) page.height; y+=(ssize_t) height)
              {
-               for (x=0; x < (ssize_t) transform_image->page.width; x+=(ssize_t) width)
+               for (x=0; x < (ssize_t) page.width; x+=(ssize_t) width)
                {
                  progress_monitor=SetImageProgressMonitor(transform_image,
                    (MagickProgressMonitor) NULL,transform_image->client_data);
