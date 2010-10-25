@@ -68,9 +68,10 @@ David Pensak, E. I. du Pont de Nemours and Company
      possible.
 
 Chantal Racette and Nicolas Robidoux, Laurentian University
-     New ellipse clamping method and filters (Robidoux, LanczosSharp,
-     Lanczos2Dsharp) for Elliptical Weighted Averaging resampling. Efficient
-     filter kernel computation (sped-up Sinc, Blackman and Bohman).
+     New ellipse clamping method and vertical/horizontal line
+     preserving filters (Robidoux, LanczosSharp and Lanczos2DSharp)
+     for Elliptical Weighted Average resampling. Efficient filter
+     kernel computation (sped-up Sinc, Blackman and Bohman).
 
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
