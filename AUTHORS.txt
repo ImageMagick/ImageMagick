@@ -71,7 +71,7 @@ Chantal Racette and Nicolas Robidoux, Laurentian University
      New ellipse clamping method and vertical/horizontal line
      preserving filters (Robidoux, LanczosSharp and Lanczos2DSharp)
      for Elliptical Weighted Average resampling. Efficient filter
-     kernel computation (sped-up Sinc, Blackman and Bohman).
+     kernel computation (sped up Sinc, Blackman and Bohman).
 
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
