@@ -2027,16 +2027,27 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     case 'T':
     case 't':
     {
-      if (LocaleCompare(attribute,"tile") == 0)
-        {
-          if (info)
-            (void) CloneString(&info->image_info->tile,SvPV(sval,na));
-          break;
-        }
       if (LocaleCompare(attribute,"texture") == 0)
         {
           if (info)
             (void) CloneString(&info->image_info->texture,SvPV(sval,na));
+          break;
+        }
+      if (LocaleCompare(attribute,"thread-limit") == 0)
+        {
+          MagickSizeType
+            limit;
+
+          limit=MagickResourceInfinity;
+          if (LocaleCompare(SvPV(sval,na),"unlimited") != 0)
+            limit=(MagickSizeType) SiPrefixToDouble(SvPV(sval,na),100.0);
+          (void) SetMagickResourceLimit(ThreadResource,limit);
+          break;
+        }
+      if (LocaleCompare(attribute,"tile") == 0)
+        {
+          if (info)
+            (void) CloneString(&info->image_info->tile,SvPV(sval,na));
           break;
         }
       if (LocaleCompare(attribute,"tile-offset") == 0)
