@@ -531,9 +531,15 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  LanczosSharp is a slightly sharpened (blur=0.9830391168464) form of
 %  the Lanczos filter.  It was designed specifically for cylindrical
-%  (radial) EWA (Elliptical Weighted Average) distortion (using a
-%  Jinc windowed Jinc), but can also be used as a slightly sharper
-%  orthogonal Lanczos (Sinc-Sinc) filter.
+%  (radial) EWA (Elliptical Weighted Average) distortion (using a Jinc
+%  windowed Jinc); it can also be used as a slightly sharper
+%  orthogonal Lanczos (Sinc-Sinc) filter. With the chosen blur value,
+%  the corresponding EWA filter comes as close as possible to
+%  satisfying the following condition:
+%
+%    'No-Op' Vertical and Horizontal Line Preservation Condition:
+%    Images with only vertical or horizontal features are preserved
+%    when performing 'no-op" with EWA distortion.
 %
 %  Two forms of the 'Sinc' function are available: Sinc and SincFast.
 %  Sinc is computed using the traditional sin(pi*x)/(pi*x); it is
@@ -542,24 +548,21 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  The Lanczos2D and Lanczos2DSharp filters specific for EWA distorts.
-%  They are both 2 lobe Lanczos-like filter but always using a
-%  Jinc-Jinc filter function regardless of if used as a orthoginal
-%  filter or not.  The 'sharp' version has been sharpened using a
-%  blur=0.958033808.
+%  The Lanczos2D and Lanczos2DSharp filters are for EWA distorts.
+%  They are both 2-lobe Lanczos-like filters but always use a
+%  Jinc-Jinc filter function regardless of whether or not they are
+%  used as orthogonal filters.  The 'sharp' version uses
+%  blur=0.958033808, chosen because the resulting EWA filter comes as
+%  close as possible to satisfing the "'No-Op' Vertical and Horizontal
+%  Line Preservation Condition".
 %
-%  Robidoux is a unique Keys cubic spline, developed from the previous
-%  Lanczos2DSharp filter.  It is designed to satisfy the following
-%  condition:
-%
-%    Robidoux exactly preserves images with only vertical or
-%    horizontal features when performing 'no-op" with EWA distortion.
-%
-%  That is, Robidoux is the BC-Spline with B=(228 - 108 sqrt(2))/199
-%  and C=(108 sqrt(2) - 29)/398.  Robidoux turns out to be close to
-%  both plain Mitchell and "sharpened" Lanczos2D. For example, it's
-%  first crossing is (36 sqrt(2) + 123)/(72 sqrt(2) + 47) which is
-%  almost identical to the first crossing of the other two.
+%  Robidoux is another filter tuned for EWA. It is the Keys cubic
+%  spline defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
+%  "'No-Op' Vertical and Horizontal Line Preservation Condition"
+%  exactly.  It turns out to be close to both plain Mitchell and
+%  "sharpened" Lanczos2D; for example, its first crossing is (36
+%  sqrt(2) + 123)/(72 sqrt(2) + 47) which is almost identical to the
+%  first crossing of the other two.
 %
 %  'EXPERT' OPTIONS:
 %
@@ -704,33 +707,33 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter,    BoxFilter },      /* Undefined (default to Box)   */
-    { PointFilter,        BoxFilter },      /* SPECIAL: Nearest neighbour   */
-    { BoxFilter,          BoxFilter },      /* Box averaging filter         */
-    { TriangleFilter,     BoxFilter },      /* Linear interpolation filter  */
-    { HermiteFilter,      BoxFilter },      /* Hermite interpolation filter */
-    { SincFastFilter,     HanningFilter },  /* Hanning -- cosine-sinc       */
-    { SincFastFilter,     HammingFilter },  /* Hamming --      '' variation */
+    { UndefinedFilter,    BoxFilter      }, /* Undefined (default to Box)   */
+    { PointFilter,        BoxFilter      }, /* SPECIAL: Nearest neighbour   */
+    { BoxFilter,          BoxFilter      }, /* Box averaging filter         */
+    { TriangleFilter,     BoxFilter      }, /* Linear interpolation filter  */
+    { HermiteFilter,      BoxFilter      }, /* Hermite interpolation filter */
+    { SincFastFilter,     HanningFilter  }, /* Hanning -- cosine-sinc       */
+    { SincFastFilter,     HammingFilter  }, /* Hamming --      '' variation */
     { SincFastFilter,     BlackmanFilter }, /* Blackman -- 2*cosine-sinc    */
-    { GaussianFilter,     BoxFilter },      /* Gaussian blur filter         */
-    { QuadraticFilter,    BoxFilter },      /* Quadratic Gaussian approx    */
-    { CubicFilter,        BoxFilter },      /* Cubic B-Spline               */
-    { CatromFilter,       BoxFilter },      /* Cubic-Keys interpolator      */
-    { MitchellFilter,     BoxFilter },      /* 'Ideal' Cubic-Keys filter    */
+    { GaussianFilter,     BoxFilter      }, /* Gaussian blur filter         */
+    { QuadraticFilter,    BoxFilter      }, /* Quadratic Gaussian approx    */
+    { CubicFilter,        BoxFilter      }, /* Cubic B-Spline               */
+    { CatromFilter,       BoxFilter      }, /* Cubic-Keys interpolator      */
+    { MitchellFilter,     BoxFilter      }, /* 'Ideal' Cubic-Keys filter    */
     { LanczosFilter,      SincFastFilter }, /* SPECIAL: 3-lobed sinc-sinc   */
-    { JincFilter,         BoxFilter },      /* Raw 3-lobed Jinc function    */
-    { SincFilter,         BoxFilter },      /* Raw 4-lobed Sinc function    */
-    { SincFastFilter,     KaiserFilter },   /* Kaiser -- square root-sinc   */
-    { SincFastFilter,     WelshFilter },    /* Welsh -- parabolic-sinc      */
-    { SincFastFilter,     CubicFilter },    /* Parzen -- cubic-sinc         */
-    { LagrangeFilter,     BoxFilter },      /* Lagrange self-windowing      */
-    { SincFastFilter,     BohmanFilter },   /* Bohman -- 2*cosine-sinc      */
+    { JincFilter,         BoxFilter      }, /* Raw 3-lobed Jinc function    */
+    { SincFilter,         BoxFilter      }, /* Raw 4-lobed Sinc function    */
+    { SincFastFilter,     KaiserFilter   }, /* Kaiser -- square root-sinc   */
+    { SincFastFilter,     WelshFilter    }, /* Welsh -- parabolic-sinc      */
+    { SincFastFilter,     CubicFilter    }, /* Parzen -- cubic-sinc         */
+    { LagrangeFilter,     BoxFilter      }, /* Lagrange self-windowing      */
+    { SincFastFilter,     BohmanFilter   }, /* Bohman -- 2*cosine-sinc      */
     { SincFastFilter,     TriangleFilter }, /* Bartlett -- triangle-sinc    */
-    { SincFastFilter,     BoxFilter },      /* Raw fast sinc ("Pade"-type)  */
+    { SincFastFilter,     BoxFilter      }, /* Raw fast sinc ("Pade"-type)  */
     { LanczosSharpFilter, SincFastFilter }, /* SPECIAL: Sharpened Lanczos   */
-    { Lanczos2DFilter,    JincFilter },     /* SPECIAL: 2-lobed jinc-jinc   */
-    { Lanczos2DSharpFilter, JincFilter },   /* SPECIAL: ditto sharpened     */
-    { RobidouxFilter,     BoxFilter },      /* SPECIAL: Keys tuned for EWA  */
+    { Lanczos2DFilter,    JincFilter     }, /* SPECIAL: 2-lobed jinc-jinc   */
+    { Lanczos2DSharpFilter, JincFilter   }, /* SPECIAL: ditto sharpened     */
+    { RobidouxFilter,     BoxFilter      }, /* SPECIAL: Keys tuned for EWA  */
   };
   /*
     Table mapping the filter/window from the above table to an actual
@@ -854,7 +857,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           filter_type=JincFilter;
         break;
       case LanczosSharpFilter:
-        /* A slightly sharper Lanczos */
+        /* Sharpen Lanczos so as to optimize for minimal blurring of
+         * orthogonal lines in EWA cylindrical usage.  Value
+         * determined by Nicolas Robidoux.
+         */
         resize_filter->blur *= 0.9830391168464;
         /* fall-thru to promote it to Jinc-Jinc */
       case LanczosFilter:
@@ -870,7 +876,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->blur *= 0.958033808;
         break;
       case GaussianFilter:
-        sigma = (MagickRealType) (MagickSQ2/2.0);  /* Cylindrical Gaussian sigma is sqrt(2)/2 */
+	/* Cylindrical Gaussian sigma is sqrt(2)/2. */
+        sigma = (MagickRealType) (MagickSQ2/2.0);
         break;
       default:
         break;
@@ -879,10 +886,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     switch (filter_type)
     {
       case LanczosSharpFilter:
-        resize_filter->blur *= 0.9830391168464; /* Orthogonal sharpen too */
+        resize_filter->blur *= 0.9830391168464; /* Orthogonal sharpen too. */
         break;
       case Lanczos2DSharpFilter:
-        resize_filter->blur *= 0.958033808;  /* Orthogonal sharpen too */
+        resize_filter->blur *= 0.958033808; /* Orthogonal sharpen too. */
         break;
       default:
         break;
@@ -1043,7 +1050,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           if (artifact != (const char *) NULL)
             {
               C=StringToDouble(artifact);
-              B=1.0-2.0*C;  /* Calculate B to get a Keys cubic filter. */
+              B=1.0-2.0*C; /* Calculate B to get a Keys cubic filter. */
             }
         }
       /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
