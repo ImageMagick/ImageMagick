@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -170,8 +170,16 @@
 
 <div class="main">
 
-<ul><dt>2010-10-22  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
-  <li> Revert the Robidoux filter to a Keys cubic with C=(108 sqrt 2-29)/398    (as is already in the documentation).</li><br />
+<ul><dt>2010-10-25  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> Clearer EWA filters (LanczosSharp etc) comments.</li><br />
+<dt>2010-10-25  6.6.5-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added LanczosSharp  (3-lobe Lanczos with sharpening)</li>
+  <li> Lanczos2D and Lanczos2DSharp are now always a 2-lobe Jinc-Jinc filter    regardless of orthoginal (resize) or cylindrical (distort-EWA) usage.    This is a rare case where a Jinc filter is also useful for resize.</li>
+  <li> Filter sharpening factors are also always applied regardless of usage.</li><br />
+<dt>2010-10-24  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> CubicBC filter formulas simplified by constant folding. In    particular, P1 coefficient (always zero) removed from coeff.</li><br />
+<dt>2010-10-22  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> Revert the Robidoux filter to a Keys cubic with C=(108 sqrt 2-29)/398    (as already specified in the documentation).</li><br />
 <dt>2010-10-14  6.6.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Ignore PS bounding box offsets if -page is set.</li>
   <li> Use #pragma omp master for dumping single threaded debugging information    (single caused a fault).</li>
