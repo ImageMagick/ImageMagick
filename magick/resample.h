@@ -55,6 +55,7 @@ typedef enum
   BohmanFilter,
   BartlettFilter,
   SincFastFilter,
+  LanczosSharpFilter,
   Lanczos2DFilter,
   Lanczos2DSharpFilter,
   RobidouxFilter,

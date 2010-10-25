@@ -1,10 +1,17 @@
+2010-10-25  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added LanczosSharp  (3-lobe Lanczos with sharpening)
+  * Lanczos2D and Lanczos2DSharp are now always a 2-lobe Jinc-Jinc filter
+    regardless of orthoginal (resize) or cylindrical (distort-EWA) usage.
+    This is a rare case where a Jinc filter is also useful for resize.
+  * Filter sharpening factors are also always applied regardless of usage.
+
 2010-10-24  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * CubicBC filter formulas simplified by constant folding. In
     particular, P1 coefficient (always zero) removed from coeff.
 
 2010-10-22  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Revert the Robidoux filter to a Keys cubic with C=(108 sqrt 2-29)/398
-    (as is already in the documentation).
+    (as already specified in the documentation).
 
 2010-10-14  6.6.5-1 Cristy  <quetzlzacatenango@image...>
   * Ignore PS bounding box offsets if -page is set.
