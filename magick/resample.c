@@ -60,6 +60,7 @@
 #include "magick/resize-private.h"
 #include "magick/transform.h"
 #include "magick/signature-private.h"
+#include "magick/utility.h"
 /*
   EWA Resampling Options
 */
@@ -1874,10 +1875,10 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
        Q;
     double
        r_scale;
+
     /* Scale radius so the filter LUT covers the full support range */
     r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
-    if (GetImageArtifact(resample_filter->image,"resample:verbose")
-          != (const char *) NULL)
+    if (IsMagickTrue(GetImageArtifact(resample_filter->image,"resample:verbose")) )
       {
         /* Debug output of the filter weighting LUT
           Gnuplot the LUT with hoizontal adjusted to 'r' using...
