@@ -574,9 +574,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %  you make good use of "filter:verbose" to make sure that the overall
 %  effect of your selection (before and after) is as expected.
 %
-%    "filter:verbose" Output the exact results of the filter
-%         selections made, as well as plotting data for graphing the
-%         resulting filter over support range (blur adjusted).
+%    "filter:verbose" controls whether to output the exact results of
+%        the filter selections made, as well as plotting data for
+%        graphing the resulting filter over the filters support range.
 %
 %    "filter:filter"    Select the main function associated with
 %        this filter name, as the weighting function of the filter.
@@ -1074,7 +1074,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
 #endif
     artifact=GetImageArtifact(image,"filter:verbose");
-    if (artifact != (const char *) NULL)
+    if (IsMagickTrue(artifact))
       {
         double
           support,

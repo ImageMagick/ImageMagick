@@ -77,6 +77,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/token.h"
+#include "magick/utility.h"
 
 
 /*
@@ -3193,8 +3194,8 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
      kernel_limit = image->columns > image->rows ? image->columns : image->rows;
 
-  verbose = ( GetImageArtifact(image,"verbose") != (const char *) NULL ) ?
-    MagickTrue : MagickFalse;
+
+  verbose = IsMagickTrue(GetImageArtifact(image,"verbose"));
 
   /* initialise for cleanup */
   curr_image = (Image *) image;
@@ -3596,9 +3597,6 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   const ChannelType channel,const MorphologyMethod method,
   const ssize_t iterations,const KernelInfo *kernel,ExceptionInfo *exception)
 {
-  const char
-    *artifact;
-
   KernelInfo
     *curr_kernel;
 
@@ -3616,6 +3614,8 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   curr_kernel = (KernelInfo *) kernel;
   if ( method == ConvolveMorphology ||  method == CorrelateMorphology )
     {
+      const char
+        *artifact;
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (const char *)NULL ) {
         if ( curr_kernel == kernel )
@@ -3629,12 +3629,9 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     }
 
   /* display the (normalized) kernel via stderr */
-  artifact = GetImageArtifact(image,"showkernel");
-  if ( artifact == (const char *) NULL)
-    artifact = GetImageArtifact(image,"convolve:showkernel");
-  if ( artifact == (const char *) NULL)
-    artifact = GetImageArtifact(image,"morphology:showkernel");
-  if ( artifact != (const char *) NULL)
+  if ( IsMagickTrue(GetImageArtifact(image,"showkernel"))
+    || IsMagickTrue(GetImageArtifact(image,"convolve:showkernel"))
+    || IsMagickTrue(GetImageArtifact(image,"morphology:showkernel")) )
     ShowKernelInfo(curr_kernel);
 
   /* Override the default handling of multi-kernel morphology results
@@ -3643,12 +3640,14 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
    * Otherwise merge resulting images using compose method given.
    * Default for 'HitAndMiss' is 'Lighten'.
    */
-  compose = UndefinedCompositeOp;  /* use default for method */
-  artifact = GetImageArtifact(image,"morphology:compose");
-  if ( artifact != (const char *) NULL)
-    compose = (CompositeOperator) ParseMagickOption(
+  { const char
+      *artifact;
+    artifact = GetImageArtifact(image,"morphology:compose");
+    compose = UndefinedCompositeOp;  /* use default for method */
+    if ( artifact != (const char *) NULL)
+      compose = (CompositeOperator) ParseMagickOption(
                              MagickComposeOptions,MagickFalse,artifact);
-
+  }
   /* Apply the Morphology */
   morphology_image = MorphologyApply(image, channel, method, iterations,
                          curr_kernel, compose, image->bias, exception);
