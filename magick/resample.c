@@ -1411,12 +1411,10 @@ static inline void ClampUpAxes(const double dux,
    * of Laurentian University with funding from the National Science
    * and Engineering Research Council of Canada.
    *
-   * The idea of using the SVD to clamp the singular values of the
-   * linear part of the affine approximation of the pullback
-   * transformation comes from the astrophysicist Craig DeForest, who
-   * implemented it for use with (approximate) Elliptical Weighted
-   * Average Gaussian filtering in his PDL::Transform method (PDL =
-   * Perl Data Language).
+   * The astrophysicist Craig DeForest pioneered the use of the SVD to
+   * clamp up the singular values of the Jacobian matrix of the
+   * pullback transformation. It is implemented in his PDL::Transform
+   * EWA code (PDL = Perl Data Language).
    */
   const double a = dux;
   const double b = duy;
