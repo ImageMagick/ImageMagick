@@ -1334,10 +1334,17 @@ static inline void ClampUpAxes(const double dux,
    * of radius r in output space is an ellipse which contains, at
    * least, a disc of radius r. (Make this hold for any r>0.)
    *
-   * METHOD: Find the singular values and (unit) left singular vectors
-   * of Jinv, clampling up the singular values to 1, and multiplying
-   * the unit left singular vectors by the new singular values in
-   * order to get the minor and major ellipse axis vectors.
+   * SUMMARY OF THE METHOD: Compute the non-unitary factor of the left
+   * polar decomposition of the linear transformation defining the
+   * ellipse and make sure that both its columns have norm at least 1.
+   * Because rotations and reflexions map disks to themselves, it is
+   * not necessary to compute the other factor of the polar
+   * decomposition.
+   *
+   * DETAILS: Find the singular values and (unit) left singular
+   * vectors of Jinv, clampling up the singular values to 1, and
+   * multiplying the unit left singular vectors by the new singular
+   * values in order to get the minor and major ellipse axis vectors.
    *
    * Inputs:
    *
