@@ -1320,12 +1320,9 @@ static inline void ClampUpAxes(const double dux,
    * newduy = minor_mag * minor_unit_x = minor_mag * -major_unit_y
    * newdvy = minor_mag * minor_unit_y = minor_mag *  major_unit_x
    *
-   * and use these new tangent vectors "as if" they were the original
-   * ones.  Most of the time this is a rather drastic change in the
-   * tangent vectors (even if the singular values are large enough not
-   * to be clampled). A technical explanation of why things still work
-   * is found at the end of the discussion below.
-   *
+   * and use these tangent vectors as if they were the original ones.
+   * This is usually a drastic change in the tangent vectors (even if
+   * the singular values are not modified).
    */
   /*
    * Discussion:
@@ -1334,7 +1331,7 @@ static inline void ClampUpAxes(const double dux,
    * of radius r in output space is an ellipse which contains, at
    * least, a disc of radius r. (Make this hold for any r>0.)
    *
-   * SUMMARY OF THE METHOD: Compute the non-unitary factor of the left
+   * ESSENCE OF THE METHOD: Compute the hermitian factor of the left
    * polar decomposition of the linear transformation defining the
    * ellipse and make sure that both its columns have norm at least 1.
    * Because rotations and reflexions map disks to themselves, it is
@@ -1343,7 +1340,7 @@ static inline void ClampUpAxes(const double dux,
    *
    * DETAILS: Find the singular values and (unit) left singular
    * vectors of Jinv, clampling up the singular values to 1, and
-   * multiplying the unit left singular vectors by the new singular
+   * multiply the unit left singular vectors by the new singular
    * values in order to get the minor and major ellipse axis vectors.
    *
    * Inputs:
@@ -1386,12 +1383,11 @@ static inline void ClampUpAxes(const double dux,
    *
    *   Jinv = U Sigma V^T
    *
-   * be an SVD decomposition of Jinv. (The SVD is not unique. The
+   * be an SVD decomposition of Jinv. (The SVD is not unique, but the
    * final ellipse does not depend on the particular SVD. It only
    * depends on the hermitian factor of the left polar decomposition,
-   * which is unique.) In principle, what we want is to clamp up the
-   * entries of the diagonal matrix Sigma so that they are at least 1,
-   * and then set
+   * which is unique.) We could clamp up the entries of the diagonal
+   * matrix Sigma so that they are at least 1, and then set
    *
    *   Jinv = U newSigma V^T.
    *
@@ -1404,9 +1400,11 @@ static inline void ClampUpAxes(const double dux,
    *
    *   Jinv = U newSigma,
    *
-   * omitting the V^T factor altogether. In the end, we return the two
-   * diagonal entries of newSigma together with the two columns of U,
-   * for a total of six returned quantities.
+   * omitting the V^T factor altogether. Omitting the "V^T" factor
+   * corresponds to moving from the SVD to the left polar
+   * decomposition. In the end, we return the two diagonal entries of
+   * newSigma together with the two columns of U, for a total of six
+   * returned quantities.
    */
   /*
    * ClampUpAxes was written by Nicolas Robidoux and Chantal Racette
@@ -1416,16 +1414,9 @@ static inline void ClampUpAxes(const double dux,
    * The idea of using the SVD to clamp the singular values of the
    * linear part of the affine approximation of the pullback
    * transformation comes from the astrophysicist Craig DeForest, who
-   * implemented it for use with (approximate) Gaussian filtering in
-   * his PDL::Transform code (PDL = Perl Data Language).
-   *
-   * The only new math in the following is the selection of the
-   * largest row of the eigen matrix system in order to stabilize the
-   * computation in near rank-deficient cases, and the corresponding
-   * efficient repair of degenerate cases using the norm of this
-   * largest row. Omitting the "V^T" factor of the SVD is also a new
-   * "trick." It corresponds to moving from the SVD to the left polar
-   * decomposition.
+   * implemented it for use with (approximate) Elliptical Weighted
+   * Average Gaussian filtering in his PDL::Transform method (PDL =
+   * Perl Data Language).
    */
   const double a = dux;
   const double b = duy;
