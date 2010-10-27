@@ -1387,9 +1387,11 @@ static inline void ClampUpAxes(const double dux,
    *   Jinv = U Sigma V^T
    *
    * be an SVD decomposition of Jinv. (The SVD is not unique. The
-   * final ellipse does not depend on the particular SVD.) In
-   * principle, what we want is to clamp up the entries of the
-   * diagonal matrix Sigma so that they are at least 1, and then set
+   * final ellipse does not depend on the particular SVD. It only
+   * depends on the hermitian factor of the left polar decomposition,
+   * which is unique.) In principle, what we want is to clamp up the
+   * entries of the diagonal matrix Sigma so that they are at least 1,
+   * and then set
    *
    *   Jinv = U newSigma V^T.
    *
@@ -1417,12 +1419,13 @@ static inline void ClampUpAxes(const double dux,
    * implemented it for use with (approximate) Gaussian filtering in
    * his PDL::Transform code (PDL = Perl Data Language).
    *
-   * The only (possibly) new math in the following is the selection of
-   * the largest row of the eigen matrix system in order to stabilize
-   * the computation in near rank-deficient cases, and the
-   * corresponding efficient repair of degenerate cases using the norm
-   * of this largest row. Omitting the "V^T" factor of the SVD may
-   * also be a new "trick."
+   * The only new math in the following is the selection of the
+   * largest row of the eigen matrix system in order to stabilize the
+   * computation in near rank-deficient cases, and the corresponding
+   * efficient repair of degenerate cases using the norm of this
+   * largest row. Omitting the "V^T" factor of the SVD is also a new
+   * "trick." It corresponds to moving from the SVD to the left polar
+   * decomposition.
    */
   const double a = dux;
   const double b = duy;
