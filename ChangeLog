@@ -1,3 +1,8 @@
+2010-10-28  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * More precise blur values for Lanczos2Sharp and LanczosSharp.
+  * Added location of first Mitchell crossing (=8/7) to the filters data
+    structure.
+
 2010-10-28  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Added Lanczos2D* filters now named Lanczos2*
   * Reorganization of AcquireFilter() to make it work better
