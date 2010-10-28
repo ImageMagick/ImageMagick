@@ -1244,21 +1244,22 @@ MagickExport MagickBooleanType ResamplePixelColor(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % ClampUpAxes() function converts the input vectors into a major and
-% minor axis unit vectors, and their magnatude.  This form allows us
-% to ensure that the ellipse generated is never smaller than the unit
+% minor axis unit vectors, and their magnitude.  This allows us to
+% ensure that the ellipse generated is never smaller than the unit
 % circle and thus never too small for use in EWA resampling.
 %
 % This purely mathematical 'magic' was provided by Professor Nicolas
 % Robidoux and his Masters student Chantal Racette.
 %
-% See Reference: "We Recommend Singular Value Decomposition", David Austin
+% Reference: "We Recommend Singular Value Decomposition", David Austin
 %   http://www.ams.org/samplings/feature-column/fcarc-svd
 %
-% By generating Major and Minor Axis vectors, we can actually use the
+% By generating major and minor axis vectors, we can actually use the
 % ellipse in its "canonical form", by remapping the dx,dy of the
 % sampled point into distances along the major and minor axis unit
 % vectors.
-%    http://en.wikipedia.org/wiki/Ellipse#Canonical_form
+%
+% Reference: http://en.wikipedia.org/wiki/Ellipse#Canonical_form
 */
 static inline void ClampUpAxes(const double dux,
 			       const double dvx,
@@ -1293,10 +1294,10 @@ static inline void ClampUpAxes(const double dux,
    * Outputs:
    *
    * major_mag is the half-length of the major axis of the "new"
-   * ellipse (in input space).
+   * ellipse.
    *
    * minor_mag is the half-length of the minor axis of the "new"
-   * ellipse (in input space).
+   * ellipse.
    *
    * major_unit_x is the x-coordinate of the major axis direction vector
    * of both the "old" and "new" ellipses.
@@ -1321,8 +1322,8 @@ static inline void ClampUpAxes(const double dux,
    * newdvy = minor_mag * minor_unit_y = minor_mag *  major_unit_x
    *
    * and use these tangent vectors as if they were the original ones.
-   * Warning: Usually, this is a drastic change in the tangent vectors
-   * even if the singular values are not clamped.
+   * Usually, this is a drastic change in the tangent vectors even if
+   * the singular values are not clamped.
    */
   /*
    * Discussion:
@@ -1331,42 +1332,43 @@ static inline void ClampUpAxes(const double dux,
    * of radius r in output space is an ellipse which contains, at
    * least, a disc of radius r. (Make this hold for any r>0.)
    *
-   * ESSENCE OF THE METHOD: Compute the hermitian factor of the left
-   * polar decomposition of the linear transformation defining the
+   * ESSENCE OF THE METHOD: Compute the product of the first two
+   * factors of an SVD of the linear transformation defining the
    * ellipse and make sure that both its columns have norm at least 1.
    * Because rotations and reflexions map disks to themselves, it is
-   * not necessary to compute the other factor of the polar
-   * decomposition.
+   * not necessary to compute the third (rightmost) factor of the SVD.
    *
    * DETAILS: Find the singular values and (unit) left singular
    * vectors of Jinv, clampling up the singular values to 1, and
    * multiply the unit left singular vectors by the new singular
    * values in order to get the minor and major ellipse axis vectors.
    *
-   * Inputs:
+   * Image resampling context:
    *
    * The Jacobian matrix of the transformation at the output point
    * under consideration is defined as follows:
    *
    * Consider the transformation (x,y) -> (X,Y) from input locations
    * to output locations. (Anthony Thyssen, elsewhere in resample.c,
-   * uses the notation (u,v) -> (x,y) instead of (x,y) -> (X,Y).)
+   * uses the notation (u,v) -> (x,y).)
    *
-   * The Jacobian matrix J is equal to
+   * The Jacobian matrix of the transformation at (x,y) is equal to
    *
-   *   [ A, B ] = [ dX/dx, dX/dy ]
-   *   [ C, D ] = [ dY/dx, dY/dy ]
+   *   J = [ A, B ] = [ dX/dx, dX/dy ]
+   *       [ C, D ]   [ dY/dx, dY/dy ]
    *
-   * Consequently, the vector [A,C] is the tangent vector
-   * corresponding to input changes in the horizontal direction, and
-   * the vector [B,D] is the tangent vector corresponding to input
-   * changes in the vertical direction.
+   * that is, the vector [A,C] is the tangent vector corresponding to
+   * input changes in the horizontal direction, and the vector [B,D]
+   * is the tangent vector corresponding to input changes in the
+   * vertical direction.
    *
-   * In the context of resampling, it is more natural to use the
-   * inverse Jacobian matrix Jinv. Jinv is
+   * In the context of resampling, it is natural to use the inverse
+   * Jacobian matrix Jinv because resampling is generally performed by
+   * pulling pixel locations in the output image back to locations in
+   * the input image. Jinv is
    *
-   *   [ a, b ] = [ dx/dX, dx/dY ]
-   *   [ c, d ] = [ dy/dX, dy/dY ]
+   *   Jinb = [ a, b ] = [ dx/dX, dx/dY ]
+   *          [ c, d ]   [ dy/dX, dy/dY ]
    *
    * Note: Jinv can be computed from J with the following matrix
    * formula:
@@ -1374,35 +1376,33 @@ static inline void ClampUpAxes(const double dux,
    *   Jinv = 1/(A*D-B*C) [  D, -B ]
    *                      [ -C,  A ]
    *
-   * What we (implicitly) want to do is replace Jinv by a new Jinv
-   * which generates an ellipse which is as close as possible to the
-   * original but which contains the unit disk. This is accomplished
-   * as follows:
+   * What we do is modify Jinv so that it generates an ellipse which
+   * is as close as possible to the original but which contains the
+   * unit disk. This can be accomplished as follows:
    *
    * Let
    *
    *   Jinv = U Sigma V^T
    *
    * be an SVD decomposition of Jinv. (The SVD is not unique, but the
-   * final ellipse does not depend on the particular SVD. It only
-   * depends on the hermitian factor of the left polar decomposition,
-   * which is unique.) We could clamp up the entries of the diagonal
-   * matrix Sigma so that they are at least 1, and then set
+   * final ellipse does not depend on the particular SVD.)
+   * 
+   * We could clamp up the entries of the diagonal matrix Sigma so
+   * that they are at least 1, and then set
    *
    *   Jinv = U newSigma V^T.
    *
-   * However, we do not need to compute V^T for the following reason:
-   * V is an orthogonal matrix (that is, it represents a combination
-   * of a rotation and a reflexion). Consequently, V maps the unit
-   * circle to itself. For this reason, the exact value of V does not
-   * affect the final ellipse. We consequently set V to be the
-   * identity matrix and set
+   * However, we do not need to compute V for the following reason:
+   * V^T is an orthogonal matrix (that is, it represents a combination
+   * of rotations and reflexions) so that it maps the unit circle to
+   * itself. For this reason, the exact value of V does not affect the
+   * final ellipse, and we can choose V to be the identity
+   * matrix. This gives
    *
-   *   Jinv = U newSigma,
+   *   Jinv = U newSigma.
    *
-   * omitting the V^T factor altogether. In the end, we return the two
-   * diagonal entries of newSigma together with the two columns of U,
-   * for a total of six returned quantities.
+   * In the end, we return the two diagonal entries of newSigma
+   * together with the two columns of U.
    */
   /*
    * ClampUpAxes was written by Nicolas Robidoux and Chantal Racette
