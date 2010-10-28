@@ -68,8 +68,8 @@ David Pensak, E. I. du Pont de Nemours and Company
      possible.
 
 Chantal Racette, Laurentian University
-     Sped up Sinc and Blackman filter kernels. Code verification for
-     the EWA resampling method.
+     Sped up Sinc and Blackman filter kernels. EWA resampling code
+     verification.
 
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
