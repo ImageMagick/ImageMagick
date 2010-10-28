@@ -68,8 +68,8 @@ David Pensak, E. I. du Pont de Nemours and Company
      possible.
 
 Chantal Racette, Laurentian University
-     Sped up Sinc and Blackman filter kernels. Code verification for the new 
-     EWA ellipse clamping method. 
+     Sped up Sinc and Blackman filter kernels. Code verification for
+     the EWA resampling method.
 
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
@@ -90,10 +90,10 @@ Paul Raveling, USC Information Sciences Institute
      software.
 
 Nicolas Robidoux, Laurentian University
-     Inventor of a new ellipse clamping method, and vertical/horizontal line
-     preserving filters (Robidoux, LanczosSharp and Lanczos2DSharp), for
-     Elliptical Weighted Average resampling. Contributed faster filter kernels
-     (minimax Sinc approximation, and simplified Blackman and Bohman).
+     New ellipse clamping method and vertical/horizontal line
+     preserving filters (Robidoux, LanczosSharp and Lanczos2Sharp),
+     for EWA resampling. Faster filter kernels (minimax Sinc
+     approximation, and simplified Blackman and Bohman).
 
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
