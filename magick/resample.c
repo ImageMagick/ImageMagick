@@ -1321,8 +1321,8 @@ static inline void ClampUpAxes(const double dux,
    * newdvy = minor_mag * minor_unit_y = minor_mag *  major_unit_x
    *
    * and use these tangent vectors as if they were the original ones.
-   * This is usually a drastic change in the tangent vectors (even if
-   * the singular values are not modified).
+   * Warning: Usually, this is a drastic change in the tangent vectors
+   * even if the singular values are not clamped.
    */
   /*
    * Discussion:
@@ -1395,16 +1395,14 @@ static inline void ClampUpAxes(const double dux,
    * V is an orthogonal matrix (that is, it represents a combination
    * of a rotation and a reflexion). Consequently, V maps the unit
    * circle to itself. For this reason, the exact value of V does not
-   * affect the final ellipse, and we choose the identity matrix.
-   * That is, we simply set
+   * affect the final ellipse. We consequently set V to be the
+   * identity matrix and set
    *
    *   Jinv = U newSigma,
    *
-   * omitting the V^T factor altogether. Omitting the "V^T" factor
-   * corresponds to moving from the SVD to the left polar
-   * decomposition. In the end, we return the two diagonal entries of
-   * newSigma together with the two columns of U, for a total of six
-   * returned quantities.
+   * omitting the V^T factor altogether. In the end, we return the two
+   * diagonal entries of newSigma together with the two columns of U,
+   * for a total of six returned quantities.
    */
   /*
    * ClampUpAxes was written by Nicolas Robidoux and Chantal Racette
@@ -1413,8 +1411,8 @@ static inline void ClampUpAxes(const double dux,
    *
    * The astrophysicist Craig DeForest pioneered the use of the SVD to
    * clamp up the singular values of the Jacobian matrix of the
-   * pullback transformation. It is implemented in his PDL::Transform
-   * EWA code (PDL = Perl Data Language).
+   * pullback transformation for EWA resampling. It is implemented in
+   * his PDL::Transform code (PDL = Perl Data Language).
    */
   const double a = dux;
   const double b = duy;
