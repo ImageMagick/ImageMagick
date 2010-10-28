@@ -536,12 +536,13 @@ static MagickRealType Welsh(const MagickRealType x,
 %  (or cylindrical promoted Jinc-Jinc filter).  This filter is
 %  probably the most popular windowed filter.
 %
-%  LanczosSharp is a slightly sharpened (blur=0.9830391168464) form of
-%  the Lanczos filter.  It was designed specifically for cylindrical
-%  EWA (Elliptical Weighted Average) distortion (as a Jinc-Jinc
-%  filter), but can used as a slightly sharper orthogonal Lanczos
-%  (Sinc-Sinc) filter. The blur value, the corresponding EWA filter
-%  comes as close as possible to satisfying the following condition:
+%  LanczosSharp is a slightly sharpened (blur=0.98303932214489908)
+%  form of the Lanczos filter.  It was designed specifically for
+%  cylindrical EWA (Elliptical Weighted Average) distortion (as a
+%  Jinc-Jinc filter), but can used as a slightly sharper orthogonal
+%  Lanczos (Sinc-Sinc) filter. The blur value, the corresponding EWA
+%  filter comes as close as possible to satisfying the following
+%  condition:
 %
 %    'No-Op' Vertical and Horizontal Line Preservation Condition:
 %    Images with only vertical or horizontal features are preserved
@@ -918,7 +919,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   switch (filter_type)
   {
     case LanczosSharpFilter:
-      resize_filter->blur *= 0.9830391168464;
+      resize_filter->blur *= 0.98303932214489908;
       break;
     case Lanczos2SharpFilter:
       resize_filter->blur *= 0.958027803631219;
