@@ -770,7 +770,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Quadratic, 1.5, 1.5,     0.0, 0.0 }, /* Quadratic gaussian          */
     { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
     { CubicBC,   2.0, 1.0,     0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
-    { CubicBC,   2.0, 1.0, 1./3., 1./3. }, /* Mitchell       (B=C=1/3)    */
+    { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3. }, /* Mitchell   (B=C=1/3)    */
     { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
     { Sinc,      4.0, 1.0,     0.0, 0.0 }, /* Raw 4-lobed Sinc            */
     { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
