@@ -540,9 +540,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %  form of the Lanczos filter.  It was designed specifically for
 %  cylindrical EWA (Elliptical Weighted Average) distortion (as a
 %  Jinc-Jinc filter), but can used as a slightly sharper orthogonal
-%  Lanczos (Sinc-Sinc) filter. The blur value, the corresponding EWA
-%  filter comes as close as possible to satisfying the following
-%  condition:
+%  Lanczos (Sinc-Sinc) filter. The chosen blur value comes as close as
+%  possible to satisfying the following condition without changing the
+%  character of the corresponding EWA filter:
 %
 %    'No-Op' Vertical and Horizontal Line Preservation Condition:
 %    Images with only vertical or horizontal features are preserved
@@ -551,8 +551,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %  The Lanczos2 and Lanczos2Sharp filters are simply 2-lobe versions
 %  of the Lanczos filters.  The 'sharp' version uses a blur factor of
 %  0.958027803631219, again chosen because the resulting EWA filter
-%  comes as close as possible to satisfing the "'No-Op' Vertical and
-%  Horizontal Line Preservation Condition".
+%  comes as close as possible to preserving vertical and horizontal
+%  lines without changing its character. (There are other optimal
+%  values; we use the least sharpening one).
 %
 %  Robidoux is another filter tuned for EWA. It is the Keys cubic
 %  filter defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
