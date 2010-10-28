@@ -1,11 +1,12 @@
+2010-10-28  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added Lanczos2D* filters now named Lanczos2*
+  * Reorganization of AcquireFilter() to make it work better
+
 2010-10-25  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Clearer EWA filters (LanczosSharp etc) comments.
 
 2010-10-25  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Added LanczosSharp  (3-lobe Lanczos with sharpening)
-  * Lanczos2D and Lanczos2DSharp are now always a 2-lobe Jinc-Jinc filter
-    regardless of orthoginal (resize) or cylindrical (distort-EWA) usage.
-    This is a rare case where a Jinc filter is also useful for resize.
   * Filter sharpening factors are also always applied regardless of usage.
 
 2010-10-24  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>

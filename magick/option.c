@@ -954,9 +954,9 @@ static const OptionInfo
     { "Kaiser", (ssize_t) KaiserFilter, MagickFalse },
     { "Lagrange", (ssize_t) LagrangeFilter, MagickFalse },
     { "Lanczos", (ssize_t) LanczosFilter, MagickFalse },
-    { "Lanczos2D", (ssize_t) Lanczos2DFilter, MagickFalse },
-    { "Lanczos2DSharp", (ssize_t) Lanczos2DSharpFilter, MagickFalse },
     { "LanczosSharp", (ssize_t) LanczosSharpFilter, MagickFalse },
+    { "Lanczos2", (ssize_t) Lanczos2Filter, MagickFalse },
+    { "Lanczos2Sharp", (ssize_t) Lanczos2SharpFilter, MagickFalse },
     { "Mitchell", (ssize_t) MitchellFilter, MagickFalse },
     { "Parzen", (ssize_t) ParzenFilter, MagickFalse },
     { "Point", (ssize_t) PointFilter, MagickFalse },
@@ -965,7 +965,6 @@ static const OptionInfo
     { "Sinc", (ssize_t) SincFilter, MagickFalse },
     { "SincFast", (ssize_t) SincFastFilter, MagickFalse },
     { "Triangle", (ssize_t) TriangleFilter, MagickFalse },
-    { "Tent", (ssize_t) TriangleFilter, MagickFalse }, /* alias for Triangle*/
     { "Welsh", (ssize_t) WelshFilter, MagickFalse },
     /* For backward compatibility - must be after "Jinc" */
     { "Bessel", (ssize_t) JincFilter, MagickTrue },
