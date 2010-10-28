@@ -91,7 +91,7 @@ Paul Raveling, USC Information Sciences Institute
 
 Nicolas Robidoux, Laurentian University
      New ellipse clamping method and vertical/horizontal line preserving
-     filters for EWA resampling. Sped-up filter kernels.
+     filters for EWA resampling. Sped up filter kernels.
 
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
