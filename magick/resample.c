@@ -1323,7 +1323,9 @@ static inline void ClampUpAxes(const double dux,
    *
    * and use these tangent vectors as if they were the original ones.
    * Usually, this is a drastic change in the tangent vectors even if
-   * the singular values are not clamped.
+   * the singular values are not clamped; for example, the minor axis
+   * vector always points in a direction which is 90 degrees
+   * counterclockwise from the direction of the major axis vector.
    */
   /*
    * Discussion:
