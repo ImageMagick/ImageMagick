@@ -1,3 +1,7 @@
+2010-10-29  6.6.5-1 Glenn Randers-Pehrson <glennrp@image...>
+  * Revised PNG palette optimization
+  * Added some debug logging in coders/png.c.
+
 2010-10-28  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * More precise blur values for Lanczos2Sharp and LanczosSharp.
   * Added location of first Mitchell crossing (=8/7) to the filters data

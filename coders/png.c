@@ -113,7 +113,7 @@
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
-#define PNG_SORT_PALETTE    /* This works as of 5.4.0. */
+#define PNG_SORT_PALETTE    /* This works as of 5.4.0 but not in 6.5. */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -574,6 +574,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     *p;
 
   IndexPacket
+    *map,
     top_used;
 
   register ssize_t
@@ -581,7 +582,6 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     x;
 
   IndexPacket
-    *map,
     *opacity;
 
   unsigned char
@@ -655,20 +655,26 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
       }
   }
 
-  if (image->matte != MagickFalse)
+  /*
+    Mark background color, first occurrence if more than one.
+  */
+  for (i=0; i < number_colors; i++)
   {
-    /*
-      Mark background color, topmost occurrence if more than one.
-    */
-    for (i=number_colors-1; i; i--)
-    {
-      if (IsColorEqual(image->colormap+i,&image->background_color))
-        {
-          marker[i]=MagickTrue;
-          break;
-        }
-    }
+    if (IsColorEqual(image->colormap+i,&image->background_color))
+      {
+        marker[i]=MagickTrue;
+        if (image->debug != MagickFalse)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
+                     (int) i,(int) image->colormap[i].red,
+                     (int) image->colormap[i].green,
+                     (int) image->colormap[i].blue);
+          }
+        break;
+      }
   }
+
   /*
     Unmark duplicates.
   */
@@ -678,7 +684,22 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
         for (j=i+1; j < number_colors; j++)
           if ((opacity[i] == opacity[j]) &&
               (IsColorEqual(image->colormap+i,image->colormap+j)))
-            marker[j]=MagickFalse;
+            {
+              marker[j]=MagickFalse;
+              if (image->debug != MagickFalse)
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Dupe CompressColormapTransFirst=%d(%d,%d,%d)=%d(%d,%d,%d)",
+                       (int) j,
+                       (int) image->colormap[j].red,
+                       (int) image->colormap[j].green,
+                       (int) image->colormap[j].blue,
+                       (int) i,
+                       (int) image->colormap[i].red,
+                       (int) image->colormap[i].green,
+                       (int) image->colormap[i].blue);
+                }
+            }
        }
   /*
     Count colors that still remain.
@@ -692,6 +713,12 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
         if (opacity[i] != OpaqueOpacity)
           have_transparency=MagickTrue;
       }
+  if (image->debug != MagickFalse)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "    new_number_colors in CompressColormapTransFirst=%d",
+      (int) new_number_colors);
+    }
   if ((!have_transparency || (marker[0] &&
       (opacity[0] == (Quantum) TransparentOpacity)))
       && (new_number_colors == number_colors))
@@ -734,12 +761,14 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
+  for (i=0; i < number_colors; i++)
+    map[i]=0;
   k=0;
   for (i=0; i < number_colors; i++)
   {
-    map[i]=(IndexPacket) k;
     if (marker[i])
       {
+        map[i]=(IndexPacket) k;
         for (j=i+1; j < number_colors; j++)
         {
           if ((opacity[i] == opacity[j]) &&
@@ -789,9 +818,6 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
       }
    }
 
-  opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
-  marker=(unsigned char *) RelinquishMagickMemory(marker);
-
   if (remap_needed)
     {
       ExceptionInfo
@@ -802,6 +828,21 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
 
       register PixelPacket
         *q;
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    i  mark map  (red,green,blue,opacity)");
+      for (i=0; i < image->colors; i++)
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    %d  %d  %d (%d,%d,%d,%d)",
+             (int) i,
+             (int) marker[i],
+             (int) map[i],
+             (int) image->colormap[i].red,
+             (int) image->colormap[i].green,
+             (int) image->colormap[i].blue,
+             (int) opacity[i]);
+      }
 
       /*
         Remap pixels.
@@ -816,17 +857,43 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           j=(int) pixels[x];
-          pixels[x]=map[j];
+          pixels[x]=(IndexPacket) map[j];
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
       for (i=0; i < new_number_colors; i++)
         image->colormap[i]=colormap[i];
+      for (; i < image->colors; i++)
+        image->colormap[i]=colormap[0];
     }
+
+  marker=(unsigned char *) RelinquishMagickMemory(marker);
   colormap=(PixelPacket *) RelinquishMagickMemory(colormap);
-  image->colors=(size_t) new_number_colors;
+  opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
   map=(IndexPacket *) RelinquishMagickMemory(map);
+
+  image->colors=(size_t) new_number_colors;
+  (void) SyncImage(image);
+
+  /*
+    See if background color was moved.
+  */
+  if (image->debug != MagickFalse)
+  {
+    for (i=0; i < new_number_colors; i++)
+    {
+      if (IsColorEqual(image->colormap+i,&image->background_color))
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
+                   (int) i,(int) image->colormap[i].red,
+                   (int) image->colormap[i].green,
+                   (int) image->colormap[i].blue);
+          break;
+        }
+    }
+  }
   return(MagickTrue);
 }
 #endif
@@ -1078,6 +1145,7 @@ static void PNGLong(png_bytep p,png_uint_32 value)
   *p++=(png_byte) (value & 0xff);
 }
 
+#if defined(JNG_SUPPORTED)
 static void PNGsLong(png_bytep p,png_int_32 value)
 {
   *p++=(png_byte) ((value >> 24) & 0xff);
@@ -1085,6 +1153,7 @@ static void PNGsLong(png_bytep p,png_int_32 value)
   *p++=(png_byte) ((value >> 8) & 0xff);
   *p++=(png_byte) (value & 0xff);
 }
+#endif
 
 static void PNGShort(png_bytep p,png_uint_16 value)
 {
@@ -6687,40 +6756,33 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            "    Setting up oFFs chunk");
     }
 #endif
-  if (image_matte && (!mng_info->adjoin || !mng_info->equal_backgrounds))
+
+  if ((!mng_info->adjoin || !mng_info->equal_backgrounds))
     {
-      png_color_16
-        background;
+       unsigned int
+         mask;
 
-      if (image_depth < MAGICKCORE_QUANTUM_DEPTH)
-        {
-          size_t
-             maxval;
+       mask=0xffff;
+       if (ping_bit_depth == 8)
+          mask=0x00ff;
+       if (ping_bit_depth == 4)
+          mask=0x000f;
+       if (ping_bit_depth == 2)
+          mask=0x0003;
+       if (ping_bit_depth == 1)
+          mask=0x0001;
+       ping_background.red=(png_uint_16)
+         (ScaleQuantumToShort(image->background_color.red) & mask);
+       ping_background.green=(png_uint_16)
+         (ScaleQuantumToShort(image->background_color.green) & mask);
+       ping_background.blue=(png_uint_16)
+         (ScaleQuantumToShort(image->background_color.blue) & mask);
+      }
 
-          maxval=(1UL << image_depth)-1;
-          background.red=(png_uint_16)
-            (QuantumScale*(maxval*image->background_color.red));
-          background.green=(png_uint_16)
-            (QuantumScale*(maxval*image->background_color.green));
-          background.blue=(png_uint_16)
-            (QuantumScale*(maxval*image->background_color.blue));
-          background.gray=(png_uint_16)
-            (QuantumScale*(maxval*PixelIntensity(&image->background_color)));
-        }
-      else
-        {
-          background.red=image->background_color.red;
-          background.green=image->background_color.green;
-          background.blue=image->background_color.blue;
-          background.gray=
-            (png_uint_16) PixelIntensity(&image->background_color);
-        }
-      background.index=(png_byte) background.gray;
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Setting up bKGd chunk");
-      png_set_bKGD(ping,ping_info,&background);
-    }
+      png_set_bKGD(ping,ping_info,&ping_background);
   /*
     Select the color type.
   */
@@ -6741,8 +6803,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             quantize_info;
 
           size_t
-             number_colors,
-             save_number_colors;
+             number_colors;
 
           number_colors=image_colors;
           if ((image->storage_class == DirectClass) || (number_colors > 256))
@@ -6766,11 +6827,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           */
           ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 #if defined(PNG_SORT_PALETTE)
-          save_number_colors=image_colors;
           if (CompressColormapTransFirst(image) == MagickFalse)
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           number_colors=image->colors;
-          image_colors=save_number_colors;
+          image_colors=number_colors;
 #endif
           palette=(png_color *) AcquireQuantumMemory(257,
             sizeof(*palette));
@@ -6778,8 +6838,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Setting up PLTE chunk with %d colors",
-                (int) number_colors);
+                "  Setting up PLTE chunk with %d colors (%d)",
+                (int) number_colors, (int) image_colors);
           for (i=0; i < (ssize_t) number_colors; i++)
           {
             palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -7235,17 +7295,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             else
               {
 #if defined(PNG_SORT_PALETTE)
-                size_t
-                   save_number_colors;
-
                 if (mng_info->optimize)
                   {
-                    save_number_colors=image_colors;
                     if (CompressColormapTransFirst(image) == MagickFalse)
                        ThrowWriterException(ResourceLimitError,
                                             "MemoryAllocationFailed");
                     number_colors=image->colors;
-                    image_colors=save_number_colors;
+                    image_colors=number_colors;
                   }
 #endif
                 palette=(png_color *) AcquireQuantumMemory(257,
@@ -7313,6 +7369,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                         packet_index;
 
                       packet_index=packet_indexes[x];
+                      if((size_t) packet_index >= number_colors)
+                        (void) LogMagickEvent(CoderEvent, GetMagickModule(),
+                        "packet_index=%d, number_colors=%d",
+                        (int) packet_index, (int) number_colors);
                       assert((size_t) packet_index < number_colors);
                       if (trans[(ssize_t) packet_index] != 256)
                         {
@@ -7387,22 +7447,19 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          png_uint_16
            maxval;
 
-         png_color_16
-           background;
-
          size_t
            one=1;
 
          maxval=(png_uint_16) ((one << ping_bit_depth)-1);
 
 
-         background.gray=(png_uint_16)
+         ping_background.gray=(png_uint_16)
            (QuantumScale*(maxval*(PixelIntensity(&image->background_color))));
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Setting up bKGD chunk");
-         png_set_bKGD(ping,ping_info,&background);
+         png_set_bKGD(ping,ping_info,&ping_background);
 
          ping_trans_color.gray=(png_uint_16) (QuantumScale*(maxval*
            ping_trans_color.gray));
@@ -7419,17 +7476,33 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         number_colors=image_colors;
 
-        for (i=0; i < (ssize_t) MagickMax(1L*number_colors-1L,1L); i++)
-          if (IsPNGColorEqual(ping_background,image->colormap[i]))
+        for (i=0; i < (ssize_t) MagickMax(1L*number_colors,1L); i++)
+          if (IsPNGColorEqual(image->background_color,image->colormap[i]))
             break;
 
         ping_background.index=(png_byte) i;
 
         if (logging)
+        {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Setting up bKGD chunk with index=%d",(int) i);
+        }
 
-        png_set_bKGD(ping,ping_info,&ping_background);
+        if (i < number_colors)
+        {
+          png_set_bKGD(ping,ping_info,&ping_background);
+          if (logging)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "     background   =(%d,%d,%d)",
+                    (int) ping_background.red,
+                    (int) ping_background.green,
+                    (int) ping_background.blue);
+          }
+        }
+
+        else
+          png_set_invalid(ping,ping_info,PNG_INFO_bKGD);
       }
 
   if (logging != MagickFalse)
@@ -7776,7 +7849,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       register const PixelPacket
         *p;
-
+      
       quantum_info->depth=8;
       for (pass=0; pass < num_passes; pass++)
       {
@@ -7785,6 +7858,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Writing row of pixels (0)");
+
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
@@ -7948,9 +8025,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             else
               (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,IndexQuantum,png_pixels,&image->exception);
-            if (logging && y == 0)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Writing row of pixels (4)");
+              if (logging && y <= 2)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Writing row of pixels (4)");
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  png_pixels[0]=%d,png_pixels[1]=%d",
+                    (int)png_pixels[0],(int)png_pixels[1]);
+              }
             png_write_row(ping,png_pixels);
           }
         }
@@ -8251,6 +8333,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   */
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
+  mng_info->equal_backgrounds=MagickTrue;
   have_mng_structure=MagickTrue;
 
   /* See if user has requested a specific PNG subformat */
