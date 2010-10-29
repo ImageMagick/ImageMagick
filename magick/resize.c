@@ -887,11 +887,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     }
 
   /* Assign the real functions to use for the filters selected. */
-  resize_filter->signature=MagickSignature;
   resize_filter->filter=filters[filter_type].function;
   resize_filter->support=filters[filter_type].lobes;
   resize_filter->window=filters[window_type].function;
   resize_filter->scale=filters[window_type].scale;
+  resize_filter->signature=MagickSignature;
 
   /* Filter Modifications for orthogonal/cylindrical usage */
   if (cylindrical != MagickFalse)
@@ -907,7 +907,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case Lanczos2SharpFilter:
         resize_filter->filter=filters[JincFilter].function;
         resize_filter->window=filters[JincFilter].function;
-        /* lobes and window scale remain as declared */
+        resize_filter->scale=filters[JincFilter].scale;
+        /* number of lobes (support window size) remain unchanged */
         break;
       case GaussianFilter:
         /* Cylindrical Gaussian sigma is sqrt(2)/2. */
@@ -984,7 +985,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   if (artifact != (const char *) NULL)
     resize_filter->window_support=fabs(StringToDouble(artifact));
   /*
-    Adjust window function scaling to the windowing support for
+    Adjust window function scaling to match windowing support for
     weighting function.  This avoids a division on every filter call.
   */
   resize_filter->scale /= resize_filter->window_support;
