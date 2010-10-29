@@ -1061,10 +1061,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         if (resize_filter->filter == SincFast)  filter_type=SincFastFilter;
         if (resize_filter->filter == Jinc)      filter_type=JincFilter;
         if (resize_filter->filter == CubicBC)   filter_type=CubicFilter;
-        if (resize_filter->filter == Box)       window_type=BoxFilter;
+        if (resize_filter->window == Box)       window_type=BoxFilter;
         if (resize_filter->window == Sinc)      window_type=SincFilter;
         if (resize_filter->window == SincFast)  window_type=SincFastFilter;
-        if (resize_filter->filter == Jinc)      window_type=JincFilter;
+        if (resize_filter->window == Jinc)      window_type=JincFilter;
         if (resize_filter->window == CubicBC)   window_type=CubicFilter;
         /*
           Report Filter Details.
