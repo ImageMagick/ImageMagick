@@ -298,15 +298,17 @@ For example the default compose method can be specified as just 'Over'.</p>
 
 <p>Many of these compose methods will clear the destination image which was
 not overlaid by the source image.  This is to be expected as part of that
-specific composition methods defintion. Seeing the You can disable this by
-setting the special <A HREF="../www/command-line-options.html#set" >-set</A>
-'option:compose:outside-overlay' to 'false' will turn off this behaviour. </p>
+specific composition methods defintion. You can disable this by setting the
+special <A HREF="../www/command-line-options.html#define"
+>-define</A> 'compose:outside-overlay' to a value of 'false' will turn off
+this behaviour. </p>
 
 <p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
-related method '<kbd>Copy</kbd>' has been provided. This is equivelent to the
-'<kbd>Src</kbd>'  with the special <A HREF="../www/command-line-options.html#set"
->-set</A> option '<kbd>option:compose:outside-overlay</kbd>' set to
-'<kbd>false></kbd>'. </p>
+related method '<kbd>Copy</kbd>' has been provided. This is equivelent to
+using the '<kbd>Src</kbd>'  with the special <A HREF="../www/command-line-options.html#define"
+>-define</A> option '<kbd>compose:outside-overlay</kbd>' set to
+'<kbd>false</kbd>', so as to only modify the overlaid area, without clearing
+the rest of the image outside the overlaid area.  </p>
 
 <br><br>
 
@@ -408,7 +410,7 @@ below. </p>
 <p>As of IM v6.6.1-6, if the special '<kbd>Sync</kbd>' flag is not specified
 (enabled by default) with the <a href="../www/command-line-options.html#channel"
 >-channel</a> setting, then the above mathematical compositions will nolonger
-syncronise its actiosn with the alpha channel.  Instead the math composition
+syncronise its actions with the alpha channel.  Instead the math composition
 will be applied on an individual channel basis as defined by the <a
 href="../www/command-line-options.html#channel"
 >-channel</a>.  This includes the alpha channel. This special usage
@@ -540,7 +542,7 @@ methods.</p>
   <tr valign="top">
     <td valign="top">copy</td>
     <td valign="top">This is equivelent to the Duff-Porter composition method
-        '<kbd>Src,<kbd>' but withotu clearing the parts of the destination
+        '<kbd>Src,</kbd>' but without clearing the parts of the destination
         image that is not overlaid.  </td>
     </tr>
 
@@ -552,7 +554,7 @@ methods.</p>
         does not exist in the source image, (which can only happen for methods,
         '<kbd>copy-opacity</kbd>' or '<kbd>copy-black</kbd>') then it is
         assumed that the source image is a special grayscale channel image
-        of the values to be copied. </td>
+        of the values that is to be copied. </td>
     </tr>
 
   <tr valign="top">
@@ -580,14 +582,13 @@ setting in the "<code>composite</code>" command.  For example... </p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>composite ... -blend 50x50 ...</span></p>
 <p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
 these extra arguments to its <a href="../www/command-line-options.html#composite"
->-composite</a> operator, using the special <a
-href="../www/command-line-options.html#set">-set</a> attribute of '<kbd
-class="arg">option:compose:args</kbd>'.  This means you can now make use of
-these special argumented <a href="../www/command-line-options.html#compose"
+>-composite</a> operator, using the special <a href="../www/command-line-options.html#define">-define</a>
+attribute of '<kbd class="arg">compose:args</kbd>'.  This means you can now
+make use of these special argumented <a href="../www/command-line-options.html#compose"
 >-compose</a> methods, those the argument and the method both need to be set
 separatally.  For example... </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert ... -compose blend  -set option:compose:args 50x50 -composite ...</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert ... -compose blend  -define compose:args=50,50 -composite ...</span></p>
 <p>The following is a table of these special 'argumented' compose methods,
 with a brief summary of what they do. For more details see the equivalent
 "composite" command option name.  </p>
@@ -715,7 +716,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td valign="top">blur</td>
     <td valign="top">Arguments:
         <em class="arg">Width</em>[x<em class="arg">Height</em
-          >[+<em class="arg">Angle</em>]]
+          >[+<em class="arg">Angle</em>][+<em class="arg">Angle2</em>]]
     <br>Equivalent to "<code>composite</code>" <a href="../www/command-line-options.html#blur-composite">-blur</a>
     <br>A Variable Blur Mapping Composition method, where each pixel in the
         overlaid region is replaced with an Elliptical Weighted Average (EWA),
@@ -724,9 +725,15 @@ with a brief summary of what they do. For more details see the equivalent
     <br><br>
         As per 'Displace' and 'Distort', the red channel will modulate the
         width of the ellipse, while the green channel will modulate the height
-        of the ellipse.  However at this time the ellipse angle is not
-        modulated though this may be a future posibility (perhaps with a
-        special flag to enable use of blur channel for this purpose).
+        of the ellipse. If a single Angle value is given in the arguments,
+        then the ellipse will then be rotated by the angle specifed.
+    <br><br>
+        Normally the blue channel of the mapping overlay image is ignored.
+        However if a second ellipse angle is given, then it is assumed that
+        the blue channel defines a variable angle for the ellipse ranging from
+        the first angle to the second angle given.  This allows to generate
+        radial blurs, or a rough approximation for rotational blur. Or any mix
+        of the two.
     <br><br>
         Added to ImageMagick version 6.5.4-0.
     </td>

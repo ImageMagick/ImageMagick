@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -170,11 +170,21 @@
 
 <div class="main">
 
-<ul><dt>2010-10-25  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<ul><dt>2010-10-30  6.6.5-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Do not read configure files in the current directory for the "installed"    version of ImageMagick.</li><br />
+<dt>2010-10-29  6.6.5-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Revised PNG palette optimization</li>
+  <li> Added some debug logging in coders/png.c.</li><br />
+<dt>2010-10-28  6.6.5-3 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <li> More precise blur values for Lanczos2Sharp and LanczosSharp.</li>
+  <li> Added location of first Mitchell crossing (=8/7) to the filters data    structure.</li><br />
+<dt>2010-10-28  6.6.5-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Added Lanczos2D* filters now named Lanczos2*</li>
+  <li> Reorganization of AcquireFilter() to make it work better</li><br />
+<dt>2010-10-25  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
   <li> Clearer EWA filters (LanczosSharp etc) comments.</li><br />
 <dt>2010-10-25  6.6.5-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Added LanczosSharp  (3-lobe Lanczos with sharpening)</li>
-  <li> Lanczos2D and Lanczos2DSharp are now always a 2-lobe Jinc-Jinc filter    regardless of orthoginal (resize) or cylindrical (distort-EWA) usage.    This is a rare case where a Jinc filter is also useful for resize.</li>
   <li> Filter sharpening factors are also always applied regardless of usage.</li><br />
 <dt>2010-10-24  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
   <li> CubicBC filter formulas simplified by constant folding. In    particular, P1 coefficient (always zero) removed from coeff.</li><br />
