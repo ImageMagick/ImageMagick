@@ -749,6 +749,10 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
     }
+  /*
+    Search current directory.
+  */
+  (void) AppendValueToLinkedList(paths,ConstantString(""));
 #endif
   {
     char
@@ -803,10 +807,6 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       }
   }
 #endif
-  /*
-    Search current directory.
-  */
-  (void) AppendValueToLinkedList(paths,ConstantString(""));
   return(paths);
 }
 
