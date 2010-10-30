@@ -1,13 +1,17 @@
-2010-10-29  6.6.5-1 Glenn Randers-Pehrson <glennrp@image...>
+2010-10-30  6.6.5-5 Cristy  <quetzlzacatenango@image...>
+  * Do not read configure files in the current directory for the "installed"
+    version of ImageMagick.
+
+2010-10-29  6.6.5-4 Glenn Randers-Pehrson <glennrp@image...>
   * Revised PNG palette optimization
   * Added some debug logging in coders/png.c.
 
-2010-10-28  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-10-28  6.6.5-3 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * More precise blur values for Lanczos2Sharp and LanczosSharp.
   * Added location of first Mitchell crossing (=8/7) to the filters data
     structure.
 
-2010-10-28  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
+2010-10-28  6.6.5-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Added Lanczos2D* filters now named Lanczos2*
   * Reorganization of AcquireFilter() to make it work better
 
