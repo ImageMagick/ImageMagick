@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -283,12 +283,11 @@ file or data stream.</p>
   $PREFIX/share/ImageMagick-6.6.5/config
   $PREFIX/share/ImageMagick-6.6.5  $HOME/.magick/
   &lt;<em>client path</em>&gt;/lib/ImageMagick-6.6.5/
-  &lt;<em>current directory</em>&gt;/
 </pre>
 
 <p>The environmental variable $PREFIX is the default install path (e.g. <kbd>/usr/local</kbd>). The <em>client path</em> is the execution path of your ImageMagick client (e.g. <kbd>/usr/local</kbd>) .</p>
 
-<p>For the Unix or Linux pre-compiled binary distribution, the configuration load order is:</p>
+<p>For the Unix or Linux pre-compiled uninstalled binary distributions, the configuration load order is:</p>
 
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
@@ -296,7 +295,7 @@ file or data stream.</p>
   $MAGICK_HOME/share/ImageMagick-6.6.5/config
   $PREFIX/share/ImageMagick-6.6.5  $HOME/.magick/
   &lt;<em>client path</em>&gt;/lib/ImageMagick-6.6.5/
-  &lt;<em>current directory</em>&gt;/
+  &lt;<em>current directory</em>&gt;
 </pre>
 
 <p>Under Windows, ImageMagick searches for these configuration files in the following order, and loads them if found:</p>
@@ -307,7 +306,6 @@ file or data stream.</p>
   $PREFIX/config
   $USERPROFILE/.magick/
   &lt;<em>client path</em>&gt;
-  &lt;<em>current directory</em>&gt;
 </pre>
 
 <p>Above, $PREFIX is the default install path, typically <kbd>c:\\Program Files\\ImageMagick-6.6.5</kbd>.</p>
@@ -332,7 +330,6 @@ file or data stream.</p>
 <p>ImageMagick's image format support is usually provided in the form of loadable modules. It searches for loadable modules in the following order and it uses the first match found:</p>
 
 <pre class="text">
-  &lt;<em>current directory</em>&gt;/
   $MAGICK_HOME/lib/ImageMagick-6.6.5/modules-Q16/coders/
   $HOME/.magick/
   &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.6.5/modules-Q16/coders/
@@ -340,7 +337,6 @@ file or data stream.</p>
   $MAGICK_HOME/share/ImageMagick-6.6.5/modules-Q16/coders
   $HOME/.magick/
   &lt;<em>client path</em>&gt;/lib/ImageMagick-6.6.5/modules-Q16/coders
-  &lt;<em>current directory</em>&gt;/
 </pre>
 
 </div>
@@ -356,7 +352,6 @@ file or data stream.</p>
   $MAGICK_HOME/share/ImageMagick-6.6.5/config
   $HOME/.magick/
   &lt;<em>client path</em>&gt;/lib/ImageMagick-6.6.5/
-  &lt;<em>current directory</em>&gt;/
   $MAGICK_FONT_PATH
 </pre>
 
