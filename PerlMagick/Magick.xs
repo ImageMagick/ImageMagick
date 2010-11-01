@@ -1524,6 +1524,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 "UnrecognizedGravityType",SvPV(sval,na));
               break;
             }
+          if (info)
+            SetImageOption(info->image_info,attribute,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->gravity=(GravityType) sp;
           break;

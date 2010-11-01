@@ -1,3 +1,7 @@
+2010-11-01  6.6.5-6 Cristy  <quetzlzacatenango@image...>
+  * The gravity attribute must set the ImageInfo gravity property (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17282).
+
 2009-12-08  6.5.8-5 <kmx@volny...>
   * A couple of minor changes to Makefile.PL to support Strawberry Perl.
 
