@@ -602,9 +602,6 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     header[FITSBlocksize],
     *fits_info;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -619,7 +616,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
 
   ssize_t
     count,
-    offset;
+    offset,
+    y;
 
   unsigned char
     *pixels;
@@ -723,7 +721,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     if (count != (ssize_t) length)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
