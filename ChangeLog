@@ -1,6 +1,8 @@
 2010-10-30  6.6.5-5 Cristy  <quetzlzacatenango@image...>
   * Do not read configure files in the current directory for the "installed"
     version of ImageMagick.
+  * Allow numeric characters in the XPM basename (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17385).
 
 2010-10-29  6.6.5-4 Glenn Randers-Pehrson <glennrp@image...>
   * Revised PNG palette optimization

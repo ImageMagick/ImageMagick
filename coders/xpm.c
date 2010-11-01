@@ -139,11 +139,11 @@ static MagickBooleanType IsXPM(const unsigned char *magick,const size_t length)
 */
 
 static int CompareXPMColor(const void *target,const void *source)
-{ 
+{
   const char
     *p,
     *q;
-  
+ 
   p=(const char *) target;
   q=(const char *) source;
   return(strcmp(p,q));
@@ -968,8 +968,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
       (void) FormatMagickString(buffer,MaxTextExtent,"xpm_%s",basename);
       (void) CopyMagickString(basename,buffer,MaxTextExtent);
     }
-  for (i=0; basename[i] != '\0'; i++)
-    if (isalpha((int) ((unsigned char) basename[i])) == 0)
+  if (isalpha((int) ((unsigned char) basename[0])) == 0)
+    basename[0]='_';
+  for (i=1; basename[i] != '\0'; i++)
+    if (isalnum((int) ((unsigned char) basename[i])) == 0)
       basename[i]='_';
   (void) FormatMagickString(buffer,MaxTextExtent,
     "static char *%s[] = {\n",basename);
