@@ -801,9 +801,10 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */
     (void) WriteBlobString(image,"\033*b0Y");  /* set y offset */
     length=(image->columns*bits_per_pixel+7)/8;
-    pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+    pixels=(unsigned char *) AcquireQuantumMemory(length+256,sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    (void) ResetMagickMemory(pixels,0,(length+256)*sizeof(*pixels));
     compress_pixels=(unsigned char *) NULL;
     previous_pixels=(unsigned char *) NULL;
     switch (image->compression)
@@ -823,6 +824,8 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
+        (void) ResetMagickMemory(compress_pixels,0,(length+256)*
+          sizeof(*compress_pixels));
         (void) FormatMagickString(buffer,MaxTextExtent,"\033*b2M");
         (void) WriteBlobString(image,buffer);
         break;
@@ -830,13 +833,15 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       default:
       {
         compress_pixels=(unsigned char *) AcquireQuantumMemory(length+
-          (length >> 3),sizeof(*compress_pixels));
+          (length >> 3)+256,sizeof(*compress_pixels));
         if (compress_pixels == (unsigned char *) NULL)
           {
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        previous_pixels=(unsigned char *) AcquireQuantumMemory(length,
+        (void) ResetMagickMemory(compress_pixels,0,(length+(length >> 3)+256)*
+          sizeof(*compress_pixels));
+        previous_pixels=(unsigned char *) AcquireQuantumMemory(length+256,
           sizeof(*previous_pixels));
         if (previous_pixels == (unsigned char *) NULL)
           {
@@ -845,6 +850,8 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
+        (void) ResetMagickMemory(previous_pixels,0,(length+256)*
+          sizeof(*previous_pixels));
         (void) FormatMagickString(buffer,MaxTextExtent,"\033*b3M");
         (void) WriteBlobString(image,buffer);
         break;
