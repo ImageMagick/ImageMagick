@@ -6564,9 +6564,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   QuantumInfo
     *quantum_info;
 
-  register IndexPacket
-    *indexes;
-
   register ssize_t
     i,
     x;
@@ -6886,22 +6883,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 register const PixelPacket
                   *p;
 
-                p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (PixelPacket *) NULL)
                   break;
-                indexes=GetAuthenticIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if (p->opacity != OpaqueOpacity)
                     {
-                      indexes[x]=(IndexPacket) (number_colors-1);
-                      trans_alpha[(ssize_t) indexes[x]]=(png_byte) (255-
+                      trans_alpha[(ssize_t) number_colors-1]=(png_byte) (255-
                         ScaleQuantumToChar(GetOpacityPixelComponent(p)));
                     }
                   p++;
                 }
-                if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                  break;
               }
               for (i=0; i < (ssize_t) number_colors; i++)
                 if (trans_alpha[i] != 255)
