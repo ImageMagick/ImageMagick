@@ -1066,7 +1066,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             CacheView
               *mask_view;
-              
+
             Image
               *mask_image;
 
@@ -3402,7 +3402,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               }
             (void) SetImageArtifact(*image,"identify:unique-colors","true");
-            (void) SetImageArtifact(*image,"identify:verbose","true");
+            (void) SetImageArtifact(*image,"verbose","true");
             break;
           }
         if (LocaleCompare("unique-colors",option+1) == 0)
