@@ -6,7 +6,8 @@
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
-#                 2006, 2007, 2008 Free Software Foundation, Inc.
+#                 2006, 2007, 2008, 2009, 2010 Free Software Foundation,
+#                 Inc.
 #   Written by Gordon Matzigkeit, 1996
 #
 #   This file is part of GNU Libtool.
@@ -53,18 +54,24 @@ EGREP="/bin/grep -E"
 # A literal string matcher.
 FGREP="/bin/grep -F"
 
+# Shell to use when invoking shell scripts.
+SHELL="/bin/sh"
+
+# An echo program that protects backslashes.
+ECHO="printf %s\\n"
+
 # Which release of libtool.m4 was used?
-macro_version=2.2.6b
-macro_revision=1.3017
+macro_version=2.2.10
+macro_revision=1.3175
 
 # Assembler program.
-AS=as
+AS="as"
 
 # DLL creation program.
-DLLTOOL=dlltool
+DLLTOOL="dlltool"
 
 # Object dumper program.
-OBJDUMP=objdump
+OBJDUMP="objdump"
 
 # Whether or not to build shared libraries.
 build_libtool_libs=yes
@@ -112,10 +119,6 @@ SP2NL="tr \\040 \\012"
 # turn newlines into spaces.
 NL2SP="tr \\015\\012 \\040\\040"
 
-# How to create reloadable object files.
-reload_flag=" -r"
-reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
-
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
 
@@ -133,6 +136,9 @@ STRIP="strip"
 RANLIB="ranlib"
 old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
 old_postuninstall_cmds=""
+
+# Whether to use a lock for old archive extraction.
+lock_old_archive_extraction=no
 
 # A C compiler.
 LTCC="gcc -std=gnu99 -std=gnu99"
@@ -154,12 +160,6 @@ global_symbol_to_c_name_address_lib_prefix="sed -n -e 's/^: \\([^ ]*\\) \$/  {\\
 
 # The name of the directory that contains temporary libtool files.
 objdir=.libs
-
-# Shell to use when invoking shell scripts.
-SHELL="/bin/sh"
-
-# An echo program that does not interpret backslashes.
-ECHO="echo"
 
 # Used to examine libraries when file_magic_cmd begins with "file".
 MAGIC_CMD=file
@@ -223,6 +223,9 @@ library_names_spec="\${libname}\${release}\${shared_ext}\$versuffix \${libname}\
 # The coded name of the library, if different from the real name.
 soname_spec="\${libname}\${release}\${shared_ext}\$major"
 
+# Permission mode override for installation of shared libraries.
+install_override_mode=""
+
 # Command to use after installation of a shared archive.
 postinstall_cmds=""
 
@@ -240,7 +243,7 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.5.1 /usr/lib64 /lib64"
+sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.5.1 /usr/lib64 /lib64 "
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/atlas /usr/lib64/mysql /usr/lib64/qt-3.3/lib /usr/lib/wine/ /usr/lib64/wine/ /usr/lib64/xulrunner-1.9.2 "
@@ -261,6 +264,10 @@ striplib="strip --strip-unneeded"
 
 # The linker used to build libraries.
 LD="/usr/bin/ld -m elf_x86_64"
+
+# How to create reloadable object files.
+reload_flag=" -r"
+reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 
 # Commands used to build an old-style archive.
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
@@ -9255,6 +9262,10 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 
 # The linker used to build libraries.
 LD="/usr/bin/ld -m elf_x86_64"
+
+# How to create reloadable object files.
+reload_flag=" -r"
+reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 
 # Commands used to build an old-style archive.
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
