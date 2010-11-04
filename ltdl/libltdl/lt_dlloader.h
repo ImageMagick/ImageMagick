@@ -73,8 +73,8 @@ typedef struct {
 LT_SCOPE int		lt_dlloader_add	   (const lt_dlvtable *vtable);
 LT_SCOPE lt_dlloader	lt_dlloader_next   (const lt_dlloader loader);
 
-LT_SCOPE lt_dlvtable *	lt_dlloader_remove	(char *name);
-LT_SCOPE const lt_dlvtable *lt_dlloader_find	(char *name);
+LT_SCOPE lt_dlvtable *	lt_dlloader_remove	(const char *name);
+LT_SCOPE const lt_dlvtable *lt_dlloader_find	(const char *name);
 LT_SCOPE const lt_dlvtable *lt_dlloader_get	(lt_dlloader loader);
 
 

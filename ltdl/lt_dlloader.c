@@ -150,7 +150,7 @@ lt_dlloader_get	(lt_dlloader loader)
    modules need this loader; in either case, the loader list is not
    changed if NULL is returned.  */
 lt_dlvtable *
-lt_dlloader_remove (char *name)
+lt_dlloader_remove (const char *name)
 {
   const lt_dlvtable *	vtable	= lt_dlloader_find (name);
   static const char	id_string[] = "lt_dlloader_remove";
@@ -199,12 +199,12 @@ lt_dlloader_remove (char *name)
 
   /* If we got this far, remove the loader from our global list.  */
   return (lt_dlvtable *)
-      slist_unbox ((SList *) slist_remove (&loaders, loader_callback, name));
+      slist_unbox ((SList *) slist_remove (&loaders, loader_callback, (void *) name));
 }
 
 
 const lt_dlvtable *
-lt_dlloader_find (char *name)
+lt_dlloader_find (const char *name)
 {
-  return lt_dlloader_get (slist_find (loaders, loader_callback, name));
+  return lt_dlloader_get (slist_find (loaders, loader_callback, (void *) name));
 }
