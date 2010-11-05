@@ -69,10 +69,10 @@
   </threshold>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  Diffused Pixel Ordered Dither Patterns
+  Dispersion Ordered Dither Patterns
 -->
   <threshold map="o2x2" alias="2x2">
-    <description>Ordered 2x2 Diffused Pixel</description>
+    <description>Ordered 2x2 Dispersion</description>
     <levels width="2" height="2" divisor="5">
        1  3
        4  2
@@ -80,7 +80,7 @@
   </threshold>
 
   <threshold map="o3x3" alias="3x3">
-    <description>Ordered 3x3 Diffused Pixel</description>
+    <description>Ordered 3x3 Dispersion</description>
     <levels width="3" height="3" divisor="10">
         3  7  4
         6  1  9
@@ -93,7 +93,7 @@
        From "Dithering Algorithms"
        http://www.efg2.com/Lab/Library/ImageProcessing/DHALF.TXT
      -->
-    <description>Ordered 4x4 Diffused Pixel</description>
+    <description>Ordered 4x4 Dispersion</description>
     <levels width="4" height="4" divisor="17">
        1   9   3  11
       13   5  15   7
@@ -149,7 +149,7 @@
 
   <threshold map="o8x8" alias="8x8">
     <!-- Extracted from original 'OrderedDither()' Function -->
-    <description>Ordered 8x8 Diffused Pixel</description>
+    <description>Ordered 8x8 Dispersion</description>
     <levels width="8" height="8" divisor="65">
          1  49  13  61   4  52  16  64
         33  17  45  29  36  20  48  32
