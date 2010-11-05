@@ -6149,19 +6149,19 @@ static MagickBooleanType png_write_chunk_from_profile(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p r e s s C o l o r m a p T r a n s F i r s t                       %
+%   O p t i m i z e P N G C o l o r m a p                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompressColormapTransFirst compresses an image colormap removing
+%  OptimizePNGColormap compresses an image colormap removing
 %  any duplicate and unused color entries and putting the transparent colors
 %  first.  Returns MagickTrue on success, MagickFalse on error.
 %
-%  The format of the CompressColormapTransFirst method is:
+%  The format of the OptimizePNGColormap method is:
 %
-%      unsigned int CompressColormapTransFirst(Image *image)
+%      unsigned int OptimizePNGColormap(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -6169,7 +6169,7 @@ static MagickBooleanType png_write_chunk_from_profile(Image *image,
 %      This function updates image->colors and image->colormap.
 %
 */
-static MagickBooleanType CompressColormapTransFirst(Image *image)
+static MagickBooleanType OptimizePNGColormap(Image *image)
 {
   int
     remap_needed,
@@ -6212,7 +6212,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    CompressColorMapTransFirst %s (%.20g colors)",image->filename,
+      "    OptimizePNGColormap %s (%.20g colors)",image->filename,
       (double) image->colors);
   if (image->storage_class != PseudoClass || image->colors > 256 ||
       image->colors < 2)
@@ -6283,7 +6283,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
         if (image->debug != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
+                 "    Background in OptimizePNGColormap=%d (%d,%d,%d)",
                      (int) i,(int) image->colormap[i].red,
                      (int) image->colormap[i].green,
                      (int) image->colormap[i].blue);
@@ -6306,7 +6306,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
               if (image->debug != MagickFalse)
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    Dupe CompressColormapTransFirst=%d(%d,%d,%d)=%d(%d,%d,%d)",
+                  "    Dupe OptimizePNGColormap=%d(%d,%d,%d)=%d(%d,%d,%d)",
                        (int) j,
                        (int) image->colormap[j].red,
                        (int) image->colormap[j].green,
@@ -6333,7 +6333,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
   if (image->debug != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    new_number_colors in CompressColormapTransFirst=%d",
+      "    new_number_colors in OptimizePNGColormap=%d",
       (int) new_number_colors);
     }
   if ((!have_transparency || (marker[0] &&
@@ -6503,7 +6503,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
       if (IsColorEqual(image->colormap+i,&image->background_color))
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
+               "    Background in OptimizePNGColormap=%d (%d,%d,%d)",
                    (int) i,(int) image->colormap[i].red,
                    (int) image->colormap[i].green,
                    (int) image->colormap[i].blue);
@@ -6514,6 +6514,11 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
   return(MagickTrue);
 }
 #endif
+
+static MagickBooleanType CompressColormapTransFirst(Image *image)
+{
+  return OptimizePNGColormap(image);
+}
 
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    const ImageInfo *image_info,Image *image)
