@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20101201000025 tanju.temurbas-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -257,7 +257,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.5-5 2010-50-50 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.5-6 2010-60-60 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -276,26 +276,26 @@
 
 <div class="viewport">
 <pre class="code">
-  long
-    x,
-    y;
-
   const PixelPacket
     *p;
 
   PixelPacket
     *q;
 
+  ssize_t
+    x,
+    y;
+
   destination=CloneImage(source,source->columns,source->rows,MagickTrue,exception);
   if (destination  == (Image *) NULL)
     { /* an exception was thrown */ }
-  for (y=0; y &lt; (long) source-&gt;rows; y++)
+  for (y=0; y &lt; (ssize_t) source-&gt;rows; y++)
   {
     p=GetVirtualPixels(source,0,y,source-&gt;columns,1,exception);
     q=GetAuthenticPixels(destination,0,y,destination-&gt;columns,1,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x &lt; (long) source-&gt;columns; x++)
+    for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
     {
       q-&gt;red=90*p-&gt;red/100;
       q-&gt;green=90*p-&gt;green/100;
@@ -307,7 +307,7 @@
     if (SyncAuthenticPixels(destination,exception) == MagickFalse)
       break;
   }
-  if (y &lt; (long) source-&gt;rows)
+  if (y &lt; (ssize_t) source-&gt;rows)
     { /* an exception was thrown */ }
 </pre>
 </div>
@@ -320,16 +320,16 @@
   const IndexPacket
     *indexes;
 
-  for (y=0; y &lt; (long) source-&gt;rows; y++)
+  for (y=0; y &lt; (ssize_t) source-&gt;rows; y++)
   {
     p=GetVirtualPixels(source,0,y,source-&gt;columns,1);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexes(source);
-    for (x=0; x &lt; (long) source-&gt;columns; x++)
+    for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
       (void) printf("%d\n",indexes[x];
   }
-  if (y &lt; (long) source-&gt;rows)
+  if (y &lt; (ssize_t) source-&gt;rows)
     /* an exception was thrown */
 </pre>
 
@@ -408,20 +408,20 @@
 
   view_1=OpenCacheView(source);
   view_2=OpenCacheView(source);
-  for (y=0; y &lt; (long) source-&gt;rows; y++)
+  for (y=0; y &lt; (ssize_t) source-&gt;rows; y++)
   {
     u=GetCacheViewVirtualPixels(view_1,0,y,source-&gt;columns,1,exception);
     v=GetCacheViewVirtualPixels(view_2,0,source-&gt;rows-y-1,source-&gt;columns,1,exception);
     if ((u == (const PixelPacket *) NULL) || (v == (const PixelPacket *) NULL))
       break;
-    for (x=0; x &lt; (long) source-&gt;columns; x++)
+    for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
     {
       /* do something with u &amp; v here */
     }
   }
   view_1=CloseCacheView(view_1);
   view_2=CloseCacheView(view_2);
-  if (y &lt; (long) source-&gt;rows)
+  if (y &lt; (ssize_t) source-&gt;rows)
     { /* an exception was thrown */ }
 </pre>
 </div>
@@ -559,25 +559,25 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
   CacheView
     *image_view;
 
-  long
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
   #pragma omp parallel for schedule(dynamic,4) shared(status)
-  for (y=0; y &lt; (long) image-&gt;rows; y++)
+  for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   {
     register IndexPacket
       *indexes;
 
-    register long
-      x;
-
     register PixelPacket
       *q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -588,7 +588,7 @@ image=ReadStream(image_info,&amp;StreamHandler,exception);
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x &lt; (long) image-&gt;columns; x++)
+    for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
     {
       q-&gt;red= ...
       q-&gt;green= ...
@@ -814,23 +814,21 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
-    y;
-
   MagickBooleanType
     status;
 
-  register long
-    x;
-
   register PixelPacket
     *q;
+
+  register size_t
+    x;
 
   register unsigned char
     *p;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -887,7 +885,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
     pixels=(unsigned char *) AcquireQuantumMemory((size_t) image-&gt;columns,3UL*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    for (y=0; y &lt; (long) image-&gt;rows; y++)
+    for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
     {
       count=(ssize_t) ReadBlob(image,(size_t) (3*image-&gt;columns),pixels);
       if (count != (ssize_t) (3*image-&gt;columns))
@@ -896,7 +894,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
       q=QueueAuthenticPixels(image,0,y,image-&gt;columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x &lt; (long) image-&gt;columns; x++)
+      for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
         q-&gt;red=ScaleCharToQuantum(*p++);
         q-&gt;green=ScaleCharToQuantum(*p++);
@@ -1037,9 +1035,6 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent];
 
-  long
-    y;
-
   MagickBooleanType
     status;
 
@@ -1049,11 +1044,14 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register ssize_t
     x;
 
   register unsigned char
     *q;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
@@ -1089,13 +1087,13 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
     (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n",
       image-&gt;columns,image-&gt;rows);
     (void) WriteBlobString(image,buffer);
-    for (y=0; y &lt; (long) image-&gt;rows; y++)
+    for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image-&gt;columns,1,&amp;image-&gt;exception);
       if (p == (const PixelPacket *) NULL)
         break;
       q=pixels;
-      for (x=0; x &lt; (long) image-&gt;columns; x++)
+      for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
         *q++=ScaleQuantumToChar(p-&gt;red);
         *q++=ScaleQuantumToChar(p-&gt;green);
@@ -1222,11 +1220,11 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     CacheView
       *image_view;
 
-    long
-      y;
-
     MagickBooleanType
       status;
+
+    ssize_t
+      y;
 
     brightness_sum_x=0.0;
     brightness_sum_x2=0.0;
@@ -1250,12 +1248,12 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
-    for (y=0; y &lt; (long) image-&gt;rows; y++)
+    for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
     {
       register const PixelPacket
         *p;
 
-      register long
+      register ssize_t
         x;
 
       if (status == MagickFalse)
@@ -1266,7 +1264,7 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
           status=MagickFalse;
           continue;
         }
-      for (x=0; x &lt; (long) image-&gt;columns; x++)
+      for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
         ConvertRGBToHSB(p-&gt;red,p-&gt;green,p-&gt;blue,&amp;hue,&amp;saturation,&amp;brightness);
         brightness*=QuantumRange;
