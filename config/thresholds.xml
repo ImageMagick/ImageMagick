@@ -117,7 +117,7 @@
   </threshold>
 
 
-  <threshold map="o5x5wc" alias="o5x5wc">
+  <threshold map="o5x5wc">
     <!--
        Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
      -->
@@ -137,16 +137,16 @@
      -->
     <description>Ordered 6x6 Black Circles</description>
     <levels width="6" height="6" divisor="37">
-        36 32 23 24 25 33
-        31 15  9 10 16 26
-        22  8  2  3 11 17
-        21  7  1  4 12 18
-        30 14  6  5 13 27
-        35 29 20 19 28 34
+         1  5 14 13 12  4
+         6 22 28 27 21 11
+        15 29 35 34 26 20
+        16 30 36 33 25 19
+         7 23 31 32 24 10
+         2  8 17 18  9  3
     </levels>
   </threshold>
 
-  <threshold map="o6x6wc" alias="6x6wc">
+  <threshold map="o6x6wc">
     <!--
        Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
      -->
@@ -167,18 +167,18 @@
      -->
     <description>Ordered 7x7 Black Circles</description>
     <levels width="7" height="7" divisor="50">
-        2  7 16 26 15  6  1
-        8 17 33 39 32 14  5
-       18 34 44 48 43 31 13
+        2  7 17 26 15  6  1
+        8 16 33 39 32 13  5
+       18 34 44 48 43 31 14
        27 40 45 49 47 38 25
-       19 35 41 46 42 30 24
-        9 20 36 37 29 23 12
-        3 10 21 28 22 11  4
+       20 35 41 46 42 30 24
+        9 19 36 37 29 22 12
+        3 10 21 28 23 11  4
     </levels>
   </threshold>
 
 
-  <threshold map="o7x7wc" alias="o7x7wc">
+  <threshold map="o7x7wc">
     <!--
        Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
      -->
