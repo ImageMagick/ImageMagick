@@ -80,7 +80,7 @@
   </threshold>
 
   <threshold map="o3x3" alias="3x3">
-    <description>Ordered 4x4 Diffused Pixel</description>
+    <description>Ordered 3x3 Diffused Pixel</description>
     <levels width="3" height="3" divisor="10">
         3  7  4
         6  1  9
@@ -101,6 +101,52 @@
       16   8  14   6
     </levels>
   </threshold>
+
+  <threshold map="o5x5" alias="5x5">
+    <!--
+       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
+     -->
+    <description>Ordered 5x5 Circular</description>
+    <levels width="5" height="5" divisor="26">
+        25 21 10 11 22
+        20  9  6  7 12
+        19  5  1  2 13
+        18  8  4  3 14
+        24 17 16 15 23
+    </levels>
+  </threshold>
+
+  <threshold map="o6x6" alias="6x6">
+    <!--
+       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
+     -->
+    <description>Ordered 6x6 Circular</description>
+    <levels width="6" height="6" divisor="37">
+        36 32 23 24 25 33
+        31 15  9 10 16 26
+        22  8  2  3 11 17
+        21  7  1  4 12 18
+        30 14  6  5 13 27
+        35 29 20 19 28 34
+    </levels>
+  </threshold>
+
+  <threshold map="o7x7" alias="7x7">
+    <!--
+       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
+     -->
+    <description>Ordered 7x7 Circular</description>
+    <levels width="7" height="7" divisor="50">
+       49 42 32 18 19 33 48
+       41 31 17 10 11 20 34
+       40 30  9  2  3 12 21
+       39 29  8 21  4  5 22
+       43 28 16  7  6 13 23
+       44 38 27 15 14 24 35
+       46 45 37 26 25 36 47
+    </levels>
+  </threshold>
+
 
   <threshold map="o8x8" alias="8x8">
     <!-- Extracted from original 'OrderedDither()' Function -->

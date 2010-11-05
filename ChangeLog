@@ -1,3 +1,6 @@
+2010-10-29  6.6.5-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Added 5x5, 6x6, and 7x7 ordered-dither level maps.
+
 2010-10-30  6.6.5-5 Cristy  <quetzlzacatenango@image...>
   * Do not read configure files in the current directory for the "installed"
     version of ImageMagick.
