@@ -526,377 +526,6 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 }
 
 #if PNG_LIBPNG_VER > 10011
-#if defined(PNG_SORT_PALETTE)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p r e s s C o l o r m a p T r a n s F i r s t                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CompressColormapTransFirst compresses an image colormap removing
-%  any duplicate and unused color entries and putting the transparent colors
-%  first.  Returns MagickTrue on success, MagickFalse on error.
-%
-%  The format of the CompressColormapTransFirst method is:
-%
-%      unsigned int CompressColormapTransFirst(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the address of a structure of type Image.
-%      This function updates image->colors and image->colormap.
-%
-*/
-static MagickBooleanType CompressColormapTransFirst(Image *image)
-{
-  int
-    remap_needed,
-    k;
-
-  ssize_t
-    j,
-    new_number_colors,
-    number_colors,
-    y;
-
-  PixelPacket
-    *colormap;
-
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
-    *p;
-
-  IndexPacket
-    *map,
-    top_used;
-
-  register ssize_t
-    i,
-    x;
-
-  IndexPacket
-    *opacity;
-
-  unsigned char
-    *marker,
-    have_transparency;
-
-  /*
-    Determine if colormap can be compressed.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    CompressColorMapTransFirst %s (%.20g colors)",image->filename,
-      (double) image->colors);
-  if (image->storage_class != PseudoClass || image->colors > 256 ||
-      image->colors < 2)
-    {
-      if (image->debug != MagickFalse)
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "    Could not compress colormap");
-          if (image->colors > 256 || image->colors == 0)
-            return(MagickFalse);
-          else
-            return(MagickTrue);
-        }
-    }
-  marker=(unsigned char *) AcquireQuantumMemory(image->colors,sizeof(*marker));
-  if (marker == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  opacity=(IndexPacket *) AcquireQuantumMemory(image->colors,sizeof(*opacity));
-  if (opacity == (IndexPacket *) NULL)
-    {
-      marker=(unsigned char *) RelinquishMagickMemory(marker);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
-  /*
-    Mark colors that are present.
-  */
-  number_colors=(ssize_t) image->colors;
-  for (i=0; i < number_colors; i++)
-  {
-    marker[i]=MagickFalse;
-    opacity[i]=OpaqueOpacity;
-  }
-  top_used=0;
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetVirtualIndexQueue(image);
-    if (image->matte != MagickFalse)
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        marker[(int) indexes[x]]=MagickTrue;
-        opacity[(int) indexes[x]]=GetOpacityPixelComponent(p);
-        if (indexes[x] > top_used)
-           top_used=indexes[x];
-        p++;
-      }
-    else
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        marker[(int) indexes[x]]=MagickTrue;
-        if (indexes[x] > top_used)
-           top_used=indexes[x];
-      }
-  }
-
-  /*
-    Mark background color, first occurrence if more than one.
-  */
-  for (i=0; i < number_colors; i++)
-  {
-    if (IsColorEqual(image->colormap+i,&image->background_color))
-      {
-        marker[i]=MagickTrue;
-        if (image->debug != MagickFalse)
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
-                     (int) i,(int) image->colormap[i].red,
-                     (int) image->colormap[i].green,
-                     (int) image->colormap[i].blue);
-          }
-        break;
-      }
-  }
-
-  /*
-    Unmark duplicates.
-  */
-  for (i=0; i < number_colors-1; i++)
-    if (marker[i])
-      {
-        for (j=i+1; j < number_colors; j++)
-          if ((opacity[i] == opacity[j]) &&
-              (IsColorEqual(image->colormap+i,image->colormap+j)))
-            {
-              marker[j]=MagickFalse;
-              if (image->debug != MagickFalse)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    Dupe CompressColormapTransFirst=%d(%d,%d,%d)=%d(%d,%d,%d)",
-                       (int) j,
-                       (int) image->colormap[j].red,
-                       (int) image->colormap[j].green,
-                       (int) image->colormap[j].blue,
-                       (int) i,
-                       (int) image->colormap[i].red,
-                       (int) image->colormap[i].green,
-                       (int) image->colormap[i].blue);
-                }
-            }
-       }
-  /*
-    Count colors that still remain.
-  */
-  have_transparency=MagickFalse;
-  new_number_colors=0;
-  for (i=0; i < number_colors; i++)
-    if (marker[i])
-      {
-        new_number_colors++;
-        if (opacity[i] != OpaqueOpacity)
-          have_transparency=MagickTrue;
-      }
-  if (image->debug != MagickFalse)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    new_number_colors in CompressColormapTransFirst=%d",
-      (int) new_number_colors);
-    }
-  if ((!have_transparency || (marker[0] &&
-      (opacity[0] == (Quantum) TransparentOpacity)))
-      && (new_number_colors == number_colors))
-    {
-      /*
-        No duplicate or unused entries, and transparency-swap not needed.
-      */
-      marker=(unsigned char *) RelinquishMagickMemory(marker);
-      opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
-      return(MagickTrue);
-    }
-
-  remap_needed=MagickFalse;
-  if ((ssize_t) top_used >= new_number_colors)
-     remap_needed=MagickTrue;
-
-  /*
-    Compress colormap.
-  */
-
-  colormap=(PixelPacket *) AcquireQuantumMemory(image->colors,
-    sizeof(*colormap));
-  if (colormap == (PixelPacket *) NULL)
-    {
-      marker=(unsigned char *) RelinquishMagickMemory(marker);
-      opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
-  /*
-    Eliminate unused colormap entries.
-  */
-  map=(IndexPacket *) AcquireQuantumMemory((size_t) number_colors,
-    sizeof(*map));
-  if (map == (IndexPacket *) NULL)
-    {
-      marker=(unsigned char *) RelinquishMagickMemory(marker);
-      opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
-      colormap=(PixelPacket *) RelinquishMagickMemory(colormap);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
-  for (i=0; i < number_colors; i++)
-    map[i]=0;
-  k=0;
-  for (i=0; i < number_colors; i++)
-  {
-    if (marker[i])
-      {
-        map[i]=(IndexPacket) k;
-        for (j=i+1; j < number_colors; j++)
-        {
-          if ((opacity[i] == opacity[j]) &&
-              (IsColorEqual(image->colormap+i,image->colormap+j)))
-            {
-               map[j]=(IndexPacket) k;
-               marker[j]=MagickFalse;
-            }
-        }
-        k++;
-      }
-  }
-  j=0;
-  for (i=0; i < number_colors; i++)
-  {
-    if (marker[i])
-      {
-        colormap[j]=image->colormap[i];
-        j++;
-      }
-  }
-  if (have_transparency && (opacity[0] != (Quantum) TransparentOpacity))
-    {
-      /*
-        Move the first transparent color to palette entry 0.
-      */
-      for (i=1; i < number_colors; i++)
-      {
-        if (marker[i] && opacity[i] == (Quantum) TransparentOpacity)
-          {
-            PixelPacket
-              temp_colormap;
-
-            temp_colormap=colormap[0];
-            colormap[0]=colormap[(int) map[i]];
-            colormap[(ssize_t) map[i]]=temp_colormap;
-            for (j=0; j < number_colors; j++)
-            {
-              if (map[j] == 0)
-                map[j]=map[i];
-              else if (map[j] == map[i])
-                map[j]=0;
-            }
-            remap_needed=MagickTrue;
-            break;
-          }
-      }
-   }
-
-  if (remap_needed)
-    {
-      ExceptionInfo
-        *exception;
-
-      register IndexPacket
-        *pixels;
-
-      register PixelPacket
-        *q;
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    i  mark map  (red,green,blue,opacity)");
-      for (i=0; i < image->colors; i++)
-      {
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    %d  %d  %d (%d,%d,%d,%d)",
-             (int) i,
-             (int) marker[i],
-             (int) map[i],
-             (int) image->colormap[i].red,
-             (int) image->colormap[i].green,
-             (int) image->colormap[i].blue,
-             (int) opacity[i]);
-      }
-
-      /*
-        Remap pixels.
-      */
-      exception=(&image->exception);
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        pixels=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          j=(int) pixels[x];
-          pixels[x]=(IndexPacket) map[j];
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
-      for (i=0; i < new_number_colors; i++)
-        image->colormap[i]=colormap[i];
-      for (; i < image->colors; i++)
-        image->colormap[i]=colormap[0];
-    }
-
-  marker=(unsigned char *) RelinquishMagickMemory(marker);
-  colormap=(PixelPacket *) RelinquishMagickMemory(colormap);
-  opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
-  map=(IndexPacket *) RelinquishMagickMemory(map);
-
-  image->colors=(size_t) new_number_colors;
-  (void) SyncImage(image);
-
-  /*
-    See if background color was moved.
-  */
-  if (image->debug != MagickFalse)
-  {
-    for (i=0; i < new_number_colors; i++)
-    {
-      if (IsColorEqual(image->colormap+i,&image->background_color))
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
-                   (int) i,(int) image->colormap[i].red,
-                   (int) image->colormap[i].green,
-                   (int) image->colormap[i].blue);
-          break;
-        }
-    }
-  }
-  return(MagickTrue);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6513,6 +6142,378 @@ static MagickBooleanType png_write_chunk_from_profile(Image *image,
    }
    return(MagickTrue);
 }
+
+#if defined(PNG_SORT_PALETTE)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o m p r e s s C o l o r m a p T r a n s F i r s t                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CompressColormapTransFirst compresses an image colormap removing
+%  any duplicate and unused color entries and putting the transparent colors
+%  first.  Returns MagickTrue on success, MagickFalse on error.
+%
+%  The format of the CompressColormapTransFirst method is:
+%
+%      unsigned int CompressColormapTransFirst(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the address of a structure of type Image.
+%      This function updates image->colors and image->colormap.
+%
+*/
+static MagickBooleanType CompressColormapTransFirst(Image *image)
+{
+  int
+    remap_needed,
+    k;
+
+  ssize_t
+    j,
+    new_number_colors,
+    number_colors,
+    y;
+
+  PixelPacket
+    *colormap;
+
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
+    *p;
+
+  IndexPacket
+    *map,
+    top_used;
+
+  register ssize_t
+    i,
+    x;
+
+  IndexPacket
+    *opacity;
+
+  unsigned char
+    *marker,
+    have_transparency;
+
+  /*
+    Determine if colormap can be compressed.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "    CompressColorMapTransFirst %s (%.20g colors)",image->filename,
+      (double) image->colors);
+  if (image->storage_class != PseudoClass || image->colors > 256 ||
+      image->colors < 2)
+    {
+      if (image->debug != MagickFalse)
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    Could not compress colormap");
+          if (image->colors > 256 || image->colors == 0)
+            return(MagickFalse);
+          else
+            return(MagickTrue);
+        }
+    }
+  marker=(unsigned char *) AcquireQuantumMemory(image->colors,sizeof(*marker));
+  if (marker == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  opacity=(IndexPacket *) AcquireQuantumMemory(image->colors,sizeof(*opacity));
+  if (opacity == (IndexPacket *) NULL)
+    {
+      marker=(unsigned char *) RelinquishMagickMemory(marker);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
+  /*
+    Mark colors that are present.
+  */
+  number_colors=(ssize_t) image->colors;
+  for (i=0; i < number_colors; i++)
+  {
+    marker[i]=MagickFalse;
+    opacity[i]=OpaqueOpacity;
+  }
+  top_used=0;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    if (image->matte != MagickFalse)
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        marker[(int) indexes[x]]=MagickTrue;
+        opacity[(int) indexes[x]]=GetOpacityPixelComponent(p);
+        if (indexes[x] > top_used)
+           top_used=indexes[x];
+        p++;
+      }
+    else
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        marker[(int) indexes[x]]=MagickTrue;
+        if (indexes[x] > top_used)
+           top_used=indexes[x];
+      }
+  }
+
+  /*
+    Mark background color, first occurrence if more than one.
+  */
+  for (i=0; i < number_colors; i++)
+  {
+    if (IsColorEqual(image->colormap+i,&image->background_color))
+      {
+        marker[i]=MagickTrue;
+        if (image->debug != MagickFalse)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
+                     (int) i,(int) image->colormap[i].red,
+                     (int) image->colormap[i].green,
+                     (int) image->colormap[i].blue);
+          }
+        break;
+      }
+  }
+
+  /*
+    Unmark duplicates.
+  */
+  for (i=0; i < number_colors-1; i++)
+    if (marker[i])
+      {
+        for (j=i+1; j < number_colors; j++)
+          if ((opacity[i] == opacity[j]) &&
+              (IsColorEqual(image->colormap+i,image->colormap+j)))
+            {
+              marker[j]=MagickFalse;
+              if (image->debug != MagickFalse)
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Dupe CompressColormapTransFirst=%d(%d,%d,%d)=%d(%d,%d,%d)",
+                       (int) j,
+                       (int) image->colormap[j].red,
+                       (int) image->colormap[j].green,
+                       (int) image->colormap[j].blue,
+                       (int) i,
+                       (int) image->colormap[i].red,
+                       (int) image->colormap[i].green,
+                       (int) image->colormap[i].blue);
+                }
+            }
+       }
+  /*
+    Count colors that still remain.
+  */
+  have_transparency=MagickFalse;
+  new_number_colors=0;
+  for (i=0; i < number_colors; i++)
+    if (marker[i])
+      {
+        new_number_colors++;
+        if (opacity[i] != OpaqueOpacity)
+          have_transparency=MagickTrue;
+      }
+  if (image->debug != MagickFalse)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "    new_number_colors in CompressColormapTransFirst=%d",
+      (int) new_number_colors);
+    }
+  if ((!have_transparency || (marker[0] &&
+      (opacity[0] == (Quantum) TransparentOpacity)))
+      && (new_number_colors == number_colors))
+    {
+      /*
+        No duplicate or unused entries, and transparency-swap not needed.
+      */
+      marker=(unsigned char *) RelinquishMagickMemory(marker);
+      opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
+      return(MagickTrue);
+    }
+
+  remap_needed=MagickFalse;
+  if ((ssize_t) top_used >= new_number_colors)
+     remap_needed=MagickTrue;
+
+  /*
+    Compress colormap.
+  */
+
+  colormap=(PixelPacket *) AcquireQuantumMemory(image->colors,
+    sizeof(*colormap));
+  if (colormap == (PixelPacket *) NULL)
+    {
+      marker=(unsigned char *) RelinquishMagickMemory(marker);
+      opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
+  /*
+    Eliminate unused colormap entries.
+  */
+  map=(IndexPacket *) AcquireQuantumMemory((size_t) number_colors,
+    sizeof(*map));
+  if (map == (IndexPacket *) NULL)
+    {
+      marker=(unsigned char *) RelinquishMagickMemory(marker);
+      opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
+      colormap=(PixelPacket *) RelinquishMagickMemory(colormap);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
+  for (i=0; i < number_colors; i++)
+    map[i]=0;
+  k=0;
+  for (i=0; i < number_colors; i++)
+  {
+    if (marker[i])
+      {
+        map[i]=(IndexPacket) k;
+        for (j=i+1; j < number_colors; j++)
+        {
+          if ((opacity[i] == opacity[j]) &&
+              (IsColorEqual(image->colormap+i,image->colormap+j)))
+            {
+               map[j]=(IndexPacket) k;
+               marker[j]=MagickFalse;
+            }
+        }
+        k++;
+      }
+  }
+  j=0;
+  for (i=0; i < number_colors; i++)
+  {
+    if (marker[i])
+      {
+        colormap[j]=image->colormap[i];
+        j++;
+      }
+  }
+  if (have_transparency && (opacity[0] != (Quantum) TransparentOpacity))
+    {
+      /*
+        Move the first transparent color to palette entry 0.
+      */
+      for (i=1; i < number_colors; i++)
+      {
+        if (marker[i] && opacity[i] == (Quantum) TransparentOpacity)
+          {
+            PixelPacket
+              temp_colormap;
+
+            temp_colormap=colormap[0];
+            colormap[0]=colormap[(int) map[i]];
+            colormap[(ssize_t) map[i]]=temp_colormap;
+            for (j=0; j < number_colors; j++)
+            {
+              if (map[j] == 0)
+                map[j]=map[i];
+              else if (map[j] == map[i])
+                map[j]=0;
+            }
+            remap_needed=MagickTrue;
+            break;
+          }
+      }
+   }
+
+  if (remap_needed)
+    {
+      ExceptionInfo
+        *exception;
+
+      register IndexPacket
+        *pixels;
+
+      register PixelPacket
+        *q;
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    i  mark map  (red,green,blue,opacity)");
+      for (i=0; i < image->colors; i++)
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    %d  %d  %d (%d,%d,%d,%d)",
+             (int) i,
+             (int) marker[i],
+             (int) map[i],
+             (int) image->colormap[i].red,
+             (int) image->colormap[i].green,
+             (int) image->colormap[i].blue,
+             (int) opacity[i]);
+      }
+
+      /*
+        Remap pixels.
+      */
+      exception=(&image->exception);
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        pixels=GetAuthenticIndexQueue(image);
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          j=(int) pixels[x];
+          pixels[x]=(IndexPacket) map[j];
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      for (i=0; i < new_number_colors; i++)
+        image->colormap[i]=colormap[i];
+      for (; i < image->colors; i++)
+        image->colormap[i]=colormap[0];
+    }
+
+  marker=(unsigned char *) RelinquishMagickMemory(marker);
+  colormap=(PixelPacket *) RelinquishMagickMemory(colormap);
+  opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
+  map=(IndexPacket *) RelinquishMagickMemory(map);
+
+  image->colors=(size_t) new_number_colors;
+  (void) SyncImage(image);
+
+  /*
+    See if background color was moved.
+  */
+  if (image->debug != MagickFalse)
+  {
+    for (i=0; i < new_number_colors; i++)
+    {
+      if (IsColorEqual(image->colormap+i,&image->background_color))
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    Background in CompressColormapTransFirst=%d (%d,%d,%d)",
+                   (int) i,(int) image->colormap[i].red,
+                   (int) image->colormap[i].green,
+                   (int) image->colormap[i].blue);
+          break;
+        }
+    }
+  }
+  return(MagickTrue);
+}
+#endif
 
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    const ImageInfo *image_info,Image *image)
