@@ -102,7 +102,7 @@
     </levels>
   </threshold>
 
-  <threshold map="o5x5" alias="5x5">
+  <threshold map="o5x5c" alias="5x5">
     <!--
        Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
      -->
@@ -116,7 +116,7 @@
     </levels>
   </threshold>
 
-  <threshold map="o6x6" alias="6x6">
+  <threshold map="o6x6c" alias="6x6">
     <!--
        Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
      -->
@@ -131,7 +131,7 @@
     </levels>
   </threshold>
 
-  <threshold map="o7x7" alias="7x7">
+  <threshold map="o7x7c" alias="7x7">
     <!--
        Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
      -->
@@ -146,7 +146,6 @@
        46 45 37 26 25 36 47
     </levels>
   </threshold>
-
 
   <threshold map="o8x8" alias="8x8">
     <!-- Extracted from original 'OrderedDither()' Function -->
