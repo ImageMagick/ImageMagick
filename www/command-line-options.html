@@ -131,7 +131,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Online-Magazin" href="http://www.unkostenbeitrag.de/">Online-Magazin</a><!-- 20101101000200 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -4311,26 +4311,27 @@ given number of <em class="arg">levels</em> per color channel .  </td><td style=
 <p>You can choose from these standard threshold maps:</p>
 
 <pre class="text">
-  threshold
-  checks
-  o2x2
-  o3x3
-  o4x4
-  o8x8
-  h4x4a
-  h6x6a
-  h8x8a
-  h4x4o
-  h6x6o
-  h8x8o
-  h16x16o
+  threshold    non-dither
+  checks       checkerboard
+  o2x2         ordered dispersion
+  o3x3         ordered dispersion
+  o4x4         ordered dispersion
+  o5x5c        ordered circular
+  o6x6c        ordered circular
+  o7x7c        ordered circular
+  o8x8         ordered dispersion
+  h4x4a        halftone angled
+  h6x6a        halftone angled
+  h8x8a        halftone angled
+  h4x4o        halftone orthogonal
+  h6x6o        halftone orthogonal
+  h8x8o        halftone orthogonal
+  h16x16o      halftone orthogonal
 </pre>
 
-<p>The '<kbd>o</kbd>' maps are ordered diffused pixel threshold maps, while the
-'<kbd>h</kbd>' maps are halftone threshold maps which are either 'a' angled, or
-'o' orthogonal. The '<kbd>checks</kbd>' produce a 3 level checkerbord dither
+<p> The <kbd>checks</kbd> pattern produces a 3 level checkerbord dither
 pattern.  Or you can define your own <em class="arg" >threshold map</em> in a
-personal or system "<kbd>thresholds.xml</kbd>" XML file. </p>
+personal or system <kbd>thresholds.xml</kbd> XML file. </p>
 
 <p>To print a complete list of threshold, use the <a href="#list" >-list
 threshold</a> option.</p>
