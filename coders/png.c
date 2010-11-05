@@ -6169,7 +6169,7 @@ static MagickBooleanType png_write_chunk_from_profile(Image *image,
 %      This function updates image->colors and image->colormap.
 %
 */
-static MagickBooleanType OptimizePNGColormap(Image *image)
+static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket *opt_map)
 {
   int
     remap_needed,
@@ -6191,7 +6191,6 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
     *p;
 
   IndexPacket
-    *map,
     top_used;
 
   register ssize_t
@@ -6368,9 +6367,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
   /*
     Eliminate unused colormap entries.
   */
-  map=(IndexPacket *) AcquireQuantumMemory((size_t) number_colors,
-    sizeof(*map));
-  if (map == (IndexPacket *) NULL)
+  if (opt_map == (IndexPacket *) NULL)
     {
       marker=(unsigned char *) RelinquishMagickMemory(marker);
       opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
@@ -6379,19 +6376,19 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
         image->filename);
     }
   for (i=0; i < number_colors; i++)
-    map[i]=0;
+   opt_map[i]=0;
   k=0;
   for (i=0; i < number_colors; i++)
   {
     if (marker[i])
       {
-        map[i]=(IndexPacket) k;
+        opt_map[i]=(IndexPacket) k;
         for (j=i+1; j < number_colors; j++)
         {
           if ((opacity[i] == opacity[j]) &&
               (IsColorEqual(image->colormap+i,image->colormap+j)))
             {
-               map[j]=(IndexPacket) k;
+               opt_map[j]=(IndexPacket) k;
                marker[j]=MagickFalse;
             }
         }
@@ -6420,14 +6417,14 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
               temp_colormap;
 
             temp_colormap=colormap[0];
-            colormap[0]=colormap[(int) map[i]];
-            colormap[(ssize_t) map[i]]=temp_colormap;
+            colormap[0]=colormap[(int) opt_map[i]];
+            colormap[(ssize_t) opt_map[i]]=temp_colormap;
             for (j=0; j < number_colors; j++)
             {
-              if (map[j] == 0)
-                map[j]=map[i];
-              else if (map[j] == map[i])
-                map[j]=0;
+              if (opt_map[j] == 0)
+                opt_map[j]=opt_map[i];
+              else if (opt_map[j] == opt_map[i])
+                opt_map[j]=0;
             }
             remap_needed=MagickTrue;
             break;
@@ -6447,14 +6444,14 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
         *q;
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    i  mark map  (red,green,blue,opacity)");
+          "    i  mark opt_map  (red,green,blue,opacity)");
       for (i=0; i < image->colors; i++)
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    %d  %d  %d (%d,%d,%d,%d)",
              (int) i,
              (int) marker[i],
-             (int) map[i],
+             (int) opt_map[i],
              (int) image->colormap[i].red,
              (int) image->colormap[i].green,
              (int) image->colormap[i].blue,
@@ -6474,7 +6471,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           j=(int) pixels[x];
-          pixels[x]=(IndexPacket) map[j];
+          pixels[x]=(IndexPacket) opt_map[j];
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -6488,36 +6485,20 @@ static MagickBooleanType OptimizePNGColormap(Image *image)
   marker=(unsigned char *) RelinquishMagickMemory(marker);
   colormap=(PixelPacket *) RelinquishMagickMemory(colormap);
   opacity=(IndexPacket *) RelinquishMagickMemory(opacity);
-  map=(IndexPacket *) RelinquishMagickMemory(map);
 
   image->colors=(size_t) new_number_colors;
   (void) SyncImage(image);
 
-  /*
-    See if background color was moved.
-  */
-  if (image->debug != MagickFalse)
-  {
-    for (i=0; i < new_number_colors; i++)
-    {
-      if (IsColorEqual(image->colormap+i,&image->background_color))
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "    Background in OptimizePNGColormap=%d (%d,%d,%d)",
-                   (int) i,(int) image->colormap[i].red,
-                   (int) image->colormap[i].green,
-                   (int) image->colormap[i].blue);
-          break;
-        }
-    }
-  }
   return(MagickTrue);
 }
 #endif
 
 static MagickBooleanType CompressColormapTransFirst(Image *image)
 {
-  return OptimizePNGColormap(image);
+  IndexPacket
+    opt_map[256];
+
+  return OptimizePNGColormap(image, opt_map);
 }
 
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
