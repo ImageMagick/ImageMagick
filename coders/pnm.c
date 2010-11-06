@@ -555,8 +555,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 pixel.red=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
                   pixel.red,max_value)];
-                pixel.green=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.green,max_value)];
+                pixel.green=(MagickRealType) scale[ConstrainPixel(image,
+                  (ssize_t) pixel.green,max_value)];
                 pixel.blue=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
                   pixel.blue,max_value)];
               }
@@ -700,8 +700,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
-                image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                  row,image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -810,8 +810,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
-                image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                  row,image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -990,8 +990,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
-                image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                  row,image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
@@ -1031,7 +1031,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (image->matte != MagickFalse)
                         {
                           p=PushCharPixel(p,&pixel);
-                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,
+                            range));
                         }
                       q++;
                     }
@@ -1051,7 +1052,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (image->matte != MagickFalse)
                         {
                           p=PushShortPixel(MSBEndian,p,&pixel);
-                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,
+                            range));
                         }
                       q++;
                     }
@@ -1080,7 +1082,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (image->matte != MagickFalse)
                         {
                           p=PushCharPixel(p,&pixel);
-                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,
+                            range));
                         }
                       q++;
                     }
@@ -1104,7 +1107,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (image->matte != MagickFalse)
                         {
                           p=PushShortPixel(MSBEndian,p,&pixel);
-                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,
+                            range));
                         }
                       q++;
                     }
@@ -1130,7 +1134,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (image->matte != MagickFalse)
                         {
                           p=PushCharPixel(p,&pixel);
-                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,
+                            range));
                         }
                       q++;
                     }
@@ -1152,7 +1157,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (image->matte != MagickFalse)
                         {
                           p=PushShortPixel(MSBEndian,p,&pixel);
-                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                          SetOpacityPixelComponent(q,ScaleAnyToQuantum(pixel,
+                            range));
                         }
                       q++;
                     }
@@ -1222,8 +1228,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MagickBooleanType
                   proceed;
 
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
-                image->rows);
+                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                  row,image->rows);
                 if (proceed == MagickFalse)
                   status=MagickFalse;
               }
