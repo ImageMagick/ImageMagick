@@ -2102,8 +2102,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
     {
       LockSemaphoreInfo(cache_info->semaphore);
-      if ((cache_info->reference_count > 1) ||
-          (cache_info->mode == ReadMode))
+      if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
         {
           Image
             clone_image;
@@ -2124,8 +2123,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
             {
               if ((clone != MagickFalse) &&
                   (cache_info->type != PingCache))
-                status=ClonePixelCachePixels(clone_info,cache_info,
-                  exception);
+                status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
                   destroy=MagickTrue;
