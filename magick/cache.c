@@ -2121,8 +2121,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           status=OpenPixelCache(&clone_image,IOMode,exception);
           if (status != MagickFalse)
             {
-              if ((clone != MagickFalse) &&
-                  (cache_info->type != PingCache))
+              if ((clone != MagickFalse) && (cache_info->type != PingCache))
                 status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
