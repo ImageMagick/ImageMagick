@@ -818,7 +818,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=psd_info.depth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
-  if ((image_info->ping != MagickFalse) &&
+  if ((image_info->ping == MagickFalse) &&
       (SetImageBackgroundColor(image) == MagickFalse))
     {
       InheritException(exception,&image->exception);
