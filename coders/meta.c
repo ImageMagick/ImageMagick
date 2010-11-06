@@ -2280,7 +2280,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       unsigned char
         *info;
 
-      profile=GetImageProfile(image,"8bim");
+      profile=GetImageProfile(image,"iptc");
+      if (profile == (StringInfo *) NULL)
+        profile=GetImageProfile(image,"8bim");
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"No8BIMDataIsAvailable");
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
