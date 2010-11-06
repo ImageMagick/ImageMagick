@@ -1288,6 +1288,8 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
 static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
+  if (cache_info->type == PingCache)
+    return(MagickTrue);
   if ((clone_info->type != DiskCache) && (cache_info->type != DiskCache))
     return(CloneMemoryToMemoryPixelCache(clone_info,cache_info,exception));
   if ((clone_info->type == DiskCache) && (cache_info->type == DiskCache))
@@ -2121,7 +2123,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           status=OpenPixelCache(&clone_image,IOMode,exception);
           if (status != MagickFalse)
             {
-              if ((clone != MagickFalse) && (cache_info->type != PingCache))
+              if (clone != MagickFalse)
                 status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
