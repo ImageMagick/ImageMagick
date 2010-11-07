@@ -102,99 +102,6 @@
     </levels>
   </threshold>
 
-  <threshold map="o5x5bc" alias="5x5">
-    <!--
-       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
-     -->
-    <description>Ordered 5x5 (black circles)</description>
-    <levels width="5" height="5" divisor="26">
-         1 21 16 15  4
-         5 17 20 19 14
-         6 21 25 24 12
-         7 18 22 23 11
-         2  8  9 10  3
-    </levels>
-  </threshold>
-
-
-  <threshold map="o5x5wc">
-    <!--
-       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
-     -->
-    <description>Ordered 5x5 (white circles)</description>
-    <levels width="5" height="5" divisor="26">
-        25 21 10 11 22
-        20  9  6  7 12
-        19  5  1  2 13
-        18  8  4  3 14
-        24 17 16 15 23
-    </levels>
-  </threshold>
-
-  <threshold map="o6x6bc" alias="6x6">
-    <!--
-       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
-     -->
-    <description>Ordered 6x6 (black circles)</description>
-    <levels width="6" height="6" divisor="37">
-         1  5 14 13 12  4
-         6 22 28 27 21 11
-        15 29 35 34 26 20
-        16 30 36 33 25 19
-         7 23 31 32 24 10
-         2  8 17 18  9  3
-    </levels>
-  </threshold>
-
-  <threshold map="o6x6wc">
-    <!--
-       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
-     -->
-    <description>Ordered 6x6 (white circles)</description>
-    <levels width="6" height="6" divisor="37">
-        36 32 23 24 25 33
-        31 15  9 10 16 26
-        22  8  2  3 11 17
-        21  7  1  4 12 18
-        30 14  6  5 13 27
-        35 29 20 19 28 34
-    </levels>
-  </threshold>
-
-  <threshold map="o7x7bc" alias="7x7">
-    <!--
-       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
-     -->
-    <description>Ordered 7x7 (black circles)</description>
-    <levels width="7" height="7" divisor="50">
-        2  7 17 26 15  6  1
-        8 16 33 39 32 13  5
-       18 34 44 48 43 31 14
-       27 40 45 49 47 38 25
-       20 35 41 46 42 30 24
-        9 19 36 37 29 22 12
-        3 10 21 28 23 11  4
-    </levels>
-  </threshold>
-
-
-  <threshold map="o7x7wc">
-    <!--
-       Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
-     -->
-    <description>Ordered 7x7 (white circles)</description>
-    <levels width="7" height="7" divisor="50">
-       49 42 32 18 19 33 48
-       41 31 17 10 11 20 34
-       40 30  9  2  3 12 21
-       39 29  8  1  4  5 22
-       43 28 16  7  6 13 23
-       44 38 27 15 14 24 35
-       46 45 37 26 25 36 47
-    </levels>
-  </threshold>
-
-
   <threshold map="o8x8" alias="8x8">
     <!-- Extracted from original 'OrderedDither()' Function -->
     <description>Ordered 8x8 (dispersed)</description>
@@ -214,8 +121,11 @@
   Halftones - Angled 45 degrees
 
   Initially added to ImageMagick by Glenn Randers-Pehrson, IM v6.2.8-6,
-  modified to be more halftone-like by Anthony, IM v6.2.9-7 Larger halftone
-  patterns still needed to be added.
+  modified to be more symmetrical with intensity by Anthony, IM v6.2.9-7
+
+  These patterns initially start as circles, but then form diamonds
+  pattern at the 50% threshold level, before forming negated circles,
+  as it approached the other threshold extereme.
 -->
   <threshold map="h4x4a" alias="4x1">
     <description>Halftone 4x4 (angled)</description>
@@ -259,6 +169,10 @@
   Initially added by Anthony Thyssen, IM v6.2.9-5 using techniques from
   "Dithering & Halftoning" by Gernot Haffmann
   http://www.fho-emden.de/~hoffmann/hilb010101.pdf
+
+  These patterns initially start as circles, but then form square
+  pattern at the 50% threshold level, before forming negated circles,
+  as it approached the other threshold extereme.
 -->
   <threshold map="h4x4o">
     <description>Halftone 4x4 (orthogonal)</description>
@@ -322,6 +236,96 @@
         1   9  21  43  71  99 135 151 149 133  97  69  41  22  10   2
     </levels>
   </threshold>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Halftones - Orthogonally Expanding Circle Patterns
+
+  Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
+
+  Rather than producing a diamond 50% threshold pattern, these
+  continue to generate larger (overlapping) circles.  They are
+  more like a true halftone pattern formed by covering a surface
+  with either pure white or pure black circular dots.
+
+  WARNING: true halftone patterns only use true circles even in
+  areas of highly varying intensity.  Threshold dither patterns
+  can generate distorted circles in such areas.
+-->
+
+  <threshold map="c5x5b" alias="5x5">
+    <description>Circles 5x5 (black)</description>
+    <levels width="5" height="5" divisor="26">
+         1 21 16 15  4
+         5 17 20 19 14
+         6 21 25 24 12
+         7 18 22 23 11
+         2  8  9 10  3
+    </levels>
+  </threshold>
+
+
+  <threshold map="c5x5w">
+    <description>Circles 5x5 (white)</description>
+    <levels width="5" height="5" divisor="26">
+        25 21 10 11 22
+        20  9  6  7 12
+        19  5  1  2 13
+        18  8  4  3 14
+        24 17 16 15 23
+    </levels>
+  </threshold>
+
+  <threshold map="c6x6b" alias="6x6">
+    <description>Circles 6x6 (black)</description>
+    <levels width="6" height="6" divisor="37">
+         1  5 14 13 12  4
+         6 22 28 27 21 11
+        15 29 35 34 26 20
+        16 30 36 33 25 19
+         7 23 31 32 24 10
+         2  8 17 18  9  3
+    </levels>
+  </threshold>
+
+  <threshold map="c6x6w">
+    <description>Circles 6x6 (white)</description>
+    <levels width="6" height="6" divisor="37">
+        36 32 23 24 25 33
+        31 15  9 10 16 26
+        22  8  2  3 11 17
+        21  7  1  4 12 18
+        30 14  6  5 13 27
+        35 29 20 19 28 34
+    </levels>
+  </threshold>
+
+  <threshold map="c7x7b" alias="7x7">
+    <description>Circles 7x7 (black)</description>
+    <levels width="7" height="7" divisor="50">
+        2  7 17 26 15  6  1
+        8 16 33 39 32 13  5
+       18 34 44 48 43 31 14
+       27 40 45 49 47 38 25
+       20 35 41 46 42 30 24
+        9 19 36 37 29 22 12
+        3 10 21 28 23 11  4
+    </levels>
+  </threshold>
+
+
+  <threshold map="c7x7w">
+    <description>Circles 7x7 (white)</description>
+    <levels width="7" height="7" divisor="50">
+       49 42 32 18 19 33 48
+       41 31 17 10 11 20 34
+       40 30  9  2  3 12 21
+       39 29  8  1  4  5 22
+       43 28 16  7  6 13 23
+       44 38 27 15 14 24 35
+       46 45 37 26 25 36 47
+    </levels>
+  </threshold>
+
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   Special Purpose Dithers
