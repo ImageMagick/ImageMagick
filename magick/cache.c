@@ -3971,13 +3971,13 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
 static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   ExceptionInfo *exception)
 {
-  char
-    format[MaxTextExtent],
-    message[MaxTextExtent];
-
   CacheInfo
     *cache_info,
     source_info;
+
+  char
+    format[MaxTextExtent],
+    message[MaxTextExtent];
 
   MagickSizeType
     length,
@@ -4199,8 +4199,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
 %
 %    o filename: the persistent pixel cache filename.
 %
-%    o attach: A value other than zero initializes the persistent pixel
-%      cache.
+%    o attach: A value other than zero initializes the persistent pixel cache.
 %
 %    o initialize: A value other than zero initializes the persistent pixel
 %      cache.
