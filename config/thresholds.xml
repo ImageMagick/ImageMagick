@@ -252,7 +252,7 @@
   can generate distorted circles in such areas.
 -->
 
-  <threshold map="c5x5b" alias="5x5">
+  <threshold map="c5x5b" alias="c5x5">
     <description>Circles 5x5 (black)</description>
     <levels width="5" height="5" divisor="26">
          1 21 16 15  4
@@ -275,7 +275,7 @@
     </levels>
   </threshold>
 
-  <threshold map="c6x6b" alias="6x6">
+  <threshold map="c6x6b" alias="c6x6">
     <description>Circles 6x6 (black)</description>
     <levels width="6" height="6" divisor="37">
          1  5 14 13 12  4
@@ -299,7 +299,7 @@
     </levels>
   </threshold>
 
-  <threshold map="c7x7b" alias="7x7">
+  <threshold map="c7x7b" alias="c7x7">
     <description>Circles 7x7 (black)</description>
     <levels width="7" height="7" divisor="50">
         2  7 17 26 15  6  1
