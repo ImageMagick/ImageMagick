@@ -30,7 +30,7 @@ $filename='input_p6.ppm';
 print "Ping \"$filename\" ...\n";
 $image=Image::Magick->new;
 ($width, $height, $size, $format)=$image->Ping("$filename");
-if (($width == 70) && ($height == 46) && ($size == 9673) && ($format eq "PNM"))
+if (($width == 70) && ($height == 46) && ($size == 9673) && ($format eq "PPM"))
   {
     print "ok $test\n";
   }
@@ -51,7 +51,7 @@ $image=Image::Magick->new;
 ($width, $height, $size, $format)=$image->Ping(blob=>@blob);
 undef @blob;
 undef $image;
-if (($width == 70) && ($height == 46) && ($size == 9673) && ($format eq "PNM"))
+if (($width == 70) && ($height == 46) && ($size == 9673) && ($format eq "PPM"))
   {
     print "ok $test\n";
   }
