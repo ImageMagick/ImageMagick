@@ -1317,7 +1317,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           {
             image->delay=(size_t) floor(geometry_info.rho+0.5);
             if ((flags & SigmaValue) != 0)
-              image->ticks_per_second=(size_t)
+              image->ticks_per_second=(ssize_t)
                 floor(geometry_info.sigma+0.5);
           }
           break;
@@ -3430,7 +3430,7 @@ DESTROY(ref)
         hv=gv_stashpv(PackageName, FALSE);
         if (!hv)
           break;
-        gvp=(GV **) hv_fetch(hv,message,strlen(message),FALSE);
+        gvp=(GV **) hv_fetch(hv,message,(long) strlen(message),FALSE);
         if (!gvp)
           break;
         sv=GvSV(*gvp);
@@ -3439,7 +3439,7 @@ DESTROY(ref)
             info=(struct PackageInfo *) SvIV(sv);
             DestroyPackageInfo(info);
           }
-        hv_delete(hv,message,strlen(message),G_DISCARD);
+        hv_delete(hv,message,(long) strlen(message),G_DISCARD);
         break;
       }
       case SVt_PVMG:
@@ -5980,7 +5980,7 @@ Histogram(ref,...)
       histogram=GetImageHistogram(image,&number_colors,&image->exception);
       if (histogram == (ColorPacket *) NULL)
         continue;
-      count+=number_colors;
+      count+=(ssize_t) number_colors;
       EXTEND(sp,6*count);
       for (i=0; i < (ssize_t) number_colors; i++)
       {
@@ -8265,8 +8265,8 @@ Mogrify(ref,...)
              else
                (void) SetImageArtifact(composite_image,
                  "compose:outside-overlay","false");
-             for (y=0; y < (ssize_t) image->rows; y+=composite_image->rows)
-                for (x=0; x < (ssize_t) image->columns; x+=composite_image->columns)
+             for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) composite_image->rows)
+                for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) composite_image->columns)
                 {
                   if (attribute_flag[8] != 0) /* rotate */
                     (void) CompositeImage(image,compose,rotate_image,x,y);
@@ -12626,8 +12626,8 @@ QueryFormat(ref,...)
       PUSHs(sv_2mortal(newSViv(magick_info->adjoin)));
       PUSHs(sv_2mortal(newSViv(magick_info->blob_support)));
       PUSHs(sv_2mortal(newSViv(magick_info->raw)));
-      PUSHs(sv_2mortal(newSViv((ssize_t) magick_info->decoder)));
-      PUSHs(sv_2mortal(newSViv((ssize_t) magick_info->encoder)));
+      PUSHs(sv_2mortal(newSViv((long) magick_info->decoder)));
+      PUSHs(sv_2mortal(newSViv((long) magick_info->encoder)));
       if (magick_info->description == (char *) NULL)
         PUSHs(&sv_undef);
       else
