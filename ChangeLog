@@ -1,3 +1,6 @@
+2010-11-08  6.6.5-8 Nicolas robidoux <nicolas.robidoux@gmail...>
+  * Missing logical operator in tiff.c.
+
 2010-11-08  6.6.5-8 Cristy  <quetzlzacatenango@image...>
   * Only save TIFF image with 1-bit depth if there is no alpha channel.
 
