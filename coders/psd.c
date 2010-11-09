@@ -1408,7 +1408,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) NegateImage(image,MagickFalse);
   if ((number_layers == 1) && (image->next != (Image *) NULL) &&
       (image->matte != MagickFalse))
-    image->next=DestroyImage(image->next);
+    DeleteImageFromList(&image);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
