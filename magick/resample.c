@@ -1411,10 +1411,17 @@ static inline void ClampUpAxes(const double dux,
    * of Laurentian University with funding from the National Science
    * and Engineering Research Council of Canada.
    *
-   * The astrophysicist Craig DeForest pioneered the use of the SVD to
-   * clamp up the singular values of the Jacobian matrix of the
-   * pullback transformation for EWA resampling. It is implemented in
-   * his PDL::Transform code (PDL = Perl Data Language).
+   * The idea of clamping up the EWA ellipse's major and minor axes so
+   * that the result contains the reconstruction kernel filter support
+   * appears to be due to Andreas Gustaffson (Masters thesis
+   * Interactive Image Warping, Helsinki University of Technology,
+   * 1993, Section 3.6). It was implemented in his Uwarp image warping
+   * system.
+   *
+   * The astrophysicist Craig DeForest apparently pioneered the use of
+   * the SVD to clamp up the singular values of the Jacobian matrix of
+   * the pullback transformation for EWA resampling. It is implemented
+   * in his PDL::Transform code (PDL = Perl Data Language).
    */
   const double a = dux;
   const double b = duy;
