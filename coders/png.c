@@ -6445,7 +6445,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket *opt_map)
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    i  mark opt_map  (red,green,blue,opacity)");
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (ssize_t) image->colors; i++)
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    %d  %d  %d (%d,%d,%d,%d)",
@@ -6478,7 +6478,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket *opt_map)
       }
       for (i=0; i < new_number_colors; i++)
         image->colormap[i]=colormap[i];
-      for (; i < image->colors; i++)
+      for (; i < (ssize_t) image->colors; i++)
         image->colormap[i]=colormap[0];
     }
 
@@ -7468,7 +7468,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             "  Setting up bKGD chunk with index=%d",(int) i);
         }
 
-        if (i < number_colors)
+        if (i < (ssize_t) number_colors)
         {
           png_set_bKGD(ping,ping_info,&ping_background);
           if (logging)
