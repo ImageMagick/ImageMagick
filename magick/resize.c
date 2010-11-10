@@ -2916,7 +2916,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       exception);
     if (q == (PixelPacket *) NULL)
       break;
-    scale_indexes=GetAuthenticIndexQueue(scale_image);
+    scale_indexes=GetCacheViewAuthenticIndexQueue(scale_view);
     if (scale_image->rows == image->rows)
       {
         /*
