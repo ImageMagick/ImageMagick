@@ -4,6 +4,8 @@
 2010-11-08  6.6.5-8 Cristy  <quetzlzacatenango@image...>
   * Only save TIFF image with 1-bit depth if there is no alpha channel.
   * Abandon PSD composite if layer is available.
+  * %[fx:mean] is the mean of the default channels (all but opacity) (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17432).
 
 2010-10-29  6.6.5-6 Glenn Randers-Pehrson <glennrp@image...>
   * Added 5x5, 6x6, and 7x7 ordered-dither level maps.

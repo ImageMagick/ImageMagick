@@ -2025,7 +2025,8 @@ MagickExport const char *GetImageProperty(const Image *image,
       if (LocaleNCompare("fx:",property,3) == 0)
         {
           fx_info=AcquireFxInfo(image,property+3);
-          status=FxEvaluateExpression(fx_info,&alpha,exception);
+          status=FxEvaluateChannelExpression(fx_info,DefaultChannels,0,0,&alpha,
+            exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
             {
