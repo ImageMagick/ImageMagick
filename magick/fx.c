@@ -2783,7 +2783,8 @@ MagickExport MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
   MagickBooleanType
     status;
 
-  status=FxEvaluateChannelExpression(fx_info,GrayChannel,0,0,alpha,exception);
+  status=FxEvaluateChannelExpression(fx_info,DefaultChannels,0,0,alpha,
+    exception);
   return(status);
 }
 

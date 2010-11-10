@@ -1668,7 +1668,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
         */
         for (i=0; i < 3; i++)
         {
-          size_t 
+          size_t
             xx,
             yy;
 
@@ -2025,8 +2025,7 @@ MagickExport const char *GetImageProperty(const Image *image,
       if (LocaleNCompare("fx:",property,3) == 0)
         {
           fx_info=AcquireFxInfo(image,property+3);
-          status=FxEvaluateChannelExpression(fx_info,DefaultChannels,0,0,&alpha,
-            exception);
+          status=FxEvaluateExpression(fx_info,0,0,&alpha,exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
             {
@@ -2432,7 +2431,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("width",property,5) == 0)
         {
-          (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double) 
+          (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
           break;
         }
