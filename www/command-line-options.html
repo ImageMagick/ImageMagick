@@ -188,7 +188,6 @@ otherwise noted, each option is recognized by the commands <a href="../www/conve
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Adaptively blur pixels, with decreasing effect near edges.</td><td style='text-align:right;'></td></tr></table>
- "direction",
 <p>A Gaussian operator of the given radius and standard deviation (<em class="arg">sigma</em>) is used. If <em class="arg">sigma</em> is not given it defaults to 1.</p>
 
 <div style="margin: auto;">
@@ -2573,6 +2572,12 @@ multi-value version of evaluate. </P>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Set the image size and offset.</td><td style='text-align:right;'></td></tr></table>
 
 <p>If the image is enlarged, unfilled areas are set to the background color. To position the image, use offsets in the <em class="arg">geometry</em> specification or precede with a <a href="#gravity">-gravity</a> setting.  To specify how to compose the image with the background, use <a href="#compose" >-compose</a>.</p>
+<p>This command reduces or expands a JPEG image to fit on an 800x600
+display.  If the aspect ratio of the input image isn't exactly 4:3, then the
+image is centered on an 800x600 black canvas: </p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert input.jpg -resize 800x600 -background black -compose Copy \ <br />  -gravity center -extent 800x600 -quality 92 output.jpg</span></p>
+
 
 <p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.</p>
 
