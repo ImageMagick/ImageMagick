@@ -23,7 +23,7 @@ fi
 
 while test $# -gt 0; do
   case "$1" in
-    -*=*) optarg=`echo -n "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
     *) optarg= ;;
   esac
   case $1 in
@@ -31,31 +31,31 @@ while test $# -gt 0; do
       prefix=$optarg
       ;;
     --prefix)
-      echo -n $prefix
+      echo $prefix
       ;;
     --exec-prefix=*)
       exec_prefix=$optarg
       ;;
     --exec-prefix)
-      echo -n $exec_prefix
+      echo $exec_prefix
       ;;
     --version)
-      echo -n '6.6.5 Q16 '
+      echo '6.6.5 Q16 '
       ;;
     --cflags)
-      echo -n "-I${includedir} -fopenmp"
+      echo "-I${includedir} -fopenmp"
       ;;
     --cxxflags)
-      echo -n '-g -O2 -pthread'
+      echo '-g -O2 -pthread'
       ;;
     --cppflags)
-      echo -n '-I/usr/local/include/ImageMagick'
+      echo '-I/usr/local/include/ImageMagick'
       ;;
     --ldflags)
-      echo -n '-L/usr/local/lib '
+      echo '-L/usr/local/lib '
       ;;
     --libs)
-      echo -n "-L${libdir} -lMagick++ -lMagickWand -lMagickCore -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lpthread -lltdl"
+      echo "-L${libdir} -lMagick++ -lMagickWand -lMagickCore -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lpthread -lltdl"
       ;;
     *)
       echo "${usage}" 1>&2
