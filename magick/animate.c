@@ -2280,7 +2280,8 @@ MagickExport Image *XAnimateImages(Display *display,
                     pixel->border_color.pixel;
                   magick_windows[i]->attributes.colormap=map_info->colormap;
                   (void) XChangeWindowAttributes(display,magick_windows[i]->id,
-                    magick_windows[i]->mask,&magick_windows[i]->attributes);
+                    (unsigned long) magick_windows[i]->mask,
+                    &magick_windows[i]->attributes);
                 }
                 if (windows->backdrop.id != (Window) NULL)
                   (void) XInstallColormap(display,map_info->colormap);

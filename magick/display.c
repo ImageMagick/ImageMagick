@@ -92,7 +92,7 @@
 /*
   Define declarations.
 */
-#define MaxColors  MagickMin(windows->visual_info->colormap_size,256L)
+#define MaxColors  MagickMin((ssize_t) windows->visual_info->colormap_size,256L)
 
 /*
   Constant declarations.
@@ -2251,7 +2251,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   annotate_info->degrees=degrees;
   annotate_info->font_info=font_info;
   annotate_info->text=(char *) AcquireQuantumMemory((size_t)
-    windows->image.width/MagickMax(font_info->min_bounds.width,1)+2UL,
+    windows->image.width/MagickMax((ssize_t) font_info->min_bounds.width,1)+2UL,
     sizeof(*annotate_info->text));
   if (annotate_info->text == (char *) NULL)
     return(MagickFalse);
@@ -2525,8 +2525,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             annotate_info->next->previous=annotate_info;
             annotate_info=annotate_info->next;
             annotate_info->text=(char *) AcquireQuantumMemory((size_t)
-              windows->image.width/MagickMax(font_info->min_bounds.width,1)+2UL,
-              sizeof(*annotate_info->text));
+              windows->image.width/MagickMax((ssize_t)
+              font_info->min_bounds.width,1)+2UL,sizeof(*annotate_info->text));
             if (annotate_info->text == (char *) NULL)
               return(MagickFalse);
             annotate_info->y+=annotate_info->height;
@@ -2620,8 +2620,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
           annotate_info->next->previous=annotate_info;
           annotate_info=annotate_info->next;
           annotate_info->text=(char *) AcquireQuantumMemory((size_t)
-            windows->image.width/MagickMax(font_info->min_bounds.width,1)+2UL,
-            sizeof(*annotate_info->text));
+            windows->image.width/MagickMax((ssize_t)
+            font_info->min_bounds.width,1)+2UL,sizeof(*annotate_info->text));
           if (annotate_info->text == (char *) NULL)
             return(MagickFalse);
           annotate_info->y+=annotate_info->height;
@@ -3147,13 +3147,13 @@ static MagickBooleanType XChopImage(Display *display,
     if (direction == HorizontalChopCommand)
       {
         chop_info.width=(size_t) (segment_info.x2-segment_info.x1+1);
-        chop_info.x=windows->image.x+segment_info.x1;
+        chop_info.x=(ssize_t) windows->image.x+segment_info.x1;
         chop_info.height=0;
         chop_info.y=0;
         if (segment_info.x1 > (int) segment_info.x2)
           {
             chop_info.width=(size_t) (segment_info.x1-segment_info.x2+1);
-            chop_info.x=windows->image.x+segment_info.x2;
+            chop_info.x=(ssize_t) windows->image.x+segment_info.x2;
           }
       }
     else
@@ -3161,12 +3161,11 @@ static MagickBooleanType XChopImage(Display *display,
         chop_info.width=0;
         chop_info.height=(size_t) (segment_info.y2-segment_info.y1+1);
         chop_info.x=0;
-        chop_info.y=windows->image.y+segment_info.y1;
+        chop_info.y=(ssize_t) windows->image.y+segment_info.y1;
         if (segment_info.y1 > segment_info.y2)
           {
-            chop_info.height=(size_t)
-              (segment_info.y1-segment_info.y2+1);
-            chop_info.y=windows->image.y+segment_info.y2;
+            chop_info.height=(size_t) (segment_info.y1-segment_info.y2+1);
+            chop_info.y=(ssize_t) windows->image.y+segment_info.y2;
           }
       }
   } while ((state & ExitState) == 0);
@@ -3192,11 +3191,11 @@ static MagickBooleanType XChopImage(Display *display,
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   scale_factor=(MagickRealType) width/windows->image.ximage->width;
   chop_info.x+=x;
-  chop_info.x=(int) (scale_factor*chop_info.x+0.5);
+  chop_info.x=(ssize_t) (scale_factor*chop_info.x+0.5);
   chop_info.width=(unsigned int) (scale_factor*chop_info.width+0.5);
   scale_factor=(MagickRealType) height/windows->image.ximage->height;
   chop_info.y+=y;
-  chop_info.y=(int) (scale_factor*chop_info.y+0.5);
+  chop_info.y=(ssize_t) (scale_factor*chop_info.y+0.5);
   chop_info.height=(unsigned int) (scale_factor*chop_info.height+0.5);
   /*
     Chop image.
@@ -3662,6 +3661,9 @@ static MagickBooleanType XColorEditImage(Display *display,
     y_offset=y;
     if ((state & UpdateConfigurationState) != 0)
       {
+        CacheView
+          *image_view;
+
         int
           x,
           y;
@@ -3686,10 +3688,11 @@ static MagickBooleanType XColorEditImage(Display *display,
           (height*(windows->image.y+y_offset)/windows->image.ximage->height+y);
         if ((x_offset < 0) || (y_offset < 0))
           continue;
-        if ((x_offset >= (ssize_t) (*image)->columns) ||
-            (y_offset >= (ssize_t) (*image)->rows))
+        if ((x_offset >= (int) (*image)->columns) ||
+            (y_offset >= (int) (*image)->rows))
           continue;
         exception=(&(*image)->exception);
+        image_view=AcquireCacheView(*image);
         switch (method)
         {
           case PointMethod:
@@ -3700,13 +3703,15 @@ static MagickBooleanType XColorEditImage(Display *display,
             */
             if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
               return(MagickFalse);
-            q=GetAuthenticPixels(*image,x_offset,y_offset,1,1,exception);
+            q=GetCacheViewAuthenticPixels(image_view,(ssize_t)x_offset,
+              (ssize_t)y_offset,1,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
             q->red=ScaleShortToQuantum(color.red);
             q->green=ScaleShortToQuantum(color.green);
             q->blue=ScaleShortToQuantum(color.blue);
-            (void) SyncAuthenticPixels(*image,&(*image)->exception);
+            (void) SyncCacheViewAuthenticPixels(image_view,
+              &(*image)->exception);
             break;
           }
           case ReplaceMethod:
@@ -3717,14 +3722,14 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using replace algorithm.
             */
-            (void) GetOneVirtualPixel(*image,x_offset,y_offset,&target,
-              &(*image)->exception);
+            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) x_offset,
+              (ssize_t) y_offset,&target,&(*image)->exception);
             if ((*image)->storage_class == DirectClass)
               {
-                for (y=0; y < (ssize_t) (*image)->rows; y++)
+                for (y=0; y < (int) (*image)->rows; y++)
                 {
-                  q=GetAuthenticPixels(*image,0,y,(*image)->columns,1,
-                    exception);
+                  q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
+                    (*image)->columns,1,exception);
                   if (q == (PixelPacket *) NULL)
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
@@ -3737,13 +3742,13 @@ static MagickBooleanType XColorEditImage(Display *display,
                       }
                     q++;
                   }
-                  if (SyncAuthenticPixels(*image,exception) == MagickFalse)
+                  if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                     break;
                 }
               }
             else
               {
-                for (i=0; i < (int) (*image)->colors; i++)
+                for (i=0; i < (ssize_t) (*image)->colors; i++)
                   if (IsColorSimilar(*image,(*image)->colormap+i,&target))
                     {
                       (*image)->colormap[i].red=ScaleShortToQuantum(color.red);
@@ -3768,8 +3773,8 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            (void) GetOneVirtualMagickPixel(*image,x_offset,y_offset,&target,
-              exception);
+            (void) GetOneVirtualMagickPixel(*image,(ssize_t) x_offset,
+              (ssize_t) y_offset,&target,exception);
             if (method == FillToBorderMethod)
               {
                 target.red=(MagickRealType)
@@ -3784,8 +3789,8 @@ static MagickBooleanType XColorEditImage(Display *display,
             (void) QueryColorDatabase(resource_info->pen_colors[pen_id],
               &draw_info->fill,exception);
             (void) FloodfillPaintImage(*image,DefaultChannels,draw_info,&target,
-              x_offset,y_offset,method == FloodfillMethod ? MagickFalse :
-              MagickTrue);
+              (ssize_t) x_offset,(ssize_t) y_offset,
+              method == FloodfillMethod ? MagickFalse : MagickTrue);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }
@@ -3796,9 +3801,10 @@ static MagickBooleanType XColorEditImage(Display *display,
             */
             if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
               return(MagickFalse);
-            for (y=0; y < (ssize_t) (*image)->rows; y++)
+            for (y=0; y < (int) (*image)->rows; y++)
             {
-              q=QueueAuthenticPixels(*image,0,y,(*image)->columns,1,exception);
+              q=QueueCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
+                (*image)->columns,1,exception);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
@@ -3808,12 +3814,13 @@ static MagickBooleanType XColorEditImage(Display *display,
                 q->blue=ScaleShortToQuantum(color.blue);
                 q++;
               }
-              if (SyncAuthenticPixels(*image,exception) == MagickFalse)
+              if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
             }
             break;
           }
         }
+        image_view=DestroyCacheView(image_view);
         state&=(~UpdateConfigurationState);
       }
   } while ((state & ExitState) == 0);
@@ -3953,8 +3960,8 @@ static MagickBooleanType XCompositeImage(Display *display,
   XQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
-  composite_info.x=windows->image.x+x;
-  composite_info.y=windows->image.y+y;
+  composite_info.x=(ssize_t) windows->image.x+x;
+  composite_info.y=(ssize_t) windows->image.y+y;
   composite_info.width=0;
   composite_info.height=0;
   cursor=XCreateFontCursor(display,XC_ul_angle);
@@ -4091,8 +4098,8 @@ static MagickBooleanType XCompositeImage(Display *display,
         composite_info.width=composite_image->columns;
         composite_info.height=composite_image->rows;
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
-        composite_info.x=windows->image.x+event.xbutton.x;
-        composite_info.y=windows->image.y+event.xbutton.y;
+        composite_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+        composite_info.y=(ssize_t) windows->image.y+event.xbutton.y;
         break;
       }
       case ButtonRelease:
@@ -4110,8 +4117,8 @@ static MagickBooleanType XCompositeImage(Display *display,
             /*
               User has selected the location of the composite image.
             */
-            composite_info.x=windows->image.x+event.xbutton.x;
-            composite_info.y=windows->image.y+event.xbutton.y;
+            composite_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+            composite_info.y=(ssize_t) windows->image.y+event.xbutton.y;
             state|=ExitState;
           }
         break;
@@ -4190,8 +4197,8 @@ static MagickBooleanType XCompositeImage(Display *display,
           if ((x > (int) (windows->info.x+windows->info.width)) ||
               (y > (int) (windows->info.y+windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
-        composite_info.x=windows->image.x+x;
-        composite_info.y=windows->image.y+y;
+        composite_info.x=(ssize_t) windows->image.x+x;
+        composite_info.y=(ssize_t) windows->image.y+y;
         break;
       }
       default:
@@ -4223,11 +4230,11 @@ static MagickBooleanType XCompositeImage(Display *display,
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   scale_factor=(MagickRealType) width/windows->image.ximage->width;
   composite_info.x+=x;
-  composite_info.x=(int) (scale_factor*composite_info.x+0.5);
+  composite_info.x=(ssize_t) (scale_factor*composite_info.x+0.5);
   composite_info.width=(unsigned int) (scale_factor*composite_info.width+0.5);
   scale_factor=(MagickRealType) height/windows->image.ximage->height;
   composite_info.y+=y;
-  composite_info.y=(int) (scale_factor*composite_info.y+0.5);
+  composite_info.y=(ssize_t) (scale_factor*composite_info.y+0.5);
   composite_info.height=(unsigned int) (scale_factor*composite_info.height+0.5);
   if ((composite_info.width != composite_image->columns) ||
       (composite_info.height != composite_image->rows))
@@ -4254,6 +4261,9 @@ static MagickBooleanType XCompositeImage(Display *display,
       displacement_geometry);
   if (blend != 0.0)
     {
+      CacheView
+        *image_view;
+
       ExceptionInfo
         *exception;
 
@@ -4279,9 +4289,11 @@ static MagickBooleanType XCompositeImage(Display *display,
         return(MagickFalse);
       image->matte=MagickTrue;
       exception=(&image->exception);
-      for (y=0; y < (ssize_t) image->rows; y++)
+      image_view=AcquireCacheView(image);
+      for (y=0; y < (int) image->rows; y++)
       {
-        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+        q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,image->columns,1,
+          exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -4289,9 +4301,10 @@ static MagickBooleanType XCompositeImage(Display *display,
           q->opacity=opacity;
           q++;
         }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           break;
       }
+      image_view=DestroyCacheView(image_view);
     }
   /*
     Composite image with X Image window.
@@ -4544,6 +4557,9 @@ static MagickBooleanType XCropImage(Display *display,
       RectifyDismissCommand
     };
 
+  CacheView
+    *image_view;
+
   char
     command[MaxTextExtent],
     text[MaxTextExtent];
@@ -4618,8 +4634,8 @@ static MagickBooleanType XCropImage(Display *display,
   XQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
-  crop_info.x=windows->image.x+x;
-  crop_info.y=windows->image.y+y;
+  crop_info.x=(ssize_t) windows->image.x+x;
+  crop_info.y=(ssize_t) windows->image.y+y;
   crop_info.width=0;
   crop_info.height=0;
   cursor=XCreateFontCursor(display,XC_fleur);
@@ -4700,8 +4716,8 @@ static MagickBooleanType XCropImage(Display *display,
           Note first corner of cropping rectangle-- exit loop.
         */
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
-        crop_info.x=windows->image.x+event.xbutton.x;
-        crop_info.y=windows->image.y+event.xbutton.y;
+        crop_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+        crop_info.y=(ssize_t) windows->image.y+event.xbutton.y;
         state|=ExitState;
         break;
       }
@@ -4784,8 +4800,8 @@ static MagickBooleanType XCropImage(Display *display,
           if ((x > (int) (windows->info.x+windows->info.width)) ||
               (y > (int) (windows->info.y+windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
-        crop_info.x=windows->image.x+x;
-        crop_info.y=windows->image.y+y;
+        crop_info.x=(ssize_t) windows->image.x+x;
+        crop_info.y=(ssize_t) windows->image.y+y;
         break;
       }
       default:
@@ -4847,8 +4863,8 @@ static MagickBooleanType XCropImage(Display *display,
       {
         case ButtonPress:
         {
-          crop_info.x=windows->image.x+event.xbutton.x;
-          crop_info.y=windows->image.y+event.xbutton.y;
+          crop_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+          crop_info.y=(ssize_t) windows->image.y+event.xbutton.y;
           break;
         }
         case ButtonRelease:
@@ -4856,8 +4872,8 @@ static MagickBooleanType XCropImage(Display *display,
           /*
             User has committed to cropping rectangle.
           */
-          crop_info.x=windows->image.x+event.xbutton.x;
-          crop_info.y=windows->image.y+event.xbutton.y;
+          crop_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+          crop_info.y=(ssize_t) windows->image.y+event.xbutton.y;
           XSetCursorState(display,windows,MagickFalse);
           state|=ExitState;
           windows->command.data=0;
@@ -4869,8 +4885,8 @@ static MagickBooleanType XCropImage(Display *display,
           break;
         case MotionNotify:
         {
-          crop_info.x=windows->image.x+event.xmotion.x;
-          crop_info.y=windows->image.y+event.xmotion.y;
+          crop_info.x=(ssize_t) windows->image.x+event.xmotion.x;
+          crop_info.y=(ssize_t) windows->image.y+event.xmotion.y;
         }
         default:
           break;
@@ -4884,26 +4900,26 @@ static MagickBooleanType XCropImage(Display *display,
           if (crop_info.x < 0)
             crop_info.x=0;
           else
-            if (crop_info.x > (int) windows->image.ximage->width)
-              crop_info.x=windows->image.ximage->width;
+            if (crop_info.x > (ssize_t) windows->image.ximage->width)
+              crop_info.x=(ssize_t) windows->image.ximage->width;
           if ((int) crop_info.x < x)
             crop_info.width=(unsigned int) (x-crop_info.x);
           else
             {
               crop_info.width=(unsigned int) (crop_info.x-x);
-              crop_info.x=x;
+              crop_info.x=(ssize_t) x;
             }
           if (crop_info.y < 0)
             crop_info.y=0;
           else
-            if (crop_info.y > (int) windows->image.ximage->height)
-              crop_info.y=windows->image.ximage->height;
+            if (crop_info.y > (ssize_t) windows->image.ximage->height)
+              crop_info.y=(ssize_t) windows->image.ximage->height;
           if ((int) crop_info.y < y)
             crop_info.height=(unsigned int) (y-crop_info.y);
           else
             {
               crop_info.height=(unsigned int) (crop_info.y-y);
-              crop_info.y=y;
+              crop_info.y=(ssize_t) y;
             }
         }
     } while ((state & ExitState) == 0);
@@ -5096,8 +5112,10 @@ static MagickBooleanType XCropImage(Display *display,
             case XK_Home:
             case XK_KP_Home:
             {
-              crop_info.x=(ssize_t) (windows->image.width/2L-crop_info.width/2L);
-              crop_info.y=(ssize_t) (windows->image.height/2L-crop_info.height/2L);
+              crop_info.x=(ssize_t) (windows->image.width/2L-
+                crop_info.width/2L);
+              crop_info.y=(ssize_t) (windows->image.height/2L-
+                crop_info.height/2L);
               break;
             }
             case XK_Left:
@@ -5188,8 +5206,8 @@ static MagickBooleanType XCropImage(Display *display,
             if ((x > (int) (windows->info.x+windows->info.width)) ||
                 (y > (int) (windows->info.y+windows->info.height)))
               (void) XMapWindow(display,windows->info.id);
-          crop_info.x=windows->image.x+event.xmotion.x;
-          crop_info.y=windows->image.y+event.xmotion.y;
+          crop_info.x=(ssize_t) windows->image.x+event.xmotion.x;
+          crop_info.y=(ssize_t) windows->image.y+event.xmotion.y;
           break;
         }
         case SelectionRequest:
@@ -5264,11 +5282,11 @@ static MagickBooleanType XCropImage(Display *display,
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   scale_factor=(MagickRealType) width/windows->image.ximage->width;
   crop_info.x+=x;
-  crop_info.x=(int) (scale_factor*crop_info.x+0.5);
+  crop_info.x=(ssize_t) (scale_factor*crop_info.x+0.5);
   crop_info.width=(unsigned int) (scale_factor*crop_info.width+0.5);
   scale_factor=(MagickRealType) height/windows->image.ximage->height;
   crop_info.y+=y;
-  crop_info.y=(int) (scale_factor*crop_info.y+0.5);
+  crop_info.y=(ssize_t) (scale_factor*crop_info.y+0.5);
   crop_info.height=(unsigned int) (scale_factor*crop_info.height+0.5);
   crop_image=CropImage(image,&crop_info,&image->exception);
   XSetCursorState(display,windows,MagickFalse);
@@ -5289,10 +5307,11 @@ static MagickBooleanType XCropImage(Display *display,
     return(MagickFalse);
   image->matte=MagickTrue;
   exception=(&image->exception);
-  for (y=0; y < (ssize_t) crop_info.height; y++)
+  image_view=AcquireCacheView(image);
+  for (y=0; y < (int) crop_info.height; y++)
   {
-    q=GetAuthenticPixels(image,crop_info.x,y+crop_info.y,crop_info.width,1,
-      exception);
+    q=GetCacheViewAuthenticPixels(image_view,crop_info.x,y+crop_info.y,
+      crop_info.width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) crop_info.width; x++)
@@ -5300,9 +5319,10 @@ static MagickBooleanType XCropImage(Display *display,
       q->opacity=(Quantum) TransparentOpacity;
       q++;
     }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
   }
+  image_view=DestroyCacheView(image_view);
   /*
     Update image configuration.
   */
@@ -5851,8 +5871,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
     line_info.y1=y;
     line_info.x2=x;
     line_info.y2=y;
-    rectangle_info.x=x;
-    rectangle_info.y=y;
+    rectangle_info.x=(ssize_t) x;
+    rectangle_info.y=(ssize_t) y;
     rectangle_info.width=0;
     rectangle_info.height=0;
     number_coordinates=1;
@@ -6037,8 +6057,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
           */
           line_info.x2=event.xbutton.x;
           line_info.y2=event.xbutton.y;
-          rectangle_info.x=event.xbutton.x;
-          rectangle_info.y=event.xbutton.y;
+          rectangle_info.x=(ssize_t) event.xbutton.x;
+          rectangle_info.y=(ssize_t) event.xbutton.y;
           coordinate_info[number_coordinates].x=event.xbutton.x;
           coordinate_info[number_coordinates].y=event.xbutton.y;
           if (((element != PolygonElement) &&
@@ -6072,8 +6092,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
             {
               line_info.x2=event.xmotion.x;
               line_info.y2=event.xmotion.y;
-              rectangle_info.x=event.xmotion.x;
-              rectangle_info.y=event.xmotion.y;
+              rectangle_info.x=(ssize_t) event.xmotion.x;
+              rectangle_info.y=(ssize_t) event.xmotion.y;
               break;
             }
           coordinate_info[number_coordinates].x=event.xbutton.x;
@@ -6114,26 +6134,26 @@ static MagickBooleanType XDrawEditImage(Display *display,
           if (rectangle_info.x < 0)
             rectangle_info.x=0;
           else
-            if (rectangle_info.x > (int) windows->image.width)
+            if (rectangle_info.x > (ssize_t) windows->image.width)
               rectangle_info.x=(ssize_t) windows->image.width;
           if ((int) rectangle_info.x < x)
             rectangle_info.width=(unsigned int) (x-rectangle_info.x);
           else
             {
               rectangle_info.width=(unsigned int) (rectangle_info.x-x);
-              rectangle_info.x=x;
+              rectangle_info.x=(ssize_t) x;
             }
           if (rectangle_info.y < 0)
             rectangle_info.y=0;
           else
-            if (rectangle_info.y > (int) windows->image.height)
+            if (rectangle_info.y > (ssize_t) windows->image.height)
               rectangle_info.y=(ssize_t) windows->image.height;
           if ((int) rectangle_info.y < y)
             rectangle_info.height=(unsigned int) (y-rectangle_info.y);
           else
             {
               rectangle_info.height=(unsigned int) (rectangle_info.y-y);
-              rectangle_info.y=y;
+              rectangle_info.y=(ssize_t) y;
             }
         }
     } while ((state & ExitState) == 0);
@@ -6144,8 +6164,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
         /*
           Determine polygon bounding box.
         */
-        rectangle_info.x=coordinate_info->x;
-        rectangle_info.y=coordinate_info->y;
+        rectangle_info.x=(ssize_t) coordinate_info->x;
+        rectangle_info.y=(ssize_t) coordinate_info->y;
         x=coordinate_info->x;
         y=coordinate_info->y;
         for (i=1; i < number_coordinates; i++)
@@ -6154,10 +6174,10 @@ static MagickBooleanType XDrawEditImage(Display *display,
             x=coordinate_info[i].x;
           if (coordinate_info[i].y > y)
             y=coordinate_info[i].y;
-          if (coordinate_info[i].x < rectangle_info.x)
-            rectangle_info.x=MagickMax(coordinate_info[i].x,0);
-          if (coordinate_info[i].y < rectangle_info.y)
-            rectangle_info.y=MagickMax(coordinate_info[i].y,0);
+          if ((ssize_t) coordinate_info[i].x < rectangle_info.x)
+            rectangle_info.x=MagickMax((ssize_t) coordinate_info[i].x,0);
+          if ((ssize_t) coordinate_info[i].y < rectangle_info.y)
+            rectangle_info.y=MagickMax((ssize_t) coordinate_info[i].y,0);
         }
         rectangle_info.width=(size_t) (x-rectangle_info.x);
         rectangle_info.height=(size_t) (y-rectangle_info.y);
@@ -6238,9 +6258,9 @@ static MagickBooleanType XDrawEditImage(Display *display,
         Swap(draw_info.line_info.y1,draw_info.line_info.y2);
       }
     draw_info.rectangle_info=rectangle_info;
-    if (draw_info.rectangle_info.x > (int) (line_width/2))
+    if (draw_info.rectangle_info.x > (ssize_t) (line_width/2))
       draw_info.rectangle_info.x=(ssize_t) line_width/2;
-    if (draw_info.rectangle_info.y > (int) (line_width/2))
+    if (draw_info.rectangle_info.y > (ssize_t) (line_width/2))
       draw_info.rectangle_info.y=(ssize_t) line_width/2;
     draw_info.number_coordinates=(unsigned int) number_coordinates;
     draw_info.coordinate_info=coordinate_info;
@@ -6302,11 +6322,11 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
     Determine dimensions of the panning rectangle.
   */
   scale_factor=(MagickRealType) windows->pan.width/windows->image.ximage->width;
-  highlight_info.x=(int) (scale_factor*windows->image.x+0.5);
+  highlight_info.x=(ssize_t) (scale_factor*windows->image.x+0.5);
   highlight_info.width=(unsigned int) (scale_factor*windows->image.width+0.5);
   scale_factor=(MagickRealType)
     windows->pan.height/windows->image.ximage->height;
-  highlight_info.y=(int) (scale_factor*windows->image.y+0.5);
+  highlight_info.y=(ssize_t) (scale_factor*windows->image.y+0.5);
   highlight_info.height=(unsigned int) (scale_factor*windows->image.height+0.5);
   /*
     Display the panning rectangle.
@@ -9224,8 +9244,8 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
   state=DefaultState;
   x=event->xbutton.x;
   y=event->xbutton.y;
-  windows->magnify.x=windows->image.x+x;
-  windows->magnify.y=windows->image.y+y;
+  windows->magnify.x=(int) windows->image.x+x;
+  windows->magnify.y=(int) windows->image.y+y;
   do
   {
     /*
@@ -9462,8 +9482,8 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  windows->pan.x=windows->image.x;
-  windows->pan.y=windows->image.y;
+  windows->pan.x=(int) windows->image.x;
+  windows->pan.y=(int) windows->image.y;
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == MagickFalse)
@@ -9912,6 +9932,9 @@ static MagickBooleanType XMatteEditImage(Display *display,
     y_offset=y;
     if ((state & UpdateConfigurationState) != 0)
       {
+        CacheView
+          *image_view;
+
         ExceptionInfo
           *exception;
 
@@ -9946,6 +9969,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           return(MagickFalse);
         (*image)->matte=MagickTrue;
         exception=(&(*image)->exception);
+        image_view=AcquireCacheView(*image);
         switch (method)
         {
           case PointMethod:
@@ -9954,11 +9978,12 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using point algorithm.
             */
-            q=GetAuthenticPixels(*image,x_offset,y_offset,1,1,exception);
+            q=GetCacheViewAuthenticPixels(image_view,(ssize_t) x_offset,
+              (ssize_t) y_offset,1,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
             q->opacity=(Quantum) StringToLong(matte);
-            (void) SyncAuthenticPixels(*image,exception);
+            (void) SyncCacheViewAuthenticPixels(image_view,exception);
             break;
           }
           case ReplaceMethod:
@@ -9969,12 +9994,12 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using replace algorithm.
             */
-            (void) GetOneVirtualPixel(*image,x_offset,y_offset,&target,
-              exception);
-            for (y=0; y < (ssize_t) (*image)->rows; y++)
+            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) x_offset,
+              (ssize_t) y_offset,&target,exception);
+            for (y=0; y < (int) (*image)->rows; y++)
             {
-              q=GetAuthenticPixels(*image,0,y,(*image)->columns,1,
-                &(*image)->exception);
+              q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
+                (*image)->columns,1,&(*image)->exception);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
@@ -9983,7 +10008,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                   q->opacity=(Quantum) StringToLong(matte);
                 q++;
               }
-              if (SyncAuthenticPixels(*image,exception) == MagickFalse)
+              if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
             }
             break;
@@ -10000,8 +10025,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using floodfill algorithm.
             */
-            (void) GetOneVirtualMagickPixel(*image,x_offset,y_offset,&target,
-              exception);
+            (void) GetOneVirtualMagickPixel(*image,(ssize_t) x_offset,
+              (ssize_t) y_offset,&target,exception);
             if (method == FillToBorderMethod)
               {
                 target.red=(MagickRealType)
@@ -10015,8 +10040,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
               (DrawInfo *) NULL);
             draw_info->fill.opacity=ClampToQuantum(StringToDouble(matte));
             (void) FloodfillPaintImage(*image,OpacityChannel,draw_info,&target,
-              x_offset,y_offset,method == FloodfillMethod ? MagickFalse :
-              MagickTrue);
+              (ssize_t) x_offset,(ssize_t) y_offset,
+              method == FloodfillMethod ? MagickFalse : MagickTrue);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }
@@ -10027,9 +10052,10 @@ static MagickBooleanType XMatteEditImage(Display *display,
             */
             if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
               return(MagickFalse);
-            for (y=0; y < (ssize_t) (*image)->rows; y++)
+            for (y=0; y < (int) (*image)->rows; y++)
             {
-              q=QueueAuthenticPixels(*image,0,y,(*image)->columns,1,exception);
+              q=QueueCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
+                (*image)->columns,1,exception);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
@@ -10037,7 +10063,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 q->opacity=(Quantum) StringToLong(matte);
                 q++;
               }
-              if (SyncAuthenticPixels(*image,exception) == MagickFalse)
+              if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
             }
             if (StringToLong(matte) == OpaqueOpacity)
@@ -10045,6 +10071,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             break;
           }
         }
+        image_view=DestroyCacheView(image_view);
         state&=(~UpdateConfigurationState);
       }
   } while ((state & ExitState) == 0);
@@ -10320,8 +10347,8 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         /*
           User choose an initial pan location.
         */
-        pan_info.x=event->xbutton.x;
-        pan_info.y=event->xbutton.y;
+        pan_info.x=(ssize_t) event->xbutton.x;
+        pan_info.y=(ssize_t) event->xbutton.y;
         state|=UpdateConfigurationState;
         break;
       }
@@ -10330,15 +10357,15 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         /*
           User has finished panning the image.
         */
-        pan_info.x=event->xbutton.x;
-        pan_info.y=event->xbutton.y;
+        pan_info.x=(ssize_t) event->xbutton.x;
+        pan_info.y=(ssize_t) event->xbutton.y;
         state|=UpdateConfigurationState | ExitState;
         break;
       }
       case MotionNotify:
       {
-        pan_info.x=event->xmotion.x;
-        pan_info.y=event->xmotion.y;
+        pan_info.x=(ssize_t) event->xmotion.x;
+        pan_info.y=(ssize_t) event->xmotion.y;
         state|=UpdateConfigurationState;
       }
       default:
@@ -10349,10 +10376,10 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         /*
           Check boundary conditions.
         */
-        if (pan_info.x < (int) (pan_info.width/2))
+        if (pan_info.x < (ssize_t) (pan_info.width/2))
           pan_info.x=0;
         else
-          pan_info.x=(int) (x_factor*(pan_info.x-(pan_info.width/2)));
+          pan_info.x=(ssize_t) (x_factor*(pan_info.x-(pan_info.width/2)));
         if (pan_info.x < 0)
           pan_info.x=0;
         else
@@ -10514,8 +10541,8 @@ static MagickBooleanType XPasteImage(Display *display,
   XQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
-  paste_info.x=windows->image.x+x;
-  paste_info.y=windows->image.y+y;
+  paste_info.x=(ssize_t) windows->image.x+x;
+  paste_info.y=(ssize_t) windows->image.y+y;
   paste_info.width=0;
   paste_info.height=0;
   cursor=XCreateFontCursor(display,XC_ul_angle);
@@ -10620,8 +10647,8 @@ static MagickBooleanType XPasteImage(Display *display,
         scale_factor=(MagickRealType) windows->image.ximage->height/height;
         paste_info.height=(unsigned int) (scale_factor*paste_image->rows+0.5);
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
-        paste_info.x=windows->image.x+event.xbutton.x;
-        paste_info.y=windows->image.y+event.xbutton.y;
+        paste_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+        paste_info.y=(ssize_t) windows->image.y+event.xbutton.y;
         break;
       }
       case ButtonRelease:
@@ -10639,8 +10666,8 @@ static MagickBooleanType XPasteImage(Display *display,
             /*
               User has selected the location of the paste image.
             */
-            paste_info.x=windows->image.x+event.xbutton.x;
-            paste_info.y=windows->image.y+event.xbutton.y;
+            paste_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+            paste_info.y=(ssize_t) windows->image.y+event.xbutton.y;
             state|=ExitState;
           }
         break;
@@ -10719,8 +10746,8 @@ static MagickBooleanType XPasteImage(Display *display,
           if ((x > (int) (windows->info.x+windows->info.width)) ||
               (y > (int) (windows->info.y+windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
-        paste_info.x=windows->image.x+x;
-        paste_info.y=windows->image.y+y;
+        paste_info.x=(ssize_t) windows->image.x+x;
+        paste_info.y=(ssize_t) windows->image.y+y;
         break;
       }
       default:
@@ -10752,11 +10779,11 @@ static MagickBooleanType XPasteImage(Display *display,
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   scale_factor=(MagickRealType) width/windows->image.ximage->width;
   paste_info.x+=x;
-  paste_info.x=(int) (scale_factor*paste_info.x+0.5);
+  paste_info.x=(ssize_t) (scale_factor*paste_info.x+0.5);
   paste_info.width=(unsigned int) (scale_factor*paste_info.width+0.5);
   scale_factor=(MagickRealType) height/windows->image.ximage->height;
   paste_info.y+=y;
-  paste_info.y=(int) (scale_factor*paste_info.y*scale_factor+0.5);
+  paste_info.y=(ssize_t) (scale_factor*paste_info.y*scale_factor+0.5);
   paste_info.height=(unsigned int) (scale_factor*paste_info.height+0.5);
   /*
     Paste image with X Image window.
@@ -11151,8 +11178,8 @@ static MagickBooleanType XROIImage(Display *display,
   XQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
-  roi_info.x=windows->image.x+x;
-  roi_info.y=windows->image.y+y;
+  roi_info.x=(ssize_t) windows->image.x+x;
+  roi_info.y=(ssize_t) windows->image.y+y;
   roi_info.width=0;
   roi_info.height=0;
   cursor=XCreateFontCursor(display,XC_fleur);
@@ -11214,8 +11241,8 @@ static MagickBooleanType XROIImage(Display *display,
           Note first corner of region of interest rectangle-- exit loop.
         */
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
-        roi_info.x=windows->image.x+event.xbutton.x;
-        roi_info.y=windows->image.y+event.xbutton.y;
+        roi_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+        roi_info.y=(ssize_t) windows->image.y+event.xbutton.y;
         state|=ExitState;
         break;
       }
@@ -11280,8 +11307,8 @@ static MagickBooleanType XROIImage(Display *display,
           if ((x > (int) (windows->info.x+windows->info.width)) ||
               (y > (int) (windows->info.y+windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
-        roi_info.x=windows->image.x+x;
-        roi_info.y=windows->image.y+y;
+        roi_info.x=(ssize_t) windows->image.x+x;
+        roi_info.y=(ssize_t) windows->image.y+y;
         break;
       }
       default:
@@ -11343,8 +11370,8 @@ static MagickBooleanType XROIImage(Display *display,
       {
         case ButtonPress:
         {
-          roi_info.x=windows->image.x+event.xbutton.x;
-          roi_info.y=windows->image.y+event.xbutton.y;
+          roi_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+          roi_info.y=(ssize_t) windows->image.y+event.xbutton.y;
           break;
         }
         case ButtonRelease:
@@ -11352,8 +11379,8 @@ static MagickBooleanType XROIImage(Display *display,
           /*
             User has committed to region of interest rectangle.
           */
-          roi_info.x=windows->image.x+event.xbutton.x;
-          roi_info.y=windows->image.y+event.xbutton.y;
+          roi_info.x=(ssize_t) windows->image.x+event.xbutton.x;
+          roi_info.y=(ssize_t) windows->image.y+event.xbutton.y;
           XSetCursorState(display,windows,MagickFalse);
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Apply") == 0)
@@ -11367,8 +11394,8 @@ static MagickBooleanType XROIImage(Display *display,
           break;
         case MotionNotify:
         {
-          roi_info.x=windows->image.x+event.xmotion.x;
-          roi_info.y=windows->image.y+event.xmotion.y;
+          roi_info.x=(ssize_t) windows->image.x+event.xmotion.x;
+          roi_info.y=(ssize_t) windows->image.y+event.xmotion.y;
         }
         default:
           break;
@@ -11382,26 +11409,26 @@ static MagickBooleanType XROIImage(Display *display,
           if (roi_info.x < 0)
             roi_info.x=0;
           else
-            if (roi_info.x > (int) windows->image.ximage->width)
-              roi_info.x=windows->image.ximage->width;
+            if (roi_info.x > (ssize_t) windows->image.ximage->width)
+              roi_info.x=(ssize_t) windows->image.ximage->width;
           if ((int) roi_info.x < x)
             roi_info.width=(unsigned int) (x-roi_info.x);
           else
             {
               roi_info.width=(unsigned int) (roi_info.x-x);
-              roi_info.x=x;
+              roi_info.x=(ssize_t) x;
             }
           if (roi_info.y < 0)
             roi_info.y=0;
           else
-            if (roi_info.y > (int) windows->image.ximage->height)
-              roi_info.y=windows->image.ximage->height;
+            if (roi_info.y > (ssize_t) windows->image.ximage->height)
+              roi_info.y=(ssize_t) windows->image.ximage->height;
           if ((int) roi_info.y < y)
             roi_info.height=(unsigned int) (y-roi_info.y);
           else
             {
               roi_info.height=(unsigned int) (roi_info.y-y);
-              roi_info.y=y;
+              roi_info.y=(ssize_t) y;
             }
         }
     } while ((state & ExitState) == 0);
@@ -11461,12 +11488,12 @@ static MagickBooleanType XROIImage(Display *display,
                   &width,&height);
               scale_factor=(MagickRealType) width/windows->image.ximage->width;
               crop_info.x+=x;
-              crop_info.x=(int) (scale_factor*crop_info.x+0.5);
+              crop_info.x=(ssize_t) (scale_factor*crop_info.x+0.5);
               crop_info.width=(unsigned int) (scale_factor*crop_info.width+0.5);
               scale_factor=(MagickRealType)
                 height/windows->image.ximage->height;
               crop_info.y+=y;
-              crop_info.y=(int) (scale_factor*crop_info.y+0.5);
+              crop_info.y=(ssize_t) (scale_factor*crop_info.y+0.5);
               crop_info.height=(unsigned int)
                 (scale_factor*crop_info.height+0.5);
               roi_image=CropImage(*image,&crop_info,&(*image)->exception);
@@ -11668,7 +11695,8 @@ static MagickBooleanType XROIImage(Display *display,
             case XK_KP_Home:
             {
               roi_info.x=(ssize_t) (windows->image.width/2L-roi_info.width/2L);
-              roi_info.y=(ssize_t) (windows->image.height/2L-roi_info.height/2L);
+              roi_info.y=(ssize_t) (windows->image.height/2L-
+                roi_info.height/2L);
               break;
             }
             case XK_Left:
@@ -11743,8 +11771,8 @@ static MagickBooleanType XROIImage(Display *display,
             if ((x > (int) (windows->info.x+windows->info.width)) ||
                 (y > (int) (windows->info.y+windows->info.height)))
               (void) XMapWindow(display,windows->info.id);
-          roi_info.x=windows->image.x+event.xmotion.x;
-          roi_info.y=windows->image.y+event.xmotion.y;
+          roi_info.x=(ssize_t) windows->image.x+event.xmotion.x;
+          roi_info.y=(ssize_t) windows->image.y+event.xmotion.y;
           break;
         }
         case SelectionRequest:
@@ -12554,7 +12582,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
             else
               if (x >= (int) windows->image.width)
                 x=(int) (windows->image.width-1);
-            windows->magnify.x=windows->image.x+x;
+            windows->magnify.x=(int) windows->image.x+x;
             if (y < 0)
               y=0;
             else
@@ -12696,7 +12724,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
             else
               if (x >= (int) windows->image.width)
                 x=(int) (windows->image.width-1);
-            windows->magnify.x=windows->image.x+x;
+            windows->magnify.x=(int) windows->image.x+x;
             if (y < 0)
               y=0;
             else
@@ -13029,6 +13057,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     }
     case TileUpdateCommand:
     {
+      CacheView
+        *image_view;
+
       ExceptionInfo
         *exception;
 
@@ -13067,19 +13098,22 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         x_offset=(int) (width*(tile % (((int) image->columns-x)/width))+x);
         y_offset=(int) (height*(tile/(((int) image->columns-x)/width))+y);
         exception=(&image->exception);
-        (void) GetOneVirtualPixel(image,0,0,&pixel,exception);
+        image_view=AcquireCacheView(image);
+        (void) GetOneCacheViewVirtualPixel(image_view,0,0,&pixel,exception);
         for (i=0; i < (int) height; i++)
         {
-          s=GetAuthenticPixels(image,x_offset,y_offset+i,width,1,exception);
+          s=GetCacheViewAuthenticPixels(image_view,(ssize_t) x_offset,(ssize_t)
+            y_offset+i,width,1,exception);
           if (s == (PixelPacket *) NULL)
             break;
           for (j=0; j < (int) width; j++)
             *s++=pixel;
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
             break;
         }
         tile++;
       }
+      image_view=DestroyCacheView(image_view);
       windows->image.window_changes.width=(int) image->columns;
       windows->image.window_changes.height=(int) image->rows;
       XConfigureImageColormap(display,resource_info,windows,image);
@@ -13193,13 +13227,13 @@ static void XTranslateImage(Display *display,XWindows *windows,
   else
     if ((int) (windows->image.x+windows->image.width) >
         windows->image.ximage->width)
-      windows->image.x=windows->image.ximage->width-windows->image.width;
+      windows->image.x=(int) windows->image.ximage->width-windows->image.width;
   if (windows->image.y < 0)
     windows->image.y=0;
   else
     if ((int) (windows->image.y+windows->image.height) >
         windows->image.ximage->height)
-      windows->image.y=windows->image.ximage->height-windows->image.height;
+      windows->image.y=(int) windows->image.ximage->height-windows->image.height;
   /*
     Refresh Image window.
   */
@@ -13278,8 +13312,8 @@ static MagickBooleanType XTrimImage(Display *display,
     if (y < windows->image.ximage->height)
       break;
   }
-  trim_info.x=x;
-  if (trim_info.x == (int) windows->image.ximage->width)
+  trim_info.x=(ssize_t) x;
+  if (trim_info.x == (ssize_t) windows->image.ximage->width)
     {
       XSetCursorState(display,windows,MagickFalse);
       return(MagickFalse);
@@ -13316,7 +13350,7 @@ static MagickBooleanType XTrimImage(Display *display,
     if (x < windows->image.ximage->width)
       break;
   }
-  trim_info.y=y;
+  trim_info.y=(ssize_t) y;
   /*
     Crop the bottom edge.
   */
@@ -13474,7 +13508,7 @@ static Image *XVisualDirectoryImage(Display *display,
   exception=AcquireExceptionInfo();
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  for (i=0; i < (ssize_t) number_files; i++)
+  for (i=0; i < (int) number_files; i++)
   {
     (void) CopyMagickString(read_info->filename,filelist[i],MaxTextExtent);
     filelist[i]=DestroyString(filelist[i]);
@@ -15037,8 +15071,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       display_image,&event);
                     if (nexus != (Image *) NULL)
                       *state|=MontageImageState | NextImageState | ExitState;
-                    vid_info.x=windows->image.x;
-                    vid_info.y=windows->image.y;
+                    vid_info.x=(short int) windows->image.x;
+                    vid_info.y=(short int) windows->image.y;
                     break;
                   }
                 /*
@@ -15198,7 +15232,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     pixel->border_color.pixel;
                   magick_windows[i]->attributes.colormap=map_info->colormap;
                   (void) XChangeWindowAttributes(display,magick_windows[i]->id,
-                    magick_windows[i]->mask,&magick_windows[i]->attributes);
+                    (unsigned long) magick_windows[i]->mask,
+                    &magick_windows[i]->attributes);
                 }
                 if (windows->pan.mapped != MagickFalse)
                   {
