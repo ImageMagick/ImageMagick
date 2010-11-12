@@ -1,3 +1,6 @@
+2010-10-29  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Revised PNG encoder to avoid emitting some spurious warnings.
+
 2010-11-08  6.6.5-8 Nicolas robidoux <nicolas.robidoux@gmail...>
   * Missing logical operator in tiff.c.
 
