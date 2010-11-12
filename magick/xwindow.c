@@ -447,6 +447,9 @@ MagickExport void DestroyXResources(void)
 MagickExport MagickBooleanType XAnnotateImage(Display *display,
   const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
 {
+  CacheView
+    *annotate_view;
+
   GC
     annotate_context;
 
@@ -503,8 +506,8 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
   context_values.background=0;
   context_values.foreground=(size_t) (~0);
   context_values.font=annotate_info->font_info->fid;
-  annotate_context=XCreateGC(display,root_window,(size_t)
-    GCBackground | GCFont | GCForeground,&context_values);
+  annotate_context=XCreateGC(display,root_window,(unsigned long)
+    (GCBackground | GCFont | GCForeground),&context_values);
   if (annotate_context == (GC) NULL)
     return(MagickFalse);
   /*
@@ -538,24 +541,25 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  (void) GetOneVirtualPixel(image,x,y,&annotate_image->background_color,
-    &image->exception);
+  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,
+    &annotate_image->background_color,&image->exception);
   if (annotate_info->stencil == ForegroundStencil)
     annotate_image->matte=MagickTrue;
   exception=(&image->exception);
+  annotate_view=AcquireCacheView(annotate_image);
   for (y=0; y < (int) annotate_image->rows; y++)
   {
-    register ssize_t
+    register int
       x;
 
     register PixelPacket
       *restrict q;
 
-    q=GetAuthenticPixels(annotate_image,0,y,annotate_image->columns,1,
-      exception);
+    q=GetCacheViewAuthenticPixels(annotate_view,0,(ssize_t) y,
+      annotate_image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (ssize_t) annotate_image->columns; x++)
+    for (x=0; x < (int) annotate_image->columns; x++)
     {
       SetOpacityPixelComponent(q,OpaqueOpacity);
       if (XGetPixel(annotate_ximage,x,y) == 0)
@@ -583,9 +587,10 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
         }
       q++;
     }
-    if (SyncAuthenticPixels(annotate_image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(annotate_view,exception) == MagickFalse)
       break;
   }
+  annotate_view=DestroyCacheView(annotate_view);
   XDestroyImage(annotate_ximage);
   /*
     Determine annotate geometry.
@@ -671,7 +676,7 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
   (void) CompositeImage(image,annotate_image->matte != MagickFalse ?
-    OverCompositeOp : CopyCompositeOp,annotate_image,x,y);
+    OverCompositeOp : CopyCompositeOp,annotate_image,(ssize_t) x,(ssize_t) y);
   image->matte=matte;
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);
@@ -1148,14 +1153,14 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
     *map_type,
     *visual_type;
 
+  int
+    visual_mask;
+
   register int
     i;
 
   size_t
     one;
-
-  ssize_t
-    visual_mask;
 
   static int
     number_visuals;
@@ -1547,8 +1552,8 @@ MagickExport void XClientMessage(Display *display,const Window window,
   client_event.window=window;
   client_event.message_type=protocol;
   client_event.format=32;
-  client_event.data.l[0]=(ssize_t) reason;
-  client_event.data.l[1]=(ssize_t) timestamp;
+  client_event.data.l[0]=(long) reason;
+  client_event.data.l[1]=(long) timestamp;
   (void) XSendEvent(display,window,MagickFalse,NoEventMask,(XEvent *) &client_event);
 }
 
@@ -2103,14 +2108,15 @@ static void XDitherImage(Image *image,XImage *ximage)
       {  2,-10, 12, -8,  0,-12, 14, -6,  3, -9, 13, -7,  1,-11, 15, -5}
     };
 
-  PixelPacket
-    color;
+  CacheView
+    *image_view;
 
   int
+    value,
     y;
 
-  ssize_t
-    value;
+  PixelPacket
+    color;
 
   register char
     *q;
@@ -2189,9 +2195,11 @@ static void XDitherImage(Image *image,XImage *ximage)
   i=0;
   j=0;
   q=ximage->data;
+  image_view=AcquireCacheView(image);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) y,image->columns,1,
+      &image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -2216,6 +2224,7 @@ static void XDitherImage(Image *image,XImage *ximage)
     if (i == 2)
       i=0;
   }
+  image_view=DestroyCacheView(image_view);
   /*
     Free allocated memory.
   */
@@ -2260,6 +2269,9 @@ static void XDitherImage(Image *image,XImage *ximage)
 MagickExport MagickBooleanType XDrawImage(Display *display,
   const XPixelInfo *pixel,XDrawInfo *draw_info,Image *image)
 {
+  CacheView
+    *draw_view;
+
   ExceptionInfo
     *exception;
 
@@ -2431,24 +2443,26 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  (void) GetOneVirtualPixel(image,x,y,&draw_image->background_color,
-    &image->exception);
+  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,
+    &draw_image->background_color,&image->exception);
   if (SetImageStorageClass(draw_image,DirectClass) == MagickFalse)
     return(MagickFalse);
   draw_image->matte=MagickTrue;
   exception=(&image->exception);
+  draw_view=AcquireCacheView(draw_image);
   for (y=0; y < (int) draw_image->rows; y++)
   {
-    register ssize_t
+    register int
       x;
 
     register PixelPacket
       *restrict q;
 
-    q=QueueAuthenticPixels(draw_image,0,y,draw_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(draw_view,0,(ssize_t) y,draw_image->columns,
+      1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (ssize_t) draw_image->columns; x++)
+    for (x=0; x < (int) draw_image->columns; x++)
     {
       if (XGetPixel(draw_ximage,x,y) == 0)
         {
@@ -2472,9 +2486,10 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
         }
       q++;
     }
-    if (SyncAuthenticPixels(draw_image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(draw_view,exception) == MagickFalse)
       break;
   }
+  draw_view=DestroyCacheView(draw_view);
   XDestroyImage(draw_ximage);
   /*
     Determine draw geometry.
@@ -2556,33 +2571,38 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
   /*
     Composite text onto the image.
   */
+  draw_view=AcquireCacheView(draw_image);
   for (y=0; y < (int) draw_image->rows; y++)
   {
-    register ssize_t
+    register int
       x;
 
     register PixelPacket
       *restrict q;
 
-    q=GetAuthenticPixels(draw_image,0,y,draw_image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(draw_view,0,(ssize_t) y,draw_image->columns,1,
+      exception);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (ssize_t) draw_image->columns; x++)
+    for (x=0; x < (int) draw_image->columns; x++)
     {
       if (q->opacity != (Quantum) TransparentOpacity)
         SetOpacityPixelComponent(q,OpaqueOpacity);
       q++;
     }
-    if (SyncAuthenticPixels(draw_image,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(draw_view,exception) == MagickFalse)
       break;
   }
+  draw_view=DestroyCacheView(draw_view);
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
-    (void) CompositeImage(image,CopyOpacityCompositeOp,draw_image,x,y);
+    (void) CompositeImage(image,CopyOpacityCompositeOp,draw_image,(ssize_t) x,
+      (ssize_t) y);
   else
     {
       matte=image->matte;
-      (void) CompositeImage(image,OverCompositeOp,draw_image,x,y);
+      (void) CompositeImage(image,OverCompositeOp,draw_image,(ssize_t) x,
+        (ssize_t) y);
       image->matte=matte;
     }
   draw_image=DestroyImage(draw_image);
@@ -3010,7 +3030,7 @@ MagickExport void XGetPixelPacket(Display *display,
   pixel->colors=0;
   if (image != (Image *) NULL)
     if (image->storage_class == PseudoClass)
-      pixel->colors=image->colors;
+      pixel->colors=(ssize_t) image->colors;
   packets=(unsigned int)
     MagickMax((int) pixel->colors,visual_info->colormap_size)+MaxNumberPens;
   if (pixel->pixels != (unsigned long *) NULL)
@@ -4103,6 +4123,9 @@ static Image *XGetWindowImage(Display *display,const Window window,
     }
   if (level <= 1)
     {
+      CacheView
+        *composite_view;
+
       ColormapInfo
         *next;
 
@@ -4293,6 +4316,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         composite_image->columns=(size_t) ximage->width;
         composite_image->rows=(size_t) ximage->height;
         exception=(&composite_image->exception);
+        composite_view=AcquireCacheView(composite_image);
         switch (composite_image->storage_class)
         {
           case DirectClass:
@@ -4341,7 +4365,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 (window_info[id].visual->klass == DirectColor))
               for (y=0; y < (int) composite_image->rows; y++)
               {
-                q=QueueAuthenticPixels(composite_image,0,y,
+                q=QueueCacheViewAuthenticPixels(composite_view,0,(ssize_t) y,
                   composite_image->columns,1,exception);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -4356,13 +4380,13 @@ static Image *XGetWindowImage(Display *display,const Window window,
                   q->blue=ScaleShortToQuantum(colors[index].blue);
                   q++;
                 }
-                if (SyncAuthenticPixels(composite_image,exception) == MagickFalse)
+                if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
                   break;
               }
             else
               for (y=0; y < (int) composite_image->rows; y++)
               {
-                q=QueueAuthenticPixels(composite_image,0,y,
+                q=QueueCacheViewAuthenticPixels(composite_view,0,(ssize_t) y,
                   composite_image->columns,1,exception);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -4380,7 +4404,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                   q->blue=ScaleShortToQuantum((unsigned short) color);
                   q++;
                 }
-                if (SyncAuthenticPixels(composite_image,exception) == MagickFalse)
+                if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
                   break;
               }
             break;
@@ -4410,22 +4434,24 @@ static Image *XGetWindowImage(Display *display,const Window window,
             */
             for (y=0; y < (int) composite_image->rows; y++)
             {
-              q=QueueAuthenticPixels(composite_image,0,y,composite_image->columns,1,exception);
+              q=QueueCacheViewAuthenticPixels(composite_view,0,(ssize_t) y,
+                composite_image->columns,1,exception);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetAuthenticIndexQueue(composite_image);
+              indexes=GetCacheViewAuthenticIndexQueue(composite_view);
               for (x=0; x < (int) composite_image->columns; x++)
               {
                 index=(IndexPacket) XGetPixel(ximage,x,y);
                 indexes[x]=index;
                 *q++=composite_image->colormap[(ssize_t) index];
               }
-              if (SyncAuthenticPixels(composite_image,exception) == MagickFalse)
+              if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
                 break;
             }
             break;
           }
         }
+        composite_view=DestroyCacheView(composite_view);
         XDestroyImage(ximage);
         if (image == (Image *) NULL)
           {
@@ -4443,8 +4469,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
         y_offset-=(int) crop_info.y;
         if (y_offset < 0)
           y_offset=0;
-        (void) CompositeImage(image,CopyCompositeOp,composite_image,x_offset,
-          y_offset);
+        (void) CompositeImage(image,CopyCompositeOp,composite_image,(ssize_t)
+          x_offset,(ssize_t) y_offset);
       }
       /*
         Relinquish resources.
@@ -4607,7 +4633,7 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->immutable=MagickFalse;
   window->shape=MagickFalse;
   window->data=0;
-  window->mask=(size_t) (CWBackingStore | CWBackPixel | CWBackPixmap |
+  window->mask=(int) (CWBackingStore | CWBackPixel | CWBackPixmap |
     CWBitGravity | CWBorderPixel | CWColormap | CWCursor | CWDontPropagate |
     CWEventMask | CWOverrideRedirect | CWSaveUnder | CWWinGravity);
   window->attributes.background_pixel=pixel->background_color.pixel;
@@ -4944,8 +4970,8 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       (void) XTranslateCoordinates(display,target,root,0,0,&x,&y,&child);
-      crop_info.x=x;
-      crop_info.y=y;
+      crop_info.x=(ssize_t) x;
+      crop_info.y=(ssize_t) y;
       crop_info.width=(size_t) window_attributes.width;
       crop_info.height=(size_t) window_attributes.height;
       if (ximage_info->borders != 0)
@@ -5642,8 +5668,8 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
   matte_image=(XImage *) NULL;
   if ((window->shape != MagickFalse) && (window->image != (Image *) NULL))
     if ((window->image->matte != MagickFalse) &&
-        ((ssize_t) width <= XDisplayWidth(display,window->screen)) &&
-        ((ssize_t) height <= XDisplayHeight(display,window->screen)))
+        ((int) width <= XDisplayWidth(display,window->screen)) &&
+        ((int) height <= XDisplayHeight(display,window->screen)))
       {
         /*
           Create matte image.
@@ -5784,6 +5810,9 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
 static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image)
 {
+  CacheView
+    *canvas_view;
+
   Image
     *canvas;
 
@@ -5858,6 +5887,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   pixels=window->pixel_info->pixels;
   q=(unsigned char *) ximage->data;
   x=0;
+  canvas_view=AcquireCacheView(canvas);
   if (ximage->format == XYBitmap)
     {
       register unsigned short
@@ -5883,10 +5913,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           PixelIntensity(&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
-        p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+        p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
+          &canvas->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetVirtualIndexQueue(canvas);
+        indexes=GetCacheViewVirtualIndexQueue(canvas_view);
         bit=0;
         byte=0;
         for (x=0; x < (int) canvas->columns; x++)
@@ -5923,10 +5954,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
@@ -5974,10 +6006,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
@@ -6017,10 +6050,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
               pixel=pixels[(ssize_t) indexes[x]];
@@ -6047,10 +6081,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
               pixel=pixels[(ssize_t) indexes[x]];
@@ -6081,7 +6116,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           for (y=0; y < (int) canvas->rows; y++)
           {
             nibble=0;
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (int) canvas->columns; x++)
@@ -6132,7 +6168,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
@@ -6176,7 +6213,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (int) canvas->columns; x++)
@@ -6201,8 +6239,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               */
               for (y=0; y < (int) canvas->rows; y++)
               {
-                p=GetVirtualPixels(canvas,0,y,canvas->columns,1,
-                  &canvas->exception);
+                p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+                  canvas->columns,1,&canvas->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
                 if ((red_gamma != 1.0) || (green_gamma != 1.0) ||
@@ -6245,8 +6283,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 */
                 for (y=0; y < (int) canvas->rows; y++)
                 {
-                  p=GetVirtualPixels(canvas,0,y,canvas->columns,1,
-                    &canvas->exception);
+                  p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+                    canvas->columns,1,&canvas->exception);
                   if (p == (const PixelPacket *) NULL)
                     break;
                   if ((red_gamma != 1.0) || (green_gamma != 1.0) ||
@@ -6298,11 +6336,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
                 for (y=0; y < (int) canvas->rows; y++)
                 {
-                  p=GetVirtualPixels(canvas,0,y,canvas->columns,1,
-                    &canvas->exception);
+                  p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+                    canvas->columns,1,&canvas->exception);
                   if (p == (PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (ssize_t) canvas->columns; x++)
+                  for (x=0; x < (int) canvas->columns; x++)
                   {
                     pixel=XGammaPixel(map_info,p);
                     for (k=0; k < (int) bytes_per_pixel; k++)
@@ -6330,7 +6368,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       q=(unsigned char *) matte_image->data;
       for (y=0; y < (int) canvas->rows; y++)
       {
-        p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+        p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
+          &canvas->exception);
         if (p == (const PixelPacket *) NULL)
           break;
         bit=0;
@@ -6338,7 +6377,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         for (x=(int) canvas->columns-1; x >= 0; x--)
         {
           byte>>=1;
-          if (p->opacity > (ssize_t) (QuantumRange/2))
+          if (p->opacity > (QuantumRange/2))
             byte|=0x80;
           bit++;
           if (bit == 8)
@@ -6354,6 +6393,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         q+=scanline_pad;
       }
     }
+  canvas_view=DestroyCacheView(canvas_view);
   if (canvas != image)
     canvas=DestroyImage(canvas);
 }
@@ -6397,6 +6437,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image)
 {
+  CacheView
+    *canvas_view;
+
   Image
     *canvas;
 
@@ -6471,6 +6514,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   pixels=window->pixel_info->pixels;
   q=(unsigned char *) ximage->data;
   x=0;
+  canvas_view=AcquireCacheView(canvas);
   if (ximage->format == XYBitmap)
     {
       register unsigned short
@@ -6496,10 +6540,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           PixelIntensity(&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
-        p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+        p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
+          &canvas->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetVirtualIndexQueue(canvas);
+        indexes=GetCacheViewVirtualIndexQueue(canvas_view);
         bit=0;
         byte=0;
         for (x=(int) canvas->columns-1; x >= 0; x--)
@@ -6536,10 +6581,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
@@ -6587,10 +6633,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
@@ -6630,10 +6677,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
               pixel=pixels[(ssize_t) indexes[x]];
@@ -6660,10 +6708,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(canvas);
+            indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
               pixel=pixels[(ssize_t) indexes[x]];
@@ -6693,7 +6742,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
@@ -6745,7 +6795,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
@@ -6789,7 +6840,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (int) canvas->rows; y++)
           {
-            p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+            p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+              canvas->columns,1,&canvas->exception);
             if (p == (const PixelPacket *) NULL)
               break;
             for (x=(int) canvas->columns-1; x >= 0; x--)
@@ -6814,8 +6866,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               */
               for (y=0; y < (int) canvas->rows; y++)
               {
-                p=GetVirtualPixels(canvas,0,y,canvas->columns,1,
-                  &canvas->exception);
+                p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+                  canvas->columns,1,&canvas->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
                 if ((red_gamma != 1.0) || (green_gamma != 1.0) ||
@@ -6858,8 +6910,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 */
                 for (y=0; y < (int) canvas->rows; y++)
                 {
-                  p=GetVirtualPixels(canvas,0,y,canvas->columns,1,
-                    &canvas->exception);
+                  p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+                    canvas->columns,1,&canvas->exception);
                   if (p == (const PixelPacket *) NULL)
                     break;
                   if ((red_gamma != 1.0) || (green_gamma != 1.0) ||
@@ -6911,8 +6963,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
                 for (y=0; y < (int) canvas->rows; y++)
                 {
-                  p=GetVirtualPixels(canvas,0,y,canvas->columns,1,
-                    &canvas->exception);
+                  p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
+                    canvas->columns,1,&canvas->exception);
                   if (p == (const PixelPacket *) NULL)
                     break;
                   for (x=(int) canvas->columns-1; x >= 0; x--)
@@ -6943,7 +6995,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       q=(unsigned char *) matte_image->data;
       for (y=0; y < (int) canvas->rows; y++)
       {
-        p=GetVirtualPixels(canvas,0,y,canvas->columns,1,&canvas->exception);
+        p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
+          &canvas->exception);
         if (p == (const PixelPacket *) NULL)
           break;
         bit=0;
@@ -6951,7 +7004,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         for (x=(int) canvas->columns-1; x >= 0; x--)
         {
           byte<<=1;
-          if (p->opacity > (ssize_t) (QuantumRange/2))
+          if (p->opacity > (QuantumRange/2))
             byte|=0x01;
           bit++;
           if (bit == 8)
@@ -6967,6 +7020,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         q+=scanline_pad;
       }
     }
+  canvas_view=DestroyCacheView(canvas_view);
   if (canvas != image)
     canvas=DestroyImage(canvas);
 }
@@ -7387,8 +7441,9 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   /*
     Show center pixel color.
   */
-  (void) GetOneVirtualMagickPixel(windows->image.image,windows->magnify.x,
-    windows->magnify.y,&pixel,&windows->image.image->exception);
+  (void) GetOneVirtualMagickPixel(windows->image.image,(ssize_t)
+    windows->magnify.x,(ssize_t) windows->magnify.y,&pixel,
+    &windows->image.image->exception);
   (void) FormatMagickString(tuple,MaxTextExtent,"%d,%d: ",
     windows->magnify.x,windows->magnify.y);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
@@ -7844,6 +7899,9 @@ MagickExport void XMakeStandardColormap(Display *display,
         colormap_type=PrivateColormap;
       if (colormap_type == SharedColormap)
         {
+          CacheView
+            *image_view;
+
           DiversityPacket
             *diversity;
 
@@ -7875,21 +7933,24 @@ MagickExport void XMakeStandardColormap(Display *display,
             diversity[i].index=(unsigned short) i;
             diversity[i].count=0;
           }
+          image_view=AcquireCacheView(image);
           for (y=0; y < (int) image->rows; y++)
           {
-            register ssize_t
+            register int
               x;
 
-            register PixelPacket
-              *restrict q;
+            register const PixelPacket
+              *restrict p;
 
-            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (PixelPacket *) NULL)
+            p=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
+              image->columns,1,exception);
+            if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetAuthenticIndexQueue(image);
-            for (x=(ssize_t) image->columns-1; x >= 0; x--)
+            indexes=GetCacheViewAuthenticIndexQueue(image_view);
+            for (x=(int) image->columns-1; x >= 0; x--)
               diversity[(ssize_t) indexes[x]].count++;
           }
+          image_view=DestroyCacheView(image_view);
           /*
             Sort colors by decreasing intensity.
           */
@@ -8007,7 +8068,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               p=colors+image->colors;
               for (i=0; i < (ssize_t) retain_colors; i++)
               {
-                p->pixel=(int) i;
+                p->pixel=(unsigned long) i;
                 p++;
               }
               (void) XQueryColors(display,
@@ -8169,7 +8230,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           &pixel->pen_colors[i]);
         pixel->pixels[image->colors+i]=pixel->pen_colors[i].pixel;
       }
-      pixel->colors=image->colors+MaxNumberPens;
+      pixel->colors=(ssize_t) (image->colors+MaxNumberPens);
     }
   colors=(XColor *) RelinquishMagickMemory(colors);
   if (IsEventLogging())
@@ -8334,7 +8395,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
     window_info->id=XCreateWindow(display,parent,window_info->x,window_info->y,
       (unsigned int) size_hints->width,(unsigned int) size_hints->height,
       window_info->border_width,(int) window_info->depth,InputOutput,
-      window_info->visual,window_info->mask,&window_info->attributes);
+      window_info->visual,(unsigned long) window_info->mask,
+      &window_info->attributes);
   else
     {
       MagickStatusType
@@ -8349,8 +8411,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       /*
         Window already exists;  change relevant attributes.
       */
-      (void) XChangeWindowAttributes(display,window_info->id,window_info->mask,
-        &window_info->attributes);
+      (void) XChangeWindowAttributes(display,window_info->id,(unsigned long)
+        window_info->mask,&window_info->attributes);
       mask=ConfigureNotify;
       while (XCheckTypedWindowEvent(display,window_info->id,(int) mask,&sans_event)) ;
       window_changes.x=window_info->x;
