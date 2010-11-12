@@ -1167,7 +1167,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
         break;
       if (*text == '\0')
         break;
-      if ((Extent(text_info->text)+1) >= (ssize_t) MaxTextExtent)
+      if ((Extent(text_info->text)+1) >= (int) MaxTextExtent)
         (void) XBell(display,0);
       else
         {
@@ -1572,9 +1572,10 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
           XWhitePixel(display,window_info->screen));
       return;
     }
-  foreground=(ssize_t) XPixelIntensity(&window_info->pixel_info->foreground_color);
+  foreground=(ssize_t) XPixelIntensity(
+    &window_info->pixel_info->foreground_color);
   matte=(ssize_t) XPixelIntensity(&window_info->pixel_info->matte_color);
-  if (MagickAbsoluteValue(foreground-matte) > (65535L >> 3))
+  if (MagickAbsoluteValue((int) (foreground-matte)) > (65535L >> 3))
     (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->foreground_color.pixel);
   else
@@ -1724,7 +1725,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   */
   font_info=windows->widget.font_info;
   text_width=0;
-  for (i=0; i < (ssize_t) colors; i++)
+  for (i=0; i < (int) colors; i++)
     if (WidgetTextWidth(font_info,colorlist[i]) > text_width)
       text_width=WidgetTextWidth(font_info,colorlist[i]);
   width=WidgetTextWidth(font_info,(char *) action);
@@ -1977,7 +1978,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           }
         else
           {
-            for (i=0; i < (ssize_t) colors; i++)
+            for (i=0; i < (int) colors; i++)
               colorlist[i]=DestroyString(colorlist[i]);
             if (colorlist != (char **) NULL)
               colorlist=(char **) RelinquishMagickMemory(colorlist);
@@ -2021,7 +2022,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           Jump scroll to match user color.
         */
         list_info.id=(~0);
-        for (i=0; i < (ssize_t) colors; i++)
+        for (i=0; i < (int) colors; i++)
           if (LocaleCompare(colorlist[i],reply) >= 0)
             {
               list_info.id=LocaleCompare(colorlist[i],reply) == 0 ? i : ~0;
@@ -2059,7 +2060,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               selection_info.raised=(slider_info.id+i) != list_info.id ?
                 MagickTrue : MagickFalse;
               selection_info.text=(char *) NULL;
-              if ((slider_info.id+i) < (ssize_t) colors)
+              if ((slider_info.id+i) < (int) colors)
                 selection_info.text=colorlist[slider_info.id+i];
               XDrawWidgetText(display,&windows->widget,&selection_info);
               selection_info.y+=(int) selection_info.height;
@@ -2133,7 +2134,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               state|=RedrawListState;
             }
         if (south_info.raised == MagickFalse)
-          if (slider_info.id < (ssize_t) colors)
+          if (slider_info.id < (int) colors)
             {
               /*
                 Move slider down.
@@ -2168,7 +2169,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               break;
             }
         if (MatteIsActive(south_info,event.xbutton))
-          if (slider_info.id < (ssize_t) colors)
+          if (slider_info.id < (int) colors)
             {
               /*
                 Move slider down.
@@ -2756,7 +2757,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   /*
     Free color list.
   */
-  for (i=0; i < (ssize_t) colors; i++)
+  for (i=0; i < (int) colors; i++)
     colorlist[i]=DestroyString(colorlist[i]);
   if (colorlist != (char **) NULL)
     colorlist=(char **) RelinquishMagickMemory(colorlist);
@@ -3705,8 +3706,8 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
   /*
     Position Dialog widget.
   */
-  windows->widget.width=(unsigned int) MagickMax(2*width,(int) WidgetTextWidth(
-    font_info,(char *) query));
+  windows->widget.width=(unsigned int) MagickMax((int) (2*width),(int)
+    WidgetTextWidth(font_info,(char *) query));
   if (windows->widget.width < WidgetTextWidth(font_info,reply))
     windows->widget.width=WidgetTextWidth(font_info,reply);
   windows->widget.width+=6*QuantumMargin;
@@ -4630,11 +4631,13 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         for (i=0; i < (ssize_t) files; i++)
           if (LocaleCompare(filelist[i],reply) >= 0)
             {
-              list_info.id=LocaleCompare(filelist[i],reply) == 0 ? i : ~0;
+              list_info.id=(int)
+                (LocaleCompare(filelist[i],reply) == 0 ? i : ~0);
               break;
             }
-        if ((i < slider_info.id) || (i >= (int) (slider_info.id+visible_files)))
-          slider_info.id=i-(visible_files >> 1);
+        if ((i < (ssize_t) slider_info.id) ||
+            (i >= (ssize_t) (slider_info.id+visible_files)))
+          slider_info.id=(int) i-(visible_files >> 1);
         selection_info.id=(~0);
         state|=RedrawListState;
         state&=(~JumpListState);
@@ -4659,9 +4662,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             */
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
-            for (i=0; i < (int) visible_files; i++)
+            for (i=0; i < (ssize_t) visible_files; i++)
             {
-              selection_info.raised=(slider_info.id+i) != list_info.id ?
+              selection_info.raised=(int) (slider_info.id+i) != list_info.id ?
                 MagickTrue : MagickFalse;
               selection_info.text=(char *) NULL;
               if ((slider_info.id+i) < (ssize_t) files)
@@ -4715,7 +4718,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               state|=RedrawListState;
             }
         if (south_info.raised == MagickFalse)
-          if (slider_info.id < (ssize_t) files)
+          if (slider_info.id < (int) files)
             {
               /*
                 Move slider down.
@@ -4750,7 +4753,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               break;
             }
         if (MatteIsActive(south_info,event.xbutton))
-          if (slider_info.id < (ssize_t) files)
+          if (slider_info.id < (int) files)
             {
               /*
                 Move slider down.
@@ -4782,7 +4785,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             */
             id=slider_info.id+(event.xbutton.y-(list_info.y+(height >> 1))+1)/
               selection_info.height;
-            if (id >= (ssize_t) files)
+            if (id >= (int) files)
               break;
             (void) CopyMagickString(reply_info.text,filelist[id],MaxTextExtent);
             reply_info.highlight=MagickFalse;
@@ -4793,7 +4796,6 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               {
                 register char
                   *p;
-
 
                 p=reply_info.text+strlen(reply_info.text)-1;
                 if (*p == *DirectorySeparator)
@@ -4866,8 +4868,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
-              if (XTextWidth(font_info,reply_info.marker,i) > x)
+            for (i=1; i <= (ssize_t) Extent(reply_info.marker); i++)
+              if (XTextWidth(font_info,reply_info.marker,(int) i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
             if (event.xbutton.time > (click_time+DoubleClick))
@@ -4986,7 +4988,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 XDrawMatteText(display,&windows->widget,&reply_info);
                 special_info.raised=MagickTrue;
                 XDrawBeveledButton(display,&windows->widget,&special_info);
-                for (i=0; i < (int) number_formats; i++)
+                for (i=0; i < (ssize_t) number_formats; i++)
                   formats[i]=DestroyString(formats[i]);
                 formats=(char **) RelinquishMagickMemory(formats);
                 break;
@@ -7739,7 +7741,7 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
       toggle_info.raised=MagickTrue;
       XDrawTriangleEast(display,&windows->command,&toggle_info);
     }
-  windows->widget.y=submenu_info.active == 0 ? y-(ssize_t)
+  windows->widget.y=submenu_info.active == 0 ? y-(int)
     ((3*title_height) >> 2) : y;
   if (submenu_info.active != 0)
     windows->widget.y=windows->command.y+submenu_info.y;
