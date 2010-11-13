@@ -532,38 +532,36 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  Lanczos filter is a special 3-lobed Sinc windowed Sinc filter,
-%  (or cylindrical promoted Jinc-Jinc filter).  This filter is
-%  probably the most popular windowed filter.
+%  Lanczos filter is a special 3-lobed Sinc-windowed Sinc filter
+%  (promoted to Jinc-windowed Jinc for cylindrical use).  This is the
+%  most popular windowed filter.
 %
-%  LanczosSharp is a slightly sharpened (blur=0.98303932214489908)
-%  form of the Lanczos filter.  It was designed specifically for
+%  LanczosSharp is a slightly sharpened (blur=0.9812505644269356) form
+%  of the Lanczos filter.  It was designed specifically for
 %  cylindrical EWA (Elliptical Weighted Average) distortion (as a
-%  Jinc-Jinc filter), but can used as a slightly sharper orthogonal
-%  Lanczos (Sinc-Sinc) filter. The chosen blur value comes as close as
-%  possible to satisfying the following condition without changing the
-%  character of the corresponding EWA filter:
+%  Jinc-Jinc filter); it can also be used as a slightly sharper
+%  orthogonal Lanczos (Sinc-Sinc) filter. The chosen blur value comes
+%  as close as possible to satisfying the following condition without
+%  changing the character of the corresponding EWA filter:
 %
 %    'No-Op' Vertical and Horizontal Line Preservation Condition:
 %    Images with only vertical or horizontal features are preserved
 %    when performing 'no-op" with EWA distortion.
 %
-%  The Lanczos2 and Lanczos2Sharp filters are simply 2-lobe versions
-%  of the Lanczos filters.  The 'sharp' version uses a blur factor of
+%  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the
+%  Lanczos filters.  The 'sharp' version uses a blur factor of
 %  0.958027803631219, again chosen because the resulting EWA filter
-%  comes as close as possible to preserving vertical and horizontal
-%  lines without changing its character. (There are other optimal
-%  values; we use the least sharpening one).
+%  comes as close as possible to satisfying the above condition.
 %
 %  Robidoux is another filter tuned for EWA. It is the Keys cubic
 %  filter defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
 %  "'No-Op' Vertical and Horizontal Line Preservation Condition"
-%  exactly.  It also seems to provide only minimal bluring of a low
-%  level 'pixel-hash' pattern in the 'No-Op Distort' case.  It turns
-%  out to be close to both plain Mitchell and Lanczos2Sharp filters.
-%  For example, its first crossing is at (36 sqrt(2) + 123)/(72
-%  sqrt(2) + 47) which is almost the same as the first crossing
-%  of the other two.
+%  exactly.  Also, it minimally blurs high frequency 'pixel-hash'
+%  patterns in the 'No-Op Distort' case.  Robidoux turns out to be
+%  close to both plain the Mitchell and Lanczos2Sharp filters.  For
+%  example, its first crossing is at (36 sqrt(2) + 123)/(72 sqrt(2) +
+%  47), almost the same as the first crossing of Mitchell and
+%  Lanczos2Sharp.
 %
 %
 %  'EXPERT' OPTIONS:
