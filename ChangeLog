@@ -1,7 +1,7 @@
 2010-11-13  6.6.5-9 Nicolas robidoux <nicolas.robidoux@gmail...>
-  * LanczosSharp blur tweaked to minimize worst case scenario deviation
-    from "perfect preservation of images which only vary horizontally (or
-    vertically)" under no-op.
+  * LanczosSharp blur tweaked to minimize worst case deviation from "perfect
+    preservation of images which only vary horizontally (or vertically)" under
+    no-op.
 
 2010-10-29  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
   * Revised PNG encoder to avoid emitting some spurious warnings.
