@@ -548,20 +548,31 @@ static MagickRealType Welsh(const MagickRealType x,
 %    Images with only vertical or horizontal features are preserved
 %    when performing 'no-op" with EWA distortion.
 %
+%  EWA LanczosSharp does not satisfy this condition exactly, but it
+%  comes really close: If all the data is in [0,1] and the input image
+%  is constant on columns (or rows), EWA LanczosSharp preserves the
+%  image under no-op to within 0.00465 (that is, it is off by at most
+%  2 in 8-bit); EWA Lanczos, on the other hand, preserves it to within
+%  0.0174 (5 in 8-bit).  The preservation of arbitrary images under
+%  no-op, however, is not so good: EWA Lanczos preserves it to within
+%  0.308 (79 in 8-bit), EWA LanczosSharp to within 0.315 (81 in
+%  8-bit). In particular, 'pixel-hash' patterns (the checkerboard
+%  mode) are smoothed out a lot.
+%
 %  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the
 %  Lanczos filters.  The 'sharp' version uses a blur factor of
 %  0.958027803631219, again chosen because the resulting EWA filter
-%  comes as close as possible to satisfying the above condition.
+%  comes as close as possible to satisfying the above
+%  condition. (Comment from Nicolas: this value may change slightly.)
 %
 %  Robidoux is another filter tuned for EWA. It is the Keys cubic
 %  filter defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
 %  "'No-Op' Vertical and Horizontal Line Preservation Condition"
-%  exactly.  Also, it minimally blurs high frequency 'pixel-hash'
-%  patterns in the 'No-Op Distort' case.  Robidoux turns out to be
-%  close to both plain the Mitchell and Lanczos2Sharp filters.  For
-%  example, its first crossing is at (36 sqrt(2) + 123)/(72 sqrt(2) +
-%  47), almost the same as the first crossing of Mitchell and
-%  Lanczos2Sharp.
+%  exactly, and it moderately blurs high frequency 'pixel-hash'
+%  patterns under no-op.  It turns out to be close to both Mitchell
+%  and Lanczos2Sharp.  For example, its first crossing is at (36
+%  sqrt(2) + 123)/(72 sqrt(2) + 47), almost the same as the first
+%  crossing of Mitchell and Lanczos2Sharp.
 %
 %
 %  'EXPERT' OPTIONS:
