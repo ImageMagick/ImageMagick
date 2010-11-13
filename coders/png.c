@@ -6379,9 +6379,15 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
             for (j=0; j < number_colors; j++)
             {
               if (ping_plte_map[j] == 0)
-               ping_plte_map[j]=ping_plte_map[i];
+              {
+                ping_plte_map[j]=ping_plte_map[i];
+                opacity[j]=TransparentOpacity;
+              }
               else if (ping_plte_map[j] == ping_plte_map[i])
+              {
                 ping_plte_map[j]=0;
+                opacity[j]=opacity[0];
+              }
             }
             remap_needed=MagickTrue;
             break;
@@ -6409,7 +6415,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
   for (i=0; i<256; i++)
   {
     ping_plte_map[i]=i;
-    opacity[i]=0;
+    opacity[i]=OpaqueOpacity;
   }
 
   if (OptimizePNGColormap(image, ping_plte_map, opacity) == MagickFalse)
@@ -8265,7 +8271,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %    o -define: For more precise control of the PNG output, you can use the
 %               Image options "png:bit-depth" and "png:color-type".  These
 %               can be set from the commandline with "-define" and also
-%               from the application programming interfaces.
+%               from the application programming interfaces.  The options
+%               are case-independent and are converted to lowercase before
+%               being passed to this encoder.
 %
 %               png:color-type can be 0, 2, 3, 4, or 6.
 %
@@ -8294,9 +8302,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %  TODO: Enforce the previous paragraph.
 %
-%  TODO: Allow all other PNG subformats to be requested via new
-%        "-define png:bit-depth -define png:color-type" options.
-%
 %  Note that another definition, "png:bit-depth-written" exists, but it
 %  is not intended for external use.  It is only used internally by the
 %  PNG encoder to inform the JNG encoder of the depth of the alpha channel.
@@ -8310,13 +8315,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %  where x is a location flag and <file> is a file containing the chunk
 %  name in the first 4 bytes, then a colon (":"), followed by the chunk data.
+%  This encoder will compute the chunk length and CRC, so those must not
+%  be included in the file.
 %
 %  "x" can be "b" (before PLTE), "m" (middle, i.e., between PLTE and IDAT),
 %  or "e" (end, i.e., after IDAT).  If you want to write multiple chunks
 %  of the same type, then add a short unique string after the "x" to prevent
-%  subsequent profiles from overwriting the preceding ones:
+%  subsequent profiles from overwriting the preceding ones, e.g.,
 %
-%     -profile PNG-chunk-x01:file01 -profile PNG-chunk-x02:file02
+%     -profile PNG-chunk-b01:file01 -profile PNG-chunk-b02:file02
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -8422,9 +8429,15 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->write_png_depth = 8;
       else if (LocaleCompare(value,"16") == 0)
         mng_info->write_png_depth = 16;
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:bit-depth",
+             "=%s",value);
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "png:bit-depth=%d was defined.\n",mng_info->write_png_depth);
+          "  png:bit-depth=%d was defined.\n",mng_info->write_png_depth);
     }
   value=GetImageOption(image_info,"png:color-type");
   if (value != (char *) NULL)
@@ -8440,9 +8453,15 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->write_png_colortype = 5;
       else if (LocaleCompare(value,"6") == 0)
         mng_info->write_png_colortype = 7;
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:color-type",
+             "=%s",value);
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "png:color-type=%d was defined.\n",mng_info->write_png_colortype-1);
+          "  png:color-type=%d was defined.\n",mng_info->write_png_colortype-1);
     }
 
   status=WriteOnePNGImage(mng_info,image_info,image);
