@@ -921,7 +921,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   switch (filter_type)
   {
     case LanczosSharpFilter:
-      resize_filter->blur *= 0.98303932214489908;
+      resize_filter->blur *= 0.9812505644269356;
       break;
     case Lanczos2SharpFilter:
       resize_filter->blur *= 0.958027803631219;
