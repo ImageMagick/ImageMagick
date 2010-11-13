@@ -123,7 +123,7 @@ static MagickBooleanType ConjureUsage(void)
   (void) printf("\nMiscellaneous Options:\n");
   for (p=miscellaneous; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
-  (void) printf("\nIn additiion, define any key value pairs required by "
+  (void) printf("\nIn addition, define any key value pairs required by "
     "your script.  For\nexample,\n\n");
   (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
   return(MagickFalse);
