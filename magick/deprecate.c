@@ -1498,6 +1498,29 @@ MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D e s t r o y C o n s t i t u t e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyConstitute() destroys the constitute component.
+%
+%  The format of the DestroyConstitute method is:
+%
+%      DestroyConstitute(void)
+%
+*/
+MagickExport void DestroyConstitute(void)
+{
+  ConstituteComponentTerminus();
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y M a g i c k R e g i s t r y                                 %
 %                                                                             %
 %                                                                             %

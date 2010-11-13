@@ -290,6 +290,7 @@ extern MagickExport void
   *AcquireMemory(const size_t) magick_attribute((deprecated)),
   AllocateNextImage(const ImageInfo *,Image *) magick_attribute((deprecated)),
   *CloneMemory(void *,const void *,const size_t) magick_attribute((deprecated)),
+  DestroyConstitute(void),
   DestroyImageAttributes(Image *) magick_attribute((deprecated)),
   DestroyImages(Image *) magick_attribute((deprecated)),
   DestroyMagick(void) magick_attribute((deprecated)),
