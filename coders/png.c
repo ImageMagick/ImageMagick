@@ -6644,6 +6644,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_colors=image->colors;
   image_depth=image->depth;
   image_matte=image->matte;
+  number_colors=image->colors;
 
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
@@ -6838,7 +6839,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   "    Colors quantized to %.20g",(double) number_colors);
             }
           if (matte)
-            png_set_invalid(ping,ping_info,PNG_INFO_tRNS);
+            ping_have_tRNS=MagickFalse;
           /*
             Set image palette.
           */
@@ -7148,7 +7149,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             (ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p))));
           ping_have_tRNS=MagickTrue;
         }
-      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+      if (ping_have_tRNS != MagickFalse)
         {
           /*
             Determine if there is one and only one transparent color
@@ -7189,9 +7190,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                break;
           }
           if (x >= 0)
-            png_set_invalid(ping,ping_info,PNG_INFO_tRNS);
+            ping_have_tRNS = MagickFalse;
         }
-      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+      if (ping_have_tRNS != MagickFalse)
         {
           ping_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
           if (image_depth == 8)
@@ -7204,7 +7205,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
     }
     matte=image_matte;
-    if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+    if (ping_have_tRNS != MagickFalse)
       image_matte=MagickFalse;
     if ((mng_info->IsPalette) &&
         mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE &&
