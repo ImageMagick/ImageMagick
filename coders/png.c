@@ -6540,7 +6540,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   const StringInfo
     *profile;
 
-
   int
     image_matte,
     num_passes,
@@ -6609,6 +6608,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     rowbytes,
     save_image_depth;
 
+  int
+    ping_pHYs_unit_type;
+
+  png_uint_32
+    ping_pHYs_x_resolution,
+    ping_pHYs_y_resolution;
+
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  enter WriteOnePNGImage()");
 
@@ -6635,16 +6641,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_trans_color.blue=0;
   ping_trans_color.gray=0;
 
+  ping_pHYs_unit_type = 0;
+  ping_pHYs_x_resolution = 0;
+  ping_pHYs_y_resolution = 0;
+
   ping_have_PLTE=MagickFalse;
   ping_have_bKGD=MagickFalse;
   ping_have_pHYs=MagickFalse;
   ping_have_tRNS=MagickFalse;
 
   quantum_info = (QuantumInfo *) NULL;
+  number_colors=0;
   image_colors=image->colors;
   image_depth=image->depth;
   image_matte=image->matte;
-  number_colors=image->colors;
 
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
@@ -6729,52 +6739,37 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
   save_image_depth=image_depth;
   ping_bit_depth=(png_byte) save_image_depth;
+
 #if defined(PNG_pHYs_SUPPORTED)
   if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
       (!mng_info->write_mng || !mng_info->equal_physs))
     {
-      int
-        unit_type;
-
-      png_uint_32
-        x_resolution,
-        y_resolution;
+     if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Setting up pHYs chunk");
 
       if (image->units == PixelsPerInchResolution)
         {
-          unit_type=PNG_RESOLUTION_METER;
-          x_resolution=(png_uint_32) (100.0*image->x_resolution/2.54);
-          y_resolution=(png_uint_32) (100.0*image->y_resolution/2.54);
+          ping_pHYs_unit_type=PNG_RESOLUTION_METER;
+          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->x_resolution/2.54);
+          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->y_resolution/2.54);
         }
+
       else if (image->units == PixelsPerCentimeterResolution)
         {
-          unit_type=PNG_RESOLUTION_METER;
-          x_resolution=(png_uint_32) (100.0*image->x_resolution);
-          y_resolution=(png_uint_32) (100.0*image->y_resolution);
+          ping_pHYs_unit_type=PNG_RESOLUTION_METER;
+          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->x_resolution);
+          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->y_resolution);
         }
 
       else
         {
-          unit_type=PNG_RESOLUTION_UNKNOWN;
-          x_resolution=(png_uint_32) image->x_resolution;
-          y_resolution=(png_uint_32) image->y_resolution;
+          ping_pHYs_unit_type=PNG_RESOLUTION_UNKNOWN;
+          ping_pHYs_x_resolution=(png_uint_32) image->x_resolution;
+          ping_pHYs_y_resolution=(png_uint_32) image->y_resolution;
         }
 
        ping_have_pHYs = MagickTrue;
-       if (logging != MagickFalse)
-         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    Setting up pHYs chunk");
-    }
-#endif
-#if defined(PNG_oFFs_SUPPORTED)
-  if (image->page.x || image->page.y)
-    {
-       png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
-          (png_int_32) image->page.y, 0);
-
-       if (logging != MagickFalse)
-         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    Setting up oFFs chunk");
     }
 #endif
 
@@ -7653,6 +7648,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                bp.x,bp.y);
        }
     }
+
   ping_interlace_method=image_info->interlace != NoInterlace;
 
   if (mng_info->write_mng)
@@ -7757,6 +7753,27 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (ping_have_bKGD != MagickFalse)
       png_set_bKGD(ping,ping_info,&ping_background);
+
+  if (ping_have_pHYs != MagickFalse)
+    {
+       png_set_pHYs(ping,ping_info,
+           ping_pHYs_x_resolution,
+           ping_pHYs_y_resolution,
+           ping_pHYs_unit_type);
+    }
+
+#if defined(PNG_oFFs_SUPPORTED)
+  if (image->page.x || image->page.y)
+    {
+       png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
+          (png_int_32) image->page.y, 0);
+
+       if (logging != MagickFalse)
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "    Setting up oFFs chunk with x=%d, y=%d, units=0",
+             (int) image->page.x, (int) image->page.y);
+    }
+#endif
 
   png_write_info_before_PLTE(ping, ping_info);
 
