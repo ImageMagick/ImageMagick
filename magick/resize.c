@@ -532,14 +532,14 @@ static MagickRealType Welsh(const MagickRealType x,
 %  and rational (high Q) approximations, and will be used by default in
 %  most cases.
 %
-%  Lanczos filter is a special 3-lobed Sinc-windowed Sinc filter
-%  (promoted to Jinc-windowed Jinc for cylindrical use).  This is the
-%  most popular windowed filter.
+%  The Lanczos filter is a special 3-lobed Sinc-windowed Sinc filter
+%  (promoted to Jinc-windowed Jinc for cylindrical (Elliptical
+%  Weighted Average) use).  The Sinc version is the most popular
+%  windowed filter.
 %
-%  LanczosSharp is a slightly sharpened (blur=0.9812505644269356) form
-%  of the Lanczos filter.  It was designed specifically for
-%  cylindrical EWA (Elliptical Weighted Average) distortion (as a
-%  Jinc-Jinc filter); it can also be used as a slightly sharper
+%  LanczosSharp is a slightly sharpened (blur=0.9812505644269356 < 1)
+%  form of the Lanczos filter, specifcally designed for EWA distortion
+%  (as a Jinc-Jinc); it can also be used as a slightly sharper
 %  orthogonal Lanczos (Sinc-Sinc) filter. The chosen blur value comes
 %  as close as possible to satisfying the following condition without
 %  changing the character of the corresponding EWA filter:
@@ -552,7 +552,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %  Lanczos filters.  The 'sharp' version uses a blur factor of
 %  0.958027803631219, again chosen because the resulting EWA filter
 %  comes as close as possible to satisfying the above
-%  condition. (Comment from Nicolas: this value may change slightly.)
+%  condition. (Comment from Nicolas: value may change following the
+%  use of a better optimization technique.)
 %
 %  Robidoux is another filter tuned for EWA. It is the Keys cubic
 %  filter defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
