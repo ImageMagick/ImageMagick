@@ -1,7 +1,7 @@
-2010-11-14  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-11-14  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Lanczos2Sharp blur tweaked. New blur = 0.9549963639785485.
 
-2010-11-13  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-11-13  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * LanczosSharp blur tweaked to minimize worst case deviation from "perfect
     preservation of images which only vary horizontally (or vertically)" under
     no-op. New blur = 0.9812505644269356.
@@ -9,7 +9,7 @@
 2010-10-29  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
   * Revised PNG encoder to avoid emitting some spurious warnings.
 
-2010-11-08  6.6.5-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-11-08  6.6.5-8 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Missing logical operator in tiff.c.
 
 2010-11-08  6.6.5-8 Cristy  <quetzlzacatenango@image...>
@@ -31,7 +31,7 @@
   * Revised PNG palette optimization
   * Added some debug logging in coders/png.c.
 
-2010-10-28  6.6.5-3 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-10-28  6.6.5-3 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * More precise blur values for Lanczos2Sharp and LanczosSharp.
   * Added location of first Mitchell crossing (=8/7) to the filters data
     structure.
@@ -40,18 +40,18 @@
   * Added Lanczos2D* filters now named Lanczos2*
   * Reorganization of AcquireFilter() to make it work better
 
-2010-10-25  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-10-25  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Clearer EWA filters (LanczosSharp etc) comments.
 
 2010-10-25  6.6.5-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Added LanczosSharp  (3-lobe Lanczos with sharpening)
   * Filter sharpening factors are also always applied regardless of usage.
 
-2010-10-24  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-10-24  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * CubicBC filter formulas simplified by constant folding. In
     particular, P1 coefficient (always zero) removed from coeff.
 
-2010-10-22  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-10-22  6.6.5-1 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Revert the Robidoux filter to a Keys cubic with C=(108 sqrt 2-29)/398
     (as already specified in the documentation).
 
@@ -114,7 +114,7 @@
     however 'Bessel' while not visible as a filter option can still be used
     as an internal alias for 'Jinc'.
 
-2010-09-28  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-09-28  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Chantal Racette double checked the bounding parallelogram computation
     in resample.c (and I tightened the comments).
 
@@ -125,7 +125,7 @@
 2010-09-28  6.6.4-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Bug fix for -filter point distorts (occasional generating black pixels)
 
-2010-09-27  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-09-27  6.6.4-8 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Simplified the ClampUpAxes code, the use of its outputs, its comments,
     and credited Craig DeForest for the "clamp singular values" idea.
   * No reason to have "insane" precision Sinc in resize.c: Use
@@ -144,7 +144,7 @@
   * Don't allow resize filter weights to go to zero (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17132).
 
-2010-09-24  6.6.4-6 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-09-24  6.6.4-6 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Now that MagickPIL is a MagickRealType, some casts are unneeded.
 
 2010-09-21  6.6.4-6 Cristy  <quetzlzacatenango@image...>
@@ -152,7 +152,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17123).
   * Don't define HAVE_THREADS for --without-threads configure script option.
 
-2010-09-20  6.6.4-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2010-09-20  6.6.4-5 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.
     Some computations were needlessly done in long double precision because
     PIL forced an automatic upcast wherever it appeared. Changed its name to
