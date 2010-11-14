@@ -1,7 +1,7 @@
-2010-11-14  6.6.5-9 Nicolas robidoux <nicolas.robidoux@gmail...>
+2010-11-14  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Lanczos2Sharp blur tweaked. New blur = 0.9549963639785485.
 
-2010-11-13  6.6.5-9 Nicolas robidoux <nicolas.robidoux@gmail...>
+2010-11-13  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * LanczosSharp blur tweaked to minimize worst case deviation from "perfect
     preservation of images which only vary horizontally (or vertically)" under
     no-op. New blur = 0.9812505644269356.
@@ -9,7 +9,7 @@
 2010-10-29  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
   * Revised PNG encoder to avoid emitting some spurious warnings.
 
-2010-11-08  6.6.5-8 Nicolas robidoux <nicolas.robidoux@gmail...>
+2010-11-08  6.6.5-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Missing logical operator in tiff.c.
 
 2010-11-08  6.6.5-8 Cristy  <quetzlzacatenango@image...>
