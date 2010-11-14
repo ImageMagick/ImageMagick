@@ -548,17 +548,6 @@ static MagickRealType Welsh(const MagickRealType x,
 %    Images with only vertical or horizontal features are preserved
 %    when performing 'no-op" with EWA distortion.
 %
-%  EWA LanczosSharp does not satisfy this condition exactly, but it
-%  comes really close: If all the data is in [0,1] and the input image
-%  is constant on columns (or rows), EWA LanczosSharp preserves the
-%  image under no-op to within 0.00465 (that is, it is off by at most
-%  2 in 8-bit); EWA Lanczos, on the other hand, preserves it to within
-%  0.0174 (5 in 8-bit).  The preservation of arbitrary images under
-%  no-op, however, is not so good: EWA Lanczos preserves it to within
-%  0.308 (79 in 8-bit), EWA LanczosSharp to within 0.315 (81 in
-%  8-bit). In particular, 'pixel-hash' patterns (the checkerboard
-%  mode) are smoothed out a lot.
-%
 %  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the
 %  Lanczos filters.  The 'sharp' version uses a blur factor of
 %  0.958027803631219, again chosen because the resulting EWA filter
