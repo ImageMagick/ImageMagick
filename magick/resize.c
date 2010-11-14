@@ -550,10 +550,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the
 %  Lanczos filters.  The 'sharp' version uses a blur factor of
-%  0.958027803631219, again chosen because the resulting EWA filter
+%  0.9549963639785485, again chosen because the resulting EWA filter
 %  comes as close as possible to satisfying the above
-%  condition. (Comment from Nicolas: value may change following the
-%  use of a better optimization technique.)
+%  condition.
 %
 %  Robidoux is another filter tuned for EWA. It is the Keys cubic
 %  filter defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
@@ -923,7 +922,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       resize_filter->blur *= 0.9812505644269356;
       break;
     case Lanczos2SharpFilter:
-      resize_filter->blur *= 0.958027803631219;
+      resize_filter->blur *= 0.9549963639785485;
       break;
     default:
       break;
