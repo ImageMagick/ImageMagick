@@ -62,6 +62,7 @@
 #include "magick/pixel.h"
 #include "magick/option.h"
 #include "magick/resample.h"
+#include "magick/resample-private.h"
 #include "magick/resize.h"
 #include "magick/resize-private.h"
 #include "magick/string_.h"
@@ -1157,7 +1158,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     offset;
 
   ResampleFilter
-    *resample_filter;
+    **resample_filter;
 
   ssize_t
     y;
@@ -1185,13 +1186,14 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
       return((Image *) NULL);
     }
   GetMagickPixelPacket(image,&pixel);
-  resample_filter=AcquireResampleFilter(image,exception);
-  (void) SetResampleFilter(resample_filter,PointFilter,1.0);
-  (void) SetResampleFilterInterpolateMethod(resample_filter,
-    MeshInterpolatePixel);
+  resample_filter=AcquireResampleFilterThreadSet(image,
+    UndefinedVirtualPixelMethod,MagickTrue,exception);
   resize_view=AcquireCacheView(resize_image);
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     register IndexPacket
       *restrict resize_indexes;
 
@@ -1210,7 +1212,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       offset.x=((MagickRealType) x*image->columns/resize_image->columns);
-      (void) ResamplePixelColor(resample_filter,offset.x-0.5,offset.y-0.5,
+      (void) ResamplePixelColor(resample_filter[id],offset.x-0.5,offset.y-0.5,
         &pixel);
       SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
       q++;
@@ -1222,7 +1224,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     if (proceed == MagickFalse)
       break;
   }
-  resample_filter=DestroyResampleFilter(resample_filter);
+  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   resize_view=DestroyCacheView(resize_view);
   return(resize_image);
 }
