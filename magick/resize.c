@@ -539,11 +539,12 @@ static MagickRealType Welsh(const MagickRealType x,
 %  windowed filter.
 %
 %  LanczosSharp is a slightly sharpened (blur=0.9812505644269356 < 1)
-%  form of the Lanczos filter, specifcally designed for EWA distortion
-%  (as a Jinc-Jinc); it can also be used as a slightly sharper
-%  orthogonal Lanczos (Sinc-Sinc) filter. The chosen blur value comes
-%  as close as possible to satisfying the following condition without
-%  changing the character of the corresponding EWA filter:
+%  form of the Lanczos filter, specifically designed for EWA
+%  distortion (as a Jinc-Jinc); it can also be used as a slightly
+%  sharper orthogonal Lanczos (Sinc-Sinc) filter. The chosen blur
+%  value comes as close as possible to satisfying the following
+%  condition without changing the character of the corresponding EWA
+%  filter:
 %
 %    'No-Op' Vertical and Horizontal Line Preservation Condition:
 %    Images with only vertical or horizontal features are preserved
