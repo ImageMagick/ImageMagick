@@ -13057,9 +13057,6 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     }
     case TileUpdateCommand:
     {
-      CacheView
-        *image_view;
-
       ExceptionInfo
         *exception;
 
@@ -13082,6 +13079,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       tile=0;
       for (p=image->directory; *p != '\0'; p++)
       {
+        CacheView
+          *image_view;
+
         q=p;
         while ((*q != '\n') && (*q != '\0'))
           q++;
