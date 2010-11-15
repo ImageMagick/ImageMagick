@@ -86,7 +86,7 @@ struct _ResizeFilter
     window_support, /* window support, usally equal to support (expert only) */
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
-    coeff[7];       /* cubic coefficents for BC-cubic spline filters */
+    coefficient[7]; /* cubic coefficents for BC-cubic spline filters */
 
   size_t
     signature;
@@ -225,11 +225,11 @@ static MagickRealType CubicBC(const MagickRealType x,
     (slope).
   */
   if (x < 1.0)
-    return(resize_filter->coeff[0]+x*(x*
-      (resize_filter->coeff[1]+x*resize_filter->coeff[2])));
+    return(resize_filter->coefficient[0]+x*(x*
+      (resize_filter->coefficient[1]+x*resize_filter->coefficient[2])));
   if (x < 2.0)
-    return(resize_filter->coeff[3]+x*(resize_filter->coeff[4]+x*
-      (resize_filter->coeff[5]+x*resize_filter->coeff[6])));
+    return(resize_filter->coefficient[3]+x*(resize_filter->coefficient[4]+x*
+      (resize_filter->coefficient[5]+x*resize_filter->coefficient[6])));
   return(0.0);
 }
 
@@ -249,7 +249,7 @@ static MagickRealType Gaussian(const MagickRealType x,
     allowing for its use in special 'small sigma' gaussians, without the filter
     'missing' pixels when blurring because the support is too small.
   */
-  return(exp((double)(-resize_filter->coeff[0]*x*x)));
+  return(exp((double)(-resize_filter->coefficient[0]*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
@@ -939,8 +939,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     sigma=StringToDouble(artifact);
   /* Define coefficents for Gaussian (assumes no cubic window) */
   if ( GaussianFilter ) {
-    resize_filter->coeff[0] = 1.0/(2.0*sigma*sigma);
-    resize_filter->coeff[1] = (MagickRealType) (1.0/(Magick2PI*sigma*sigma)); /* unused */
+    resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
+    resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*sigma*
+      sigma)); /* unused */
   }
 
   /* Blur Override */
@@ -1025,13 +1026,13 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
       {
         const double twoB = B+B;
-        resize_filter->coeff[0]=1.0-(1.0/3.0)*B;
-        resize_filter->coeff[1]=-3.0+twoB+C;
-        resize_filter->coeff[2]=2.0-1.5*B-C;
-        resize_filter->coeff[3]=(4.0/3.0)*B+4.0*C;
-        resize_filter->coeff[4]=-8.0*C-twoB;
-        resize_filter->coeff[5]=B+5.0*C;
-        resize_filter->coeff[6]=(-1.0/6.0)*B-C;
+        resize_filter->coefficient[0]=1.0-(1.0/3.0)*B;
+        resize_filter->coefficient[1]=-3.0+twoB+C;
+        resize_filter->coefficient[2]=2.0-1.5*B-C;
+        resize_filter->coefficient[3]=(4.0/3.0)*B+4.0*C;
+        resize_filter->coefficient[4]=-8.0*C-twoB;
+        resize_filter->coefficient[5]=B+5.0*C;
+        resize_filter->coefficient[6]=(-1.0/6.0)*B-C;
       }
     }
 
@@ -1149,13 +1150,10 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     *resize_image;
 
   MagickBooleanType
-    proceed;
+    status;
 
-  MagickPixelPacket
-    pixel;
-
-  PointInfo
-    offset;
+  MagickOffsetType
+    progress;
 
   ResampleFilter
     **resample_filter;
@@ -1185,14 +1183,24 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);
     }
-  GetMagickPixelPacket(image,&pixel);
+  status=MagickTrue;
+  progress=0;
   resample_filter=AcquireResampleFilterThreadSet(image,
     UndefinedVirtualPixelMethod,MagickTrue,exception);
   resize_view=AcquireCacheView(resize_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+#endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
     const int
       id = GetOpenMPThreadId();
+
+    MagickPixelPacket
+      pixel;
+
+    PointInfo
+      offset;
 
     register IndexPacket
       *restrict resize_indexes;
@@ -1203,12 +1211,15 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     register PixelPacket
       *restrict q;
 
+    if (status == MagickFalse)
+      continue;
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
     if (q == (PixelPacket *) NULL)
-      break;
+      continue;
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
     offset.y=((MagickRealType) y*image->rows/resize_image->rows);
+    GetMagickPixelPacket(image,&pixel);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       offset.x=((MagickRealType) x*image->columns/resize_image->columns);
@@ -1218,14 +1229,25 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
       q++;
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
-      break;
-    proceed=SetImageProgress(image,AdaptiveResizeImageTag,(MagickOffsetType) y,
-      image->rows);
-    if (proceed == MagickFalse)
-      break;
+      continue;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+  #pragma omp critical (MagickCore_AdaptiveResizeImage)
+#endif
+        proceed=SetImageProgress(image,AdaptiveResizeImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   resize_view=DestroyCacheView(resize_view);
+  if (status == MagickFalse)
+    resize_image=DestroyImage(resize_image);
   return(resize_image);
 }
 
