@@ -1206,11 +1206,11 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     register IndexPacket
       *restrict resize_indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
