@@ -13111,9 +13111,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
           if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
             break;
         }
+        image_view=DestroyCacheView(image_view);
         tile++;
       }
-      image_view=DestroyCacheView(image_view);
       windows->image.window_changes.width=(int) image->columns;
       windows->image.window_changes.height=(int) image->rows;
       XConfigureImageColormap(display,resource_info,windows,image);
