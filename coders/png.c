@@ -6364,7 +6364,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
 
   if (have_transparency && (image->colormap[0].opacity != 
      (Quantum) TransparentOpacity))
-    {
+   {
       /*
         Move the first transparent color to palette entry 0.
       */
@@ -6373,15 +6373,14 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
         if (marker[i] && image->colormap[i].opacity ==
            (Quantum) TransparentOpacity)
           {
-            for (j=0; j < number_colors; j++)
-            {
-              if (ping_plte_map[j] == 0)
-                ping_plte_map[j]=ping_plte_map[i];
+            IndexPacket
+              swap;
 
-              else if (ping_plte_map[j] == ping_plte_map[i])
-                ping_plte_map[j]=0;
-
-            }
+            swap=ping_plte_map[0];
+            ping_plte_map[0]=ping_plte_map[i];
+            ping_plte_map[i]=swap;
+            marker[i]=marker[0];
+            marker[0]=MagickTrue;
             remap_needed=MagickTrue;
             break;
           }
