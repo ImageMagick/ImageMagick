@@ -6720,7 +6720,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
   remap_needed=MagickTrue;
 
   /*
-    Eliminate unused colormap entries.
+    Relink duplicate colormap entries.
   */
   for (i=0; i < number_colors; i++)
     ping_plte_map[i]=i;
@@ -6736,7 +6736,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
           if ((image->colormap[i].opacity == image->colormap[j].opacity) &&
               (IsColorEqual(image->colormap+i,image->colormap+j)))
             {
-              ping_plte_map[j]=(IndexPacket) k;
+               ping_plte_map[j]=(IndexPacket) k;
                marker[j]=MagickFalse;
             }
         }
@@ -6746,7 +6746,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
 
   if (have_transparency && (image->colormap[0].opacity !=
      (Quantum) TransparentOpacity))
-   {
+    {
       /*
         Move the first transparent color to palette entry 0.
       */
@@ -6761,13 +6761,21 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
             swap=ping_plte_map[0];
             ping_plte_map[0]=ping_plte_map[i];
             ping_plte_map[i]=swap;
-            marker[i]=marker[0];
-            marker[0]=MagickTrue;
             remap_needed=MagickTrue;
             break;
           }
       }
-   }
+
+      /* Swap any remaining duplicates */
+      for (; i < number_colors; i++)
+      {
+        if (ping_plte_map[i] == 0)
+          ping_plte_map[i]=ping_plte_map[0];
+
+        else if (ping_plte_map[i] == ping_plte_map[0])
+          ping_plte_map[i]=0;
+      }
+    }
 
   return(MagickTrue);
 }
