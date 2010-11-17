@@ -6689,10 +6689,10 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
           (int) new_number_colors);
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    In OptimizePNGColormap:");
+          "    Entering OptimizePNGColormap:");
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    i  plte_map  (red,green,blue,opacity)");
+          "    i     (red,green,blue,opacity)");
 
       for (i=0; i < image->colors; i++)
       {
@@ -6874,12 +6874,12 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
         "    After OptimizePNGColormap:");
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    i  plte_map  (red,green,blue,opacity)");
+        "    i  plte_map (red,green,blue,opacity)");
 
     for (i=0; i < image->colors; i++)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    %d  %d (%d,%d,%d,%d)",
+          "    %d    %d   (%d,%d,%d,%d)",
            (int) i,
            (int) ping_plte_map[i],
            (int) image->colormap[i].red,
@@ -6899,11 +6899,11 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    After Remap:");
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    i   (red,green,blue,opacity)");
+        "    i      (red,green,blue,opacity)");
     for (i=0; i < image->colors; i++)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    %d  (%d,%d,%d,%d)",
+          "    %d    (%d,%d,%d,%d)",
            (int) i,
            (int) image->colormap[i].red,
            (int) image->colormap[i].green,
@@ -7868,7 +7868,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                         if (trans[(ssize_t) packet_index] != 256)
                           {
-                            if (trans[(ssize_t) packet_index] != (png_byte) (255-
+                            if (trans[(ssize_t) packet_index] !=
+                                (png_byte) (255-
                                ScaleQuantumToChar(GetOpacityPixelComponent(p))))
                               {
                                 ping_color_type=(png_byte)
@@ -7879,6 +7880,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                         trans[(ssize_t) packet_index]=(png_byte) (255-
                           ScaleQuantumToChar(GetOpacityPixelComponent(p)));
+
+                        ping_have_tRNS=MagickTrue;
                       }
                     p++;
                   }
@@ -9941,7 +9944,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
   }
 
 #ifdef PNG_BUILD_PALETTE
-  if (optimize)
+  if (!(mng_info->write_png24 || mng_info->write_png32))
     {
       /*
         Sometimes we get DirectClass images that have 256 colors or fewer.
