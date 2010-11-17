@@ -345,7 +345,6 @@ typedef struct _MngInfo
     need_fram,
     object_id,
     old_framing_mode,
-    optimize,
     saved_bkgd_index;
 
   int
@@ -7054,6 +7053,39 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
 
+  /*
+    Sometimes we get PseudoClass images whose RGB values don't match
+    the colors in the colormap.  This code syncs the RGB values.
+  */
+  if (image->taint && image->storage_class == PseudoClass)
+     (void) SyncImage(image);
+
+#ifdef PNG_BUILD_PALETTE
+  
+  if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
+      (mng_info->write_png_colortype == 0 && image->depth <= 8))
+    {
+      /*
+        Sometimes we get DirectClass images that have 256 colors or fewer.
+        This code will convert them to PseudoClass and build a colormap.
+      */
+      if (image->storage_class != PseudoClass)
+        {
+          image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
+          if (image->colors <= 256)
+            {
+              image->colors=0;
+
+              if (image->matte != MagickFalse)
+                (void) SetImageType(image,PaletteMatteType);
+
+              else
+                (void) SetImageType(image,PaletteType);
+            }
+        }
+    }
+#endif
+
   mng_info->IsPalette=image->storage_class == PseudoClass &&
     image_colors <= 256 && !IsOpaqueImage(image,&image->exception);
 
@@ -9924,56 +9956,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
           break;
       }
     }
-
-  /*
-    Sometimes we get PseudoClass images whose RGB values don't match
-    the colors in the colormap.  This code syncs the RGB values.
-  */
-  {
-    Image
-      *p;
-
-    for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
-    {
-      if (p->taint && p->storage_class == PseudoClass)
-         (void) SyncImage(p);
-
-      if (mng_info->adjoin == MagickFalse)
-        break;
-    }
-  }
-
-#ifdef PNG_BUILD_PALETTE
-  if (!(mng_info->write_png24 || mng_info->write_png32))
-    {
-      /*
-        Sometimes we get DirectClass images that have 256 colors or fewer.
-        This code will convert them to PseudoClass and build a colormap.
-      */
-      Image
-        *p;
-
-      for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
-      {
-        if (p->storage_class != PseudoClass)
-          {
-            p->colors=GetNumberColors(p,(FILE *) NULL,&p->exception);
-            if (p->colors <= 256)
-              {
-                p->colors=0;
-
-                if (p->matte != MagickFalse)
-                  (void) SetImageType(p,PaletteMatteType);
-
-                else
-                  (void) SetImageType(p,PaletteType);
-              }
-          }
-        if (mng_info->adjoin == MagickFalse)
-          break;
-      }
-    }
-#endif
 
   use_global_plte=MagickFalse;
   all_images_are_gray=MagickFalse;
