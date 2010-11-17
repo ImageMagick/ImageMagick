@@ -1,3 +1,7 @@
+2010-11-17  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Many of the problems with the PNG encoder have been fixed (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16487).
+
 2010-11-14  6.6.5-9 Cristy  <quetzlzacatenango@image...>
   * The splice option no longer throws spurious "pixels are not authentic"
     exceptions.
@@ -10,9 +14,6 @@
   * LanczosSharp blur tweaked to minimize worst case deviation from "perfect
     preservation of images which only vary horizontally (or vertically)" under
     no-op. New blur = 0.9812505644269356.
-
-2010-10-29  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
-  * Revised PNG encoder to avoid emitting some spurious warnings.
 
 2010-11-08  6.6.5-8 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Missing logical operator in tiff.c.
