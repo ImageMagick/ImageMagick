@@ -362,7 +362,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (GetBlobSize(image) != 0)
         {
           (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-          (void) fprintf(file,"%sB ",format);
+          (void) fprintf(file,"%s ",format);
         }
       (void) fprintf(file,"%0.3fu %lu:%02lu.%03lu",user_time,(unsigned long)
         (elapsed_time/60.0),(unsigned long) floor(fmod(elapsed_time,60.0)),
