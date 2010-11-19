@@ -468,12 +468,125 @@ typedef struct _MngInfo
 */
 static MagickBooleanType
   WritePNGImage(const ImageInfo *,Image *);
+
 static MagickBooleanType
   WriteMNGImage(const ImageInfo *,Image *);
+
 #if defined(JNG_SUPPORTED)
 static MagickBooleanType
   WriteJNGImage(const ImageInfo *,Image *);
 #endif
+
+#if PNG_LIBPNG_VER > 10011
+
+#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+static MagickBooleanType
+  LosslessReduceDepth(Image *image)
+{
+    MagickBooleanType
+      ok_to_reduce=MagickFalse;
+
+   /* PNG does not handle depths greater than 16 so reduce it even
+    * if lossy
+    */
+    if (image->depth > 16)
+      image->depth=16;
+
+    /* Reduce bit depth if it can be reduced losslessly from 16 to 8.
+     * Note that the method GetImageDepth doesn't check background
+     * and doesn't handle PseudoClass specially.  Also it uses
+     * multiplication and division by 257 instead of shifting, so
+     * might be slower.
+     */
+
+    if (image->depth == 16)
+      {
+
+        const PixelPacket
+          *p;
+
+        ok_to_reduce=
+          (((((size_t) image->background_color.red >> 8) & 0xff)
+          == ((size_t) image->background_color.red & 0xff)) &&
+           ((((size_t) image->background_color.green >> 8) & 0xff)
+          == ((size_t) image->background_color.green & 0xff)) &&
+           ((((size_t) image->background_color.blue >> 8) & 0xff)
+          == ((size_t) image->background_color.blue & 0xff)));
+
+        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
+          {
+            int indx;
+
+            for (indx=0; indx < (ssize_t) image->colors; indx++)
+              {
+                ok_to_reduce=(((((size_t) image->colormap[indx].red >>
+                    8) & 0xff)
+                  == ((size_t) image->colormap[indx].red & 0xff)) &&
+                  ((((size_t) image->colormap[indx].green >> 8) & 0xff)
+                  == ((size_t) image->colormap[indx].green & 0xff)) &&
+                  ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
+                  == ((size_t) image->colormap[indx].blue & 0xff)) &&
+                  ((((size_t) image->colormap[indx].opacity >> 8) & 0xff)
+                  == ((size_t) image->colormap[indx].opacity & 0xff)));
+                if (ok_to_reduce == MagickFalse)
+                  break;
+              }
+          }
+
+        if ((ok_to_reduce != MagickFalse) &&
+            (image->storage_class != PseudoClass))
+          {
+            ssize_t
+              y;
+
+            register ssize_t
+              x;
+
+            for (y=0; y < (ssize_t) image->rows; y++)
+            {
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+
+              if (p == (const PixelPacket *) NULL)
+                {
+                  ok_to_reduce = MagickFalse;
+                  break;
+                }
+
+              for (x=(ssize_t) image->columns-1; x >= 0; x--)
+              {
+                ok_to_reduce=((
+                  (((size_t) p->red >> 8) & 0xff) ==
+                  ((size_t) p->red & 0xff)) &&
+                  ((((size_t) p->green >> 8) & 0xff) ==
+                  ((size_t) p->green & 0xff)) &&
+                  ((((size_t) p->blue >> 8) & 0xff) ==
+                  ((size_t) p->blue & 0xff)) &&
+                  (((!image->matte ||
+                  (((size_t) p->opacity >> 8) & 0xff) ==
+                  ((size_t) p->opacity & 0xff)))));
+
+                if (ok_to_reduce == MagickFalse)
+                  break;
+
+                p++;
+              }
+              if (x != 0)
+                break;
+            }
+          }
+
+        if (ok_to_reduce != MagickFalse)
+          {
+            image->depth=8;
+
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Reducing PNG bit depth to 8 without loss of info");
+          }
+      }
+
+    return ok_to_reduce;
+}
+#endif /* MAGICKCORE_QUANTUM_DEPTH >= 16 */
 
 static int
 PNG_RenderingIntent_from_Magick_RenderingIntent(const RenderingIntent intent)
@@ -526,6 +639,7 @@ static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 
   return(y);
 }
+
 static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 {
   if (x < y)
@@ -533,8 +647,7 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 
   return(y);
 }
-
-#if PNG_LIBPNG_VER > 10011
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1299,7 +1412,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
   StringInfo
     *profile;
 
-  unsigned char
+  const unsigned char
     unhex[103]={0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
                  0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
                  0,0,0,0,0,0,0,0,0,1, 2,3,4,5,6,7,8,9,0,0,
@@ -5806,91 +5919,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
       }
 
-#if (MAGICKCORE_QUANTUM_DEPTH == 16)  /* TO DO: treat Q:32 */
-    /* Determine if bit depth can be reduced from 16 to 8.
-     * Note that the method GetImageDepth doesn't check background
-     * and doesn't handle PseudoClass specially.  Also it uses
-     * multiplication and division by 257 instead of shifting, so
-     * might be slower.
-     */
-    if (image->depth == 16)
-      {
-        MagickBooleanType
-          ok_to_reduce;
-
-        const PixelPacket
-          *p;
-
-        ok_to_reduce=(((((size_t) image->background_color.red >> 8) &
-                     0xff)
-          == ((size_t) image->background_color.red & 0xff)) &&
-           ((((size_t) image->background_color.green >> 8) & 0xff)
-          == ((size_t) image->background_color.green & 0xff)) &&
-           ((((size_t) image->background_color.blue >> 8) & 0xff)
-          == ((size_t) image->background_color.blue & 0xff)));
-
-        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
-          {
-            int indx;
-
-            for (indx=0; indx < (ssize_t) image->colors; indx++)
-              {
-                ok_to_reduce=(((((size_t) image->colormap[indx].red >>
-                    8) & 0xff)
-                  == ((size_t) image->colormap[indx].red & 0xff)) &&
-                  ((((size_t) image->colormap[indx].green >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].green & 0xff)) &&
-                  ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].blue & 0xff)));
-                if (ok_to_reduce == MagickFalse)
-                  break;
-              }
-          }
-
-        if ((ok_to_reduce != MagickFalse) &&
-            (image->storage_class != PseudoClass))
-          {
-            ssize_t
-              y;
-
-            register ssize_t
-              x;
-
-            for (y=0; y < (ssize_t) image->rows; y++)
-            {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-              for (x=(ssize_t) image->columns-1; x >= 0; x--)
-              {
-                ok_to_reduce=((
-                  (((size_t) p->red >> 8) & 0xff) ==
-                  ((size_t) p->red & 0xff)) &&
-                  ((((size_t) p->green >> 8) & 0xff) ==
-                  ((size_t) p->green & 0xff)) &&
-                  ((((size_t) p->blue >> 8) & 0xff) ==
-                  ((size_t) p->blue & 0xff)) &&
-                  (((!image->matte ||
-                  (((size_t) p->opacity >> 8) & 0xff) ==
-                  ((size_t) p->opacity & 0xff)))));
-                if (ok_to_reduce == MagickFalse)
-                  break;
-                p++;
-              }
-              if (x != 0)
-                break;
-            }
-          }
-
-        if (ok_to_reduce != MagickFalse)
-          {
-            image->depth=8;
-
-            if (logging != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Reducing PNG bit depth to 8 without loss of info");
-          }
-      }
+#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+      (void) LosslessReduceDepth(image);
 #endif
 
       GetImageException(image,exception);
@@ -7060,103 +7090,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
 
+#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+    (void) LosslessReduceDepth(image);
+#endif
+
   /*
     Sometimes we get PseudoClass images whose RGB values don't match
     the colors in the colormap.  This code syncs the RGB values.
   */
   if (image->taint && image->storage_class == PseudoClass)
      (void) SyncImage(image);
-
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-
-    /* TO DO: Merge this with identical code in WriteMNGImage */
-
-    if (image->depth > 16)
-      image->depth=16;
-
-    /* Determine if bit depth can be reduced losslessly from 16 to 8.
-     * Note that the method GetImageDepth doesn't check background
-     * and doesn't handle PseudoClass specially.  Also it uses
-     * multiplication and division by 257 instead of shifting, so
-     * might be slower.
-     */
-
-    if (image->depth == 16)
-      {
-        MagickBooleanType
-          ok_to_reduce;
-
-        const PixelPacket
-          *p;
-
-        ok_to_reduce=(((((size_t) image->background_color.red >> 8) &
-                     0xff)
-          == ((size_t) image->background_color.red & 0xff)) &&
-           ((((size_t) image->background_color.green >> 8) & 0xff)
-          == ((size_t) image->background_color.green & 0xff)) &&
-           ((((size_t) image->background_color.blue >> 8) & 0xff)
-          == ((size_t) image->background_color.blue & 0xff)));
-        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
-          {
-            int indx;
-
-            for (indx=0; indx < (ssize_t) image->colors; indx++)
-              {
-                ok_to_reduce=(((((size_t) image->colormap[indx].red >>
-                    8) & 0xff)
-                  == ((size_t) image->colormap[indx].red & 0xff)) &&
-                  ((((size_t) image->colormap[indx].green >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].green & 0xff)) &&
-                  ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].blue & 0xff)));
-                if (ok_to_reduce == MagickFalse)
-                  break;
-              }
-          }
-        if ((ok_to_reduce != MagickFalse) &&
-            (image->storage_class != PseudoClass))
-          {
-            ssize_t
-              y;
-
-            register ssize_t
-              x;
-
-            for (y=0; y < (ssize_t) image->rows; y++)
-            {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-              for (x=(ssize_t) image->columns-1; x >= 0; x--)
-              {
-                ok_to_reduce=((
-                  (((size_t) p->red >> 8) & 0xff) ==
-                  ((size_t) p->red & 0xff)) &&
-                  ((((size_t) p->green >> 8) & 0xff) ==
-                  ((size_t) p->green & 0xff)) &&
-                  ((((size_t) p->blue >> 8) & 0xff) ==
-                  ((size_t) p->blue & 0xff)) &&
-                  (((!image->matte ||
-                  (((size_t) p->opacity >> 8) & 0xff) ==
-                  ((size_t) p->opacity & 0xff)))));
-                if (ok_to_reduce == MagickFalse)
-                  break;
-                p++;
-              }
-              if (x != 0)
-                break;
-            }
-          }
-        if (ok_to_reduce != MagickFalse)
-          {
-            image->depth=8;
-
-            if (logging != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Reducing PNG bit depth to 8 without loss of info");
-          }
-      }
-#endif
 
 #ifdef PNG_BUILD_PALETTE
   
