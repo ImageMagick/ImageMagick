@@ -5815,7 +5815,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
      */
     if (image->depth == 16)
       {
-        int
+        MagickBooleanType
           ok_to_reduce;
 
         const PixelPacket
@@ -5828,7 +5828,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           == ((size_t) image->background_color.green & 0xff)) &&
            ((((size_t) image->background_color.blue >> 8) & 0xff)
           == ((size_t) image->background_color.blue & 0xff)));
-        if (ok_to_reduce && image->storage_class == PseudoClass)
+
+        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
           {
             int indx;
 
@@ -5845,6 +5846,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
               }
           }
+
         if ((ok_to_reduce != MagickFalse) &&
             (image->storage_class != PseudoClass))
           {
@@ -5871,7 +5873,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (((!image->matte ||
                   (((size_t) p->opacity >> 8) & 0xff) ==
                   ((size_t) p->opacity & 0xff)))));
-                if (ok_to_reduce == 0)
+                if (ok_to_reduce == MagickFalse)
                   break;
                 p++;
               }
@@ -5879,15 +5881,18 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
           }
-        if (ok_to_reduce)
+
+        if (ok_to_reduce != MagickFalse)
           {
             image->depth=8;
+
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Reducing PNG bit depth to 8 without loss of info");
           }
       }
 #endif
+
       GetImageException(image,exception);
       if (image_info->number_scenes != 0)
         {
@@ -5895,9 +5900,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
              (ssize_t) (image_info->first_scene+image_info->number_scenes))
             break;
         }
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Finished reading image datastream.");
+
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
   (void) CloseBlob(image);
   if (logging != MagickFalse)
@@ -7059,6 +7066,97 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   */
   if (image->taint && image->storage_class == PseudoClass)
      (void) SyncImage(image);
+
+#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+
+    /* TO DO: Merge this with identical code in WriteMNGImage */
+
+    if (image->depth > 16)
+      image->depth=16;
+
+    /* Determine if bit depth can be reduced losslessly from 16 to 8.
+     * Note that the method GetImageDepth doesn't check background
+     * and doesn't handle PseudoClass specially.  Also it uses
+     * multiplication and division by 257 instead of shifting, so
+     * might be slower.
+     */
+
+    if (image->depth == 16)
+      {
+        MagickBooleanType
+          ok_to_reduce;
+
+        const PixelPacket
+          *p;
+
+        ok_to_reduce=(((((size_t) image->background_color.red >> 8) &
+                     0xff)
+          == ((size_t) image->background_color.red & 0xff)) &&
+           ((((size_t) image->background_color.green >> 8) & 0xff)
+          == ((size_t) image->background_color.green & 0xff)) &&
+           ((((size_t) image->background_color.blue >> 8) & 0xff)
+          == ((size_t) image->background_color.blue & 0xff)));
+        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
+          {
+            int indx;
+
+            for (indx=0; indx < (ssize_t) image->colors; indx++)
+              {
+                ok_to_reduce=(((((size_t) image->colormap[indx].red >>
+                    8) & 0xff)
+                  == ((size_t) image->colormap[indx].red & 0xff)) &&
+                  ((((size_t) image->colormap[indx].green >> 8) & 0xff)
+                  == ((size_t) image->colormap[indx].green & 0xff)) &&
+                  ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
+                  == ((size_t) image->colormap[indx].blue & 0xff)));
+                if (ok_to_reduce == MagickFalse)
+                  break;
+              }
+          }
+        if ((ok_to_reduce != MagickFalse) &&
+            (image->storage_class != PseudoClass))
+          {
+            ssize_t
+              y;
+
+            register ssize_t
+              x;
+
+            for (y=0; y < (ssize_t) image->rows; y++)
+            {
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              for (x=(ssize_t) image->columns-1; x >= 0; x--)
+              {
+                ok_to_reduce=((
+                  (((size_t) p->red >> 8) & 0xff) ==
+                  ((size_t) p->red & 0xff)) &&
+                  ((((size_t) p->green >> 8) & 0xff) ==
+                  ((size_t) p->green & 0xff)) &&
+                  ((((size_t) p->blue >> 8) & 0xff) ==
+                  ((size_t) p->blue & 0xff)) &&
+                  (((!image->matte ||
+                  (((size_t) p->opacity >> 8) & 0xff) ==
+                  ((size_t) p->opacity & 0xff)))));
+                if (ok_to_reduce == MagickFalse)
+                  break;
+                p++;
+              }
+              if (x != 0)
+                break;
+            }
+          }
+        if (ok_to_reduce != MagickFalse)
+          {
+            image->depth=8;
+
+            if (logging != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Reducing PNG bit depth to 8 without loss of info");
+          }
+      }
+#endif
 
 #ifdef PNG_BUILD_PALETTE
   
@@ -8979,24 +9077,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %     -profile PNG-chunk-b01:file01 -profile PNG-chunk-b02:file02
 %
-%  Set image_info->type=OptimizeType (new in version 5.4.0) to get the
-%  following optimizations:
-%
-%   o  16-bit depth is reduced to 8 if all pixels contain samples whose
-%      high byte and low byte are identical.
-%   o  Opaque matte channel is removed.
-%   o  If matte channel is present but only one transparent color is
-%      present, RGB+tRNS is written instead of RGBA
-%   o  Grayscale images are reduced to 1, 2, or 4 bit depth if
-%      this can be done without loss.
-%
-%  TO DO: Always do the above.
-%
 %  As of version 6.6.5 the following optimizations are always done:
 %
+%   o  32-bit depth is reduced to 16.
+%   o  16-bit depth is reduced to 8 if all pixels contain samples whose
+%      high byte and low byte are identical.
 %   o  Palette is sorted to remove unused entries and to put a
 %      transparent color first, if PNG_SORT_PALETTE is defined.
 %   o  Opaque matte channel is removed when writing an indexed PNG.
+%   o  Grayscale images are reduced to 1, 2, or 4 bit depth if
+%      this can be done without loss and a larger bit depth N was not
+%      requested via the "-define PNG:bit-depth=N" option.
+%   o  If matte channel is present but only one transparent color is
+%      present, RGB+tRNS is written instead of RGBA
+%   o  Opaque matte channel is removed (or added, if color-type 4 or 6
+%      was requested when converting an opaque image).
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -9813,7 +9908,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
     all_images_are_gray,
     logging,
     need_defi,
-    optimize,
     use_global_plte;
 
   register ssize_t
@@ -9889,13 +9983,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->adjoin=image_info->adjoin &&
     (GetNextImageInList(image) != (Image *) NULL) && write_mng;
 
-  if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
-    optimize=MagickFalse;
-
-  else
-    optimize=(image_info->type == OptimizeType || image_info->type ==
-      UndefinedType);
-
   if (logging != MagickFalse)
     {
       /* Log some info about the input */
@@ -9904,14 +9991,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Checking input image(s)");
-
-      if (optimize)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Optimize: TRUE");
-
-      else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Optimize: FALSE");
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Image_info depth: %.20g",(double) image_info->depth);
