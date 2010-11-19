@@ -1,6 +1,8 @@
 2010-11-17  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
   * Many of the problems with the PNG encoder have been fixed (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16487).
+  * The "-type Optimize" option is now treated by the PNG encoder the same
+    as if the type were undefined.  Optimization is now always performed.
 
 2010-11-14  6.6.5-9 Cristy  <quetzlzacatenango@image...>
   * The splice option no longer throws spurious "pixels are not authentic"
