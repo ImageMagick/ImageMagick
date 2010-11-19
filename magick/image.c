@@ -501,7 +501,7 @@ MagickExport Image *AppendImages(const Image *image,
       y_offset-=geometry.y;
     image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(dynamic,4) shared(status)
+    #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
