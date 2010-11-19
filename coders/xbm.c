@@ -240,7 +240,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (LocaleCompare(name+strlen(name)-7,"_height") == 0))
         break;
   image->columns=width;
-  image->rows=width;
+  image->rows=height;
   image->depth=8;
   image->storage_class=PseudoClass;
   image->colors=2;
