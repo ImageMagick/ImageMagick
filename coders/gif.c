@@ -295,12 +295,12 @@ static inline int GetNextLZWCode(LZWInfo *lzw_info,const size_t bits)
   return(code);
 }
 
-static inline ssize_t PopLZWStack(LZWStack *stack_info)
+static inline int PopLZWStack(LZWStack *stack_info)
 {
   if (stack_info->index <= stack_info->codes)
     return(-1);
   stack_info->index--;
-  return((ssize_t) *stack_info->index);
+  return((int) *stack_info->index);
 }
 
 static inline void PushLZWStack(LZWStack *stack_info,const size_t value)
@@ -673,7 +673,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     indexes=GetVirtualIndexQueue(image);
     if (y == 0)
       waiting_code=(short) (*indexes);
-    for (x=(y == 0) ? 1 : 0; x < (ssize_t) image->columns; x++)
+    for (x=(ssize_t) (y == 0 ? 1 : 0); x < (ssize_t) image->columns; x++)
     {
       /*
         Probe hash table.
