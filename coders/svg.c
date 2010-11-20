@@ -949,6 +949,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
           break;
       }
     }
+  if (strchr(name,':') != (char *) NULL)
+    {
+      /*
+        Skip over namespace.
+      */
+      for ( ; *name != ':'; name++) ;
+      name++;
+    }
   switch (*name)
   {
     case 'C':
@@ -2140,6 +2148,14 @@ static void SVGEndElement(void *context,const xmlChar *name)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.endElement(%s)",name);
   svg_info=(SVGInfo *) context;
+  if (strchr(name,':') != (char *) NULL)
+    {
+      /*
+        Skip over namespace.
+      */
+      for ( ; *name != ':'; name++) ;
+      name++;
+    }
   switch (*name)
   {
     case 'C':
