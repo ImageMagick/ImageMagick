@@ -2511,6 +2511,7 @@ Append(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     attribute=NULL;
     av=NULL;
     if (sv_isobject(ST(0)) == 0)
@@ -2639,6 +2640,7 @@ Average(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -2749,6 +2751,7 @@ BlobToImage(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     number_images=0;
     ac=(items < 2) ? 1 : items-1;
     length=(STRLEN *) NULL;
@@ -2889,6 +2892,7 @@ Clone(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -3010,6 +3014,7 @@ Coalesce(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -3117,6 +3122,7 @@ Compare(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     av=NULL;
     attribute=NULL;
     if (sv_isobject(ST(0)) == 0)
@@ -3304,6 +3310,7 @@ CompareLayers(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -3591,6 +3598,7 @@ EvaluateImages(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -3926,6 +3934,7 @@ Flatten(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -4061,6 +4070,7 @@ Fx(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     attribute=NULL;
     av=NULL;
     if (sv_isobject(ST(0)) == 0)
@@ -4399,6 +4409,7 @@ Get(ref,...)
                   SV
                     *sv;
 
+                  sv=NULL;
                   if (image->mask == (Image *) NULL)
                     ClipImage(image);
                   if (image->mask != (Image *) NULL)
@@ -4417,6 +4428,7 @@ Get(ref,...)
                   SV
                     *sv;
 
+                  sv=NULL;
                   if (image->clip_mask == (Image *) NULL)
                     ClipImage(image);
                   if (image->clip_mask != (Image *) NULL)
@@ -4430,7 +4442,8 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"compression") == 0)
             {
-              j=info ? info->image_info->compression : image->compression;
+              j=info ? info->image_info->compression : image ?
+                image->compression : UndefinedCompression;
               if (info)
                 if (info->image_info->compression == UndefinedCompression)
                   j=image->compression;
@@ -4592,7 +4605,8 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"endian") == 0)
             {
-              j=info ? info->image_info->endian : image->endian;
+              j=info ? info->image_info->endian : image ? image->endian :
+                UndefinedEndian;
               s=newSViv(j);
               (void) sv_setpv(s,MagickOptionToMnemonic(MagickEndianOptions,j));
               SvIOK_on(s);
@@ -4632,7 +4646,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"filter") == 0)
             {
-              s=newSViv(image->filter);
+              s=image ? newSViv(image->filter) : newSViv(0);
               (void) sv_setpv(s,MagickOptionToMnemonic(MagickFilterOptions,
                 image->filter));
               SvIOK_on(s);
@@ -4696,9 +4710,9 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"gravity") == 0)
             {
-              s=newSViv(image->gravity);
-              (void) sv_setpv(s,
-                MagickOptionToMnemonic(MagickGravityOptions,image->gravity));
+              s=image ? newSViv(image->gravity) : newSViv(0);
+              (void) sv_setpv(s,MagickOptionToMnemonic(MagickGravityOptions,
+                image->gravity));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4852,7 +4866,8 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"interlace") == 0)
             {
-              j=info ? info->image_info->interlace : image->interlace;
+              j=info ? info->image_info->interlace : image ? image->interlace :
+                UndefinedInterlace;
               s=newSViv(j);
               (void) sv_setpv(s,MagickOptionToMnemonic(MagickInterlaceOptions,
                 j));
@@ -5005,7 +5020,8 @@ Get(ref,...)
         {
           if (LocaleCompare(attribute,"orientation") == 0)
             {
-              j=info ? info->image_info->orientation : image->orientation;
+              j=info ? info->image_info->orientation : image ?
+                image->orientation : UndefinedOrientation;
               s=newSViv(j);
               (void) sv_setpv(s,MagickOptionToMnemonic(MagickOrientationOptions,
                 j));
@@ -5300,9 +5316,10 @@ Get(ref,...)
         {
           if (LocaleCompare(attribute,"units") == 0)
             {
-              j=info ? info->image_info->units : image->units;
-              if (info)
-                if (info->image_info->units == UndefinedResolution)
+              j=info ? info->image_info->units : image ? image->units :
+                UndefinedResolution;
+              if (info && (info->image_info->units == UndefinedResolution))
+                if (image)
                   j=image->units;
               if (j == UndefinedResolution)
                 s=newSVpv("undefined units",0);
@@ -6635,6 +6652,7 @@ Layers(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -7353,6 +7371,7 @@ Mogrify(ref,...)
       SV
         *sv;
 
+      sv=NULL;
       ssize_test=0;
       pp=(Arguments *) NULL;
       qq=rp->arguments;
@@ -10637,6 +10656,7 @@ Montage(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     attribute=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
@@ -11037,6 +11057,7 @@ Morph(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     av=NULL;
     attribute=NULL;
     if (sv_isobject(ST(0)) == 0)
@@ -11155,6 +11176,7 @@ Mosaic(ref)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -11458,6 +11480,7 @@ Preview(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     av=NULL;
     if (sv_isobject(ST(0)) == 0)
       {
@@ -12771,6 +12794,7 @@ Read(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     package_info=(struct PackageInfo *) NULL;
     number_images=0;
     ac=(items < 2) ? 1 : items-1;
@@ -13523,6 +13547,7 @@ Transform(ref,...)
 
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
+    sv=NULL;
     av=NULL;
     attribute=NULL;
     if (sv_isobject(ST(0)) == 0)

@@ -1,3 +1,7 @@
+2010-11-11  6.6.5-6 Cristy  <quetzlzacatenango@image...>
+  * Check that image exists before accessing its member (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=17502).
+
 2010-11-01  6.6.5-6 Cristy  <quetzlzacatenango@image...>
   * The gravity attribute must set the ImageInfo gravity property (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17282).

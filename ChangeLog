@@ -9,6 +9,7 @@
   * The splice option no longer throws spurious "pixels are not authentic"
     exceptions.
   * Thread the -adaptive-resize option.
+  * Set XBM coder height to height not width.
 
 2010-11-14  6.6.5-9 Nicolas Robidoux <nicolas.robidoux@gmai...>
   * Lanczos2Sharp blur tweaked. New blur = 0.9549963639785485.
