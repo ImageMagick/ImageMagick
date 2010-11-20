@@ -1362,12 +1362,12 @@ static inline ssize_t CacheOffset(CubeInfo *cube_info,
     offset;
 
   offset=(ssize_t)
-    RedShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->red))) |
+    (RedShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->red))) |
     GreenShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->green))) |
-    BlueShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->blue)));
+    BlueShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->blue))));
   if (cube_info->associate_alpha != MagickFalse)
-    offset|=
-      AlphaShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->opacity)));
+    offset|=AlphaShift(ScaleQuantumToChar(ClampToUnsignedQuantum(
+      pixel->opacity)));
   return(offset);
 }
 
@@ -2469,9 +2469,6 @@ static MagickBooleanType DirectToColormapImage(Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -2480,6 +2477,9 @@ static MagickBooleanType DirectToColormapImage(Image *image,
 
   size_t
     number_colors;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   number_colors=(size_t) (image->columns*image->rows);
