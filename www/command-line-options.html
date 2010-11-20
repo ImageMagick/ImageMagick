@@ -131,7 +131,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Notebook of repair" href="http://www.notebook-reparatur-berlin.de/">Notebook of Repair</a><!-- 2011030100025 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -231,9 +231,10 @@ per file (for example, GIF, MIFF, and TIFF). </p>
 </p>
 
 <p>In summary, ImageMagick tries to write all images to one file, but will use
-multiple files if either (1) the output image's file format does not allow multi-image files,
-(2) the <a href="#adjoin">+adjoin</a> option is given, or (3) a C-style integer format string is
-present in the output filename. </p>
+multiple files if either<br>
+ (1) the output image's file format does not allow multi-image files,<br>
+ (2) the <a href="#adjoin">+adjoin</a> option is given, or<br>
+ (3) a C-style integer format string is present in the output filename. </p>
 
 
 <div style="margin: auto;">
@@ -635,10 +636,10 @@ the background image is weighted by the exact opposite amount. That is a
 </div>
 
 <p>The <em class="arg" >Sigma</em> value is the important argument, and
-determines the actual amount of bluring that will take place. </p>
+determines the actual amount of blurring that will take place. </p>
 
 <p>The <em class="arg" >Radius</em> is only used to determine the size of the
-array which will hold the calculated gaussian distribution. It should be an
+array which will hold the calculated Gaussian distribution. It should be an
 integer.  If not given, or set to zero, IM will calculate the largest possible
 radius that will provide meaningful results for the Gaussian distribution.
 </p>
@@ -725,19 +726,37 @@ functionality.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Adjust the brightness and/or contrast of the image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Brightness and Contrast values apply changes to the input image. They are not absolute settings. A brightness or contrast value of zero means no change. The range of values is -100 to +100 on each. Positive values increase the brightness or contrast and negative values decrease the brightness or contrast. To control only contrast, set the brightness=0. To control only brightness, set contrast=0 or just leave it off.</p>
+<p>Brightness and Contrast values apply changes to the input image. They are
+not absolute settings. A brightness or contrast value of zero means no change.
+The range of values is -100 to +100 on each. Positive values increase the
+brightness or contrast and negative values decrease the brightness or contrast.
+To control only contrast, set the brightness=0. To control only brightness,
+set contrast=0 or just leave it off.</p>
 
-<p>You may also use <a href="#fill">-channel</a> to control which channels to apply the brightness and/or contrast change. The default is to apply the same transformation to all channels.</p>
+<p>You may also use <a href="#fill">-channel</a> to control which channels to
+apply the brightness and/or contrast change. The default is to apply the same
+transformation to all channels.</p>
 
-<p>Brightness and Contrast arguments are converted to offset and slope of a linear transform and applied using <a href="#fill">-function polynomial "slope,offset"</a>.</p>
+<p>Brightness and Contrast arguments are converted to offset and slope of a
+linear transform and applied
+using <a href="#fill">-function polynomial "slope,offset"</a>.</p>
 
-<p>The slope varies from 0 at contrast=-100 to almost vertical at contrast=+100. For brightness=0 and contrast=-100, the result are totally midgray. For brightness=0 and contrast=+100, the result will approach but not quite reach a threshold at midgray; that is the linear transformation is a very steep vertical line at mid gray.</p>
+<p>The slope varies from 0 at contrast=-100 to almost vertical at
+contrast=+100. For brightness=0 and contrast=-100, the result are totally
+midgray. For brightness=0 and contrast=+100, the result will approach but
+not quite reach a threshold at midgray; that is the linear transformation
+is a very steep vertical line at mid gray.</p>
 
-<p>Negative slopes, i.e. negating the image, are not possible with this function. All achievable slopes are zero or positive.</p>
+<p>Negative slopes, i.e. negating the image, are not possible with this
+function. All achievable slopes are zero or positive.</p>
 
-<p>The offset varies from -0.5 at brightness=-100 to 0 at brightness=0 to +0.5 at brightness=+100. Thus, when contrast=0 and brightness=100, the result is totally white. Similarly, when contrast=0 and brightness=-100, the result is totally black.</p>
+<p>The offset varies from -0.5 at brightness=-100 to 0 at brightness=0 to +0.5
+at brightness=+100. Thus, when contrast=0 and brightness=100, the result is
+totally white. Similarly, when contrast=0 and brightness=-100, the result is
+totally black.</p>
 
-<p>As the range of values for the arguments are -100 to +100, adding the '%' symbol is no different than leaving it off.</p>
+<p>As the range of values for the arguments are -100 to +100, adding the '%'
+symbol is no different than leaving it off.</p>
 
 <div style="margin: auto;">
   <h4><a name="cache" id="cache"></a>-cache <em class="arg">threshold</em></h4>
@@ -810,7 +829,10 @@ that the image <kbd>bird.miff</kbd> has a width of 512 and a height of
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Specify those image color channels to which subsequent operators are limited.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Choose from: <kbd>Red</kbd>, <kbd>Green</kbd>, <kbd>Blue</kbd>, <kbd>Alpha</kbd>, <kbd>Cyan</kbd>, <kbd>Magenta</kbd>, <kbd>Yellow</kbd>, <kbd>Black</kbd>, <kbd>Opacity</kbd>, <kbd>Index</kbd>, <kbd>RGB</kbd>, <kbd>RGBA</kbd>, <kbd>CMYK</kbd>, or <kbd>CMYKA</kbd>.</p>
+<p>Choose from: <kbd>Red</kbd>, <kbd>Green</kbd>, <kbd>Blue</kbd>,
+<kbd>Alpha</kbd>, <kbd>Cyan</kbd>, <kbd>Magenta</kbd>, <kbd>Yellow</kbd>,
+<kbd>Black</kbd>, <kbd>Opacity</kbd>, <kbd>Index</kbd>, <kbd>RGB</kbd>,
+<kbd>RGBA</kbd>, <kbd>CMYK</kbd>, or <kbd>CMYKA</kbd>.</p>
 
 <p>The channels above can also be specified as a comma-separated list or can be
 abbreviated as a concatenation of the letters '<kbd>R</kbd>', '<kbd>G</kbd>',
@@ -949,9 +971,15 @@ href="#clut">-clut</a> operator is a good example of this. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Remove pixels from the interior of an image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. The <em class="arg">width</em> and <em class="arg">height</em> given in the of the <em class="arg">size</em> portion of the <em class="arg">geometry</em> argument  give the number of columns and rows to remove. The <em class="arg">offset</em> portion of the <em class="arg">geometry</em> argument is influenced by a <a href="#gravity">-gravity</a> setting, if present.</p>
+<p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. The <em class="arg">width</em>
+and <em class="arg">height</em> given in the of the <em class="arg">size</em>
+portion of the <em class="arg">geometry</em> argument give the number of
+columns and rows to remove. The <em class="arg">offset</em> portion of
+the <em class="arg">geometry</em> argument is influenced by
+a <a href="#gravity">-gravity</a> setting, if present.</p>
 
-<p>The <a href="#chop">-chop</a> option removes entire rows and columns, and moves the remaining corner blocks leftward and upward to close the gaps.</p>
+<p>The <a href="#chop">-chop</a> option removes entire rows and columns,
+and moves the remaining corner blocks leftward and upward to close the gaps.</p>
 
 <div style="margin: auto;">
   <h4><a name="clip" id="clip"></a>-clip</h4>
@@ -987,9 +1015,11 @@ href="#clut">-clut</a> operator is a good example of this. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Make a copy of an image (or images).</td><td style='text-align:right;'></td></tr></table>
 
 <p>Specify the image by its index in the sequence.  The first image is index
-0.  Negative indexes are relative to the end of the sequence; for example, &minus;1
+0.  Negative indexes are relative to the end of the sequence; for
+example, &minus;1
 represents the last image of the sequence.  Specify a range of images with a
-dash (e.g. 0&minus;4).  Separate multiple indexes with commas but no spaces (e.g. 0,2,5).  Use <a
+dash (e.g. 0&minus;4).  Separate multiple indexes with commas but no
+spaces (e.g. 0,2,5).  Use <a
 href="#clone">+clone</a>  make a copy of the last image in the image
 sequence.</p>
 
@@ -1036,9 +1066,9 @@ adjust a existing images alpha channel, or you can color a gray-scale image
 using colors form CLUT containing the desired colors, including transparency.
 </p>
 
-<p>See also <a href="#hald-clut" >-hald-clut</a> which replaces colors according
-the lookup of the full color RGB value from a 2D representation of a 3D color
-cube. </p>
+<p>See also <a href="#hald-clut" >-hald-clut</a> which replaces colors
+according to the lookup of the full color RGB value from a 2D representation
+of a 3D color cube. </p>
 
 
 <div style="margin: auto;">
@@ -1047,9 +1077,18 @@ cube. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Fully define the look of each frame of an GIF animation sequence, to form a 'film strip' animation.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Overlay each image in an image sequence according to its <a href="#dispose">-dispose</a> meta-data, to reproduce the look of an animation at each point in the animation sequence. All images should be the same size, and are assigned appropriate GIF disposal settings for the animation to continue working as expected as a GIF animation.  Such frames are more easily viewed and processed than the highly optimized GIF overlay images.  </p>
+<p>Overlay each image in an image sequence according to
+its <a href="#dispose">-dispose</a> meta-data, to reproduce the look of
+an animation at each point in the animation sequence. All images should be
+the same size, and are assigned appropriate GIF disposal settings for the
+animation to continue working as expected as a GIF animation.  Such frames
+are more easily viewed and processed than the highly optimized GIF overlay
+images.  </p>
 
-<p>The animation can be re-optimized after processing using the <a href="#layers">-layers</a> method '<kbd>optimize</kbd>', though there is no guarantee that the restored GIF animation optimization is better than the original. </p>
+<p>The animation can be re-optimized after processing using
+the <a href="#layers">-layers</a> method '<kbd>optimize</kbd>', although
+there is no guarantee that the restored GIF animation optimization is
+better than the original. </p>
 
 
 <div style="margin: auto;">
@@ -1058,7 +1097,10 @@ cube. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Colorize the image by an amount specified by <em class="arg">value</em> using the color specified by the most recent <a href="#fill" >-fill</a> setting.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Specify the amount of colorization as a percentage. Separate colorization values can be applied to the red, green, and blue channels of the image with a comma-delimited list of colorization values (e.g., <kbd>-colorize 0,0,50</kbd>).</p>
+<p>Specify the amount of colorization as a percentage. Separate colorization
+values can be applied to the red, green, and blue channels of the image with
+a comma-delimited list of colorization
+values (e.g., <kbd>-colorize 0,0,50</kbd>).</p>
 
 <div style="margin: auto;">
   <h4><a name="colormap" id="colormap"></a>-colormap <em class="arg">type</em></h4>
@@ -1068,7 +1110,15 @@ cube. </p>
 
 <p>The <em class="arg">type</em> can be  <kbd>shared</kbd> or <kbd>private</kbd>.</p>
 
-<p>This option only applies when the default X server visual is <kbd>PseudoColor</kbd> or <kbd>GrayScale</kbd>. Refer to <a href="#visual">-visual</a> for more details. By default, a shared colormap is allocated. The image shares colors with other X clients. Some image colors could be approximated, therefore your image may look very different than intended. If <kbd>private</kbd> is chosen, the image colors appear exactly as they are defined. However, other clients may go <em>technicolor</em> when the image colormap is installed.</p>
+<p>This option only applies when the default X server visual
+is <kbd>PseudoColor</kbd> or <kbd>GrayScale</kbd>. Refer
+to <a href="#visual">-visual</a> for more details. By default,
+a shared colormap is allocated. The image shares colors with
+other X clients. Some image colors could be approximated,
+therefore your image may look very different than intended.
+If <kbd>private</kbd> is chosen, the image colors appear exactly
+as they are defined. However, other clients may go <em>technicolor</em>
+when the image colormap is installed.</p>
 
 <div style="margin: auto;">
   <h4><a name="colors" id="colors"></a>-colors <em class="arg">value</em></h4>
@@ -1076,7 +1126,15 @@ cube. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Set the preferred number of colors in the image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>The actual number of colors in the image may be less than your request, but never more. Note that this a color reduction option. Images with fewer unique colors than specified by <em class="arg">value</em> will have any duplicate or unused colors removed.  The ordering of an existing color palette may be altered. When converting an image from color to grayscale, it is more efficient to convert the image to the gray colorspace before reducing the number of colors. Refer to the <a href="../www/quantize.html">color reduction algorithm</a> for more details.</p>
+<p>The actual number of colors in the image may be less than your request,
+but never more. Note that this a color reduction option. Images with fewer
+unique colors than specified by <em class="arg">value</em> will have any
+duplicate or unused colors removed.  The ordering of an existing color
+palette may be altered. When converting an image from color to grayscale,
+it is more efficient to convert the image to the gray colorspace before
+reducing the number of colors. Refer to
+the <a href="../www/quantize.html">
+color reduction algorithm</a> for more details.</p>
 
 <div style="margin: auto;">
   <h4><a name="color-matrix" id="color-matrix"></a>-color-matrix <em class="arg">matrix</em></h4>
@@ -1084,7 +1142,12 @@ cube. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>apply color correction to the image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option permits saturation changes, hue rotation, luminance to alpha, and various other effects.  Although variable-sized transformation matrices can be used, typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash except offsets are in column 6 rather than 5 (in support of CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
+<p>This option permits saturation changes, hue rotation, luminance to alpha,
+and various other effects.  Although variable-sized transformation matrices
+can be used, typically one uses a 5x5 matrix for an RGBA image and a 6x6
+for CMYKA (or RGBA with offsets).  The matrix is similar to those used by
+Adobe Flash except offsets are in column 6 rather than 5 (in support of
+CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 
 <p>As an example, to add contrast to an image with offsets, try this command:</p>
 
@@ -1539,6 +1602,10 @@ href="#set" >-set "option:<em class="arg">key</em>" "<em class="arg"
 >value</em>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value. </p>
 
+<p>The <em>option</em> and <em>key</em> are case-independent (they are
+converted to lowercase for use within the decoders) while the <em>value</em>
+is case-dependent.</p>
+
 <p>Such settings are global in scope, and effect all images and operations. </p>
 
 <p>The following definitions are just some of the artifacts that are
@@ -1587,7 +1654,7 @@ available:</p>
     <a href="#colors">-colors</a>, or <a href="#type">-type</a> directives to
     reduce the image quality prior to using the PNG encoder. Note that in
     indexed PNG files, "bit-depth" refers to the number of bits per index,
-    which can range from 1 to 8.  In such files, the color samples always have
+    which can be 1, 2, 4, or 8.  In such files, the color samples always have
     8-bit depth.</dd><br />
 
 <dt>ps:imagemask</dt>
@@ -3126,10 +3193,10 @@ All these values can be adjusted via the arguments.
 </div>
 
 <p>The <em class="arg" >Sigma</em> value is the important argument, and
-determines the actual amount of bluring that will take place. </p>
+determines the actual amount of blurring that will take place. </p>
 
 <p>The <em class="arg" >Radius</em> is only used to determine the size of the
-array which will hold the calculated gaussian distribution. It should be an
+array which will hold the calculated Gaussian distribution. It should be an
 integer.  If not given, or set to zero, IM will calculate the largest possible
 radius that will provide meaningful results for the Gaussian distribution.
 </p>
@@ -5635,7 +5702,7 @@ single pixel transparent 'missed' image is returned, in the same way as when a
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>the image type.</td><td style='text-align:right;'></td></tr></table>
- <p>Choose from: <kbd>Bilevel</kbd>, <kbd>Grayscale</kbd>, <kbd>GrayscaleMatte</kbd>, <kbd>Palette</kbd>, <kbd>PaletteMatte</kbd>, <kbd>TrueColor</kbd>, <kbd>TrueColorMatte</kbd>, <kbd>ColorSeparation</kbd>, <kbd>ColorSeparationMatte</kbd>, or <kbd>Optimize</kbd>.</p>
+ <p>Choose from: <kbd>Bilevel</kbd>, <kbd>Grayscale</kbd>, <kbd>GrayscaleMatte</kbd>, <kbd>Palette</kbd>, <kbd>PaletteMatte</kbd>, <kbd>TrueColor</kbd>, <kbd>TrueColorMatte</kbd>, <kbd>ColorSeparation</kbd>, or <kbd>ColorSeparationMatte</kbd>.</p>
 
 <p>Normally, when a format supports different subformats such as grayscale and truecolor, the encoder will try to choose an efficient subformat. The <a href="#type">-type</a> option can be used to overrride this behavior. For example, to prevent a JPEG from being written in grayscale format even though only gray pixels are present, use.</p>
 

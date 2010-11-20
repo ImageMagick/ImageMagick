@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -170,7 +170,19 @@
 
 <div class="main">
 
-<ul><dt>2010-11-08  6.6.5-8 Nicolas robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<ul><dt>2010-11-17  6.6.5-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Many of the problems with the PNG encoder have been fixed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16490).</li>
+  <li> The "-type Optimize" option is now treated by the PNG encoder the same    as if the type were undefined.  Optimization is now always performed.</li>
+  <li> Merged redundant code into LosslessReduceDepth() function in the PNG codec.</li><br />
+<dt>2010-11-14  6.6.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> The splice option no longer throws spurious "pixels are not authentic"    exceptions.</li>
+  <li> Thread the -adaptive-resize option.</li>
+  <li> Set XBM coder height to height not width.</li><br />
+<dt>2010-11-14  6.6.5-9 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
+  <li> Lanczos2Sharp blur tweaked. New blur = 0.9549963639785485.</li><br />
+<dt>2010-11-13  6.6.5-9 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
+  <li> LanczosSharp blur tweaked to minimize worst case deviation from "perfect    preservation of images which only vary horizontally (or vertically)" under    no-op. New blur = 0.9812505644269356.</li><br />
+<dt>2010-11-08  6.6.5-8 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Missing logical operator in tiff.c.</li><br />
 <dt>2010-11-08  6.6.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Only save TIFF image with 1-bit depth if there is no alpha channel.</li>
@@ -184,20 +196,20 @@
 <dt>2010-10-29  6.6.5-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Revised PNG palette optimization</li>
   <li> Added some debug logging in coders/png.c.</li><br />
-<dt>2010-10-28  6.6.5-3 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-10-28  6.6.5-3 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> More precise blur values for Lanczos2Sharp and LanczosSharp.</li>
   <li> Added location of first Mitchell crossing (=8/7) to the filters data    structure.</li><br />
 <dt>2010-10-28  6.6.5-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Added Lanczos2D* filters now named Lanczos2*</li>
   <li> Reorganization of AcquireFilter() to make it work better</li><br />
-<dt>2010-10-25  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-10-25  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Clearer EWA filters (LanczosSharp etc) comments.</li><br />
 <dt>2010-10-25  6.6.5-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Added LanczosSharp  (3-lobe Lanczos with sharpening)</li>
   <li> Filter sharpening factors are also always applied regardless of usage.</li><br />
-<dt>2010-10-24  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-10-24  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> CubicBC filter formulas simplified by constant folding. In    particular, P1 coefficient (always zero) removed from coeff.</li><br />
-<dt>2010-10-22  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-10-22  6.6.5-1 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Revert the Robidoux filter to a Keys cubic with C=(108 sqrt 2-29)/398    (as already specified in the documentation).</li><br />
 <dt>2010-10-14  6.6.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Ignore PS bounding box offsets if -page is set.</li>
@@ -228,13 +240,13 @@
   <li> Adjusted Variable Mapping Blur Composition so user arguments actual    relate properly to the sigma of the blur for a maximum mapping value.</li>
   <li> Fix horizon anti-alising for output-scaled perspective distortions.</li>
   <li> 'Bessel' filter is now offically and more accuritally named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</li><br />
-<dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Chantal Racette double checked the bounding parallelogram computation    in resample.c (and I tightened the comments).</li><br />
 <dt>2010-09-28  6.6.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Temporary files not always deleted (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=15960).</li><br />
 <dt>2010-09-28  6.6.4-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Bug fix for -filter point distorts (occasional generating black pixels)</li><br />
-<dt>2010-09-27  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-09-27  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Simplified the ClampUpAxes code, the use of its outputs, its comments,    and credited Craig DeForest for the "clamp singular values" idea.</li>
   <li> No reason to have "insane" precision Sinc in resize.c: Use    the 1.2e-12 max. abs. relative error version for Q64 as well as Q32.</li><br />
 <dt>2010-09-27  6.6.4-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
@@ -243,12 +255,12 @@
   <li> Fix Point filter for ResizeImage() caused by support limiting the    Box weighting function.</li><br />
 <dt>2010-09-26  6.6.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't allow resize filter weights to go to zero (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17132).</li><br />
-<dt>2010-09-24  6.6.4-6 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-09-24  6.6.4-6 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Now that MagickPIL is a MagickRealType, some casts are unneeded.</li><br />
 <dt>2010-09-21  6.6.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Do not break words if caption size is absolute (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17123).</li>
   <li> Don't define HAVE_THREADS for --without-threads configure script option.</li><br />
-<dt>2010-09-20  6.6.4-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+<dt>2010-09-20  6.6.4-5 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <li> Modified "magick/resize.c" so that MagickPIL is a MagickRealType number.    Some computations were needlessly done in long double precision because    PIL forced an automatic upcast wherever it appeared. Changed its name to    MagickREALTYPEPI. &lt;- This was later reverted back to MagickPIL.</li>
   <li> Modified "magick/resize.c" so that Bohman uses one trig call + one sqrt    call instead of two trig calls.</li><br />
 <dt>2010-09-20  6.6.4-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
