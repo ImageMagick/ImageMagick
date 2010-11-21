@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include <magick/image-private.h>
 #include <magick/pixel.h>
 
 static inline MagickBooleanType IsGrayColorspace(
@@ -41,36 +42,27 @@ static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
     magenta,
     yellow;
                                                                                 
-  cyan=(MagickRealType) (QuantumRange-pixel->red);
-  magenta=(MagickRealType) (QuantumRange-pixel->green);
-  yellow=(MagickRealType) (QuantumRange-pixel->blue);
-  black=(MagickRealType) QuantumRange;
-  if (cyan < black)
-    black=cyan;
+  if ((pixel->red == 0) && (pixel->green == 0) && (pixel->blue == 0))
+    {
+      pixel->index=QuantumRange;
+      return;
+    }
+  cyan=(MagickRealType) (1.0-QuantumScale*pixel->red);
+  magenta=(MagickRealType) (1.0-QuantumScale*pixel->green);
+  yellow=(MagickRealType) (1.0-QuantumScale*pixel->blue);
+  black=cyan;
   if (magenta < black)
     black=magenta;
   if (yellow < black)
     black=yellow;
-  if (black == QuantumRange)
-    {
-      cyan=0.0;
-      magenta=0.0;
-      yellow=0.0;
-    }
-  else
-    {
-      cyan=(MagickRealType) (QuantumRange*(cyan-black)/
-        (QuantumRange-black));
-      magenta=(MagickRealType) (QuantumRange*(magenta-black)/
-        (QuantumRange-black));
-      yellow=(MagickRealType) (QuantumRange*(yellow-black)/
-        (QuantumRange-black));
-    }
+  cyan=(MagickRealType) ((cyan-black)/(1.0-black));
+  magenta=(MagickRealType) ((magenta-black)/(1.0-black));
+  yellow=(MagickRealType) ((yellow-black)/(1.0-black));
   pixel->colorspace=CMYKColorspace;
-  pixel->red=cyan;
-  pixel->green=magenta;
-  pixel->blue=yellow;
-  pixel->index=black;
+  pixel->red=QuantumRange*cyan;
+  pixel->green=QuantumRange*magenta;
+  pixel->blue=QuantumRange*yellow;
+  pixel->index=QuantumRange*black;
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
