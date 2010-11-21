@@ -1,3 +1,6 @@
+2010-11-21  6.6.6-0 Cristy  <quetzlzacatenango@image...>
+  * Add DrawGetFontResolution() / DrawSetFontResolution().
+
 2009-10-10  6.5.6-10 Cristy  <quetzlzacatenango@image...>
   * Add MagickSetImageArtifact(), etc.  Wand artifacts are like properties
     except they are not exported.  They are needed for some method such

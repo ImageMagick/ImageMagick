@@ -1372,6 +1372,59 @@ WandExport const char *MagickGetReleaseDate(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t R e s o l u t i o n                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetResolution() gets the image X and Y resolution.
+%
+%  The format of the MagickGetResolution method is:
+%
+%      MagickBooleanType MagickGetResolution(const MagickWand *wand,double *x,
+%        double *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o x: the x-resolution.
+%
+%    o y: the y-resolution.
+%
+*/
+WandExport MagickBooleanType MagickGetResolution(const MagickWand *wand,
+  double *x,double *y)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  *x=72.0;
+  *y=72.0;
+  if (wand->image_info->density != (char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        flags;
+
+      flags=ParseGeometry(wand->image_info->density,&geometry_info);
+      *x=geometry_info.rho;
+      *y=geometry_info.sigma;
+      if ((flags & SigmaValue) == MagickFalse)
+        *y=(*x);
+    }
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t R e s o u r c e                                         %
 %                                                                             %
 %                                                                             %
