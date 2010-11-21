@@ -102,6 +102,10 @@ static const unsigned char
   {
     0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
   },
+  OpaqueBitmap[8] =
+  {
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+  },
   ShadowBitmap[8] =
   {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -1500,6 +1504,8 @@ typedef enum
 #define DiagonalHeight  16
 #define HighlightWidth  8
 #define HighlightHeight  8
+#define OpaqueWidth  8
+#define OpaqueHeight  8
 #define ScalesWidth  16
 #define ScalesHeight  16
 #define ShadowWidth  8
@@ -5635,8 +5641,6 @@ static MagickBooleanType XDrawEditImage(Display *display,
               if (stipple != (Pixmap) NULL)
                 (void) XFreePixmap(display,stipple);
               stipple=(Pixmap) NULL;
-              if (entry == 6)
-                break;
               if (entry != 7)
                 {
                   switch (entry)
@@ -5672,11 +5676,17 @@ static MagickBooleanType XDrawEditImage(Display *display,
                       break;
                     }
                     case 5:
-                    default:
                     {
                       stipple=XCreateBitmapFromData(display,root_window,
                         (char *) HighlightBitmap,HighlightWidth,
                         HighlightHeight);
+                      break;
+                    }
+                    case 6:
+                    default:
+                    {
+                      stipple=XCreateBitmapFromData(display,root_window,
+                        (char *) OpaqueBitmap,OpaqueWidth,OpaqueHeight);
                       break;
                     }
                   }
@@ -5738,7 +5748,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 break;
               if (entry != 5)
                 {
-                  line_width=(unsigned int) StringToUnsignedLong(WidthsMenu[entry]);
+                  line_width=(unsigned int) StringToUnsignedLong(
+                    WidthsMenu[entry]);
                   break;
                 }
               (void) XDialogWidget(display,windows,"Ok","Enter line width:",

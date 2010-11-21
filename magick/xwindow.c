@@ -2343,8 +2343,11 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
   */
   (void) XSetBackground(display,draw_context,0);
   (void) XSetForeground(display,draw_context,(size_t) (~0));
-  (void) XSetFillStyle(display,draw_context,FillOpaqueStippled);
-  (void) XSetStipple(display,draw_context,draw_info->stipple);
+  if (draw_info->stipple !=  (Pixmap) NULL)
+    {
+      (void) XSetFillStyle(display,draw_context,FillOpaqueStippled);
+      (void) XSetStipple(display,draw_context,draw_info->stipple);
+    }
   switch (draw_info->element)
   {
     case PointElement:
