@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -170,9 +170,11 @@
 
 <div class="main">
 
-<ul><dt>2010-11-17  6.6.5-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<ul><dt>2010-11-21  6.6.5-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix png coder compile error when HDRI is enabled.</li><br />
+<dt>2010-11-17  6.6.5-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Many of the problems with the PNG encoder have been fixed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16490).</li>
-  <li> The "-type Optimize" option is now treated by the PNG encoder the same    as if the type were undefined.  Optimization is now always performed.</li>
+  <li> The "-type Optimize" option is now deprecated.  If present, it is treated    by the PNG encoder the same as if the type were undefined.  Optimization    is now always performed.</li>
   <li> Merged redundant code into LosslessReduceDepth() function in the PNG codec.</li><br />
 <dt>2010-11-14  6.6.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The splice option no longer throws spurious "pixels are not authentic"    exceptions.</li>
