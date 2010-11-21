@@ -5978,7 +5978,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     colorspace;
 
                   colorspace=(ColorspaceType) ParseMagickOption(
-                    MagickColorspaceOptions,MagickFalse,keyword);
+                    MagickColorspaceOptions,MagickFalse,value);
                   if (colorspace < 0)
                     ThrowMSLException(OptionError,"UnrecognizedColorspace",
                       value);
