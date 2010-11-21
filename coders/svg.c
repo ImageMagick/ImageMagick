@@ -949,7 +949,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           break;
       }
     }
-  if (strchr(name,':') != (char *) NULL)
+  if (strchr((char *) name,':') != (char *) NULL)
     {
       /*
         Skip over namespace.
@@ -2148,7 +2148,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.endElement(%s)",name);
   svg_info=(SVGInfo *) context;
-  if (strchr(name,':') != (char *) NULL)
+  if (strchr((char *) name,':') != (char *) NULL)
     {
       /*
         Skip over namespace.
