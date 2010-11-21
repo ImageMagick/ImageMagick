@@ -1580,6 +1580,59 @@ WandExport char *DrawGetFontFamily(const DrawingWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F o n t R e s o l u t i o n                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFontResolution() gets the image X and Y resolution.
+%
+%  The format of the DrawGetFontResolution method is:
+%
+%      DrawBooleanType DrawGetFontResolution(const DrawingWand *wand,
+%        double *x,double *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o x: the x-resolution.
+%
+%    o y: the y-resolution.
+%
+*/
+WandExport MagickBooleanType DrawGetFontResolution(const DrawingWand *wand,
+  double *x,double *y)
+{
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  *x=72.0;
+  *y=72.0;
+  if (CurrentContext->density != (char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        flags;
+
+      flags=ParseGeometry(CurrentContext->density,&geometry_info);
+      *x=geometry_info.rho;
+      *y=geometry_info.sigma;
+      if ((flags & SigmaValue) == MagickFalse)
+        *y=(*x);
+    }
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w G e t F o n t S i z e                                             %
 %                                                                             %
 %                                                                             %
@@ -4715,6 +4768,49 @@ WandExport void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
       CurrentContext->fill.opacity=opacity;
       (void) MvgPrintf(wand,"fill-opacity %g\n",fill_opacity);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w S e t F o n t R e s o l u t i o n                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawSetFontResolution() sets the image resolution.
+%
+%  The format of the DrawSetFontResolution method is:
+%
+%      DrawBooleanType DrawSetFontResolution(DrawingWand *wand,
+%        const double x_resolution,const doubtl y_resolution)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o x_resolution: the image x resolution.
+%
+%    o y_resolution: the image y resolution.
+%
+*/
+WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
+  const double x_resolution,const double y_resolution)
+{
+  char
+    density[MaxTextExtent];
+
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",x_resolution,
+    y_resolution);
+  (void) CloneString(&CurrentContext->density,density);
+  return(MagickTrue);
 }
 
 /*
