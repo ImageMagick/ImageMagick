@@ -1601,7 +1601,7 @@ MagickExport Image *SpliceImage(const Image *image,
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y-(ssize_t) splice_geometry.height,
       image->columns,1,exception);
-    if ((y < 0) || (y >= splice_image->rows))
+    if ((y < 0) || (y >= (ssize_t) splice_image->rows))
       continue;
     q=QueueCacheViewAuthenticPixels(splice_view,0,y,splice_image->columns,1,
       exception);

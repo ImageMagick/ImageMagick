@@ -511,7 +511,8 @@ static MagickBooleanType
            ((((size_t) image->background_color.green >> 8) & 0xff)
           == ((size_t) image->background_color.green & 0xff)) &&
            ((((size_t) image->background_color.blue >> 8) & 0xff)
-          == ((size_t) image->background_color.blue & 0xff)));
+          == ((size_t) image->background_color.blue & 0xff))) ? MagickTrue :
+          MagickFalse;
 
         if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
           {
@@ -527,7 +528,8 @@ static MagickBooleanType
                   ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
                   == ((size_t) image->colormap[indx].blue & 0xff)) &&
                   ((((size_t) image->colormap[indx].opacity >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].opacity & 0xff)));
+                  == ((size_t) image->colormap[indx].opacity & 0xff))) ?
+                  MagickTrue : MagickFalse;
                 if (ok_to_reduce == MagickFalse)
                   break;
               }
@@ -563,7 +565,7 @@ static MagickBooleanType
                   ((size_t) p->blue & 0xff)) &&
                   (((!image->matte ||
                   (((size_t) p->opacity >> 8) & 0xff) ==
-                  ((size_t) p->opacity & 0xff)))));
+                  ((size_t) p->opacity & 0xff))))) ? MagickTrue : MagickFalse;
 
                 if (ok_to_reduce == MagickFalse)
                   break;
@@ -6730,7 +6732,7 @@ static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    i     (red,green,blue,opacity)");
 
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (ssize_t) image->colors; i++)
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    %d  (%d,%d,%d,%d)",
@@ -6867,9 +6869,9 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     ping_number_colors=(size_t) 0;
     remap_needed = MagickFalse;
 
-    for (i=0; i<image->colors; i++)
+    for (i=0; i<(ssize_t) image->colors; i++)
     {
-      colormap[ping_plte_map[i]] = image->colormap[i];
+      colormap[(ssize_t) ping_plte_map[i]] = image->colormap[i];
 
       if (ping_plte_map[i] != i)
         remap_needed = MagickTrue;
@@ -6912,7 +6914,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    i  plte_map (red,green,blue,opacity)");
 
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (ssize_t) image->colors; i++)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    %d    %d   (%d,%d,%d,%d)",
@@ -6925,7 +6927,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     }
 
 
-    for (i=0; i<image->colors; i++)
+    for (i=0; i< (ssize_t) image->colors; i++)
     {
       image->colormap[i] = colormap[i];
     }
@@ -6936,7 +6938,7 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
         "    After Remap:");
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    i      (red,green,blue,opacity)");
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (ssize_t) image->colors; i++)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    %d    (%d,%d,%d,%d)",
@@ -8062,7 +8064,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "  Setting up bKGD chunk with index=%d",(int) i);
           }
 
-        if (i < number_colors)
+        if (i < (ssize_t) number_colors)
           {
             ping_have_bKGD = MagickTrue;
             if (logging)
@@ -8348,7 +8350,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       if (logging)
         {
-          for (i=0; i< number_colors; i++)
+          for (i=0; i< (ssize_t) number_colors; i++)
           {
             if (ping_num_trans != 0)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
