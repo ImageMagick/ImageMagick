@@ -38,6 +38,10 @@
   Any large image is cached to disk rather than memory:
 
     <policy domain="resource" name="area" value="1gb"/>
+
+  Note, resource policies are maximums for each instance of ImageMagick. For
+  example, if you set the memory resource to 1gb, no ImageMagick instance can
+  use more than 10mb of pixel cache memory.
 -->
 <policymap>
   <!-- <policy domain="system" name="precision" value="6"/> -->
