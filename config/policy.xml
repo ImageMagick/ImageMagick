@@ -39,15 +39,15 @@
 
     <policy domain="resource" name="area" value="1gb"/>
 
-  Note, resource policies are maximums for each instance of ImageMagick. For
-  example, if you set the memory resource to 1gb, no ImageMagick instance can
-  use more than 10mb of pixel cache memory.
+  Note, resource policies are maximums for each instance of ImageMagick (e.g.
+  policy memory limit 1GB, -limit 2GB exceeds policy maximum so memory limit
+  is 1GB).
 -->
 <policymap>
   <!-- <policy domain="system" name="precision" value="6"/> -->
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
-  <!-- <policy domain="resource" name="memory" value="2gb"/> -->
-  <!-- <policy domain="resource" name="map" value="4gb"/> -->
+  <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
+  <!-- <policy domain="resource" name="map" value="4GiB"/> -->
   <!-- <policy domain="resource" name="area" value="1gb"/> -->
   <!-- <policy domain="resource" name="disk" value="16eb"/> -->
   <!-- <policy domain="resource" name="file" value="768"/> -->
