@@ -507,12 +507,18 @@ static MagickBooleanType
 
         ok_to_reduce=
           (((((size_t) image->background_color.red >> 8) & 0xff)
-          == ((size_t) image->background_color.red & 0xff)) &&
+             == ((size_t) image->background_color.red & 0xff)) &&
            ((((size_t) image->background_color.green >> 8) & 0xff)
-          == ((size_t) image->background_color.green & 0xff)) &&
+             == ((size_t) image->background_color.green & 0xff)) &&
            ((((size_t) image->background_color.blue >> 8) & 0xff)
-          == ((size_t) image->background_color.blue & 0xff))) ? MagickTrue :
-          MagickFalse;
+             == ((size_t) image->background_color.blue & 0xff)) &&
+           ((((size_t) image->background_color.opacity >> 8) & 0xff)
+             == ((size_t) image->background_color.opacity & 0xff))) ?
+           MagickTrue : MagickFalse;
+
+        if (ok_to_reduce != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    OK to reduce background bit depth to 8");
 
         if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
           {
@@ -520,19 +526,23 @@ static MagickBooleanType
 
             for (indx=0; indx < (ssize_t) image->colors; indx++)
               {
-                ok_to_reduce=(((((size_t) image->colormap[indx].red >>
-                    8) & 0xff)
-                  == ((size_t) image->colormap[indx].red & 0xff)) &&
+                ok_to_reduce=
+                  (((((size_t) image->colormap[indx].red >> 8) & 0xff)
+                     == ((size_t) image->colormap[indx].red & 0xff)) &&
                   ((((size_t) image->colormap[indx].green >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].green & 0xff)) &&
+                     == ((size_t) image->colormap[indx].green & 0xff)) &&
                   ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].blue & 0xff)) &&
+                     == ((size_t) image->colormap[indx].blue & 0xff)) &&
                   ((((size_t) image->colormap[indx].opacity >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].opacity & 0xff))) ?
+                     == ((size_t) image->colormap[indx].opacity & 0xff))) ?
                   MagickTrue : MagickFalse;
+
                 if (ok_to_reduce == MagickFalse)
                   break;
               }
+            if (ok_to_reduce != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "    OK to reduce colormap bit depth to 8");
           }
 
         if ((ok_to_reduce != MagickFalse) &&
@@ -556,24 +566,31 @@ static MagickBooleanType
 
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
-                ok_to_reduce=((
-                  (((size_t) p->red >> 8) & 0xff) ==
-                  ((size_t) p->red & 0xff)) &&
+                ok_to_reduce=(
+                  ((((size_t) p->red >> 8) & 0xff) ==
+                   ((size_t) p->red & 0xff)) &&
                   ((((size_t) p->green >> 8) & 0xff) ==
-                  ((size_t) p->green & 0xff)) &&
+                   ((size_t) p->green & 0xff)) &&
                   ((((size_t) p->blue >> 8) & 0xff) ==
-                  ((size_t) p->blue & 0xff)) &&
-                  (((!image->matte ||
-                  (((size_t) p->opacity >> 8) & 0xff) ==
-                  ((size_t) p->opacity & 0xff))))) ? MagickTrue : MagickFalse;
+                   ((size_t) p->blue & 0xff)) &&
+                  ((image->matte == MagickFalse ||
+                   (((size_t) p->opacity >> 8) & 0xff) ==
+                   ((size_t) p->opacity & 0xff)))) ? MagickTrue : MagickFalse;
 
                 if (ok_to_reduce == MagickFalse)
                   break;
 
                 p++;
               }
-              if (x != 0)
+
+              if (ok_to_reduce == MagickFalse)
                 break;
+            }
+
+          if (ok_to_reduce != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    OK to reduce all pixels bit depth to 8");
             }
           }
 
@@ -582,7 +599,7 @@ static MagickBooleanType
             image->depth=8;
 
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Reducing PNG bit depth to 8 without loss of info");
+                "    Reducing PNG bit depth to 8 without loss of info");
           }
       }
 
@@ -686,13 +703,16 @@ static MagickBooleanType ImageIsGray(Image *image)
       for (i=0; i < (ssize_t) image->colors; i++)
         if (IsGray(image->colormap+i) == MagickFalse)
           return(MagickFalse);
+
       return(MagickTrue);
     }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+
     if (p == (const PixelPacket *) NULL)
       return(MagickFalse);
+
     for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
        if (IsGray(p) == MagickFalse)
@@ -5925,6 +5945,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) LosslessReduceDepth(image);
 #endif
 
+
       GetImageException(image,exception);
       if (image_info->number_scenes != 0)
         {
@@ -7083,18 +7104,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_pHYs=MagickFalse;
   ping_have_tRNS=MagickFalse;
 
-  quantum_info = (QuantumInfo *) NULL;
-  number_colors=0;
-  image_colors=image->colors;
-  image_depth=image->depth;
-  image_matte=image->matte;
 
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
-
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-    (void) LosslessReduceDepth(image);
-#endif
 
   /*
     Sometimes we get PseudoClass images whose RGB values don't match
@@ -7103,8 +7115,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->taint && image->storage_class == PseudoClass)
      (void) SyncImage(image);
 
+#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+  (void) LosslessReduceDepth(image);
+#endif
+
+  quantum_info = (QuantumInfo *) NULL;
+  number_colors=0;
+  image_colors=image->colors;
+  image_depth=image->depth;
+  image_matte=image->matte;
+
 #ifdef PNG_BUILD_PALETTE
-  
+
   if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
       (mng_info->write_png_colortype == 0 && image->depth <= 8))
     {
@@ -7284,7 +7306,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    Setting up bKGd chunk");
+         "    Setting up bKGD chunk");
 
   ping_have_bKGD = MagickTrue;
 
@@ -7508,8 +7530,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
 
       if (logging != MagickFalse)
+      {
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
          "Selected PNG colortype=%d",ping_color_type);
+
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "   image->depth=%d (%d)",(int) image->depth, (int) image_depth);
+      }
 
       if (ping_bit_depth < 8)
         {
@@ -7638,7 +7665,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           p++;
         }
 
-        if (x != 0)
+        if (x >= 0)
           break;
       }
 
@@ -7819,6 +7846,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    else if ((intensity & 0x01) != ((intensity & 0x02) >> 1))
                      depth_1_ok=MagickFalse;
                 }
+
                 if (depth_1_ok && mng_info->write_png_depth <= 1)
                   ping_bit_depth=1;
 
@@ -7859,6 +7887,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 if (CompressColormapTransFirst(image) == MagickFalse)
                    ThrowWriterException(ResourceLimitError,
                                         "MemoryAllocationFailed");
+
                 number_colors=image->colors;
                 image_colors=number_colors;
 
@@ -8155,20 +8184,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       base_filter;
 
     if ((quality % 10) > 5)
-      base_filter=PNG_ALL_FILTERS;
+        base_filter=PNG_ALL_FILTERS;
 
-    else
-      if ((quality % 10) != 5)
+    else if ((quality % 10) != 5)
         base_filter=(int) quality % 10;
 
-      else
-        if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+    else if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
             ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
             (quality < 50))
-          base_filter=PNG_NO_FILTERS;
+        base_filter=PNG_NO_FILTERS;
 
-        else
-          base_filter=PNG_ALL_FILTERS;
+    else
+        base_filter=PNG_ALL_FILTERS;
 
     if (logging != MagickFalse)
       {
@@ -8317,7 +8344,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "Cannot write image with defined PNG:bit-depth or PNG:color-type.");
     }
 
-  if (image_matte && !image->matte)
+  if (image_matte != MagickFalse && image->matte == MagickFalse)
     {
       /* Add an opaque matte channel */
       image->matte = MagickTrue;
@@ -8350,7 +8377,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       if (logging)
         {
-          for (i=0; i< (ssize_t) number_colors; i++)
+          for (i=0; i< number_colors; i++)
           {
             if (ping_num_trans != 0)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8490,6 +8517,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Allocating %.20g bytes of memory for pixels",(double) rowbytes);
     }
+
   png_pixels=(unsigned char *) AcquireQuantumMemory(rowbytes,
     sizeof(*png_pixels));
 
@@ -8741,15 +8769,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,IndexQuantum,png_pixels,&image->exception);
 
-              if (logging && y <= 2)
-              {
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  Writing row of pixels (4)");
+            if (logging && y <= 2)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Writing row of pixels (4)");
 
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  png_pixels[0]=%d,png_pixels[1]=%d",
-                    (int)png_pixels[0],(int)png_pixels[1]);
-              }
             png_write_row(ping,png_pixels);
           }
         }
