@@ -51,7 +51,7 @@
   <!-- <policy domain="resource" name="area" value="1gb"/> -->
   <!-- <policy domain="resource" name="disk" value="16eb"/> -->
   <!-- <policy domain="resource" name="file" value="768"/> -->
-  <!-- <policy domain="resource" name="thread" value="8"/> -->
+  <!-- <policy domain="resource" name="thread" value="4"/> -->
   <!-- <policy domain="resource" name="throttle" value="0"/> -->
   <!-- <policy domain="resource" name="time" value="3600"/> -->
 </policymap>
