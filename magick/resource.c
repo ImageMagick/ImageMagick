@@ -873,8 +873,7 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
 %
 */
 
-static inline size_t MagickMax(const size_t x,
-  const size_t y)
+static inline size_t MagickMax(const size_t x,const size_t y)
 {
   if (x > y)
     return(x);
@@ -993,7 +992,6 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
     limit=GetPolicyValue("thread");
   if (limit != (char *) NULL)
     {
-      SetOpenMPMaximumThreads((int) StringToUnsignedLong(limit));
       (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
         100.0));
       limit=DestroyString(limit);
@@ -1065,9 +1063,20 @@ MagickExport void ResourceComponentTerminus(void)
 %    o limit: the maximum limit for the resource.
 %
 */
+
+static inline size_t MagickMin(const size_t x,const size_t y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
   const MagickSizeType limit)
 {
+  char
+    *value;
+
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
@@ -1076,37 +1085,60 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case AreaResource:
     {
       resource_info.area_limit=limit;
+      value=GetPolicyValue("area");
+      if (value != (char *) NULL)
+        resource_info.area_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
     }
     case MemoryResource:
     {
       resource_info.memory_limit=limit;
+      value=GetPolicyValue("memory");
+      if (value != (char *) NULL)
+        resource_info.memory_limit=MagickMin(limit,StringToSizeType(value,
+          100.0));
       break;
     }
     case MapResource:
     {
       resource_info.map_limit=limit;
+      value=GetPolicyValue("map");
+      if (value != (char *) NULL)
+        resource_info.map_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
     }
     case DiskResource:
     {
       resource_info.disk_limit=limit;
+      value=GetPolicyValue("disk");
+      if (value != (char *) NULL)
+        resource_info.disk_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
     }
     case FileResource:
     {
       resource_info.file_limit=limit;
+      value=GetPolicyValue("file");
+      if (value != (char *) NULL)
+        resource_info.file_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
     }
     case ThreadResource:
     {
-      SetOpenMPMaximumThreads((int) limit);
       resource_info.thread_limit=limit;
+      value=GetPolicyValue("thread");
+      if (value != (char *) NULL)
+        resource_info.thread_limit=MagickMin(limit,StringToSizeType(value,
+          100.0));
+      SetOpenMPMaximumThreads((int) resource_info.thread_limit);
       break;
     }
     case TimeResource:
     {
       resource_info.time_limit=limit;
+      value=GetPolicyValue("time");
+      if (value != (char *) NULL)
+        resource_info.time_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
     }
     default:
