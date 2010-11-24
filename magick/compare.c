@@ -811,6 +811,114 @@ static MagickBooleanType GetMeanSquaredError(const Image *image,
   return(status);
 }
 
+static MagickBooleanType GetNormalizedCrossCorrelationError(const Image *image,
+  const Image *reconstruct_image,const ChannelType channel,
+  double *distortion,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
+  ssize_t
+    y;
+
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  status=MagickTrue;
+  image_view=AcquireCacheView(image);
+  reconstruct_view=AcquireCacheView(reconstruct_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    double
+      channel_distortion[AllChannels+1];
+
+    register const IndexPacket
+      *restrict indexes,
+      *restrict reconstruct_indexes;
+
+    register const PixelPacket
+      *restrict p,
+      *restrict q;
+
+    register ssize_t
+      i,
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
+      reconstruct_image->columns,1,exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
+    reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
+    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      MagickRealType
+        distance;
+
+      if ((channel & RedChannel) != 0)
+        {
+          distance=QuantumScale*fabs(p->red-(double) q->red);
+          channel_distortion[RedChannel]+=distance;
+          channel_distortion[AllChannels]+=distance;
+        }
+      if ((channel & GreenChannel) != 0)
+        {
+          distance=QuantumScale*fabs(p->green-(double) q->green);
+          channel_distortion[GreenChannel]+=distance;
+          channel_distortion[AllChannels]+=distance;
+        }
+      if ((channel & BlueChannel) != 0)
+        {
+          distance=QuantumScale*fabs(p->blue-(double) q->blue);
+          channel_distortion[BlueChannel]+=distance;
+          channel_distortion[AllChannels]+=distance;
+        }
+      if (((channel & OpacityChannel) != 0) &&
+          (image->matte != MagickFalse))
+        {
+          distance=QuantumScale*fabs(p->opacity-(double) q->opacity);
+          channel_distortion[OpacityChannel]+=distance;
+          channel_distortion[AllChannels]+=distance;
+        }
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        {
+          distance=QuantumScale*fabs(indexes[x]-(double)
+            reconstruct_indexes[x]);
+          channel_distortion[BlackChannel]+=distance;
+          channel_distortion[AllChannels]+=distance;
+        }
+      p++;
+      q++;
+    }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_GetNormalizedCrossCorrelationError)
+#endif
+    for (i=0; i <= (ssize_t) AllChannels; i++)
+      distortion[i]+=channel_distortion[i];
+  }
+  reconstruct_view=DestroyCacheView(reconstruct_view);
+  image_view=DestroyCacheView(image_view);
+  for (i=0; i <= (ssize_t) AllChannels; i++)
+    distortion[i]/=((double) image->columns*image->rows);
+  distortion[AllChannels]/=(double) GetNumberChannels(image,channel);
+  return(status);
+}
+
 static MagickBooleanType GetPeakAbsoluteError(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
@@ -1043,6 +1151,12 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
         channel_distortion,exception);
       break;
     }
+    case NormalizedCrossCorrelationErrorMetric:
+    {
+      status=GetNormalizedCrossCorrelationError(image,reconstruct_image,channel,
+        channel_distortion,exception);
+      break;
+    }
     case PeakAbsoluteErrorMetric:
     default:
     {
@@ -1162,6 +1276,12 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     {
       status=GetMeanSquaredError(image,reconstruct_image,AllChannels,
         channel_distortion,exception);
+      break;
+    }
+    case NormalizedCrossCorrelationErrorMetric:
+    {
+      status=GetNormalizedCrossCorrelationError(image,reconstruct_image,
+        AllChannels,channel_distortion,exception);
       break;
     }
     case PeakAbsoluteErrorMetric:

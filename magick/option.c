@@ -1244,6 +1244,7 @@ static const OptionInfo
     { "MAE", (ssize_t) MeanAbsoluteErrorMetric, MagickFalse },
     { "MEPP", (ssize_t) MeanErrorPerPixelMetric, MagickFalse },
     { "MSE", (ssize_t) MeanSquaredErrorMetric, MagickFalse },
+    { "NCC", (ssize_t) NormalizedCrossCorrelationErrorMetric, MagickFalse },
     { "PAE", (ssize_t) PeakAbsoluteErrorMetric, MagickFalse },
     { "PSNR", (ssize_t) PeakSignalToNoiseRatioMetric, MagickFalse },
     { "RMSE", (ssize_t) RootMeanSquaredErrorMetric, MagickFalse },
