@@ -13513,6 +13513,8 @@ static Image *XVisualDirectoryImage(Display *display,
   backdrop=(windows->visual_info->klass == TrueColor) ||
     (windows->visual_info->klass == DirectColor) ? MagickTrue : MagickFalse;
   read_info=CloneImageInfo(resource_info->image_info);
+  (void) SetImageOption(read_info,"jpeg:size","120x120");
+  (void) CloneString(&read_info->size,DefaultTileGeometry);
   (void) SetImageInfoProgressMonitor(read_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
   images=NewImageList();
@@ -13524,7 +13526,6 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) CopyMagickString(read_info->filename,filelist[i],MaxTextExtent);
     filelist[i]=DestroyString(filelist[i]);
     *read_info->magick='\0';
-    (void) CloneString(&read_info->size,DefaultTileGeometry);
     next_image=ReadImage(read_info,exception);
     CatchException(exception);
     if (next_image != (Image *) NULL)
