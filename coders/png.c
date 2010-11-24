@@ -7675,7 +7675,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           break;
       }
 
-      if ((y == (ssize_t) image->rows) && (x == (ssize_t) image->columns))
+      if ((y == (ssize_t) image->rows) && (x < 0))
         {
           /*
             No transparent pixels are present.  Change 4 or 6 to 0 or 2.
