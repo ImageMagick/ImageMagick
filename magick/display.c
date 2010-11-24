@@ -13530,7 +13530,8 @@ static Image *XVisualDirectoryImage(Display *display,
     if (next_image != (Image *) NULL)
       {
         (void) DeleteImageProperty(next_image,"label");
-        (void) SetImageProperty(next_image,"label",DefaultTileLabel);
+        (void) SetImageProperty(next_image,"label",InterpretImageProperties(
+          read_info,next_image,DefaultTileLabel));
         (void) ParseRegionGeometry(next_image,read_info->size,&geometry,
           exception);
         thumbnail_image=ThumbnailImage(next_image,geometry.width,
