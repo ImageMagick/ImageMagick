@@ -1011,6 +1011,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               break;
             }
             case AbsoluteErrorMetric:
+            case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioMetric:
             {
               (void) fprintf(stderr,"%g",distortion);
@@ -1116,6 +1117,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               break;
             }
             case AbsoluteErrorMetric:
+            case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioMetric:
             {
               switch (image->colorspace)

@@ -33,7 +33,8 @@ typedef enum
   MeanSquaredErrorMetric,
   PeakAbsoluteErrorMetric,
   PeakSignalToNoiseRatioMetric,
-  RootMeanSquaredErrorMetric
+  RootMeanSquaredErrorMetric,
+  NormalizedCrossCorrelationErrorMetric
 } MetricType;
 
 extern MagickExport double
