@@ -63,6 +63,7 @@
 #include "magick/pixel-private.h"
 #include "magick/resource_.h"
 #include "magick/string_.h"
+#include "magick/statistic.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
@@ -815,9 +816,23 @@ static MagickBooleanType GetNormalizedCrossCorrelationError(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
 {
+#define SimilarityImageTag  "Similarity/Image"
+
   CacheView
+    *correlation_view,
     *image_view,
     *reconstruct_view;
+
+  ChannelStatistics
+    *correlation_statistics,
+    *image_statistics,
+    *reconstruct_statistics;
+
+  Image
+    *correlation_image;
+
+  MagickOffsetType
+    progress;
 
   ssize_t
     y;
@@ -828,17 +843,28 @@ static MagickBooleanType GetNormalizedCrossCorrelationError(const Image *image,
   register ssize_t
     i;
 
+  correlation_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (correlation_image == (Image *) NULL)
+    return(MagickFalse);
+  if (SetImageStorageClass(correlation_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&correlation_image->exception);
+      correlation_image=DestroyImage(correlation_image);
+      return(MagickFalse);
+    }
+  image_statistics=GetImageChannelStatistics(image,exception);
+  reconstruct_statistics=GetImageChannelStatistics(reconstruct_image,exception);
   status=MagickTrue;
+  progress=0;
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
+  correlation_view=AcquireCacheView(correlation_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(dynamic,4) shared(status,progress)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    double
-      channel_distortion[AllChannels+1];
-
     register const IndexPacket
       *restrict indexes,
       *restrict reconstruct_indexes;
@@ -847,8 +873,13 @@ static MagickBooleanType GetNormalizedCrossCorrelationError(const Image *image,
       *restrict p,
       *restrict q;
 
+    register IndexPacket
+      *restrict correlation_indexes;
+
+    register PixelPacket
+      *restrict c;
+
     register ssize_t
-      i,
       x;
 
     if (status == MagickFalse)
@@ -856,66 +887,88 @@ static MagickBooleanType GetNormalizedCrossCorrelationError(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
       reconstruct_image->columns,1,exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
+    c=GetCacheViewAuthenticPixels(correlation_view,0,y,
+      correlation_image->columns,1,exception);
+    if ((p == (const PixelPacket *) NULL) ||
+        (q == (const PixelPacket *) NULL) || (c == (PixelPacket *) NULL))
       {
         status=MagickFalse;
         continue;
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    correlation_indexes=GetCacheViewAuthenticIndexQueue(correlation_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickRealType
-        distance;
-
       if ((channel & RedChannel) != 0)
-        {
-          distance=QuantumScale*fabs(p->red-(double) q->red);
-          channel_distortion[RedChannel]+=distance;
-          channel_distortion[AllChannels]+=distance;
-        }
+        c->red=(p->red-image_statistics[RedChannel].mean)*
+          (q->red-reconstruct_statistics[RedChannel].mean);
       if ((channel & GreenChannel) != 0)
-        {
-          distance=QuantumScale*fabs(p->green-(double) q->green);
-          channel_distortion[GreenChannel]+=distance;
-          channel_distortion[AllChannels]+=distance;
-        }
+        c->green=(p->green-image_statistics[GreenChannel].mean)*
+          (q->green-reconstruct_statistics[GreenChannel].mean);
       if ((channel & BlueChannel) != 0)
-        {
-          distance=QuantumScale*fabs(p->blue-(double) q->blue);
-          channel_distortion[BlueChannel]+=distance;
-          channel_distortion[AllChannels]+=distance;
-        }
+        c->blue=(p->blue-image_statistics[BlueChannel].mean)*
+          (q->blue-reconstruct_statistics[BlueChannel].mean);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
-        {
-          distance=QuantumScale*fabs(p->opacity-(double) q->opacity);
-          channel_distortion[OpacityChannel]+=distance;
-          channel_distortion[AllChannels]+=distance;
-        }
+        c->opacity=(p->opacity-image_statistics[OpacityChannel].mean)*
+          (q->opacity-reconstruct_statistics[OpacityChannel].mean);
       if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        {
-          distance=QuantumScale*fabs(indexes[x]-(double)
-            reconstruct_indexes[x]);
-          channel_distortion[BlackChannel]+=distance;
-          channel_distortion[AllChannels]+=distance;
-        }
+          (image->colorspace == CMYKColorspace) &&
+          (reconstruct_image->colorspace == CMYKColorspace))
+        correlation_indexes[x]=(indexes[x]-
+          image_statistics[OpacityChannel].mean)*(reconstruct_indexes[x]-
+          reconstruct_statistics[OpacityChannel].mean);
       p++;
       q++;
+      c++;
     }
+    if (SyncCacheViewAuthenticPixels(correlation_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetNormalizedCrossCorrelationError)
 #endif
-    for (i=0; i <= (ssize_t) AllChannels; i++)
-      distortion[i]+=channel_distortion[i];
+        proceed=SetImageProgress(image,SimilarityImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
+  correlation_view=DestroyCacheView(correlation_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i <= (ssize_t) AllChannels; i++)
-    distortion[i]/=((double) image->columns*image->rows);
-  distortion[AllChannels]/=(double) GetNumberChannels(image,channel);
+  correlation_statistics=GetImageChannelStatistics(correlation_image,exception);
+  correlation_image=DestroyImage(correlation_image);
+  for (i=0; i < (ssize_t) AllChannels; i++)
+    distortion[i]=correlation_statistics[i].mean/(
+      image_statistics[i].standard_deviation*
+      reconstruct_statistics[i].standard_deviation);
+  distortion[AllChannels]=0.0;
+  if ((channel & RedChannel) != 0)
+    distortion[AllChannels]+=distortion[RedChannel]*distortion[RedChannel];
+  if ((channel & GreenChannel) != 0)
+    distortion[AllChannels]+=distortion[GreenChannel]*distortion[GreenChannel];
+  if ((channel & BlueChannel) != 0)
+    distortion[AllChannels]+=distortion[BlueChannel]*distortion[BlueChannel];
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
+    distortion[AllChannels]+=distortion[OpacityChannel]*
+      distortion[OpacityChannel];
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
+    distortion[AllChannels]+=distortion[BlackChannel]*distortion[BlackChannel];
+  distortion[AllChannels]=sqrt(distortion[AllChannels])/
+    GetNumberChannels(image,AllChannels);
+  reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    reconstruct_statistics);
+  image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    image_statistics);
+  correlation_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    correlation_statistics);
   return(status);
 }
 
