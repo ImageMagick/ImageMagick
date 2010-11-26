@@ -113,9 +113,7 @@
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
-#if 0
-#define PNG_SORT_PALETTE    /* This works as of 5.4.0 but not in 6.5. */
-#endif
+#define PNG_SORT_PALETTE    /* This works as of 5.4.0 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
