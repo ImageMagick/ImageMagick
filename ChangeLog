@@ -1,7 +1,7 @@
 2010-11-23  6.6.6-0 Cristy  <quetzlzacatenango@image...>
   * The policy.xml sets not-to-exceed resource values (e.g. policy memory limit
     1GB, -limit 2GB exceeds policy maximum so memory limit is 1GB).
-  * Support NCC (normalized cross correlation) compare metric (not working yet).
+  * Support NCC (normalized cross correlation) compare metric.
 
 2010-11-21  6.6.5-10 Cristy  <quetzlzacatenango@image...>
   * Fix png coder compile error when HDRI is enabled.
