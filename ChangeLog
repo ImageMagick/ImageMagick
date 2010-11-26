@@ -1,3 +1,7 @@
+2010-11-26  6.6.6-0 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed another case where the PNG encoder lost transparency (reference
+http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
+
 2010-11-23  6.6.6-0 Cristy  <quetzlzacatenango@image...>
   * The policy.xml sets not-to-exceed resource values (e.g. policy memory limit
     1GB, -limit 2GB exceeds policy maximum so memory limit is 1GB).
