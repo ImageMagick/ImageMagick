@@ -64,6 +64,7 @@
 #include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/statistic.h"
+#include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
@@ -1546,91 +1547,30 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 static double GetSimilarityMetric(const Image *image,const Image *reference,
   const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
-  CacheView
-    *image_view,
-    *reference_view;
-
   double
-    similarity;
+    channel_distortion[AllChannels+1];
 
-  ssize_t
-    y;
-
+  Image
+    *similarity_image;
+ 
   MagickBooleanType
     status;
 
-  /*
-    Compute the similarity in pixels between two images.
-  */
-  status=MagickTrue;
-  similarity=0.0;
-  image_view=AcquireCacheView(image);
-  reference_view=AcquireCacheView(reference);
-  for (y=0; y < (ssize_t) reference->rows; y++)
-  {
-    register const IndexPacket
-      *restrict indexes,
-      *restrict reference_indexes;
+  RectangleInfo
+    geometry;
 
-    register const PixelPacket
-      *restrict p,
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset+y,
-      reference->columns,1,exception);
-    q=GetCacheViewVirtualPixels(reference_view,0,y,reference->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    reference_indexes=GetCacheViewVirtualIndexQueue(reference_view);
-    for (x=0; x < (ssize_t) reference->columns; x++)
-    {
-      double
-        thread_similarity;
-
-      MagickRealType
-        distance;
-
-      thread_similarity=0.0;
-      distance=QuantumScale*(p->red-(MagickRealType) q->red);
-      thread_similarity+=distance*distance;
-      distance=QuantumScale*(p->green-(MagickRealType) q->green);
-      thread_similarity+=distance*distance;
-      distance=QuantumScale*(p->blue-(MagickRealType) q->blue);
-      thread_similarity+=distance*distance;
-      if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
-        {
-          distance=QuantumScale*(p->opacity-(MagickRealType) q->opacity);
-          thread_similarity+=distance*distance;
-        }
-      if ((image->colorspace == CMYKColorspace) &&
-          (reference->colorspace == CMYKColorspace))
-        {
-          distance=QuantumScale*(indexes[x]-(MagickRealType)
-            reference_indexes[x]);
-          thread_similarity+=distance*distance;
-        }
-      similarity+=thread_similarity;
-      p++;
-      q++;
-    }
-  }
-  reference_view=DestroyCacheView(reference_view);
-  image_view=DestroyCacheView(image_view);
+  SetGeometry(reference,&geometry);
+  geometry.x=x_offset;
+  geometry.y=y_offset;
+  similarity_image=CropImage(image,&geometry,exception);
+  if (similarity_image == (Image *) NULL)
+    return(0.0);
+  status=GetNormalizedCrossCorrelationError(reference,similarity_image,
+    DefaultChannels,channel_distortion,exception);
+  similarity_image=DestroyImage(similarity_image);
   if (status == MagickFalse)
     return(0.0);
-  similarity/=((double) reference->columns*reference->rows);
-  similarity/=(double) GetNumberChannels(reference,AllChannels);
-  return(sqrt(similarity));
+  return(1.0-channel_distortion[AllChannels]);
 }
 
 MagickExport Image *SimilarityImage(Image *image,const Image *reference,
