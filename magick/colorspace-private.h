@@ -44,7 +44,7 @@ static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
                                                                                 
   if ((pixel->red == 0) && (pixel->green == 0) && (pixel->blue == 0))
     {
-      pixel->index=QuantumRange;
+      pixel->index=(MagickRealType) QuantumRange;
       return;
     }
   cyan=(MagickRealType) (1.0-QuantumScale*pixel->red);
