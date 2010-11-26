@@ -113,7 +113,9 @@
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
+#if 0
 #define PNG_SORT_PALETTE    /* This works as of 5.4.0 but not in 6.5. */
+#endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -7373,7 +7375,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-  if (mng_info->write_png_colortype != 16)
+  if (image_depth == 16 && mng_info->write_png_colortype != 16)
     if (LosslessReduceDepthOK(image) != MagickFalse)
       image->depth = 8;
 #endif
@@ -7386,7 +7388,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_matte=image->matte;
 
 #ifdef PNG_BUILD_PALETTE
-  
   if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
       (mng_info->write_png_colortype == 0 && image->depth <= 8))
     {
@@ -7412,7 +7413,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
   mng_info->IsPalette=image->storage_class == PseudoClass &&
-    image_colors <= 256 && !IsOpaqueImage(image,&image->exception);
+    image_colors <= 256;
 
   /*
     Allocate the PNG structures
