@@ -827,11 +827,11 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     *image_statistics,
     *reconstruct_statistics;
 
-  MagickOffsetType
-    progress;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MagickRealType
     area;
@@ -843,7 +843,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     y;
 
   /*
-    Subtract the mean.
+    Normalize to account for variation due to lighting and exposure condition.
   */
   image_statistics=GetImageChannelStatistics(image,exception);
   reconstruct_statistics=GetImageChannelStatistics(reconstruct_image,exception);
@@ -926,16 +926,12 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   for (i=0; i < (ssize_t) AllChannels; i++)
   {
     MagickRealType
-      alpha;
+      gamma;
 
-    alpha=image_statistics[i].standard_deviation*
+    gamma=image_statistics[i].standard_deviation*
       reconstruct_statistics[i].standard_deviation;
-    if (fabs(alpha) <= MagickEpsilon)
-      {
-        distortion[i]=1.0;
-        continue;
-      }
-    distortion[i]=QuantumRange*distortion[i]/alpha;
+    gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+    distortion[i]=QuantumRange*gamma*distortion[i];
   }
   distortion[AllChannels]=0.0;
   if ((channel & RedChannel) != 0)
@@ -1564,8 +1560,8 @@ static double GetNCCDistortion(const Image *image,
     status;
 
   MagickRealType
-    alpha,
-    area;
+    area,
+    gamma;
 
   ssize_t
     y;
@@ -1574,7 +1570,7 @@ static double GetNCCDistortion(const Image *image,
     number_channels;
   
   /*
-    Subtract the mean.
+    Normalize to account for variation due to lighting and exposure condition.
   */
   image_statistics=GetImageChannelStatistics(image,exception);
   status=MagickTrue;
@@ -1636,17 +1632,16 @@ static double GetNCCDistortion(const Image *image,
   /*
     Divide by the standard deviation.
   */
-  alpha=image_statistics[AllChannels].standard_deviation*
+  gamma=image_statistics[AllChannels].standard_deviation*
     reconstruct_statistics[AllChannels].standard_deviation;
-  distortion=QuantumRange*distortion/alpha;
+  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+  distortion=QuantumRange*gamma*distortion;
   number_channels=3;
   if (image->matte != MagickFalse)
     number_channels++;
   if (image->colorspace == CMYKColorspace)
     number_channels++;
   distortion=sqrt(distortion/number_channels);
-  if (fabs(alpha) <= MagickEpsilon)
-    distortion=1.0;
   /*
     Free resources.
   */
