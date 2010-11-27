@@ -112,7 +112,7 @@
 #undef MNG_BASI_SUPPORTED
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
-#define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
+#define PNG_BUILD_PALETTE   /* This works as of 5.4.3 for opaque images. */
 #define PNG_SORT_PALETTE    /* This works as of 5.4.0 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
@@ -2830,8 +2830,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       storage_class=image->storage_class;
       image->matte=MagickTrue;
 
-#if 1  /* balfour fix */
-/* From imagemagick discourse server, 5 Feb 2010 */
+/* Balfour fix from imagemagick discourse server, 5 Feb 2010 */
 
       if (storage_class == PseudoClass)
         {
@@ -2888,75 +2887,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
         }
 
-#else /* not balfour */
-
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        image->storage_class=storage_class;
-        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-
-        if (q == (PixelPacket *) NULL)
-          break;
-
-        indexes=GetAuthenticIndexQueue(image);
-
-        if (storage_class == PseudoClass)
-          {
-            IndexPacket
-              indexpacket;
-
-            if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                indexpacket=indexes[x];
-
-                if (indexpacket < ping_num_trans)
-                  q->opacity=ScaleCharToQuantum((unsigned char)
-                    (255-ping_trans_alpha[(ssize_t) indexpacket]));
-
-                else
-                  SetOpacityPixelComponent(q,OpaqueOpacity);
-
-                q++;
-              }
-
-            else if (ping_color_type == PNG_COLOR_TYPE_GRAY)
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                indexpacket=indexes[x];
-                q->red=image->colormap[(ssize_t) indexpacket].red;
-                q->green=q->red;
-                q->blue=q->red;
-
-                if (ScaleQuantomToShort(q->red) == transparent_color.opacity)
-                  q->opacity=(Quantum) TransparentOpacity;
-
-                else
-                  SetOpacityPixelComponent(q,OpaqueOpacity);
-
-                q++;
-              }
-          }
-        else
-          for (x=(ssize_t) image->columns-1; x >= 0; x--)
-          {
-            if (ScaleQuantumToShort(q->red) == transparent_color.red &&
-                ScaleQuantumToShort(q->green) == transparent_color.green &&
-                ScaleQuantumToShort(q->blue) == transparent_color.blue)
-               q->opacity=(Quantum) TransparentOpacity;
-
-            else
-              SetOpacityPixelComponent(q,OpaqueOpacity);
-
-            q++;
-          }
-
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
-#endif /* not balfour */
       image->storage_class=DirectClass;
     }
+
   if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     image->colorspace=GRAYColorspace;
@@ -2999,6 +2932,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           value=DestroyString(value);
         }
     }
+
 #ifdef MNG_OBJECT_BUFFERS
   /*
     Store the object if necessary.
@@ -3077,6 +3011,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               */
               png_get_PLTE(ping,ping_info,&plte,&number_colors);
               mng_info->ob[object_id]->plte_length=number_colors;
+
               for (i=0; i < number_colors; i++)
               {
                 mng_info->ob[object_id]->plte[i]=plte[i];
@@ -7378,37 +7313,139 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth = 8;
 #endif
 
+#ifdef PNG_BUILD_PALETTE
+  if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
+      (mng_info->write_png_colortype == 0 && image->depth <= 8))
+
+    {
+      /*
+        Sometimes we get DirectClass images that have 256 colors or fewer.
+        This code will convert them to PseudoClass and build a colormap.
+
+        As of version 6.6.5 it fails to account for opacity, but not always.
+      */
+      if (image->storage_class != PseudoClass)
+        {
+          (void) SyncImage(image);
+          image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
+          image_colors=image->colors;
+
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Enter BUILD_PALETTE:");
+
+          if (image->colormap != NULL)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      i     (red,green,blue,opacity)");
+
+            for (i=0; i < (ssize_t) image->colors; i++)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "      %d  (%d,%d,%d,%d)",
+                   (int) i,
+                   (int) image->colormap[i].red,
+                   (int) image->colormap[i].green,
+                   (int) image->colormap[i].blue,
+                   (int) image->colormap[i].opacity);
+            }
+          }
+
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "      image->colors=%d",(int) image->colors);
+
+          if (image->colors <= 256)
+            {
+              if (image->matte != MagickFalse)
+                {
+                  /* Sometimes SetImageType(image,PaletteMatteType)
+                   * loses the transparency.  We work around this
+                   * problem by making a trial clone, setting it
+                   * to PaletteMatteType, and counting the colors
+                   * to see if any were lost.  If not, we also
+                   * set the image to PaletteMatteType.  Otherwise
+                   * we return without changing it.  In any case
+                   * we destroy the clone.  This workaround is no
+                   * doubt costly.
+                   */
+
+                  ExceptionInfo
+                    *exception;
+
+                  Image
+                    *clone_image;
+
+                  exception=(&image->exception);
+        
+                  clone_image=CloneImage(image, 0, 0, MagickTrue, exception);
+
+                  image_colors=GetNumberColors(clone_image,(FILE *) NULL,
+                     &clone_image->exception);
+
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "      Before SetImageType, clone_colors=%d",
+                         (int) image_colors);
+
+                  (void) SetImageType(clone_image,PaletteMatteType);
+
+                  image_colors=GetNumberColors(clone_image,(FILE *) NULL,
+                     &clone_image->exception);
+
+                  (void) DestroyImage(clone_image);
+
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "      After SetImageType, clone_colors=%d",
+                         (int) image_colors);
+
+                  if (image_colors == image->colors)
+                    {
+                      (void) SetImageType(image,PaletteMatteType);
+
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "      After SetImageType, image_colors=%d",
+                          (int) image->colors);
+
+                      image_colors = image->colors;
+
+                      (void) SyncImage(image);
+                    }
+                }
+
+              else
+                {
+                  (void) SetImageType(image,PaletteType);
+                  (void) SyncImage(image);
+                }
+            }
+
+          if (image->colormap != NULL)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "       i     (red,green,blue,opacity)");
+
+            for (i=0; i < (ssize_t) image->colors; i++)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "      %d  (%d,%d,%d,%d)",
+                   (int) i,
+                   (int) image->colormap[i].red,
+                   (int) image->colormap[i].green,
+                   (int) image->colormap[i].blue,
+                   (int) image->colormap[i].opacity);
+            }
+          }
+
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Exit BUILD_PALETTE:");
+        }
+    }
+#endif /* PNG_BUILD_PALETTE */
+
   image_depth=image->depth;
 
   quantum_info = (QuantumInfo *) NULL;
   number_colors=0;
   image_colors=image->colors;
   image_matte=image->matte;
-
-#ifdef PNG_BUILD_PALETTE
-  if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
-      (mng_info->write_png_colortype == 0 && image->depth <= 8))
-    {
-      /*
-        Sometimes we get DirectClass images that have 256 colors or fewer.
-        This code will convert them to PseudoClass and build a colormap.
-      */
-      if (image->storage_class != PseudoClass)
-        {
-          image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-          if (image->colors <= 256)
-            {
-              image->colors=0;
-
-              if (image->matte != MagickFalse)
-                (void) SetImageType(image,PaletteMatteType);
-
-              else
-                (void) SetImageType(image,PaletteType);
-            }
-        }
-    }
-#endif
 
   mng_info->IsPalette=image->storage_class == PseudoClass &&
     image_colors <= 256;
@@ -7571,7 +7608,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    Setting up bKGd chunk");
+         "    Setting up bKGD chunk (1)");
   if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
          "    ping_bit_depth=%d",ping_bit_depth);
@@ -7765,7 +7802,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
           if (logging != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "  Selecting PNG colortype");
+             "  Selecting PNG colortype:");
 
           ping_color_type=(png_byte) ((matte == MagickTrue)?
           PNG_COLOR_TYPE_RGB_ALPHA:PNG_COLOR_TYPE_RGB);
@@ -7892,6 +7929,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "    image_depth: %.20g",(double) image_depth);
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+
         "    image->depth: %.20g",(double) image->depth);
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7936,7 +7974,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         for (x=(ssize_t) image->columns-1; x >= 0; x--)
         {
           if (p->opacity != OpaqueOpacity)
+          {
             break;
+          }
           p++;
         }
 
@@ -8036,6 +8076,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             if (x >= 0)
                break;
           }
+
 
           if (x >= 0)
             ping_have_tRNS = MagickFalse;
@@ -8349,7 +8390,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "  Setting up bKGD chunk");
+             "  Setting up bKGD chunk (2)");
          ping_have_bKGD = MagickTrue;
 
          ping_trans_color.gray=(png_uint_16) (QuantumScale*(maxval*
@@ -8369,6 +8410,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             break;
 
         ping_background.index=(png_byte) i;
+
+        if (i == (ssize_t) number_colors)
+        {
+          if (i < 255)
+          {
+            number_colors++;
+            image_colors++;
+          }
+        }
 
         if (logging)
           {
@@ -8390,7 +8440,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           }
 
         else
-          ping_have_bKGD = MagickFalse;
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      No room in PLTE to add bKGD color");
+            ping_have_bKGD = MagickFalse;
+          }
       }
 
   if (logging != MagickFalse)
@@ -9416,15 +9470,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_colortype = /* 3 */ 4;
       mng_info->write_png_depth = 8;
       image->depth = 8;
-#if 0 /* this does not work */
-      if (image->matte == MagickTrue)
-        (void) SetImageType(image,PaletteMatteType);
-
-      else
-        (void) SetImageType(image,PaletteType);
-
-      (void) SyncImage(image);
-#endif
     }
 
   if (mng_info->write_png24)
