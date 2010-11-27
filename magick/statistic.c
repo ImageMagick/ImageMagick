@@ -787,7 +787,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       else if ( result >= 1.0 )
         result = bias + range/2.0;
       else
-        result=range/MagickPI*asin((double)result) + bias;
+        result=(MagickRealType) (range/MagickPI*asin((double) result)+bias);
       result *= QuantumRange;
       break;
     }
@@ -801,7 +801,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       center = ( number_parameters >= 2 ) ? parameters[1] : 0.5;
       range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0;
       bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
-      result = MagickPI*slope*(QuantumScale*pixel - center);
+      result=(MagickRealType) (MagickPI*slope*(QuantumScale*pixel-center));
       result=(MagickRealType) (QuantumRange*(range/MagickPI*atan((double)
                   result) + bias ) );
       break;
