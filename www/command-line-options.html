@@ -131,7 +131,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Atlas Multimedia" href="http://www.atlas-multimedia.de/">Atlas Multimedia</a><!-- 20110101000025 tanju.temurbas-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -150,9 +150,6 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
-</div>
-<div  class="sponsor">
-   <a title="Sponsor: Druckerei Online" href="http://www.allesdruck.de">Druckerei Online</a><!-- 201012011200 allesdruck.de-->
 </div>
 </div>
 </div>
@@ -4161,16 +4158,17 @@ style="background-color: #bdbdbd;">this shade of gray</span>.</p>
  MAE     mean absolute error (normalized), average channel error distance
  MEPP    mean error per pixel (normalized mean error, normalized peak error)
  MSE     mean error squared, average of the channel error squared
+  NCC     normalized cross correlation
  PAE     peak absolute (normalize peak absolute)
  PSNR    peak signal to noise ratio
  RMSE    root mean squared (normalized root mean squared)
 </pre>
 
-<p>The '<kbd>AE</kbd>' or absolute count of pixels that are different, can be
-controlled using a <a href="#fuzz" >-fuzz</a> factor to ignore pixels which
-only changed by a small amount.  The '<kbd>PAE</kbd>' can be used to find the
+<p>Control the '<kbd>AE</kbd>', or absolute count of pixels that are different,
+with the <a href="#fuzz" >-fuzz</a> factor (ignore pixels which
+only changed by a small amount).  Use '<kbd>PAE</kbd>' to find the
 size of the <a href="#fuzz" >-fuzz</a> factor needed to make all pixels
-'similar', while '<kbd>MAE</kbd>' can be used to find out the factor needed
+'similar', while '<kbd>MAE</kbd>' dtermines the factor needed
 for about half the pixels to be similar. </p>
 
 <p>The '<kbd>MEPP</kbd>' metric returns three different metrics
