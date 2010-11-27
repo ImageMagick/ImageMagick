@@ -7333,7 +7333,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Enter BUILD_PALETTE:");
 
-          if (image->colormap != NULL)
+          if (logging != MagickFalse && image->colormap != NULL)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "      i     (red,green,blue,opacity)");
@@ -7364,8 +7364,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    * to see if any were lost.  If not, we also
                    * set the image to PaletteMatteType.  Otherwise
                    * we return without changing it.  In any case
-                   * we destroy the clone.  This workaround is no
-                   * doubt costly.
+                   * we destroy the clone.
                    */
 
                   ExceptionInfo
@@ -7417,7 +7416,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 }
             }
 
-          if (image->colormap != NULL)
+          if (logging != MagickFalse && image->colormap != NULL)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "       i     (red,green,blue,opacity)");
@@ -7607,11 +7606,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   if (logging != MagickFalse)
-     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    Setting up bKGD chunk (1)");
-  if (logging != MagickFalse)
-     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    ping_bit_depth=%d",ping_bit_depth);
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Setting up bKGD chunk (1)");
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    ping_bit_depth=%d",ping_bit_depth);
+    }
 
   ping_have_bKGD = MagickTrue;
 
@@ -7877,9 +7878,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 "image has 0 colors", "`%s'","");
            }
 
-              if (logging != MagickFalse)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  SyncImage.2.");
+           if (logging != MagickFalse)
+               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  SyncImage.2.");
 
            while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
              ping_bit_depth <<= 1;
@@ -8200,7 +8201,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               {
                 png_set_PLTE(ping,ping_info,NULL,0);
 
-                if (logging)
+                if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Setting up empty PLTE chunk");
               }
@@ -8220,7 +8221,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   palette[i].blue=ScaleQuantumToChar(image->colormap[i].blue);
                 }
 
-                if (logging)
+                if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Setting up PLTE chunk with %d colors",
                     (int) number_colors);
@@ -8321,7 +8322,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     mng_info->IsPalette=MagickFalse;
                     (void) SyncImage(image);
 
-                    if (logging)
+                    if (logging != MagickFalse)
                       (void) LogMagickEvent(CoderEvent, GetMagickModule(),
                         "    Cannot write image as indexed PNG, writing RGBA.");
 
@@ -8391,6 +8392,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Setting up bKGD chunk (2)");
+
          ping_have_bKGD = MagickTrue;
 
          ping_trans_color.gray=(png_uint_16) (QuantumScale*(maxval*
@@ -8420,7 +8422,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           }
         }
 
-        if (logging)
+        if (logging != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Setting up bKGD chunk with index=%d",(int) i);
@@ -8429,7 +8431,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (i < (ssize_t) number_colors)
           {
             ping_have_bKGD = MagickTrue;
-            if (logging)
+
+            if (logging != MagickFalse)
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "     background   =(%d,%d,%d)",
@@ -8441,8 +8444,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         else
           {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "      No room in PLTE to add bKGD color");
+            if (logging != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "      No room in PLTE to add bKGD color");
             ping_have_bKGD = MagickFalse;
           }
       }
@@ -8609,6 +8613,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Setting up gAMA chunk");
+
           png_set_gAMA(ping,ping_info,image->gamma);
         }
 
@@ -8633,6 +8638,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (logging != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "  Setting up cHRM chunk");
+
            png_set_cHRM(ping,ping_info,wp.x,wp.y,rp.x,rp.y,gp.x,gp.y,
                bp.x,bp.y);
        }
@@ -8720,7 +8726,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       png_set_PLTE(ping,ping_info,palette,(int) number_colors);
 
-      if (logging)
+      if (logging != MagickFalse)
         {
           for (i=0; i< (ssize_t) number_colors; i++)
           {
@@ -8771,7 +8777,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (ping_have_tRNS != MagickFalse && ping_color_type < 4)
     {
-      if (logging)
+      if (logging != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Calling png_set_tRNS with num_trans=%d",ping_num_trans);
@@ -8790,7 +8796,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   0,
                   &ping_trans_color);
 
-           if (logging)
+           if (logging != MagickFalse)
              {
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "     background   =(%d,%d,%d)",
@@ -8854,7 +8860,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       default:
         break;
     }
-  if (logging)
+
+  if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Writing PNG image data");
@@ -8914,8 +8921,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
 
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Writing row of pixels (0)");
+          if (logging != MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Writing row of pixels (0)");
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
 
@@ -8948,7 +8956,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                *(png_pixels+i)=(unsigned char) ((*(png_pixels+i) > 127) ?
                       255 : 0);
 
-          if (logging && y == 0)
+          if (logging != MagickFalse && y == 0)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    Writing row of pixels (1)");
 
@@ -8992,21 +9000,22 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                   quantum_info,RedQuantum,png_pixels,&image->exception);
 
-              if (logging && y == 0)
+              if (logging != MagickFalse && y == 0)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                      "    Writing GRAY PNG pixels (2)");
             }
 
           else /* PNG_COLOR_TYPE_GRAY_ALPHA */
             {
-              if (logging && y == 0)
+              if (logging != MagickFalse && y == 0)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "    Writing GRAY_ALPHA PNG pixels (2)");
 
               (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,GrayAlphaQuantum,png_pixels,&image->exception);
             }
-          if (logging && y == 0)
+
+          if (logging != MagickFalse && y == 0)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    Writing row of pixels (2)");
 
@@ -9049,7 +9058,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                   quantum_info,GrayAlphaQuantum,png_pixels,&image->exception);
 
-                if (logging && y == 0)
+                if (logging != MagickFalse && y == 0)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "    Writing GRAY_ALPHA PNG pixels (3)");
               }
@@ -9062,7 +9071,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,RGBQuantum,png_pixels,&image->exception);
 
-            if (logging && y == 0)
+            if (logging != MagickFalse && y == 0)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    Writing row of pixels (3)");
 
@@ -9077,7 +9086,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if ((ping_color_type != PNG_COLOR_TYPE_GRAY) &&
               (ping_color_type != PNG_COLOR_TYPE_GRAY_ALPHA))
             {
-              if (logging)
+              if (logging != MagickFalse)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  pass %d, Image Is not GRAY or GRAY_ALPHA",pass);
 
@@ -9086,7 +9095,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             }
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            if (logging && y == 0)
+            if (logging != MagickFalse && y == 0)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  pass %d, Image Is RGB, 16-bit GRAY, or GRAY_ALPHA",pass);
 
@@ -9101,7 +9110,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             else if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
               {
-                if (logging && y == 0)
+                if (logging != MagickFalse && y == 0)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "  Writing GRAY_ALPHA PNG pixels (4)");
 
@@ -9113,7 +9122,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,IndexQuantum,png_pixels,&image->exception);
 
-              if (logging && y <= 2)
+              if (logging != MagickFalse && y <= 2)
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Writing row of pixels (4)");
