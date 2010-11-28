@@ -912,6 +912,7 @@ static const OptionInfo
     { "Log", (ssize_t) LogEvaluateOperator, MagickFalse },
     { "Max", (ssize_t) MaxEvaluateOperator, MagickFalse },
     { "Mean", (ssize_t) MeanEvaluateOperator, MagickFalse },
+    { "Median", (ssize_t) MedianEvaluateOperator, MagickFalse },
     { "Min", (ssize_t) MinEvaluateOperator, MagickFalse },
     { "MultiplicativeNoise", (ssize_t) MultiplicativeNoiseEvaluateOperator, MagickFalse },
     { "Multiply", (ssize_t) MultiplyEvaluateOperator, MagickFalse },

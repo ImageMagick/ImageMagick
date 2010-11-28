@@ -1,3 +1,6 @@
+2010-11-27  6.6.6-0 Cristy  <quetzlzacatenango@image...>
+  * Add support for -evaluate-sequence median.
+
 2010-11-26  6.6.6-0 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed two more cases where the PNG encoder lost transparency (reference
 http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
