@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -192,49 +192,32 @@
 </p>
 </div>
 
-<p class="warn">[<em>A quick word about our formatting of commands:</em> The second example above is long enough that the command must be written across several lines, so we have formatted it for clarity by inserting backslashes (<kbd>\</kbd>). The backslash is the Unix <em>line continuation</em> character. In the Windows shell, a carat character (<kbd>^</kbd>) may be used for line continuation. We will use the Unix style on these web pages, as above. Sometimes, however, the lines may be wrapped by your browser if the browser window is small enough, but the command lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <em>parentheses</em> that are <em>escaped</em> above using the backslash are not escaped in Windows. There are some other differences between Windows and Unix (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise.]</p>
+<p class="warn">[ <em>A quick word about our formatting of commands:</em> The second example above is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<kbd>\</kbd>). The backslash is the Unix <em>line continuation</em> character. In the Windows shell, use a carat character (<kbd>^</kbd>) for line continuation. We use the Unix style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <em>parentheses</em> that are <em>escaped</em> above using the backslash are not escaped in Windows. There are some other differences between Windows and Unix (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. ]</p>
 
-<p>Our final example is a shaded cylinder that shows the percent completion of a task:</p>
-
+<p>Here we show percent completion of a task as a shaded cylinder:</p>
 
 <div class="image">
 <p>
-  <img src="../images/cylinder_shaded_2.png" width="320" height="200" alt="Shaded Cylinder" /></a>
+  <img src="../images/cylinder_shaded.png" width="320" height="200" alt="Shaded Cylinder" /></a>
 </p>
 </div>
 
-<p>And here is the command that generates the shaded cylinder:</p>
+<p>Given the complexity of the rendering, you might be surprised it is accomplished by a single command-line:</p>
 
-<div class="viewport">
 <pre class="text">
-    convert -size 320x90 -stroke snow4 \
-      \( xc:none \
-         -fill chartreuse3 -draw 'roundrectangle 16,  5, 180, 85  20,40' \
-         gradient:chartreuse-chartreuse4 -compose ATop -composite -compose Over \
-         -fill chartreuse2 -draw 'roundrectangle 140, 5, 180, 85  20,40' \
-      \) \
-      \( xc:none    -draw 'roundrectangle 16,  5, 304, 85  20,40' \
-         gradient:'none-graya(0,.4)' -compose In -composite -compose Over \
-         \( xc:none -draw 'roundrectangle 264, 5, 304, 85  20,40' \) \
-         -compose DstOut -composite -compose Over \
-         -fill 'graya(0,.07)' -draw 'roundrectangle 264, 5, 304, 85  20,40' \
-         -strokewidth 2  -draw 'roundrectangle 16,  5, 304, 85  20,40' \
-      \) \
-      \( xc:none -fill white -draw 'roundrectangle 16,  5, 304, 85  20,40' \
-         \( +clone -background snow4 -shadow 80x3+3+3 \) \
-      \) \
-      -insert 0 -insert 1 -background none -layers merge \
-      \
-      \( -font Helvetica -pointsize 80 \
-         -strokewidth 1 -fill red label:'50 %' -trim +repage  \
-         \( +clone -background firebrick3 -shadow 80x3+3+3 \
-         \) +swap -background none -layers merge \) \
-      -insert 0 -gravity center -append \
-      -background white -gravity center -extent 320x200 \
-      cylinder_shaded_2.png
+convert -size 320x90 xc:none -stroke snow4 -size 1x90 -tile gradient:white-snow4 \
+  -draw 'roundrectangle 16, 5, 304, 85 20,40' +tile -fill snow \
+  -draw 'roundrectangle 264, 5, 304, 85  20,40' -tile gradient:chartreuse-green \
+  -draw 'roundrectangle 16,  5, 180, 85  20,40' -tile gradient:chartreuse1-chartreuse3 \
+  -draw 'roundrectangle 140, 5, 180, 85  20,40' +tile -fill none \
+  -draw 'roundrectangle 264, 5, 304, 85 20,40' -strokewidth 2 \
+  -draw 'roundrectangle 16, 5, 304, 85 20,40' \( +clone -background snow4 \
+  -shadow 80x3+3+3 \) +swap -background none -layers merge \( +size -font Helvetica \
+  -pointsize 90 -strokewidth 1 -fill red label:'50 %' -trim +repage \( +clone \
+  -background firebrick3 -shadow 80x3+3+3 \) +swap -background none -layers merge \) \
+  -insert 0 -gravity center -append -background white -gravity center -extent 320x200 \
+  cylinder_shaded.png
 </pre>
-</div>
-
 
 <p>In the next sections we dissect the anatomy of the ImageMagick command line.  Hopefully, after carefully reading and better understanding how the command line works, you should be able to accomplish complex image-processing tasks without resorting to the sometimes daunting <a href="../www/api.html">program interfaces</a>.</p>
 
