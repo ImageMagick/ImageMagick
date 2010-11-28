@@ -2221,7 +2221,6 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AUTOTRACE_CFLAGS = @AUTOTRACE_CFLAGS@
 AUTOTRACE_LIBS = @AUTOTRACE_LIBS@
-AVIDecodeDelegate = @AVIDecodeDelegate@
 AWK = @AWK@
 AutotraceDecodeDelegate = @AutotraceDecodeDelegate@
 BIN_DIR = @BIN_DIR@
