@@ -152,7 +152,7 @@ static const CoderMapInfo
     { "M4V", "MPEG" },
     { "M", "RAW" },
     { "MNG", "PNG" },
-    { "MOV", "PNG" },
+    { "MOV", "MPEG" },
     { "MP4", "MPEG" },
     { "MPG", "MPEG" },
     { "MPRI", "MPR" },
