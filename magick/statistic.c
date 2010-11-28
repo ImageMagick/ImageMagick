@@ -145,7 +145,8 @@ static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
   return(pixels);
 }
 
-static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
+static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
+  const size_t number_images)
 {
   register ssize_t
     i,
@@ -155,6 +156,7 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
     **pixels;
 
   size_t
+    length,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
@@ -165,11 +167,14 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image)
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(image->columns,
+    length=image->columns;
+    if (length < number_images)
+      length=number_images;
+    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(length,
       sizeof(**pixels));
     if (pixels[i] == (MagickPixelPacket *) NULL)
       return(DestroyPixelThreadSet(pixels));
-    for (j=0; j < (ssize_t) image->columns; j++)
+    for (j=0; j < (ssize_t) length; j++)
       GetMagickPixelPacket(image,&pixels[i][j]);
   }
   return(pixels);
@@ -181,6 +186,30 @@ static inline double MagickMax(const double x,const double y)
     return(x);
   return(y);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static int IntensityCompare(const void *x,const void *y)
+{
+  const MagickPixelPacket
+    *color_1,
+    *color_2;
+
+  int
+    intensity;
+
+  color_1=(const MagickPixelPacket *) x;
+  color_2=(const MagickPixelPacket *) y;
+  intensity=(int) MagickPixelIntensity(color_2)-
+    (int) MagickPixelIntensity(color_1);
+  return(intensity);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static inline double MagickMin(const double x,const double y)
 {
@@ -279,6 +308,11 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
       break;
     }
     case MeanEvaluateOperator:
+    {
+      result=(MagickRealType) (pixel+value);
+      break;
+    }
+    case MedianEvaluateOperator:
     {
       result=(MagickRealType) (pixel+value);
       break;
@@ -441,7 +475,8 @@ MagickExport Image *EvaluateImages(const Image *images,
       evaluate_image=DestroyImage(evaluate_image);
       return((Image *) NULL);
     }
-  evaluate_pixels=AcquirePixelThreadSet(images);
+  number_images=GetImageListLength(images);
+  evaluate_pixels=AcquirePixelThreadSet(images,number_images);
   if (evaluate_pixels == (MagickPixelPacket **) NULL)
     {
       evaluate_image=DestroyImage(evaluate_image);
@@ -456,127 +491,236 @@ MagickExport Image *EvaluateImages(const Image *images,
   progress=0;
   GetMagickPixelPacket(images,&zero);
   random_info=AcquireRandomInfoThreadSet();
-  number_images=GetImageListLength(images);
   evaluate_view=AcquireCacheView(evaluate_image);
+  if (op == MedianEvaluateOperator)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic) shared(progress,status)
 #endif
-  for (y=0; y < (ssize_t) evaluate_image->rows; y++)
-  {
-    CacheView
-      *image_view;
-
-    const Image
-      *next;
-
-    const int
-      id = GetOpenMPThreadId();
-
-    MagickPixelPacket
-      pixel;
-
-    register IndexPacket
-      *restrict evaluate_indexes;
-
-    register ssize_t
-      i,
-      x;
-
-    register MagickPixelPacket
-      *evaluate_pixel;
-
-    register PixelPacket
-      *restrict q;
-
-    if (status == MagickFalse)
-      continue;
-    q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,evaluate_image->columns,1,
-      exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
-    pixel=zero;
-    evaluate_pixel=evaluate_pixels[id];
-    for (x=0; x < (ssize_t) evaluate_image->columns; x++)
-      evaluate_pixel[x]=zero;
-    next=images;
-    for (i=0; i < (ssize_t) number_images; i++)
+    for (y=0; y < (ssize_t) evaluate_image->rows; y++)
     {
-      register const IndexPacket
-        *indexes;
+      CacheView
+        *image_view;
 
-      register const PixelPacket
-        *p;
+      const Image
+        *next;
 
-      image_view=AcquireCacheView(next);
-      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
+      const int
+        id = GetOpenMPThreadId();
+
+      MagickPixelPacket
+        pixel;
+
+      register IndexPacket
+        *restrict evaluate_indexes;
+
+      register MagickPixelPacket
+        *evaluate_pixel;
+
+      register PixelPacket
+        *restrict q;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,evaluate_image->columns,
+        1,exception);
+      if (q == (PixelPacket *) NULL)
         {
-          image_view=DestroyCacheView(image_view);
-          break;
+          status=MagickFalse;
+          continue;
         }
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (x=0; x < (ssize_t) next->columns; x++)
-      {
-        evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],p->red,
-          i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].red);
-        evaluate_pixel[x].green=ApplyEvaluateOperator(random_info[id],p->green,
-          i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].green);
-        evaluate_pixel[x].blue=ApplyEvaluateOperator(random_info[id],p->blue,
-          i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].blue);
-        evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
-          p->opacity,i == 0 ? AddEvaluateOperator : op,
-          evaluate_pixel[x].opacity);
-        if (evaluate_image->colorspace == CMYKColorspace)
-          evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
-            indexes[x],i == 0 ? AddEvaluateOperator : op,
-            evaluate_pixel[x].index);
-        p++;
-      }
-      image_view=DestroyCacheView(image_view);
-      next=GetNextImageInList(next);
-    }
-    if (op == MeanEvaluateOperator)
+      evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
+      pixel=zero;
+      evaluate_pixel=evaluate_pixels[id];
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
-        evaluate_pixel[x].red/=number_images;
-        evaluate_pixel[x].green/=number_images;
-        evaluate_pixel[x].blue/=number_images;
-        evaluate_pixel[x].opacity/=number_images;
-        evaluate_pixel[x].index/=number_images;
+        register ssize_t
+          i;
+
+        for (i=0; i < (ssize_t) number_images; i++)
+          evaluate_pixel[i]=zero;
+        next=images;
+        for (i=0; i < (ssize_t) number_images; i++)
+        {
+          register const IndexPacket
+            *indexes;
+
+          register const PixelPacket
+            *p;
+
+          image_view=AcquireCacheView(next);
+          p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
+          if (p == (const PixelPacket *) NULL)
+            {
+              image_view=DestroyCacheView(image_view);
+              break;
+            }
+          indexes=GetCacheViewVirtualIndexQueue(image_view);
+          evaluate_pixel[i].red=ApplyEvaluateOperator(random_info[id],
+            p->red,op,evaluate_pixel[i].red);
+          evaluate_pixel[i].green=ApplyEvaluateOperator(random_info[id],
+            p->green,op,evaluate_pixel[i].green);
+          evaluate_pixel[i].blue=ApplyEvaluateOperator(random_info[id],
+            p->blue,op,evaluate_pixel[i].blue);
+          evaluate_pixel[i].opacity=ApplyEvaluateOperator(random_info[id],
+            p->opacity,op,evaluate_pixel[i].opacity);
+          if (evaluate_image->colorspace == CMYKColorspace)
+            evaluate_pixel[i].index=ApplyEvaluateOperator(random_info[id],
+              *indexes,op,evaluate_pixel[i].index);
+          image_view=DestroyCacheView(image_view);
+          next=GetNextImageInList(next);
+        }
+        qsort((void *) evaluate_pixel,number_images,sizeof(*evaluate_pixel),
+          IntensityCompare);
+        q->red=ClampToQuantum(evaluate_pixel[i/2].red);
+        q->green=ClampToQuantum(evaluate_pixel[i/2].green);
+        q->blue=ClampToQuantum(evaluate_pixel[i/2].blue);
+        if (evaluate_image->matte == MagickFalse)
+          q->opacity=ClampToQuantum(evaluate_pixel[i/2].opacity);
+        else
+          q->opacity=ClampToQuantum(QuantumRange-evaluate_pixel[i/2].opacity);
+        if (evaluate_image->colorspace == CMYKColorspace)
+          evaluate_indexes[i]=ClampToQuantum(evaluate_pixel[i/2].index);
+        q++;
       }
-    for (x=0; x < (ssize_t) evaluate_image->columns; x++)
-    {
-      q->red=ClampToQuantum(evaluate_pixel[x].red);
-      q->green=ClampToQuantum(evaluate_pixel[x].green);
-      q->blue=ClampToQuantum(evaluate_pixel[x].blue);
-      if (evaluate_image->matte == MagickFalse)
-        q->opacity=ClampToQuantum(evaluate_pixel[x].opacity);
-      else
-        q->opacity=ClampToQuantum(QuantumRange-evaluate_pixel[x].opacity);
-      if (evaluate_image->colorspace == CMYKColorspace)
-        evaluate_indexes[x]=ClampToQuantum(evaluate_pixel[x].index);
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (images->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
+      if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
+        status=MagickFalse;
+      if (images->progress_monitor != (MagickProgressMonitor) NULL)
+        {
+          MagickBooleanType
+            proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_EvaluateImages)
+          #pragma omp critical (MagickCore_EvaluateImages)
 #endif
-        proceed=SetImageProgress(images,EvaluateImageTag,progress++,
-          evaluate_image->rows);
-        if (proceed == MagickFalse)
+          proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+            evaluate_image->rows);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
+        }
+    }
+  else
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+#endif
+    for (y=0; y < (ssize_t) evaluate_image->rows; y++)
+    {
+      CacheView
+        *image_view;
+
+      const Image
+        *next;
+
+      const int
+        id = GetOpenMPThreadId();
+
+      MagickPixelPacket
+        pixel;
+
+      register IndexPacket
+        *restrict evaluate_indexes;
+
+      register ssize_t
+        i,
+        x;
+
+      register MagickPixelPacket
+        *evaluate_pixel;
+
+      register PixelPacket
+        *restrict q;
+
+      if (status == MagickFalse)
+        continue;
+      q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,evaluate_image->columns,
+        1,exception);
+      if (q == (PixelPacket *) NULL)
+        {
           status=MagickFalse;
+          continue;
+        }
+      evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
+      pixel=zero;
+      evaluate_pixel=evaluate_pixels[id];
+      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        evaluate_pixel[x]=zero;
+      next=images;
+      for (i=0; i < (ssize_t) number_images; i++)
+      {
+        register const IndexPacket
+          *indexes;
+
+        register const PixelPacket
+          *p;
+
+        image_view=AcquireCacheView(next);
+        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          {
+            image_view=DestroyCacheView(image_view);
+            break;
+          }
+        indexes=GetCacheViewVirtualIndexQueue(image_view);
+        for (x=0; x < (ssize_t) next->columns; x++)
+        {
+          evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],
+            p->red,i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].red);
+          evaluate_pixel[x].green=ApplyEvaluateOperator(random_info[id],
+            p->green,i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].green);
+          evaluate_pixel[x].blue=ApplyEvaluateOperator(random_info[id],
+            p->blue,i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].blue);
+          evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
+            p->opacity,i == 0 ? AddEvaluateOperator : op,
+            evaluate_pixel[x].opacity);
+          if (evaluate_image->colorspace == CMYKColorspace)
+            evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
+              indexes[x],i == 0 ? AddEvaluateOperator : op,
+              evaluate_pixel[x].index);
+          p++;
+        }
+        image_view=DestroyCacheView(image_view);
+        next=GetNextImageInList(next);
       }
-  }
+      if (op == MeanEvaluateOperator)
+        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        {
+          evaluate_pixel[x].red/=number_images;
+          evaluate_pixel[x].green/=number_images;
+          evaluate_pixel[x].blue/=number_images;
+          evaluate_pixel[x].opacity/=number_images;
+          evaluate_pixel[x].index/=number_images;
+        }
+      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+      {
+        q->red=ClampToQuantum(evaluate_pixel[x].red);
+        q->green=ClampToQuantum(evaluate_pixel[x].green);
+        q->blue=ClampToQuantum(evaluate_pixel[x].blue);
+        if (evaluate_image->matte == MagickFalse)
+          q->opacity=ClampToQuantum(evaluate_pixel[x].opacity);
+        else
+          q->opacity=ClampToQuantum(QuantumRange-evaluate_pixel[x].opacity);
+        if (evaluate_image->colorspace == CMYKColorspace)
+          evaluate_indexes[x]=ClampToQuantum(evaluate_pixel[x].index);
+        q++;
+      }
+      if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
+        status=MagickFalse;
+      if (images->progress_monitor != (MagickProgressMonitor) NULL)
+        {
+          MagickBooleanType
+            proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp critical (MagickCore_EvaluateImages)
+#endif
+          proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+            evaluate_image->rows);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
+        }
+    }
   evaluate_view=DestroyCacheView(evaluate_view);
   evaluate_pixels=DestroyPixelThreadSet(evaluate_pixels);
   random_info=DestroyRandomInfoThreadSet(random_info);
