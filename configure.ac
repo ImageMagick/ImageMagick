@@ -2704,7 +2704,6 @@ AC_MSG_RESULT([-------------------------------------------------------------])
 AC_MSG_CHECKING([for ImageMagick delegate programs])
 AC_MSG_RESULT([])
 AutotraceDecodeDelegateDefault='autotrace'
-AVIDecodeDelegateDefault='mplayer'
 BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
@@ -2759,7 +2758,6 @@ ZipDelegateDefault='gzip'
 
 # Search for delegates
 AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$AutotraceDecodeDelegateDefault")
-AC_PATH_PROG(AVIDecodeDelegate, "$AVIDecodeDelegateDefault", "$AVIDecodeDelegateDefault")
 AC_PATH_PROG(BlenderDecodeDelegate, "$BlenderDecodeDelegateDefault", "$BlenderDecodeDelegateDefault")
 AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROG(BrowseDelegate, "$BrowseDelegateDefault" mozilla firefox netscape, "$BrowseDelegateDefault")
@@ -2825,7 +2823,6 @@ have_fig2dev='no'    ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefaul
 have_gs='no'         ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes'; fi
 have_hp2xx='no'      ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes'; fi
 have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes'; fi
-have_mplayer='no'; if test "$AVIDecodeDelegate" != "$AVIDecodeDelegateDefault" ; then have_mplayer='yes'; fi
 have_mrsid='no'; if test "$MrSIDDecodeDelegate" != "$MrSIDDecodeDelegateDefault" ; then have_mrsid='yes'; fi
 have_pcl='no'        ; if test "$PCLDelegate" != "$PCLDelegateDefault"; then have_pcl='yes'; fi
 have_ppmtoilbm='no'  ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes'; fi
@@ -2933,7 +2930,6 @@ AC_SUBST(type_include_files)
 if test "$with_frozenpaths" != 'yes'; then
   # Re-set delegate definitions to default (no paths)
   AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
-  AVIDecodeDelegate="$AVIDecodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
@@ -2981,7 +2977,6 @@ fi
 
 # Delegate substitutions
 AC_SUBST(AutotraceDecodeDelegate)
-AC_SUBST(AVIDecodeDelegate)
 AC_SUBST(BlenderDecodeDelegate)
 AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
