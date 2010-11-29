@@ -18,7 +18,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16490).
   * The "-type Optimize" option is now deprecated.  If present, it is treated
     by the PNG encoder the same as if the type were undefined.  Optimization
-    is now always performed.
+    is now always performed.  No other formats used the "type Optimize" option.
   * Merged redundant code into LosslessReduceDepth() function in the PNG codec.
 
 2010-11-14  6.6.5-9 Cristy  <quetzlzacatenango@image...>
@@ -129,10 +129,10 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17194).
 
 2010-10-02  6.6.4-9 Anthony Thyssen <A.Thyssen@griffith...>
-  * Added sqrt(2) bluring default for Gaussian Filter if used as
+  * Added sqrt(2) blurring default for Gaussian Filter if used as
     a Cylindrical EWA filter.  This resulted removing the last aliasing
     issue that was present in tests for Gaussian EWA resampling. Of course
-    it is still a very blury filter for default use in EWA.
+    it is still a very blurry filter for default use in EWA.
   * Adjusted Variable Mapping Blur Composition so user arguments actual
     relate properly to the sigma of the blur for a maximum mapping value.
   * Fix horizon anti-alising for output-scaled perspective distortions.
