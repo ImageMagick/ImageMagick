@@ -1,3 +1,7 @@
+2010-12-01  6.6.6-1 Cristy  <quetzlzacatenango@image...>
+  * Affine multiplication reversed when translating (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17570).
+
 2010-11-26  6.6.6-2 Glenn Randers-Pehrson <glennrp@image...>
   * Revised the "c7x7b" and "c7x7w" ordered-dither maps to be complementary
     to each other.

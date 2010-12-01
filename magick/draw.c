@@ -2761,14 +2761,14 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     if ((affine.sx != 1.0) || (affine.rx != 0.0) || (affine.ry != 0.0) ||
         (affine.sy != 1.0) || (affine.tx != 0.0) || (affine.ty != 0.0))
       {
-        graphic_context[n]->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
-        graphic_context[n]->affine.rx=affine.rx*current.sx+affine.sy*current.rx;
-        graphic_context[n]->affine.ry=affine.sx*current.ry+affine.ry*current.sy;
-        graphic_context[n]->affine.sy=affine.rx*current.ry+affine.sy*current.sy;
-        graphic_context[n]->affine.tx=affine.sx*current.tx+affine.ry*current.ty+
-          affine.tx;
-        graphic_context[n]->affine.ty=affine.rx*current.tx+affine.sy*current.ty+
-          affine.ty;
+        graphic_context[n]->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+        graphic_context[n]->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+        graphic_context[n]->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+        graphic_context[n]->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+        graphic_context[n]->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
+          current.tx;
+        graphic_context[n]->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
+          current.ty;
       }
     if (primitive_type == UndefinedPrimitive)
       {
@@ -5153,8 +5153,8 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     }
   delta=2.0/MagickMax(stop.x,stop.y);
   step=(MagickRealType) (MagickPI/8.0);
-  if ((delta >= 0.0) && (delta < (MagickRealType) (MagickPI/8.0)))
-    step=(MagickRealType) (MagickPI/(4*(MagickPI/delta/2+0.5)));
+  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
+    step=MagickPI/(4*(MagickPI/delta/2+0.5));
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)
