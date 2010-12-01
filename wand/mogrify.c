@@ -1289,7 +1289,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Cycle an image colormap.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) CycleColormapImage(*image,StringToLong(argv[i+1]));
+            (void) CycleColormapImage(*image,(ssize_t) StringToLong(argv[i+1]));
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -2256,7 +2256,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((*p == ':') || (*p == ','))
               GetMagickToken(p,&p,token);
             if ((*p != '\0'))
-              iterations=StringToLong(p);
+              iterations=(ssize_t) StringToLong(p);
             kernel=AcquireKernelInfo(argv[i+2]);
             if (kernel == (KernelInfo *) NULL)
               {
@@ -7969,7 +7969,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
 
             index=0;
             if (*option != '+')
-              index=StringToLong(argv[i+1]);
+              index=(ssize_t) StringToLong(argv[i+1]);
             p=RemoveLastImageFromList(images);
             if (p == (Image *) NULL)
               {
