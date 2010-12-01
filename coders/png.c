@@ -7308,7 +7308,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-  if (image_depth == 16 && mng_info->write_png_colortype != 16)
+  if (image->depth == 16 && mng_info->write_png_colortype != 16)
     if (LosslessReduceDepthOK(image) != MagickFalse)
       image->depth = 8;
 #endif
