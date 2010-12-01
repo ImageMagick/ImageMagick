@@ -256,7 +256,7 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickSignature);
   assert(quantum_info->pixels != (unsigned char **) NULL);
-  extent=quantum_info->extent;
+  extent=(ssize_t) quantum_info->extent;
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
     if (quantum_info->pixels[i] != (unsigned char *) NULL)
       {

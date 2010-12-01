@@ -246,7 +246,7 @@ MagickExport XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
     node=child;
     if (node == (XMLTreeInfo *) NULL)
       break;
-    for (j=StringToLong(subnode)-1; j > 0; j--)
+    for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
     {
       node=GetXMLTreeOrdered(node);
       if (node == (XMLTreeInfo *) NULL)
@@ -835,7 +835,7 @@ MagickExport XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,const char *path)
     node=GetXMLTreeChild(node,tag);
     if (node == (XMLTreeInfo *) NULL)
       break;
-    for (j=StringToLong(subnode)-1; j > 0; j--)
+    for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
     {
       node=GetXMLTreeOrdered(node);
       if (node == (XMLTreeInfo *) NULL)

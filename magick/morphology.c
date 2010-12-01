@@ -1036,7 +1036,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           { /* Calculate a Gaussian,  OR positive half of a DoG */
             if ( sigma > MagickEpsilon )
               { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
-                B = 1.0/(Magick2PI*sigma*sigma);
+                B = (double) (1.0/(Magick2PI*sigma*sigma));
                 for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
                   for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
                       kernel->values[i] = exp(-((double)(u*u+v*v))*A)*B;
@@ -1053,7 +1053,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if ( sigma2 > MagickEpsilon )
               { sigma = sigma2;                /* simplify loop expressions */
                 A = 1.0/(2.0*sigma*sigma);
-                B = 1.0/(Magick2PI*sigma*sigma);
+                B = (double) (1.0/(Magick2PI*sigma*sigma));
                 for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
                   for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
                     kernel->values[i] -= exp(-((double)(u*u+v*v))*A)*B;
@@ -1066,7 +1066,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           { /* Calculate a Laplacian of a Gaussian - Or Mexician Hat */
             if ( sigma > MagickEpsilon )
               { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
-                B = 1.0/(MagickPI*sigma*sigma*sigma*sigma);
+                B = (double) (1.0/(MagickPI*sigma*sigma*sigma*sigma));
                 for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
                   for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
                     { R = ((double)(u*u+v*v))*A;
@@ -1139,7 +1139,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if ( sigma > MagickEpsilon )
           { sigma *= KernelRank;               /* simplify loop expressions */
             alpha = 1.0/(2.0*sigma*sigma);
-            beta= 1.0/(MagickSQ2PI*sigma );
+            beta= (double) (1.0/(MagickSQ2PI*sigma ));
             for ( u=-v; u <= v; u++) {
               kernel->values[(u+v)/KernelRank] +=
                               exp(-((double)(u*u))*alpha)*beta;
@@ -1411,7 +1411,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->values[3] = +MagickSQ2;
             kernel->values[5] = -MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
-            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
           case 12:
             kernel=ParseKernelArray("3: 1,2,1  0,0,0  1,2,1");
@@ -1421,7 +1421,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->values[1] = +MagickSQ2;
             kernel->values[7] = +MagickSQ2;
             CalcKernelMetaData(kernel);
-            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
           case 13:
             kernel=ParseKernelArray("3: 2,-1,0  -1,0,1  0,1,-2");
@@ -1431,7 +1431,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->values[0] = +MagickSQ2;
             kernel->values[8] = -MagickSQ2;
             CalcKernelMetaData(kernel);
-            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
           case 14:
             kernel=ParseKernelArray("3: 0,1,-2  -1,0,1  2,-1,0");
@@ -1441,7 +1441,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->values[2] = -MagickSQ2;
             kernel->values[6] = +MagickSQ2;
             CalcKernelMetaData(kernel);
-            ScaleKernelInfo(kernel, 1.0/2.0*MagickSQ2, NoValue);
+            ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
           case 15:
             kernel=ParseKernelArray("3: 0,-1,0  1,0,1  0,-1,0");
@@ -2490,7 +2490,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
       register ssize_t
         y;
 
-      size_t
+      ssize_t
         r;
 
       if (status == MagickFalse)

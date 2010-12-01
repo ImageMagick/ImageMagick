@@ -388,7 +388,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       }
       case '[':
       {
-        ssize_t
+        int
           c;
 
         pattern+=GetUTFOctets(pattern);
