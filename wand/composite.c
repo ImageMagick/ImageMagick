@@ -1387,7 +1387,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
               ThrowCompositeException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompositeInvalidArgumentException(option,argv[i]);
-            composite_options.stegano=StringToLong(argv[i])+1;
+            composite_options.stegano=(ssize_t) StringToLong(argv[i])+1;
             break;
           }
         if (LocaleCompare("stereo",option+1) == 0)

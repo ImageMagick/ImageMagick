@@ -74,8 +74,8 @@ static MagickBooleanType ScribbleImage (MagickWand *canvas)
   color=NewPixelWand();
   (void) PushDrawingWand(picasso);
   {
-    DrawSetViewbox(picasso,0,0,MagickGetImageWidth(canvas),
-      MagickGetImageHeight(canvas));
+    DrawSetViewbox(picasso,0,0,(ssize_t) MagickGetImageWidth(canvas),
+      (ssize_t) MagickGetImageHeight(canvas));
     DrawScale(picasso,1.101,1.08);
     DrawTranslate(picasso,-23.69,-22.97);
     DrawRotate(picasso,0);

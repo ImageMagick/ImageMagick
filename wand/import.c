@@ -1177,7 +1177,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
-            snapshots=StringToLong(argv[i]);
+            snapshots=(ssize_t) StringToLong(argv[i]);
             break;
           }
         if (LocaleCompare("strip",option+1) == 0)
