@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -167,7 +167,11 @@
 
 <div class="main">
 
-<ul><dt>2010-11-27  6.6.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<ul><dt>2010-12-01  6.6.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Affine multiplication reversed when translating (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17570).</li><br />
+<dt>2010-11-26  6.6.6-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Revised the "c7x7b" and "c7x7w" ordered-dither maps to be complementary    to each other.</li><br />
+<dt>2010-11-27  6.6.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Add support for -evaluate-sequence median.</li><br />
 <dt>2010-11-26  6.6.6-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Fixed two more cases where the PNG encoder lost transparency (reference<dt>http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17516).</dt>
@@ -178,7 +182,7 @@
   <li> Fix png coder compile error when HDRI is enabled.</li><br />
 <dt>2010-11-17  6.6.5-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Many of the problems with the PNG encoder have been fixed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16490).</li>
-  <li> The "-type Optimize" option is now deprecated.  If present, it is treated    by the PNG encoder the same as if the type were undefined.  Optimization    is now always performed.</li>
+  <li> The "-type Optimize" option is now deprecated.  If present, it is treated    by the PNG encoder the same as if the type were undefined.  Optimization    is now always performed.  No other formats used the "type Optimize" option.</li>
   <li> Merged redundant code into LosslessReduceDepth() function in the PNG codec.</li><br />
 <dt>2010-11-14  6.6.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> The splice option no longer throws spurious "pixels are not authentic"    exceptions.</li>
@@ -242,7 +246,7 @@
   <li> Fix memory assertion with --enable-embeddable (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17201).</li>
   <li> Don't permit access to pixels when pinging an image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17194).</li><br />
 <dt>2010-10-02  6.6.4-9 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Added sqrt(2) bluring default for Gaussian Filter if used as    a Cylindrical EWA filter.  This resulted removing the last aliasing    issue that was present in tests for Gaussian EWA resampling. Of course    it is still a very blury filter for default use in EWA.</li>
+  <li> Added sqrt(2) blurring default for Gaussian Filter if used as    a Cylindrical EWA filter.  This resulted removing the last aliasing    issue that was present in tests for Gaussian EWA resampling. Of course    it is still a very blurry filter for default use in EWA.</li>
   <li> Adjusted Variable Mapping Blur Composition so user arguments actual    relate properly to the sigma of the blur for a maximum mapping value.</li>
   <li> Fix horizon anti-alising for output-scaled perspective distortions.</li>
   <li> 'Bessel' filter is now offically and more accuritally named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</li><br />
