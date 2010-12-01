@@ -5153,8 +5153,8 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     }
   delta=2.0/MagickMax(stop.x,stop.y);
   step=(MagickRealType) (MagickPI/8.0);
-  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/(4*(MagickPI/delta/2+0.5));
+  if ((delta >= 0.0) && (delta < (MagickRealType) (MagickPI/8.0)))
+    step=(MagickRealType) (MagickPI/(4*(MagickPI/delta/2+0.5)));
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)

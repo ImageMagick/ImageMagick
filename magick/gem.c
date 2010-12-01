@@ -641,8 +641,8 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
         alpha=1.0;
       beta=GetPseudoRandomValue(random_info);
       gamma=sqrt(-2.0*log(alpha));
-      sigma=gamma*cos(2.0*MagickPI*beta);
-      tau=gamma*sin(2.0*MagickPI*beta);
+      sigma=gamma*cos((double) (2.0*MagickPI*beta));
+      tau=gamma*sin((double) (2.0*MagickPI*beta));
       noise=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
         TauGaussian*tau;
       break;
@@ -655,7 +655,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
         sigma=sqrt(-2.0*log(alpha));
       beta=GetPseudoRandomValue(random_info);
       noise=(double) pixel+pixel*SigmaMultiplicativeGaussian*sigma/2.0*
-        cos((2.0*MagickPI*beta));
+        cos((double) (2.0*MagickPI*beta));
       break;
     }
     case ImpulseNoise:
@@ -771,7 +771,7 @@ MagickExport size_t GetOptimalKernelWidth1D(const double radius,
   if (gamma <= MagickEpsilon)
     return(3UL);
   alpha=1.0/(2.0*gamma*gamma);
-  beta=1.0/(MagickSQ2PI*gamma);
+  beta=(double) (1.0/(MagickSQ2PI*gamma));
   for (width=5; ; )
   {
     normalize=0.0;
@@ -811,7 +811,7 @@ MagickExport size_t GetOptimalKernelWidth2D(const double radius,
   if (gamma <= MagickEpsilon)
     return(3UL);
   alpha=1.0/(2.0*gamma*gamma);
-  beta=1.0/(Magick2PI*gamma*gamma);
+  beta=(double) (1.0/(Magick2PI*gamma*gamma));
   for (width=5; ; )
   {
     normalize=0.0;

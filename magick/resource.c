@@ -1064,7 +1064,8 @@ MagickExport void ResourceComponentTerminus(void)
 %
 */
 
-static inline size_t MagickMin(const MagickSizeType x,const MagickSizeType y)
+static inline MagickSizeType MagickMin(const MagickSizeType x,
+  const MagickSizeType y)
 {
   if (x < y)
     return(x);

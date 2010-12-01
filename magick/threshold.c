@@ -992,7 +992,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
     map = DestroyThresholdMap(map);
     return(map);
   }
-  map->divisor = StringToLong(attr);
+  map->divisor = (ssize_t) StringToLong(attr);
   if ( map->divisor < 2 ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
       "XmlInvalidAttribute", "<levels divisor>, map \"%s\"", map_id);
@@ -1538,32 +1538,32 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
         if (levels.red) {
           t = (ssize_t) (QuantumScale*q->red*(levels.red*d+1.0));
           l = t/d;  t = t-l*d;
-          q->red=RoundToQuantum((l+(t >= threshold))*(double) QuantumRange/
-            levels.red);
+          q->red=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
+            (MagickRealType) QuantumRange/levels.red));
         }
         if (levels.green) {
           t = (ssize_t) (QuantumScale*q->green*(levels.green*d+1.0));
           l = t/d;  t = t-l*d;
-          q->green=RoundToQuantum((l+(t >= threshold))*(double) QuantumRange/
-            levels.green);
+          q->green=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
+            (MagickRealType) QuantumRange/levels.green));
         }
         if (levels.blue) {
           t = (ssize_t) (QuantumScale*q->blue*(levels.blue*d+1.0));
           l = t/d;  t = t-l*d;
-          q->blue=RoundToQuantum((l+(t >= threshold))*(double) QuantumRange/
-            levels.blue);
+          q->blue=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
+            (MagickRealType) QuantumRange/levels.blue));
         }
         if (levels.opacity) {
           t = (ssize_t) ((1.0-QuantumScale*q->opacity)*(levels.opacity*d+.01));
           l = t/d;  t = t-l*d;
-          q->opacity=RoundToQuantum((1.0-l-(t >= threshold))*(double)
-            QuantumRange/levels.opacity);
+          q->opacity=RoundToQuantum((MagickRealType) ((1.0-l-(t >= threshold))*
+            (MagickRealType) QuantumRange/levels.opacity));
         }
         if (levels.index) {
           t = (ssize_t) (QuantumScale*indexes[x]*(levels.index*d+1.0));
           l = t/d;  t = t-l*d;
-          indexes[x]=(IndexPacket) RoundToQuantum((l+(t>=threshold))*(double)
-            QuantumRange/levels.index);
+          indexes[x]=(IndexPacket) RoundToQuantum((MagickRealType) ((l+
+            (t>=threshold))*(MagickRealType) QuantumRange/levels.index));
         }
         q++;
       }

@@ -226,7 +226,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
         if ((size_t) (p->offset+4) > length)
           break;
         q=magic+p->offset;
-        value=(*q++);
+        value=(ssize_t) (*q++);
         if (p->mask == 0)
           {
             if (p->value == value)
@@ -249,12 +249,12 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
           endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
         if (endian == LSBEndian)
           {
-            value=(*q++);
+            value=(ssize_t) (*q++);
             value|=(*q++) << 8;
           }
         else
           {
-            value=(*q++) << 8;
+            value=(ssize_t) (*q++) << 8;
             value|=(*q++);
           }
         if (p->mask == 0)
@@ -279,14 +279,14 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
           endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
         if (endian == LSBEndian)
           {
-            value=(*q++);
+            value=(ssize_t) (*q++);
             value|=(*q++) << 8;
             value|=(*q++) << 16;
             value|=(*q++) << 24;
           }
         else
           {
-            value=(*q++) << 24;
+            value=(ssize_t) (*q++) << 24;
             value|=(*q++) << 16;
             value|=(*q++) << 8;
             value|=(*q++);
@@ -886,12 +886,12 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
         }
         token=DestroyString(token);
         if (mime_info->data_type != StringData)
-          mime_info->value=(size_t) strtoul((char *) mime_info->magic,
+          mime_info->value=(ssize_t) strtoul((char *) mime_info->magic,
             (char **) NULL,0);
       }
     attribute=GetXMLTreeAttribute(mime,"mask");
     if (attribute != (const char *) NULL)
-      mime_info->mask=(size_t) strtoul(attribute,(char **) NULL,0);
+      mime_info->mask=(ssize_t) strtoul(attribute,(char **) NULL,0);
     attribute=GetXMLTreeAttribute(mime,"offset");
     if (attribute != (const char *) NULL)
       {

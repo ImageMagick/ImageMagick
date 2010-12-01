@@ -616,7 +616,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
       }
     if ((count & 0x01) == 0)
       (void) ReadPropertyByte(&info,&length);
-    count=(int) ReadPropertyMSBLong(&info,&length);
+    count=(ssize_t) ((int) ReadPropertyMSBLong(&info,&length));
     if ((*name != '\0') && (*name != '#'))
       if ((resource == (char *) NULL) || (LocaleCompare(name,resource) != 0))
         {
@@ -1239,7 +1239,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   /*
     This the offset to the first IFD.
   */
-  offset=(int) ReadPropertyLong(endian,exif+4);
+  offset=(ssize_t) ((int) ReadPropertyLong(endian,exif+4));
   if ((size_t) offset >= length)
     return(MagickFalse);
   /*
@@ -1285,7 +1285,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       format=(size_t) ReadPropertyShort(endian,q+2);
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
-      components=(int) ReadPropertyLong(endian,q+4);
+      components=(ssize_t) ((int) ReadPropertyLong(endian,q+4));
       number_bytes=(size_t) components*tag_bytes[format];
       if (number_bytes <= 4)
         p=q+8;
@@ -1297,7 +1297,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           /*
             The directory entry contains an offset.
           */
-          offset=(int) ReadPropertyLong(endian,q+8);
+          offset=(ssize_t) ((int) ReadPropertyLong(endian,q+8));
           if ((size_t) (offset+number_bytes) > length)
             continue;
           p=(unsigned char *) (exif+offset);

@@ -1988,9 +1988,9 @@ MagickExport Image *MergeImageLayers(Image *image,
              height += page.y-next->page.y;
              page.y = next->page.y;
         }
-        if ( width < (next->page.x + next->columns - page.x) )
+        if ( (ssize_t) width < (next->page.x + next->columns - page.x) )
            width = (size_t) next->page.x + next->columns - page.x;
-        if ( height < (next->page.y + next->rows - page.y) )
+        if ( (ssize_t) height < (next->page.y + next->rows - page.y) )
            height = (size_t) next->page.y + next->rows - page.y;
       }
       break;
@@ -2015,9 +2015,9 @@ MagickExport Image *MergeImageLayers(Image *image,
         if (method == MosaicLayer) {
           page.x=next->page.x;
           page.y=next->page.y;
-          if ( width < (next->page.x + next->columns) )
+          if ( (ssize_t) width < (next->page.x + next->columns) )
              width = (size_t) next->page.x + next->columns;
-          if ( height < (next->page.y + next->rows) )
+          if ( (ssize_t) height < (next->page.y + next->rows) )
              height = (size_t) next->page.y + next->rows;
         }
       }
