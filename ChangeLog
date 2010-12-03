@@ -1,3 +1,7 @@
+2010-12-03  6.6.6-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed two more cases where the PNG encoder lost transparency (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
+
 2010-12-01  6.6.6-2 Cristy  <quetzlzacatenango@image...>
   * Affine multiplication reversed when translating (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17570).
@@ -11,7 +15,7 @@
 
 2010-11-26  6.6.6-0 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed two more cases where the PNG encoder lost transparency (reference
-http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17516).
 
 2010-11-23  6.6.6-0 Cristy  <quetzlzacatenango@image...>
   * The policy.xml sets not-to-exceed resource values (e.g. policy memory limit
