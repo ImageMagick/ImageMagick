@@ -9023,7 +9023,7 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_nvidia_flags"; break
 else
-  ax_check_cl_dylib_flag='-framework OpenCL -L/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
+  ax_check_cl_dylib_flag='-Wl,-framework,OpenCL -L/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
                                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -9059,7 +9059,7 @@ rm -f core conftest.err conftest.$ac_objext \
   done
 
   if test "X$ax_cv_check_cl_libcl" = Xno -a X$no_x = Xyes; then :
-  LIBS='-framework OpenCL'
+  LIBS='-Wl,-framework,OpenCL'
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
