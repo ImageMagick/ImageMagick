@@ -37,10 +37,10 @@ PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 #
 #   If there is any interface change, increment CURRENT (major).  If that
 #   interface change does not break upward compatibility (i.e. it is an
-#   addition), increment AGE( micro), Otherwise AGE is reset to 0. If CURRENT
+#   addition), increment AGE (micro), Otherwise AGE is reset to 0. If CURRENT
 #   has changed, REVISION (minor) is set to 0, otherwise REVISION is
 #   incremented.
 
 MAGICK_LIBRARY_CURRENT=4
-MAGICK_LIBRARY_REVISION=0
+MAGICK_LIBRARY_REVISION=1
 MAGICK_LIBRARY_AGE=0
