@@ -1536,31 +1536,31 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
               Opacity is inverted so 'off' represents transparent.
         */
         if (levels.red) {
-          t = (ssize_t) (QuantumScale*q->red*(levels.red*d+1.0));
+          t = (ssize_t) (QuantumScale*q->red*(levels.red*d+1));
           l = t/d;  t = t-l*d;
           q->red=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
             (MagickRealType) QuantumRange/levels.red));
         }
         if (levels.green) {
-          t = (ssize_t) (QuantumScale*q->green*(levels.green*d+1.0));
+          t = (ssize_t) (QuantumScale*q->green*(levels.green*d+1));
           l = t/d;  t = t-l*d;
           q->green=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
             (MagickRealType) QuantumRange/levels.green));
         }
         if (levels.blue) {
-          t = (ssize_t) (QuantumScale*q->blue*(levels.blue*d+1.0));
+          t = (ssize_t) (QuantumScale*q->blue*(levels.blue*d+1));
           l = t/d;  t = t-l*d;
           q->blue=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
             (MagickRealType) QuantumRange/levels.blue));
         }
         if (levels.opacity) {
-          t = (ssize_t) ((1.0-QuantumScale*q->opacity)*(levels.opacity*d+.01));
+          t = (ssize_t) ((1.0-QuantumScale*q->opacity)*(levels.opacity*d+1));
           l = t/d;  t = t-l*d;
           q->opacity=RoundToQuantum((MagickRealType) ((1.0-l-(t >= threshold))*
             (MagickRealType) QuantumRange/levels.opacity));
         }
         if (levels.index) {
-          t = (ssize_t) (QuantumScale*indexes[x]*(levels.index*d+1.0));
+          t = (ssize_t) (QuantumScale*indexes[x]*(levels.index*d+1));
           l = t/d;  t = t-l*d;
           indexes[x]=(IndexPacket) RoundToQuantum((MagickRealType) ((l+
             (t>=threshold))*(MagickRealType) QuantumRange/levels.index));
