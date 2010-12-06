@@ -1759,7 +1759,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       fuzz=3.0*MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
   alpha=1.0;
   if (p->matte != MagickFalse)
-    alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
+    alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
   beta=1.0;
   if (q->matte != MagickFalse)
     beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
@@ -1792,7 +1792,15 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   distance+=pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=p->opacity-q->opacity;
+  pixel=0.0;
+  if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
+    pixel=p->opacity-q->opacity;
+  else
+    if (p->matte != MagickFalse) 
+      pixel=p->opacity-(MagickRealType) OpaqueOpacity;
+    else
+      if (q->matte != MagickFalse) 
+        pixel=(MagickRealType) OpaqueOpacity-q->opacity;
   distance+=pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
