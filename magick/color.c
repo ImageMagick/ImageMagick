@@ -1568,6 +1568,19 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
       alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
       beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
     }
+  if ((image->colorspace == HSLColorspace) ||
+      (image->colorspace == HSBColorspace) ||
+      (image->colorspace == HWBColorspace))
+    {
+      if (fabs((double) (p->red-q->red)) > (QuantumRange/2))
+        {
+          if (p->red > (QuantumRange/2))
+            pixel=alpha*(p->red-QuantumRange)-beta*q->red;
+          else
+            pixel=alpha*p->red-beta*(q->red-QuantumRange);
+        }
+        pixel*=2;
+     }
   pixel=alpha*p->red-beta*q->red;
   distance=pixel*pixel;
   if (distance > fuzz)
@@ -1577,6 +1590,12 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   if (distance > fuzz)
     return(MagickFalse);
   pixel=alpha*p->blue-beta*q->blue;
+  distance+=pixel*pixel;
+  if (distance > fuzz)
+    return(MagickFalse);
+  pixel=(MagickRealType) OpaqueOpacity;
+  if (image->matte != MagickFalse)
+    pixel=(MagickRealType) p->opacity-q->opacity;
   distance+=pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
@@ -1772,7 +1791,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
       (p->colorspace == HWBColorspace))
     {
-      if (fabs(p->red-q->red) > (QuantumRange/2))
+      if (fabs((double) (p->red-q->red)) > (QuantumRange/2))
         {
           if (p->red > (QuantumRange/2))
             pixel=alpha*(p->red-QuantumRange)-beta*q->red;
