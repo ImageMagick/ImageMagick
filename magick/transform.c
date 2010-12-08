@@ -936,6 +936,9 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   MagickOffsetType
     progress;
 
+  RectangleInfo
+    page;
+
   ssize_t
     y;
 
@@ -953,6 +956,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   */
   status=MagickTrue;
   progress=0;
+  page=image->page;
   image_view=AcquireCacheView(image);
   flip_view=AcquireCacheView(flip_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1009,6 +1013,11 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   flip_view=DestroyCacheView(flip_view);
   image_view=DestroyCacheView(image_view);
   flip_image->type=image->type;
+  if (page.width != 0)
+    page.x=(ssize_t) (page.width-flip_image->columns-page.x);
+  if (page.height != 0)
+    page.y=(ssize_t) (page.height-flip_image->rows-page.y);
+  flip_image->page=page;
   if (status == MagickFalse)
     flip_image=DestroyImage(flip_image);
   return(flip_image);
@@ -1056,6 +1065,9 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   MagickOffsetType
     progress;
 
+  RectangleInfo
+    page;
+
   ssize_t
     y;
 
@@ -1073,6 +1085,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   */
   status=MagickTrue;
   progress=0;
+  page=image->page;
   image_view=AcquireCacheView(image);
   flop_view=AcquireCacheView(flop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1133,6 +1146,11 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   flop_view=DestroyCacheView(flop_view);
   image_view=DestroyCacheView(image_view);
   flop_image->type=image->type;
+  if (page.width != 0)
+    page.x=(ssize_t) (page.width-flop_image->columns-page.x);
+  if (page.height != 0)
+    page.y=(ssize_t) (page.height-flop_image->rows-page.y);
+  flop_image->page=page;
   if (status == MagickFalse)
     flop_image=DestroyImage(flop_image);
   return(flop_image);

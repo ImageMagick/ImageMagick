@@ -1,3 +1,7 @@
+2010-12-07  6.6.6-4 Cristy  <quetzlzacatenango@image...>
+  * Account for virtual canvas for the -flip / -flop options (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17626).
+
 2010-12-06  6.6.6-4 Anthony Thyssen <A.Thyssen@griffith...>
   * Ordered Dithered handling of Alpha channel was incorrect - fixing
     Bug was introduced v6.6.5-6
