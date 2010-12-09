@@ -1755,6 +1755,26 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 %    o q: Pixel q.
 %
 */
+/*
+   This implements the equivelent of...
+     fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
+
+   Which produces a multi-dimentional cone for that colorspace
+   along the transpaency vector
+
+   For example for an RGB
+     color_distance^2  = ( (u.r-v.r)^2 + (u.g-v.g)^2 + (u.b-v.b)^2 ) / 3
+
+   See http://www.imagemagick.org/Usage/bugs/fuzz_distance/
+
+   Hue colorspace distances need more work.
+   Hue is not a distance, it is an angle!
+
+   A check that q is in the same color space as p should be made!
+   and the appropriate mapping made.
+
+   -- Anthony Thyssen  8 December 2010
+*/
 MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
@@ -1763,64 +1783,82 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
     pixel;
 
   register MagickRealType
-    alpha,
-    beta,
+    scale,
     distance;
+
 
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsMagickColorEqual(p,q));
   if (p->fuzz == 0.0)
     fuzz=MagickMax(q->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
+  else if (q->fuzz == 0.0)
+    fuzz=MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(p->fuzz,MagickSQ1_2);
   else
-    if (q->fuzz == 0.0)
-      fuzz=3.0*MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(p->fuzz,MagickSQ1_2);
-    else
-      fuzz=3.0*MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
-  alpha=1.0;
-  if (p->matte != MagickFalse)
-    alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
-  beta=1.0;
-  if (q->matte != MagickFalse)
-    beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
+    fuzz=MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
+
+  scale=1.0;
+  distance=0.0;
+  if ((p->matte != MagickFalse) || (q->matte != MagickFalse))
+    {
+      /* transparencies are involved - set alpha distance */
+      pixel = ( p->matte != MagickFalse ? p->opacity : OpaqueOpacity )
+            - ( q->matte != MagickFalse ? q->opacity : OpaqueOpacity );
+      distance=pixel*pixel;
+      if (distance > fuzz)
+        return(MagickFalse);
+
+      /* generate a alpha scaling factor to generate a 4D cone on colorspace
+        Note that if one color is transparent, distance has no color component
+      */
+      if (p->matte != MagickFalse)
+        scale=(QuantumScale*GetAlphaPixelComponent(p));
+      if (q->matte != MagickFalse)
+        scale*=(QuantumScale*GetAlphaPixelComponent(q));
+      if ( scale < MagickEpsilon )
+        return(MagickTrue);
+    }
+
+  /* CMYK create a CMY cube with a multi-dimensional cone toward black */
   if (p->colorspace == CMYKColorspace)
     {
-      alpha*=(MagickRealType) (QuantumScale*(QuantumRange-p->index));
-      beta*=(MagickRealType) (QuantumScale*(QuantumRange-q->index));
+      pixel=p->index-q->index;
+      distance+=pixel*pixel*scale;
+      if (distance > fuzz)
+        return(MagickFalse);
+
+      scale*=(MagickRealType) (QuantumScale*(QuantumRange-p->index));
+      scale*=(MagickRealType) (QuantumScale*(QuantumRange-q->index));
     }
-  pixel=alpha*p->red-beta*q->red;
-  if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
+
+  /* RGB or CMY color cube */
+  distance*=3.0;  /* rescale appropriately */
+  fuzz*=3.0;
+
+  pixel=p->red-q->red;
+  if ((p->colorspace == HSLColorspace) ||
+      (p->colorspace == HSBColorspace) ||
       (p->colorspace == HWBColorspace))
     {
+      /* This calculates a arc distance for hue
+         Really if should be a vector angle of 'S'/'W' length
+         with 'L'/'B' forming appropriate cones.
+         In other words this is a hack - Anthony
+      */
       if (fabs((double) (p->red-q->red)) > (QuantumRange/2))
-        {
-          if (p->red > (QuantumRange/2))
-            pixel=alpha*(p->red-QuantumRange)-beta*q->red;
-          else
-            pixel=alpha*p->red-beta*(q->red-QuantumRange);
-        }
-        pixel*=2;
-     }
-  distance=pixel*pixel;
+        pixel=p->red-q->red-QuantumRange;
+      pixel*=2;
+    }
+  distance += pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=alpha*p->green-beta*q->green;
-  distance+=pixel*pixel;
+
+  pixel=p->green-q->green;
+  distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=alpha*p->blue-beta*q->blue;
-  distance+=pixel*pixel;
-  if (distance > fuzz)
-    return(MagickFalse);
-  pixel=0.0;
-  if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
-    pixel=p->opacity-q->opacity;
-  else
-    if (p->matte != MagickFalse) 
-      pixel=p->opacity-(MagickRealType) OpaqueOpacity;
-    else
-      if (q->matte != MagickFalse) 
-        pixel=(MagickRealType) OpaqueOpacity-q->opacity;
-  distance+=pixel*pixel;
+
+  pixel=p->blue-q->blue;
+  distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
   return(MagickTrue);
