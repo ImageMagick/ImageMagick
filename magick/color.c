@@ -1577,7 +1577,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
         scale=(QuantumScale*GetAlphaPixelComponent(p));
       if (image->matte != MagickFalse)
         scale*=(QuantumScale*GetAlphaPixelComponent(q));
-      if (scale < MagickEpsilon)
+      if (scale <= MagickEpsilon)
         return(MagickTrue);
     }
 
@@ -1756,6 +1756,23 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 %  This method is used by ColorFloodFill() and other algorithms which
 %  compare two colors.
 %
+%  This implements the equivelent of...
+%    fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
+%
+%  Which produces a multi-dimentional cone for that colorspace along the
+%  transpaency vector
+%
+%  For example for an RGB
+%    color_distance^2  = ( (u.r-v.r)^2 + (u.g-v.g)^2 + (u.b-v.b)^2 ) / 3
+%
+%  See http://www.imagemagick.org/Usage/bugs/fuzz_distance/
+%
+%  Hue colorspace distances need more work.  Hue is not a distance, it is an
+%  angle!
+%
+%  A check that q is in the same color space as p should be made and the
+%  appropriate mapping made.  -- Anthony Thyssen  8 December 2010
+%
 %  The format of the IsMagickColorSimilar method is:
 %
 %      MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
@@ -1768,26 +1785,6 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 %    o q: Pixel q.
 %
 */
-/*
-   This implements the equivelent of...
-     fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
-
-   Which produces a multi-dimentional cone for that colorspace
-   along the transpaency vector
-
-   For example for an RGB
-     color_distance^2  = ( (u.r-v.r)^2 + (u.g-v.g)^2 + (u.b-v.b)^2 ) / 3
-
-   See http://www.imagemagick.org/Usage/bugs/fuzz_distance/
-
-   Hue colorspace distances need more work.
-   Hue is not a distance, it is an angle!
-
-   A check that q is in the same color space as p should be made!
-   and the appropriate mapping made.
-
-   -- Anthony Thyssen  8 December 2010
-*/
 MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
@@ -1798,7 +1795,6 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   register MagickRealType
     scale,
     distance;
-
 
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsMagickColorEqual(p,q));
@@ -1827,7 +1823,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
         scale=(QuantumScale*GetAlphaPixelComponent(p));
       if (q->matte != MagickFalse)
         scale*=(QuantumScale*GetAlphaPixelComponent(q));
-      if ( scale < MagickEpsilon )
+      if ( scale <= MagickEpsilon )
         return(MagickTrue);
     }
 
@@ -1848,8 +1844,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   fuzz*=3.0;
 
   pixel=p->red-q->red;
-  if ((p->colorspace == HSLColorspace) ||
-      (p->colorspace == HSBColorspace) ||
+  if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
       (p->colorspace == HWBColorspace))
     {
       /* This calculates a arc distance for hue
