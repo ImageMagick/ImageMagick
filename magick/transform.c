@@ -1014,9 +1014,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   flip_image->type=image->type;
   if (page.width != 0)
-    page.x=(ssize_t) (page.width-flip_image->columns-page.x);
-  if (page.height != 0)
-    page.y=(ssize_t) (page.height-flip_image->rows-page.y);
+    page.x=(ssize_t) (page.width-flip_image->columns-page.x-1);
   flip_image->page=page;
   if (status == MagickFalse)
     flip_image=DestroyImage(flip_image);
@@ -1146,10 +1144,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   flop_view=DestroyCacheView(flop_view);
   image_view=DestroyCacheView(image_view);
   flop_image->type=image->type;
-  if (page.width != 0)
-    page.x=(ssize_t) (page.width-flop_image->columns-page.x);
   if (page.height != 0)
-    page.y=(ssize_t) (page.height-flop_image->rows-page.y);
+    page.y=(ssize_t) (page.height-flop_image->rows-page.y-1);
   flop_image->page=page;
   if (status == MagickFalse)
     flop_image=DestroyImage(flop_image);
