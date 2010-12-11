@@ -996,6 +996,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
         {
           switch (metric)
           {
+            case FuzzErrorMetric:
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
             case RootMeanSquaredErrorMetric:
@@ -1054,6 +1055,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             MagickOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
           switch (metric)
           {
+            case FuzzErrorMetric:
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
             case RootMeanSquaredErrorMetric:

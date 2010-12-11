@@ -1242,6 +1242,7 @@ static const OptionInfo
   {
     { "Undefined", (ssize_t) UndefinedMetric, MagickTrue },
     { "AE", (ssize_t) AbsoluteErrorMetric, MagickFalse },
+    { "Fuzz", (ssize_t) FuzzErrorMetric, MagickFalse },
     { "MAE", (ssize_t) MeanAbsoluteErrorMetric, MagickFalse },
     { "MEPP", (ssize_t) MeanErrorPerPixelMetric, MagickFalse },
     { "MSE", (ssize_t) MeanSquaredErrorMetric, MagickFalse },
